@@ -1,0 +1,44 @@
+[user]
+	name = Leonid V. Fedorenchik
+	email = leonidsbox@gmail.com
+[core]
+	editor = gvim --nofork
+	whitespace = trailing-space,space-before-tab,indent-with-non-tab
+	excludesfile = ~/.cvsignore
+[merge]
+	tool = vimdiff
+[color]
+	ui = true
+[sendemail]
+	from = Leonid V. Fedorenchik <leonidsbox@gmail.com>
+	smtpserver = smtp.gmail.com
+	smtpserverport = 587
+	smtpencryption = tls
+	smtpuser = leonidsbox@gmail.com
+[diff "zcat"]
+	textconv = zcat
+[alias]
+	aa = add .
+	a = add
+	b = branch
+	c = checkout
+	ct = commit
+	dc = diff --cached
+	d = diff
+	lg = log --all --decorate --graph --oneline -30
+	ll = log --all --decorate --graph --oneline
+	l = log
+	lreview = log --pretty=format:'%Cred%h%Creset %Cgreen%aD%Creset %Cblue%an%Creset %s'
+	orphank = !gitk --all `git reflog | cut -c1-7`&
+	orphanl = !git log --pretty=oneline --abbrev-commit --graph --decorate `git reflog | cut -c1-7`
+	s = status
+	children = "!f() { git rev-list --all --not $1^@ --children | grep $(git rev-parse $1); }; f" # reachable children of a ref
+[rerere]
+	enabled = true
+[diff]
+	tool = gvimdiff
+[format]
+	signoff = true
+[pretty]
+	olp = %h%x09%an%x09%ad%x09%s
+	ll = %C(auto)%h %Cgreen%an%Creset %s
