@@ -12,22 +12,22 @@ FILES := \
 	.gvimrc \
 	.signature \
 	.signature-work \
-	templ \
-	.vim \
+	templ/ \
+	.vim/ \
 	.vimrc
 
 DELETED_FILES :=
 
 RSYNC := rsync
 
-RSYNC_OPTIONS := -a --delete-after --delete-missing-args --dry-run
+RSYNC_OPTIONS := -a --delete-missing-args
 
 local-files := $(foreach file,$(FILES) $(DELETED_FILES),$(HOME)/$(file))
 
 all: help
 
 help:
-	@echo now       -- update now
+	@echo sync       -- update now
 	@echo push      -- push changes to remote
 	@echo pull      -- pull changes from remote to local
 	@echo install   -- set up cron automatically
@@ -50,7 +50,7 @@ pull:
 	git pull --ff-only
 
 install:
-	{ crontab -l; echo "*/10 * * * * make -C $(PWD) cycle"; } | crontab -
+	{ crontab -l; echo "*/10 * * * * make -C $(PWD) cycle > /tmp/homerc.out"; } | crontab -
 
 cycle: push pull sync-home
 	notify-send --urgency=low --icon=terminal "homerc" "Updated"
