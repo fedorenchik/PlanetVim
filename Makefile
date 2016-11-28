@@ -40,7 +40,11 @@ sync-home:
 	for file in $(FILES); do $(RSYNC) $(RSYNC_OPTIONS) $$file $(HOME)/$$file; done
 
 push:
-	git commit -a -m 'Commit at $(shell LC_ALL=C date)'
+	git add $(FILES) Makefile
+ifneq "$(DELETED_FILES)" ""
+	git rm --ignore-unmatch -- $(DELETED_FILES)
+endif
+	git commit -m 'Commit at $(shell LC_ALL=C date)'
 	git push
 
 pull:
