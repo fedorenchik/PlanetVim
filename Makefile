@@ -44,8 +44,7 @@ push:
 ifneq "$(DELETED_FILES)" ""
 	git rm --ignore-unmatch -- $(DELETED_FILES)
 endif
-	git commit -m 'Commit at $(shell LC_ALL=C date)'
-	git push
+	git commit -m 'Commit at $(shell LC_ALL=C date)' && git push || echo "Nothing to commit"
 
 pull:
 	git pull --ff-only
