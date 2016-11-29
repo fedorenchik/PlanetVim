@@ -42,7 +42,7 @@ sync-home:
 	for file in $(FILES); do $(RSYNC) $(RSYNC_OPTIONS) $$file $(HOME)/$$file; done
 
 push:
-	git add $(FILES) Makefile
+	git add $(FILES) Makefile package-list
 ifneq "$(DELETED_FILES)" ""
 	git rm --ignore-unmatch -- $(DELETED_FILES)
 endif
