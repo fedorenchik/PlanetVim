@@ -14,5 +14,6 @@ libsdl1.2-dev
 libtool
 libtool-bin
 python2.7-dev
+synaptic
 texinfo
 vim-gnome
