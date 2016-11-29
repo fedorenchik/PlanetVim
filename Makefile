@@ -54,5 +54,8 @@ pull:
 install:
 	{ crontab -l; echo "*/10 * * * * make -C $(PWD) cycle > /tmp/homerc.out"; } | crontab -
 
+uninstall:
+	@echo "Run crontab -e and remove the rule manually."
+
 cycle: push pull sync-home
 	notify-send --urgency=low --icon=terminal "homerc" "Updated"
