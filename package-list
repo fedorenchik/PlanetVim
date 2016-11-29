@@ -1,3 +1,17 @@
+autoconf
+automake
+bison
+chrpath
 ctags
+flex
+g++
+gawk
 git-all
+gperf
+libexpat1-dev
+libncurses5-dev
+libsdl1.2-dev
+libtool
+python2.7-dev
+texinfo
 vim-gnome
