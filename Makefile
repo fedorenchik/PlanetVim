@@ -22,6 +22,7 @@ RSYNC := rsync
 
 # TODO: add --delete-after to RSYNC_OPTIONS;
 # TODO: current problem is: delete git-ignored files is error
+# TODO: rsync git metadata files is error
 RSYNC_OPTIONS := -a --delete-missing-args
 
 local-files := $(foreach file,$(FILES) $(DELETED_FILES),$(HOME)/$(file))
@@ -46,7 +47,7 @@ push:
 ifneq "$(DELETED_FILES)" ""
 	git rm --ignore-unmatch -- $(DELETED_FILES)
 endif
-	git commit -m 'Automatic commit at $(shell LC_ALL=C date)' || echo "Nothing to commit"
+	git commit -a -m 'Automatic commit at $(shell LC_ALL=C date)' || echo "Nothing to commit"
 	git push
 
 pull:
