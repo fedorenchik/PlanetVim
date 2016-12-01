@@ -10,6 +10,7 @@ FILES := \
 	.gdbinit \
 	.gitconfig \
 	.gvimrc \
+	.local/share/applications/gvim-local.desktop \
 	.signature \
 	.signature-work \
 	templ/ \
