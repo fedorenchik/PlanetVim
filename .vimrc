@@ -505,7 +505,8 @@ let g:indexed_search_shortmess=1
 " }}}
 " Plugin: mark-2.8.5 {{{
 let g:mwDefaultHighlightingPalette = 'maximum'
-let g:mwAutoLoadMarks = 1
+let g:mwAutoLoadMarks = 0
+let g:mwAutoSaveMarks = 0
 " }}}
 " Plugin: neocomplete {{{
 let g:neocomplete#enable_at_startup = 1
