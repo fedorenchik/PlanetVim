@@ -9,6 +9,7 @@ FILES := \
 	.cvsignore \
 	.gdbinit \
 	.gitconfig \
+	.git-prompt.sh \
 	.gvimrc \
 	.local/share/applications/gvim-local.desktop \
 	.signature \
