@@ -1,3 +1,6 @@
+# add current user to dialout group
+sudo usermod -a -G dialout $USER
+# packages
 autoconf
 automake
 bc
