@@ -56,7 +56,7 @@ pull:
 	git pull --ff-only
 
 install:
-	{ crontab -l; echo "*/10 * * * * make -C $(PWD) cycle > /tmp/homerc.out"; } | crontab -
+	{ crontab -l; echo "*/10 * * * * make -C $(PWD) cycle 2>&1 > /tmp/homerc.out"; } | crontab -
 
 uninstall:
 	@echo "Run crontab -e and remove the rule manually."
