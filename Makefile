@@ -45,12 +45,14 @@ sync: sync-home
 sync-home:
 	for file in $(FILES); do $(RSYNC) $(RSYNC_OPTIONS) $$file $(HOME)/$$file; done
 
-push:
+commit:
 	git add $(FILES) Makefile package-list
 ifneq "$(DELETED_FILES)" ""
 	git rm --ignore-unmatch -- $(DELETED_FILES)
 endif
 	git commit -a -m 'Automatic commit at $(shell LC_ALL=C date)' || echo "Nothing to commit"
+
+push:
 	git push
 
 pull:
@@ -62,5 +64,5 @@ install:
 uninstall:
 	@echo "Run crontab -e and remove the rule manually."
 
-cycle: push pull sync-home
+cycle: commit pull push sync-home
 	notify-send --urgency=low --icon=terminal "homerc" "Updated"
