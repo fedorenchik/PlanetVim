@@ -25,6 +25,7 @@ python-dev
 subversion
 synaptic
 texinfo
+tig
 unzip
 vim-gnome
 wget
