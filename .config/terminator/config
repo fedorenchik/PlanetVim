@@ -1,0 +1,34 @@
+[global_config]
+  focus = mouse
+  title_transmit_bg_color = "#1c4f00"
+[keybindings]
+  go_down = <Alt>j
+  go_left = <Alt>h
+  go_right = <Alt>l
+  go_up = <Alt>k
+  layout_launcher = <Alt>i
+[layouts]
+  [[default]]
+    [[[child0]]]
+      fullscreen = False
+      last_active_term = 6d90fb2f-e2cb-4ebe-bc60-54d098fb4ba5
+      last_active_window = True
+      maximised = True
+      order = 0
+      parent = ""
+      position = 41:24
+      size = 1879, 1176
+      title = /bin/bash
+      type = Window
+    [[[terminal1]]]
+      order = 0
+      parent = child0
+      profile = default
+      type = Terminal
+      uuid = 6d90fb2f-e2cb-4ebe-bc60-54d098fb4ba5
+[plugins]
+[profiles]
+  [[default]]
+    background_image = None
+    scroll_on_output = False
+    scrollback_lines = 10000
