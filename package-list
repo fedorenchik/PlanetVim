@@ -20,11 +20,13 @@ libtool
 libtool-bin
 patch
 pkg-config
+ppa-purge
 python2.7-dev
 python-dev
 subversion
 synaptic
 texinfo
+tig
 unzip
 vim-gnome
 wget
