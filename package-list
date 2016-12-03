@@ -21,6 +21,8 @@ libncurses5-dev
 libsdl1.2-dev
 libtool
 libtool-bin
+libusb-1.0-0-dev
+lzop
 patch
 pkg-config
 ppa-purge
