@@ -117,6 +117,7 @@ gitv()
 dirdiffv()
 {
 	gvim -c "DirDiff $@" 2>>/tmp/gvim.out
+}
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
