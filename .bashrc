@@ -102,7 +102,7 @@ alias f='nautilus .'
 
 e()
 {
-	gvim "$@"
+	gvim "$@" 2>>/tmp/gvim.out
 }
 
 gitv()
@@ -111,7 +111,7 @@ gitv()
 		echo "Not a git repository."
 		return 1
 	fi
-	gvim -c 'Gitv' .git/index
+	gvim -c 'Gitv' .git/index 2>>/tmp/gvim.out
 }
 
 # Add an "alert" alias for long running commands.  Use like so:
