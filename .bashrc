@@ -107,11 +107,17 @@ e()
 
 gitv()
 {
-	if [ ! -d '.git' ]; then
+	if [ ! -e '.git' ]; then
 		echo "Not a git repository."
 		return 1
 	fi
-	gvim -c "Gitv $@" .git/index 2>>/tmp/gvim.out
+	if [ -d '.git' ]; then
+		gvim -c "Gitv $@" .git/index 2>>/tmp/gvim.out
+	elif [ -f '.git' ]; then
+		gvim -c "Gitv $@" .git 2>>/tmp/gvim.out
+	else
+		echo "Not a git repository."
+	fi
 }
 
 dirdiffv()
