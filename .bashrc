@@ -8,6 +8,8 @@ case $- in
       *) return;;
 esac
 
+export TERM=xterm-256color
+
 # generate core files
 ulimit -c unlimited
 
