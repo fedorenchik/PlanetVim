@@ -120,6 +120,8 @@ gitv()
 	fi
 }
 
+export MANPAGER="env MAN_PN=1 vim -M +MANPAGER -"
+
 dirdiffv()
 {
 	gvim -c "DirDiff $@" 2>>/tmp/gvim.out
