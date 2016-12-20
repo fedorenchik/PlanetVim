@@ -33,7 +33,7 @@ local-files := $(foreach file,$(FILES) $(DELETED_FILES),$(HOME)/$(file))
 all: help
 
 help:
-	@echo sync       -- update now
+	@echo sync      -- update now
 	@echo push      -- push changes to remote
 	@echo pull      -- pull changes from remote to local
 	@echo install   -- set up cron automatically
@@ -46,7 +46,7 @@ sync-home:
 	for file in $(FILES); do $(RSYNC) $(RSYNC_OPTIONS) $$file $(HOME)/$$file; done
 
 commit:
-	git submodule update --recursive --remote
+	git submodule update --recursive --remote --init
 	git add $(FILES) Makefile package-list
 ifneq "$(DELETED_FILES)" ""
 	git rm --ignore-unmatch -- $(DELETED_FILES)
