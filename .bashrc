@@ -8,6 +8,8 @@ case $- in
       *) return;;
 esac
 
+export TERM=xterm-256color
+
 # generate core files
 ulimit -c unlimited
 
@@ -107,12 +109,20 @@ e()
 
 gitv()
 {
-	if [ ! -d '.git' ]; then
+	if [ ! -e '.git' ]; then
 		echo "Not a git repository."
 		return 1
 	fi
-	gvim -c "Gitv $@" .git/index 2>>/tmp/gvim.out
+	if [ -d '.git' ]; then
+		gvim -c "Gitv $@" .git/index 2>>/tmp/gvim.out
+	elif [ -f '.git' ]; then
+		gvim -c "Gitv $@" .git 2>>/tmp/gvim.out
+	else
+		echo "Not a git repository."
+	fi
 }
+
+export MANPAGER="env MAN_PN=1 vim -M +MANPAGER -"
 
 dirdiffv()
 {
