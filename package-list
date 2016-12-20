@@ -36,3 +36,4 @@ u-boot-tools
 unzip
 vim-gnome
 wget
+wmctrl
