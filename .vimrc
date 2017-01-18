@@ -138,7 +138,7 @@ set tags-=TAGS
 " Save and restore global variables.
 set viminfo+=!
 set breakindent
-set showbreak=>>>
+set showbreak=>>>>>>>>
 set display=lastline
 set sidescroll=30
 set sidescrolloff=2
