@@ -107,6 +107,11 @@ e()
 	gvim "$@" 2>>/tmp/gvim.out
 }
 
+r()
+{
+	gview "$@" 2>>/tmp/gvim.out
+}
+
 gitv()
 {
 	if [ ! -e '.git' ]; then
