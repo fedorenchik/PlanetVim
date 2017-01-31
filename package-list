@@ -24,6 +24,7 @@ libtool-bin
 libusb-1.0-0-dev
 lzop
 patch
+picocom
 pkg-config
 ppa-purge
 python2.7-dev
