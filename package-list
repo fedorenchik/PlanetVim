@@ -1,5 +1,7 @@
-# add current user to dialout group
+# add current user to dialout group (for access to /dev/tty*)
 sudo usermod -a -G dialout $USER
+# add current user to vboxusers group (for access to usb in virtualbox)
+sudo usermod -a -G vboxusers $USER
 # packages
 autoconf
 automake
