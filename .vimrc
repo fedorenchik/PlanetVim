@@ -495,7 +495,10 @@ let g:airline#extensions#syntastic#enabled = 0
 let g:airline#extensions#whitespace#enabled = 0
 " }}}
 " Plugin: alternate {{{
-let g:alternateNoDefaultAlternate=1
+let g:alternateNoDefaultAlternate = 1
+" }}}
+" Plugin: conque-gdb {{{
+let g:ConqueGdb_Leader = '\'
 " }}}
 " Plugin: gtags {{{
 let g:Gtags_OpenQuickfixWindow = 0
