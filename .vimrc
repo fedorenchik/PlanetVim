@@ -500,6 +500,9 @@ let g:alternateNoDefaultAlternate = 1
 " Plugin: conque-gdb {{{
 let g:ConqueGdb_Leader = '\'
 " }}}
+" Plugin: conque-term {{{
+let g:ConqueTerm_ReadUnfocused = 1
+" }}}
 " Plugin: gtags {{{
 let g:Gtags_OpenQuickfixWindow = 0
 " }}}
