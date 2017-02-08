@@ -502,6 +502,10 @@ let g:ConqueGdb_Leader = '\'
 " }}}
 " Plugin: conque-term {{{
 let g:ConqueTerm_ReadUnfocused = 1
+
+let g:ConqueTerm_InsertOnEnter = 1
+let g:ConqueTerm_ShowBell = 1
+
 " }}}
 " Plugin: gtags {{{
 let g:Gtags_OpenQuickfixWindow = 0
