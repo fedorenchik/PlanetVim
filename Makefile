@@ -54,7 +54,7 @@ endif
 	git commit -a -m 'Automatic commit at $(shell LC_ALL=C date)' || echo "Nothing to commit"
 
 push:
-	git push
+	-git push
 
 pull:
 	git pull --ff-only
