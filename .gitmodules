@@ -43,9 +43,6 @@
 [submodule ".vim/bundle/vim-gitgutter"]
 	path = .vim/bundle/vim-gitgutter
 	url = https://github.com/airblade/vim-gitgutter.git
-[submodule ".vim/bundle/vim-localrc"]
-	path = .vim/bundle/vim-localrc
-	url = https://github.com/thinca/vim-localrc.git
 [submodule ".vim/bundle/vim-obsession"]
 	path = .vim/bundle/vim-obsession
 	url = https://github.com/tpope/vim-obsession.git
