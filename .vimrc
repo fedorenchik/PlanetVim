@@ -54,92 +54,90 @@ let maplocalleader=","	" <leader> local to buffer
 " }}}
 " Settings: {{{
 "TODO: set cpoptions to repeat yanking of text (using '.')
-set showmode		" always show mode we're currently in
-set title
-set titlestring=%F\ %a%r%m\ -\ VIM
-set nowrap              " don't wrap lines by default
-set nowrapscan
-set fileformats=unix,dos,mac
-set tabstop=8		" tab is 8 spaces
-set softtabstop=8	" when hitting <BS>, pretend like a tab is removed, even if spaces
-set noexpandtab		" insert real tabs for tabs
-set smarttab		" insert tabs on the start of a line according to shiftwidth, not tabstop
-set shiftwidth=8	" number of spaces to use for autoindenting
-set shiftround		" use multiple of shiftwidth when indenting with '<' and '>'
-set ttimeoutlen=50
-set updatetime=1000
+set autoindent		" always set autoindenting on
+set autoread		" automatically reload changes if detected
 " don't allow backspacing over everything in insert mode
 set backspace=indent,start
-set autoindent		" always set autoindenting on
-set copyindent		" copy the previous indentation on autoindenting
-set nonumber
-set norelativenumber
-set noshowmatch		" do not jump to open paren/bracket/brace when close one it typed
-set nohlsearch
-set incsearch           " do incremental searching
-set gdefault		" global search/replace by default
-set listchars=tab:»\ ,trail:·,extends:>,precedes:<	" show some invisible chars
-set list		" do not show invisible characters by default
-set mouse=a		" enable mouse (hold Shift to give mouse to xterm)
-set formatoptions+=1	" when wrapping paragraphs, do not end lines with 1-letter words (looks stupid)
-set nofoldenable	" disable folding
-set foldcolumn=0	" add a fold column
-set foldmethod=manual	" syntax folding
-set foldlevelstart=99	" all folds opened by default
-set termencoding=utf-8
-set encoding=utf-8
-set lazyredraw		" don't update the display while executing macros
-set laststatus=2        " always show the status line
-set cmdheight=2		" use a status bar that is 2 rows high
-set sessionoptions-=options
-set hidden		" hide buffers instead of closing them
-set switchbuf=useopen	" reuse opened buffers from quickfix window
-set history=1000        " keep 1000 lines of command line history
-set undolevels=1000
-if v:version >= 703
-	set undofile
-	set undodir=$HOME/.vim/undo
-endif
-set backup              " keep a backup file
 set backupdir=~/.vim/backup,/tmp
-set writebackup
-set swapfile
-set directory=~/.vim/swap//,.,/tmp	" set directory for swap files
-set wildmenu		" make tab completion like bash
-set wildmode=list:longest	" show tab completion menu and complete longest match
-"set title		" change the terminal's title
-set visualbell		" do not visual blink
-set t_vb=		" do not visual blink
-set noerrorbells	" do not beep
-set showcmd             " display incomplete commands
-set nomodeline		" disable mode lines (security measure)
-set ttyfast		" smoother redrawing on fast terminals
-set nocursorline	" do not highlight current line: breaks highlighting
-set virtualedit=block	" allow cursor to move freely in vilual block mode
-set ruler               " show the cursor position all the time
+set backup              " keep a backup file
+set breakindent
+set cmdheight=2		" use a status bar that is 2 rows high
 set colorcolumn=80      " visually display column 81
 set completeopt=menuone,menu,longest,preview
+set copyindent		" copy the previous indentation on autoindenting
+set directory=~/.vim/swap//,.,/tmp	" set directory for swap files
+set display=lastline
+set encoding=utf-8
+set exrc
+set fileformats=unix,dos,mac
+set foldcolumn=0	" add a fold column
+set foldlevelstart=99	" all folds opened by default
+set foldmethod=manual	" syntax folding
+set formatoptions+=1	" when wrapping paragraphs, do not end lines with 1-letter words (looks stupid)
+set gdefault		" global search/replace by default
 set guicursor+=a:blinkon0
-set noshowmode		" do not show mode since PowerLine shows it
-set autoread		" automatically reload changes if detected
-set nostartofline	" do not jump to start of line after moving commands
-set scrolloff=2		" show some lines ahead when scrolling
 " remove toolbar and scrollbars
 set guioptions-=T
 set guioptions-=L
 set guioptions-=r
-" Configure tags
-set tags-=./TAGS
-set tags-=TAGS
-" Save and restore global variables.
-set viminfo+=!
-set breakindent
+set hidden		" hide buffers instead of closing them
+set history=1000        " keep 1000 lines of command line history
+set incsearch           " do incremental searching
+set laststatus=2        " always show the status line
+set lazyredraw		" don't update the display while executing macros
+set listchars=tab:»\ ,trail:·,extends:>,precedes:<	" show some invisible chars
+set list		" do not show invisible characters by default
+set mouse=a		" enable mouse (hold Shift to give mouse to xterm)
+set nocursorline	" do not highlight current line: breaks highlighting
+set noerrorbells	" do not beep
+set noexpandtab		" insert real tabs for tabs
+set nofoldenable	" disable folding
+set nohlsearch
+set nomodeline		" disable mode lines (security measure)
+set nonumber
+set norelativenumber
+set noshowmatch		" do not jump to open paren/bracket/brace when close one it typed
+set noshowmode		" do not show mode since PowerLine shows it
+set nostartofline	" do not jump to start of line after moving commands
+set nowrap              " don't wrap lines by default
+set nowrapscan
+set ruler               " show the cursor position all the time
+set scrolloff=2		" show some lines ahead when scrolling
+set secure
+set sessionoptions-=options
+set shiftround		" use multiple of shiftwidth when indenting with '<' and '>'
+set shiftwidth=8	" number of spaces to use for autoindenting
 set showbreak=>>>>>>>>
-set display=lastline
+set showcmd             " display incomplete commands
+set showmode		" always show mode we're currently in
 set sidescroll=30
 set sidescrolloff=2
-set exrc
-set secure
+set smarttab		" insert tabs on the start of a line according to shiftwidth, not tabstop
+set softtabstop=8	" when hitting <BS>, pretend like a tab is removed, even if spaces
+set swapfile
+set switchbuf=useopen	" reuse opened buffers from quickfix window
+set tabstop=8		" tab is 8 spaces
+set tags-=./TAGS
+set tags-=TAGS
+set termencoding=utf-8
+set title
+set titlestring=%F\ %a%r%m\ -\ VIM
+set ttimeoutlen=50
+set ttyfast		" smoother redrawing on fast terminals
+set t_vb=		" do not visual blink
+if v:version >= 703
+	set undodir=$HOME/.vim/undo
+	set undofile
+endif
+set undolevels=1000
+set updatetime=1000
+" Save and restore global variables.
+set viminfo+=!
+set virtualedit=block	" allow cursor to move freely in vilual block mode
+set visualbell		" do not visual blink
+set wildmenu		" make tab completion like bash
+set wildmode=list:longest	" show tab completion menu and complete longest match
+set writebackup
 " }}}
 " Mappings: {{{
 " Modes: {{{
