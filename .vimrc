@@ -82,12 +82,10 @@ set listchars=tab:»\ ,trail:·,extends:>,precedes:<	" show some invisible chars
 set list		" do not show invisible characters by default
 set mouse=a		" enable mouse (hold Shift to give mouse to xterm)
 set formatoptions+=1	" when wrapping paragraphs, do not end lines with 1-letter words (looks stupid)
-
 set nofoldenable	" disable folding
 set foldcolumn=0	" add a fold column
 set foldmethod=manual	" syntax folding
 set foldlevelstart=99	" all folds opened by default
-
 set termencoding=utf-8
 set encoding=utf-8
 set lazyredraw		" don't update the display while executing macros
@@ -109,7 +107,7 @@ set swapfile
 set directory=~/.vim/swap//,.,/tmp	" set directory for swap files
 set wildmenu		" make tab completion like bash
 set wildmode=list:longest	" show tab completion menu and complete longest match
-set title		" change the terminal's title
+"set title		" change the terminal's title
 set visualbell		" do not visual blink
 set t_vb=		" do not visual blink
 set noerrorbells	" do not beep
@@ -118,12 +116,10 @@ set nomodeline		" disable mode lines (security measure)
 set ttyfast		" smoother redrawing on fast terminals
 set nocursorline	" do not highlight current line: breaks highlighting
 set virtualedit=block	" allow cursor to move freely in vilual block mode
-
 set ruler               " show the cursor position all the time
 set colorcolumn=80      " visually display column 81
 set completeopt=menuone,menu,longest,preview
 set guicursor+=a:blinkon0
-
 set noshowmode		" do not show mode since PowerLine shows it
 set autoread		" automatically reload changes if detected
 set nostartofline	" do not jump to start of line after moving commands
@@ -142,6 +138,8 @@ set showbreak=>>>>>>>>
 set display=lastline
 set sidescroll=30
 set sidescrolloff=2
+set exrc
+set secure
 " }}}
 " Mappings: {{{
 " Modes: {{{
