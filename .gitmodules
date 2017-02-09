@@ -5,7 +5,7 @@
 	path = .vim/bundle/IndexedSearch
 	url = https://github.com/vim-scripts/IndexedSearch.git
 [submodule ".vim/bundle/molokai"]
-	path = .vim/bundle/molokai
+	path = .vim/pack/bundle/start/molokai
 	url = https://github.com/tomasr/molokai.git
 [submodule ".vim/bundle/neocomplete.vim"]
 	path = .vim/bundle/neocomplete.vim
