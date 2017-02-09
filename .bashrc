@@ -136,6 +136,8 @@ dirdiffv()
 
 less()
 {
+	declare cmd=$(dirname $(dirname $(which vim)))/share/vim/vim80/macros/less.sh
+	$cmd "$@"
 }
 
 # Add an "alert" alias for long running commands.  Use like so:
