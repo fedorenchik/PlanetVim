@@ -8,58 +8,58 @@
 	path = .vim/pack/bundle/start/molokai
 	url = https://github.com/tomasr/molokai.git
 [submodule ".vim/bundle/neocomplete.vim"]
-	path = .vim/bundle/neocomplete.vim
+	path = .vim/pack/bundle/start/neocomplete.vim
 	url = https://github.com/Shougo/neocomplete.vim.git
 [submodule ".vim/bundle/tagbar"]
-	path = .vim/bundle/tagbar
+	path = .vim/pack/bundle/start/tagbar
 	url = https://github.com/majutsushi/tagbar.git
 [submodule ".vim/bundle/undotree"]
-	path = .vim/bundle/undotree
+	path = .vim/pack/bundle/start/undotree
 	url = https://github.com/mbbill/undotree.git
 [submodule ".vim/bundle/unite-gtags"]
-	path = .vim/bundle/unite-gtags
+	path = .vim/pack/bundle/start/unite-gtags
 	url = https://github.com/hewes/unite-gtags.git
 [submodule ".vim/bundle/unite-mark"]
-	path = .vim/bundle/unite-mark
+	path = .vim/pack/bundle/start/unite-mark
 	url = https://github.com/tacroe/unite-mark.git
 [submodule ".vim/bundle/unite-outline"]
-	path = .vim/bundle/unite-outline
+	path = .vim/pack/bundle/start/unite-outline
 	url = https://github.com/Shougo/unite-outline.git
 [submodule ".vim/bundle/unite-quickfix"]
-	path = .vim/bundle/unite-quickfix
+	path = .vim/pack/bundle/start/unite-quickfix
 	url = https://github.com/osyo-manga/unite-quickfix.git
 [submodule ".vim/bundle/unite.vim"]
-	path = .vim/bundle/unite.vim
+	path = .vim/pack/bundle/start/unite.vim
 	url = https://github.com/Shougo/unite.vim.git
 [submodule ".vim/bundle/vim-airline"]
-	path = .vim/bundle/vim-airline
+	path = .vim/pack/bundle/start/vim-airline
 	url = https://github.com/bling/vim-airline.git
 [submodule ".vim/bundle/vim-dirdiff"]
-	path = .vim/bundle/vim-dirdiff
+	path = .vim/pack/bundle/start/vim-dirdiff
 	url = https://github.com/will133/vim-dirdiff.git
 [submodule ".vim/bundle/vim-fugitive"]
-	path = .vim/bundle/vim-fugitive
+	path = .vim/pack/bundle/start/vim-fugitive
 	url = https://github.com/tpope/vim-fugitive.git
 [submodule ".vim/bundle/vim-gitgutter"]
-	path = .vim/bundle/vim-gitgutter
+	path = .vim/pack/bundle/start/vim-gitgutter
 	url = https://github.com/airblade/vim-gitgutter.git
 [submodule ".vim/bundle/vim-obsession"]
-	path = .vim/bundle/vim-obsession
+	path = .vim/pack/bundle/start/vim-obsession
 	url = https://github.com/tpope/vim-obsession.git
 [submodule ".vim/bundle/vim-repeat"]
-	path = .vim/bundle/vim-repeat
+	path = .vim/pack/bundle/start/vim-repeat
 	url = https://github.com/tpope/vim-repeat.git
 [submodule ".vim/bundle/vim-signature"]
-	path = .vim/bundle/vim-signature
+	path = .vim/pack/bundle/start/vim-signature
 	url = https://github.com/kshenoy/vim-signature.git
 [submodule ".vim/bundle/vim-surround"]
-	path = .vim/bundle/vim-surround
+	path = .vim/pack/bundle/start/vim-surround
 	url = https://github.com/tpope/vim-surround.git
 [submodule ".vim/bundle/vimproc.vim"]
-	path = .vim/bundle/vimproc.vim
+	path = .vim/pack/bundle/start/vimproc.vim
 	url = https://github.com/Shougo/vimproc.vim.git
 [submodule ".vim/bundle/vimshell.vim"]
-	path = .vim/bundle/vimshell.vim
+	path = .vim/pack/bundle/start/vimshell.vim
 	url = https://github.com/Shougo/vimshell.vim.git
 [submodule ".vim/bundle/gitv"]
 	path = .vim/pack/bundle/start/gitv

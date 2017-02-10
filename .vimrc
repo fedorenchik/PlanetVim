@@ -107,6 +107,7 @@ set secure
 set sessionoptions-=options
 set shiftround		" use multiple of shiftwidth when indenting with '<' and '>'
 set shiftwidth=8	" number of spaces to use for autoindenting
+set shortmess+=I
 set showbreak=>>>>>>>>
 set showcmd             " display incomplete commands
 set showmode		" always show mode we're currently in
