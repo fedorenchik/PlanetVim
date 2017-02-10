@@ -94,7 +94,7 @@ set norelativenumber
 set ruler               " show the cursor position all the time
 set scrolloff=2
 set secure
-set sessionoptions="buffers,folds,help,sesdir,tabpages,unix,winsize"
+set sessionoptions="buffers,folds,help,sesdir,slash,tabpages,unix,winsize"
 set shiftround		" use multiple of shiftwidth when indenting with '<' and '>'
 set shiftwidth=8	" number of spaces to use for autoindenting
 set shortmess+=I
@@ -425,12 +425,10 @@ augroup vimrcEx
 				\   exe "normal! g`\"" |
 				\ endif
 augroup END
-if has('mksession')
 augroup auto_sessions
 	autocmd!
 	autocmd BufEnter,VimLeavePre * mksession! .session.vim
 augroup END
-endif
 " }}}
 " Commands: {{{
 " Convenient command to see the difference between the current buffer and the
