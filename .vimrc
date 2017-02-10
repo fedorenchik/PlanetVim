@@ -8,7 +8,7 @@
 " latest GNU GLOBAL (compile from source) (6.5.5 as of 30.10.2016)
 " }}}
 " Basics: {{{
-set nocompatible
+set nocompatible	" affects other options, so it should be the first
 syntax on
 filetype plugin indent on       " enable detection, plugins and indenting in one step
 " }}}
