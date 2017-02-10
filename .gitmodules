@@ -2,7 +2,7 @@
 	path = .vim/bundle/vim-pathogen
 	url = https://github.com/tpope/vim-pathogen.git
 [submodule ".vim/bundle/IndexedSearch"]
-	path = .vim/bundle/IndexedSearch
+	path = .vim/pack/bundle/start/IndexedSearch
 	url = https://github.com/vim-scripts/IndexedSearch.git
 [submodule ".vim/bundle/molokai"]
 	path = .vim/pack/bundle/start/molokai
@@ -62,5 +62,5 @@
 	path = .vim/bundle/vimshell.vim
 	url = https://github.com/Shougo/vimshell.vim.git
 [submodule ".vim/bundle/gitv"]
-	path = .vim/bundle/gitv
+	path = .vim/pack/bundle/start/gitv
 	url = https://github.com/gregsexton/gitv.git
