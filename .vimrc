@@ -427,7 +427,7 @@ augroup vimrcEx
 augroup END
 augroup auto_sessions
 	autocmd!
-	autocmd BufEnter,VimLeavePre *
+	autocmd VimLeavePre *
 				\ if !&readonly |
 				\   mksession! .session.vim |
 				\ endif
