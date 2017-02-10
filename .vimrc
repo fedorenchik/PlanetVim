@@ -54,12 +54,16 @@ set cmdheight=2		" use a status bar that is 2 rows high
 set colorcolumn=80      " visually display column 81
 set completeopt=menuone,menu,longest,preview
 set copyindent		" copy the previous indentation on autoindenting
+set nocursorline	" do not highlight current line: breaks highlighting
 set directory=~/.vim/swap//,.,/tmp	" set directory for swap files
 set display=lastline
 set encoding=utf-8
+set noerrorbells	" do not beep
+set noexpandtab		" insert real tabs for tabs
 set exrc
 set fileformats=unix,dos,mac
 set foldcolumn=0	" add a fold column
+set nofoldenable	" disable folding
 set foldlevelstart=99	" all folds opened by default
 set foldmethod=manual	" syntax folding
 set formatoptions+=1	" when wrapping paragraphs, do not end lines with 1-letter words (looks stupid)
@@ -71,27 +75,18 @@ set guioptions-=L
 set guioptions-=r
 set hidden		" hide buffers instead of closing them
 set history=1000        " keep 1000 lines of command line history
+set nohlsearch
 set incsearch           " do incremental searching
 set laststatus=2        " always show the status line
 set lazyredraw		" don't update the display while executing macros
 set listchars=tab:»\ ,trail:·,extends:>,precedes:<	" show some invisible chars
 set list		" do not show invisible characters by default
+set nomodeline		" disable mode lines (security measure)
 if has('mouse')
 	set mouse=a		" enable mouse (hold Shift to give mouse to xterm)
 endif
-set nocursorline	" do not highlight current line: breaks highlighting
-set noerrorbells	" do not beep
-set noexpandtab		" insert real tabs for tabs
-set nofoldenable	" disable folding
-set nohlsearch
-set nomodeline		" disable mode lines (security measure)
 set nonumber
 set norelativenumber
-set noshowmatch		" do not jump to open paren/bracket/brace when close one it typed
-set noshowmode		" do not show mode since PowerLine shows it
-set nostartofline	" do not jump to start of line after moving commands
-set nowrap              " don't wrap lines by default
-set nowrapscan
 set ruler               " show the cursor position all the time
 set scrolloff=2		" show some lines ahead when scrolling
 set secure
@@ -101,11 +96,14 @@ set shiftwidth=8	" number of spaces to use for autoindenting
 set shortmess+=I
 set showbreak=>>>>>>>>
 set showcmd             " display incomplete commands
+set noshowmatch		" do not jump to open paren/bracket/brace when close one it typed
+set noshowmode		" do not show mode since PowerLine shows it
 set showmode		" always show mode we're currently in
 set sidescroll=30
 set sidescrolloff=2
 set smarttab		" insert tabs on the start of a line according to shiftwidth, not tabstop
 set softtabstop=8	" when hitting <BS>, pretend like a tab is removed, even if spaces
+set nostartofline	" do not jump to start of line after moving commands
 set swapfile
 set switchbuf=useopen	" reuse opened buffers from quickfix window
 set tabstop=8		" tab is 8 spaces
@@ -129,6 +127,8 @@ set virtualedit=block	" allow cursor to move freely in vilual block mode
 set visualbell		" do not visual blink
 set wildmenu		" make tab completion like bash
 set wildmode=list:longest	" show tab completion menu and complete longest match
+set nowrap
+set nowrapscan
 set writebackup
 " }}}
 " Leaders: {{{
