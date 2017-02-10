@@ -3,5 +3,6 @@ GPATH
 GRTAGS
 GTAGS
 .session.vim
+.viminfo
 Session.vim
 tags
