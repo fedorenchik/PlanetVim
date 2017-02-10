@@ -65,5 +65,5 @@
 	path = .vim/pack/bundle/start/gitv
 	url = https://github.com/gregsexton/gitv.git
 [submodule ".vim/pack/bundle/start/vimagit.git"]
-	path = .vim/pack/bundle/start/vimagit.git
+	path = .vim/pack/bundle/start/vimagit
 	url = https://github.com/jreybert/vimagit.git
