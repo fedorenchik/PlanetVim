@@ -76,7 +76,9 @@ set laststatus=2        " always show the status line
 set lazyredraw		" don't update the display while executing macros
 set listchars=tab:»\ ,trail:·,extends:>,precedes:<	" show some invisible chars
 set list		" do not show invisible characters by default
-set mouse=a		" enable mouse (hold Shift to give mouse to xterm)
+if has('mouse')
+	set mouse=a		" enable mouse (hold Shift to give mouse to xterm)
+endif
 set nocursorline	" do not highlight current line: breaks highlighting
 set noerrorbells	" do not beep
 set noexpandtab		" insert real tabs for tabs
