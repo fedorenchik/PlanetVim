@@ -1,6 +1,3 @@
-[submodule ".vim/bundle/vim-pathogen"]
-	path = .vim/bundle/vim-pathogen
-	url = https://github.com/tpope/vim-pathogen.git
 [submodule ".vim/bundle/IndexedSearch"]
 	path = .vim/pack/bundle/start/IndexedSearch
 	url = https://github.com/vim-scripts/IndexedSearch.git

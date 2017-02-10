@@ -41,11 +41,6 @@ if &t_Co > 2 || has("gui_running")
 	syntax on
 endif
 " }}}
-" Leaders: {{{
-" should be before any mappings: it affects only mappings below
-let mapleader=","
-let maplocalleader=","	" <leader> local to buffer
-" }}}
 " Settings: {{{
 "TODO: set cpoptions to repeat yanking of text (using '.')
 set autoindent		" always set autoindenting on
@@ -133,6 +128,11 @@ set visualbell		" do not visual blink
 set wildmenu		" make tab completion like bash
 set wildmode=list:longest	" show tab completion menu and complete longest match
 set writebackup
+" }}}
+" Leaders: {{{
+" should be before any mappings: it affects only mappings below
+let mapleader=","
+let maplocalleader=","	" <leader> local to buffer
 " }}}
 " Mappings: {{{
 " Modes: {{{
@@ -484,6 +484,7 @@ let g:netrw_special_syntax = 1
 let g:airline#extensions#hunks#enabled = 0
 let g:airline#extensions#syntastic#enabled = 0
 let g:airline#extensions#whitespace#enabled = 0
+let g:airline#extensions#tabline#enabled = 1
 " }}}
 " Plugin: alternate {{{
 let g:alternateNoDefaultAlternate = 1
