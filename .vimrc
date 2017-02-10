@@ -425,6 +425,9 @@ augroup vimrcEx
 				\   exe "normal! g`\"" |
 				\ endif
 augroup END
+augroup auto_sessions
+	autocmd!
+	autocmd BufEnter,VimLeavePre * mksession! .session.vim
 " }}}
 " Commands: {{{
 " Convenient command to see the difference between the current buffer and the
