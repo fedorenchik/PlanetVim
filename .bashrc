@@ -104,7 +104,11 @@ alias f='nautilus .'
 
 e()
 {
-	gvim "$@" 2>>/tmp/gvim.out
+	if [ "$*" == "" ]; then
+		gvim -S .session.vim 2>>/tmp/gvim.out
+	else
+		gvim "$@" 2>>/tmp/gvim.out
+	fi
 }
 
 r()
