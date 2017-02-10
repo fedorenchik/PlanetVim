@@ -9,7 +9,9 @@
 " }}}
 " Basics: {{{
 set nocompatible	" affects other options, so it should be the first
-syntax on
+if &t_Co > 2 || has("gui_running")
+	syntax on
+endif
 filetype plugin indent on       " enable detection, plugins and indenting in one step
 " }}}
 " GUI Settings: {{{
@@ -37,9 +39,6 @@ elseif &t_Co >= 256
 	set background=dark
 	colorscheme molokai
 endif
-if &t_Co > 2 || has("gui_running")
-	syntax on
-endif
 " }}}
 " Settings: {{{
 "TODO: set cpoptions to repeat yanking of text (using '.')
@@ -50,6 +49,7 @@ set backspace=indent,start
 set backupdir=~/.vim/backup,/tmp
 set backup              " keep a backup file
 set breakindent
+let c_comment_strings=1
 set cmdheight=2		" use a status bar that is 2 rows high
 set colorcolumn=80      " visually display column 81
 set completeopt=menuone,menu,longest,preview
@@ -76,7 +76,9 @@ set guioptions-=r
 set hidden		" hide buffers instead of closing them
 set history=1000        " keep 1000 lines of command line history
 set nohlsearch
-set incsearch           " do incremental searching
+if has('reltime')
+	set incsearch
+endif
 set laststatus=2        " always show the status line
 set lazyredraw		" don't update the display while executing macros
 set listchars=tab:»\ ,trail:·,extends:>,precedes:<	" show some invisible chars
@@ -85,10 +87,11 @@ set nomodeline		" disable mode lines (security measure)
 if has('mouse')
 	set mouse=a		" enable mouse (hold Shift to give mouse to xterm)
 endif
+set mousehide
 set nonumber
 set norelativenumber
 set ruler               " show the cursor position all the time
-set scrolloff=2		" show some lines ahead when scrolling
+set scrolloff=2
 set secure
 set sessionoptions-=options
 set shiftround		" use multiple of shiftwidth when indenting with '<' and '>'
@@ -110,12 +113,15 @@ set tabstop=8		" tab is 8 spaces
 set tags-=./TAGS
 set tags-=TAGS
 set termencoding=utf-8
+set timeout
+set timeoutlen=300
 set title
 set titlestring=%F\ %a%r%m\ -\ VIM
-set ttimeoutlen=50
+set ttimeout
+set ttimeoutlen=10
 set ttyfast		" smoother redrawing on fast terminals
 set t_vb=		" do not visual blink
-if v:version >= 703
+if has('persistent_undo')
 	set undodir=$HOME/.vim/undo
 	set undofile
 endif
@@ -467,6 +473,11 @@ function! ToggleFileExplorer()
 endfunction
 " }}}
 "  Standard Plugins: {{{
+" Plugin: matchit {{{
+if has('syntax') && has('eval')
+	packadd matchit
+endif
+" }}}
 " Plugin: man {{{
 runtime! ftplugin/man.vim
 " }}}
