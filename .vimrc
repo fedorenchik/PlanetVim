@@ -42,7 +42,6 @@ elseif &t_Co >= 256
 endif
 " }}}
 " Settings: {{{
-"TODO: set cpoptions to repeat yanking of text (using '.')
 set autoindent		" always set autoindenting on
 set autoread		" automatically reload changes if detected
 " don't allow backspacing over everything in insert mode
@@ -55,6 +54,7 @@ set cmdheight=2		" use a status bar that is 2 rows high
 set colorcolumn=80      " visually display column 81
 set completeopt=menuone,menu,longest,preview
 set copyindent		" copy the previous indentation on autoindenting
+"TODO: set cpoptions to repeat yanking of text (using '.')
 set nocursorline	" do not highlight current line: breaks highlighting
 set directory=~/.vim/swap//,.,/tmp	" set directory for swap files
 set display=lastline
