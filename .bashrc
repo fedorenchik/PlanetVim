@@ -113,7 +113,7 @@ e()
 
 r()
 {
-	gview "$@" 2>>/tmp/gvim.out
+	gview -i NONE "$@" 2>>/tmp/gvim.out
 }
 
 gitv()
