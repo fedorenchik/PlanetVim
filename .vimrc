@@ -130,6 +130,7 @@ set undolevels=1000
 set updatetime=1000
 " Save and restore global variables.
 set viminfo+=!
+set viminfo+=r/tmp
 set virtualedit=block	" allow cursor to move freely in vilual block mode
 set visualbell		" do not visual blink
 set wildmenu		" make tab completion like bash
