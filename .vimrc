@@ -1,4 +1,5 @@
 " Required Vim: {{{
+" version: >= 8.0
 " --with-features=huge --enable-luainterp --with-luajit [--enable-perlinterp]
 " --enable-pythoninterp [--enable-tclinterp] [--enable-rubyinterp]
 " --enable-cscope --enable-gui=gnome2
