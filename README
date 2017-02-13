@@ -6,6 +6,7 @@ cd $HOME/src/vim
 make clean
 make distclean
 rm -f auto/config.cache
+git clean -fxd
 git checkout master
 git checkout -- .
 git pull --ff-only
