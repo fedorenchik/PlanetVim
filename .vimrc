@@ -97,7 +97,7 @@ set secure
 set sessionoptions="buffers,folds,help,sesdir,slash,tabpages,unix,winsize"
 set shiftround		" use multiple of shiftwidth when indenting with '<' and '>'
 set shiftwidth=8	" number of spaces to use for autoindenting
-set shortmess+=I
+set shortmess+=Im
 set showbreak=>>>>>>>>
 set showcmd             " display incomplete commands
 set noshowmatch		" do not jump to open paren/bracket/brace when close one it typed
