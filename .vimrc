@@ -502,8 +502,12 @@ let g:netrw_special_syntax = 1
 " }}}
 " Configuration Of All Plugins: {{{
 " Plugin: airline {{{
+let g:airline#extensions#bufferline#enabled = 0
 let g:airline#extensions#hunks#enabled = 0
 let g:airline#extensions#syntastic#enabled = 0
+let g:airline#extensions#virtualenv#enabled = 0
+let g:airline#extensions#eclim#enabled = 0
+let g:airline#extensions#wordcount#enabled = 0
 let g:airline#extensions#whitespace#enabled = 0
 let g:airline#extensions#tabline#enabled = 1
 " }}}
