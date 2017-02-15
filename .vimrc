@@ -311,7 +311,7 @@ nnoremap <silent> <Leader>u :UniteResume<CR>
 "nnoremap <silent> <Leader>U <Nop>
 "nnoremap <silent> <Leader>v <Nop>
 "nnoremap <silent> <Leader>V <Nop>
-nnoremap <silent> <Leader>w :w!<CR>
+nnoremap <silent> <Leader>w :up!<CR>
 nnoremap <silent> <Leader>W :wa!<CR>
 "nnoremap <silent> <Leader>x <Nop>
 "nnoremap <silent> <Leader>X <Nop>
