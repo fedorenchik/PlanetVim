@@ -177,7 +177,7 @@ inoremap <silent> <down> <nop>
 inoremap <silent> <left> <nop>
 inoremap <silent> <right> <nop>
 inoremap <silent> <up> <nop>
-inoremap <silent> <leader>w <C-O>:w<CR>
+inoremap <silent> <leader>w <C-O>:up<CR>
 " }}}
 " Normal (Command) Mode: {{{
 " Subcommands & submodes: Ctrl-W, Ctrl-W g, Ctrl-\, ", ', <, =, >, @, F, T, Z,
