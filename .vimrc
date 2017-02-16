@@ -90,6 +90,7 @@ if has('mouse')
 endif
 set mousehide
 set nonumber
+set patchmode=".orig"
 set norelativenumber
 set ruler               " show the cursor position all the time
 set scrolloff=2
