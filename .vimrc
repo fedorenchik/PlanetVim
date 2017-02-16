@@ -115,7 +115,7 @@ set tags-=./TAGS
 set tags-=TAGS
 set termencoding=utf-8
 set timeout
-set timeoutlen=300
+set timeoutlen=400
 set title
 set titlestring=%F\ %a%r%m\ -\ VIM
 set ttimeout
