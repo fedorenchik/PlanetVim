@@ -74,6 +74,7 @@ set guicursor+=a:blinkon0
 set guioptions-=T
 set guioptions-=L
 set guioptions-=r
+set guioptions+=c
 set hidden		" hide buffers instead of closing them
 set history=1000        " keep 1000 lines of command line history
 set nohlsearch
@@ -300,8 +301,8 @@ nnoremap <silent> <Leader>o :Unite -start-insert -smartcase outline<CR>
 nnoremap <silent> <Leader>O :Unite -no-resize -no-split -smartcase outline<CR>
 nnoremap <silent> <Leader>p :Unite -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
 nnoremap <silent> <Leader>P :Unite -no-resize -no-split -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
-nnoremap <silent> <Leader>q :q<CR>
-nnoremap <silent> <Leader>Q :qa!<CR>
+nnoremap <silent> <Leader>q :confirm q<CR>
+nnoremap <silent> <Leader>Q :confirm qa<CR>
 "nnoremap <silent> <Leader>r <Nop>
 nnoremap <silent> <Leader>R :Unite -start-insert -smartcase -buffer-name=unite-register register<CR>
 nnoremap <silent> <Leader>s :Unite -start-insert -smartcase -buffer-name=unite-grep grep:%::`expand('<cword>')`<CR>
@@ -312,8 +313,8 @@ nnoremap <silent> <Leader>u :UniteResume<CR>
 "nnoremap <silent> <Leader>U <Nop>
 "nnoremap <silent> <Leader>v <Nop>
 "nnoremap <silent> <Leader>V <Nop>
-nnoremap <silent> <Leader>w :up!<CR>
-nnoremap <silent> <Leader>W :wa!<CR>
+nnoremap <silent> <Leader>w :confirm up<CR>
+nnoremap <silent> <Leader>W :confirm wa<CR>
 "nnoremap <silent> <Leader>x <Nop>
 "nnoremap <silent> <Leader>X <Nop>
 "nnoremap <silent> <Leader>y <Nop>
