@@ -183,7 +183,7 @@ inoremap <silent> <leader>w <C-O>:up<CR>
 " [, ], `, d, f, g, m, q, t, z.
 " Normal Keys: {{{
 nnoremap <silent> <BS> <nop>
-"nnoremap <silent> <cr> <nop>
+nnoremap <silent> <CR> <nop>
 nnoremap <silent> <F2> :call ToggleFileExplorer()<CR>
 nnoremap <silent> <F4> :VimShellPop<CR><ESC>
 nnoremap <silent> <F8> :call Marvim_search()<CR>
@@ -205,9 +205,9 @@ nnoremap <silent> h F
 nnoremap <silent> K :Man <cword><CR>
 nnoremap <silent> l f
 nnoremap <silent> Y y$
-"nnoremap <silent> + <nop>
-"nnoremap <silent> _ <nop>
-"nnoremap <silent> | <nop>
+nnoremap <silent> - <nop>
+nnoremap <silent> + <nop>
+nnoremap <silent> _ <nop>
 " }}}
 " Ctrl Key: {{{
 nnoremap <silent> <C-@> <C-L>
