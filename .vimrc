@@ -188,16 +188,11 @@ inoremap <silent> <leader>w <C-O>:up<CR>
 " Normal Keys: {{{
 nnoremap <silent> <BS> <nop>
 "nnoremap <silent> <cr> <nop>
-"nnoremap <silent> <esc> <nop>
 nnoremap <silent> <F2> :call ToggleFileExplorer()<CR>
 nnoremap <silent> <F4> :VimShellPop<CR><ESC>
 nnoremap <silent> <F8> :call Marvim_search()<CR>
 nnoremap <silent> <F10> :TagbarToggle<CR>
 nnoremap <silent> <F12> :UndotreeToggle<CR>
-"nnoremap <silent> <down> <nop>
-"nnoremap <silent> <left> <nop>
-"nnoremap <silent> <right> <nop>
-"nnoremap <silent> <up> <nop>
 nnoremap <silent> <Space> za
 nnoremap <silent> ` '
 nnoremap <silent> ' `
@@ -207,7 +202,6 @@ silent! nunmap ;
 "silent! nunmap :
 nnoremap <unique> ; :
 "nnoremap <unique> : ;
-nnoremap <silent> \ <Plug>SneakNext
 nnoremap <silent> / /\v
 " yank entire buffer with gy
 nnoremap <silent> gy :%y+<CR>
