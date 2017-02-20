@@ -176,10 +176,6 @@ inoremap <silent> <C-F> <C-X><C-F>
 inoremap <silent> <C-L> <C-X><C-L>
 inoremap <silent> <C-Y> <esc>
 inoremap <silent> <C-Z> <esc>
-inoremap <silent> <down> <nop>
-inoremap <silent> <left> <nop>
-inoremap <silent> <right> <nop>
-inoremap <silent> <up> <nop>
 inoremap <silent> <leader>w <C-O>:up<CR>
 " }}}
 " Normal (Command) Mode: {{{
