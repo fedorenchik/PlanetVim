@@ -94,6 +94,7 @@ set nonumber
 set patchmode=".orig"
 set norelativenumber
 set ruler               " show the cursor position all the time
+set scrolljump=2
 set scrolloff=2
 set secure
 set sessionoptions="buffers,folds,help,sesdir,slash,tabpages,unix,winsize"
