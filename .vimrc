@@ -186,7 +186,7 @@ inoremap <silent> <leader>w <C-O>:up<CR>
 " Subcommands & submodes: Ctrl-W, Ctrl-W g, Ctrl-\, ", ', <, =, >, @, F, T, Z,
 " [, ], `, d, f, g, m, q, t, z.
 " Normal Keys: {{{
-"nnoremap <silent> <bs> <nop>
+nnoremap <silent> <BS> <nop>
 "nnoremap <silent> <cr> <nop>
 "nnoremap <silent> <esc> <nop>
 nnoremap <silent> <F2> :call ToggleFileExplorer()<CR>
