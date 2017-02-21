@@ -99,7 +99,7 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 # some more ls aliases
 alias b=exit
 alias f='nautilus .'
-alias gitk=(gitk &)
+alias gitk=(command gitk &)
 
 e()
 {
