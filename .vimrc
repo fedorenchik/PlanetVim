@@ -55,6 +55,7 @@ set colorcolumn=80      " visually display column 81
 set completeopt=menuone,menu,longest,preview
 set copyindent		" copy the previous indentation on autoindenting
 "TODO: set cpoptions to repeat yanking of text (using '.')
+set cpoptions+={
 set nocursorline	" do not highlight current line: breaks highlighting
 set directory=~/.vim/swap//,.,/tmp	" set directory for swap files
 set display=lastline
