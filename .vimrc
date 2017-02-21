@@ -55,6 +55,7 @@ set colorcolumn=80      " visually display column 81
 set completeopt=menuone,menu,longest,preview
 set copyindent		" copy the previous indentation on autoindenting
 "TODO: set cpoptions to repeat yanking of text (using '.')
+set cpoptions+={
 set nocursorline	" do not highlight current line: breaks highlighting
 set directory=~/.vim/swap//,.,/tmp	" set directory for swap files
 set display=lastline
@@ -74,6 +75,7 @@ set guicursor+=a:blinkon0
 set guioptions-=T
 set guioptions-=L
 set guioptions-=r
+set guioptions+=c
 set hidden		" hide buffers instead of closing them
 set history=1000        " keep 1000 lines of command line history
 set nohlsearch
@@ -93,6 +95,7 @@ set nonumber
 set patchmode=".orig"
 set norelativenumber
 set ruler               " show the cursor position all the time
+set scrolljump=2
 set scrolloff=2
 set secure
 set sessionoptions="buffers,folds,help,sesdir,slash,tabpages,unix,winsize"
@@ -174,28 +177,19 @@ inoremap <silent> <C-F> <C-X><C-F>
 inoremap <silent> <C-L> <C-X><C-L>
 inoremap <silent> <C-Y> <esc>
 inoremap <silent> <C-Z> <esc>
-inoremap <silent> <down> <nop>
-inoremap <silent> <left> <nop>
-inoremap <silent> <right> <nop>
-inoremap <silent> <up> <nop>
 inoremap <silent> <leader>w <C-O>:up<CR>
 " }}}
 " Normal (Command) Mode: {{{
 " Subcommands & submodes: Ctrl-W, Ctrl-W g, Ctrl-\, ", ', <, =, >, @, F, T, Z,
 " [, ], `, d, f, g, m, q, t, z.
 " Normal Keys: {{{
-"nnoremap <silent> <bs> <nop>
-"nnoremap <silent> <cr> <nop>
-"nnoremap <silent> <esc> <nop>
+nnoremap <silent> <BS> <nop>
+nnoremap <silent> <CR> <nop>
 nnoremap <silent> <F2> :call ToggleFileExplorer()<CR>
 nnoremap <silent> <F4> :VimShellPop<CR><ESC>
 nnoremap <silent> <F8> :call Marvim_search()<CR>
 nnoremap <silent> <F10> :TagbarToggle<CR>
 nnoremap <silent> <F12> :UndotreeToggle<CR>
-"nnoremap <silent> <down> <nop>
-"nnoremap <silent> <left> <nop>
-"nnoremap <silent> <right> <nop>
-"nnoremap <silent> <up> <nop>
 nnoremap <silent> <Space> za
 nnoremap <silent> ` '
 nnoremap <silent> ' `
@@ -205,7 +199,6 @@ silent! nunmap ;
 "silent! nunmap :
 nnoremap <unique> ; :
 "nnoremap <unique> : ;
-nnoremap <silent> \ <Plug>SneakNext
 nnoremap <silent> / /\v
 " yank entire buffer with gy
 nnoremap <silent> gy :%y+<CR>
@@ -213,9 +206,9 @@ nnoremap <silent> h F
 nnoremap <silent> K :Man <cword><CR>
 nnoremap <silent> l f
 nnoremap <silent> Y y$
-"nnoremap <silent> + <nop>
-"nnoremap <silent> _ <nop>
-"nnoremap <silent> | <nop>
+nnoremap <silent> - <nop>
+nnoremap <silent> + <nop>
+nnoremap <silent> _ <nop>
 " }}}
 " Ctrl Key: {{{
 nnoremap <silent> <C-@> <C-L>
@@ -300,8 +293,8 @@ nnoremap <silent> <Leader>o :Unite -start-insert -smartcase outline<CR>
 nnoremap <silent> <Leader>O :Unite -no-resize -no-split -smartcase outline<CR>
 nnoremap <silent> <Leader>p :Unite -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
 nnoremap <silent> <Leader>P :Unite -no-resize -no-split -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
-nnoremap <silent> <Leader>q :q<CR>
-nnoremap <silent> <Leader>Q :qa!<CR>
+nnoremap <silent> <Leader>q :confirm q<CR>
+nnoremap <silent> <Leader>Q :confirm qa<CR>
 "nnoremap <silent> <Leader>r <Nop>
 nnoremap <silent> <Leader>R :Unite -start-insert -smartcase -buffer-name=unite-register register<CR>
 nnoremap <silent> <Leader>s :Unite -start-insert -smartcase -buffer-name=unite-grep grep:%::`expand('<cword>')`<CR>
@@ -312,8 +305,8 @@ nnoremap <silent> <Leader>u :UniteResume<CR>
 "nnoremap <silent> <Leader>U <Nop>
 "nnoremap <silent> <Leader>v <Nop>
 "nnoremap <silent> <Leader>V <Nop>
-nnoremap <silent> <Leader>w :up!<CR>
-nnoremap <silent> <Leader>W :wa!<CR>
+nnoremap <silent> <Leader>w :confirm up<CR>
+nnoremap <silent> <Leader>W :confirm wa<CR>
 "nnoremap <silent> <Leader>x <Nop>
 "nnoremap <silent> <Leader>X <Nop>
 "nnoremap <silent> <Leader>y <Nop>
