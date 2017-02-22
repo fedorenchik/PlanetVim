@@ -192,6 +192,7 @@ nnoremap <silent> <F8> :call Marvim_search()<CR>
 nnoremap <silent> <F10> :TagbarToggle<CR>
 nnoremap <silent> <F12> :UndotreeToggle<CR>
 nnoremap <silent> <Space> za
+nnoremap <silent> <Tab> <nop>
 nnoremap <silent> ` '
 nnoremap <silent> ' `
 " swap semicolon and colon seems very weird:
