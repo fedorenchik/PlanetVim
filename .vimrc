@@ -89,7 +89,7 @@ set list		" do not show invisible characters by default
 set matchpairs+=<:>
 set nomodeline		" disable mode lines (security measure)
 if has('mouse')
-	set mouse=a		" enable mouse (hold Shift to give mouse to xterm)
+	set mouse=ar
 endif
 set mousehide
 set nonumber
@@ -113,7 +113,7 @@ set sidescrolloff=2
 set signcolumn=yes
 set smarttab		" insert tabs on the start of a line according to shiftwidth, not tabstop
 set softtabstop=8	" when hitting <BS>, pretend like a tab is removed, even if spaces
-set nostartofline	" do not jump to start of line after moving commands
+set nostartofline
 set swapfile
 set switchbuf=useopen	" reuse opened buffers from quickfix window
 set tabstop=8		" tab is 8 spaces
