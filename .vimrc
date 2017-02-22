@@ -477,11 +477,6 @@ function! ToggleFileExplorer()
 endfunction
 " }}}
 "  Standard Plugins: {{{
-" Plugin: matchit {{{
-if has('syntax') && has('eval')
-	packadd matchit
-endif
-" }}}
 " Plugin: man {{{
 runtime! ftplugin/man.vim
 " }}}
@@ -496,7 +491,14 @@ let g:netrw_liststyle = 2
 let g:netrw_special_syntax = 1
 " }}}
 " }}}
-" Configuration Of All Plugins: {{{
+" Additional Plugins: {{{
+" Plugin: matchit {{{
+if has('syntax') && has('eval')
+	packadd matchit
+endif
+" }}}
+" }}}
+" 3rd Party Plugins: {{{
 " Plugin: airline {{{
 let g:airline#extensions#bufferline#enabled = 0
 let g:airline#extensions#hunks#enabled = 0
