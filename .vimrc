@@ -494,7 +494,7 @@ let g:netrw_special_syntax = 1
 " Additional Plugins: {{{
 " Plugin: matchit {{{
 if has('syntax') && has('eval')
-	packadd matchit
+	packadd! matchit
 endif
 " }}}
 " }}}
