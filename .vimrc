@@ -491,11 +491,14 @@ let g:netrw_liststyle = 2
 let g:netrw_special_syntax = 1
 " }}}
 " }}}
-" Additional Plugins: {{{
+" pack/dist/opt/ Plugins: {{{
 " Plugin: matchit {{{
 if has('syntax') && has('eval')
 	packadd! matchit
 endif
+" }}}
+" Plugin: editexisting {{{
+packadd! editexisting
 " }}}
 " }}}
 " 3rd Party Plugins: {{{
