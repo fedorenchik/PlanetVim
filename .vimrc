@@ -104,11 +104,12 @@ set shiftwidth=8	" number of spaces to use for autoindenting
 set shortmess+=Im
 set showbreak=>>>>>>>>
 set showcmd             " display incomplete commands
-set noshowmatch		" do not jump to open paren/bracket/brace when close one it typed
+set noshowmatch		" do not jump to open paren/bracket/brace when close one is typed
 set noshowmode		" do not show mode since PowerLine shows it
 set showmode		" always show mode we're currently in
 set sidescroll=30
 set sidescrolloff=2
+set signcolumn=yes
 set smarttab		" insert tabs on the start of a line according to shiftwidth, not tabstop
 set softtabstop=8	" when hitting <BS>, pretend like a tab is removed, even if spaces
 set nostartofline	" do not jump to start of line after moving commands
