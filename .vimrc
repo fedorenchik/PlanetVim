@@ -86,9 +86,10 @@ set laststatus=2        " always show the status line
 set lazyredraw		" don't update the display while executing macros
 set listchars=tab:»\ ,trail:·,extends:>,precedes:<	" show some invisible chars
 set list		" do not show invisible characters by default
+set matchpairs+=<:>
 set nomodeline		" disable mode lines (security measure)
 if has('mouse')
-	set mouse=a		" enable mouse (hold Shift to give mouse to xterm)
+	set mouse=ar
 endif
 set mousehide
 set nonumber
@@ -104,14 +105,15 @@ set shiftwidth=8	" number of spaces to use for autoindenting
 set shortmess+=Im
 set showbreak=>>>>>>>>
 set showcmd             " display incomplete commands
-set noshowmatch		" do not jump to open paren/bracket/brace when close one it typed
+set noshowmatch		" do not jump to open paren/bracket/brace when close one is typed
 set noshowmode		" do not show mode since PowerLine shows it
 set showmode		" always show mode we're currently in
 set sidescroll=30
 set sidescrolloff=2
+set signcolumn=yes
 set smarttab		" insert tabs on the start of a line according to shiftwidth, not tabstop
 set softtabstop=8	" when hitting <BS>, pretend like a tab is removed, even if spaces
-set nostartofline	" do not jump to start of line after moving commands
+set nostartofline
 set swapfile
 set switchbuf=useopen	" reuse opened buffers from quickfix window
 set tabstop=8		" tab is 8 spaces
@@ -133,7 +135,6 @@ endif
 set undolevels=1000
 set updatetime=1000
 set viminfo='100,<50,s10,h,!,c,r/tmp,r/var,n$PWD/.viminfo
-" Save and restore global variables.
 set virtualedit=block	" allow cursor to move freely in vilual block mode
 set visualbell		" do not visual blink
 set wildmenu		" make tab completion like bash
@@ -191,6 +192,7 @@ nnoremap <silent> <F8> :call Marvim_search()<CR>
 nnoremap <silent> <F10> :TagbarToggle<CR>
 nnoremap <silent> <F12> :UndotreeToggle<CR>
 nnoremap <silent> <Space> za
+nnoremap <silent> <Tab> <nop>
 nnoremap <silent> ` '
 nnoremap <silent> ' `
 " swap semicolon and colon seems very weird:
@@ -475,11 +477,6 @@ function! ToggleFileExplorer()
 endfunction
 " }}}
 "  Standard Plugins: {{{
-" Plugin: matchit {{{
-if has('syntax') && has('eval')
-	packadd matchit
-endif
-" }}}
 " Plugin: man {{{
 runtime! ftplugin/man.vim
 " }}}
@@ -494,7 +491,17 @@ let g:netrw_liststyle = 2
 let g:netrw_special_syntax = 1
 " }}}
 " }}}
-" Configuration Of All Plugins: {{{
+" pack/dist/opt/ Plugins: {{{
+" Plugin: matchit {{{
+if has('syntax') && has('eval')
+	packadd! matchit
+endif
+" }}}
+" Plugin: editexisting {{{
+packadd! editexisting
+" }}}
+" }}}
+" 3rd Party Plugins: {{{
 " Plugin: airline {{{
 let g:airline#extensions#bufferline#enabled = 0
 let g:airline#extensions#hunks#enabled = 0
