@@ -183,6 +183,9 @@ inoremap <silent> <leader>w <C-O>:up<CR>
 " Normal (Command) Mode: {{{
 " Subcommands & submodes: Ctrl-W, Ctrl-W g, Ctrl-\, ", ', <, =, >, @, F, T, Z,
 " [, ], `, d, f, g, m, q, t, z.
+" ', ` -- jumping to marks/markers
+" [, ] -- moving through text objects
+" z    -- folding & moving lines in window
 " Normal Keys: {{{
 nnoremap <silent> <BS> <nop>
 nnoremap <silent> <CR> <nop>
