@@ -511,7 +511,7 @@ let g:netrw_liststyle = 2
 let g:netrw_special_syntax = 1
 " }}}
 " }}}
-" pack/dist/opt/ Plugins: {{{
+" $VIMRUNTIME/pack/dist/opt/ Plugins: {{{
 " Plugin: matchit {{{
 if has('syntax') && has('eval')
 	packadd! matchit
@@ -531,9 +531,6 @@ let g:airline#extensions#eclim#enabled = 0
 let g:airline#extensions#wordcount#enabled = 0
 let g:airline#extensions#whitespace#enabled = 0
 let g:airline#extensions#tabline#enabled = 1
-" }}}
-" Plugin: alternate {{{
-let g:alternateNoDefaultAlternate = 1
 " }}}
 " Plugin: conque-gdb {{{
 let g:ConqueGdb_Leader = '\'
@@ -567,10 +564,10 @@ let g:SignatureMap = {
         \ 'DeleteMark'         :  "dm",
         \ 'PurgeMarks'         :  "m<Space>",
         \ 'PurgeMarkers'       :  "m<BS>",
-        \ 'GotoNextLineAlpha'  :  "']",
-        \ 'GotoPrevLineAlpha'  :  "'[",
-        \ 'GotoNextSpotAlpha'  :  "`]",
-        \ 'GotoPrevSpotAlpha'  :  "`[",
+        \ 'GotoNextLineAlpha'  :  "'+",
+        \ 'GotoPrevLineAlpha'  :  "'-",
+        \ 'GotoNextSpotAlpha'  :  "`+",
+        \ 'GotoPrevSpotAlpha'  :  "`-",
         \ 'GotoNextLineByPos'  :  "]'",
         \ 'GotoPrevLineByPos'  :  "['",
         \ 'GotoNextSpotByPos'  :  "]`",
@@ -590,36 +587,6 @@ let g:SignatureDeleteConfirmation = 1
 let g:SignaturePurgeConfirmation = 1
 let g:SignatureForceMarkPlacement = 1
 let g:SignatureForceMarkerPlacement = 1
-" This function returns the highlight group used by git-gutter depending on how
-" the line was edited (added/modified/deleted)
-" It must be placed in the vimrc (or in any file that is sourced by vim)
-function! SignatureGitGutter(lnum)
-  let gg_line_state = filter(copy(gitgutter#diff#process_hunks(gitgutter#hunk#hunks())), 'v:val[0] == a:lnum')
-  "echo gg_line_state
-
-  if len(gg_line_state) == 0
-    return 'Exception'
-  endif
-
-  if gg_line_state[0][1] =~ 'added'
-    return 'GitGutterAdd'
-  elseif gg_line_state[0][1] =~ 'modified'
-    return 'GitGutterChange'
-  elseif gg_line_state[0][1] =~ 'removed'
-    return 'GitGutterDelete'
-  endif
-endfunction
-
-" Next, assign it to g:SignatureMarkTextHL
-let g:SignatureMarkTextHL = 'SignatureGitGutter(a:lnum)'
-
-" Now everytime Signature wants to place a sign, it calls this function and
-" thus, we can dynamically assign a Highlight group g:SignatureMarkTextHL
-" The advantage of doing it this way is that this decouples Signature from
-" git-gutter. Both can remain unaware of the other.
-" }}}
-" Plugin: sneak {{{
-"let g:sneak#s_next = 1
 " }}}
 " Plugin: tagbar {{{
 let g:tagbar_sort=0			" do not sort tags by name
