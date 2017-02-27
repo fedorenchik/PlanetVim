@@ -584,6 +584,10 @@ let g:SignatureMap = {
         \ }
 let g:SignatureIncludeMarkers = '*()}+{][!='
 let g:SignatureWrapJumps = 0
+let g:SignatureMarkTextHLDynamic = 1
+let g:SignatureMarkerTextHLDynamic = 1
+let g:SignatureDeleteConfirmation = 1
+let g:SignaturePurgeConfirmation = 1
 " This function returns the highlight group used by git-gutter depending on how
 " the line was edited (added/modified/deleted)
 " It must be placed in the vimrc (or in any file that is sourced by vim)
