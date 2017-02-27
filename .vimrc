@@ -211,6 +211,26 @@ nnoremap <silent> Y y$
 nnoremap <silent> - <nop>
 nnoremap <silent> + <nop>
 nnoremap <silent> _ <nop>
+nnoremap [1 :call signature#marker#Goto('prev', 1, v:count)
+nnoremap ]1 :call signature#marker#Goto('next', 1, v:count)
+nnoremap [2 :call signature#marker#Goto('prev', 2, v:count)
+nnoremap ]2 :call signature#marker#Goto('next', 2, v:count)
+nnoremap [3 :call signature#marker#Goto('prev', 3, v:count)
+nnoremap ]3 :call signature#marker#Goto('next', 3, v:count)
+nnoremap [4 :call signature#marker#Goto('prev', 4, v:count)
+nnoremap ]4 :call signature#marker#Goto('next', 4, v:count)
+nnoremap [5 :call signature#marker#Goto('prev', 5, v:count)
+nnoremap ]5 :call signature#marker#Goto('next', 5, v:count)
+nnoremap [6 :call signature#marker#Goto('prev', 6, v:count)
+nnoremap ]6 :call signature#marker#Goto('next', 6, v:count)
+nnoremap [7 :call signature#marker#Goto('prev', 7, v:count)
+nnoremap ]7 :call signature#marker#Goto('next', 7, v:count)
+nnoremap [8 :call signature#marker#Goto('prev', 8, v:count)
+nnoremap ]8 :call signature#marker#Goto('next', 8, v:count)
+nnoremap [9 :call signature#marker#Goto('prev', 9, v:count)
+nnoremap ]9 :call signature#marker#Goto('next', 9, v:count)
+nnoremap [0 :call signature#marker#Goto('prev', 0, v:count)
+nnoremap ]0 :call signature#marker#Goto('next', 0, v:count)
 " }}}
 " Ctrl Key: {{{
 nnoremap <silent> <C-@> <C-L>
