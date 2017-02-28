@@ -99,7 +99,6 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 # some more ls aliases
 alias b=exit
 alias f='nautilus .'
-alias gitk='(command gitk &)'
 
 e()
 {
@@ -128,6 +127,11 @@ gitv()
 	else
 		echo "Not a git repository."
 	fi
+}
+
+gitk()
+{
+	(command gitk "$@" &)
 }
 
 export MANPAGER="env MAN_PN=1 vim -M +MANPAGER -"
