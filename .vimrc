@@ -182,7 +182,7 @@ inoremap <silent> <C-B> <esc>
 inoremap <silent> <C-E> <esc>
 inoremap <silent> <C-F> <C-X><C-F>
 inoremap <silent> <C-L> <C-X><C-L>
-"inoremap <silent> <C-Q> <nop>
+inoremap <silent> <C-Q> <esc>
 inoremap <silent> <C-Y> <esc>
 inoremap <silent> <C-Z> <esc>
 inoremap <silent> <leader>w <C-O>:up<CR>
