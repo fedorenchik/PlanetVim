@@ -86,7 +86,6 @@ if [ -x /usr/bin/dircolors ]; then
 	alias ll='ls -l'
 	alias la='ls -A'
 	alias l='ls'
-	alias lh='ls -d .*'
 
 	alias grep='grep --color=auto'
 	alias fgrep='fgrep --color=auto'
@@ -99,6 +98,23 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 # some more ls aliases
 alias b=exit
 alias f='nautilus .'
+
+lh()
+{
+	if [ "$*" == "" ]; then
+		ls -d .*
+	else
+		for i in "$@"; do
+			if [ -d "$i" ]; then
+				ls "$i"/.*
+			elif [ -f "$i" ]; then
+				ls "$i"
+			else
+				ls "$i"
+			fi
+		done
+	fi
+}
 
 e()
 {
