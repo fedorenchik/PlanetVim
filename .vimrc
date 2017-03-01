@@ -174,7 +174,7 @@ let maplocalleader=","	" <leader> local to buffer
 " i_<C-[>
 " }}}
 " Insert Mode: {{{
-" Subcommands & submodes: Ctrl-G, Ctrl-R, Ctrl-X, Ctrl-\.
+" Subcommands & submodes: Ctrl-G, Ctrl-R, Ctrl-R Ctrl-R, Ctrl-X, Ctrl-\.
 " Cannot distinguish between <Tab> and <C-I> in insert mode.
 " Cannot distinguish between <Enter> and <C-M> in insert mode.
 inoremap <silent> <C-@> <esc>
