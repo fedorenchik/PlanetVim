@@ -270,6 +270,9 @@ nnoremap <silent> <A-p> :colder<CR>
 " Ctrl Shift Key: {{{
 " Ctrl-Shift modifier does not work neither in terminal nor in GUI.
 " }}}
+" Mouse Keys: {{{
+nnoremap <silent> <ScrollWheelUp> 6<C-Y>
+" }}}
 " Leader: {{{
 nnoremap <silent> <Leader><Space> :set hlsearch! hlsearch?<CR>
 "nnoremap <silent> <Leader><Tab> <Nop>
