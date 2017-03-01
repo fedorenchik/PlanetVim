@@ -82,6 +82,9 @@ set nohlsearch
 if has('reltime')
 	set incsearch
 endif
+if has('langmap') && exists('+langremap')
+	set nolangremap
+endif
 set laststatus=2        " always show the status line
 set lazyredraw		" don't update the display while executing macros
 set listchars=tab:»\ ,trail:·,extends:>,precedes:<	" show some invisible chars
@@ -176,6 +179,7 @@ inoremap <silent> <C-B> <esc>
 inoremap <silent> <C-E> <esc>
 inoremap <silent> <C-F> <C-X><C-F>
 inoremap <silent> <C-L> <C-X><C-L>
+"inoremap <silent> <C-Q> <nop>
 inoremap <silent> <C-Y> <esc>
 inoremap <silent> <C-Z> <esc>
 inoremap <silent> <leader>w <C-O>:up<CR>
@@ -271,6 +275,8 @@ nnoremap <silent> <A-p> :colder<CR>
 " Ctrl-Shift modifier does not work neither in terminal nor in GUI.
 " }}}
 " Mouse Keys: {{{
+" When remap mousekeys, they send key events to the active window.
+" (by default, they send key events to the window under mouse cursor).
 "nnoremap <silent> <ScrollWheelUp> 6<C-y>
 "nnoremap <silent> <ScrollWheelDown> 6<C-e>
 "nnoremap <silent> <S-ScrollWheelUp> <C-b>
