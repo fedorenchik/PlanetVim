@@ -44,8 +44,7 @@ endif
 " Settings: {{{
 set autoindent		" always set autoindenting on
 set autoread		" automatically reload changes if detected
-" don't allow backspacing over everything in insert mode
-set backspace=indent,start
+set backspace=
 set backupdir=~/.vim/backup,/tmp
 set backup              " keep a backup file
 set breakindent
