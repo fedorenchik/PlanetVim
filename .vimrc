@@ -175,6 +175,8 @@ let maplocalleader=","	" <leader> local to buffer
 " }}}
 " Insert Mode: {{{
 " Subcommands & submodes: Ctrl-G, Ctrl-R, Ctrl-X, Ctrl-\.
+inoremap <silent> <C-@> <esc>
+inoremap <silent> <C-A> <esc>
 inoremap <silent> <C-B> <esc>
 inoremap <silent> <C-E> <esc>
 inoremap <silent> <C-F> <C-X><C-F>
