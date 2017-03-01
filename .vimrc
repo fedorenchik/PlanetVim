@@ -271,14 +271,14 @@ nnoremap <silent> <A-p> :colder<CR>
 " Ctrl-Shift modifier does not work neither in terminal nor in GUI.
 " }}}
 " Mouse Keys: {{{
-nnoremap <silent> <ScrollWheelUp> 6<C-y>
-nnoremap <silent> <ScrollWheelDown> 6<C-e>
-nnoremap <silent> <S-ScrollWheelUp> <C-b>
-nnoremap <silent> <S-ScrollWheelDown> <C-f>
-nnoremap <silent> <C-ScrollWheelUp> <nop>
-nnoremap <silent> <C-ScrollWheelDown> <nop>
-nnoremap <silent> <A-ScrollWheelUp> <nop>
-nnoremap <silent> <A-ScrollWheelDown> <nop>
+"nnoremap <silent> <ScrollWheelUp> 6<C-y>
+"nnoremap <silent> <ScrollWheelDown> 6<C-e>
+"nnoremap <silent> <S-ScrollWheelUp> <C-b>
+"nnoremap <silent> <S-ScrollWheelDown> <C-f>
+"nnoremap <silent> <C-ScrollWheelUp> <nop>
+"nnoremap <silent> <C-ScrollWheelDown> <nop>
+"nnoremap <silent> <A-ScrollWheelUp> <nop>
+"nnoremap <silent> <A-ScrollWheelDown> <nop>
 " }}}
 " Leader: {{{
 nnoremap <silent> <Leader><Space> :set hlsearch! hlsearch?<CR>
