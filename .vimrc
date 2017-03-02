@@ -55,6 +55,7 @@ set completeopt=menuone,menu,longest,preview
 set copyindent		" copy the previous indentation on autoindenting
 set cpoptions+={
 set cursorline
+set dictionary+=/usr/share/dict/words
 set directory=~/.vim/swap//,.,/tmp
 set display=lastline
 set encoding=utf-8
