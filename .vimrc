@@ -66,7 +66,7 @@ set foldcolumn=0	" add a fold column
 set nofoldenable	" disable folding
 set foldlevelstart=99	" all folds opened by default
 set foldmethod=manual	" syntax folding
-set formatoptions+=1	" when wrapping paragraphs, do not end lines with 1-letter words (looks stupid)
+set formatoptions+=1jMm
 set gdefault		" global search/replace by default
 set guicursor+=a:blinkon0
 " remove toolbar and scrollbars
