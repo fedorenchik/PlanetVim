@@ -190,9 +190,11 @@ let maplocalleader=","	" <leader> local to buffer
 inoremap <silent> <C-@> <esc>
 inoremap <silent> <C-A> <esc>
 inoremap <silent> <C-B> <esc>
+inoremap <silent> <C-E> <C-R>=pumvisible() ? "\<C-E>" : "\<Esc>"<CR>
 inoremap <silent> <C-J> <esc>
 inoremap <silent> <C-Q> <esc>
 inoremap <silent> <C-R><C-D> <Esc>:Unite register<CR>
+inoremap <silent> <C-Y> <C-R>=pumvisible() ? "\<C-Y>" : "\<Esc>"<CR>
 inoremap <silent> <C-Z> <esc>
 inoremap <silent> <leader>w <C-O>:up<CR>
 " }}}
