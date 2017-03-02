@@ -165,6 +165,11 @@ let maplocalleader=","	" <leader> local to buffer
 " Insert Visual Mode:
 " Insert Select Mode:
 " }}}
+" Keys Limitations: {{{
+" Shifted cursor keys are not available on all terminals (but available in GUI).
+" Cannot distinguish between <Tab> and <C-I> in insert mode (but can in normal mode).
+" Cannot distinguish between <Enter> and <C-M> in insert mode (but can in normal mode).
+" }}}
 " Go To Normal Mode: {{{
 " <C-\><C-N>
 " <C-\><C-G>
@@ -174,8 +179,6 @@ let maplocalleader=","	" <leader> local to buffer
 " }}}
 " Insert Mode: {{{
 " Subcommands & submodes: Ctrl-G, Ctrl-R, Ctrl-R Ctrl-R, Ctrl-X, Ctrl-\.
-" Cannot distinguish between <Tab> and <C-I> in insert mode.
-" Cannot distinguish between <Enter> and <C-M> in insert mode.
 inoremap <silent> <C-@> <esc>
 inoremap <silent> <C-A> <esc>
 inoremap <silent> <C-B> <esc>
