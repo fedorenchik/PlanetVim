@@ -86,7 +86,7 @@ endif
 set laststatus=2        " always show the status line
 set lazyredraw
 set listchars=tab:»\ ,trail:·,extends:>,precedes:<	" show some invisible chars
-set list		" do not show invisible characters by default
+set list
 set matchpairs+=<:>
 set nomodeline		" disable mode lines (security measure)
 if has('mouse')
