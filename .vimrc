@@ -139,6 +139,7 @@ set updatetime=1000
 set viminfo='100,<50,s10,h,!,c,r/tmp,r/var,n$PWD/.viminfo
 set virtualedit=block	" allow cursor to move freely in vilual block mode
 set visualbell		" do not visual blink
+set whichwrap=
 set wildmenu		" make tab completion like bash
 set wildmode=list:longest	" show tab completion menu and complete longest match
 set nowrap
@@ -179,6 +180,8 @@ let maplocalleader=","	" <leader> local to buffer
 " }}}
 " Insert Mode: {{{
 " Subcommands & submodes: Ctrl-G, Ctrl-R, Ctrl-R Ctrl-R, Ctrl-X, Ctrl-\.
+" Tmp normal mode: Ctrl-O
+" Tmp command-line mode: Ctrl-R =
 inoremap <silent> <C-@> <esc>
 inoremap <silent> <C-A> <esc>
 inoremap <silent> <C-B> <esc>
