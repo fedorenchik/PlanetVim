@@ -51,7 +51,7 @@ set nobreakindent
 let c_comment_strings=1
 set cmdheight=2		" use a status bar that is 2 rows high
 set colorcolumn=80
-set completeopt=menuone,menu,longest,preview
+set completeopt=menuone,preview
 set copyindent		" copy the previous indentation on autoindenting
 set cpoptions+={
 set nocursorline
@@ -107,6 +107,7 @@ set shiftround		" use multiple of shiftwidth when indenting with '<' and '>'
 set shiftwidth=8
 set shortmess+=Im
 set showbreak=>>>>>>>>
+set showfulltag
 set showcmd             " display incomplete commands
 set noshowmatch		" do not jump to open paren/bracket/brace when close one is typed
 set noshowmode		" do not show mode since PowerLine shows it
@@ -184,6 +185,7 @@ let maplocalleader=","	" <leader> local to buffer
 " Subcommands & submodes: Ctrl-G, Ctrl-R, Ctrl-R Ctrl-R, Ctrl-X, Ctrl-\.
 " Tmp normal mode: Ctrl-O
 " Tmp command-line mode: Ctrl-R =
+" Ctrl-X - insert-mode completion.
 inoremap <silent> <C-@> <esc>
 inoremap <silent> <C-A> <esc>
 inoremap <silent> <C-B> <esc>
