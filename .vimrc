@@ -102,7 +102,7 @@ set scrolloff=2
 set secure
 set sessionoptions="buffers,folds,help,sesdir,slash,tabpages,unix,winsize"
 set shiftround		" use multiple of shiftwidth when indenting with '<' and '>'
-set shiftwidth=8	" number of spaces to use for autoindenting
+set shiftwidth=8
 set shortmess+=Im
 set showbreak=>>>>>>>>
 set showcmd             " display incomplete commands
@@ -112,8 +112,8 @@ set showmode		" always show mode we're currently in
 set sidescroll=30
 set sidescrolloff=2
 set signcolumn=yes
-set smarttab		" insert tabs on the start of a line according to shiftwidth, not tabstop
-set softtabstop=8	" when hitting <BS>, pretend like a tab is removed, even if spaces
+set smarttab
+set softtabstop=8
 set nostartofline
 set swapfile
 set switchbuf=useopen	" reuse opened buffers from quickfix window
