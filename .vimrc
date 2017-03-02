@@ -85,7 +85,7 @@ if has('langmap') && exists('+langremap')
 	set nolangremap
 endif
 set laststatus=2        " always show the status line
-set lazyredraw		" don't update the display while executing macros
+set lazyredraw
 set listchars=tab:»\ ,trail:·,extends:>,precedes:<	" show some invisible chars
 set list		" do not show invisible characters by default
 set matchpairs+=<:>
