@@ -46,16 +46,15 @@ set autoindent		" always set autoindenting on
 set autoread		" automatically reload changes if detected
 set backspace=
 set backupdir=~/.vim/backup,/tmp
-set backup              " keep a backup file
-set breakindent
+set backup
+set nobreakindent
 let c_comment_strings=1
 set cmdheight=2		" use a status bar that is 2 rows high
-set colorcolumn=80      " visually display column 81
+set colorcolumn=80
 set completeopt=menuone,menu,longest,preview
 set copyindent		" copy the previous indentation on autoindenting
-"TODO: set cpoptions to repeat yanking of text (using '.')
 set cpoptions+={
-set nocursorline	" do not highlight current line: breaks highlighting
+set cursorline
 set directory=~/.vim/swap//,.,/tmp	" set directory for swap files
 set display=lastline
 set encoding=utf-8
