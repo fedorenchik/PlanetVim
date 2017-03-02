@@ -97,6 +97,7 @@ set mousehide
 set nonumber
 set patchmode=".orig"
 set path+=./../include,./../../include
+set pumheight=10
 set norelativenumber
 set ruler               " show the cursor position all the time
 set scrolljump=2
