@@ -58,15 +58,15 @@ set cursorline
 set directory=~/.vim/swap//,.,/tmp	" set directory for swap files
 set display=lastline
 set encoding=utf-8
-set noerrorbells	" do not beep
-set noexpandtab		" insert real tabs for tabs
+set noerrorbells
+set noexpandtab
 set exrc
 set fileformats=unix,dos,mac
-set foldcolumn=0	" add a fold column
+set foldcolumn=0
 set nofoldenable	" disable folding
 set foldlevelstart=99	" all folds opened by default
 set foldmethod=manual	" syntax folding
-set formatoptions+=1jMm
+set formatoptions+=1jMmn
 set gdefault		" global search/replace by default
 set guicursor+=a:blinkon0
 " remove toolbar and scrollbars
