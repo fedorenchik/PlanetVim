@@ -122,6 +122,7 @@ set tabstop=8		" tab is 8 spaces
 set tags-=./TAGS
 set tags-=TAGS
 set termencoding=utf-8
+set thesaurus+=$HOME/.vim/thes/mobythes.txt
 set timeout
 set timeoutlen=400
 set title
