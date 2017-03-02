@@ -55,7 +55,7 @@ set completeopt=menuone,menu,longest,preview
 set copyindent		" copy the previous indentation on autoindenting
 set cpoptions+={
 set cursorline
-set directory=~/.vim/swap//,.,/tmp	" set directory for swap files
+set directory=~/.vim/swap//,.,/tmp
 set display=lastline
 set encoding=utf-8
 set noerrorbells
@@ -66,7 +66,7 @@ set foldcolumn=0
 set nofoldenable	" disable folding
 set foldlevelstart=99	" all folds opened by default
 set foldmethod=manual	" syntax folding
-set formatoptions+=1jMmn
+set formatoptions+=1ajMmn
 set gdefault		" global search/replace by default
 set guicursor+=a:blinkon0
 " remove toolbar and scrollbars
