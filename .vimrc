@@ -461,6 +461,12 @@ if has("autocmd")
 	augroup filetypes
 		autocmd!
 		autocmd FileType vim setlocal foldenable foldmethod=marker foldlevelstart=0 foldlevel=0
+		if exists("+omnifunc")
+			autocmd Filetype *
+						\ if &omnifunc == "" |
+						\	setlocal omnifunc=syntaxcomplete#Complete |
+						\ endif
+		endif
 	augroup END
 	augroup vimrcEx
 		autocmd!
