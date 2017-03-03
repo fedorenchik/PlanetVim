@@ -49,6 +49,7 @@ set backupdir=~/.vim/backup,/tmp
 set backup
 set nobreakindent
 let c_comment_strings=1
+set cindent
 set cmdheight=2		" use a status bar that is 2 rows high
 set colorcolumn=80
 set completeopt=menuone,preview
@@ -116,6 +117,7 @@ set showmode		" always show mode we're currently in
 set sidescroll=30
 set sidescrolloff=2
 set signcolumn=yes
+set smartindent
 set smarttab
 set softtabstop=8
 set nostartofline
@@ -126,6 +128,7 @@ set tags-=./TAGS
 set tags-=TAGS
 set tags+=$HOME/.vim/systags
 set termencoding=utf-8
+set textwidth=120
 set thesaurus+=$HOME/.vim/thes/mobythes.txt
 set timeout
 set timeoutlen=400
