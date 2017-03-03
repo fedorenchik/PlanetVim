@@ -96,6 +96,7 @@ if has('mouse')
 	set mouse=ar
 endif
 set mousehide
+set nrformats+=alpha
 set nonumber
 set patchmode=".orig"
 set path+=./../include,./../../include
