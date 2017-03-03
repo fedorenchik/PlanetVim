@@ -42,3 +42,7 @@ unzip
 vim-gnome
 wget
 wmctrl
+# compile from source packages:
+terminator
+universal-ctags
+gnu global
