@@ -131,6 +131,7 @@ set tags+=$HOME/.vim/systags
 set termencoding=utf-8
 set textwidth=80
 set thesaurus+=$HOME/.vim/thes/mobythes.txt
+set notildeop
 set timeout
 set timeoutlen=400
 set title
