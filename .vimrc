@@ -82,6 +82,7 @@ set nohlsearch
 if has('reltime')
 	set incsearch
 endif
+set joinspaces
 if has('langmap') && exists('+langremap')
 	set nolangremap
 endif
