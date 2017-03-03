@@ -124,6 +124,7 @@ set switchbuf=useopen	" reuse opened buffers from quickfix window
 set tabstop=8		" tab is 8 spaces
 set tags-=./TAGS
 set tags-=TAGS
+set tags+=$HOME/.vim/systags
 set termencoding=utf-8
 set thesaurus+=$HOME/.vim/thes/mobythes.txt
 set timeout

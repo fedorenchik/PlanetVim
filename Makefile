@@ -45,6 +45,7 @@ sync: sync-home
 sync-home:
 	cd .vim/pack/bundle/start/vimproc.vim && make
 	for file in $(FILES); do $(RSYNC) $(RSYNC_OPTIONS) $$file $(HOME)/$$file; done
+	ctags -R -f ~/.vim/systags /usr/include
 
 commit:
 	git submodule update --recursive --remote --init
