@@ -68,7 +68,7 @@ set foldcolumn=0
 set nofoldenable	" disable folding
 set foldlevelstart=99	" all folds opened by default
 set foldmethod=manual	" syntax folding
-set formatoptions+=1ajMmn
+set formatoptions+=1jMmn
 set gdefault		" global search/replace by default
 set guicursor+=a:blinkon0
 " remove toolbar and scrollbars
@@ -128,7 +128,7 @@ set tags-=./TAGS
 set tags-=TAGS
 set tags+=$HOME/.vim/systags
 set termencoding=utf-8
-set textwidth=120
+set textwidth=80
 set thesaurus+=$HOME/.vim/thes/mobythes.txt
 set timeout
 set timeoutlen=400
