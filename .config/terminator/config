@@ -1,4 +1,5 @@
 [global_config]
+  enabled_plugins = CustomCommandsMenu, TerminalShot, LaunchpadCodeURLHandler, APTURLHandler, Logger, LaunchpadBugURLHandler
   focus = mouse
   scroll_tabbar = True
   title_font = Monospace 10
