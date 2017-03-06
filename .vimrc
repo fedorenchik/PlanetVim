@@ -107,7 +107,7 @@ set scrolljump=2
 set scrolloff=2
 set secure
 set sessionoptions="buffers,folds,help,sesdir,slash,tabpages,unix,winsize"
-set shiftround		" use multiple of shiftwidth when indenting with '<' and '>'
+set shiftround
 set shiftwidth=8
 set shortmess+=Im
 set showbreak=>>>>>>>>
