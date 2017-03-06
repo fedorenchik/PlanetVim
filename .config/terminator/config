@@ -34,10 +34,11 @@
 [plugins]
 [profiles]
   [[default]]
+    background_color = "#1b1d1e"
     cursor_color = "#aaaaaa"
     font = Monospace 10
-    foreground_color = "#ffffff"
-    palette = "#000000:#cc0000:#4e9a06:#c4a000:#3465a4:#75507b:#06989a:#d3d7cf:#555753:#ef2929:#8ae234:#fce94f:#729fcf:#ad7fa8:#34e2e2:#eeeeec"
+    foreground_color = "#cccccc"
+    palette = "#1b1d1e:#ff0044:#82b414:#fd971f:#266c98:#ac0cb1:#ae81ff:#cccccc:#808080:#f92672:#a6e22e:#e6db74:#7070f0:#d63ae1:#66d9ef:#f8f8f2"
     scrollback_lines = 10000
     urgent_bell = True
     use_system_font = False
