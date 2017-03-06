@@ -1,6 +1,10 @@
 [global_config]
   focus = mouse
+  scroll_tabbar = True
+  title_font = Monospace 10
   title_transmit_bg_color = "#1c4f00"
+  title_use_system_font = False
+  window_state = maximise
 [keybindings]
   go_down = <Alt>j
   go_left = <Alt>h
@@ -29,6 +33,12 @@
 [plugins]
 [profiles]
   [[default]]
-    background_image = None
-    scroll_on_output = False
+    cursor_color = "#aaaaaa"
+    font = Monospace 10
+    foreground_color = "#ffffff"
+    palette = "#000000:#cc0000:#4e9a06:#c4a000:#3465a4:#75507b:#06989a:#d3d7cf:#555753:#ef2929:#8ae234:#fce94f:#729fcf:#ad7fa8:#34e2e2:#eeeeec"
     scrollback_lines = 10000
+    urgent_bell = True
+    use_system_font = False
+    visible_bell = True
+    word_chars = "-,./?%&#:_~"
