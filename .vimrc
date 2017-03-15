@@ -106,7 +106,7 @@ set ruler               " show the cursor position all the time
 set scrolljump=2
 set scrolloff=2
 set secure
-set sessionoptions="buffers,folds,help,sesdir,slash,tabpages,unix,winsize"
+set sessionoptions=buffers,folds,help,sesdir,slash,tabpages,unix,winsize
 set shiftround
 set shiftwidth=8
 set shortmess+=Im
