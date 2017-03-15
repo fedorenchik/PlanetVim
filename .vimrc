@@ -359,7 +359,7 @@ nnoremap <silent> <Leader>p :Unite -auto-preview -vertical-preview -buffer-name=
 nnoremap <silent> <Leader>P :Unite -no-resize -no-split -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
 nnoremap <silent> <Leader>q :confirm q<CR>
 nnoremap <silent> <Leader>Q :confirm qa<CR>
-"nnoremap <silent> <Leader>r <Nop>
+nnoremap <silent> <Leader>r <Plug>MarkRegex
 nnoremap <silent> <Leader>R :Unite -start-insert -smartcase -buffer-name=unite-register register<CR>
 nnoremap <silent> <Leader>s :Unite -start-insert -smartcase -buffer-name=unite-grep grep:%::`expand('<cword>')`<CR>
 nnoremap <silent> <Leader>S :Scratch<CR>
@@ -383,8 +383,8 @@ nnoremap <silent> <Leader>; ,
 "nnoremap <silent> <Leader>< <Nop>
 "nnoremap <silent> <Leader>. <Nop>
 "nnoremap <silent> <Leader>> <Nop>
-"nnoremap <silent> <Leader>/ <Nop>
-"nnoremap <silent> <Leader>? <Nop>
+nnoremap <silent> <Leader>/ <Plug>MarkSearchAnyNext
+nnoremap <silent> <Leader>? <Plug>MarkSearchAnyPrev
 "nnoremap <silent> <Leader>@ <Nop>
 "nnoremap <silent> <Leader>^ <Nop>
 "nnoremap <silent> <Leader>\ <Nop>
@@ -440,6 +440,8 @@ vnoremap ; :
 vnoremap / /\v
 " make p in visual mode replace selected text with the yank register
 vnoremap p <Esc>:let current_reg = @"<CR>gvdi<C-R>=current_reg<CR><Esc>
+vnoremap <silent> <Leader>m <Plug>MarkSet
+vnoremap <silent> <Leader>r <Plug>MarkRegex
 " }}}
 " Command-line (Cmdline) Mode: {{{
 " Subcommands & submodes: Ctrl-R, Ctrl-\
