@@ -395,7 +395,7 @@ nnoremap <silent> <Leader>_ :Unite -start-insert -smartcase -buffer-name=unite-w
 "nnoremap <silent> <Leader>~ <Nop>
 "nnoremap <silent> <Leader>& <Nop>
 "nnoremap <silent> <Leader>% <Nop>
-"nnoremap <silent> <Leader># <Nop>
+nnoremap <silent> <Leader># :e #<CR>
 "nnoremap <silent> <Leader>` <Nop>
 "nnoremap <silent> <Leader>[ <Nop>
 "nnoremap <silent> <Leader>{ <Nop>
