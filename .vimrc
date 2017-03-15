@@ -323,7 +323,7 @@ nnoremap <silent> <Leader><Space> :set hlsearch! hlsearch?<CR>
 "nnoremap <silent> <Leader>7 <Nop>
 "nnoremap <silent> <Leader>8 <Nop>
 "nnoremap <silent> <Leader>9 <Nop>
-nnoremap <silent> <Leader>a :A<CR>
+nnoremap <silent> <Leader>a :e #<CR>
 "nnoremap <silent> <Leader>A <Nop>
 nnoremap <silent> <Leader>b :Unite -start-insert -smartcase -buffer-name=unite-buffer buffer<CR>
 "nnoremap <silent> <Leader>B <Nop>
@@ -395,7 +395,7 @@ nnoremap <silent> <Leader>_ :Unite -start-insert -smartcase -buffer-name=unite-w
 "nnoremap <silent> <Leader>~ <Nop>
 "nnoremap <silent> <Leader>& <Nop>
 "nnoremap <silent> <Leader>% <Nop>
-nnoremap <silent> <Leader># :e #<CR>
+"nnoremap <silent> <Leader># :e #<CR>
 "nnoremap <silent> <Leader>` <Nop>
 "nnoremap <silent> <Leader>[ <Nop>
 "nnoremap <silent> <Leader>{ <Nop>
