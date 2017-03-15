@@ -349,17 +349,17 @@ nnoremap <silent> <Leader>k :Unite -start-insert -smartcase -buffer-name=unite-m
 "nnoremap <silent> <Leader>K <Nop>
 nnoremap <silent> <Leader>l :Unite -buffer-name=unite-location-list location_list<CR>
 "nnoremap <silent> <Leader>L <Nop>
-nnoremap <silent> <Leader>m <Plug>MarkSet
+nmap <silent> <unique> <Leader>m <Plug>MarkSet
 "nnoremap <silent> <Leader>M <Nop>
-nnoremap <silent> <Leader>n <Plug>MarkSearchCurrentNext
-nnoremap <silent> <Leader>N <Plug>MarkSearchCurrentPrev
+nmap <silent> <Leader>n <Plug>MarkSearchCurrentNext
+nmap <silent> <Leader>N <Plug>MarkSearchCurrentPrev
 nnoremap <silent> <Leader>o :Unite -start-insert -smartcase outline<CR>
 nnoremap <silent> <Leader>O :Unite -no-resize -no-split -smartcase outline<CR>
 nnoremap <silent> <Leader>p :Unite -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
 nnoremap <silent> <Leader>P :Unite -no-resize -no-split -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
 nnoremap <silent> <Leader>q :confirm q<CR>
 nnoremap <silent> <Leader>Q :confirm qa<CR>
-nnoremap <silent> <Leader>r <Plug>MarkRegex
+nmap <silent> <Leader>r <Plug>MarkRegex
 nnoremap <silent> <Leader>R :Unite -start-insert -smartcase -buffer-name=unite-register register<CR>
 nnoremap <silent> <Leader>s :Unite -start-insert -smartcase -buffer-name=unite-grep grep:%::`expand('<cword>')`<CR>
 nnoremap <silent> <Leader>S :Scratch<CR>
@@ -383,8 +383,8 @@ nnoremap <silent> <Leader>; ,
 "nnoremap <silent> <Leader>< <Nop>
 "nnoremap <silent> <Leader>. <Nop>
 "nnoremap <silent> <Leader>> <Nop>
-nnoremap <silent> <Leader>/ <Plug>MarkSearchAnyNext
-nnoremap <silent> <Leader>? <Plug>MarkSearchAnyPrev
+nmap <silent> <Leader>/ <Plug>MarkSearchAnyNext
+nmap <silent> <Leader>? <Plug>MarkSearchAnyPrev
 "nnoremap <silent> <Leader>@ <Nop>
 "nnoremap <silent> <Leader>^ <Nop>
 "nnoremap <silent> <Leader>\ <Nop>
@@ -440,8 +440,8 @@ vnoremap ; :
 vnoremap / /\v
 " make p in visual mode replace selected text with the yank register
 vnoremap p <Esc>:let current_reg = @"<CR>gvdi<C-R>=current_reg<CR><Esc>
-vnoremap <silent> <Leader>m <Plug>MarkSet
-vnoremap <silent> <Leader>r <Plug>MarkRegex
+vmap <silent> <Leader>m <Plug>MarkSet
+vmap <silent> <Leader>r <Plug>MarkRegex
 " }}}
 " Command-line (Cmdline) Mode: {{{
 " Subcommands & submodes: Ctrl-R, Ctrl-\
