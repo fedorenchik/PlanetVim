@@ -349,8 +349,8 @@ nnoremap <silent> <Leader>l :Unite -buffer-name=unite-location-list location_lis
 "nnoremap <silent> <Leader>L <Nop>
 "nnoremap <silent> <Leader>m <Nop>
 "nnoremap <silent> <Leader>M <Nop>
-"nnoremap <silent> <Leader>n <Nop>
-"nnoremap <silent> <Leader>N <Nop>
+nnoremap <silent> <Leader>n <Plug>MarkSearchCurrentNext
+nnoremap <silent> <Leader>N <Plug>MarkSearchCurrentPrev
 nnoremap <silent> <Leader>o :Unite -start-insert -smartcase outline<CR>
 nnoremap <silent> <Leader>O :Unite -no-resize -no-split -smartcase outline<CR>
 nnoremap <silent> <Leader>p :Unite -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
