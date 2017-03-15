@@ -235,6 +235,8 @@ nnoremap <silent> gy :%y+<CR>
 nnoremap <silent> h F
 nnoremap <silent> K :Man <cword><CR>
 nnoremap <silent> l f
+nnoremap <silent> n :<C-u>if !mark#SearchNext(0)<Bar>execute 'normal! nzv'<Bar>endif<CR>
+nnoremap <silent> N :<C-u>if !mark#SearchNext(1)<Bar>execute 'normal! Nzv'<Bar>endif<CR>
 nnoremap <silent> Y y$
 nnoremap <silent> - <nop>
 nnoremap <silent> + <nop>
@@ -347,7 +349,7 @@ nnoremap <silent> <Leader>k :Unite -start-insert -smartcase -buffer-name=unite-m
 "nnoremap <silent> <Leader>K <Nop>
 nnoremap <silent> <Leader>l :Unite -buffer-name=unite-location-list location_list<CR>
 "nnoremap <silent> <Leader>L <Nop>
-"nnoremap <silent> <Leader>m <Nop>
+nnoremap <silent> <Leader>m <Plug>MarkSet
 "nnoremap <silent> <Leader>M <Nop>
 nnoremap <silent> <Leader>n <Plug>MarkSearchCurrentNext
 nnoremap <silent> <Leader>N <Plug>MarkSearchCurrentPrev

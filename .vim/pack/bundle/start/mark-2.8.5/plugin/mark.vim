@@ -363,6 +363,7 @@ nnoremap <silent> <Plug>MarkSearchOrAnyPrev   :<C-u>if !mark#SearchNext(1,'mark#
 nnoremap <silent> <Plug>MarkSearchGroupNext   :<C-u>call mark#SearchGroupMark(v:count, 1, 0, 1)<CR>
 nnoremap <silent> <Plug>MarkSearchGroupPrev   :<C-u>call mark#SearchGroupMark(v:count, 1, 1, 1)<CR>
 
+if exists('g:mwAddDefaultMappings')
 
 if !hasmapto('<Plug>MarkSet', 'n')
 	nmap <unique> <Leader>m <Plug>MarkSet
@@ -423,6 +424,7 @@ endfunction
 call s:MakeDirectGroupMappings()
 delfunction s:MakeDirectGroupMappings
 
+endif
 
 
 "- commands -------------------------------------------------------------------
