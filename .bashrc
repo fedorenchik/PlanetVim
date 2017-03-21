@@ -117,10 +117,12 @@ lh()
 e()
 {
 	if [ "$*" == "" ]; then
-		gvim -S .session.vim 2>>/tmp/gvim.out
-	else
-		gvim "$@" 2>>/tmp/gvim.out
+		if [ -f .session.vim ]; then
+			gvim -S .session.vim 2>>/tmp/gvim.out
+			return
+		fi
 	fi
+	gvim "$@" 2>>/tmp/gvim.out
 }
 
 r()
