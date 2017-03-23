@@ -8,6 +8,12 @@
 " ctags, [cscope], gtags, wmctrl, trash-cli,
 " latest GNU GLOBAL (compile from source) (6.5.5 as of 30.10.2016)
 " }}}
+" Prevent Multiple Sourcing: {{{
+if exists("g:loaded_home_vimrc")
+	finish
+endif
+let g:loaded_home_vimrc = 1
+" }}}
 " Basics: {{{
 set nocompatible	" affects other options, so it should be the first
 if &t_Co > 2 || has("gui_running")
@@ -349,7 +355,7 @@ nnoremap <silent> <Leader>k :Unite -start-insert -smartcase -buffer-name=unite-m
 "nnoremap <silent> <Leader>K <Nop>
 nnoremap <silent> <Leader>l :Unite -buffer-name=unite-location-list location_list<CR>
 "nnoremap <silent> <Leader>L <Nop>
-"nmap <silent> <unique> <Leader>m <Plug>MarkSet
+nmap <silent> <unique> <Leader>m <Plug>MarkSet
 "nnoremap <silent> <Leader>M <Nop>
 nmap <silent> <Leader>n <Plug>MarkSearchCurrentNext
 nmap <silent> <Leader>N <Plug>MarkSearchCurrentPrev
