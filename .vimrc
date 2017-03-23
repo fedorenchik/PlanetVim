@@ -349,7 +349,7 @@ nnoremap <silent> <Leader>k :Unite -start-insert -smartcase -buffer-name=unite-m
 "nnoremap <silent> <Leader>K <Nop>
 nnoremap <silent> <Leader>l :Unite -buffer-name=unite-location-list location_list<CR>
 "nnoremap <silent> <Leader>L <Nop>
-nmap <silent> <unique> <Leader>m <Plug>MarkSet
+"nmap <silent> <unique> <Leader>m <Plug>MarkSet
 "nnoremap <silent> <Leader>M <Nop>
 nmap <silent> <Leader>n <Plug>MarkSearchCurrentNext
 nmap <silent> <Leader>N <Plug>MarkSearchCurrentPrev
