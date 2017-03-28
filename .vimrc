@@ -48,8 +48,8 @@ elseif &t_Co >= 256
 endif
 " }}}
 " Settings: {{{
-set autoindent		" always set autoindenting on
-set autoread		" automatically reload changes if detected
+set autoindent
+set autoread
 set backspace=
 set backupdir=~/.vim/backup,/tmp
 set backup
