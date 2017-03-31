@@ -9,6 +9,7 @@ bc
 bison
 build-essential
 chrpath
+crash
 ctags
 curl
 cvs
