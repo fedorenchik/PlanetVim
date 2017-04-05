@@ -476,7 +476,6 @@ cnoreabbrev grep grep -IarFw
 if has("autocmd")
 	augroup filetypes
 		autocmd!
-		autocmd FileType vim setlocal foldenable foldmethod=marker foldlevelstart=0 foldlevel=0
 		if exists("+omnifunc")
 			autocmd Filetype *
 						\ if &omnifunc == "" |
@@ -484,10 +483,11 @@ if has("autocmd")
 						\ endif
 		endif
 		autocmd FileType sh setlocal formatoptions-=t formatoptions+=croql
+		autocmd FileType text setlocal textwidth=72
+		autocmd FileType vim setlocal foldenable foldmethod=marker foldlevelstart=0 foldlevel=0
 	augroup END
 	augroup vimrcEx
 		autocmd!
-		autocmd FileType text setlocal textwidth=72
 		" When editing a file, always jump to the last known cursor position.
 		" Don't do it when the position is invalid or when inside an event handler
 		" (happens when dropping a file on gvim).
