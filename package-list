@@ -5,6 +5,7 @@ sudo usermod -a -G vboxusers $USER
 # packages
 autoconf
 automake
+autopoint
 bc
 bison
 build-essential
