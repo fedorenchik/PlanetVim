@@ -483,6 +483,7 @@ if has("autocmd")
 						\	setlocal omnifunc=syntaxcomplete#Complete |
 						\ endif
 		endif
+		autocmd FileType sh setlocal formatoptions-=t formatoptions+=croql
 	augroup END
 	augroup vimrcEx
 		autocmd!
