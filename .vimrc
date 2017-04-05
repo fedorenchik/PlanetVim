@@ -477,9 +477,8 @@ if has("autocmd")
 	augroup filetypes
 		autocmd!
 		if exists("+omnifunc")
-			autocmd Filetype *
-						\ if &omnifunc == "" |
-						\	setlocal omnifunc=syntaxcomplete#Complete |
+			autocmd Filetype * if &omnifunc == "" |
+						\   setlocal omnifunc=syntaxcomplete#Complete |
 						\ endif
 		endif
 		autocmd FileType sh setlocal formatoptions-=t formatoptions+=croql
