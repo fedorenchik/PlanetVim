@@ -56,7 +56,7 @@ set backup
 set nobreakindent
 let c_comment_strings=1
 set cindent
-set cinoptions=:0
+set cinoptions=:0,l1,g0
 set cmdheight=2		" use a status bar that is 2 rows high
 set colorcolumn=80
 set completeopt=menuone,preview
