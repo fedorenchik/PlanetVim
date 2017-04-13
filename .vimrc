@@ -187,8 +187,8 @@ let maplocalleader=","	" <leader> local to buffer
 " }}}
 " Keys Limitations: {{{
 " Shifted cursor keys are not available on all terminals (but available in GUI).
-" Cannot distinguish between <Tab> and <C-I> in insert mode (but can in normal mode).
-" Cannot distinguish between <Enter> and <C-M> in insert mode (but can in normal mode).
+" Cannot distinguish between <Tab> and <C-I>.
+" Cannot distinguish between <Enter> and <C-M>.
 " }}}
 " Go To Normal Mode: {{{
 " <C-\><C-N>
@@ -228,7 +228,6 @@ nnoremap <silent> <F8> :call Marvim_search()<CR>
 nnoremap <silent> <F10> :TagbarToggle<CR>
 nnoremap <silent> <F12> :UndotreeToggle<CR>
 nnoremap <silent> <Space> za
-nnoremap <silent> <Tab> <nop>
 nnoremap <silent> ` '
 nnoremap <silent> ' `
 " swap semicolon and colon seems very weird:
@@ -282,7 +281,6 @@ nnoremap <silent> <C-H> <C-W>h
 nnoremap <silent> <C-J> <C-W>j
 nnoremap <silent> <C-K> <C-W>k
 nnoremap <silent> <C-L> <C-W>l
-nnoremap <silent> <C-M> <nop>
 nnoremap <silent> <C-N> :UniteNext<CR>
 nnoremap <silent> <C-P> :UnitePrevious<CR>
 nnoremap <silent> <C-T> :tabnew<CR>
