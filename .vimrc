@@ -155,7 +155,7 @@ endif
 set undolevels=1000
 set updatetime=1000
 set viminfo='100,<50,s10,h,!,c,r/tmp,r/var,n$PWD/.viminfo
-set virtualedit=block	" allow cursor to move freely in vilual block mode
+set virtualedit=block
 set visualbell		" do not visual blink
 set whichwrap=
 set wildmenu		" make tab completion like bash
