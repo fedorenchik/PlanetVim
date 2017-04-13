@@ -449,6 +449,7 @@ vnoremap / /\v
 vnoremap p <Esc>:let current_reg = @"<CR>gvdi<C-R>=current_reg<CR><Esc>
 vmap <silent> <Leader>m <Plug>MarkSet
 vmap <silent> <Leader>r <Plug>MarkRegex
+vnoremap X y/<C-R>"<CR>
 " }}}
 " Command-line (Cmdline) Mode: {{{
 " Subcommands & submodes: Ctrl-R, Ctrl-\
