@@ -172,8 +172,8 @@ let maplocalleader=","	" <leader> local to buffer
 " Mappings: {{{
 " Modes: {{{
 " Normal (Command) Mode: nmap
-" Visual Mode: vmap
-" Select Mode:
+" Visual Mode: xmap, vmap
+" Select Mode: smap, vmap
 " Insert Mode: imap
 " Command-line (Cmdline) Mode: cmap
 " Ex Mode:
@@ -449,7 +449,7 @@ vnoremap / /\v
 vnoremap p <Esc>:let current_reg = @"<CR>gvdi<C-R>=current_reg<CR><Esc>
 vmap <silent> <Leader>m <Plug>MarkSet
 vmap <silent> <Leader>r <Plug>MarkRegex
-vnoremap X y/<C-R>"<CR>
+xnoremap X y/<C-R>"<CR>
 " }}}
 " Command-line (Cmdline) Mode: {{{
 " Subcommands & submodes: Ctrl-R, Ctrl-\
