@@ -161,6 +161,7 @@ set visualbell		" do not visual blink
 set whichwrap=
 set wildmenu		" make tab completion like bash
 set wildmode=list:longest	" show tab completion menu and complete longest match
+set wildoptions=tagfile
 set nowrap
 set nowrapscan
 set writebackup
