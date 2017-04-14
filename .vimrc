@@ -486,7 +486,9 @@ if has("autocmd")
 		autocmd FileType sh setlocal formatoptions-=t formatoptions+=croql
 		autocmd FileType text setlocal textwidth=72
 		autocmd FileType vim setlocal foldenable foldmethod=marker foldlevelstart=0 foldlevel=0
-		autocmd CmdWinEnter * noremap <buffer> <S-CR> <CR>q:
+		autocmd CmdWinEnter : noremap <buffer> <S-CR> <CR>q:
+		autocmd CmdWinEnter / noremap <buffer> <S-CR> <CR>q/
+		autocmd CmdWinEnter ? noremap <buffer> <S-CR> <CR>q?
 	augroup END
 	augroup vimrcEx
 		autocmd!
