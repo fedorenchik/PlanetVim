@@ -84,7 +84,7 @@ set guioptions-=L
 set guioptions-=r
 set guioptions+=c
 set hidden		" hide buffers instead of closing them
-set history=1000        " keep 1000 lines of command line history
+set history=1000
 set nohlsearch
 if has('reltime')
 	set incsearch
