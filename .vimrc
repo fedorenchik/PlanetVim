@@ -96,8 +96,8 @@ if has('langmap') && exists('+langremap')
 endif
 set laststatus=2        " always show the status line
 set lazyredraw
-set listchars=tab:»\ ,trail:·,extends:>,precedes:<	" show some invisible chars
 set list
+set listchars=tab:»\ ,trail:·,extends:>,precedes:<	" show some invisible chars
 set matchpairs+=<:>
 set nomodeline		" disable mode lines (security measure)
 if has('mouse')
