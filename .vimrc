@@ -83,7 +83,7 @@ set guioptions-=T
 set guioptions-=L
 set guioptions-=r
 set guioptions+=c
-set hidden		" hide buffers instead of closing them
+set hidden
 set history=1000
 set nohlsearch
 if has('reltime')
