@@ -90,6 +90,7 @@ if has('reltime')
 	set incsearch
 endif
 set joinspaces
+set keywordprg=:Man
 if has('langmap') && exists('+langremap')
 	set nolangremap
 endif
@@ -241,7 +242,6 @@ nnoremap <silent> / /\v
 " yank entire buffer with gy
 nnoremap <silent> gy :%y+<CR>
 nnoremap <silent> h F
-nnoremap <silent> K :Man <cword><CR>
 nnoremap <silent> l f
 nnoremap <silent> n :<C-u>if !mark#SearchNext(0)<Bar>execute 'normal! nzv'<Bar>endif<CR>
 nnoremap <silent> N :<C-u>if !mark#SearchNext(1)<Bar>execute 'normal! Nzv'<Bar>endif<CR>
