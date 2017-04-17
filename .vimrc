@@ -52,7 +52,7 @@ set autoindent
 set autoread
 set backspace=
 set backup
-set backupdir=~/.vim/backup,/tmp
+set backupdir=~/.vim/backup,~/tmp,~/,.,/tmp
 set nobreakindent
 let c_comment_strings=1
 set cindent
