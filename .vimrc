@@ -15,7 +15,7 @@ endif
 let g:loaded_home_vimrc = 1
 " }}}
 " Basics: {{{
-set nocompatible	" affects other options, so it should be the first
+set nocompatible
 if &t_Co > 2 || has("gui_running")
 	syntax on
 endif
@@ -51,8 +51,8 @@ endif
 set autoindent
 set autoread
 set backspace=
-set backupdir=~/.vim/backup,/tmp
 set backup
+set backupdir=~/.vim/backup,/tmp
 set nobreakindent
 let c_comment_strings=1
 set cindent
