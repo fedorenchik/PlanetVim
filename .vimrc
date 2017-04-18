@@ -59,6 +59,7 @@ set browsedir=buffer
 let c_comment_strings=1
 set cindent
 set cinoptions=:0,l1,g0,t0,U1,j1,J1
+set cinwords-=switch
 set cmdheight=2
 set colorcolumn=80
 set completeopt=menuone,preview
