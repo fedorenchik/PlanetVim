@@ -53,14 +53,15 @@ set autoread
 set backspace=
 set backup
 set backupdir=~/.vim/backup,~/tmp,~/,.,/tmp
+set belloff=all,error
 set nobreakindent
 let c_comment_strings=1
 set cindent
 set cinoptions=:0,l1,g0,t0,U1,j1,J1
-set cmdheight=2		" use a status bar that is 2 rows high
+set cmdheight=2
 set colorcolumn=80
 set completeopt=menuone,preview
-set copyindent		" copy the previous indentation on autoindenting
+set copyindent
 set cpoptions+={
 set nocursorline
 set dictionary+=/usr/share/dict/words
@@ -94,12 +95,12 @@ set keywordprg=:Man
 if has('langmap') && exists('+langremap')
 	set nolangremap
 endif
-set laststatus=2        " always show the status line
+set laststatus=2
 set lazyredraw
 set list
-set listchars=tab:»\ ,trail:·,extends:>,precedes:<	" show some invisible chars
+set listchars=tab:»\ ,trail:·,extends:>,precedes:<
 set matchpairs+=<:>
-set nomodeline		" disable mode lines (security measure)
+set nomodeline
 if has('mouse')
 	set mouse=ar
 endif
@@ -110,7 +111,7 @@ set patchmode=".orig"
 set path+=./../include,./../../include
 set pumheight=10
 set norelativenumber
-set ruler               " show the cursor position all the time
+set ruler
 set scrolljump=2
 set scrolloff=2
 set secure
@@ -134,7 +135,7 @@ set softtabstop=8
 set nostartofline
 set swapfile
 set switchbuf=useopen	" reuse opened buffers from quickfix window
-set tabstop=8		" tab is 8 spaces
+set tabstop=8
 set tags-=./TAGS
 set tags-=TAGS
 set tags+=$HOME/.vim/systags
@@ -148,7 +149,7 @@ set title
 set titlestring=%F\ %a%r%m\ -\ VIM
 set ttimeout
 set ttimeoutlen=10
-set ttyfast		" smoother redrawing on fast terminals
+set ttyfast
 set t_vb=		" do not visual blink
 if has('persistent_undo')
 	set undodir=$HOME/.vim/undo
