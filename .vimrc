@@ -97,6 +97,7 @@ if has('langmap') && exists('+langremap')
 endif
 set laststatus=2
 set lazyredraw
+set nolinebreak
 set list
 set listchars=tab:»\ ,trail:·,extends:>,precedes:<
 set matchpairs+=<:>
@@ -485,7 +486,7 @@ if has("autocmd")
 						\ endif
 		endif
 		autocmd FileType sh setlocal formatoptions-=t formatoptions+=croql
-		autocmd FileType text setlocal textwidth=72
+		autocmd FileType text setlocal textwidth=72 linebreak breakindent
 		autocmd FileType vim setlocal foldenable foldmethod=marker foldlevelstart=0 foldlevel=0
 		autocmd CmdWinEnter : noremap <buffer> <S-CR> <CR>q:
 		autocmd CmdWinEnter / noremap <buffer> <S-CR> <CR>q/
