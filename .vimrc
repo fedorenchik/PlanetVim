@@ -504,8 +504,7 @@ if has("autocmd")
 	augroup END
 	augroup auto_sessions
 		autocmd!
-		autocmd VimLeavePre *
-					\ if !&readonly |
+		autocmd VimLeavePre * if !&readonly |
 					\   mksession! .session.vim |
 					\ endif
 	augroup END
