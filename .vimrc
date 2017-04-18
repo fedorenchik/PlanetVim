@@ -55,6 +55,7 @@ set backup
 set backupdir=~/.vim/backup,~/tmp,~/,.,/tmp
 set belloff=all,error
 set nobreakindent
+set browsedir=buffer
 let c_comment_strings=1
 set cindent
 set cinoptions=:0,l1,g0,t0,U1,j1,J1
