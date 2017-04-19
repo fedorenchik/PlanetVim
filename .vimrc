@@ -64,6 +64,7 @@ set clipboard=autoselect,autoselectml,exclude:cons\|linux
 set cmdheight=2
 set colorcolumn=80,120,160,+1
 set completeopt=menuone,preview
+set confirm
 set copyindent
 set cpoptions+={
 set nocursorline
