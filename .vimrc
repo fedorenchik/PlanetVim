@@ -490,6 +490,7 @@ if has("autocmd")
 		endif
 		autocmd FileType sh setlocal formatoptions-=t formatoptions+=croql
 		autocmd FileType text setlocal textwidth=72 linebreak breakindent
+		autocmd FileType text setlocal complete+=k,s
 		autocmd FileType vim setlocal foldenable foldmethod=marker foldlevelstart=0 foldlevel=0
 		autocmd FileType html setlocal clipboard=autoselect,autoselectml,html,exclude:cons\|linux
 		autocmd CmdWinEnter : noremap <buffer> <S-CR> <CR>q:
