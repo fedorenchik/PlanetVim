@@ -60,6 +60,7 @@ let c_comment_strings=1
 set cindent
 set cinoptions=:0,l1,g0,t0,U1,j1,J1
 set cinwords-=switch
+set clipboard=autoselect,autoselectml,exclude:cons\|linux
 set cmdheight=2
 set colorcolumn=80
 set completeopt=menuone,preview
@@ -490,6 +491,7 @@ if has("autocmd")
 		autocmd FileType sh setlocal formatoptions-=t formatoptions+=croql
 		autocmd FileType text setlocal textwidth=72 linebreak breakindent
 		autocmd FileType vim setlocal foldenable foldmethod=marker foldlevelstart=0 foldlevel=0
+		autocmd FileType html setlocal clipboard=autoselect,autoselectml,html,exclude:cons\|linux
 		autocmd CmdWinEnter : noremap <buffer> <S-CR> <CR>q:
 		autocmd CmdWinEnter / noremap <buffer> <S-CR> <CR>q/
 		autocmd CmdWinEnter ? noremap <buffer> <S-CR> <CR>q?
