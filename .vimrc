@@ -70,7 +70,11 @@ set cscopequickfix=s-,c-,d-,i-,t-,e-,a-
 set cscoperelative
 set cscopetag
 set cscopetagorder=1
+set cscopeverbose
+set cursorbind
+set nocursorcolumn
 set nocursorline
+set debug=beep
 set dictionary+=/usr/share/dict/words
 set directory=~/.vim/swap//,.,/tmp
 set display=lastline
