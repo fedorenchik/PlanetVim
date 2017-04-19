@@ -66,7 +66,6 @@ set colorcolumn=80,120,160,+1
 set completeopt=menuone,preview
 set confirm
 set copyindent
-set cpoptions+={
 set nocursorline
 set dictionary+=/usr/share/dict/words
 set directory=~/.vim/swap//,.,/tmp
