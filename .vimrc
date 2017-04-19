@@ -75,6 +75,7 @@ set cursorbind
 set nocursorcolumn
 set nocursorline
 set debug=beep
+set nodelcombine
 set dictionary+=/usr/share/dict/words
 set directory=~/.vim/swap//,.,/tmp
 set display=lastline
@@ -496,11 +497,12 @@ if has("autocmd")
 						\   setlocal omnifunc=syntaxcomplete#Complete |
 						\ endif
 		endif
+		autocmd FileType cpp setlocal define=^\\(#\\s*define\\|[a-z]*\\s*const\\s*[a-z]*\\)
+		autocmd FileType html setlocal clipboard=autoselect,autoselectml,html,exclude:cons\|linux
 		autocmd FileType sh setlocal formatoptions-=t formatoptions+=croql
 		autocmd FileType text setlocal textwidth=72 linebreak breakindent
 		autocmd FileType text setlocal complete+=k,s
 		autocmd FileType vim setlocal foldenable foldmethod=marker foldlevelstart=0 foldlevel=0
-		autocmd FileType html setlocal clipboard=autoselect,autoselectml,html,exclude:cons\|linux
 		autocmd CmdWinEnter : noremap <buffer> <S-CR> <CR>q:
 		autocmd CmdWinEnter / noremap <buffer> <S-CR> <CR>q/
 		autocmd CmdWinEnter ? noremap <buffer> <S-CR> <CR>q?
