@@ -62,7 +62,7 @@ set cinoptions=:0,l1,g0,t0,U1,j1,J1
 set cinwords-=switch
 set clipboard=autoselect,autoselectml,exclude:cons\|linux
 set cmdheight=2
-set colorcolumn=80
+set colorcolumn=80,120,160,+1
 set completeopt=menuone,preview
 set copyindent
 set cpoptions+={
