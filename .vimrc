@@ -106,6 +106,7 @@ set nofsync
 set nogdefault
 set grepprg=grep\ -nH\ $*
 set guicursor+=a:blinkon0
+set guifont=Monospace\ 10
 " remove toolbar and scrollbars
 set guioptions-=T
 set guioptions-=L
