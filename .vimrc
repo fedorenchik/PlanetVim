@@ -84,6 +84,7 @@ set eadirection=
 set noedcompatible
 set emoji
 set encoding=utf-8
+set noequalalways
 set noerrorbells
 set noexpandtab
 set exrc
