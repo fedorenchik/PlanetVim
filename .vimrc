@@ -80,6 +80,9 @@ set dictionary+=/usr/share/dict/words
 set dictionary+=/usr/share/dict/web2
 set directory=~/.vim/swap//,~/tmp//,~//,.//,/var/tmp//,/tmp//
 set display=lastline,uhex
+set eadirection=
+set noedcompatible
+set emoji
 set encoding=utf-8
 set noerrorbells
 set noexpandtab
