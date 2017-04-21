@@ -92,11 +92,15 @@ set exrc
 set fileformats=unix,dos,mac
 set nofileignorecase
 set nofixendofline
-set foldclose=
+set foldclose=all
 set foldcolumn=0
 set nofoldenable
+set foldlevel=99
 set foldlevelstart=99
 set foldmethod=manual
+set foldminlines=1
+set foldnestmax=20
+set foldopen=quickfix,tag,undo
 set formatoptions+=1jMmn
 set gdefault
 set guicursor+=a:blinkon0
