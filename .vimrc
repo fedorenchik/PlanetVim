@@ -102,7 +102,8 @@ set foldminlines=1
 set foldnestmax=20
 set foldopen=quickfix,tag,undo
 set formatoptions+=1jMmn
-set gdefault
+set nofsync
+set nogdefault
 set guicursor+=a:blinkon0
 " remove toolbar and scrollbars
 set guioptions-=T
@@ -160,6 +161,7 @@ set smarttab
 set softtabstop=8
 set nostartofline
 set swapfile
+set swapsync=
 set switchbuf=useopen	" reuse opened buffers from quickfix window
 set tabstop=8
 set tags-=./TAGS
