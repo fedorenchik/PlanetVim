@@ -106,8 +106,10 @@ set nofsync
 set nogdefault
 set grepprg=grep\ -nH\ $*
 set guicursor+=a:blinkon0
-set guifont=Monospace\ 10
-" remove toolbar and scrollbars
+if has("gui_gtk2")
+	set guifont=Monospace\ 10
+	set guifontwide=WenQuanYi\ Zen\ Hei\ 10
+endif
 set guioptions-=T
 set guioptions-=L
 set guioptions-=r
