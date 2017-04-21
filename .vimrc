@@ -90,6 +90,7 @@ set esckeys
 set noexpandtab
 set exrc
 set fileformats=unix,dos,mac
+set nofileignorecase
 set foldcolumn=0
 set nofoldenable	" disable folding
 set foldlevelstart=99	" all folds opened by default
