@@ -86,6 +86,7 @@ set emoji
 set encoding=utf-8
 set noequalalways
 set noerrorbells
+set esckeys
 set noexpandtab
 set exrc
 set fileformats=unix,dos,mac
