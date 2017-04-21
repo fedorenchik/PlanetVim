@@ -91,12 +91,14 @@ set noexpandtab
 set exrc
 set fileformats=unix,dos,mac
 set nofileignorecase
+set nofixendofline
+set foldclose=
 set foldcolumn=0
-set nofoldenable	" disable folding
-set foldlevelstart=99	" all folds opened by default
-set foldmethod=manual	" syntax folding
+set nofoldenable
+set foldlevelstart=99
+set foldmethod=manual
 set formatoptions+=1jMmn
-set gdefault		" global search/replace by default
+set gdefault
 set guicursor+=a:blinkon0
 " remove toolbar and scrollbars
 set guioptions-=T
