@@ -104,6 +104,7 @@ set foldopen=quickfix,tag,undo
 set formatoptions+=1jMmn
 set nofsync
 set nogdefault
+set grepprg=grep\ -nH\ $*
 set guicursor+=a:blinkon0
 " remove toolbar and scrollbars
 set guioptions-=T
