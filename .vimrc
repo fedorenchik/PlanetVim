@@ -110,6 +110,7 @@ if has("gui_gtk2")
 	set guifont=Monospace\ 10
 	set guifontwide=WenQuanYi\ Zen\ Hei\ 10
 endif
+set guioptions-=e
 set guioptions-=T
 set guioptions-=L
 set guioptions-=r
@@ -157,6 +158,7 @@ set showcmd             " display incomplete commands
 set noshowmatch		" do not jump to open paren/bracket/brace when close one is typed
 set noshowmode		" do not show mode since PowerLine shows it
 set showmode		" always show mode we're currently in
+set showtabline=2
 set sidescroll=30
 set sidescrolloff=2
 set signcolumn=yes
