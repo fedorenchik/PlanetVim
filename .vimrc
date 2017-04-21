@@ -52,7 +52,7 @@ set autoindent
 set autoread
 set backspace=
 set backup
-set backupdir=~/.vim/backup,~/tmp,~/,.,/tmp
+set backupdir=~/.vim/backup,~/tmp,~/,.,/var/tmp,/tmp
 set belloff=all,error
 set nobreakindent
 set browsedir=buffer
@@ -78,8 +78,8 @@ set debug=beep
 set nodelcombine
 set dictionary+=/usr/share/dict/words
 set dictionary+=/usr/share/dict/web2
-set directory=~/.vim/swap,.,/tmp
-set display=lastline
+set directory=~/.vim/swap//,~/tmp//,~//,.//,/var/tmp//,/tmp//
+set display=lastline,uhex
 set encoding=utf-8
 set noerrorbells
 set noexpandtab
