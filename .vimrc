@@ -112,9 +112,9 @@ if has("gui_gtk2")
 endif
 set guioptions-=e
 set guioptions-=T
-set guioptions-=L
 set guioptions-=r
-set guioptions+=c
+set guioptions-=L
+set guioptions+=cp
 set hidden
 set history=1000
 set nohlsearch
