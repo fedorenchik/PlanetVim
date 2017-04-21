@@ -77,7 +77,8 @@ set nocursorline
 set debug=beep
 set nodelcombine
 set dictionary+=/usr/share/dict/words
-set directory=~/.vim/swap//,.,/tmp
+set dictionary+=/usr/share/dict/web2
+set directory=~/.vim/swap,.,/tmp
 set display=lastline
 set encoding=utf-8
 set noerrorbells

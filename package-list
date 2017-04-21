@@ -28,6 +28,7 @@ libtool
 libtool-bin
 libusb-1.0-0-dev
 lzop
+miscfiles
 patch
 picocom
 pkg-config
