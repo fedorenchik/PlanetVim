@@ -145,6 +145,7 @@ set guitablabel=%{GuiTabLabel()}
 "TODO: Add second (and further) lines with useful info
 set guitabtooltip=%{GuiTabLabel()}
 set helpheight=10
+set helplang=en
 set hidden
 set history=1000
 set nohlsearch
