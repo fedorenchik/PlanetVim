@@ -142,7 +142,9 @@ set guioptions-=L
 set guioptions+=cp
 set guipty
 set guitablabel=%{GuiTabLabel()}
+"TODO: Add second (and further) lines with useful info
 set guitabtooltip=%{GuiTabLabel()}
+set helpheight=10
 set hidden
 set history=1000
 set nohlsearch
