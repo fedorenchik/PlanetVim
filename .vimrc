@@ -147,8 +147,8 @@ set guitabtooltip=%{GuiTabLabel()}
 set helpheight=10
 set helplang=en
 set hidden
-set history=1000
 set nohlsearch
+set history=1000
 if has('reltime')
 	set incsearch
 endif
@@ -659,7 +659,7 @@ let g:airline#extensions#virtualenv#enabled = 0
 let g:airline#extensions#eclim#enabled = 0
 let g:airline#extensions#wordcount#enabled = 0
 let g:airline#extensions#whitespace#enabled = 0
-let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#enabled = 0
 " }}}
 " Plugin: conque-gdb {{{
 let g:ConqueGdb_Leader = '\'
