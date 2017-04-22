@@ -151,6 +151,7 @@ set nohlsearch
 set history=1000
 set icon
 set iconstring=
+set noignorecase
 if has('reltime')
 	set incsearch
 endif
