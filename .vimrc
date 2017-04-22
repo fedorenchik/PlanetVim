@@ -150,6 +150,7 @@ set hidden
 set nohlsearch
 set history=1000
 set icon
+set iconstring=
 if has('reltime')
 	set incsearch
 endif
