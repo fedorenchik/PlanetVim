@@ -149,6 +149,7 @@ set helplang=en
 set hidden
 set nohlsearch
 set history=1000
+set icon
 if has('reltime')
 	set incsearch
 endif
