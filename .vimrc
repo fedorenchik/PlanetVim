@@ -29,6 +29,32 @@ augroup GUI_Settings
 	autocmd GUIEnter * call system('wmctrl -i -b add,maximized_vert,maximized_horz -r '.v:windowid)
 augroup END
 " }}}
+" Functions: {{{
+function GuiTabLabel()
+	let label = ''
+	let bufnrlist = tabpagebuflist(v:lnum)
+
+	" Add '+' if one of the buffers in the tab page is modified
+	for bufnr in bufnrlist
+		if getbufvar(bufnr, "&modified")
+			let label = '+'
+			break
+		endif
+	endfor
+
+	" Append the number of windows in the tab page if more than one
+	let wincount = tabpagewinnr(v:lnum, '$')
+	if wincount > 1
+		let label .= wincount
+	endif
+	if label != ''
+		let label .= ' '
+	endif
+
+	" Append the buffer name
+	return label . bufname(bufnrlist[tabpagewinnr(v:lnum) - 1])
+endfunction
+" }}}
 " Colorscheme: {{{
 " set colorscheme
 " nice term dark themes: molokai, skittles_dark, wombat256, wombat256mod
@@ -116,6 +142,7 @@ set guioptions-=r
 set guioptions-=L
 set guioptions+=cp
 set guipty
+set guitablabel=%{GuiTabLabel()}
 set hidden
 set history=1000
 set nohlsearch
