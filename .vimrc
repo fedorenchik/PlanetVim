@@ -115,6 +115,7 @@ set guioptions-=T
 set guioptions-=r
 set guioptions-=L
 set guioptions+=cp
+set guipty
 set hidden
 set history=1000
 set nohlsearch
