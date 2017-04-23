@@ -170,7 +170,10 @@ set list
 set listchars=tab:»\ ,trail:·,extends:>,precedes:<
 set magic
 set matchpairs+=<:>
-set nomodeline
+set menuitems=40
+set mkspellmem=900000,3000,800
+set modeline
+set modelines=5
 if has('mouse')
 	set mouse=ar
 endif
