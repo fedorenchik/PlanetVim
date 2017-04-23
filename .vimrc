@@ -168,6 +168,7 @@ set lazyredraw
 set nolinebreak
 set list
 set listchars=tab:»\ ,trail:·,extends:>,precedes:<
+set magic
 set matchpairs+=<:>
 set nomodeline
 if has('mouse')
