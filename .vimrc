@@ -159,6 +159,7 @@ set infercase
 set joinspaces
 set keymodel=
 set keywordprg=:Man
+set langmenu=none
 if has('langmap') && exists('+langremap')
 	set nolangremap
 endif
