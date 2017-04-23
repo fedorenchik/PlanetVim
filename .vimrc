@@ -174,6 +174,7 @@ set menuitems=40
 set mkspellmem=900000,3000,800
 set modeline
 set modelines=5
+set more
 if has('mouse')
 	set mouse=ar
 endif
