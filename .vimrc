@@ -157,6 +157,7 @@ if has('reltime')
 endif
 set infercase
 set joinspaces
+set keymodel=
 set keywordprg=:Man
 if has('langmap') && exists('+langremap')
 	set nolangremap
