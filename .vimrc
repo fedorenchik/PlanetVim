@@ -190,7 +190,7 @@ set scrolljump=2
 set scrolloff=2
 set secure
 set sessionoptions=buffers,folds,help,sesdir,slash,tabpages,unix,winsize
-set shellcmdflag=-ic
+set shellcmdflag=-c
 set shiftround
 set shiftwidth=8
 set shortmess+=Im
