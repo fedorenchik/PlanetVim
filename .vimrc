@@ -176,7 +176,7 @@ set modeline
 set modelines=5
 set more
 if has('mouse')
-	set mouse=ar
+	set mouse=a
 endif
 set mousehide
 set nrformats+=alpha
