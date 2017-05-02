@@ -178,6 +178,7 @@ set more
 if has('mouse')
 	set mouse=a
 endif
+set nomousefocus
 set mousehide
 set nrformats+=alpha
 set nonumber
