@@ -180,6 +180,7 @@ if has('mouse')
 endif
 set nomousefocus
 set mousehide
+set mousemodel=popup_setpos
 set nrformats+=alpha
 set nonumber
 set patchmode=".orig"
