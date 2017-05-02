@@ -176,7 +176,7 @@ set modeline
 set modelines=5
 set more
 if has('mouse')
-	set mouse=a
+	set mouse=n
 endif
 set nomousefocus
 set mousehide
