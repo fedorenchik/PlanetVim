@@ -181,7 +181,7 @@ endif
 set nomousefocus
 set mousehide
 set mousemodel=popup_setpos
-set mouseshape+=o:question,c:pencil
+set mouseshape+=o:question,c:pencil,e:hand2
 set nrformats+=alpha
 set nonumber
 set patchmode=".orig"
