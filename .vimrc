@@ -202,9 +202,8 @@ set shortmess+=Im
 set showbreak=>>>>>>>>
 set showfulltag
 set showcmd             " display incomplete commands
-set noshowmatch		" do not jump to open paren/bracket/brace when close one is typed
-set noshowmode		" do not show mode since PowerLine shows it
-set showmode		" always show mode we're currently in
+set noshowmatch
+set showmode
 set showtabline=2
 set sidescroll=30
 set sidescrolloff=2
