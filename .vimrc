@@ -186,6 +186,7 @@ set mousetime&
 set mzquantum&
 set nrformats+=alpha
 set nonumber
+set numberwidth&
 set patchmode=".orig"
 set path+=./../include,./../../include
 set pumheight=10
