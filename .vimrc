@@ -182,11 +182,10 @@ set nomousefocus
 set mousehide
 set mousemodel=popup_setpos
 set mouseshape+=o:question,c:pencil,e:hand2
-set mousetime&
-set mzquantum&
 set nrformats+=alpha
 set nonumber
-set numberwidth&
+set opendevice&
+set operatorfunc&
 set patchmode=".orig"
 set path+=./../include,./../../include
 set pumheight=10
