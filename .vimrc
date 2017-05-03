@@ -191,6 +191,7 @@ set path+=./../include,./../../include
 set nopreserveindent
 set previewheight=12
 set printfont=Monospace\ 10
+set prompt
 set pumheight=10
 set norelativenumber
 set ruler
