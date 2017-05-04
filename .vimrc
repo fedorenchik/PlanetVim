@@ -197,8 +197,11 @@ set redrawtime=1000
 set norelativenumber
 set ruler
 set rulerformat&
+set scroll&
+set noscrollbind
 set scrolljump=2
 set scrolloff=2
+set scrollopt=ver,hor,jump
 set secure
 set sessionoptions=buffers,folds,help,sesdir,slash,tabpages,unix,winsize
 set shellcmdflag=-c
