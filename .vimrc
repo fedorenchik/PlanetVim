@@ -196,6 +196,7 @@ set pumheight=10
 set redrawtime=1000
 set norelativenumber
 set ruler
+set rulerformat&
 set scrolljump=2
 set scrolloff=2
 set secure
