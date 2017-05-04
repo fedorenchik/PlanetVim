@@ -206,11 +206,11 @@ set secure
 set sessionoptions=buffers,folds,help,sesdir,slash,tabpages,unix,winsize
 set shellcmdflag&
 set shellpipe&
-set shellquote&
 set shellredir&
+set shelltemp&
 set shiftround
 set shiftwidth=8
-set shortmess+=Im
+set shortmess+=mI
 set showbreak=>>>>>>>>
 set showfulltag
 set showcmd             " display incomplete commands
