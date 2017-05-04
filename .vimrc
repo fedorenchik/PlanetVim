@@ -212,8 +212,8 @@ set shiftround
 set shiftwidth=8
 set shortmess+=mrwsIcF
 set showbreak=>>>>>>>>
+set showcmd
 set showfulltag
-set showcmd             " display incomplete commands
 set noshowmatch
 set showmode
 set showtabline=2
