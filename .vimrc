@@ -220,6 +220,7 @@ set showtabline=2
 set sidescroll=30
 set sidescrolloff=2
 set signcolumn=yes
+set smartcase
 set smartindent
 set smarttab
 set softtabstop=8
