@@ -229,6 +229,8 @@ set spellcapcheck&
 set spellfile&
 set spelllang+=cjk
 set spellsuggest&
+set splitbelow
+set splitright
 set nostartofline
 set swapfile
 set swapsync=
