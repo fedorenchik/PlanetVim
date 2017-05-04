@@ -210,7 +210,7 @@ set shellredir&
 set shelltemp&
 set shiftround
 set shiftwidth=8
-set shortmess+=mI
+set shortmess+=mrwsIcF
 set showbreak=>>>>>>>>
 set showfulltag
 set showcmd             " display incomplete commands
