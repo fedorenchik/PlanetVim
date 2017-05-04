@@ -193,6 +193,7 @@ set previewheight=12
 set printfont=Monospace\ 10
 set prompt
 set pumheight=10
+set redrawtime=1000
 set norelativenumber
 set ruler
 set scrolljump=2
