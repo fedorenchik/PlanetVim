@@ -224,6 +224,11 @@ set smartcase
 set smartindent
 set smarttab
 set softtabstop=8
+set spell&
+set spellcapcheck&
+set spellfile&
+set spelllang+=cjk
+set spellsuggest&
 set nostartofline
 set swapfile
 set swapsync=
