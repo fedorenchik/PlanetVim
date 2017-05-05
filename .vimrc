@@ -262,9 +262,9 @@ set ttimeoutlen=10
 set toolbar&
 set toolbariconsize&
 set ttyfast
-set t_vb=		" do not visual blink
+set ttymouse&
 if has('persistent_undo')
-	set undodir=$HOME/.vim/undo
+	set undodir=$HOME/.vim/undo,.
 	set undofile
 endif
 set undolevels=1000
@@ -279,6 +279,7 @@ set wildoptions=tagfile
 set nowrap
 set nowrapscan
 set writebackup
+set t_vb=		" do not visual blink
 " }}}
 " Leaders: {{{
 " should be before any mappings: it affects only mappings below
