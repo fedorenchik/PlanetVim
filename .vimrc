@@ -232,6 +232,7 @@ set spellsuggest&
 set splitbelow
 set splitright
 set nostartofline
+set suffixes-=.h
 set swapfile
 set swapsync=
 set switchbuf=useopen	" reuse opened buffers from quickfix window
