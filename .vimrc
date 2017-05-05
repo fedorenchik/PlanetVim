@@ -242,10 +242,12 @@ set tagbsearch
 set tagcase=followscs
 set taglength&
 set tagrelative
+set tagstack
 set tags-=./TAGS
 set tags-=TAGS
 set tags+=$HOME/.vim/systags
-set termencoding=utf-8
+"set termencoding=utf-8
+set termguicolors
 set textwidth=80
 set thesaurus+=$HOME/.vim/thes/mobythes.txt
 set notildeop
