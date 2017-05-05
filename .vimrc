@@ -275,17 +275,17 @@ set verbose&
 set verbosefile&
 set viewdir&
 set viewoptions=cursor,folds,slash,unix
-set viminfo=%50,'100,<50,s10,h,!,c,r/tmp,r/var,n$PWD/.viminfo
+set viminfo=%50,'100,<50,f,s10,h,!,c,r/tmp,r/var,r/mnt,r/media,n$PWD/.viminfo
 set virtualedit=block
-set visualbell		" do not visual blink
+set visualbell
 set whichwrap=
-set wildmenu		" make tab completion like bash
-set wildmode=list:longest	" show tab completion menu and complete longest match
+set wildmenu
+set wildmode=list:longest
 set wildoptions=tagfile
 set nowrap
 set nowrapscan
 set writebackup
-set t_vb=		" do not visual blink
+set t_vb=
 " }}}
 " Leaders: {{{
 " should be before any mappings: it affects only mappings below
