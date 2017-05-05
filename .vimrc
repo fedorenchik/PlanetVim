@@ -277,15 +277,19 @@ set viewdir&
 set viewoptions=cursor,folds,slash,unix
 set viminfo=%50,'100,<50,f,s10,h,!,c,r/tmp,r/var,r/mnt,r/media,n$PWD/.viminfo
 set virtualedit=block
-set visualbell
+set novisualbell
+set warn
 set whichwrap=
+set wildchar&
+set wildcharm&
+set wildignore+=*.o
 set wildmenu
 set wildmode=list:longest
 set wildoptions=tagfile
 set nowrap
 set nowrapscan
 set writebackup
-set t_vb=
+"set t_vb=
 " }}}
 " Leaders: {{{
 " should be before any mappings: it affects only mappings below
