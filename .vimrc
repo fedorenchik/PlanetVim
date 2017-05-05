@@ -260,6 +260,7 @@ set titlestring=%F\ %a%r%m\ -\ VIM
 set ttimeout
 set ttimeoutlen=10
 set toolbar&
+set toolbariconsize&
 set ttyfast
 set t_vb=		" do not visual blink
 if has('persistent_undo')
