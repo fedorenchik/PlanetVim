@@ -239,6 +239,9 @@ set switchbuf=newtab
 set tabline&
 set tabstop=8
 set tagbsearch
+set tagcase=followscs
+set taglength&
+set tagrelative
 set tags-=./TAGS
 set tags-=TAGS
 set tags+=$HOME/.vim/systags
