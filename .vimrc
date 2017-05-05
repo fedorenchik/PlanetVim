@@ -141,7 +141,7 @@ set guioptions-=r
 set guioptions-=L
 set guioptions+=cp
 set guipty
-set guitablabel=%{GuiTabLabel()}
+set guitablabel&
 "TODO: Add second (and further) lines with useful info
 set guitabtooltip=%{GuiTabLabel()}
 set helpheight=10
@@ -235,7 +235,8 @@ set nostartofline
 set suffixes-=.h
 set swapfile
 set swapsync=
-set switchbuf=useopen
+set switchbuf=newtab
+set tabline&
 set tabstop=8
 set tags-=./TAGS
 set tags-=TAGS
