@@ -254,9 +254,12 @@ set notildeop
 set timeout
 set timeoutlen=400
 set title
+set titlelen&
+set titleold=$PWD
 set titlestring=%F\ %a%r%m\ -\ VIM
 set ttimeout
 set ttimeoutlen=10
+set toolbar&
 set ttyfast
 set t_vb=		" do not visual blink
 if has('persistent_undo')
