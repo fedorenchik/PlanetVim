@@ -238,6 +238,7 @@ set swapsync=
 set switchbuf=newtab
 set tabline&
 set tabstop=8
+set tagbsearch
 set tags-=./TAGS
 set tags-=TAGS
 set tags+=$HOME/.vim/systags
