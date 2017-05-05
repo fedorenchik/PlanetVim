@@ -235,7 +235,7 @@ set nostartofline
 set suffixes-=.h
 set swapfile
 set swapsync=
-set switchbuf=useopen	" reuse opened buffers from quickfix window
+set switchbuf=useopen
 set tabstop=8
 set tags-=./TAGS
 set tags-=TAGS
