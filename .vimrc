@@ -268,7 +268,13 @@ if has('persistent_undo')
 	set undofile
 endif
 set undolevels=1000
+set undoreload&
+set updatecount&
 set updatetime=1000
+set verbose&
+set verbosefile&
+set viewdir&
+set viewoptions=cursor,folds,slash,unix
 set viminfo='100,<50,s10,h,!,c,r/tmp,r/var,n$PWD/.viminfo
 set virtualedit=block
 set visualbell		" do not visual blink
