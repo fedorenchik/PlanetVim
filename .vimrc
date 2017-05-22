@@ -286,7 +286,7 @@ set wildcharm&
 set wildignore&
 set nowildignorecase
 set wildmenu
-set wildmode=list:longest
+set wildmode=full
 set wildoptions=tagfile
 set nowrap
 set nowrapscan
