@@ -296,7 +296,9 @@ set winminheight=0
 set winminwidth=0
 set winwidth&
 set nowrap
+set wrapmargin&
 set nowrapscan
+set write&
 set writebackup
 " }}}
 " Leaders: {{{
