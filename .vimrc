@@ -288,6 +288,7 @@ set nowildignorecase
 set wildmenu
 set wildmode=full
 set wildoptions=tagfile
+set winaltkeys=no
 set nowrap
 set nowrapscan
 set writebackup
