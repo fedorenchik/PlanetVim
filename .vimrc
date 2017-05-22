@@ -289,6 +289,12 @@ set wildmenu
 set wildmode=full
 set wildoptions=tagfile
 set winaltkeys=no
+set winheight&
+set winfixheight&
+set winfixwidth&
+set winminheight=0
+set winminwidth=0
+set winwidth&
 set nowrap
 set nowrapscan
 set writebackup
