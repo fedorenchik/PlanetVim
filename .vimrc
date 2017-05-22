@@ -279,6 +279,7 @@ set viminfo=!,%50,'100,<50,c,f1,h,r/tmp,r/var,r/mnt,r/media,s10,n$PWD/.viminfo
 set virtualedit=block
 set novisualbell
 set warn
+set noweirdinvert
 set whichwrap=
 set wildchar&
 set wildcharm&
@@ -290,7 +291,6 @@ set wildoptions=tagfile
 set nowrap
 set nowrapscan
 set writebackup
-"set t_vb=
 " }}}
 " Leaders: {{{
 " should be before any mappings: it affects only mappings below
