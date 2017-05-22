@@ -298,7 +298,7 @@ set winwidth&
 set nowrap
 set wrapmargin&
 set nowrapscan
-set write&
+set nowriteany
 set writebackup
 " }}}
 " Leaders: {{{
