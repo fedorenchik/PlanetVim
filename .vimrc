@@ -275,7 +275,7 @@ set verbose&
 set verbosefile&
 set viewdir&
 set viewoptions=cursor,folds,slash,unix
-set viminfo=%50,'100,<50,f1,s10,h,!,c,r/tmp,r/var,r/mnt,r/media,n$PWD/.viminfo
+set viminfo=!,%50,'100,<50,f1,s10,h,c,r/tmp,r/var,r/mnt,r/media,n$PWD/.viminfo
 set virtualedit=block
 set novisualbell
 set warn
