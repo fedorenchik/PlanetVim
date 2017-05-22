@@ -361,7 +361,7 @@ nnoremap <silent> <CR> <nop>
 nnoremap <silent> <F2> :call ToggleFileExplorer()<CR>
 nnoremap <silent> <F4> :VimShellPop<CR><ESC>
 nnoremap <silent> <F8> :call Marvim_search()<CR>
-nnoremap <silent> <F10> :TagbarToggle<CR>
+nnoremap <silent> <F9> :TagbarToggle<CR>
 nnoremap <silent> <F12> :UndotreeToggle<CR>
 nnoremap <silent> <Space> za
 nnoremap <silent> ` '
