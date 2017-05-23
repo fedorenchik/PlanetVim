@@ -304,7 +304,7 @@ set writebackup
 " Leaders: {{{
 " should be before any mappings: it affects only mappings below
 let mapleader=","
-let maplocalleader=","	" <leader> local to buffer
+let maplocalleader=","
 " }}}
 " Mappings: {{{
 " Modes: {{{
