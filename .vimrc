@@ -576,11 +576,11 @@ nnoremap <silent> <Leader>_ :Unite -start-insert -smartcase -buffer-name=unite-w
 " }}}
 " Visual Mode: {{{
 " Subcommands & submodes: Ctrl-\, a, g, i.
-vnoremap <Space> za
-vnoremap ; :
-vnoremap / /\v
+xnoremap <Space> za
+xnoremap ; :
+xnoremap / /\v
 " make p in visual mode replace selected text with the yank register
-vnoremap p <Esc>:let current_reg = @"<CR>gvdi<C-R>=current_reg<CR><Esc>
+xnoremap p <Esc>:let current_reg = @"<CR>gvdi<C-R>=current_reg<CR><Esc>
 vmap <silent> <Leader>m <Plug>MarkSet
 vmap <silent> <Leader>r <Plug>MarkRegex
 xnoremap X y/<C-R>"<CR>
