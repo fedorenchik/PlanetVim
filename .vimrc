@@ -600,7 +600,6 @@ inoreabbrev cc Copyright (C) 2016 Leonid V. Fedorenchik
 inoreabbrev ssig -- <cr>Leonid V. Fedorenchik
 inoreabbrev fr fedorenchik.ru
 inoreabbrev teh the
-inoreabbrev rr REVIEW:
 cnoreabbrev unite Unite
 cnoreabbrev calc Calc
 cnoreabbrev gblame Gblame
