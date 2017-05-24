@@ -597,7 +597,7 @@ cnoremap <silent> w!! w !sudo tee % >/dev/null
 inoreabbrev lf leonid@fedorenchik.ru
 inoreabbrev gm leonidsbox@gmail.com
 inoreabbrev cc Copyright (C) 2016 Leonid V. Fedorenchik
-inoreabbrev ssig -- <cr>Leonid V. Fedorenchik
+inoreabbrev ssig -- <CR>Leonid V. Fedorenchik
 inoreabbrev fr fedorenchik.ru
 inoreabbrev teh the
 cnoreabbrev unite Unite
