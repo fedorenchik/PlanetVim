@@ -482,7 +482,7 @@ nnoremap <silent> <Leader>g :GtagsCursor<CR>:Unite -auto-preview -vertical-previ
 nnoremap <silent> <Leader>G :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/context<CR>
 nnoremap <silent> <Leader>h :VimShellPop -buffer-name=vimshell<CR>
 "nnoremap <silent> <Leader>H <Nop>
-nnoremap <silent> <Leader>i :Unite -start-insert -buffer-name=unite-line<cr>
+nnoremap <silent> <Leader>i :Unite -start-insert -buffer-name=unite-line<CR>
 "nnoremap <silent> <Leader>I <Nop>
 nnoremap <silent> <Leader>j :Unite -start-insert -smartcase -buffer-name=unite-jump jump<CR>
 "nnoremap <silent> <Leader>J <Nop>
