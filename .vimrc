@@ -357,7 +357,7 @@ inoremap <silent> <leader>w <C-O>:up<CR>
 " z    -- folding & moving lines in window
 " Normal Keys: {{{
 nnoremap <silent> <BS> <nop>
-nnoremap <silent> <CR> <nop>
+nnoremap <silent> <CR> :GtagsCursor<CR>
 nnoremap <silent> <F2> :call ToggleFileExplorer()<CR>
 nnoremap <silent> <F4> :VimShellPop<CR><ESC>
 nnoremap <silent> <F8> :call Marvim_search()<CR>
@@ -410,7 +410,6 @@ nnoremap <silent> <C-F4> :VimShell -toggle<CR><ESC>
 nnoremap <silent> <C-F12> :!ctags -R --sort=yes --excmd=p --c++-kinds=+pl --fields=+iaS --extra=+q .<CR>
 nnoremap <silent> <C-PageDown> :bnext<CR>
 nnoremap <silent> <C-PageUp> :bprevious<CR>
-nnoremap <silent> <C-]> :GtagsCursor<CR>
 nnoremap <silent> <C-E> 2<C-E>
 nnoremap <silent> <C-H> <C-W>h
 nnoremap <silent> <C-J> <C-W>j
@@ -418,7 +417,6 @@ nnoremap <silent> <C-K> <C-W>k
 nnoremap <silent> <C-L> <C-W>l
 nnoremap <silent> <C-N> :UniteNext<CR>
 nnoremap <silent> <C-P> :UnitePrevious<CR>
-nnoremap <silent> <C-T> :tabnew<CR>
 nnoremap <silent> <C-Y> 2<C-Y>
 nnoremap <silent> <C-[> <nop>
 nnoremap <silent> <C-_> <nop>
