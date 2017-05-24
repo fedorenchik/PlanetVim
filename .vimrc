@@ -606,6 +606,7 @@ cnoreabbrev gblame Gblame
 cnoreabbrev gt Gtags
 cnoreabbrev gtags Gtags
 cnoreabbrev grep grep -IarFw
+cnoreabbrev h topleft h
 " }}}
 " Autocommands: {{{
 if has("autocmd")
