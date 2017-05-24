@@ -356,12 +356,13 @@ inoremap <silent> <leader>w <C-O>:up<CR>
 " [, ] -- moving through text objects
 " z    -- folding & moving lines in window
 " Normal Keys: {{{
-nnoremap <silent> <BS> <nop>
+nnoremap <silent> <BS> <Nop>
 nnoremap <silent> <CR> :GtagsCursor<CR>
 nnoremap <silent> <F2> :call ToggleFileExplorer()<CR>
 nnoremap <silent> <F4> :VimShellPop<CR><ESC>
 nnoremap <silent> <F8> :call Marvim_search()<CR>
 nnoremap <silent> <F9> :TagbarToggle<CR>
+nnoremap <silent> <F10> <Nop>
 nnoremap <silent> <F12> :UndotreeToggle<CR>
 nnoremap <silent> <Space> za
 nnoremap <silent> ` '
@@ -380,9 +381,9 @@ nnoremap <silent> l f
 nnoremap <silent> n :<C-u>if !mark#SearchNext(0)<Bar>execute 'normal! nzv'<Bar>endif<CR>
 nnoremap <silent> N :<C-u>if !mark#SearchNext(1)<Bar>execute 'normal! Nzv'<Bar>endif<CR>
 nnoremap <silent> Y y$
-nnoremap <silent> - <nop>
-nnoremap <silent> + <nop>
-nnoremap <silent> _ <nop>
+nnoremap <silent> - <Nop>
+nnoremap <silent> + <Nop>
+nnoremap <silent> _ <Nop>
 nnoremap [1 :call signature#marker#Goto('prev', 1, v:count)
 nnoremap ]1 :call signature#marker#Goto('next', 1, v:count)
 nnoremap [2 :call signature#marker#Goto('prev', 2, v:count)
@@ -418,8 +419,8 @@ nnoremap <silent> <C-L> <C-W>l
 nnoremap <silent> <C-N> :UniteNext<CR>
 nnoremap <silent> <C-P> :UnitePrevious<CR>
 nnoremap <silent> <C-Y> 2<C-Y>
-nnoremap <silent> <C-[> <nop>
-nnoremap <silent> <C-_> <nop>
+nnoremap <silent> <C-[> <Nop>
+nnoremap <silent> <C-_> <Nop>
 " }}}
 " Shift Key: {{{
 nnoremap <silent> <S-F4> :VimShell -split -split-command=vsplit\ +wincmd\\ l -toggle<CR><ESC>
@@ -443,10 +444,10 @@ nnoremap <silent> <A-p> :colder<CR>
 "nnoremap <silent> <ScrollWheelDown> 6<C-e>
 "nnoremap <silent> <S-ScrollWheelUp> <C-b>
 "nnoremap <silent> <S-ScrollWheelDown> <C-f>
-"nnoremap <silent> <C-ScrollWheelUp> <nop>
-"nnoremap <silent> <C-ScrollWheelDown> <nop>
-"nnoremap <silent> <A-ScrollWheelUp> <nop>
-"nnoremap <silent> <A-ScrollWheelDown> <nop>
+"nnoremap <silent> <C-ScrollWheelUp> <Nop>
+"nnoremap <silent> <C-ScrollWheelDown> <Nop>
+"nnoremap <silent> <A-ScrollWheelUp> <Nop>
+"nnoremap <silent> <A-ScrollWheelDown> <Nop>
 " }}}
 " Leader: {{{
 nnoremap <silent> <Leader><Space> :set hlsearch! hlsearch?<CR>
@@ -585,8 +586,8 @@ xnoremap X y/<C-R>"<CR>
 " }}}
 " Command-line (Cmdline) Mode: {{{
 " Subcommands & submodes: Ctrl-R, Ctrl-\
-"cnoremap <C-@> <nop>
-"cnoremap <C-O> <nop>
+"cnoremap <C-@> <Nop>
+"cnoremap <C-O> <Nop>
 "cnoremap <silent> %% <C-R>=expand('%:h').'/'<cr>
 cnoremap <silent> w!! w !sudo tee % >/dev/null
 " }}}
@@ -678,10 +679,10 @@ endfunction
 function! EfficientMoveMappings()
 	nnoremap <silent> h F
 	nnoremap <silent> l f
-	nnoremap <silent> <down> <nop>
-	nnoremap <silent> <left> <nop>
-	nnoremap <silent> <right> <nop>
-	nnoremap <silent> <up> <nop>
+	nnoremap <silent> <down> <Nop>
+	nnoremap <silent> <left> <Nop>
+	nnoremap <silent> <right> <Nop>
+	nnoremap <silent> <up> <Nop>
 endfunction
 function! ToggleFileExplorer()
 	try
