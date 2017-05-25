@@ -5,8 +5,8 @@
 " --enable-cscope --enable-gui=gnome2
 " }}}
 " External Dependencies Of This Vimrc: {{{
-" ctags, [cscope], gtags, wmctrl, trash-cli,
-" latest GNU GLOBAL (compile from source) (6.5.5 as of 30.10.2016)
+" ctags (Universal Ctags), [cscope], gtags (GNU Global), wmctrl, trash-cli,
+" latest GNU GLOBAL (compile from source) (6.5.7 as of 25.05.2017)
 " }}}
 " TODO: {{{
 " Patches for vim:
