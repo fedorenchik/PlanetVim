@@ -59,6 +59,39 @@ function GuiTabLabel()
 	" Append the buffer name
 	return label . bufname(bufnrlist[tabpagewinnr(v:lnum) - 1])
 endfunction
+" Highlight the found tag, avoid the ":ptag" when there is no word under the
+" cursor, and a few other things. Opens the tag under cursor in Preview
+" window.
+function PreviewWord()
+	if &previewwindow		" don't do this in the preview window
+		return
+	endif
+	let w = expand("<cword>")
+	if w =~ '\a'
+		silent! wincmd P
+		if &previewwindow
+			match none
+			wincmd p
+		endif
+		try
+			exe "ptag " . w
+		catch
+			return
+		endtry
+		silent! wincmd P
+		if &previewwindow
+			if has("folding")
+				silent! .foldopen
+			endif
+			call search("$", "b")
+			let w = substitute(w, '\\', '\\\\', "")
+			call search('\<\V' . w . '\>')
+			hi previewWord term=bold ctermbg=green guibg=green
+			exe 'match previewWord "\%' . line(".") . 'l\%' . col(".") . 'c\k*"'
+			wincmd p
+		endif
+	endif
+endfunction
 " }}}
 " Colorscheme: {{{
 " set colorscheme
@@ -630,6 +663,7 @@ if has("autocmd")
 		autocmd CmdWinEnter : noremap <buffer> <S-CR> <CR>q:
 		autocmd CmdWinEnter / noremap <buffer> <S-CR> <CR>q/
 		autocmd CmdWinEnter ? noremap <buffer> <S-CR> <CR>q?
+		autocmd CursorHold *.[ch] nested call PreviewWord()
 	augroup END
 	augroup vimrcEx
 		autocmd!
