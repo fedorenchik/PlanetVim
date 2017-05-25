@@ -194,7 +194,7 @@ set operatorfunc&
 set patchmode=".orig"
 set path+=./../include,./../../include
 set nopreserveindent
-set previewheight=12
+set previewheight=7
 set printfont=Monospace\ 10
 set prompt
 set pumheight=10
