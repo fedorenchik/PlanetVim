@@ -8,6 +8,11 @@
 " ctags, [cscope], gtags, wmctrl, trash-cli,
 " latest GNU GLOBAL (compile from source) (6.5.5 as of 30.10.2016)
 " }}}
+" TODO: {{{
+" Patches for vim:
+" * Max number of quickfix lists change to 100 (from 10)
+" * tag stack size change to 200 (from 20)
+" }}}
 " Prevent Multiple Sourcing: {{{
 if exists("g:loaded_home_vimrc")
 	finish
