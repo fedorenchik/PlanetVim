@@ -5,8 +5,13 @@
 " --enable-cscope --enable-gui=gnome2
 " }}}
 " External Dependencies Of This Vimrc: {{{
-" ctags, [cscope], gtags, wmctrl, trash-cli,
-" latest GNU GLOBAL (compile from source) (6.5.5 as of 30.10.2016)
+" ctags (Universal Ctags), [cscope], gtags (GNU Global), wmctrl, trash-cli,
+" latest GNU GLOBAL (compile from source) (6.5.7 as of 25.05.2017)
+" }}}
+" TODO: {{{
+" Patches for vim:
+" * Max number of quickfix lists change to 100 (from 10)
+" * tag stack size change to 200 (from 20)
 " }}}
 " Prevent Multiple Sourcing: {{{
 if exists("g:loaded_home_vimrc")
@@ -53,6 +58,39 @@ function GuiTabLabel()
 
 	" Append the buffer name
 	return label . bufname(bufnrlist[tabpagewinnr(v:lnum) - 1])
+endfunction
+" Highlight the found tag, avoid the ":ptag" when there is no word under the
+" cursor, and a few other things. Opens the tag under cursor in Preview
+" window.
+function PreviewWord()
+	if &previewwindow		" don't do this in the preview window
+		return
+	endif
+	let w = expand("<cword>")
+	if w =~ '\a'
+		silent! wincmd P
+		if &previewwindow
+			match none
+			wincmd p
+		endif
+		try
+			exe "ptag " . w
+		catch
+			return
+		endtry
+		silent! wincmd P
+		if &previewwindow
+			if has("folding")
+				silent! .foldopen
+			endif
+			call search("$", "b")
+			let w = substitute(w, '\\', '\\\\', "")
+			call search('\<\V' . w . '\>')
+			hi previewWord term=bold ctermbg=green guibg=green
+			exe 'match previewWord "\%' . line(".") . 'l\%' . col(".") . 'c\k*"'
+			wincmd p
+		endif
+	endif
 endfunction
 " }}}
 " Colorscheme: {{{
@@ -141,7 +179,7 @@ set guioptions-=r
 set guioptions-=L
 set guioptions+=cp
 set guipty
-set guitablabel=%{GuiTabLabel()}
+set guitablabel&
 "TODO: Add second (and further) lines with useful info
 set guitabtooltip=%{GuiTabLabel()}
 set helpheight=10
@@ -176,78 +214,135 @@ set modeline
 set modelines=5
 set more
 if has('mouse')
-	set mouse=a
+	set mouse=n
 endif
+set nomousefocus
 set mousehide
+set mousemodel=popup_setpos
+set mouseshape+=o:question,c:pencil,e:hand2
 set nrformats+=alpha
 set nonumber
+set opendevice&
+set operatorfunc&
 set patchmode=".orig"
 set path+=./../include,./../../include
+set nopreserveindent
+set previewheight=7
+set printfont=Monospace\ 10
+set prompt
 set pumheight=10
+set redrawtime=1000
 set norelativenumber
 set ruler
+set rulerformat&
+set scroll&
+set noscrollbind
 set scrolljump=2
 set scrolloff=2
+set scrollopt=ver,hor,jump
 set secure
 set sessionoptions=buffers,folds,help,sesdir,slash,tabpages,unix,winsize
-set shellcmdflag=-c
+set shellcmdflag&
+set shellpipe&
+set shellredir&
+set shelltemp&
 set shiftround
 set shiftwidth=8
-set shortmess+=Im
+set shortmess+=mrwsIcF
 set showbreak=>>>>>>>>
+set showcmd
 set showfulltag
-set showcmd             " display incomplete commands
-set noshowmatch		" do not jump to open paren/bracket/brace when close one is typed
-set noshowmode		" do not show mode since PowerLine shows it
-set showmode		" always show mode we're currently in
+set noshowmatch
+set showmode
 set showtabline=2
 set sidescroll=30
 set sidescrolloff=2
 set signcolumn=yes
+set smartcase
 set smartindent
 set smarttab
 set softtabstop=8
+set spell&
+set spellcapcheck&
+set spellfile&
+set spelllang+=cjk
+set spellsuggest&
+set splitbelow
+set splitright
 set nostartofline
+set suffixes-=.h
 set swapfile
 set swapsync=
-set switchbuf=useopen	" reuse opened buffers from quickfix window
+set switchbuf=newtab
+set tabline&
 set tabstop=8
+set tagbsearch
+set tagcase=followscs
+set taglength&
+set tagrelative
+set tagstack
 set tags-=./TAGS
 set tags-=TAGS
 set tags+=$HOME/.vim/systags
-set termencoding=utf-8
+"set termencoding=utf-8
+set termguicolors
 set textwidth=80
 set thesaurus+=$HOME/.vim/thes/mobythes.txt
 set notildeop
 set timeout
 set timeoutlen=400
 set title
+set titlelen&
+set titleold=$PWD
 set titlestring=%F\ %a%r%m\ -\ VIM
 set ttimeout
 set ttimeoutlen=10
+set toolbar&
+set toolbariconsize&
 set ttyfast
-set t_vb=		" do not visual blink
+set ttymouse&
 if has('persistent_undo')
-	set undodir=$HOME/.vim/undo
+	set undodir=$HOME/.vim/undo,.
 	set undofile
 endif
 set undolevels=1000
+set undoreload&
+set updatecount&
 set updatetime=1000
-set viminfo='100,<50,s10,h,!,c,r/tmp,r/var,n$PWD/.viminfo
+set verbose&
+set verbosefile&
+set viewdir&
+set viewoptions=cursor,folds,slash,unix
+set viminfo=!,%50,'100,<50,c,f1,h,r/tmp,r/var,r/mnt,r/media,s10,n$PWD/.viminfo
 set virtualedit=block
-set visualbell		" do not visual blink
+set novisualbell
+set warn
+set noweirdinvert
 set whichwrap=
-set wildmenu		" make tab completion like bash
-set wildmode=list:longest	" show tab completion menu and complete longest match
+set wildchar&
+set wildcharm&
+set wildignore&
+set nowildignorecase
+set wildmenu
+set wildmode=full
 set wildoptions=tagfile
+set winaltkeys=no
+set winheight&
+set winfixheight&
+set winfixwidth&
+set winminheight=0
+set winminwidth=0
+set winwidth&
 set nowrap
+set wrapmargin&
 set nowrapscan
+set nowriteany
 set writebackup
 " }}}
 " Leaders: {{{
 " should be before any mappings: it affects only mappings below
 let mapleader=","
-let maplocalleader=","	" <leader> local to buffer
+let maplocalleader="\\"
 " }}}
 " Mappings: {{{
 " Modes: {{{
@@ -299,12 +394,13 @@ inoremap <silent> <leader>w <C-O>:up<CR>
 " [, ] -- moving through text objects
 " z    -- folding & moving lines in window
 " Normal Keys: {{{
-nnoremap <silent> <BS> <nop>
-nnoremap <silent> <CR> <nop>
+nnoremap <silent> <BS> <Nop>
+nnoremap <silent> <CR> :GtagsCursor<CR>
 nnoremap <silent> <F2> :call ToggleFileExplorer()<CR>
 nnoremap <silent> <F4> :VimShellPop<CR><ESC>
 nnoremap <silent> <F8> :call Marvim_search()<CR>
-nnoremap <silent> <F10> :TagbarToggle<CR>
+nnoremap <silent> <F9> :TagbarToggle<CR>
+nnoremap <silent> <F10> <Nop>
 nnoremap <silent> <F12> :UndotreeToggle<CR>
 nnoremap <silent> <Space> za
 nnoremap <silent> ` '
@@ -323,9 +419,9 @@ nnoremap <silent> l f
 nnoremap <silent> n :<C-u>if !mark#SearchNext(0)<Bar>execute 'normal! nzv'<Bar>endif<CR>
 nnoremap <silent> N :<C-u>if !mark#SearchNext(1)<Bar>execute 'normal! Nzv'<Bar>endif<CR>
 nnoremap <silent> Y y$
-nnoremap <silent> - <nop>
-nnoremap <silent> + <nop>
-nnoremap <silent> _ <nop>
+nnoremap <silent> - <Nop>
+nnoremap <silent> + <Nop>
+nnoremap <silent> _ <Nop>
 nnoremap [1 :call signature#marker#Goto('prev', 1, v:count)
 nnoremap ]1 :call signature#marker#Goto('next', 1, v:count)
 nnoremap [2 :call signature#marker#Goto('prev', 2, v:count)
@@ -353,7 +449,6 @@ nnoremap <silent> <C-F4> :VimShell -toggle<CR><ESC>
 nnoremap <silent> <C-F12> :!ctags -R --sort=yes --excmd=p --c++-kinds=+pl --fields=+iaS --extra=+q .<CR>
 nnoremap <silent> <C-PageDown> :bnext<CR>
 nnoremap <silent> <C-PageUp> :bprevious<CR>
-nnoremap <silent> <C-]> :GtagsCursor<CR>
 nnoremap <silent> <C-E> 2<C-E>
 nnoremap <silent> <C-H> <C-W>h
 nnoremap <silent> <C-J> <C-W>j
@@ -361,10 +456,9 @@ nnoremap <silent> <C-K> <C-W>k
 nnoremap <silent> <C-L> <C-W>l
 nnoremap <silent> <C-N> :UniteNext<CR>
 nnoremap <silent> <C-P> :UnitePrevious<CR>
-nnoremap <silent> <C-T> :tabnew<CR>
 nnoremap <silent> <C-Y> 2<C-Y>
-nnoremap <silent> <C-[> <nop>
-nnoremap <silent> <C-_> <nop>
+nnoremap <silent> <C-[> <Nop>
+nnoremap <silent> <C-_> <Nop>
 " }}}
 " Shift Key: {{{
 nnoremap <silent> <S-F4> :VimShell -split -split-command=vsplit\ +wincmd\\ l -toggle<CR><ESC>
@@ -388,10 +482,10 @@ nnoremap <silent> <A-p> :colder<CR>
 "nnoremap <silent> <ScrollWheelDown> 6<C-e>
 "nnoremap <silent> <S-ScrollWheelUp> <C-b>
 "nnoremap <silent> <S-ScrollWheelDown> <C-f>
-"nnoremap <silent> <C-ScrollWheelUp> <nop>
-"nnoremap <silent> <C-ScrollWheelDown> <nop>
-"nnoremap <silent> <A-ScrollWheelUp> <nop>
-"nnoremap <silent> <A-ScrollWheelDown> <nop>
+"nnoremap <silent> <C-ScrollWheelUp> <Nop>
+"nnoremap <silent> <C-ScrollWheelDown> <Nop>
+"nnoremap <silent> <A-ScrollWheelUp> <Nop>
+"nnoremap <silent> <A-ScrollWheelDown> <Nop>
 " }}}
 " Leader: {{{
 nnoremap <silent> <Leader><Space> :set hlsearch! hlsearch?<CR>
@@ -425,7 +519,7 @@ nnoremap <silent> <Leader>g :GtagsCursor<CR>:Unite -auto-preview -vertical-previ
 nnoremap <silent> <Leader>G :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/context<CR>
 nnoremap <silent> <Leader>h :VimShellPop -buffer-name=vimshell<CR>
 "nnoremap <silent> <Leader>H <Nop>
-nnoremap <silent> <Leader>i :Unite -start-insert -buffer-name=unite-line<cr>
+nnoremap <silent> <Leader>i :Unite -start-insert -buffer-name=unite-line<CR>
 "nnoremap <silent> <Leader>I <Nop>
 nnoremap <silent> <Leader>j :Unite -start-insert -smartcase -buffer-name=unite-jump jump<CR>
 "nnoremap <silent> <Leader>J <Nop>
@@ -519,19 +613,19 @@ nnoremap <silent> <Leader>_ :Unite -start-insert -smartcase -buffer-name=unite-w
 " }}}
 " Visual Mode: {{{
 " Subcommands & submodes: Ctrl-\, a, g, i.
-vnoremap <Space> za
-vnoremap ; :
-vnoremap / /\v
+xnoremap <Space> za
+xnoremap ; :
+xnoremap / /\v
 " make p in visual mode replace selected text with the yank register
-vnoremap p <Esc>:let current_reg = @"<CR>gvdi<C-R>=current_reg<CR><Esc>
+xnoremap p <Esc>:let current_reg = @"<CR>gvdi<C-R>=current_reg<CR><Esc>
 vmap <silent> <Leader>m <Plug>MarkSet
 vmap <silent> <Leader>r <Plug>MarkRegex
 xnoremap X y/<C-R>"<CR>
 " }}}
 " Command-line (Cmdline) Mode: {{{
 " Subcommands & submodes: Ctrl-R, Ctrl-\
-"cnoremap <C-@> <nop>
-"cnoremap <C-O> <nop>
+"cnoremap <C-@> <Nop>
+"cnoremap <C-O> <Nop>
 "cnoremap <silent> %% <C-R>=expand('%:h').'/'<cr>
 cnoremap <silent> w!! w !sudo tee % >/dev/null
 " }}}
@@ -540,16 +634,16 @@ cnoremap <silent> w!! w !sudo tee % >/dev/null
 inoreabbrev lf leonid@fedorenchik.ru
 inoreabbrev gm leonidsbox@gmail.com
 inoreabbrev cc Copyright (C) 2016 Leonid V. Fedorenchik
-inoreabbrev ssig -- <cr>Leonid V. Fedorenchik
+inoreabbrev ssig -- <CR>Leonid V. Fedorenchik
 inoreabbrev fr fedorenchik.ru
 inoreabbrev teh the
-inoreabbrev rr REVIEW:
 cnoreabbrev unite Unite
 cnoreabbrev calc Calc
 cnoreabbrev gblame Gblame
 cnoreabbrev gt Gtags
 cnoreabbrev gtags Gtags
 cnoreabbrev grep grep -IarFw
+cnoreabbrev h topleft h
 " }}}
 " Autocommands: {{{
 if has("autocmd")
@@ -569,6 +663,7 @@ if has("autocmd")
 		autocmd CmdWinEnter : noremap <buffer> <S-CR> <CR>q:
 		autocmd CmdWinEnter / noremap <buffer> <S-CR> <CR>q/
 		autocmd CmdWinEnter ? noremap <buffer> <S-CR> <CR>q?
+		autocmd CursorHold *.[ch] nested call PreviewWord()
 	augroup END
 	augroup vimrcEx
 		autocmd!
@@ -623,10 +718,10 @@ endfunction
 function! EfficientMoveMappings()
 	nnoremap <silent> h F
 	nnoremap <silent> l f
-	nnoremap <silent> <down> <nop>
-	nnoremap <silent> <left> <nop>
-	nnoremap <silent> <right> <nop>
-	nnoremap <silent> <up> <nop>
+	nnoremap <silent> <down> <Nop>
+	nnoremap <silent> <left> <Nop>
+	nnoremap <silent> <right> <Nop>
+	nnoremap <silent> <up> <Nop>
 endfunction
 function! ToggleFileExplorer()
 	try
