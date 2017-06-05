@@ -10,6 +10,7 @@ bc
 bison
 build-essential
 chrpath
+clipit
 crash
 ctags
 curl
