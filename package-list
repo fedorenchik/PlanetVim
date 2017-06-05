@@ -49,4 +49,4 @@ wmctrl
 universal-ctags
 gnu global
 # ppas:
-
+ppa:gnome-terminator/nightly-gtk3 -- terminator
