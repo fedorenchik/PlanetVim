@@ -9,6 +9,7 @@ autopoint
 bc
 bison
 build-essential
+cdecl
 chrpath
 clipit
 cppcheck
