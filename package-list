@@ -17,6 +17,8 @@ crash
 ctags
 curl
 cvs
+exfat-fuse
+exfat-utils
 flex
 g++
 gawk
