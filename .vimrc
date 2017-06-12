@@ -225,7 +225,7 @@ set nonumber
 set opendevice&
 set operatorfunc&
 set patchmode=".orig"
-set path+=./../include,./../../include
+set path+=./../include,./../../include,**
 set nopreserveindent
 set previewheight=7
 set printfont=Monospace\ 10
