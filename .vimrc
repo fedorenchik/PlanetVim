@@ -732,6 +732,13 @@ function! ToggleFileExplorer()
 endfunction
 " }}}
 "  Standard Plugins: {{{
+" Plugin: TOhtml {{{
+let g:html_number_lines = 1
+let g:html_use_css = 1
+let g:html_ignore_conceal = 0
+let g:html_dynamic_folds = 1
+let g:html_no_foldcolumn = 0
+" }}}
 " Plugin: man {{{
 runtime! ftplugin/man.vim
 " }}}
