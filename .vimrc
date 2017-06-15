@@ -120,7 +120,6 @@ set backupdir=~/.vim/backup,~/tmp,~/,.,/var/tmp,/tmp
 set belloff=all,error
 set nobreakindent
 set browsedir=buffer
-let c_comment_strings=1
 set cindent
 set cinoptions=:0,l1,g0,t0,U1,j1,J1
 set cinwords-=switch
@@ -741,6 +740,11 @@ let g:html_no_foldcolumn = 0
 let g:html_prevent_copy = "fn"
 let g:html_hover_unfold = 0
 let g:html_pre_wrap = 1
+" }}}
+" Syntax: c.vim {{{
+let c_gnu = 1
+let c_comment_strings = 1
+let c_space_errors = 1
 " }}}
 " Plugin: man {{{
 runtime! ftplugin/man.vim
