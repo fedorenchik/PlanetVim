@@ -653,6 +653,7 @@ if has("autocmd")
 						\   setlocal omnifunc=syntaxcomplete#Complete |
 						\ endif
 		endif
+		autocmd FileType c setlocal foldmethod=syntax
 		autocmd FileType cpp setlocal define=^\\(#\\s*define\\|[a-z]*\\s*const\\s*[a-z]*\\)
 		autocmd FileType html setlocal clipboard=autoselect,autoselectml,html,exclude:cons\|linux
 		autocmd FileType sh setlocal formatoptions-=t formatoptions+=croql
