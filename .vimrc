@@ -747,6 +747,10 @@ let c_gnu = 1
 let c_comment_strings = 1
 let c_space_errors = 1
 " }}}
+" syntax/doxygen.vim {{{
+let g:load_doxygen_syntax = 1
+let g:doxygen_enhanced_color = 1
+" }}}
 " Plugin: man {{{
 runtime! ftplugin/man.vim
 " }}}
