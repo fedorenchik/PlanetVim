@@ -24,7 +24,7 @@ set nocompatible
 if &t_Co > 2 || has("gui_running")
 	syntax on
 endif
-filetype plugin indent on       " enable detection, plugins and indenting in one step
+filetype plugin indent on
 " }}}
 " GUI Settings: {{{
 augroup GUI_Settings
