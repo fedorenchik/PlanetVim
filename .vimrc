@@ -731,7 +731,7 @@ function! ToggleFileExplorer()
 	endtry
 endfunction
 " }}}
-"  $VIMRUNTIME {{{
+"  $VIMRUNTIME/ {{{
 " Plugin: TOhtml (tohtml.vim) {{{
 let g:html_number_lines = 1
 let g:html_use_css = 1
@@ -756,6 +756,13 @@ let perl_fold_blocks = 1
 let perl_nofold_subs = 1
 let perl_fold_anonymous_subs = 1
 let perl_nofold_packages = 1
+" }}}
+" syntax/python.vim {{{
+let python_space_error_highlight = 1
+let python_highlight_all = 1
+" }}}
+" syntax/readline.vim {{{
+let readline_has_bash = 1
 " }}}
 " syntax/doxygen.vim {{{
 let g:load_doxygen_syntax = 1
