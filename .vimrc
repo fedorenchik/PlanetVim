@@ -764,6 +764,18 @@ let python_highlight_all = 1
 " syntax/readline.vim {{{
 let readline_has_bash = 1
 " }}}
+" syntax/ruby.vim {{{
+let ruby_operators = 1
+let ruby_space_errors = 1
+let ruby_fold = 1
+let ruby_spellcheck_strings = 1
+" }}}
+" syntax/sed.vim {{{
+let highlight_sedtabs = 1
+" }}}
+" syntax/sh.vim {{{
+let g:is_bash = 1
+" }}}
 " syntax/doxygen.vim {{{
 let g:load_doxygen_syntax = 1
 let g:doxygen_enhanced_color = 1
