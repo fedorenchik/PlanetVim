@@ -754,6 +754,8 @@ let g:lisp_rainbow = 1
 let perl_fold = 1
 let perl_fold_blocks = 1
 let perl_nofold_subs = 1
+let perl_fold_anonymous_subs = 1
+let perl_nofold_packages = 1
 " }}}
 " syntax/doxygen.vim {{{
 let g:load_doxygen_syntax = 1
