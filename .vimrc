@@ -750,6 +750,11 @@ let c_space_errors = 1
 " syntax/lisp.vim {{{
 let g:lisp_rainbow = 1
 " }}}
+" syntax/perl.vim {{{
+let perl_fold = 1
+let perl_fold_blocks = 1
+let perl_nofold_subs = 1
+" }}}
 " syntax/doxygen.vim {{{
 let g:load_doxygen_syntax = 1
 let g:doxygen_enhanced_color = 1
