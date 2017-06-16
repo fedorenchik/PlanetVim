@@ -731,7 +731,7 @@ function! ToggleFileExplorer()
 	endtry
 endfunction
 " }}}
-"  Standard Plugins: {{{
+"  $VIMRUNTIME {{{
 " Plugin: TOhtml (tohtml.vim) {{{
 let g:html_number_lines = 1
 let g:html_use_css = 1
@@ -746,6 +746,9 @@ let g:html_pre_wrap = 1
 let c_gnu = 1
 let c_comment_strings = 1
 let c_space_errors = 1
+" }}}
+" syntax/lisp.vim {{{
+let g:lisp_rainbow = 1
 " }}}
 " syntax/doxygen.vim {{{
 let g:load_doxygen_syntax = 1
