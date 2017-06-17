@@ -777,6 +777,13 @@ let highlight_sedtabs = 1
 let g:is_bash = 1
 let g:sh_fold_enabled = 7
 " }}}
+" syntax/vim.vim {{{
+let g:vimsyn_embed = lmpPrt
+let g:vimsyn_folding = aflmpPrt
+" }}}
+" syntax/xml.vim {{{
+let g:xml_syntax_folding = 1
+" }}}
 " syntax/doxygen.vim {{{
 let g:load_doxygen_syntax = 1
 let g:doxygen_enhanced_color = 1
