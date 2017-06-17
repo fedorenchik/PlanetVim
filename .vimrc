@@ -734,7 +734,28 @@ function! ToggleFileExplorer()
 endfunction
 " }}}
 " $VIMRUNTIME/ {{{
-" Plugin: TOhtml (tohtml.vim) {{{
+" ftplugin/man.vim {{{
+runtime! ftplugin/man.vim
+" }}}
+" pack/dist/opt/editexisting/ {{{
+packadd! editexisting
+" }}}
+" pack/dist/opt/matchit/ {{{
+if has('syntax') && has('eval')
+	packadd! matchit
+endif
+" }}}
+" plugin/netrwPlugin.vim {{{
+"augroup VimStartup
+"	autocmd!
+"	autocmd VimEnter * if expand("%") == "" | e . | endif
+"augroup END
+let g:netrw_fastbrowse = 2
+"let g:netrw_keepdir = 0
+let g:netrw_liststyle = 2
+let g:netrw_special_syntax = 1
+" }}}
+" plugin/tohtml.vim {{{
 let g:html_number_lines = 1
 let g:html_use_css = 1
 let g:html_ignore_conceal = 0
@@ -744,7 +765,7 @@ let g:html_prevent_copy = "fn"
 let g:html_hover_unfold = 0
 let g:html_pre_wrap = 1
 " }}}
-" Syntax: c.vim {{{
+" syntax/c.vim {{{
 let c_gnu = 1
 let c_comment_strings = 1
 let c_space_errors = 1
@@ -789,29 +810,6 @@ let g:vimsyn_folding = aflmpPrt
 " }}}
 " syntax/xml.vim {{{
 let g:xml_syntax_folding = 1
-" }}}
-" Plugin: man {{{
-runtime! ftplugin/man.vim
-" }}}
-" Plugin: netrw {{{
-"augroup VimStartup
-"	autocmd!
-"	autocmd VimEnter * if expand("%") == "" | e . | endif
-"augroup END
-let g:netrw_fastbrowse = 2
-"let g:netrw_keepdir = 0
-let g:netrw_liststyle = 2
-let g:netrw_special_syntax = 1
-" }}}
-" }}}
-" $VIMRUNTIME/pack/dist/opt/ Plugins: {{{
-" Plugin: matchit {{{
-if has('syntax') && has('eval')
-	packadd! matchit
-endif
-" }}}
-" Plugin: editexisting {{{
-packadd! editexisting
 " }}}
 " }}}
 " External Plugins: {{{
