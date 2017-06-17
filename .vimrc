@@ -394,7 +394,7 @@ inoremap <silent> <leader>w <C-O>:up<CR>
 " z    -- folding & moving lines in window
 " Normal Keys: {{{
 nnoremap <silent> <BS> <Nop>
-nnoremap <silent> <CR> <C-R>=(getcmdwintype() != "") ? ":GtagsCursor<lt>CR>" : "\<lt>CR>"<CR>
+nnoremap <silent> <CR> <C-R>=(getcmdwintype() != "") ? ":GtagsCursor\<lt>CR>" : "\<lt>CR>"<CR>
 nnoremap <silent> <F2> :call ToggleFileExplorer()<CR>
 nnoremap <silent> <F4> :VimShellPop<CR><ESC>
 nnoremap <silent> <F8> :call Marvim_search()<CR>
