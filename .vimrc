@@ -664,6 +664,8 @@ if has("autocmd")
 		autocmd CmdWinEnter / noremap <buffer> <S-CR> <CR>q/
 		autocmd CmdWinEnter ? noremap <buffer> <S-CR> <CR>q?
 		autocmd CursorHold *.[ch] nested call PreviewWord()
+		autocmd CmdwinEnter * nnoremap <buffer> <CR> <CR>
+		autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
 	augroup END
 	augroup vimrcEx
 		autocmd!
