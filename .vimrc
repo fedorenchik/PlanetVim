@@ -407,9 +407,9 @@ nnoremap <silent> ' `
 " swap semicolon and colon seems very weird:
 cnoremap <expr> ; getcmdpos() == 1 ? '<C-F>A' : ';'
 silent! nunmap ;
-"silent! nunmap :
+silent! nunmap :
 nnoremap <unique> ; :
-"nnoremap <unique> : ;
+nnoremap <unique> : q:
 nnoremap <silent> / /\v
 " yank entire buffer with gy
 nnoremap <silent> gy :%y+<CR>
@@ -731,7 +731,7 @@ function! ToggleFileExplorer()
 	endtry
 endfunction
 " }}}
-"  $VIMRUNTIME/ {{{
+" $VIMRUNTIME/ {{{
 " Plugin: TOhtml (tohtml.vim) {{{
 let g:html_number_lines = 1
 let g:html_use_css = 1
@@ -746,6 +746,10 @@ let g:html_pre_wrap = 1
 let c_gnu = 1
 let c_comment_strings = 1
 let c_space_errors = 1
+" }}}
+" syntax/doxygen.vim {{{
+let g:load_doxygen_syntax = 1
+let g:doxygen_enhanced_color = 1
 " }}}
 " syntax/lisp.vim {{{
 let g:lisp_rainbow = 1
@@ -783,10 +787,6 @@ let g:vimsyn_folding = aflmpPrt
 " }}}
 " syntax/xml.vim {{{
 let g:xml_syntax_folding = 1
-" }}}
-" syntax/doxygen.vim {{{
-let g:load_doxygen_syntax = 1
-let g:doxygen_enhanced_color = 1
 " }}}
 " Plugin: man {{{
 runtime! ftplugin/man.vim
