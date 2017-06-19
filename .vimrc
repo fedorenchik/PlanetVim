@@ -129,9 +129,9 @@ set colorcolumn=80,120,160,+0
 set completeopt=menuone,preview
 set confirm
 set copyindent
-set cscopequickfix=s-,c-,d-,i-,t-,e-,a-
+set cscopequickfix=s-,g-,d-,c-,t-,e-,f-,i-,a-
 set cscoperelative
-set nocscopetag
+set cscopetag
 set cscopetagorder=1
 set cscopeverbose
 set nocursorbind
