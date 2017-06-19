@@ -408,7 +408,7 @@ cnoremap <expr> ; getcmdpos() == 1 ? '<C-F>A' : ';'
 silent! nunmap ;
 silent! nunmap :
 nnoremap <unique> ; :
-nnoremap <unique> : q:
+nnoremap <unique> : q:i
 nnoremap <silent> / /\v
 " yank entire buffer with gy
 nnoremap <silent> gy :%y+<CR>
