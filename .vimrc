@@ -70,7 +70,7 @@ function PreviewWord()
 	if w =~ '\a'
 		silent! wincmd P
 		if &previewwindow
-			match none
+			"match none
 			wincmd p
 		endif
 		try
@@ -83,11 +83,11 @@ function PreviewWord()
 			if has("folding")
 				silent! .foldopen
 			endif
-			call search("$", "b")
-			let w = substitute(w, '\\', '\\\\', "")
-			call search('\<\V' . w . '\>')
-			hi previewWord term=bold ctermbg=green guibg=green
-			exe 'match previewWord "\%' . line(".") . 'l\%' . col(".") . 'c\k*"'
+			"call search("$", "b")
+			"let w = substitute(w, '\\', '\\\\', "")
+			"call search('\<\V' . w . '\>')
+			"hi previewWord term=bold ctermbg=green guibg=green
+			"exe 'match previewWord "\%' . line(".") . 'l\%' . col(".") . 'c\k*"'
 			wincmd p
 		endif
 	endif
