@@ -410,7 +410,7 @@ silent! nunmap :
 nnoremap <unique> ; :
 nnoremap <unique> : q:i
 nnoremap <silent> / /\v
-" yank entire buffer with gy
+nnoremap <silent> gQ Q
 nnoremap <silent> gy :%y+<CR>
 nnoremap <silent> h F
 nnoremap <silent> l f
@@ -614,6 +614,7 @@ nnoremap <silent> <Leader>_ :Unite -start-insert -smartcase -buffer-name=unite-w
 xnoremap <Space> za
 xnoremap ; :
 xnoremap / /\v
+xnoremap gy "+y
 " make p in visual mode replace selected text with the yank register
 xnoremap p <Esc>:let current_reg = @"<CR>gvdi<C-R>=current_reg<CR><Esc>
 vmap <silent> <Leader>m <Plug>MarkSet
