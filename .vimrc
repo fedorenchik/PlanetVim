@@ -131,7 +131,7 @@ set confirm
 set copyindent
 set cscopequickfix=s-,g-,d-,c-,t-,e-,f-,i-,a-
 set cscoperelative
-set cscopetag
+set nocscopetag
 set cscopetagorder=1
 set cscopeverbose
 set nocursorbind
