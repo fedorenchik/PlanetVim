@@ -266,8 +266,8 @@ set spellcapcheck&
 set spellfile&
 set spelllang+=cjk
 set spellsuggest&
-set splitbelow
-set splitright
+set nosplitbelow
+set nosplitright
 set nostartofline
 set suffixes-=.h
 set swapfile
@@ -642,7 +642,8 @@ cnoreabbrev gblame Gblame
 cnoreabbrev gt Gtags
 cnoreabbrev gtags Gtags
 cnoreabbrev grep grep -IarFw
-cnoreabbrev h topleft h
+cnoreabbrev split rightbelow split
+cnoreabbrev vsplit rightbelow vsplit
 " }}}
 " Autocommands: {{{
 if has("autocmd")
