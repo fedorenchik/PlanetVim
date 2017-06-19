@@ -155,7 +155,7 @@ set exrc
 set fileformats=unix,dos,mac
 set nofileignorecase
 set nofixendofline
-set foldclose=all
+set foldclose=
 set foldcolumn=0
 set nofoldenable
 set foldlevel=99
@@ -646,7 +646,7 @@ cnoreabbrev h topleft h
 " }}}
 " Autocommands: {{{
 if has("autocmd")
-	augroup filetypes
+	augroup autocommands
 		autocmd!
 		if exists("+omnifunc")
 			autocmd Filetype * if &omnifunc == "" |
