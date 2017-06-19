@@ -283,7 +283,6 @@ set tags-=./TAGS
 set tags-=TAGS
 set tags+=$HOME/.vim/systags
 set tagstack
-"set termencoding=utf-8
 set termguicolors
 set textwidth=80
 set thesaurus+=$HOME/.vim/thes/mobythes.txt
