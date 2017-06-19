@@ -393,7 +393,7 @@ inoremap <silent> <leader>w <C-O>:up<CR>
 " z    -- folding & moving lines in window
 " Normal Keys: {{{
 nnoremap <silent> <BS> <Nop>
-nnoremap <silent> <CR> <C-R>=getcmdwintype() != "" ? ":GtagsCursor\<lt>CR>" : "\<lt>CR>"<CR>
+nnoremap <silent> <CR> :GtagsCursor<CR>
 nnoremap <silent> <F2> :call ToggleFileExplorer()<CR>
 nnoremap <silent> <F4> :VimShellPop<CR><ESC>
 nnoremap <silent> <F8> :call Marvim_search()<CR>
@@ -664,8 +664,8 @@ augroup autocommands
 	autocmd CmdWinEnter / noremap <buffer> <S-CR> <CR>q/
 	autocmd CmdWinEnter ? noremap <buffer> <S-CR> <CR>q?
 	autocmd CursorHold *.[ch] nested call PreviewWord()
-	"autocmd CmdwinEnter * nnoremap <buffer> <CR> <CR>
-	"autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
+	autocmd CmdwinEnter * nnoremap <buffer> <CR> <CR>
+	autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
 	" When editing a file, always jump to the last known cursor position.
 	" Don't do it when the position is invalid or when inside an event handler
 	" (happens when dropping a file on gvim).
