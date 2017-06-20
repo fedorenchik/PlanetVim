@@ -61,3 +61,6 @@
 [submodule ".vim/pack/bundle/start/vimagit.git"]
 	path = .vim/pack/bundle/start/vimagit
 	url = https://github.com/jreybert/vimagit.git
+[submodule ".vim/pack/bundle/start/gdbmgr.vim"]
+	path = .vim/pack/bundle/start/gdbmgr.vim
+	url = https://github.com/fedorenchik/gdbmgr.vim.git
