@@ -190,3 +190,5 @@ if ! shopt -oq posix; then
 fi
 
 export GTAGSFORCECPP=
+
+export LD_LIBRARY_PATH="$HOME/.vim/pack/bundle/start/gdbmgr.vim/gdbmgr/src:$LD_LIBRARY_PATH"
