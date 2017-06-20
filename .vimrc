@@ -173,6 +173,7 @@ if has("gui_gtk2")
 	set guifont=Monospace\ 10
 	set guifontwide=WenQuanYi\ Zen\ Hei\ 10
 endif
+set guioptions-=t
 set guioptions-=T
 set guioptions-=r
 set guioptions-=L
