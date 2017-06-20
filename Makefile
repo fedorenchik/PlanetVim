@@ -7,6 +7,7 @@ SHELL := /bin/bash
 FILES := \
 	.bashrc \
 	.config/terminator/config \
+	.ctags \
 	.cvsignore \
 	.gdbinit \
 	.gitconfig \

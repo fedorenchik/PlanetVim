@@ -879,6 +879,7 @@ let g:SignatureForceMarkerPlacement = 1
 let g:tagbar_sort=0			" do not sort tags by name
 let g:tagbar_compact=1			" compact layout
 let g:tagbar_autofocus=0		" do not move cursor to Tagbar
+let g:tagbar_type_make = { 'kinds':[ 'm:macros', 't:targets' ] }
 " }}}
 " Plugin: undotree {{{
 let g:undotree_WindowLayout=4
