@@ -29,7 +29,7 @@ filetype plugin indent on
 " GUI Settings: {{{
 augroup GUI_Settings
 	autocmd!
-	autocmd GUIEnter * set lines=30 columns=100 guifont=Monospace\ 10
+	autocmd GUIEnter * set lines=300 columns=1000 guifont=Monospace\ 10
 	" maximize GUI window
 	autocmd GUIEnter * call system('wmctrl -i -b add,maximized_vert,maximized_horz -r '.v:windowid)
 augroup END
