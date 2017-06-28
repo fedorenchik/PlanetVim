@@ -13,6 +13,7 @@ cdecl
 cgdb
 chrpath
 clipit
+cmake
 cppcheck
 crash
 ctags
