@@ -389,13 +389,8 @@ nnoremap <silent> <F12> :UndotreeToggle<CR>
 nnoremap <silent> <Space> <Nop>
 nnoremap <silent> ` '
 nnoremap <silent> ' `
-" swap semicolon and colon seems very weird:
-cnoremap <expr> ; getcmdpos() == 1 ? '<C-F>A' : ';'
-silent! nunmap ;
-silent! nunmap :
 nnoremap <unique> ; :
 nnoremap <unique> : q:i
-nnoremap <silent> / /\v
 nnoremap <silent> gy :%y+<CR>
 nnoremap <silent> gX Q
 nnoremap <silent> h F
