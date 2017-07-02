@@ -415,8 +415,8 @@ nnoremap <silent> gy :%y+<CR>
 nnoremap <silent> gX Q
 nnoremap <silent> h F
 nnoremap <silent> l f
-nnoremap <silent> n :<C-u>if !mark#SearchNext(0)<Bar>execute 'normal! nzv'<Bar>endif<CR>
-nnoremap <silent> N :<C-u>if !mark#SearchNext(1)<Bar>execute 'normal! Nzv'<Bar>endif<CR>
+nnoremap <silent> n nzz
+nnoremap <silent> N Nzz
 nnoremap <silent> Q gq
 nnoremap <silent> Y y$
 nnoremap <silent> - <Nop>
