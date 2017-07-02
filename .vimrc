@@ -282,7 +282,7 @@ set taglength&
 set tagrelative
 set tags-=./TAGS
 set tags-=TAGS
-set tags+=$HOME/.vim/systags
+set tags+=$HOME/.vim/ctags,$HOME/.vim/cpptags,$HOME/.vim/linuxtags
 set tagstack
 set termguicolors
 set textwidth=80
