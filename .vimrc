@@ -386,7 +386,7 @@ nnoremap <silent> <F8> <Nop>
 nnoremap <silent> <F9> :TagbarToggle<CR>
 nnoremap <silent> <F10> <Nop>
 nnoremap <silent> <F12> :UndotreeToggle<CR>
-nnoremap <silent> <Space> za
+nnoremap <silent> <Space> <Nop>
 nnoremap <silent> ` '
 nnoremap <silent> ' `
 " swap semicolon and colon seems very weird:
