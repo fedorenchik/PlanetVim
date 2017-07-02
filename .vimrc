@@ -225,7 +225,7 @@ set nonumber
 set opendevice&
 set operatorfunc&
 set patchmode=".orig"
-set path+=/usr/include/c++/6,./../include,./../../include,**
+set path+=/usr/include/c++/6,./include,./../include,./../../include,**
 set nopreserveindent
 set previewheight=7
 set printfont=Monospace\ 10
