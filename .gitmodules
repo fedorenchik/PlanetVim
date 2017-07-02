@@ -7,21 +7,6 @@
 [submodule ".vim/bundle/undotree"]
 	path = .vim/pack/bundle/start/undotree
 	url = https://github.com/mbbill/undotree.git
-[submodule ".vim/bundle/unite-gtags"]
-	path = .vim/pack/bundle/start/unite-gtags
-	url = https://github.com/hewes/unite-gtags.git
-[submodule ".vim/bundle/unite-mark"]
-	path = .vim/pack/bundle/start/unite-mark
-	url = https://github.com/tacroe/unite-mark.git
-[submodule ".vim/bundle/unite-outline"]
-	path = .vim/pack/bundle/start/unite-outline
-	url = https://github.com/Shougo/unite-outline.git
-[submodule ".vim/bundle/unite-quickfix"]
-	path = .vim/pack/bundle/start/unite-quickfix
-	url = https://github.com/osyo-manga/unite-quickfix.git
-[submodule ".vim/bundle/unite.vim"]
-	path = .vim/pack/bundle/start/unite.vim
-	url = https://github.com/Shougo/unite.vim.git
 [submodule ".vim/bundle/vim-airline"]
 	path = .vim/pack/bundle/start/vim-airline
 	url = https://github.com/bling/vim-airline.git
