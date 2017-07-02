@@ -231,10 +231,6 @@ set scrolloff=2
 set scrollopt=ver,hor,jump
 set secure
 set sessionoptions=blank,buffers,folds,help,localoptions,sesdir,slash,tabpages,unix,winsize
-set shellcmdflag&
-set shellpipe&
-set shellredir&
-set shelltemp&
 set shiftround
 set shiftwidth=8
 set shortmess+=mrwsIcF
@@ -277,7 +273,7 @@ set termguicolors
 set textwidth=80
 set thesaurus+=$HOME/.vim/thes/mobythes.txt
 set notildeop
-set timeout
+set notimeout
 set timeoutlen=400
 set title
 set titlelen&
