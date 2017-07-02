@@ -32,7 +32,7 @@
 	path = .vim/pack/bundle/start/vim-airline
 	url = https://github.com/bling/vim-airline.git
 [submodule ".vim/bundle/vim-dirdiff"]
-	path = .vim/pack/bundle/start/vim-dirdiff
+	path = .vim/pack/bundle/opt/vim-dirdiff
 	url = https://github.com/will133/vim-dirdiff.git
 [submodule ".vim/bundle/vim-fugitive"]
 	path = .vim/pack/bundle/start/vim-fugitive
@@ -62,7 +62,7 @@
 	path = .vim/pack/bundle/start/vimagit
 	url = https://github.com/jreybert/vimagit.git
 [submodule ".vim/pack/bundle/start/gdbmgr.vim"]
-	path = .vim/pack/bundle/start/gdbmgr.vim
+	path = .vim/pack/bundle/opt/gdbmgr.vim
 	url = https://github.com/fedorenchik/gdbmgr.vim.git
 [submodule ".vim/pack/bundle/start/vim-unimpaired"]
 	path = .vim/pack/bundle/start/vim-unimpaired
