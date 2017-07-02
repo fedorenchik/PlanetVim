@@ -4,9 +4,6 @@
 [submodule ".vim/bundle/molokai"]
 	path = .vim/pack/bundle/start/molokai
 	url = https://github.com/tomasr/molokai.git
-[submodule ".vim/bundle/neocomplete.vim"]
-	path = .vim/pack/bundle/start/neocomplete.vim
-	url = https://github.com/Shougo/neocomplete.vim.git
 [submodule ".vim/bundle/tagbar"]
 	path = .vim/pack/bundle/start/tagbar
 	url = https://github.com/majutsushi/tagbar.git
