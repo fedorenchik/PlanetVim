@@ -805,31 +805,16 @@ let g:airline#extensions#wordcount#enabled = 0
 let g:airline#extensions#whitespace#enabled = 0
 let g:airline#extensions#tabline#enabled = 0
 " }}}
-" Plugin: conque-gdb {{{
-let g:ConqueGdb_Leader = '\'
-" }}}
-" Plugin: conque-term {{{
-let g:ConqueTerm_ReadUnfocused = 1
-let g:ConqueTerm_InsertOnEnter = 1
-let g:ConqueTerm_ShowBell = 1
-let g:ConqueTerm_SendFunctionKeys = 1
-" }}}
 " Plugin: gitv {{{
 let g:Gitv_OpenHorizontal = 1
 " }}}
 " Plugin: gtags {{{
 let g:Gtags_OpenQuickfixWindow = 0
 " }}}
-" Plugin: IndexedSearch {{{
-let g:indexed_search_shortmess=1
-" }}}
 " Plugin: mark-2.8.5 {{{
 let g:mwDefaultHighlightingPalette = 'maximum'
 let g:mwAutoLoadMarks = 0
 let g:mwAutoSaveMarks = 0
-" }}}
-" Plugin: neocomplete {{{
-let g:neocomplete#enable_at_startup = 1
 " }}}
 " Plugin: signature {{{
 let g:SignatureMap = {
@@ -872,13 +857,6 @@ let g:tagbar_type_make = { 'kinds':[ 'm:macros', 't:targets' ] }
 " }}}
 " Plugin: undotree {{{
 let g:undotree_WindowLayout=4
-" }}}
-" Plugin: unite {{{
-"let g:unite_source_history_yank_enable = 1
-" }}}
-" Plugin: unite-quickfix {{{
-let g:unite_quickfix_filename_is_pathshorten = 0
-let g:unite_quickfix_is_multiline = 0
 " }}}
 " Plugin: vimshell {{{
 let g:vimshell_prompt = '$ '
