@@ -46,3 +46,6 @@
 [submodule ".vim/pack/bundle/start/vim-unimpaired"]
 	path = .vim/pack/bundle/start/vim-unimpaired
 	url = https://github.com/tpope/vim-unimpaired.git
+[submodule ".vim/pack/bundle/start/denite.nvim"]
+	path = .vim/pack/bundle/start/denite.nvim
+	url = https://github.com/Shougo/denite.nvim.git
