@@ -171,7 +171,7 @@ set guipty
 set guitablabel&
 "TODO: Add second (and further) lines with useful info
 set guitabtooltip=%{GuiTabLabel()}
-set helpheight=10
+set helpheight=8
 set helplang=en
 set hidden
 set nohlsearch
