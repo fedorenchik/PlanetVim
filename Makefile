@@ -40,12 +40,19 @@ help:
 
 sync: sync-home
 
+c_headers := assert complex ctype errno fenv float inttypes iso646 limits \
+	locale math setjmp signal stdalign stdarg stdatomic stdbool stddef \
+	stdint stdio stdlib stdnoreturn string tgmath threads time uchar \
+	wchar wctype
+
+c_headers :=
+
 sync-home:
 	cd .vim/pack/bundle/start/vimproc.vim && make
 	cd .vim/pack/bundle/opt/gdbmgr.vim/gdbmgr/src && make
 	for file in $(FILES); do $(RSYNC) $(RSYNC_OPTIONS) $$file $(HOME)/$$file; done
 	vim -c 'helptags ALL' -c 'q'
-	ctags -R -f ~/.vim/ctags /usr/include/*.h
+	ctags -R -f ~/.vim/ctags /usr/include/assert.h
 	ctags -R -f ~/.vim/cpptags /usr/include/c++
 	ctags -R -f ~/.vim/linuxtags /usr/include/linux
 
