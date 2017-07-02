@@ -44,7 +44,7 @@ sync-home:
 	cd .vim/pack/bundle/start/vimproc.vim && make
 	cd .vim/pack/bundle/opt/gdbmgr.vim/gdbmgr/src && make
 	for file in $(FILES); do $(RSYNC) $(RSYNC_OPTIONS) $$file $(HOME)/$$file; done
-	ctags -R -f ~/.vim/systags /usr/include
+	ctags -R -f ~/.vim/systags /usr/include/{c++,linux,*.h}
 
 commit:
 	git submodule update --recursive --remote --init
