@@ -3,7 +3,7 @@
 	email = leonidsbox@gmail.com
 [core]
 	editor = gvim --nofork
-	whitespace = trailing-space,space-before-tab,indent-with-non-tab
+	whitespace = trailing-space,space-before-tab
 	excludesfile = ~/.cvsignore
 [merge]
 	tool = vimdiff
