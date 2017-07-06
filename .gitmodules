@@ -49,3 +49,6 @@
 [submodule ".vim/pack/bundle/start/denite.nvim"]
 	path = .vim/pack/bundle/start/denite.nvim
 	url = https://github.com/Shougo/denite.nvim.git
+[submodule ".vim/pack/bundle/start/vim-cpp-enhanced-highlight"]
+	path = .vim/pack/bundle/start/vim-cpp-enhanced-highlight
+	url = https://github.com/octol/vim-cpp-enhanced-highlight.git
