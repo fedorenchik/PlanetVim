@@ -52,6 +52,7 @@
 [submodule ".vim/pack/bundle/start/vim-cpp-enhanced-highlight"]
 	path = .vim/pack/bundle/start/vim-cpp-enhanced-highlight
 	url = https://github.com/fedorenchik/vim-cpp-enhanced-highlight.git
+	branch = config-func-hl
 [submodule ".vim/pack/bundle/start/vim-c-posix-syntax"]
 	path = .vim/pack/bundle/start/vim-c-posix-syntax
 	url = https://github.com/t6tn4k/vim-c-posix-syntax.git
