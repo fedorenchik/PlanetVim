@@ -849,6 +849,9 @@ let g:tagbar_type_make = { 'kinds':[ 'm:macros', 't:targets' ] }
 " Plugin: undotree {{{
 let g:undotree_WindowLayout=4
 " }}}
+" Plugin: vim-cpp-enhanced-highlight {{{
+let g:cpp_no_function_highlight=1
+" }}}
 " Plugin: vimshell {{{
 let g:vimshell_prompt = '$ '
 let g:vimshell_scrollback_limit = 10000
