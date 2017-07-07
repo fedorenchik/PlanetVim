@@ -57,6 +57,7 @@ sync-home:
 	ctags -R -f ~/.vim/linuxtags /usr/include/linux
 
 commit:
+	git submodule sync
 	git submodule update --recursive --remote --init
 	git add $(FILES) Makefile package-list
 ifneq "$(DELETED_FILES)" ""
