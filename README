@@ -24,7 +24,7 @@ git pull --ff-only
 	--enable-tclinterp=no \
 	--enable-rubyinterp=no \
 	--enable-cscope \
-	--enable-workshop \
+	--disable-workshop \
 	--enable-netbeans \
 	--enable-channel \
 	--enable-terminal \
