@@ -27,6 +27,7 @@ git pull --ff-only
 	--disable-workshop \
 	--disable-netbeans \
 	--enable-channel \
+	--enable-terminal \
 	--enable-multibyte \
 	--enable-gui=gnome2 \
 	--enable-largefile \
