@@ -56,3 +56,6 @@
 [submodule ".vim/pack/bundle/start/vim-c-posix-syntax"]
 	path = .vim/pack/bundle/start/vim-c-posix-syntax
 	url = https://github.com/t6tn4k/vim-c-posix-syntax.git
+[submodule ".vim/pack/bundle/start/vim-mark"]
+	path = .vim/pack/bundle/start/vim-mark
+	url = https://github.com/inkarkat/vim-mark.git
