@@ -51,6 +51,7 @@ u-boot-tools
 unzip
 vim-gnome
 wget
+whois
 wmctrl
 # compile from source packages:
 universal-ctags
