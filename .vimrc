@@ -390,6 +390,8 @@ nnoremap <silent> gL :lhistory<CR>
 nnoremap <silent> gq :clist<CR>
 nnoremap <silent> gQ :chistory<CR>
 nnoremap <silent> gS ^vg_y:execute @@<CR>:echo 'Sourced: ' . @@<CR>
+nnoremap <silent> gt :tselect<CR>
+nnoremap <silent> gT :tags<CR>
 nnoremap <silent> gW Q
 nnoremap <silent> gX gQ
 nnoremap <silent> gy :%y+<CR>
@@ -456,6 +458,7 @@ nnoremap <silent> <C-F12> :!ctags -R --sort=yes --excmd=p --c++-kinds=+pl --fiel
 nnoremap <silent> <C-PageDown> :bnext<CR>
 nnoremap <silent> <C-PageUp> :bprevious<CR>
 nnoremap <silent> <C-E> 2<C-E>
+nnoremap <silent> <C-G> :tag<CR>
 nnoremap <silent> <C-H> <C-W>h
 nnoremap <silent> <C-J> <C-W>j
 nnoremap <silent> <C-K> <C-W>k
