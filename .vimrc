@@ -364,9 +364,12 @@ inoremap <silent> <leader>w <C-O>:up<CR>
 "}}}
 " }}}
 " Normal (Command) Mode: {{{
-" Subcommands & submodes: Ctrl-W g, Ctrl-\, ", ', <, =, >, @, F, T, Z,
+" Subcommands & submodes: Ctrl-W g, Ctrl-\, ", ', <, =, >, @,
 " `, d, f, m, q, t.
 " ', ` -- jumping to marks/markers
+" Metakeys: <BS> <Tab> <CR> <Esc> <Space> <Del> <Up> <Down> <Left> <Right>
+" <F1>..<F12> <Insert> <Home> <End> <PageUp> <PageDown>
+" Standard Text Objects: b B p s t w W [ ( ) < > ] ` { } " '
 " Normal Keys: {{{
 " Available To Remap: f F h j k l Q s S t T U
 nnoremap <silent> <BS> <Nop>
