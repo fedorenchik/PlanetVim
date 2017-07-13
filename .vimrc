@@ -383,6 +383,11 @@ nnoremap <unique> : q:i
 " Standard Vim Mappings: a ^A d D e E f F g ^G h H ^H i I j J k m n N o p P q Q
 " r R s t T u U v V w x 0 8 ] ^] # $ & ' ` * + , - ; < ? ^ _ @ ~ <Down> <End>
 " <Home> <LeftMouse> <MiddleMouse> <RightMouse> <Up>
+" Available To Map: A b B c C G K l L M O S W X y Y z Z 1 2 3 4 5 6 7 9
+nnoremap <silent> gc :copen<CR>
+nnoremap <silent> gC :cclose<CR>
+nnoremap <silent> gl :lopen<CR>
+nnoremap <silent> gL :lclose<CR>
 nnoremap <silent> gy :%y+<CR>
 nnoremap <silent> gX Q
 " }}}
@@ -395,6 +400,10 @@ nnoremap <silent> Y y$
 " Normal Keys: z...: {{{
 " Standard Vim Mappings: a A b c C d D e E f F g G h H i j k l L m M n N o O r R
 " s t v w W x X z ^ + - . = <Left> <Right> <CR>
+" Available To Map: B I J K p P q Q S T u U V y Y Z
+" }}}
+" Normal Keys: Z...: {{{
+" Standard Vim Mappings: Q Z
 " }}}
 nnoremap <silent> - <Nop>
 nnoremap <silent> + <Nop>
