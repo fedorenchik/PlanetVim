@@ -65,6 +65,11 @@ function PreviewWord()
 	if &previewwindow
 		return
 	endif
+	silent! wincmd P
+	if &previewwindow
+		wincmd p
+		return
+	endif
 	let w = expand("<cword>")
 	if w =~ '\a'
 		try
@@ -387,6 +392,7 @@ nnoremap <unique> : q:i
 " Available To Map: A b B c C G K l L M O S W X y Y z Z 1 2 3 4 5 6 7 9
 nnoremap <silent> gl :llist<CR>
 nnoremap <silent> gL :lhistory<CR>
+nnoremap <silent> gO :jumps<CR>
 nnoremap <silent> gq :clist<CR>
 nnoremap <silent> gQ :chistory<CR>
 nnoremap <silent> gS ^vg_y:execute @@<CR>:echo 'Sourced: ' . @@<CR>
@@ -395,6 +401,8 @@ nnoremap <silent> gT :tags<CR>
 nnoremap <silent> gW Q
 nnoremap <silent> gX gQ
 nnoremap <silent> gy :%y+<CR>
+nnoremap <silent> gz :buffers<CR>
+nnoremap <silent> gZ :tabs<CR>
 " }}}
 nnoremap <silent> h F
 nnoremap <silent> l f
