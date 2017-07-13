@@ -413,6 +413,10 @@ nnoremap <silent> Zc :copen<CR>
 nnoremap <silent> ZC :cclose<CR>
 nnoremap <silent> Zl :lopen<CR>
 nnoremap <silent> ZL :lclose<CR>
+nnoremap <silent> Zn :tabnext<CR>
+nnoremap <silent> ZN :tablast<CR>
+nnoremap <silent> Zp :tabprevious<CR>
+nnoremap <silent> ZP :tabfirst<CR>
 " }}}
 nnoremap <silent> - <Nop>
 nnoremap <silent> + <Nop>
