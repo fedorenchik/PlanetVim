@@ -336,22 +336,22 @@ let maplocalleader="\\"
 " Cannot distinguish between <Enter> and <C-M>.
 " }}}
 " Insert Mode: {{{
-inoremap <silent> <C-@> <nop>
-inoremap <silent> <C-A> <nop>
-inoremap <silent> <C-B> <nop>
+inoremap <silent> <C-@> <Nop>
+inoremap <silent> <C-A> <Nop>
+inoremap <silent> <C-B> <Nop>
 inoremap <silent> <C-E> <C-R>=pumvisible() ? "\<lt>C-E>" : "\<lt>Esc>"<CR>
 " Insert Mode i_^G: {{{
 " }}}
-inoremap <silent> <C-J> <nop>
-inoremap <silent> <C-L> <nop>
-inoremap <silent> <C-M> <nop>
-inoremap <silent> <C-Q> <nop>
+inoremap <silent> <C-J> <Nop>
+inoremap <silent> <C-L> <Nop>
+inoremap <silent> <C-M> <Nop>
+inoremap <silent> <C-Q> <Nop>
 inoremap <silent> <C-R><C-D> <Esc>:Unite register<CR>
-inoremap <silent> <C-S> <nop>
+inoremap <silent> <C-S> <Nop>
 " Insert Mode i_^X: {{{
 " }}}
 inoremap <silent> <C-Y> <C-R>=pumvisible() ? "\<lt>C-Y>" : "\<lt>Esc>"<CR>
-inoremap <silent> <C-Z> <nop>
+inoremap <silent> <C-Z> <Nop>
 " Insert Mode i_<A-...>: {{{
 " }}}
 " Insert Mode: <leader>...: {{{
@@ -378,14 +378,18 @@ nnoremap <silent> ` '
 nnoremap <silent> ' `
 nnoremap <unique> ; :
 nnoremap <unique> : q:i
+" Normal Keys: g...: {{{
 nnoremap <silent> gy :%y+<CR>
 nnoremap <silent> gX Q
+" }}}
 nnoremap <silent> h F
 nnoremap <silent> l f
 nnoremap <silent> n nzz
 nnoremap <silent> N Nzz
 nnoremap <silent> Q gq
 nnoremap <silent> Y y$
+" Normal Keys: z...: {{{
+" }}}
 nnoremap <silent> - <Nop>
 nnoremap <silent> + <Nop>
 nnoremap <silent> _ <Nop>
