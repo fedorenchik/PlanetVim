@@ -359,11 +359,9 @@ inoremap <silent> <leader>w <C-O>:up<CR>
 "}}}
 " }}}
 " Normal (Command) Mode: {{{
-" Subcommands & submodes: Ctrl-W, Ctrl-W g, Ctrl-\, ", ', <, =, >, @, F, T, Z,
-" [, ], `, d, f, g, m, q, t, z.
+" Subcommands & submodes: Ctrl-W g, Ctrl-\, ", ', <, =, >, @, F, T, Z,
+" `, d, f, m, q, t.
 " ', ` -- jumping to marks/markers
-" [, ] -- moving through text objects
-" z    -- folding & moving lines in window
 " Normal Keys: {{{
 nnoremap <silent> <BS> <Nop>
 nnoremap <silent> <CR> :GtagsCursor<CR>
@@ -434,6 +432,8 @@ nnoremap ]0 :call signature#marker#Goto('next', 0, v:count)<CR>
 " }}}
 " Ctrl Key: {{{
 " XXX: Ctrl-Shift modifier does not work neither in terminal nor in GUI.
+" Standard Vim Mappings: A C G I M O R T V W X Z [ \ ] ^
+" Available To Map: @ B D E F H J K L N P Q S U Y _
 nnoremap <silent> <C-@> <C-L>
 nnoremap <silent> <C-F4> :VimShell -toggle<CR><ESC>
 nnoremap <silent> <C-F12> :!ctags -R --sort=yes --excmd=p --c++-kinds=+pl --fields=+iaS --extra=+q .<CR>
