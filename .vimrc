@@ -330,47 +330,33 @@ let mapleader=","
 let maplocalleader="\\"
 " }}}
 " Mappings: {{{
-" Modes: {{{
-" Normal (Command) Mode: nmap
-" Visual Mode: xmap, vmap
-" Select Mode: smap, vmap
-" Insert Mode: imap
-" Command-line (Cmdline) Mode: cmap
-" Ex Mode:
-" Operator-pending Mode: omap
-" Replace Mode:
-" Virtual Replace Mode:
-" Insert Normal Mode:
-" Insert Visual Mode:
-" Insert Select Mode:
-" }}}
 " Keys Limitations: {{{
 " Shifted cursor keys are not available on all terminals (but available in GUI).
 " Cannot distinguish between <Tab> and <C-I>.
 " Cannot distinguish between <Enter> and <C-M>.
 " }}}
-" Go To Normal Mode: {{{
-" <C-\><C-N>
-" <C-\><C-G>
-" i_<C-@>
-" i_<c-c>
-" i_<C-[>
-" }}}
 " Insert Mode: {{{
-" Subcommands & submodes: Ctrl-G, Ctrl-R, Ctrl-R Ctrl-R, Ctrl-X, Ctrl-\.
-" Tmp normal mode: Ctrl-O
-" Tmp command-line mode: Ctrl-R =
-" Ctrl-X - insert-mode completion.
-inoremap <silent> <C-@> <esc>
-inoremap <silent> <C-A> <esc>
-inoremap <silent> <C-B> <esc>
+inoremap <silent> <C-@> <nop>
+inoremap <silent> <C-A> <nop>
+inoremap <silent> <C-B> <nop>
 inoremap <silent> <C-E> <C-R>=pumvisible() ? "\<lt>C-E>" : "\<lt>Esc>"<CR>
-inoremap <silent> <C-J> <esc>
-inoremap <silent> <C-Q> <esc>
+" Insert Mode i_^G: {{{
+" }}}
+inoremap <silent> <C-J> <nop>
+inoremap <silent> <C-L> <nop>
+inoremap <silent> <C-M> <nop>
+inoremap <silent> <C-Q> <nop>
 inoremap <silent> <C-R><C-D> <Esc>:Unite register<CR>
+inoremap <silent> <C-S> <nop>
+" Insert Mode i_^X: {{{
+" }}}
 inoremap <silent> <C-Y> <C-R>=pumvisible() ? "\<lt>C-Y>" : "\<lt>Esc>"<CR>
-inoremap <silent> <C-Z> <esc>
+inoremap <silent> <C-Z> <nop>
+" Insert Mode i_<A-...>: {{{
+" }}}
+" Insert Mode: <leader>...: {{{
 inoremap <silent> <leader>w <C-O>:up<CR>
+"}}}
 " }}}
 " Normal (Command) Mode: {{{
 " Subcommands & submodes: Ctrl-W, Ctrl-W g, Ctrl-\, ", ', <, =, >, @, F, T, Z,
