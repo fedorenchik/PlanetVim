@@ -430,6 +430,7 @@ nnoremap ]0 :call signature#marker#Goto('next', 0, v:count)<CR>
 " }}}
 " }}}
 " Ctrl Key: {{{
+" XXX: Ctrl-Shift modifier does not work neither in terminal nor in GUI.
 nnoremap <silent> <C-@> <C-L>
 nnoremap <silent> <C-F4> :VimShell -toggle<CR><ESC>
 nnoremap <silent> <C-F12> :!ctags -R --sort=yes --excmd=p --c++-kinds=+pl --fields=+iaS --extra=+q .<CR>
@@ -458,9 +459,6 @@ nnoremap <silent> <A-F4> :VimShell -split -split-command=tabnew -toggle<CR><ESC>
 nnoremap <silent> <A-/> /\v\c
 nnoremap <silent> <A-n> :cnewer<CR>
 nnoremap <silent> <A-p> :colder<CR>
-" }}}
-" Ctrl Shift Key: {{{
-" Ctrl-Shift modifier does not work neither in terminal nor in GUI.
 " }}}
 " Mouse Keys: {{{
 " When remap mousekeys, they send key events to the active window.
