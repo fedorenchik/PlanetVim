@@ -364,14 +364,11 @@ inoremap <silent> <leader>w <C-O>:up<CR>
 "}}}
 " }}}
 " Normal (Command) Mode: {{{
-" Subcommands & submodes: Ctrl-W g, Ctrl-\, ", <, =, >, @.
 " Metakeys: <BS> <Tab> <CR> <Esc> <Space> <Del> <Up> <Down> <Left> <Right>
 " <F1>..<F12> <Insert> <Home> <End> <PageUp> <PageDown>
-" Mousekeys: <LeftMouse> <MiddleMouse> <RightMouse> <X1Mouse> <X2Mouse>
-" <ScrollWheelDown> <ScrollWheelUp> <ScrollWheelLeft> <ScrollWheelRight>
-" Commands Expecting Text Objects: d
+" Commands Expecting Text Objects: d < = >
 " Commands Expecting Marks: m ' `
-" Commands Expecting Registers: q
+" Commands Expecting Registers: q " @
 " Standard Text Objects: b B p s t w W [ { } ( ) ] ` < > ' "
 " Normal Keys: {{{
 " Available To Remap: f F h j k l Q s S t T U
@@ -496,10 +493,14 @@ nnoremap <silent> <C-L> <C-W>l
 nnoremap <silent> <C-N> :UniteNext<CR>
 nnoremap <silent> <C-P> :UnitePrevious<CR>
 " Ctrl Key: <C-W>...: {{{
+" Ctrl Key: <C-W>g...: {{{
+" }}}
 " }}}
 nnoremap <silent> <C-Y> 2<C-Y>
 nnoremap <silent> <C-[> <Nop>
 nnoremap <silent> <C-_> <Nop>
+" Ctrl Key: <C-\>...: {{{
+" }}}
 " }}}
 " Alt Key: {{{
 nnoremap <silent> <A-F4> :VimShell -split -split-command=tabnew -toggle<CR><ESC>
@@ -510,6 +511,8 @@ nnoremap <silent> <A-Q> :colder<CR>
 nnoremap <silent> <A-q> :cnewer<CR>
 " }}}
 " Mouse Keys: {{{
+" Mousekeys: <LeftMouse> <MiddleMouse> <RightMouse> <X1Mouse> <X2Mouse>
+" <ScrollWheelDown> <ScrollWheelUp> <ScrollWheelLeft> <ScrollWheelRight>
 " When remap mousekeys, they send key events to the active window.
 " (by default, they send key events to the window under mouse cursor).
 "nnoremap <silent> <ScrollWheelUp> 6<C-y>
