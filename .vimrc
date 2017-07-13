@@ -392,6 +392,8 @@ nnoremap <unique> : q:i
 " Available To Map: A b B c C G K l L M O S W X y Y z Z 1 2 3 4 5 6 7 9 % [ { }
 " ( = ) ! : > . / \ | "
 nnoremap <silent> gA :args<CR>
+nnoremap <silent> gc :changes<CR>
+nnoremap <silent> gC :undolist<CR>
 nnoremap <silent> gl :llist<CR>
 nnoremap <silent> gL :lhistory<CR>
 nnoremap <silent> gO :jumps<CR>
@@ -407,6 +409,7 @@ nnoremap <silent> gz :buffers<CR>
 nnoremap <silent> gZ :tabs<CR>
 nnoremap <silent> g" :registers<CR>
 nnoremap <silent> g. :marks<CR>
+nnoremap <silent> g: :history<CR>
 " }}}
 nnoremap <silent> h F
 nnoremap <silent> l f
