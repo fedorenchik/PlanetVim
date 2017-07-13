@@ -390,8 +390,9 @@ nnoremap <silent> gC :cclose<CR>
 nnoremap <silent> gl :lopen<CR>
 nnoremap <silent> gL :lclose<CR>
 nnoremap <silent> gS ^vg_y:execute @@<CR>:echo 'Sourced: ' . @@<CR>
+nnoremap <silent> gW Q
+nnoremap <silent> gX gQ
 nnoremap <silent> gy :%y+<CR>
-nnoremap <silent> gX Q
 " }}}
 nnoremap <silent> h F
 nnoremap <silent> l f
