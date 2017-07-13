@@ -369,6 +369,9 @@ nnoremap <silent> <BS> <Nop>
 nnoremap <silent> <CR> :GtagsCursor<CR>
 nnoremap <silent> <F2> :call ToggleFileExplorer()<CR>
 nnoremap <silent> <F4> :VimShellPop<CR><ESC>
+nnoremap <silent> <S-F4> :VimShell -split -split-command=vsplit\ +wincmd\\ l -toggle<CR><ESC>
+nnoremap <silent> <S-F6> :Unite history/yank<CR>
+nnoremap <silent> <S-F7> :Unite -start-insert file_rec/async<CR>
 nnoremap <silent> <F8> <Nop>
 nnoremap <silent> <F9> :TagbarToggle<CR>
 nnoremap <silent> <F10> <Nop>
@@ -448,11 +451,6 @@ nnoremap <silent> <C-P> :UnitePrevious<CR>
 nnoremap <silent> <C-Y> 2<C-Y>
 nnoremap <silent> <C-[> <Nop>
 nnoremap <silent> <C-_> <Nop>
-" }}}
-" Shift Key: {{{
-nnoremap <silent> <S-F4> :VimShell -split -split-command=vsplit\ +wincmd\\ l -toggle<CR><ESC>
-nnoremap <silent> <S-F6> :Unite history/yank<CR>
-nnoremap <silent> <S-F7> :Unite -start-insert file_rec/async<CR>
 " }}}
 " Alt Key: {{{
 nnoremap <silent> <A-F4> :VimShell -split -split-command=tabnew -toggle<CR><ESC>
