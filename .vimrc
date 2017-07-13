@@ -466,8 +466,10 @@ nnoremap <silent> <C-_> <Nop>
 " Alt Key: {{{
 nnoremap <silent> <A-F4> :VimShell -split -split-command=tabnew -toggle<CR><ESC>
 nnoremap <silent> <A-/> /\v\c
-nnoremap <silent> <A-n> :cnewer<CR>
-nnoremap <silent> <A-p> :colder<CR>
+nnoremap <silent> <A-L> :lolder<CR>
+nnoremap <silent> <A-l> :lnewer<CR>
+nnoremap <silent> <A-Q> :colder<CR>
+nnoremap <silent> <A-q> :cnewer<CR>
 " }}}
 " Mouse Keys: {{{
 " When remap mousekeys, they send key events to the active window.
