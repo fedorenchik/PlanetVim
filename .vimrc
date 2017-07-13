@@ -389,7 +389,9 @@ nnoremap <unique> : q:i
 " Standard Vim Mappings: a ^A d D e E f F g ^G h H ^H i I j J k m n N o p P q Q
 " r R s t T u U v V w x 0 8 ] ^] # $ & ' ` * + , - ; < ? ^ _ @ ~ <Down> <End>
 " <Home> <LeftMouse> <MiddleMouse> <RightMouse> <Up>
-" Available To Map: A b B c C G K l L M O S W X y Y z Z 1 2 3 4 5 6 7 9
+" Available To Map: A b B c C G K l L M O S W X y Y z Z 1 2 3 4 5 6 7 9 % [ { }
+" ( = ) ! : > . / \ | "
+nnoremap <silent> gA :args<CR>
 nnoremap <silent> gl :llist<CR>
 nnoremap <silent> gL :lhistory<CR>
 nnoremap <silent> gO :jumps<CR>
@@ -403,6 +405,8 @@ nnoremap <silent> gX gQ
 nnoremap <silent> gy :%y+<CR>
 nnoremap <silent> gz :buffers<CR>
 nnoremap <silent> gZ :tabs<CR>
+nnoremap <silent> g" :registers<CR>
+nnoremap <silent> g. :marks<CR>
 " }}}
 nnoremap <silent> h F
 nnoremap <silent> l f
