@@ -62,3 +62,6 @@
 [submodule ".vim/pack/bundle/start/vim-ingo-library"]
 	path = .vim/pack/bundle/start/vim-ingo-library
 	url = https://github.com/inkarkat/vim-ingo-library.git
+[submodule ".vim/pack/bundle/start/VimCalc3"]
+	path = .vim/pack/bundle/start/VimCalc3
+	url = git@github.com:fedorenchik/VimCalc3.git
