@@ -379,8 +379,8 @@ nnoremap <silent> ' `
 nnoremap <unique> ; :
 nnoremap <unique> : q:i
 " Normal Keys: g...: {{{
-" Standard Vim Mappings: a ^A ^G ^H ^] # $ & ' ` * + , - 0 8 ; < ? D E H I J N P
-" Q R T U V ] ^ _ d e f F g h i j k n m o p q r s t u v w x @ ~ <Down> <End>
+" Standard Vim Mappings: a ^A d D e E f F g ^G h H ^H i I j J k m n N o p P q Q
+" r R s t T u U v V w x 0 8 ] ^] # $ & ' ` * + , - ; < ? ^ _ @ ~ <Down> <End>
 " <Home> <LeftMouse> <MiddleMouse> <RightMouse> <Up>
 nnoremap <silent> gy :%y+<CR>
 nnoremap <silent> gX Q
@@ -392,6 +392,8 @@ nnoremap <silent> N Nzz
 nnoremap <silent> Q gq
 nnoremap <silent> Y y$
 " Normal Keys: z...: {{{
+" Standard Vim Mappings: a A b c C d D e E f F g G h H i j k l L m M n N o O r R
+" s t v w W x X z ^ + - . = <Left> <Right> <CR>
 " }}}
 nnoremap <silent> - <Nop>
 nnoremap <silent> + <Nop>
@@ -440,6 +442,8 @@ nnoremap <silent> <C-K> <C-W>k
 nnoremap <silent> <C-L> <C-W>l
 nnoremap <silent> <C-N> :UniteNext<CR>
 nnoremap <silent> <C-P> :UnitePrevious<CR>
+" Ctrl Key: <C-W>...: {{{
+" }}}
 nnoremap <silent> <C-Y> 2<C-Y>
 nnoremap <silent> <C-[> <Nop>
 nnoremap <silent> <C-_> <Nop>
