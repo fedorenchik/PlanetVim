@@ -385,10 +385,10 @@ nnoremap <unique> : q:i
 " r R s t T u U v V w x 0 8 ] ^] # $ & ' ` * + , - ; < ? ^ _ @ ~ <Down> <End>
 " <Home> <LeftMouse> <MiddleMouse> <RightMouse> <Up>
 " Available To Map: A b B c C G K l L M O S W X y Y z Z 1 2 3 4 5 6 7 9
-nnoremap <silent> gc :copen<CR>
-nnoremap <silent> gC :cclose<CR>
-nnoremap <silent> gl :lopen<CR>
-nnoremap <silent> gL :lclose<CR>
+nnoremap <silent> gl :llist<CR>
+nnoremap <silent> gL :lhistory<CR>
+nnoremap <silent> gq :clist<CR>
+nnoremap <silent> gQ :chistory<CR>
 nnoremap <silent> gS ^vg_y:execute @@<CR>:echo 'Sourced: ' . @@<CR>
 nnoremap <silent> gW Q
 nnoremap <silent> gX gQ
@@ -407,6 +407,10 @@ nnoremap <silent> Y y$
 " }}}
 " Normal Keys: Z...: {{{
 " Standard Vim Mappings: Q Z
+nnoremap <silent> Zc :copen<CR>
+nnoremap <silent> ZC :cclose<CR>
+nnoremap <silent> Zl :lopen<CR>
+nnoremap <silent> ZL :lclose<CR>
 " }}}
 nnoremap <silent> - <Nop>
 nnoremap <silent> + <Nop>
