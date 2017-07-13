@@ -440,6 +440,7 @@ nnoremap <silent> _ <Nop>
 " Standard Vim Mappings: c d D ^D f i I ^I m p P s z # ' ( * ` / [ ] {
 " <MiddleMouse>
 " Vim Unimpaired Mappings: a A b B e f l L ^L n o q Q ^Q t T u x y <Space>
+" Available To Remap: C E F g G h H j J k K M N O r R S U v V w W X Y Z
 nnoremap [1 :call signature#marker#Goto('prev', 1, v:count)<CR>
 nnoremap [2 :call signature#marker#Goto('prev', 2, v:count)<CR>
 nnoremap [3 :call signature#marker#Goto('prev', 3, v:count)<CR>
