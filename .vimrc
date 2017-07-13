@@ -363,6 +363,7 @@ inoremap <silent> <leader>w <C-O>:up<CR>
 " `, d, f, m, q, t.
 " ', ` -- jumping to marks/markers
 " Normal Keys: {{{
+" Available To Remap: f F h j k l Q s S t T U
 nnoremap <silent> <BS> <Nop>
 nnoremap <silent> <CR> :GtagsCursor<CR>
 nnoremap <silent> <F2> :call ToggleFileExplorer()<CR>
