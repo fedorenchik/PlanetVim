@@ -388,8 +388,6 @@ nnoremap <silent> <CR> :GtagsCursor<CR>
 nnoremap <silent> <F2> :call ToggleFileExplorer()<CR>
 nnoremap <silent> <F4> :VimShellPop<CR><ESC>
 nnoremap <silent> <S-F4> :VimShell -split -split-command=vsplit\ +wincmd\\ l -toggle<CR><ESC>
-nnoremap <silent> <S-F6> :Unite history/yank<CR>
-nnoremap <silent> <S-F7> :Unite -start-insert file_rec/async<CR>
 nnoremap <silent> <F8> <Nop>
 nnoremap <silent> <F9> :TagbarToggle<CR>
 nnoremap <silent> <F10> <Nop>
@@ -501,14 +499,11 @@ nnoremap <silent> <C-H> <C-W>h
 nnoremap <silent> <C-J> <C-W>j
 nnoremap <silent> <C-K> <C-W>k
 nnoremap <silent> <C-L> <C-W>l
-nnoremap <silent> <C-N> :UniteNext<CR>
-nnoremap <silent> <C-P> :UnitePrevious<CR>
 " Ctrl Key: <C-W>...: {{{
 " Ctrl Key: <C-W>g...: {{{
 " }}}
 " }}}
 nnoremap <silent> <C-Y> 2<C-Y>
-nnoremap <silent> <C-[> <Nop>
 nnoremap <silent> <C-_> <Nop>
 " Ctrl Key: <C-\>...: {{{
 " }}}
@@ -542,20 +537,6 @@ nnoremap <silent> <A-q> :cnewer<CR>
 " <BS> <Tab> <CR> <Esc> <Space> <Del> <Up> <Down> <Left> <Right> <F1>..<F12>
 " <Insert> <Home> <End> <PageUp> <PageDown>
 nnoremap <silent> <Leader><Space> :set hlsearch! hlsearch?<CR>
-"nnoremap <silent> <Leader><Tab> <Nop>
-"nnoremap <silent> <Leader><Enter> <Nop>
-"nnoremap <silent> <Leader><Backspace> <Nop>
-"nnoremap <silent> <Leader><Esc> <Nop>
-"nnoremap <silent> <Leader>0 <Nop>
-"nnoremap <silent> <Leader>1 <Nop>
-"nnoremap <silent> <Leader>2 <Nop>
-"nnoremap <silent> <Leader>3 <Nop>
-"nnoremap <silent> <Leader>4 <Nop>
-"nnoremap <silent> <Leader>5 <Nop>
-"nnoremap <silent> <Leader>6 <Nop>
-"nnoremap <silent> <Leader>7 <Nop>
-"nnoremap <silent> <Leader>8 <Nop>
-"nnoremap <silent> <Leader>9 <Nop>
 nnoremap <silent> <Leader>a :e #<CR>
 "nnoremap <silent> <Leader>A <Nop>
 nnoremap <silent> <Leader>b :Unite -start-insert -smartcase -buffer-name=unite-buffer buffer<CR>
@@ -689,7 +670,6 @@ inoreabbrev lf leonid@fedorenchik.ru
 inoreabbrev gm leonidsbox@gmail.com
 inoreabbrev cc Copyright (C) 2016 Leonid V. Fedorenchik
 inoreabbrev ssig -- <CR>Leonid V. Fedorenchik
-inoreabbrev fr fedorenchik.ru
 inoreabbrev teh the
 cnoreabbrev unite Unite
 cnoreabbrev calc Calc
