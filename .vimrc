@@ -595,10 +595,10 @@ cnoremap <silent> w!! w !sudo tee % >/dev/null
 " }}}
 " }}}
 " Abbreviations: {{{
-inoreabbrev @lf leonid@fedorenchik.ru
-inoreabbrev @gm leonidsbox@gmail.com
-inoreabbrev @cc Copyright (C) 2016 Leonid V. Fedorenchik
-inoreabbrev @sig -- <CR>Leonid V. Fedorenchik
+"inoreabbrev @lf leonid@fedorenchik.ru
+"inoreabbrev @gm leonidsbox@gmail.com
+"inoreabbrev @cc Copyright (C) 2016 Leonid V. Fedorenchik
+"inoreabbrev @sig -- <CR>Leonid V. Fedorenchik
 inoreabbrev teh the
 cnoreabbrev unite Unite
 cnoreabbrev calc Calc
