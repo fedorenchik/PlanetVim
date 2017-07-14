@@ -341,15 +341,15 @@ let maplocalleader="\\"
 " Cannot distinguish between <Enter> and <C-M>.
 " }}}
 " Insert Mode: {{{
-" Standard Vim Mappings: <BS> <Tab> <CR> <Esc> <Del>
 " Standard Vim Mappings i_^: @ A C D E F G H I J K L M N O P Q R
 " S T U V W X Y Z [ \ ] ^ _
-" Available To Remap: @ A B E J L M Q S Y Z _ <F1>..<F12>
+" Available To Remap: @ A B E J L M Q S Y Z _ <F2>..<F12>
 inoremap <silent> <C-@> <Nop>
 inoremap <silent> <C-A> <Nop>
 inoremap <silent> <C-B> <Nop>
 inoremap <silent> <C-E> <C-R>=pumvisible() ? "\<lt>C-E>" : "\<lt>Esc>"<CR>
 " Insert Mode i_^G: {{{
+" Standard Vim Mappings: j ^J k ^K u U <Up> <Down>
 " }}}
 "inoremap <silent> <C-J> <Nop>
 inoremap <silent> <C-L> <Nop>
@@ -358,6 +358,8 @@ inoremap <silent> <C-Q> <Nop>
 inoremap <silent> <C-R><C-D> <Esc>:Unite register<CR>
 inoremap <silent> <C-S> <Nop>
 " Insert Mode i_^X: {{{
+" Standard Vim Mappings ^: D E F I K L N O P S T U V Y ]
+" Available To Map: A B C G H J M Q R W X Z
 " }}}
 inoremap <silent> <C-Y> <C-R>=pumvisible() ? "\<lt>C-Y>" : "\<lt>Esc>"<CR>
 inoremap <silent> <C-Z> <Nop>
@@ -376,6 +378,9 @@ inoremap <silent> <leader>w <C-O>:up<CR>
 " Standard Text Objects: b B p s t w W [ { } ( ) ] ` < > ' "
 " Normal Keys: {{{
 " Available To Remap: f F h j k l Q s S t T U
+" TODO: 1. Make f F t T search multiline
+" TODO: 2. Make h l behave like f F but input 2 characters
+" TODO: 3. Make j k behave like f F but input 3 characters
 nnoremap <silent> <BS> <Nop>
 nnoremap <silent> <CR> :GtagsCursor<CR>
 nnoremap <silent> <F2> :call ToggleFileExplorer()<CR>
