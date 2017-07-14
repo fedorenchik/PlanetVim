@@ -263,7 +263,7 @@ set nostartofline
 set suffixes-=.h
 set swapfile
 set swapsync=
-set switchbuf=newtab
+set switchbuf=
 set synmaxcol=300
 set tabline&
 set tabstop=8
