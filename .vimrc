@@ -618,6 +618,7 @@ if exists("+omnifunc")
 				\ endif
 endif
 autocmd BufRead */linux/*.[ch] setlocal tags+=$HOME/.vim/linuxtags
+autocmd BufRead */linux/*.h setlocal filetype=c
 autocmd FileType c,cpp setlocal tags+=$HOME/.vim/ctags
 autocmd FileType c setlocal foldmethod=syntax
 autocmd FileType cpp setlocal define=^\\(#\\s*define\\|[a-z]*\\s*const\\s*[a-z]*\\)
