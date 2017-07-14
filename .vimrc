@@ -525,6 +525,11 @@ nnoremap <silent> <A-q> :cnewer<CR>
 "nnoremap <silent> <A-ScrollWheelDown> <Nop>
 " }}}
 " Leader: {{{
+" Available To Map: a A b B c C d D e E f F g G h H i I j J k K l L m M n N o O
+" p P q Q r R s S t T u U v V w W x X y Y z Z 0 1 2 3 4 5 6 7 8 9
+" $ ~ & % [ { } ( = * ) + ] ! # ` ; : , < . > / ? @ ^ \ | - _ ' "
+" <BS> <Tab> <CR> <Esc> <Space> <Del> <Up> <Down> <Left> <Right> <F1>..<F12>
+" <Insert> <Home> <End> <PageUp> <PageDown>
 nnoremap <silent> <Leader><Space> :set hlsearch! hlsearch?<CR>
 "nnoremap <silent> <Leader><Tab> <Nop>
 "nnoremap <silent> <Leader><Enter> <Nop>
