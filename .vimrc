@@ -273,7 +273,6 @@ set taglength&
 set tagrelative
 set tags-=./TAGS
 set tags-=TAGS
-set tags+=$HOME/.vim/ctags,$HOME/.vim/cpptags,$HOME/.vim/linuxtags
 set tagstack
 set termguicolors
 set textwidth=80
@@ -618,8 +617,11 @@ if exists("+omnifunc")
 				\   setlocal omnifunc=syntaxcomplete#Complete |
 				\ endif
 endif
+autocmd BufRead */linux/*.[ch] setlocal tags+=$HOME/.vim/linuxtags
+autocmd FileType c,cpp setlocal tags+=$HOME/.vim/ctags
 autocmd FileType c setlocal foldmethod=syntax
 autocmd FileType cpp setlocal define=^\\(#\\s*define\\|[a-z]*\\s*const\\s*[a-z]*\\)
+autocmd FileType cpp setlocal tags+=$HOME/.vim/cpptags
 autocmd FileType html setlocal clipboard=autoselect,autoselectml,html,exclude:cons\|linux
 autocmd FileType sh setlocal formatoptions-=t formatoptions+=croql
 autocmd FileType text setlocal textwidth=72 linebreak breakindent
