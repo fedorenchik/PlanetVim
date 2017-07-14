@@ -349,9 +349,9 @@ inoremap <silent> <C-B> <Nop>
 inoremap <silent> <C-E> <C-R>=pumvisible() ? "\<lt>C-E>" : "\<lt>Esc>"<CR>
 " Insert Mode i_^G: {{{
 " }}}
-inoremap <silent> <C-J> <Nop>
+"inoremap <silent> <C-J> <Nop>
 inoremap <silent> <C-L> <Nop>
-inoremap <silent> <C-M> <Nop>
+"inoremap <silent> <C-M> <Nop>
 inoremap <silent> <C-Q> <Nop>
 inoremap <silent> <C-R><C-D> <Esc>:Unite register<CR>
 inoremap <silent> <C-S> <Nop>
