@@ -341,8 +341,9 @@ let maplocalleader="\\"
 " Cannot distinguish between <Enter> and <C-M>.
 " }}}
 " Insert Mode: {{{
-" Standard Vim Mappings:
-" Available To Remap:
+" Standard Vim Mappings i_^: @ A C D E F G <BS> H <Tab> I J K L <CR> M N O P Q R
+" S T U V W X Y Z <Esc>
+" Available To Remap: @ A B E J L M Q S Y Z
 inoremap <silent> <C-@> <Nop>
 inoremap <silent> <C-A> <Nop>
 inoremap <silent> <C-B> <Nop>
