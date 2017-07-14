@@ -538,31 +538,20 @@ nnoremap <silent> <A-q> :cnewer<CR>
 " <Insert> <Home> <End> <PageUp> <PageDown>
 nnoremap <silent> <Leader><Space> :set hlsearch! hlsearch?<CR>
 nnoremap <silent> <Leader>a :e #<CR>
-"nnoremap <silent> <Leader>A <Nop>
 nnoremap <silent> <Leader>b :Unite -start-insert -smartcase -buffer-name=unite-buffer buffer<CR>
-"nnoremap <silent> <Leader>B <Nop>
 nnoremap <silent> <Leader>c :Unite -buffer-name=unite-quickfix quickfix<CR>
 nnoremap <silent> <Leader>C :Unite -no-resize -no-split -buffer-name=unite-quickfix quickfix<CR>
-"nnoremap <silent> <Leader>d <Nop>
-"nnoremap <silent> <Leader>D <Nop>
 nnoremap <silent> <Leader>e :Unite -start-insert -no-resize -no-split -buffer-name=unite-file file<CR>
-"nnoremap <silent> <Leader>E <Nop>
 nnoremap <silent> <Leader>f :Unite -start-insert -smartcase -buffer-name=unite-file file:`expand('%:p:h')`<CR>
 nnoremap <silent> <Leader>F :Unite -start-insert -smartcase -buffer-name=unite-file file_rec/async<CR>
 nnoremap <silent> <Leader>g :GtagsCursor<CR>:Unite -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
 nnoremap <silent> <Leader>G :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/context<CR>
 nnoremap <silent> <Leader>h :VimShellPop -buffer-name=vimshell<CR>
-"nnoremap <silent> <Leader>H <Nop>
 nnoremap <silent> <Leader>i :Unite -start-insert -buffer-name=unite-line<CR>
-"nnoremap <silent> <Leader>I <Nop>
 nnoremap <silent> <Leader>j :Unite -start-insert -smartcase -buffer-name=unite-jump jump<CR>
-"nnoremap <silent> <Leader>J <Nop>
 nnoremap <silent> <Leader>k :Unite -start-insert -smartcase -buffer-name=unite-mark mark<CR>
-"nnoremap <silent> <Leader>K <Nop>
 nnoremap <silent> <Leader>l :Unite -buffer-name=unite-location-list location_list<CR>
-"nnoremap <silent> <Leader>L <Nop>
 nmap <silent> <unique> <Leader>m <Plug>MarkSet
-"nnoremap <silent> <Leader>M <Nop>
 nmap <silent> <Leader>n <Plug>MarkSearchCurrentNext
 nmap <silent> <Leader>N <Plug>MarkSearchCurrentPrev
 nnoremap <silent> <Leader>o :Unite -start-insert -smartcase outline<CR>
@@ -576,73 +565,14 @@ nnoremap <silent> <Leader>R :Unite -start-insert -smartcase -buffer-name=unite-r
 nnoremap <silent> <Leader>s :Unite -start-insert -smartcase -buffer-name=unite-grep grep:%::`expand('<cword>')`<CR>
 nnoremap <silent> <Leader>S :Scratch<CR>
 nnoremap <silent> <Leader>t :Unite -start-insert -smartcase -buffer-name=unite-tab tab<CR>
-"nnoremap <silent> <Leader>T <Nop>
 nnoremap <silent> <Leader>u :UniteResume<CR>
-"nnoremap <silent> <Leader>U <Nop>
-"nnoremap <silent> <Leader>v <Nop>
-"nnoremap <silent> <Leader>V <Nop>
 nnoremap <silent> <Leader>w :confirm up<CR>
 nnoremap <silent> <Leader>W :confirm wa<CR>
-"nnoremap <silent> <Leader>x <Nop>
-"nnoremap <silent> <Leader>X <Nop>
-"nnoremap <silent> <Leader>y <Nop>
-"nnoremap <silent> <Leader>Y <Nop>
-"nnoremap <silent> <Leader>z <Nop>
-"nnoremap <silent> <Leader>Z <Nop>
 nnoremap <silent> <Leader>; ,
-"nnoremap <silent> <Leader>: <Nop>
-"nnoremap <silent> <Leader>, <Nop>
-"nnoremap <silent> <Leader>< <Nop>
-"nnoremap <silent> <Leader>. <Nop>
-"nnoremap <silent> <Leader>> <Nop>
 nmap <silent> <Leader>/ <Plug>MarkSearchAnyNext
 nmap <silent> <Leader>? <Plug>MarkSearchAnyPrev
-"nnoremap <silent> <Leader>@ <Nop>
-"nnoremap <silent> <Leader>^ <Nop>
-"nnoremap <silent> <Leader>\ <Nop>
-"nnoremap <silent> <Leader><Bar> <Nop>
 nnoremap <silent> <Leader>- :Unite -start-insert -smartcase -buffer-name=unite-window window:no-current<CR>
 nnoremap <silent> <Leader>_ :Unite -start-insert -smartcase -buffer-name=unite-window window/gui<CR>
-"nnoremap <silent> <Leader>' <Nop>
-"nnoremap <silent> <Leader>" <Nop>
-"nnoremap <silent> <Leader>$ <Nop>
-"nnoremap <silent> <Leader>~ <Nop>
-"nnoremap <silent> <Leader>& <Nop>
-"nnoremap <silent> <Leader>% <Nop>
-"nnoremap <silent> <Leader># :e #<CR>
-"nnoremap <silent> <Leader>` <Nop>
-"nnoremap <silent> <Leader>[ <Nop>
-"nnoremap <silent> <Leader>{ <Nop>
-"nnoremap <silent> <Leader>} <Nop>
-"nnoremap <silent> <Leader>( <Nop>
-"nnoremap <silent> <Leader>= <Nop>
-"nnoremap <silent> <Leader>* <Nop>
-"nnoremap <silent> <Leader>) <Nop>
-"nnoremap <silent> <Leader>+ <Nop>
-"nnoremap <silent> <Leader>] <Nop>
-"nnoremap <silent> <Leader>! <Nop>
-"nnoremap <silent> <Leader><Up> <Nop>
-"nnoremap <silent> <Leader><Down> <Nop>
-"nnoremap <silent> <Leader><Left> <Nop>
-"nnoremap <silent> <Leader><Right> <Nop>
-"nnoremap <silent> <Leader><Home> <Nop>
-"nnoremap <silent> <Leader><End> <Nop>
-"nnoremap <silent> <Leader><PageUp> <Nop>
-"nnoremap <silent> <Leader><PageDown> <Nop>
-"nnoremap <silent> <Leader><Insert> <Nop>
-"nnoremap <silent> <Leader><Delete> <Nop>
-"nnoremap <silent> <Leader><F1> <Nop>
-"nnoremap <silent> <Leader><F2> <Nop>
-"nnoremap <silent> <Leader><F3> <Nop>
-"nnoremap <silent> <Leader><F4> <Nop>
-"nnoremap <silent> <Leader><F5> <Nop>
-"nnoremap <silent> <Leader><F6> <Nop>
-"nnoremap <silent> <Leader><F7> <Nop>
-"nnoremap <silent> <Leader><F8> <Nop>
-"nnoremap <silent> <Leader><F9> <Nop>
-"nnoremap <silent> <Leader><F10> <Nop>
-"nnoremap <silent> <Leader><F11> <Nop>
-"nnoremap <silent> <Leader><F12> <Nop>
 " }}}
 " }}}
 " Visual Mode: {{{
@@ -666,15 +596,14 @@ cnoremap <silent> w!! w !sudo tee % >/dev/null
 " }}}
 " }}}
 " Abbreviations: {{{
-inoreabbrev lf leonid@fedorenchik.ru
-inoreabbrev gm leonidsbox@gmail.com
-inoreabbrev cc Copyright (C) 2016 Leonid V. Fedorenchik
-inoreabbrev ssig -- <CR>Leonid V. Fedorenchik
+inoreabbrev @lf leonid@fedorenchik.ru
+inoreabbrev @gm leonidsbox@gmail.com
+inoreabbrev @cc Copyright (C) 2016 Leonid V. Fedorenchik
+inoreabbrev @sig -- <CR>Leonid V. Fedorenchik
 inoreabbrev teh the
 cnoreabbrev unite Unite
 cnoreabbrev calc Calc
 cnoreabbrev gblame Gblame
-cnoreabbrev gt Gtags
 cnoreabbrev gtags Gtags
 cnoreabbrev grep grep -IarFw
 cnoreabbrev split rightbelow split
