@@ -1,8 +1,9 @@
 *~
+.session.vim
+.viminfo
 GPATH
 GRTAGS
 GTAGS
-.session.vim
-.viminfo
 Session.vim
+makefile
 tags
