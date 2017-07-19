@@ -49,7 +49,6 @@ c_headers := $(addprefix /usr/include/,$(addsuffix .h,$(c_headers)))
 
 sync-home:
 	cd .vim/pack/bundle/start/vimproc.vim && make
-	cd .vim/pack/bundle/opt/gdbmgr.vim/gdbmgr/src && make
 	for file in $(FILES); do $(RSYNC) $(RSYNC_OPTIONS) $$file $(HOME)/$$file; done
 	vim -c 'helptags ALL' -c 'q'
 	ctags -R -f ~/.vim/ctags $(c_headers)
