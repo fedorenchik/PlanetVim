@@ -65,6 +65,6 @@
 [submodule ".vim/pack/bundle/start/gtags.vim"]
 	path = .vim/pack/bundle/start/gtags.vim
 	url = git@github.com:fedorenchik/gtags.vim.git
-[submodule ".vim/pack/bundle/start/clang_complete"]
-	path = .vim/pack/bundle/start/clang_complete
-	url = https://github.com/Rip-Rip/clang_complete.git
+[submodule ".vim/pack/bundle/start/OmniCppComplete"]
+	path = .vim/pack/bundle/start/OmniCppComplete
+	url = git@github.com:fedorenchik/OmniCppComplete.git
