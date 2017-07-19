@@ -40,20 +40,20 @@ help:
 
 sync: sync-home
 
-c_headers := assert complex ctype errno fenv float inttypes iso646 limits \
-	locale math setjmp signal stdalign stdarg stdatomic stdbool stddef \
-	stdint stdio stdlib stdnoreturn string tgmath threads time uchar \
-	wchar wctype
+#c_headers := assert complex ctype errno fenv float inttypes iso646 limits \
+#	locale math setjmp signal stdalign stdarg stdatomic stdbool stddef \
+#	stdint stdio stdlib stdnoreturn string tgmath threads time uchar \
+#	wchar wctype
 
-c_headers := $(addprefix /usr/include/,$(addsuffix .h,$(c_headers)))
+#c_headers := $(addprefix /usr/include/,$(addsuffix .h,$(c_headers)))
 
 sync-home:
 	cd .vim/pack/bundle/start/vimproc.vim && make
 	for file in $(FILES); do $(RSYNC) $(RSYNC_OPTIONS) $$file $(HOME)/$$file; done
 	vim -c 'helptags ALL' -c 'q'
-	ctags -R -f ~/.vim/ctags $(c_headers)
-	ctags -R -f ~/.vim/cpptags /usr/include/c++
-	ctags -R -f ~/.vim/linuxtags /usr/include/linux
+#	ctags -R -f ~/.vim/ctags $(c_headers)
+#	ctags -R -f ~/.vim/cpptags /usr/include/c++
+#	ctags -R -f ~/.vim/linuxtags /usr/include/linux
 
 commit:
 	git submodule sync --recursive

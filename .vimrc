@@ -790,12 +790,6 @@ let g:Gitv_OpenHorizontal = 1
 " Plugin: gtags {{{
 let g:Gtags_OpenQuickfixWindow = 0
 " }}}
-" Plugin: OmniCppComplete {{{
-let OmniCpp_NamespaceSearch = 2
-let OmniCpp_DisplayMode = 0
-let OmniCpp_ShowPrototypeInAbbr = 1
-let OmniCpp_LocalSearchDecl = 1
-" }}}
 " Plugin: signature {{{
 let g:SignatureMap = {
         \ 'Leader'             :  "m",
