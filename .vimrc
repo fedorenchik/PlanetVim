@@ -781,6 +781,9 @@ let g:airline#extensions#wordcount#enabled = 0
 let g:airline#extensions#whitespace#enabled = 0
 let g:airline#extensions#tabline#enabled = 0
 " }}}
+" Plugin: clang_complete {{{
+let g:clang_library_path = '/usr/lib/llvm-3.9/lib'
+" }}}
 " Plugin: gitv {{{
 let g:Gitv_OpenHorizontal = 1
 " }}}
