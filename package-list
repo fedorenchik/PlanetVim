@@ -40,7 +40,6 @@ patch
 picocom
 pkg-config
 ppa-purge
-python2.7-dev
 python-dev
 python3-dev
 subversion

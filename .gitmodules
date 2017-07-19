@@ -68,6 +68,3 @@
 [submodule ".vim/pack/bundle/start/gtags.vim"]
 	path = .vim/pack/bundle/start/gtags.vim
 	url = git@github.com:fedorenchik/gtags.vim.git
-[submodule ".vim/pack/bundle/start/YouCompleteMe"]
-	path = .vim/pack/bundle/start/YouCompleteMe
-	url = https://github.com/Valloric/YouCompleteMe.git

@@ -612,11 +612,11 @@ cnoreabbrev vsplit rightbelow vsplit
 if has("autocmd")
 augroup autocommands
 autocmd!
-if exists("+omnifunc")
-	autocmd Filetype * if &omnifunc == "" |
-				\   setlocal omnifunc=syntaxcomplete#Complete |
-				\ endif
-endif
+"if exists("+omnifunc")
+"	autocmd Filetype * if &omnifunc == "" |
+"				\   setlocal omnifunc=syntaxcomplete#Complete |
+"				\ endif
+"endif
 autocmd BufRead */linux/*.[ch] setlocal tags+=$HOME/.vim/linuxtags
 autocmd BufRead */linux/*.h setlocal filetype=c
 autocmd FileType c,cpp setlocal tags+=$HOME/.vim/ctags
