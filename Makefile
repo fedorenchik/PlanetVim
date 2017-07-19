@@ -78,3 +78,5 @@ uninstall:
 
 cycle: commit pull push sync-home
 	notify-send --urgency=low --icon=terminal "homerc" "Updated"
+
+.PHONY: all help sync sync-home commit push pull install uninstall cycle

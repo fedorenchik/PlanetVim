@@ -614,17 +614,17 @@ cnoreabbrev vsplit rightbelow vsplit
 if has("autocmd")
 augroup autocommands
 autocmd!
-"if exists("+omnifunc")
-"	autocmd Filetype * if &omnifunc == "" |
-"				\   setlocal omnifunc=syntaxcomplete#Complete |
-"				\ endif
-"endif
-"autocmd BufRead */linux/*.[ch] setlocal tags+=$HOME/.vim/linuxtags
+if exists("+omnifunc")
+	autocmd Filetype * if &omnifunc == "" |
+				\   setlocal omnifunc=syntaxcomplete#Complete |
+				\ endif
+endif
+autocmd BufRead */linux/*.[ch] setlocal tags+=$HOME/.vim/linuxtags
 autocmd BufRead */linux/*.h setlocal filetype=c
-"autocmd FileType c,cpp setlocal tags+=$HOME/.vim/ctags
+autocmd FileType c,cpp setlocal tags+=$HOME/.vim/ctags
 autocmd FileType c setlocal foldmethod=syntax
 autocmd FileType cpp setlocal define=^\\(#\\s*define\\|[a-z]*\\s*const\\s*[a-z]*\\)
-"autocmd FileType cpp setlocal tags+=$HOME/.vim/cpptags
+autocmd FileType cpp setlocal tags+=$HOME/.vim/cpptags
 autocmd FileType html setlocal clipboard=autoselect,autoselectml,html,exclude:cons\|linux
 autocmd FileType sh setlocal formatoptions-=t formatoptions+=croql
 autocmd FileType text setlocal textwidth=72 linebreak breakindent
