@@ -787,10 +787,10 @@ let g:Gitv_OpenHorizontal = 1
 " Plugin: gtags {{{
 let g:Gtags_OpenQuickfixWindow = 0
 " }}}
-" Plugin: mark-2.8.5 {{{
-let g:mwDefaultHighlightingPalette = 'maximum'
-let g:mwAutoLoadMarks = 0
-let g:mwAutoSaveMarks = 0
+" Plugin: OmniCppComplete {{{
+let OmniCpp_NamespaceSearch = 2
+let OmniCpp_DisplayMode = 0
+let OmniCpp_ShowPrototypeInAbbr = 1
 " }}}
 " Plugin: signature {{{
 let g:SignatureMap = {
@@ -836,6 +836,11 @@ let g:undotree_WindowLayout=4
 " }}}
 " Plugin: vim-cpp-enhanced-highlight {{{
 let g:cpp_no_function_highlight=1
+" }}}
+" Plugin: vim-mark {{{
+let g:mwDefaultHighlightingPalette = 'maximum'
+let g:mwAutoLoadMarks = 0
+let g:mwAutoSaveMarks = 0
 " }}}
 " Plugin: vimshell {{{
 let g:vimshell_prompt = '$ '
