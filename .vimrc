@@ -617,12 +617,12 @@ autocmd!
 "				\   setlocal omnifunc=syntaxcomplete#Complete |
 "				\ endif
 "endif
-autocmd BufRead */linux/*.[ch] setlocal tags+=$HOME/.vim/linuxtags
+"autocmd BufRead */linux/*.[ch] setlocal tags+=$HOME/.vim/linuxtags
 autocmd BufRead */linux/*.h setlocal filetype=c
-autocmd FileType c,cpp setlocal tags+=$HOME/.vim/ctags
+"autocmd FileType c,cpp setlocal tags+=$HOME/.vim/ctags
 autocmd FileType c setlocal foldmethod=syntax
 autocmd FileType cpp setlocal define=^\\(#\\s*define\\|[a-z]*\\s*const\\s*[a-z]*\\)
-autocmd FileType cpp setlocal tags+=$HOME/.vim/cpptags
+"autocmd FileType cpp setlocal tags+=$HOME/.vim/cpptags
 autocmd FileType html setlocal clipboard=autoselect,autoselectml,html,exclude:cons\|linux
 autocmd FileType sh setlocal formatoptions-=t formatoptions+=croql
 autocmd FileType text setlocal textwidth=72 linebreak breakindent
@@ -784,6 +784,7 @@ let g:airline#extensions#tabline#enabled = 0
 " Plugin: clang_complete {{{
 let g:clang_library_path = '/usr/lib/llvm-3.9/lib'
 let g:clang_user_options = '-std=c++1z'
+let g:clang_complete_macros = 1
 " }}}
 " Plugin: gitv {{{
 let g:Gitv_OpenHorizontal = 1
@@ -825,9 +826,9 @@ let g:SignatureForceMarkPlacement = 1
 let g:SignatureForceMarkerPlacement = 1
 " }}}
 " Plugin: tagbar {{{
-let g:tagbar_sort=0			" do not sort tags by name
-let g:tagbar_compact=1			" compact layout
-let g:tagbar_autofocus=0		" do not move cursor to Tagbar
+let g:tagbar_sort=0
+let g:tagbar_compact=1
+let g:tagbar_autofocus=0
 let g:tagbar_type_make = { 'kinds':[ 'm:macros', 't:targets' ] }
 " }}}
 " Plugin: undotree {{{
