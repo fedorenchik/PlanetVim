@@ -22,6 +22,7 @@ cvs
 exfat-fuse
 exfat-utils
 flex
+ftp-upload
 g++
 gawk
 git-all
