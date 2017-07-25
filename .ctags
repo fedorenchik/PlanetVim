@@ -3,6 +3,7 @@
 --extras=Ffpq
 --fields=afiklmsSt
 --if0=yes
+--languages=c++,c
 --regex-make=/^([^# \t]*):/\1/t,target/
 --c-kinds=defglmpstuvxzL
 --c++-kinds=defglmpstuvxzLcnAN
