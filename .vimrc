@@ -502,8 +502,6 @@ nnoremap <silent> <C-L> <C-W>l
 " Ctrl Key: <C-W>g...: {{{
 " }}}
 " }}}
-" Ctrl Key: <C-X>...: {{{
-" }}}
 nnoremap <silent> <C-Y> 2<C-Y>
 nnoremap <silent> <C-_> <Nop>
 " Ctrl Key: <C-\>...: {{{
