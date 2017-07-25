@@ -1,7 +1,8 @@
 --exclude=.git
---exclude=@~/.cvsignore
 --excmd=mixed
 --extras=Ffpq
 --fields=afiklmsSt
+--if0=yes
 --regex-make=/^([^# \t]*):/\1/t,target/
---c++-kinds=+p
+--c-kinds=defglmpstuvxzL
+--c++-kinds=defglmpstuvxzLcnAN
