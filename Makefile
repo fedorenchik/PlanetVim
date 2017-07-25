@@ -52,7 +52,7 @@ sync-home:
 	for file in $(FILES); do $(RSYNC) $(RSYNC_OPTIONS) $$file $(HOME)/$$file; done
 	vim -c 'helptags ALL' -c 'q'
 	ctags -R -f ~/.vim/ctags $(c_headers)
-	ctags -R -f ~/.vim/cpptags /usr/include/c++
+	ctags -R -f ~/.vim/cpptags /usr/include/c++/6
 	ctags -R -f ~/.vim/linuxtags /usr/include/linux
 
 commit:
