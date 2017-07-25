@@ -15,6 +15,7 @@ chrpath
 clipit
 cmake
 cppcheck
+cppman
 crash
 ctags
 curl
