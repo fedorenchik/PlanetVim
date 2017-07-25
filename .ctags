@@ -1,6 +1,7 @@
 --exclude=.git
 --exclude=@~/.cvsignore
+--excmd=mixed
+--extras=Ffpq
+--fields=afiklmsSt
 --regex-make=/^([^# \t]*):/\1/t,target/
 --c++-kinds=+p
---fields=+iaS
---extra=+q
