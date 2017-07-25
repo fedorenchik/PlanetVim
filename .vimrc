@@ -787,6 +787,7 @@ let g:airline#extensions#tabline#enabled = 0
 let g:clang_library_path = '/usr/lib/llvm-3.9/lib'
 let g:clang_user_options = '-std=c++1z'
 let g:clang_complete_macros = 1
+let g:clang_omnicppcomplete_compliance = 1
 " }}}
 " Plugin: gitv {{{
 let g:Gitv_OpenHorizontal = 1
