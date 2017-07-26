@@ -826,6 +826,7 @@ let g:SignatureForceMarkPlacement = 1
 let g:SignatureForceMarkerPlacement = 1
 " }}}
 " Plugin: tagbar {{{
+let g:tagbar_ctags_bin = '/usr/local/bin/ctags'
 let g:tagbar_sort=0
 let g:tagbar_compact=1
 let g:tagbar_autofocus=0
