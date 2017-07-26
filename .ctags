@@ -6,5 +6,5 @@
 --languages=c++,c
 --sort=yes
 --regex-make=/^([^# \t]*):/\1/t,target/
---c-kinds=defglmpstuvxzL
---c++-kinds=defglmpstuvxzLcnAN
+--c-kinds=defghlmpstuvxzL
+--c++-kinds=defghlmpstuvxzLcnANU
