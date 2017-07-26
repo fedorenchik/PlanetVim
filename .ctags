@@ -4,6 +4,7 @@
 --fields=afiklmsSt
 --if0=yes
 --languages=c++,c
+--sort=yes
 --regex-make=/^([^# \t]*):/\1/t,target/
 --c-kinds=defglmpstuvxzL
 --c++-kinds=defglmpstuvxzLcnAN
