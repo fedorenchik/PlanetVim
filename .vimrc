@@ -448,10 +448,10 @@ nnoremap <silent> - <Nop>
 nnoremap <silent> + <Nop>
 nnoremap <silent> _ <Nop>
 " Normal Keys: [...: {{{
-" Standard Vim Mappings: c d D ^D f i I ^I m p P s z # ' ( * ` / [ ] {
+" Standard Vim Mappings: c d D ^D f i I ^I m p P s S z # ' ( * ` / [ ] {
 " <MiddleMouse>
 " Vim Unimpaired Mappings: a A b B e f l L ^L n o q Q ^Q t T u x y <Space>
-" Available To Remap: C E F g G h H j J k K M N O r R S U v V w W X Y Z 0 1 2 3
+" Available To Remap: C E F g G h H j J k K M N O r R U v V w W X Y Z 0 1 2 3
 " 4 5 6 7 8 9 $ ~ & % } = ) + ! ; : , < . > ? @ ^ \ | - _ "
 nnoremap [1 :call signature#marker#Goto('prev', 1, v:count)<CR>
 nnoremap [2 :call signature#marker#Goto('prev', 2, v:count)<CR>
@@ -465,10 +465,10 @@ nnoremap [9 :call signature#marker#Goto('prev', 9, v:count)<CR>
 nnoremap [0 :call signature#marker#Goto('prev', 0, v:count)<CR>
 " }}}
 " Normal Keys: ]...: {{{
-" Standard Vim Mappings: c d D ^D f i I ^I m p P s z # ' ) * ` / [ ] }
+" Standard Vim Mappings: c d D ^D f i I ^I m p P s S z # ' ) * ` / [ ] }
 " <MiddleMouse>
 " Vim Unimpaired Mappings: a A b B e f l L ^L n o q Q ^Q t T u x y <Space>
-" Available To Remap: C E F g G h H j J k K M N O r R S U v V w W X Y Z 0 1 2 3
+" Available To Remap: C E F g G h H j J k K M N O r R U v V w W X Y Z 0 1 2 3
 " 4 5 6 7 8 9 $ ~ & % } = ) + ! ; : , < . > ? @ ^ \ | - _ "
 nnoremap ]1 :call signature#marker#Goto('next', 1, v:count)<CR>
 nnoremap ]2 :call signature#marker#Goto('next', 2, v:count)<CR>
