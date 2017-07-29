@@ -722,6 +722,9 @@ let g:html_prevent_copy = "fn"
 let g:html_hover_unfold = 0
 let g:html_pre_wrap = 1
 " }}}
+" spell/ {{{
+let g:spell_clean_limit = 60 * 60
+" }}}
 " syntax/c.vim {{{
 let c_gnu = 1
 let c_comment_strings = 1

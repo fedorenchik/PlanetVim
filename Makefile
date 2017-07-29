@@ -51,6 +51,7 @@ sync-home:
 	cd .vim/pack/bundle/start/vimproc.vim && make
 	for file in $(FILES); do $(RSYNC) $(RSYNC_OPTIONS) $$file $(HOME)/$$file; done
 	vim -c 'helptags ALL' -c 'q'
+	vim -c 'runtime spell/cleanadd.vim' -c 'q'
 	ctags --language-force=c -R -f ~/.vim/ctags $(c_headers)
 	ctags --language-force=c++ -R -f ~/.vim/cpptags /usr/include/c++/6
 	ctags --language-force=c -R -f ~/.vim/linuxtags /usr/include/linux
