@@ -431,8 +431,8 @@ nnoremap <silent> Q gq
 nnoremap <silent> Y y$
 " Normal Keys: z...: {{{
 " Standard Vim Mappings: a A b c C d D e E f F g G h H i j k l L m M n N o O r R
-" s t v w W x X z ^ + - . = <Left> <Right> <CR>
-" Available To Map: B I J K p P q Q S T u U V y Y Z $ ~ & % [ { } ( * ) ] ! # `
+" s t u v w W x X z ^ + - . = <Left> <Right> <CR>
+" Available To Map: B I J K p P q Q S T U V y Y Z $ ~ & % [ { } ( * ) ] ! # `
 " ; : , < > / ? @ \ | _ ' "
 " }}}
 " Normal Keys: Z...: {{{
