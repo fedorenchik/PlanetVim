@@ -253,10 +253,9 @@ set smartindent
 set smarttab
 set softtabstop=8
 set spell&
-set spellcapcheck&
 set spellfile&
 set spelllang+=cjk
-set spellsuggest&
+set spellsuggest=fast,10
 set nosplitbelow
 set nosplitright
 set nostartofline
