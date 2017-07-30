@@ -679,6 +679,9 @@ runtime ftplugin/changelog.vim
 runtime! ftplugin/man.vim
 let g:ft_man_folding_enable = 1
 " }}}
+" ftplugin/spec.vim {{{
+let spec_chglog_release_info = 1
+" }}}
 " pack/dist/opt/editexisting/ {{{
 packadd! editexisting
 " }}}
