@@ -608,7 +608,7 @@ cnoreabbrev vsplit rightbelow vsplit
 " }}}
 " Autocommands: {{{
 if has("autocmd")
-augroup autocommands
+augroup vimrc
 autocmd!
 if exists("+omnifunc")
 	autocmd Filetype * if &omnifunc == "" |
