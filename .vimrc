@@ -669,6 +669,9 @@ function! ToggleFileExplorer()
 endfunction
 " }}}
 " $VIMRUNTIME/ {{{
+" filetype.vim {{{
+let g:bash_is_sh = 1
+" }}}
 " ftplugin/man.vim {{{
 runtime! ftplugin/man.vim
 " }}}
