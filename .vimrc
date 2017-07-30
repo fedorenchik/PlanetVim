@@ -648,14 +648,8 @@ endif
 " file it was loaded from, thus the changes you made.
 " Only define it when not defined already.
 if !exists(":DiffOrig")
-	command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
-				\ | wincmd p | diffthis
-endif
-if !exists(":EasyModeOn")
-	command EasyModeOn call StandardMoveMappings()
-endif
-if !exists(":EasyModeOff")
-	command EasyModeOff call EfficientMoveMappings()
+	command DiffOrig vertical new | setlocal buftype=nofile | r ++edit # |
+				\ 0d_ | diffthis | wincmd p | diffthis
 endif
 " }}}
 " Functions: {{{
@@ -665,22 +659,6 @@ function! FoldColumnToggle()
 	else
 		setlocal foldcolumn=4
 	endif
-endfunction
-function! StandardMoveMappings()
-	nunmap <silent> h
-	nunmap <silent> l
-	nunmap <silent> <down>
-	nunmap <silent> <left>
-	nunmap <silent> <right>
-	nunmap <silent> <up>
-endfunction
-function! EfficientMoveMappings()
-	nnoremap <silent> h F
-	nnoremap <silent> l f
-	nnoremap <silent> <down> <Nop>
-	nnoremap <silent> <left> <Nop>
-	nnoremap <silent> <right> <Nop>
-	nnoremap <silent> <up> <Nop>
 endfunction
 function! ToggleFileExplorer()
 	try
