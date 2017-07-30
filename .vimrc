@@ -708,6 +708,9 @@ let c_gnu = 1
 let c_comment_strings = 1
 let c_space_errors = 1
 " }}}
+" syntax/diff.vim {{{
+let g:diff_translations = 0
+" }}}
 " syntax/doxygen.vim {{{
 let g:load_doxygen_syntax = 1
 let g:doxygen_enhanced_color = 1
