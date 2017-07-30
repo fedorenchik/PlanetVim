@@ -135,7 +135,7 @@ set debug=beep
 set nodelcombine
 set dictionary+=/usr/share/dict/words
 set dictionary+=/usr/share/dict/web2
-set diffopt+=vertical,context:12
+set diffopt=filter,context:12,iwhite,vertical,foldcolumn:2
 set directory=~/.vim/swap//,~/tmp//,~//,.//,/var/tmp//,/tmp//
 set display=lastline,uhex
 set eadirection=
