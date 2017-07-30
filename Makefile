@@ -14,7 +14,6 @@ FILES := \
 	.git-prompt.sh \
 	.local/share/applications/gvim-local.desktop \
 	.signature \
-	.signature-work \
 	templ/ \
 	.vim/ \
 	.vimrc

@@ -252,8 +252,7 @@ set smartcase
 set smartindent
 set smarttab
 set softtabstop=8
-set spell&
-set spellfile&
+set spellfile=$HOME/src/homerc/.vim/spell/personal.utf-8.add,/tmp/tmp.utf-8.add
 set spelllang+=cjk
 set spellsuggest=fast,10
 set nosplitbelow
@@ -625,6 +624,7 @@ autocmd FileType html setlocal clipboard=autoselect,autoselectml,html,exclude:co
 autocmd FileType sh setlocal formatoptions-=t formatoptions+=croql
 autocmd FileType text setlocal textwidth=72 linebreak breakindent
 autocmd FileType text setlocal complete+=k,s
+autocmd FileType text,markdown setlocal spell
 autocmd FileType vim setlocal foldenable foldmethod=marker foldlevelstart=0 foldlevel=0
 autocmd CmdWinEnter : noremap <buffer> <S-CR> <CR>q:
 autocmd CmdWinEnter / noremap <buffer> <S-CR> <CR>q/
