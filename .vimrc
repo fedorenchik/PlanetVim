@@ -672,6 +672,9 @@ endfunction
 " filetype.vim {{{
 let g:bash_is_sh = 1
 " }}}
+" ftplugin/changelog.vim {{{
+runtime ftplugin/changelog.vim
+" }}}
 " ftplugin/man.vim {{{
 runtime! ftplugin/man.vim
 " }}}
