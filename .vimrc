@@ -617,11 +617,6 @@ cnoreabbrev vsplit rightbelow vsplit
 if has("autocmd")
 augroup vimrc
 autocmd!
-if exists("+omnifunc")
-	autocmd Filetype * if &omnifunc == "" |
-				\   setlocal omnifunc=syntaxcomplete#Complete |
-				\ endif
-endif
 autocmd BufReadPost */linux/*.[ch] setlocal tags+=$HOME/.vim/linuxtags
 autocmd BufReadPost */linux/*.h setlocal filetype=c
 autocmd BufReadPost *.log normal G
@@ -642,6 +637,9 @@ autocmd FileType text setlocal textwidth=72 linebreak breakindent
 autocmd FileType text setlocal complete+=k,s
 autocmd FileType text,markdown setlocal spell
 autocmd FileType vim setlocal foldenable foldmethod=marker foldlevelstart=0 foldlevel=0
+if exists("+omnifunc")
+	autocmd Filetype * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
+endif
 autocmd VimLeavePre * if !&readonly | mksession! .session.vim | endif
 augroup END
 endif
