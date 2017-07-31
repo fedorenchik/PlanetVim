@@ -236,7 +236,7 @@ set scrolljump=2
 set scrolloff=2
 set scrollopt=ver,hor,jump
 set secure
-set sessionoptions=blank,buffers,folds,help,localoptions,sesdir,slash,tabpages,unix,winsize
+set sessionoptions=blank,buffers,folds,globals,help,localoptions,sesdir,slash,tabpages,unix,winsize
 set shiftround
 set shiftwidth=8
 set shortmess+=mrwsIcF
@@ -363,9 +363,10 @@ inoremap <silent> <C-Y> <C-R>=pumvisible() ? "\<lt>C-Y>" : "\<lt>Esc>"<CR>
 inoremap <silent> <C-Z> <Nop>
 inoremap <silent> <C-{> <Esc>
 " Insert Mode i_<A-...>: {{{
+inoremap <silent> <A-w> <C-O>:up<CR>
 " }}}
 " Insert Mode: <leader>...: {{{
-inoremap <silent> <leader>w <C-O>:up<CR>
+"inoremap <silent> <leader>w <C-O>:up<CR>
 "}}}
 " }}}
 " Normal (Command) Mode: {{{
