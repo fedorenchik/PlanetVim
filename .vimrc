@@ -591,6 +591,8 @@ xnoremap X y/<C-R>"<CR>
 "cnoremap <C-O> <Nop>
 "cnoremap <silent> %% <C-R>=expand('%:h').'/'<cr>
 cnoremap <silent> w!! w !sudo tee % >/dev/null
+cnoremap <A-N> <Down>
+cnoremap <A-P> <Up>
 " }}}
 " }}}
 " Abbreviations: {{{
