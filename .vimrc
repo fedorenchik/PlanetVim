@@ -363,6 +363,8 @@ inoremap <silent> <C-Y> <C-R>=pumvisible() ? "\<lt>C-Y>" : "\<lt>Esc>"<CR>
 inoremap <silent> <C-Z> <Nop>
 inoremap <silent> <C-{> <Esc>
 " Insert Mode i_<A-...>: {{{
+inoremap <silent> <A-u> <Esc>
+inoremap <silent> <A-h> <Esc>
 inoremap <silent> <A-w> <C-O>:up<CR>
 " }}}
 " Insert Mode: <leader>...: {{{
