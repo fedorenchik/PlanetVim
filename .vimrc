@@ -510,11 +510,13 @@ nnoremap <silent> <C-_> <Nop>
 " }}}
 " Alt Key: {{{
 nnoremap <silent> <A-F4> :VimShell -split -split-command=tabnew -toggle<CR><ESC>
-nnoremap <silent> <A-/> /\v\c
 nnoremap <silent> <A-L> :lolder<CR>
 nnoremap <silent> <A-l> :lnewer<CR>
+nnoremap <silent> <A-m> :<C-U><C-R><C-R>='let @'. v:register .' = '. string(getreg(v:register))<CR><C-F><Left>
 nnoremap <silent> <A-Q> :colder<CR>
 nnoremap <silent> <A-q> :cnewer<CR>
+nnoremap <silent> <A-r> :nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-L>
+nnoremap <silent> <A-/> /\v\c
 " }}}
 " Mouse Keys: {{{
 " Mousekeys: <LeftMouse> <MiddleMouse> <RightMouse> <X1Mouse> <X2Mouse>
