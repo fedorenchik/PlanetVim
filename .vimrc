@@ -263,7 +263,7 @@ set suffixes-=.h
 set swapfile
 set swapsync=
 set switchbuf=
-set synmaxcol=300
+set synmaxcol=200
 set tabline&
 set tabstop=8
 set tagbsearch
