@@ -68,3 +68,6 @@
 [submodule ".vim/pack/bundle/start/clang_complete"]
 	path = .vim/pack/bundle/start/clang_complete
 	url = https://github.com/Rip-Rip/clang_complete.git
+[submodule ".vim/pack/bundle/start/ale"]
+	path = .vim/pack/bundle/start/ale
+	url = https://github.com/w0rp/ale.git
