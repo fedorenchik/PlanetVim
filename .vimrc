@@ -622,8 +622,16 @@ if exists("+omnifunc")
 				\   setlocal omnifunc=syntaxcomplete#Complete |
 				\ endif
 endif
-autocmd BufRead */linux/*.[ch] setlocal tags+=$HOME/.vim/linuxtags
-autocmd BufRead */linux/*.h setlocal filetype=c
+autocmd BufReadPost */linux/*.[ch] setlocal tags+=$HOME/.vim/linuxtags
+autocmd BufReadPost */linux/*.h setlocal filetype=c
+autocmd BufReadPost *.log normal G
+autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
+autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+autocmd CmdWinEnter : noremap <buffer> <S-CR> <CR>q:
+autocmd CmdWinEnter / noremap <buffer> <S-CR> <CR>q/
+autocmd CmdWinEnter ? noremap <buffer> <S-CR> <CR>q?
+autocmd CmdwinEnter * nnoremap <buffer> <CR> <CR>
+autocmd CursorHold *.[ch] nested call PreviewWord()
 autocmd FileType c,cpp setlocal tags+=$HOME/.vim/ctags
 autocmd FileType c,cpp setlocal foldmethod=syntax
 autocmd FileType cpp setlocal define=^\\(#\\s*define\\|[a-z]*\\s*const\\s*[a-z]*\\)
@@ -634,19 +642,7 @@ autocmd FileType text setlocal textwidth=72 linebreak breakindent
 autocmd FileType text setlocal complete+=k,s
 autocmd FileType text,markdown setlocal spell
 autocmd FileType vim setlocal foldenable foldmethod=marker foldlevelstart=0 foldlevel=0
-autocmd CmdWinEnter : noremap <buffer> <S-CR> <CR>q:
-autocmd CmdWinEnter / noremap <buffer> <S-CR> <CR>q/
-autocmd CmdWinEnter ? noremap <buffer> <S-CR> <CR>q?
-autocmd CursorHold *.[ch] nested call PreviewWord()
-autocmd CmdwinEnter * nnoremap <buffer> <CR> <CR>
-autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
-autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") |
-			\   exe "normal! g`\"" |
-			\ endif
-autocmd BufReadPost *.log normal G
-autocmd VimLeavePre * if !&readonly |
-			\   mksession! .session.vim |
-			\ endif
+autocmd VimLeavePre * if !&readonly | mksession! .session.vim | endif
 augroup END
 endif
 " }}}
