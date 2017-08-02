@@ -556,6 +556,7 @@ nnoremap <silent> <Leader>j :Unite -start-insert -smartcase -buffer-name=unite-j
 nnoremap <silent> <Leader>k :Unite -start-insert -smartcase -buffer-name=unite-mark mark<CR>
 nnoremap <silent> <Leader>l :Unite -buffer-name=unite-location-list location_list<CR>
 nmap <silent> <unique> <Leader>m <Plug>MarkSet
+nmap <silent> <unique> <Leader>M <Plug>MarkClear
 nmap <silent> <Leader>n <Plug>MarkSearchCurrentNext
 nmap <silent> <Leader>N <Plug>MarkSearchCurrentPrev
 nnoremap <silent> <Leader>o :Unite -start-insert -smartcase outline<CR>
