@@ -74,3 +74,6 @@
 [submodule ".vim/pack/bundle/start/FastFold"]
 	path = .vim/pack/bundle/start/FastFold
 	url = https://github.com/Konfekt/FastFold.git
+[submodule ".vim/pack/bundle/start/vim-markdown-preview"]
+	path = .vim/pack/bundle/start/vim-markdown-preview
+	url = https://github.com/JamshedVesuna/vim-markdown-preview.git
