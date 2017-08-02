@@ -61,10 +61,10 @@
 	url = https://github.com/inkarkat/vim-ingo-library.git
 [submodule ".vim/pack/bundle/start/VimCalc3"]
 	path = .vim/pack/bundle/start/VimCalc3
-	url = git@github.com:fedorenchik/VimCalc3.git
+	url = https://github.com/fedorenchik/VimCalc3.git
 [submodule ".vim/pack/bundle/start/gtags.vim"]
 	path = .vim/pack/bundle/start/gtags.vim
-	url = git@github.com:fedorenchik/gtags.vim.git
+	url = https://github.com/fedorenchik/gtags.vim.git
 [submodule ".vim/pack/bundle/start/clang_complete"]
 	path = .vim/pack/bundle/start/clang_complete
 	url = https://github.com/Rip-Rip/clang_complete.git
