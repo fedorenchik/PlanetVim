@@ -441,6 +441,8 @@ nnoremap <silent> Y y$
 " Standard Vim Mappings: Q Z
 nnoremap <silent> Zc :copen<CR>
 nnoremap <silent> ZC :cclose<CR>
+nnoremap <silent> Zh :help<CR>
+nnoremap <silent> ZH :helpclose<CR>
 nnoremap <silent> Zl :lopen<CR>
 nnoremap <silent> ZL :lclose<CR>
 nnoremap <silent> Zp :ptag<CR>
