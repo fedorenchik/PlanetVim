@@ -77,3 +77,6 @@
 [submodule ".vim/pack/bundle/start/vim-markdown-preview"]
 	path = .vim/pack/bundle/start/vim-markdown-preview
 	url = https://github.com/JamshedVesuna/vim-markdown-preview.git
+[submodule ".vim/pack/bundle/opt/AnsiEsc"]
+	path = .vim/pack/bundle/opt/AnsiEsc
+	url = https://github.com/fedorenchik/AnsiEsc.git
