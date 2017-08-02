@@ -839,6 +839,9 @@ let g:mwDefaultHighlightingPalette = 'maximum'
 let g:mwAutoLoadMarks = 0
 let g:mwAutoSaveMarks = 0
 " }}}
+" Plugin: vim-markdown-preview {{{
+let vim_markdown_preview_hotkey='<A-m>'
+" }}}
 " Plugin: vimshell {{{
 let g:vimshell_prompt = '$ '
 let g:vimshell_scrollback_limit = 10000
