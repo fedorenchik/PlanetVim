@@ -126,14 +126,8 @@ r()
 	gvim -M -R -i NONE "$@" 2>>/tmp/gvim.out
 }
 
-s()
+S()
 {
-	if [ "$*" == "" ]; then
-		if [ -f .session.vim ]; then
-			gvim -S .session.vim 2>>/tmp/gvim.out
-			return
-		fi
-	fi
 	gvim --cmd 'let g:vimrc_auto_session=1' "$@" 2>>/tmp/gvim.out
 }
 

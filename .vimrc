@@ -643,7 +643,7 @@ autocmd FileType vim setlocal foldenable foldmethod=marker foldlevelstart=0 fold
 if exists("+omnifunc")
 	autocmd Filetype * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
 endif
-"FIXME: &readonly is buffer-local. Need to do more sophisticated check.
+autocmd VimEnter * if exists('g:vimrc_auto_session') && filereadable('.session.vim') | source .session.vim | endif
 autocmd VimLeavePre * if exists('g:vimrc_auto_session') | mksession! .session.vim | endif
 augroup END
 endif
