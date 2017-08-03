@@ -1,4 +1,16 @@
+### Some features of this Vim configuration:
+ * automatically source local .vimrc/.exrc file from current directory
+   - set secure to restrict what can be put into local .vimrc/.exrc
+ * .viminfo files are local
+   - saved in current directory
+ * e -- start gvim usually
+ * r -- start gvim in RO mode
+   - set nomodifiable readonly
+ * S -- start gvim in "session" mode
+   - .session.vim file is automatically loaded/saved on start/exit.
+
 Compile vim:
+------------
 
 sudo apt install luajit libluajit-5.1-dev ncurses-dev
 sudo apt build-dep vim-gnome
