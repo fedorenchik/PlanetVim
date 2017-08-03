@@ -3,15 +3,18 @@
    - set secure to restrict what can be put into local .vimrc/.exrc
  * .viminfo files are local
    - saved in current directory
- * e -- start gvim usually
+
+### Commands defined in .bashrc
+ * e -- start gvim normally
  * r -- start gvim in RO mode
    - set nomodifiable readonly
  * S -- start gvim in "session" mode
-   - .session.vim file is automatically loaded/saved on start/exit.
+   - local .session.vim file is automatically loaded/saved on start/exit.
 
 Compile vim:
 ------------
 
+```shell
 sudo apt install luajit libluajit-5.1-dev ncurses-dev
 sudo apt build-dep vim-gnome
 cd $HOME/src/vim
@@ -47,3 +50,4 @@ git pull --ff-only
 	--with-compiledby='Leonid V. Fedorenchik'
 make
 make install
+```
