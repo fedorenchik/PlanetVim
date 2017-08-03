@@ -118,18 +118,23 @@ lh()
 
 e()
 {
+	gvim "$@" 2>>/tmp/gvim.out
+}
+
+r()
+{
+	gvim -M -R -i NONE "$@" 2>>/tmp/gvim.out
+}
+
+s()
+{
 	if [ "$*" == "" ]; then
 		if [ -f .session.vim ]; then
 			gvim -S .session.vim 2>>/tmp/gvim.out
 			return
 		fi
 	fi
-	gvim "$@" 2>>/tmp/gvim.out
-}
-
-r()
-{
-	gview -i NONE "$@" 2>>/tmp/gvim.out
+	gvim --cmd 'let g:vimrc_auto_session=1' "$@" 2>>/tmp/gvim.out
 }
 
 gitv()
