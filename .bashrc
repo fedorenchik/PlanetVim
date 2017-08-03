@@ -91,7 +91,7 @@ fi
 # colored GCC warnings and errors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-CDPATH=".:~:~/src"
+#CDPATH=".:~:~/src"
 
 alias ll='ls -l'
 alias la='ls -A'
@@ -158,7 +158,7 @@ dirdiffv()
 	gvim -c "DirDiff $@" 2>>/tmp/gvim.out
 }
 
-less()
+vess()
 {
 	declare cmd=$(dirname $(dirname $(which vim)))/share/vim/vim80/macros/less.sh
 	$cmd "$@"
