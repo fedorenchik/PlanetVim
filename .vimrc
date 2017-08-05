@@ -624,7 +624,7 @@ autocmd BufReadPost */linux/*.[ch] setlocal tags+=$HOME/.vim/linuxtags
 autocmd BufReadPost */linux/*.h setlocal filetype=c
 autocmd BufReadPost *.log normal G
 autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
-autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") && &filetype !~# 'commit' | exe "normal! g`\"" | endif
 autocmd CmdWinEnter : noremap <buffer> <S-CR> <CR>q:
 autocmd CmdWinEnter / noremap <buffer> <S-CR> <CR>q/
 autocmd CmdWinEnter ? noremap <buffer> <S-CR> <CR>q?
