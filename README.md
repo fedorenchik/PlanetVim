@@ -3,6 +3,7 @@
    - set secure to restrict what can be put into local .vimrc/.exrc
  * .viminfo files are local
    - saved in current directory
+ * Minimum window size is zero
 
 ### Commands defined in .bashrc
  * e -- start gvim normally
