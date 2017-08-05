@@ -644,7 +644,7 @@ if exists("+omnifunc")
 	autocmd Filetype * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
 endif
 autocmd VimEnter * if exists('g:vimrc_auto_session') && filereadable('.session.vim') | source .session.vim | endif
-autocmd VimLeavePre * if exists('g:vimrc_auto_session') && (filewritable('.sesssion.vim') == 1) | mksession! .session.vim | endif
+autocmd VimLeavePre * if exists('g:vimrc_auto_session') | mksession! .session.vim | endif
 augroup END
 endif
 " }}}
