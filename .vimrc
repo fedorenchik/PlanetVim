@@ -226,6 +226,7 @@ set previewheight=7
 set printfont=Monospace\ 10
 set prompt
 set pumheight=10
+set pyxversion=3
 set redrawtime=1000
 set norelativenumber
 set ruler
