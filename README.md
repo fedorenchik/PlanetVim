@@ -5,6 +5,13 @@
    - saved in current directory
  * Minimum window size (width & height) is zero
 
+### Maps
+ * Do not redefine standard Vim maps (except Vim anti-patterns, almost)
+ * Do not redefine any vim-obsession mappings
+ * Define additional (not mapped originally) mappings in g..., z..., Z...,
+     [..., ]..., <A-...>
+ * Leader is ',', LocalLeader is `'_'`
+
 ### Commands defined in .bashrc
  * e -- start gvim normally
  * r -- start gvim in RO mode
