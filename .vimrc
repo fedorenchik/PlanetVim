@@ -223,7 +223,10 @@ set patchmode=".orig"
 set path+=/usr/include/c++/6,./include,./../include,./../../include,**
 set nopreserveindent
 set previewheight=7
+set printencoding=utf-8
+set printexpr&
 set printfont=Monospace\ 10
+set printmbcharset=ISO10646
 set prompt
 set pumheight=10
 set pyxversion=3
