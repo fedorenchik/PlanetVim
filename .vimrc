@@ -227,6 +227,7 @@ set printencoding=utf-8
 set printexpr&
 set printfont=Monospace\ 10
 set printmbcharset=ISO10646
+set printmbfont=r:WenQuanYi\ Zen\ Hei,c:yes
 set prompt
 set pumheight=10
 set pyxversion=3
