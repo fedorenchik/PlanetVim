@@ -147,9 +147,9 @@ gitv()
 }
 
 gitk()
-{
-	(command gitk "$@" &)
-}
+(
+	command gitk "$@" &
+)
 
 export MANPAGER="env MAN_PN=1 vim -M +MANPAGER -"
 
