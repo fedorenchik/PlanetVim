@@ -310,7 +310,6 @@ set viminfo=!,%50,'100,<50,c,f1,h,r/tmp,r/var,r/mnt,r/media,s10,n$PWD/.viminfo
 set virtualedit=block
 set novisualbell
 set warn
-set noweirdinvert
 set whichwrap=
 set wildchar&
 set wildcharm&
