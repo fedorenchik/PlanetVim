@@ -293,7 +293,6 @@ set ttimeoutlen=10
 set toolbar&
 set toolbariconsize&
 set ttyfast
-set ttymouse&
 if has('persistent_undo')
 	set undodir=$HOME/.vim/undo,.
 	set undofile
