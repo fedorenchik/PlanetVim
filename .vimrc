@@ -348,7 +348,7 @@ let maplocalleader="_"
 " S T U V W X Y Z [ \ ] ^ _
 " Available To Remap: @ A B E J L M Q S Y Z _ <F2>..<F12>
 inoremap <silent> <C-@> <C-^>
-inoremap <silent> <C-A> <Nop>
+"inoremap <silent> <C-A> <Nop>
 inoremap <silent> <C-B> <Nop>
 inoremap <silent> <C-E> <C-R>=pumvisible() ? "\<lt>C-E>" : "\<lt>Esc>"<CR>
 " Insert Mode i_^G: {{{
