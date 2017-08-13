@@ -166,7 +166,7 @@ set grepprg=grep\ -nH\ $*
 set guicursor+=a:blinkon0
 if has("gui_gtk2")
 	set guifont=Monospace\ 10
-	set guifontwide=WenQuanYi\ Zen\ Hei\ 10
+	"set guifontwide=WenQuanYi\ Zen\ Hei\ 10
 endif
 set guioptions-=t
 set guioptions-=T
