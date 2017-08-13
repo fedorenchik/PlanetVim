@@ -106,6 +106,9 @@ elseif &t_Co >= 256
 endif
 highlight lCursor guifg=NONE guibg=Cyan
 " }}}
+" Keymap: {{{
+set keymap=russian-dvp
+" }}}
 " Settings: {{{
 set autoindent
 set autoread
@@ -193,7 +196,6 @@ if has('reltime')
 endif
 set infercase
 set joinspaces
-set keymap=russian-dvp
 set keymodel=
 set keywordprg=:Man
 set langmenu=none
