@@ -79,12 +79,30 @@ m	ь	CYRILLIC SMALL LETTER SOFT SIGN
 -	э	CYRILLIC SMALL LETTER E
 v	ю	CYRILLIC SMALL LETTER YU
 '	я	CYRILLIC SMALL LETTER YA
+&	1
+[	2
+{	3
+}	4
+(	5
+=	6
+*	7
+)	8
++	9
+]	0
+!	-
+#	=
+%	!
 7	"
-#	№	NUMERO SIGN
-$	;
-^	:
-&	?
+5	№	NUMERO SIGN
+3	;
+1	%
+9	:
+0	?
+2	*
+4	(
+6	)
+8	_
+`	+
 z	.
 Z	,
-[   -
-]   =
+|	/
