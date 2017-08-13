@@ -186,6 +186,8 @@ set history=1000
 set icon
 set iconstring=
 set noignorecase
+set iminsert=0
+set imsearch=-1
 if has('reltime')
 	set incsearch
 endif
