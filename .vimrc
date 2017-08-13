@@ -347,7 +347,7 @@ let maplocalleader="_"
 " Standard Vim Mappings i_^: @ A C D E F G H I J K L M N O P Q R
 " S T U V W X Y Z [ \ ] ^ _
 " Available To Remap: @ A B E J L M Q S Y Z _ <F2>..<F12>
-inoremap <silent> <C-@> <Nop>
+inoremap <silent> <C-@> <C-^>
 inoremap <silent> <C-A> <Nop>
 inoremap <silent> <C-B> <Nop>
 inoremap <silent> <C-E> <C-R>=pumvisible() ? "\<lt>C-E>" : "\<lt>Esc>"<CR>
@@ -358,7 +358,7 @@ inoremap <silent> <C-E> <C-R>=pumvisible() ? "\<lt>C-E>" : "\<lt>Esc>"<CR>
 inoremap <silent> <C-L> <Nop>
 "inoremap <silent> <C-M> <Nop>
 inoremap <silent> <C-Q> <Nop>
-inoremap <silent> <C-R><C-D> <Esc>:Unite register<CR>
+inoremap <silent> <C-R><C-D> <C-O>:Denite register<CR>
 inoremap <silent> <C-S> <Nop>
 " Insert Mode i_^X: {{{
 " Standard Vim Mappings ^: D E F I K L N O P S T U V Y ]
