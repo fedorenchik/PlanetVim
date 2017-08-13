@@ -104,6 +104,7 @@ elseif &t_Co >= 256
 	set background=dark
 	colorscheme molokai
 endif
+highlight lCursor guifg=NONE guibg=Cyan
 " }}}
 " Settings: {{{
 set autoindent
@@ -190,6 +191,7 @@ if has('reltime')
 endif
 set infercase
 set joinspaces
+set keymap=russian-dvp
 set keymodel=
 set keywordprg=:Man
 set langmenu=none
