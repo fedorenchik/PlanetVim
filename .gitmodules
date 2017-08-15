@@ -80,3 +80,6 @@
 [submodule ".vim/pack/bundle/opt/AnsiEsc"]
 	path = .vim/pack/bundle/opt/AnsiEsc
 	url = https://github.com/fedorenchik/AnsiEsc.git
+[submodule ".vim/pack/bundle/start/dbext.vim"]
+	path = .vim/pack/bundle/start/dbext.vim
+	url = https://github.com/fedorenchik/dbext.vim.git
