@@ -167,11 +167,13 @@ set formatoptions+=1jMmn
 set nofsync
 set nogdefault
 set grepprg=grep\ -nH\ $*
+"TODO: Colorize cursor in different modes.
 set guicursor+=a:blinkon0
 if has("gui_gtk2")
 	set guifont=Monospace\ 10
 	"set guifontwide=WenQuanYi\ Zen\ Hei\ 10
 endif
+set guiheadroom=24
 set guioptions-=t
 set guioptions-=T
 set guioptions-=r
