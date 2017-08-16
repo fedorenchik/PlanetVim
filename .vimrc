@@ -506,6 +506,7 @@ nnoremap <silent> <C-H> <C-W>h
 nnoremap <silent> <C-J> <C-W>j
 nnoremap <silent> <C-K> <C-W>k
 nnoremap <silent> <C-L> <C-W>l
+nnoremap <silent> <C-S> :emenu <C-Z>
 " Ctrl Key: <C-W>...: {{{
 " Ctrl Key: <C-W>g...: {{{
 " }}}
