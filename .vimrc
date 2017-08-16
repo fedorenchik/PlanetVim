@@ -703,6 +703,9 @@ let spec_chglog_release_info = 1
 " ftplugin/sql.vim {{{
 let g:ftplugin_sql_statements = 'create,alter'
 " }}}
+" menu.vim {{{
+let do_syntax_sel_menu = 1
+" }}}
 " pack/dist/opt/editexisting/ {{{
 packadd! editexisting
 " }}}
