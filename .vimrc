@@ -27,12 +27,12 @@ endif
 filetype plugin indent on
 " }}}
 " GUI Settings: {{{
-augroup GUI_Settings
-	autocmd!
-	autocmd GUIEnter * set lines=300 columns=1000 guifont=Monospace\ 10
-	" maximize GUI window
-	autocmd GUIEnter * call system('wmctrl -i -b add,maximized_vert,maximized_horz -r '.v:windowid)
-augroup END
+"augroup GUI_Settings
+"	autocmd!
+"	autocmd GUIEnter * set lines=300 columns=1000 guifont=Monospace\ 10
+"	" maximize GUI window
+"	autocmd GUIEnter * call system('wmctrl -i -b add,maximized_vert,maximized_horz -r '.v:windowid)
+"augroup END
 " }}}
 " Functions: {{{
 function GuiTabLabel()
@@ -652,6 +652,8 @@ autocmd FileType vim setlocal foldenable foldmethod=marker foldlevelstart=0 fold
 if exists("+omnifunc")
 	autocmd Filetype * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
 endif
+autocmd GUIEnter * set lines=300 columns=1000 guifont=Monospace\ 10
+autocmd GUIEnter * call system('wmctrl -i -b add,maximized_vert,maximized_horz -r '.v:windowid)
 autocmd VimEnter * if exists('g:vimrc_auto_session') && filereadable('.session.vim') | source .session.vim | endif
 autocmd VimLeavePre * if exists('g:vimrc_auto_session') | mksession! .session.vim | endif
 augroup END
