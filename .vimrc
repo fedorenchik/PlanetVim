@@ -26,14 +26,6 @@ if &t_Co > 2 || has("gui_running")
 endif
 filetype plugin indent on
 " }}}
-" GUI Settings: {{{
-"augroup GUI_Settings
-"	autocmd!
-"	autocmd GUIEnter * set lines=300 columns=1000 guifont=Monospace\ 10
-"	" maximize GUI window
-"	autocmd GUIEnter * call system('wmctrl -i -b add,maximized_vert,maximized_horz -r '.v:windowid)
-"augroup END
-" }}}
 " Functions: {{{
 function GuiTabLabel()
 	let label = ''
@@ -319,7 +311,7 @@ set novisualbell
 set warn
 set whichwrap=
 set wildchar&
-set wildcharm&
+set wildcharm=<C-Z>
 set wildignore&
 set nowildignorecase
 set wildmenu
@@ -499,6 +491,8 @@ nnoremap ]0 :call signature#marker#Goto('next', 0, v:count)<CR>
 " }}}
 " Ctrl Key: {{{
 " XXX: Ctrl-Shift modifier does not work neither in terminal nor in GUI.
+" XXX: Uppercase/lowercase distinction is not available with <Ctrl-...>
+" XXX: modifier.
 " Standard Vim Mappings: A C G I M O R T V W X Z [ \ ] ^
 " Available To Map: B D E F H J K L N P Q S U Y @ _
 nnoremap <silent> <C-@> <C-L>
@@ -705,6 +699,9 @@ let g:ftplugin_sql_statements = 'create,alter'
 " }}}
 " menu.vim {{{
 let do_syntax_sel_menu = 1
+if !has("gui_running")
+	source $VIMRUNTIME/menu.vim
+endif
 " }}}
 " pack/dist/opt/editexisting/ {{{
 packadd! editexisting
