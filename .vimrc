@@ -493,9 +493,9 @@ nnoremap ]0 :call signature#marker#Goto('next', 0, v:count)<CR>
 " XXX: Ctrl-Shift modifier does not work neither in terminal nor in GUI.
 " XXX: Uppercase/lowercase distinction is not available with <Ctrl-...>
 " XXX: modifier.
-" Standard Vim Mappings: A C G I M O R T V W X Z [ \ ] ^
-" Available To Map: B D E F H J K L N P Q S U Y 1 2 3 4 5 6 7 8 9 0 $ & { } ( =
-" * ) + ! # ~ % ` ; : , < . > / ? @ | - _ ' " <BS> <Tab> <CR> <Esc> <Space>
+" Standard Vim Mappings: A C G I M O Q R S T V W X Z [ \ ] ^
+" Available To Map: B D E F H J K L N P U Y 1 2 3 4 5 6 7 8 9 0 $ & { } ( = * )
+" + ! # ~ % ` ; : , < . > / ? @ | - _ ' " <BS> <Tab> <CR> <Esc> <Space>
 nnoremap <silent> <C-@> <C-L>
 nnoremap <silent> <C-F4> :VimShell -toggle<CR><ESC>
 nnoremap <silent> <C-F12> :!ctags -R --sort=yes --excmd=p --c++-kinds=+pl --fields=+iaS --extra=+q .<CR>
