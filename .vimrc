@@ -383,8 +383,6 @@ inoremap <silent> <A-w> <C-O>:up<CR>
 " Standard Text Objects: b B p s t w W [ { } ( ) ] ` < > ' "
 " Normal Keys: {{{
 " Available To Remap: f F h j k l Q s S t T U + ; : , \ - _ <BS> <CR> <Space>
-" <Del> <Up> <Down> <Left> <Right> <F2>..<F12> <Insert> <Home> <End> <PageUp>
-" <PageDown>
 " TODO: 1. Make f F t T search multiline
 " TODO: 2. Make h l behave like f F but input 2 characters
 " TODO: 3. Make j k behave like f F but input 3 characters
@@ -453,7 +451,6 @@ nnoremap <silent> ZP :pclose<CR>
 " }}}
 nnoremap <silent> - <Nop>
 nnoremap <silent> + <Nop>
-nnoremap <silent> _ <Nop>
 " Normal Keys: [...: {{{
 " Standard Vim Mappings: c d D ^D f i I ^I m p P s S z # ' ( * ` / [ ] {
 " <MiddleMouse>
