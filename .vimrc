@@ -681,9 +681,13 @@ endfunction
 " }}}
 " Run Commands: {{{
 if has("cscope")
-	if filereadable('cscope.out')
+	set nocscopeverbose
+	if filereadable("cscope.out")
 		cscope add cscope.out
+	elseif $CSCOPE_DB != ""
+		cscope add $CSCOPE_DB
 	endif
+	set cscopeverbose
 endif
 " }}}
 " $VIMRUNTIME/ {{{
