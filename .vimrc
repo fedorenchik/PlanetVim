@@ -122,7 +122,7 @@ set copyindent
 set cscopequickfix=s-,g-,d-,c-,t-,e-,f-,i-,a-
 set cscoperelative
 set nocscopetag
-set cscopetagorder=1
+set cscopetagorder=0
 set cscopeverbose
 set nocursorbind
 set nocursorcolumn
@@ -678,6 +678,13 @@ function! ToggleFileExplorer()
 		Explore
 	endtry
 endfunction
+" }}}
+" Run Commands: {{{
+if has("cscope")
+	if filereadable('cscope.out')
+		cscope add cscope.out
+	endif
+endif
 " }}}
 " $VIMRUNTIME/ {{{
 " filetype.vim {{{
