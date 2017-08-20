@@ -697,8 +697,8 @@ let spec_chglog_release_info = 1
 let g:ftplugin_sql_statements = 'create,alter'
 " }}}
 " menu.vim {{{
-let do_syntax_sel_menu = 1
 if !has("gui_running")
+	let do_syntax_sel_menu = 1
 	source $VIMRUNTIME/menu.vim
 endif
 " }}}
@@ -732,6 +732,13 @@ let g:html_pre_wrap = 1
 " }}}
 " spell/ {{{
 let g:spell_clean_limit = 60 * 60
+" }}}
+" synmenu.vim {{{
+if has("gui_running")
+	let do_syntax_sel_menu = 1
+	runtime! synmenu.vim
+	aunmenu &Syntax.&Show\ File\ Types\ in\ Menu
+endif
 " }}}
 " syntax/c.vim {{{
 let c_gnu = 1
