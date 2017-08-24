@@ -4,6 +4,7 @@
  * .viminfo files are local
    - saved in current directory
  * Minimum window size (width & height) is zero
+ * No statusline plugins: they all slow down vim considerably
 
 ### Maps
  * Do not redefine standard Vim maps (except Vim anti-patterns, almost)
