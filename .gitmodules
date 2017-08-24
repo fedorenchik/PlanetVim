@@ -8,7 +8,7 @@
 	path = .vim/pack/bundle/start/undotree
 	url = https://github.com/mbbill/undotree.git
 [submodule ".vim/bundle/vim-airline"]
-	path = .vim/pack/bundle/start/vim-airline
+	path = .vim/pack/bundle/opt/vim-airline
 	url = https://github.com/bling/vim-airline.git
 [submodule ".vim/bundle/vim-dirdiff"]
 	path = .vim/pack/bundle/opt/vim-dirdiff
