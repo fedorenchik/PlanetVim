@@ -12,7 +12,6 @@ FILES := \
 	.gdbinit \
 	.gitconfig \
 	.git-prompt.sh \
-	.local/share/applications/gvim-local.desktop \
 	.signature \
 	templ/ \
 	.vim/ \
@@ -47,12 +46,11 @@ c_headers := assert complex ctype errno fenv float inttypes iso646 limits \
 c_headers := $(addprefix /usr/include/,$(addsuffix .h,$(c_headers)))
 
 sync-home:
-	cd .vim/pack/bundle/start/vimproc.vim && make
 	for file in $(FILES); do $(RSYNC) $(RSYNC_OPTIONS) $$file $(HOME)/$$file; done
 	vim -c 'helptags ALL' -c 'q'
 	vim -c 'runtime spell/cleanadd.vim' -c 'q'
 	ctags --language-force=c -R -f ~/.vim/ctags $(c_headers)
-	ctags --language-force=c++ -R -f ~/.vim/cpptags /usr/include/c++/6
+	ctags --language-force=c++ -R -f ~/.vim/cpptags /usr/include/c++/7
 	ctags --language-force=c -R -f ~/.vim/linuxtags /usr/include/linux
 
 commit:

@@ -1,57 +1,24 @@
 [global_config]
-  enabled_plugins = CustomCommandsMenu, TerminalShot, LaunchpadCodeURLHandler, APTURLHandler, Logger, LaunchpadBugURLHandler
+  enabled_plugins = TerminalShot, LaunchpadCodeURLHandler, APTURLHandler, Logger, LaunchpadBugURLHandler
   focus = mouse
-  scroll_tabbar = True
-  title_font = Monospace 10
-  title_inactive_bg_color = "#808080"
-  title_inactive_fg_color = "#1b1d1e"
-  title_receive_bg_color = "#266c98"
-  title_receive_fg_color = "#cccccc"
-  title_transmit_bg_color = "#82b414"
-  title_transmit_fg_color = "#cccccc"
-  title_use_system_font = False
-  window_state = maximise
+  title_inactive_bg_color = "#2e3436"
+  title_inactive_fg_color = "#babdb6"
+  title_receive_bg_color = "#204a87"
+  title_transmit_bg_color = "#4e9a06"
 [keybindings]
-  go_down = <Alt>j
-  go_left = <Alt>h
-  go_right = <Alt>l
-  go_up = <Alt>k
-  layout_launcher = <Alt>i
 [layouts]
   [[default]]
-    [[[child0]]]
-      fullscreen = False
-      last_active_term = 6d90fb2f-e2cb-4ebe-bc60-54d098fb4ba5
-      last_active_window = True
-      maximised = True
-      order = 0
-      parent = ""
-      position = 41:24
-      size = 1879, 1176
-      title = /bin/bash
-      type = Window
-    [[[terminal1]]]
-      order = 0
-      parent = child0
-      profile = default
+    [[[child1]]]
+      parent = window0
       type = Terminal
-      uuid = 6d90fb2f-e2cb-4ebe-bc60-54d098fb4ba5
+    [[[window0]]]
+      parent = ""
+      type = Window
 [plugins]
-  [[CustomCommandsMenu]]
-    [[[ls]]]
-      command = ls
-      enabled = True
-      name = ls
-      position = 0
 [profiles]
   [[default]]
-    background_color = "#1b1d1e"
+    audible_bell = True
+    background_color = "#300a24"
     cursor_color = "#aaaaaa"
-    font = Monospace 10
-    foreground_color = "#cccccc"
-    palette = "#1b1d1e:#ff0044:#82b414:#fd971f:#266c98:#ac0cb1:#ae81ff:#cccccc:#808080:#f92672:#a6e22e:#e6db74:#7070f0:#d63ae1:#66d9ef:#f8f8f2"
+    foreground_color = "#ffffff"
     scrollback_lines = 10000
-    split_to_group = True
-    urgent_bell = True
-    use_system_font = False
-    word_chars = "-,./?%&#:_~"

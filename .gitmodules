@@ -25,12 +25,6 @@
 [submodule ".vim/bundle/vim-surround"]
 	path = .vim/pack/bundle/start/vim-surround
 	url = https://github.com/tpope/vim-surround.git
-[submodule ".vim/bundle/vimproc.vim"]
-	path = .vim/pack/bundle/start/vimproc.vim
-	url = https://github.com/Shougo/vimproc.vim.git
-[submodule ".vim/bundle/vimshell.vim"]
-	path = .vim/pack/bundle/start/vimshell.vim
-	url = https://github.com/Shougo/vimshell.vim.git
 [submodule ".vim/bundle/gitv"]
 	path = .vim/pack/bundle/opt/gitv
 	url = https://github.com/gregsexton/gitv.git
