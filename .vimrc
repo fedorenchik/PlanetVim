@@ -225,7 +225,7 @@ set nopreserveindent
 set previewheight=7
 set printencoding=utf-8
 set printexpr&
-set printfont=Monospace\ 10
+set printfont=Ubuntu\ Mono\ 11,Monospace\ 9
 set printmbcharset=ISO10646
 set printmbfont=r:WenQuanYi\ Zen\ Hei,a:yes
 set prompt
@@ -647,7 +647,7 @@ autocmd FileType vim setlocal foldenable foldmethod=marker foldlevelstart=0 fold
 if exists("+omnifunc")
 	autocmd Filetype * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
 endif
-autocmd GUIEnter * set lines=300 columns=1000 guifont=Monospace\ 10
+autocmd GUIEnter * set lines=300 columns=1000 guifont=Ubuntu\ Mono\ 11,Monospace\ 9
 autocmd GUIEnter * call system('wmctrl -i -b add,maximized_vert,maximized_horz -r '.v:windowid)
 autocmd VimEnter * if exists('g:vimrc_auto_session') && filereadable('.session.vim') | source .session.vim | endif
 autocmd VimLeavePre * if exists('g:vimrc_auto_session') | mksession! .session.vim | endif
