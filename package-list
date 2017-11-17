@@ -3,6 +3,7 @@ sudo usermod -a -G dialout $USER
 # add current user to vboxusers group (for access to usb in virtualbox)
 sudo usermod -a -G vboxusers $USER
 # packages
+amule
 autoconf
 automake
 autopoint
@@ -11,12 +12,14 @@ bison
 build-essential
 cdecl
 cgdb
+chromium-browser
 chrpath
 clipit
 cmake
 cppcheck
 cppman
 crash
+cscope
 ctags
 curl
 cvs
@@ -26,7 +29,10 @@ flex
 ftp-upload
 g++
 gawk
+gdebi
+gimp
 git-all
+gnome-tweak-tool
 gperf
 help2man
 htop
@@ -50,13 +56,13 @@ texinfo
 tig
 tree
 u-boot-tools
+ubuntu-restricted-extras
 unzip
 vim-gnome
+vlc
 wget
 whois
 wmctrl
 # compile from source packages:
 universal-ctags
 gnu global
-# ppas:
-ppa:gnome-terminator/nightly-gtk3 -- terminator
