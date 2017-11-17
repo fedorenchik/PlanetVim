@@ -58,7 +58,7 @@ sync-home:
 commit:
 	git submodule sync --recursive
 	git submodule update --recursive --remote --init
-	git add $(FILES) Makefile package-list
+	git add $(FILES) Makefile package-list README.md
 ifneq "$(DELETED_FILES)" ""
 	git rm --ignore-unmatch -- $(DELETED_FILES)
 endif

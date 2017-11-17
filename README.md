@@ -24,8 +24,7 @@ Compile vim:
 ------------
 
 ```shell
-sudo apt install luajit libluajit-5.1-dev ncurses-dev
-sudo apt build-dep vim-gnome
+sudo apt build-dep vim-gtk3
 cd $HOME/src/vim
 make clean
 make distclean
@@ -39,7 +38,6 @@ git pull --ff-only
 	--prefix=$HOME/.local \
 	--with-features=huge \
 	--enable-luainterp=dynamic \
-	--with-luajit \
 	--disable-mzschemeinterp \
 	--enable-perlinterp=dynamic \
 	--enable-pythoninterp=no \
@@ -55,6 +53,9 @@ git pull --ff-only
 	--enable-multibyte \
 	--enable-gui=gnome2 \
 	--enable-largefile \
+	--enable-autoservername \
+	--disable-nls \
+	--enable-acl \
 	--with-modified-by='Leonid V. Fedorenchik' \
 	--with-compiledby='Leonid V. Fedorenchik'
 make
