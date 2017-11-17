@@ -1,6 +1,6 @@
 [user]
 	name = Leonid V. Fedorenchik
-	email = leonidsbox@gmail.com
+	email = leonid@fedorenchik.com
 [core]
 	editor = gvim --nofork
 	whitespace = trailing-space,space-before-tab
