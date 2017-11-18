@@ -46,13 +46,19 @@ c_headers := assert complex ctype errno fenv float inttypes iso646 limits \
 
 c_headers := $(addprefix /usr/include/,$(addsuffix .h,$(c_headers)))
 
+gen-c-ctags: $(c_headers)
+	-ctags --language-force=c -R -f ~/.vim/ctags $(c_headers)
+
+gen-cpp-ctags: /usr/include/c++/7
+	-ctags --language-force=c++ -R -f ~/.vim/cpptags /usr/include/c++/7
+
+gen-linux-ctags: /usr/include/linux
+	-ctags --language-force=c -R -f ~/.vim/linuxtags /usr/include/linux
+
 sync-home:
 	for file in $(FILES); do $(RSYNC) $(RSYNC_OPTIONS) $$file $(HOME)/$$file; done
-	vim -c 'helptags ALL' -c 'q'
-	vim -c 'runtime spell/cleanadd.vim' -c 'q'
-	-ctags --language-force=c -R -f ~/.vim/ctags $(c_headers)
-	-ctags --language-force=c++ -R -f ~/.vim/cpptags /usr/include/c++/7
-	-ctags --language-force=c -R -f ~/.vim/linuxtags /usr/include/linux
+	#vim -c 'helptags ALL' -c 'q'
+	#vim -c 'runtime spell/cleanadd.vim' -c 'q'
 
 commit:
 	git submodule sync --recursive
