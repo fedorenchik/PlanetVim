@@ -523,6 +523,7 @@ nnoremap <silent> <A-m> :<C-U><C-R><C-R>='let @'. v:register .' = '. string(getr
 nnoremap <silent> <A-Q> :colder<CR>
 nnoremap <silent> <A-q> :cnewer<CR>
 nnoremap <silent> <A-r> :nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-L>
+nnoremap <silent> <A-w> :confirm up<CR>
 nnoremap <silent> <A-/> /\v\c
 " }}}
 " Mouse Keys: {{{

@@ -55,7 +55,11 @@ gen-cpp-ctags: /usr/include/c++/7
 gen-linux-ctags: /usr/include/linux
 	-ctags --language-force=c -R -f ~/.vim/linuxtags /usr/include/linux
 
-sync-home:
+gen-all-ctags: gen-c-ctags gen-cpp-ctags gen-linux-ctags
+
+sync-home: sync-files gen-all-ctags
+
+sync-files:
 	for file in $(FILES); do $(RSYNC) $(RSYNC_OPTIONS) $$file $(HOME)/$$file; done
 	#vim -c 'helptags ALL' -c 'q'
 	#vim -c 'runtime spell/cleanadd.vim' -c 'q'
@@ -76,7 +80,7 @@ pull:
 	git pull --ff-only
 
 install:
-	{ crontab -l; echo "*/10 * * * * make -C $(PWD) cycle >/tmp/homerc.out 2>&1"; } | crontab -
+	{ crontab -l; echo "0 */2 * * * make -C $(PWD) cycle >/tmp/homerc.out 2>&1"; } | crontab -
 
 uninstall:
 	@echo "Run crontab -e and remove the rule manually."
@@ -85,3 +89,4 @@ cycle: commit pull push sync-home
 	notify-send --urgency=low --icon=terminal "homerc" "Updated"
 
 .PHONY: all help sync sync-home commit push pull install uninstall cycle
+.PHONY: gen-c-ctags gen-cpp-ctags gen-linux-ctags gen-all-ctags sync-files
