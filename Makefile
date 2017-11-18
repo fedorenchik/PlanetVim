@@ -46,16 +46,16 @@ c_headers := assert complex ctype errno fenv float inttypes iso646 limits \
 
 c_headers := $(addprefix /usr/include/,$(addsuffix .h,$(c_headers)))
 
-gen-c-ctags: $(c_headers)
-	-ctags --language-force=c -R -f ~/.vim/ctags $(c_headers)
+~/.vim/ctags: $(c_headers)
+	-ctags --language-force=c -R -f $@ $^
 
-gen-cpp-ctags: /usr/include/c++/7
-	-ctags --language-force=c++ -R -f ~/.vim/cpptags /usr/include/c++/7
+~/.vim/cpptags: /usr/include/c++/7
+	-ctags --language-force=c++ -R -f $@ $^
 
-gen-linux-ctags: /usr/include/linux
-	-ctags --language-force=c -R -f ~/.vim/linuxtags /usr/include/linux
+~/.vim/linuxtags: /usr/include/linux
+	-ctags --language-force=c -R -f $@ $^
 
-gen-all-ctags: gen-c-ctags gen-cpp-ctags gen-linux-ctags
+gen-all-ctags: ~/.vim/ctags ~/.vim/cpptags ~/.vim/linuxtags
 
 sync-home: sync-files gen-all-ctags
 
@@ -89,4 +89,4 @@ cycle: commit pull push sync-home
 	notify-send --urgency=low --icon=terminal "homerc" "Updated"
 
 .PHONY: all help sync sync-home commit push pull install uninstall cycle
-.PHONY: gen-c-ctags gen-cpp-ctags gen-linux-ctags gen-all-ctags sync-files
+.PHONY: gen-all-ctags sync-files
