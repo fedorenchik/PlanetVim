@@ -2,7 +2,7 @@
 [Desktop Entry]
 Type=Application
 Exec=/home/leonid/.local/bin/gvim -f %f
-Path=/home/leonid/.local/bin
+Path=/home/leonid
 Name=GVim
 GenericName=Text Editor
 Icon=gvim
