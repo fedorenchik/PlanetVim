@@ -34,12 +34,13 @@ git checkout master
 git checkout -- .
 git pull --ff-only
 ./configure \
+	--enable-option-checking \
 	--enable-fail-if-missing \
 	--prefix=$HOME/.local \
 	--with-features=huge \
 	--enable-luainterp=dynamic \
 	--disable-mzschemeinterp \
-	--enable-perlinterp=dynamic \
+	--enable-perlinterp=no \
 	--enable-pythoninterp=no \
 	--enable-python3interp=dynamic \
 	--with-python3-config-dir=/usr/lib/python3.5/config-3.5m-x86_64-linux-gnu \
@@ -50,12 +51,12 @@ git pull --ff-only
 	--enable-netbeans \
 	--enable-channel \
 	--enable-terminal \
-	--enable-multibyte \
-	--enable-gui=gnome2 \
-	--enable-largefile \
 	--enable-autoservername \
-	--disable-nls \
+	--enable-multibyte \
+	--enable-gui=gtk3 \
+	--enable-largefile \
 	--enable-acl \
+	--disable-nls \
 	--with-modified-by='Leonid V. Fedorenchik' \
 	--with-compiledby='Leonid V. Fedorenchik'
 make

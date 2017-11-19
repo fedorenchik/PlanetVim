@@ -58,11 +58,17 @@ tree
 u-boot-tools
 ubuntu-restricted-extras
 unzip
-vim-gnome
+vim-gtk3
 vlc
 wget
 whois
 wmctrl
-# compile from source packages:
+# virtualization packages
+libquestfs-tools
+libvirt-bin
+qemu-kvm
+virt-manager
+virtinst
+# compile from source:
 universal-ctags
 gnu global
