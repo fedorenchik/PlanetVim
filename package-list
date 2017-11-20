@@ -64,8 +64,9 @@ wget
 whois
 wmctrl
 # virtualization packages
-libquestfs-tools
+libguestfs-tools
 libvirt-bin
+oz
 qemu-kvm
 virt-manager
 virtinst
