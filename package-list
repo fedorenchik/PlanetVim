@@ -66,6 +66,7 @@ wmctrl
 # virtualization packages
 ksmtuned
 libguestfs-tools
+libosinfo-bin
 libvirt-bin
 oz
 qemu-kvm
