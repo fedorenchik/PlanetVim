@@ -64,12 +64,15 @@ wget
 whois
 wmctrl
 # virtualization packages
+ksmtuned
 libguestfs-tools
 libvirt-bin
 oz
 qemu-kvm
 virt-manager
 virtinst
+# workaround for virt-builder bug:
+sudo dpkg-statoverride --add --update root root 0644 /boot/vmlinuz-$(uname -r)
 # compile from source:
 universal-ctags
 gnu global
