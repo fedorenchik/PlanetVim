@@ -43,7 +43,7 @@ git pull --ff-only
 	--enable-perlinterp=no \
 	--enable-pythoninterp=no \
 	--enable-python3interp=dynamic \
-	--with-python3-config-dir=/usr/lib/python3.5/config-3.5m-x86_64-linux-gnu \
+	--with-python3-config-dir=/usr/lib/python3.6/config-3.6m-x86_64-linux-gnu \
 	--enable-tclinterp=no \
 	--enable-rubyinterp=no \
 	--enable-cscope \
