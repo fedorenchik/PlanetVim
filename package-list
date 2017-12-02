@@ -74,6 +74,8 @@ virt-manager
 virtinst
 # workaround for virt-builder bug:
 sudo dpkg-statoverride --add --update root root 0644 /boot/vmlinuz-$(uname -r)
+# Android Studio 3.0.1
+libc6:i386 libncurses5:i386 libstdc++6:i386 lib32z1 libbz2-1.0:i386
 # compile from source:
 universal-ctags
 gnu global
