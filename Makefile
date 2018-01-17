@@ -44,6 +44,9 @@ c_headers := assert complex ctype errno fenv float inttypes iso646 limits \
 	stdint stdio stdlib stdnoreturn string tgmath threads time uchar \
 	wchar wctype
 
+# workaround for bugs
+c_headers := $(filter-out float iso646 stdalign stdarg stdatomic stdbool stddef stdnoreturn threads,$(c_headers))
+
 c_headers := $(addprefix /usr/include/,$(addsuffix .h,$(c_headers)))
 
 ~/.vim/ctags: $(c_headers)

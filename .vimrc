@@ -820,6 +820,10 @@ let g:clang_user_options = '-std=c++1z'
 let g:clang_complete_macros = 1
 let g:clang_omnicppcomplete_compliance = 1
 " }}}
+" Plugin: deoplete {{{
+let g:deoplete#enable_at_startup = 1
+let g:deoplete#enable_yarp = 1
+" }}}
 " Plugin: gitv {{{
 let g:Gitv_OpenHorizontal = 1
 " }}}
