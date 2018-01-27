@@ -360,7 +360,9 @@ inoremap <silent> <C-R><C-D> <C-O>:Denite register<CR>
 inoremap <silent> <C-S> <Nop>
 " Insert Mode i_^X: {{{
 " Standard Vim Mappings ^: D E F I K L N O P S T U V Y ]
-" Available To Map: A B C G H J M Q R W X Z
+" Unmappable: C
+" Available To Map: A B G H J M Q R W X Z
+inoremap <expr> <C-X><C-H> deoplete#mappings#manual_complete()
 " }}}
 inoremap <silent> <C-Y> <C-R>=pumvisible() ? "\<lt>C-Y>" : "\<lt>Esc>"<CR>
 inoremap <silent> <C-Z> <Nop>
@@ -616,6 +618,7 @@ cnoremap <A-P> <Up>
 inoreabbrev teh the
 cnoreabbrev unite Unite
 cnoreabbrev calc Calc
+cnoreabbrev f find
 cnoreabbrev gblame Gblame
 cnoreabbrev gtags Gtags
 cnoreabbrev grep grep -IarFw
@@ -823,6 +826,7 @@ let g:clang_omnicppcomplete_compliance = 1
 " Plugin: deoplete {{{
 let g:deoplete#enable_at_startup = 1
 let g:deoplete#enable_yarp = 1
+let g:deoplete#disable_auto_complete = 1
 " }}}
 " Plugin: gitv {{{
 let g:Gitv_OpenHorizontal = 1
