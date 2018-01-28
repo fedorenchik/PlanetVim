@@ -83,3 +83,6 @@
 [submodule ".vim/pack/bundle/start/deoplete.nvim"]
 	path = .vim/pack/bundle/start/deoplete.nvim
 	url = https://github.com/Shougo/deoplete.nvim.git
+[submodule ".vim/pack/bundle/start/vim-dispatch"]
+	path = .vim/pack/bundle/start/vim-dispatch
+	url = https://github.com/tpope/vim-dispatch.git
