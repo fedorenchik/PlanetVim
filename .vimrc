@@ -717,6 +717,7 @@ if !has("gui_running")
 	let do_syntax_sel_menu = 1
 	source $VIMRUNTIME/menu.vim
 endif
+let v:this_session = ".session.vim"
 " }}}
 " pack/dist/opt/editexisting/ {{{
 packadd! editexisting

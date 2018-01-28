@@ -86,3 +86,6 @@
 [submodule ".vim/pack/bundle/start/vim-dispatch"]
 	path = .vim/pack/bundle/start/vim-dispatch
 	url = https://github.com/tpope/vim-dispatch.git
+[submodule ".vim/pack/bundle/start/qt-support.vim"]
+	path = .vim/pack/bundle/start/qt-support.vim
+	url = https://github.com/fedorenchik/qt-support.vim.git
