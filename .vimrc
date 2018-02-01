@@ -811,15 +811,8 @@ let g:xml_syntax_folding = 1
 " }}}
 " }}}
 " External Plugins: {{{
-" Plugin: airline {{{
-let g:airline#extensions#bufferline#enabled = 0
-let g:airline#extensions#hunks#enabled = 0
-let g:airline#extensions#syntastic#enabled = 0
-let g:airline#extensions#virtualenv#enabled = 0
-let g:airline#extensions#eclim#enabled = 0
-let g:airline#extensions#wordcount#enabled = 0
-let g:airline#extensions#whitespace#enabled = 0
-let g:airline#extensions#tabline#enabled = 0
+" Plugin: ale {{{
+let g:ale_c_build_dir = "."
 " }}}
 " Plugin: clang_complete {{{
 let g:clang_library_path = '/usr/lib/llvm-3.9/lib'
