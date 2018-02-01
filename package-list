@@ -8,12 +8,15 @@ autoconf
 automake
 autopoint
 bc
+bear
 bison
 build-essential
 cdecl
 cgdb
 chromium-browser
 chrpath
+clang
+clang-tidy
 clipit
 cmake
 cppcheck

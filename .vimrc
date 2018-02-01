@@ -812,13 +812,15 @@ let g:xml_syntax_folding = 1
 " }}}
 " External Plugins: {{{
 " Plugin: ale {{{
-let g:ale_c_build_dir = "."
+let g:ale_c_build_dir_names = ['build', 'bin', 'build-Elephant-Desktop_Qt_5_5_1_GCC_64bit-Debug']
+let g:ale_cpp_cppcheck_options = '--project=compile_commands.json'
 " }}}
 " Plugin: clang_complete {{{
-let g:clang_library_path = '/usr/lib/llvm-3.9/lib'
+let g:clang_library_path = '/usr/lib/llvm-4.0/lib'
 let g:clang_user_options = '-std=c++1z'
 let g:clang_complete_macros = 1
 let g:clang_omnicppcomplete_compliance = 1
+let g:clang_auto_user_options = "compile_commands.json, .clang_complete, path"
 " }}}
 " Plugin: deoplete {{{
 let g:deoplete#enable_at_startup = 1
