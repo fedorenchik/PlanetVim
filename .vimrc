@@ -602,8 +602,6 @@ xnoremap X y/<C-R>"<CR>
 " }}}
 " Command-line (Cmdline) Mode: {{{
 " Subcommands & submodes: Ctrl-R, Ctrl-\
-"cnoremap <C-@> <Nop>
-"cnoremap <C-O> <Nop>
 "cnoremap <silent> %% <C-R>=expand('%:h').'/'<cr>
 cnoremap <silent> w!! w !sudo tee % >/dev/null
 cnoremap <A-N> <Down>
@@ -886,9 +884,5 @@ let g:mwAutoSaveMarks = 0
 " }}}
 " Plugin: vim-markdown-preview {{{
 let vim_markdown_preview_hotkey='<A-m>'
-" }}}
-" Plugin: vimshell {{{
-let g:vimshell_prompt = '$ '
-let g:vimshell_scrollback_limit = 10000
 " }}}
 " }}}

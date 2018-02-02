@@ -14,16 +14,16 @@
 	path = .vim/pack/git/opt/vim-fugitive
 	url = https://github.com/tpope/vim-fugitive.git
 [submodule ".vim/bundle/vim-gitgutter"]
-	path = .vim/pack/bundle/start/vim-gitgutter
+	path = .vim/pack/development/start/vim-gitgutter
 	url = https://github.com/airblade/vim-gitgutter.git
 [submodule ".vim/bundle/vim-repeat"]
-	path = .vim/pack/bundle/start/vim-repeat
+	path = .vim/pack/essential/start/vim-repeat
 	url = https://github.com/tpope/vim-repeat.git
 [submodule ".vim/bundle/vim-signature"]
-	path = .vim/pack/bundle/start/vim-signature
+	path = .vim/pack/evaluating/start/vim-signature
 	url = https://github.com/kshenoy/vim-signature.git
 [submodule ".vim/bundle/vim-surround"]
-	path = .vim/pack/bundle/start/vim-surround
+	path = .vim/pack/evaluating/start/vim-surround
 	url = https://github.com/tpope/vim-surround.git
 [submodule ".vim/bundle/gitv"]
 	path = .vim/pack/git/opt/gitv
@@ -32,23 +32,23 @@
 	path = .vim/pack/git/opt/vimagit
 	url = https://github.com/jreybert/vimagit.git
 [submodule ".vim/pack/bundle/start/vim-unimpaired"]
-	path = .vim/pack/bundle/start/vim-unimpaired
+	path = .vim/pack/essential/start/vim-unimpaired
 	url = https://github.com/tpope/vim-unimpaired.git
 [submodule ".vim/pack/bundle/start/denite.nvim"]
 	path = .vim/pack/essential/start/denite.nvim
 	url = https://github.com/Shougo/denite.nvim.git
 [submodule ".vim/pack/bundle/start/vim-cpp-enhanced-highlight"]
-	path = .vim/pack/bundle/start/vim-cpp-enhanced-highlight
+	path = .vim/pack/development/start/vim-cpp-enhanced-highlight
 	url = https://github.com/fedorenchik/vim-cpp-enhanced-highlight.git
 	branch = config-func-hl
 [submodule ".vim/pack/bundle/start/vim-c-posix-syntax"]
-	path = .vim/pack/bundle/start/vim-c-posix-syntax
+	path = .vim/pack/development/opt/vim-c-posix-syntax
 	url = https://github.com/t6tn4k/vim-c-posix-syntax.git
 [submodule ".vim/pack/bundle/start/vim-mark"]
-	path = .vim/pack/bundle/start/vim-mark
+	path = .vim/pack/essential/start/vim-mark
 	url = https://github.com/inkarkat/vim-mark.git
 [submodule ".vim/pack/bundle/start/vim-ingo-library"]
-	path = .vim/pack/bundle/start/vim-ingo-library
+	path = .vim/pack/essential/start/vim-ingo-library
 	url = https://github.com/inkarkat/vim-ingo-library.git
 [submodule ".vim/pack/bundle/start/VimCalc3"]
 	path = .vim/pack/evaluating/start/VimCalc3
@@ -66,7 +66,7 @@
 	path = .vim/pack/evaluating/start/FastFold
 	url = https://github.com/Konfekt/FastFold.git
 [submodule ".vim/pack/bundle/start/vim-markdown-preview"]
-	path = .vim/pack/bundle/start/vim-markdown-preview
+	path = .vim/pack/evaluating/start/vim-markdown-preview
 	url = https://github.com/JamshedVesuna/vim-markdown-preview.git
 [submodule ".vim/pack/bundle/opt/AnsiEsc"]
 	path = .vim/pack/essential/opt/AnsiEsc
@@ -78,13 +78,13 @@
 	path = .vim/pack/development/start/nvim-yarp
 	url = https://github.com/roxma/nvim-yarp.git
 [submodule ".vim/pack/bundle/start/vim-hug-neovim-rpc"]
-	path = .vim/pack/bundle/start/vim-hug-neovim-rpc
+	path = .vim/pack/development/start/vim-hug-neovim-rpc
 	url = https://github.com/roxma/vim-hug-neovim-rpc.git
 [submodule ".vim/pack/bundle/start/deoplete.nvim"]
 	path = .vim/pack/development/start/deoplete.nvim
 	url = https://github.com/Shougo/deoplete.nvim.git
 [submodule ".vim/pack/bundle/start/vim-dispatch"]
-	path = .vim/pack/bundle/start/vim-dispatch
+	path = .vim/pack/development/start/vim-dispatch
 	url = https://github.com/tpope/vim-dispatch.git
 [submodule ".vim/pack/bundle/start/qt-support.vim"]
 	path = .vim/pack/development/start/qt-support.vim
