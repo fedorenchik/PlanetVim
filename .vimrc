@@ -344,10 +344,9 @@ let maplocalleader="_"
 " Insert Mode: {{{
 " Standard Vim Mappings i_^: @ A C D E F G H I J K L M N O P Q R
 " S T U V W X Y Z [ \ ] ^ _
-" Available To Remap: @ A B E J L M Q S Y Z _ <F2>..<F12>
+" Available To Remap: @ A B E J L M Q S Y Z _
+" Submodes: <A-...> <C-...> <C-X>... <C-G>...
 inoremap <silent> <C-@> <C-^>
-"inoremap <silent> <C-A> <Nop>
-inoremap <silent> <C-B> <Nop>
 inoremap <silent> <C-E> <C-R>=pumvisible() ? "\<lt>C-E>" : "\<lt>Esc>"<CR>
 " Insert Mode i_^G: {{{
 " Standard Vim Mappings: j ^J k ^K u U <Up> <Down>
@@ -369,13 +368,8 @@ inoremap <silent> <C-Z> <Nop>
 inoremap <silent> <C-{> <Esc>
 " Insert Mode i_<A-...>: {{{
 inoremap <silent> <A-e> <Esc>
-inoremap <silent> <A-u> <Esc>
-inoremap <silent> <A-h> <Esc>
 inoremap <silent> <A-w> <C-O>:up<CR>
 " }}}
-" Insert Mode: <leader>...: {{{
-"inoremap <silent> <leader>w <C-O>:up<CR>
-"}}}
 " }}}
 " Normal (Command) Mode: {{{
 " Metakeys: <BS> <Tab> <CR> <Esc> <Space> <Del> <Up> <Down> <Left> <Right>
@@ -384,6 +378,7 @@ inoremap <silent> <A-w> <C-O>:up<CR>
 " Commands Expecting Marks: m ' `
 " Commands Expecting Registers: q " @
 " Standard Text Objects: b B p s t w W [ { } ( ) ] ` < > ' "
+" Submodes: <Space> <CR> <BS> - + g z Z [ ] <A-...> <C-...>
 " Normal Keys: {{{
 " Available To Remap: f F h j k l Q s S t T U + ; : , \ - _ <BS> <CR> <Space>
 " TODO: 1. Make f F t T search multiline
@@ -394,11 +389,11 @@ nnoremap <silent> <CR> :GtagsCursor<CR>
 nnoremap <silent> <F2> :call ToggleFileExplorer()<CR>
 nnoremap <silent> <F4> :VimShellPop<CR><ESC>
 nnoremap <silent> <S-F4> :VimShell -split -split-command=vsplit\ +wincmd\\ l -toggle<CR><ESC>
-nnoremap <silent> <F8> <Nop>
 nnoremap <silent> <F9> :TagbarToggle<CR>
-nnoremap <silent> <F10> <Nop>
 nnoremap <silent> <F12> :UndotreeToggle<CR>
+" Normal Keys: <Space>...: {{{
 nnoremap <silent> <Space> <Nop>
+" }}}
 nnoremap <silent> ` '
 nnoremap <silent> ' `
 nnoremap <unique> ; :
@@ -407,8 +402,9 @@ nnoremap <unique> : q:i
 " Standard Vim Mappings: a ^A d D e E f F g ^G h H ^H i I j J k m n N o p P q Q
 " r R s t T u U v V w x 0 8 ] ^] # $ & ' ` * + , - ; < ? ^ _ @ ~ <Down> <End>
 " <Home> <LeftMouse> <MiddleMouse> <RightMouse> <Up>
-" Available To Map: A b B c C G K l L M O S W X y Y z Z 1 2 3 4 5 6 7 9 % [ { }
-" ( = ) ! : > . / \ | "
+" Available To Map:
+" A b B c C G K l L M O S W X y Y z Z 1 2 3 4 5 6 7 9 % [ { } ( = ) ! : > . / \ | "
+" +     + +     + +   + + + + +   + +                                 +   +       +
 nnoremap <silent> gA :args<CR>
 nnoremap <silent> gc :changes<CR>
 nnoremap <silent> gC :undolist<CR>
@@ -425,9 +421,9 @@ nnoremap <silent> gX gQ
 nnoremap <silent> gy :%y+<CR>
 nnoremap <silent> gz :buffers<CR>
 nnoremap <silent> gZ :tabs<CR>
-nnoremap <silent> g" :registers<CR>
-nnoremap <silent> g. :marks<CR>
 nnoremap <silent> g: :history<CR>
+nnoremap <silent> g. :marks<CR>
+nnoremap <silent> g" :registers<CR>
 " }}}
 nnoremap <silent> h F
 nnoremap <silent> l f
@@ -438,8 +434,8 @@ nnoremap <silent> Y y$
 " Normal Keys: z...: {{{
 " Standard Vim Mappings: a A b c C d D e E f F g G h H i j k l L m M n N o O r R
 " s t u v w W x X z ^ + - . = <Left> <Right> <CR>
-" Available To Map: B I J K p P q Q S T U V y Y Z $ ~ & % [ { } ( * ) ] ! # `
-" ; : , < > / ? @ \ | _ ' "
+" Available To Map:
+" B I J K p P q Q S T U V y Y Z $ ~ & % [ { } ( * ) ] ! # ` ; : , < > / ? @ \ | _ ' "
 " }}}
 " Normal Keys: Z...: {{{
 " Standard Vim Mappings: Q Z
@@ -533,14 +529,6 @@ nnoremap <silent> <A-/> /\v\c
 " <ScrollWheelDown> <ScrollWheelUp> <ScrollWheelLeft> <ScrollWheelRight>
 " When remap mousekeys, they send key events to the active window.
 " (by default, they send key events to the window under mouse cursor).
-"nnoremap <silent> <ScrollWheelUp> 6<C-y>
-"nnoremap <silent> <ScrollWheelDown> 6<C-e>
-"nnoremap <silent> <S-ScrollWheelUp> <C-b>
-"nnoremap <silent> <S-ScrollWheelDown> <C-f>
-"nnoremap <silent> <C-ScrollWheelUp> <Nop>
-"nnoremap <silent> <C-ScrollWheelDown> <Nop>
-"nnoremap <silent> <A-ScrollWheelUp> <Nop>
-"nnoremap <silent> <A-ScrollWheelDown> <Nop>
 " }}}
 " Leader: {{{
 " Available To Map: a A b B c C d D e E f F g G h H i I j J k K l L m M n N o O
@@ -590,7 +578,6 @@ nnoremap <silent> <Leader>_ :Unite -start-insert -smartcase -buffer-name=unite-w
 " }}}
 " Visual Mode: {{{
 " Subcommands & submodes: Ctrl-\, a, g, i.
-xnoremap <Space> za
 xnoremap ; :
 xnoremap / /\v
 xnoremap gy "+y
@@ -602,10 +589,6 @@ xnoremap X y/<C-R>"<CR>
 " }}}
 " Command-line (Cmdline) Mode: {{{
 " Subcommands & submodes: Ctrl-R, Ctrl-\
-"cnoremap <silent> %% <C-R>=expand('%:h').'/'<cr>
-cnoremap <silent> w!! w !sudo tee % >/dev/null
-cnoremap <A-N> <Down>
-cnoremap <A-P> <Up>
 " }}}
 " }}}
 " Abbreviations: {{{
