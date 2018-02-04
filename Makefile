@@ -64,7 +64,7 @@ sync-home: sync-files gen-all-ctags
 
 sync-files:
 	for file in $(FILES); do $(RSYNC) $(RSYNC_OPTIONS) $$file $(HOME)/$$file; done
-	#vim -c 'helptags ALL' -c 'q'
+	vim -c 'helptags ALL' -c 'q'
 	#vim -c 'runtime spell/cleanadd.vim' -c 'q'
 
 commit:

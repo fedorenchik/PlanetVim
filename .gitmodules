@@ -7,12 +7,6 @@
 [submodule ".vim/bundle/vim-dirdiff"]
 	path = .vim/pack/essential/opt/vim-dirdiff
 	url = https://github.com/will133/vim-dirdiff.git
-[submodule ".vim/bundle/vim-fugitive"]
-	path = .vim/pack/git/opt/vim-fugitive
-	url = https://github.com/tpope/vim-fugitive.git
-[submodule ".vim/bundle/vim-gitgutter"]
-	path = .vim/pack/development/start/vim-gitgutter
-	url = https://github.com/airblade/vim-gitgutter.git
 [submodule ".vim/bundle/vim-repeat"]
 	path = .vim/pack/essential/start/vim-repeat
 	url = https://github.com/tpope/vim-repeat.git
@@ -22,12 +16,6 @@
 [submodule ".vim/bundle/vim-surround"]
 	path = .vim/pack/evaluating/start/vim-surround
 	url = https://github.com/tpope/vim-surround.git
-[submodule ".vim/bundle/gitv"]
-	path = .vim/pack/git/opt/gitv
-	url = https://github.com/gregsexton/gitv.git
-[submodule ".vim/pack/bundle/start/vimagit.git"]
-	path = .vim/pack/git/opt/vimagit
-	url = https://github.com/jreybert/vimagit.git
 [submodule ".vim/pack/bundle/start/vim-unimpaired"]
 	path = .vim/pack/essential/start/vim-unimpaired
 	url = https://github.com/tpope/vim-unimpaired.git
@@ -62,14 +50,11 @@
 [submodule ".vim/pack/bundle/start/dbext.vim"]
 	path = .vim/pack/essential/start/dbext.vim
 	url = https://github.com/fedorenchik/dbext.vim.git
-[submodule ".vim/pack/bundle/start/vim-dispatch"]
-	path = .vim/pack/development/start/vim-dispatch
-	url = https://github.com/tpope/vim-dispatch.git
 [submodule ".vim/pack/bundle/start/qt-support.vim"]
 	path = .vim/pack/development/start/qt-support.vim
 	url = https://github.com/fedorenchik/qt-support.vim.git
 [submodule ".vim/pack/bundle/opt/gina.vim"]
-	path = .vim/pack/git/opt/gina.vim
+	path = .vim/pack/git/start/gina.vim
 	url = https://github.com/lambdalisue/gina.vim.git
 [submodule ".vim/pack/lsp/start/vim-lsp"]
 	path = .vim/pack/lsp/start/vim-lsp
