@@ -792,27 +792,8 @@ let g:xml_syntax_folding = 1
 " }}}
 " }}}
 " External Plugins: {{{
-" Plugin: ale {{{
-let g:ale_c_build_dir_names = ['build', 'bin', 'build-Elephant-Desktop_Qt_5_5_1_GCC_64bit-Debug']
-let g:ale_cpp_cppcheck_options = '--project=compile_commands.json'
-" }}}
-" Plugin: clang_complete {{{
-let g:clang_library_path = '/usr/lib/llvm-4.0/lib'
-let g:clang_user_options = '-std=c++1z'
-let g:clang_complete_macros = 1
-let g:clang_omnicppcomplete_compliance = 1
-let g:clang_auto_user_options = "compile_commands.json, .clang_complete, path"
-" }}}
-" Plugin: deoplete {{{
-let g:deoplete#enable_at_startup = 1
-let g:deoplete#enable_yarp = 1
-let g:deoplete#disable_auto_complete = 1
-" }}}
 " Plugin: gitv {{{
 let g:Gitv_OpenHorizontal = 1
-" }}}
-" Plugin: gtags {{{
-let g:Gtags_OpenQuickfixWindow = 0
 " }}}
 " Plugin: signature {{{
 let g:SignatureMap = {
@@ -846,13 +827,6 @@ let g:SignatureDeleteConfirmation = 1
 let g:SignaturePurgeConfirmation = 1
 let g:SignatureForceMarkPlacement = 1
 let g:SignatureForceMarkerPlacement = 1
-" }}}
-" Plugin: tagbar {{{
-let g:tagbar_ctags_bin = '/usr/local/bin/ctags'
-let g:tagbar_sort=0
-let g:tagbar_compact=1
-let g:tagbar_autofocus=0
-let g:tagbar_type_make = { 'kinds':[ 'm:macros', 't:targets' ] }
 " }}}
 " Plugin: undotree {{{
 let g:undotree_WindowLayout=4
