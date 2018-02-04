@@ -1,9 +1,6 @@
 [submodule ".vim/bundle/molokai"]
 	path = .vim/pack/essential/start/molokai
 	url = https://github.com/tomasr/molokai.git
-[submodule ".vim/bundle/tagbar"]
-	path = .vim/pack/development/start/tagbar
-	url = https://github.com/majutsushi/tagbar.git
 [submodule ".vim/bundle/undotree"]
 	path = .vim/pack/essential/start/undotree
 	url = https://github.com/mbbill/undotree.git
@@ -53,15 +50,6 @@
 [submodule ".vim/pack/bundle/start/VimCalc3"]
 	path = .vim/pack/evaluating/start/VimCalc3
 	url = https://github.com/fedorenchik/VimCalc3.git
-[submodule ".vim/pack/bundle/start/gtags.vim"]
-	path = .vim/pack/development/start/gtags.vim
-	url = https://github.com/fedorenchik/gtags.vim.git
-[submodule ".vim/pack/bundle/start/clang_complete"]
-	path = .vim/pack/development/start/clang_complete
-	url = https://github.com/Rip-Rip/clang_complete.git
-[submodule ".vim/pack/bundle/start/ale"]
-	path = .vim/pack/development/start/ale
-	url = https://github.com/w0rp/ale.git
 [submodule ".vim/pack/bundle/start/FastFold"]
 	path = .vim/pack/evaluating/start/FastFold
 	url = https://github.com/Konfekt/FastFold.git
@@ -74,15 +62,6 @@
 [submodule ".vim/pack/bundle/start/dbext.vim"]
 	path = .vim/pack/essential/start/dbext.vim
 	url = https://github.com/fedorenchik/dbext.vim.git
-[submodule ".vim/pack/bundle/start/nvim-yarp"]
-	path = .vim/pack/development/start/nvim-yarp
-	url = https://github.com/roxma/nvim-yarp.git
-[submodule ".vim/pack/bundle/start/vim-hug-neovim-rpc"]
-	path = .vim/pack/development/start/vim-hug-neovim-rpc
-	url = https://github.com/roxma/vim-hug-neovim-rpc.git
-[submodule ".vim/pack/bundle/start/deoplete.nvim"]
-	path = .vim/pack/development/start/deoplete.nvim
-	url = https://github.com/Shougo/deoplete.nvim.git
 [submodule ".vim/pack/bundle/start/vim-dispatch"]
 	path = .vim/pack/development/start/vim-dispatch
 	url = https://github.com/tpope/vim-dispatch.git
@@ -92,3 +71,15 @@
 [submodule ".vim/pack/bundle/opt/gina.vim"]
 	path = .vim/pack/git/opt/gina.vim
 	url = https://github.com/lambdalisue/gina.vim.git
+[submodule ".vim/pack/lsp/start/vim-lsp"]
+	path = .vim/pack/lsp/start/vim-lsp
+	url = https://github.com/prabirshrestha/vim-lsp.git
+[submodule ".vim/pack/lsp/start/async.vim"]
+	path = .vim/pack/lsp/start/async.vim
+	url = https://github.com/prabirshrestha/async.vim.git
+[submodule ".vim/pack/lsp/start/asyncomplete.vim"]
+	path = .vim/pack/lsp/start/asyncomplete.vim
+	url = https://github.com/prabirshrestha/asyncomplete.vim.git
+[submodule ".vim/pack/lsp/start/asyncomplete-lsp.vim"]
+	path = .vim/pack/lsp/start/asyncomplete-lsp.vim
+	url = https://github.com/prabirshrestha/asyncomplete-lsp.vim.git
