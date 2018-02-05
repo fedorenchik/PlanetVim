@@ -400,8 +400,10 @@ nnoremap <unique> : q:i
 " <Home> <LeftMouse> <MiddleMouse> <RightMouse> <Up>
 " Available To Map:
 " A b B c C G K l L M O S W X y Y z Z 1 2 3 4 5 6 7 9 % [ { } ( = ) ! : > . / \ | "
-" +     + +     + +   + + + + +   + +                                 +   +       +
+" + + + + +     + +   + + + + +   + +                                 +   +       +
 nnoremap <silent> gA :args<CR>
+nnoremap <silent> gb :tselect<CR>
+nnoremap <silent> gB :tags<CR>
 nnoremap <silent> gc :changes<CR>
 nnoremap <silent> gC :undolist<CR>
 nnoremap <silent> gl :llist<CR>
@@ -410,8 +412,6 @@ nnoremap <silent> gO :jumps<CR>
 nnoremap <silent> gq :clist<CR>
 nnoremap <silent> gQ :chistory<CR>
 nnoremap <silent> gS ^vg_y:execute @@<CR>:echo 'Sourced: ' . @@<CR>
-nnoremap <silent> gt :tselect<CR>
-nnoremap <silent> gT :tags<CR>
 nnoremap <silent> gW Q
 nnoremap <silent> gX gQ
 nnoremap <silent> gy :%y+<CR>
