@@ -795,6 +795,7 @@ let g:undotree_WindowLayout=4
 let g:cpp_no_function_highlight=1
 " }}}
 " Plugin: vim-lsp {{{
+let g:lsp_async_completion = 1
 if executable('cquery')
 	au User lsp_setup call lsp#register_server({
 				\ 'name': 'cquery',
