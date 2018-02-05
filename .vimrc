@@ -378,20 +378,16 @@ inoremap <silent> <A-w> <C-O>:up<CR>
 " Commands Expecting Marks: m ' `
 " Commands Expecting Registers: q " @
 " Standard Text Objects: b B p s t w W [ { } ( ) ] ` < > ' "
-" Submodes: <Space> <CR> <BS> - + g z Z [ ] <A-...> <C-...>
+" Submodes: <Space> - g z Z [ ] <A-...> <C-...>
 " Normal Keys: {{{
 " Available To Remap: f F h j k l Q s S t T U + ; : , \ - _ <BS> <CR> <Space>
 " TODO: 1. Make f F t T search multiline
 " TODO: 2. Make h l behave like f F but input 2 characters
 " TODO: 3. Make j k behave like f F but input 3 characters
-nnoremap <silent> <BS> <Nop>
-nnoremap <silent> <CR> :GtagsCursor<CR>
-nnoremap <silent> <F2> :call ToggleFileExplorer()<CR>
-nnoremap <silent> <F4> :VimShellPop<CR><ESC>
-nnoremap <silent> <S-F4> :VimShell -split -split-command=vsplit\ +wincmd\\ l -toggle<CR><ESC>
-nnoremap <silent> <F9> :TagbarToggle<CR>
-nnoremap <silent> <F12> :UndotreeToggle<CR>
 " Normal Keys: <Space>...: {{{
+" Available To Map:
+" aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ;,.:<>/@\?^|-_'"$&[{}(=*)+]!#~%7531902468`
+"
 nnoremap <silent> <Space> <Nop>
 " }}}
 nnoremap <silent> ` '
@@ -435,10 +431,13 @@ nnoremap <silent> Y y$
 " Standard Vim Mappings: a A b c C d D e E f F g G h H i j k l L m M n N o O r R
 " s t u v w W x X z ^ + - . = <Left> <Right> <CR>
 " Available To Map:
-" B I J K p P q Q S T U V y Y Z $ ~ & % [ { } ( * ) ] ! # ` ; : , < > / ? @ \ | _ ' "
+" B I J K p P q Q S T U V y Y Z $ ~ & % [ { } ( * ) ] ! # ` ; : , < > / ? @ \ | _ ' " 0 1 2 3 4 5 6 7 8 9
 " }}}
 " Normal Keys: Z...: {{{
 " Standard Vim Mappings: Q Z
+" Available To Map:
+" aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ;,.:<>/@\?^|-_'"$&[{}(=*)+]!#~%7531902468`
+"     ++        ++      ++      ++ +                 +
 nnoremap <silent> Zc :copen<CR>
 nnoremap <silent> ZC :cclose<CR>
 nnoremap <silent> Zh :help<CR>
@@ -448,14 +447,13 @@ nnoremap <silent> ZL :lclose<CR>
 nnoremap <silent> Zp :ptag<CR>
 nnoremap <silent> ZP :pclose<CR>
 " }}}
-nnoremap <silent> - <Nop>
-nnoremap <silent> + <Nop>
 " Normal Keys: [...: {{{
 " Standard Vim Mappings: c d D ^D f i I ^I m p P s S z # ' ( * ` / [ ] {
 " <MiddleMouse>
 " Vim Unimpaired Mappings: a A b B e f l L ^L n o q Q ^Q t T u x y <Space>
-" Available To Remap: C E F g G h H j J k K M N O r R U v V w W X Y Z 0 1 2 3
-" 4 5 6 7 8 9 $ ~ & % } = ) + ! ; : , < . > ? @ ^ \ | - _ "
+" Available To Remap:
+" C E F g G h H j J k K M N O r R U v V w W X Y Z 0 1 2 3 4 5 6 7 8 9 $ ~ & % } = ) + ! ; : , < . > ? @ ^ \ | - _ "
+"                                                 + + + + + + + + + +
 nnoremap [1 :call signature#marker#Goto('prev', 1, v:count)<CR>
 nnoremap [2 :call signature#marker#Goto('prev', 2, v:count)<CR>
 nnoremap [3 :call signature#marker#Goto('prev', 3, v:count)<CR>
@@ -471,8 +469,9 @@ nnoremap [0 :call signature#marker#Goto('prev', 0, v:count)<CR>
 " Standard Vim Mappings: c d D ^D f i I ^I m p P s S z # ' ) * ` / [ ] }
 " <MiddleMouse>
 " Vim Unimpaired Mappings: a A b B e f l L ^L n o q Q ^Q t T u x y <Space>
-" Available To Remap: C E F g G h H j J k K M N O r R U v V w W X Y Z 0 1 2 3
-" 4 5 6 7 8 9 $ ~ & % } = ) + ! ; : , < . > ? @ ^ \ | - _ "
+" Available To Remap:
+" C E F g G h H j J k K M N O r R U v V w W X Y Z 0 1 2 3 4 5 6 7 8 9 $ ~ & % } = ) + ! ; : , < . > ? @ ^ \ | - _ "
+"                                                 + + + + + + + + + +
 nnoremap ]1 :call signature#marker#Goto('next', 1, v:count)<CR>
 nnoremap ]2 :call signature#marker#Goto('next', 2, v:count)<CR>
 nnoremap ]3 :call signature#marker#Goto('next', 3, v:count)<CR>
@@ -490,11 +489,9 @@ nnoremap ]0 :call signature#marker#Goto('next', 0, v:count)<CR>
 " XXX: Uppercase/lowercase distinction is not available with <Ctrl-...>
 " XXX: modifier.
 " Standard Vim Mappings: A C G I M O Q R S T V W X Z [ \ ] ^
-" Available To Map: B D E F H J K L N P U Y 1 2 3 4 5 6 7 8 9 0 $ & { } ( = * )
-" + ! # ~ % ` ; : , < . > / ? @ | - _ ' " <BS> <Tab> <CR> <Esc> <Space>
+" Available To Map:
+" B D E F H J K L N P U Y 1 2 3 4 5 6 7 8 9 0 $ & { } ( = * ) + ! # ~ % ` ; : , < . > / ? @ | - _ ' " <BS> <Tab> <CR> <Esc> <Space>
 nnoremap <silent> <C-@> <C-L>
-nnoremap <silent> <C-F4> :VimShell -toggle<CR><ESC>
-nnoremap <silent> <C-F12> :!ctags -R --sort=yes --excmd=p --c++-kinds=+pl --fields=+iaS --extra=+q .<CR>
 nnoremap <silent> <C-PageDown> :bnext<CR>
 nnoremap <silent> <C-PageUp> :bprevious<CR>
 nnoremap <silent> <C-E> 2<C-E>
@@ -514,7 +511,10 @@ nnoremap <silent> <C-_> <Nop>
 " }}}
 " }}}
 " Alt Key: {{{
-nnoremap <silent> <A-F4> :VimShell -split -split-command=tabnew -toggle<CR><ESC>
+" Available To Map:
+" aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ;,.:<>/@\?^|-_'"$&[{}(=*)+]!#~%7531902468`
+"   +                   +++       +++         +
+nnoremap <silent> <A-b> :Denite buffer
 nnoremap <silent> <A-L> :lolder<CR>
 nnoremap <silent> <A-l> :lnewer<CR>
 nnoremap <silent> <A-m> :<C-U><C-R><C-R>='let @'. v:register .' = '. string(getreg(v:register))<CR><C-F><Left>
@@ -522,58 +522,12 @@ nnoremap <silent> <A-Q> :colder<CR>
 nnoremap <silent> <A-q> :cnewer<CR>
 nnoremap <silent> <A-r> :nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-L>
 nnoremap <silent> <A-w> :confirm up<CR>
-nnoremap <silent> <A-/> /\v\c
 " }}}
 " Mouse Keys: {{{
 " Mousekeys: <LeftMouse> <MiddleMouse> <RightMouse> <X1Mouse> <X2Mouse>
 " <ScrollWheelDown> <ScrollWheelUp> <ScrollWheelLeft> <ScrollWheelRight>
 " When remap mousekeys, they send key events to the active window.
 " (by default, they send key events to the window under mouse cursor).
-" }}}
-" Leader: {{{
-" Available To Map: a A b B c C d D e E f F g G h H i I j J k K l L m M n N o O
-" p P q Q r R s S t T u U v V w W x X y Y z Z 0 1 2 3 4 5 6 7 8 9
-" $ ~ & % [ { } ( = * ) + ] ! # ` ; : , < . > / ? @ ^ \ | - _ ' "
-" <BS> <Tab> <CR> <Esc> <Space> <Del> <Up> <Down> <Left> <Right> <F1>..<F12>
-" <Insert> <Home> <End> <PageUp> <PageDown>
-nnoremap <silent> <Leader><Space> :set hlsearch! hlsearch?<CR>
-nnoremap <silent> <Leader>a :e #<CR>
-nnoremap <silent> <Leader>b :Unite -start-insert -smartcase -buffer-name=unite-buffer buffer<CR>
-nnoremap <silent> <Leader>c :Unite -buffer-name=unite-quickfix quickfix<CR>
-nnoremap <silent> <Leader>C :Unite -no-resize -no-split -buffer-name=unite-quickfix quickfix<CR>
-nnoremap <silent> <Leader>e :Unite -start-insert -no-resize -no-split -buffer-name=unite-file file<CR>
-nnoremap <silent> <Leader>f :Unite -start-insert -smartcase -buffer-name=unite-file file:`expand('%:p:h')`<CR>
-nnoremap <silent> <Leader>F :Unite -start-insert -smartcase -buffer-name=unite-file file_rec/async<CR>
-nnoremap <silent> <Leader>g :GtagsCursor<CR>:Unite -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
-nnoremap <silent> <Leader>G :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/context<CR>
-nnoremap <silent> <Leader>h :VimShellPop -buffer-name=vimshell<CR>
-nnoremap <silent> <Leader>i :Unite -start-insert -buffer-name=unite-line<CR>
-nnoremap <silent> <Leader>j :Unite -start-insert -smartcase -buffer-name=unite-jump jump<CR>
-nnoremap <silent> <Leader>k :Unite -start-insert -smartcase -buffer-name=unite-mark mark<CR>
-nnoremap <silent> <Leader>l :Unite -buffer-name=unite-location-list location_list<CR>
-nmap <silent> <unique> <Leader>m <Plug>MarkSet
-nmap <silent> <unique> <Leader>M <Plug>MarkClear
-nmap <silent> <Leader>n <Plug>MarkSearchCurrentNext
-nmap <silent> <Leader>N <Plug>MarkSearchCurrentPrev
-nnoremap <silent> <Leader>o :Unite -start-insert -smartcase outline<CR>
-nnoremap <silent> <Leader>O :Unite -no-resize -no-split -smartcase outline<CR>
-nnoremap <silent> <Leader>p :Unite -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
-nnoremap <silent> <Leader>P :Unite -no-resize -no-split -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
-nnoremap <silent> <Leader>q :confirm q<CR>
-nnoremap <silent> <Leader>Q :confirm qa<CR>
-nmap <silent> <Leader>r <Plug>MarkRegex
-nnoremap <silent> <Leader>R :Unite -start-insert -smartcase -buffer-name=unite-register register<CR>
-nnoremap <silent> <Leader>s :Unite -start-insert -smartcase -buffer-name=unite-grep grep:%::`expand('<cword>')`<CR>
-nnoremap <silent> <Leader>S :Scratch<CR>
-nnoremap <silent> <Leader>t :Unite -start-insert -smartcase -buffer-name=unite-tab tab<CR>
-nnoremap <silent> <Leader>u :UniteResume<CR>
-nnoremap <silent> <Leader>w :confirm up<CR>
-nnoremap <silent> <Leader>W :confirm wa<CR>
-nnoremap <silent> <Leader>; ,
-nmap <silent> <Leader>/ <Plug>MarkSearchAnyNext
-nmap <silent> <Leader>? <Plug>MarkSearchAnyPrev
-nnoremap <silent> <Leader>- :Unite -start-insert -smartcase -buffer-name=unite-window window:no-current<CR>
-nnoremap <silent> <Leader>_ :Unite -start-insert -smartcase -buffer-name=unite-window window/gui<CR>
 " }}}
 " }}}
 " Visual Mode: {{{
@@ -633,7 +587,7 @@ autocmd FileType vim setlocal foldenable foldmethod=marker foldlevelstart=0 fold
 if exists("+omnifunc")
 	autocmd Filetype * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
 endif
-"autocmd GUIEnter * set lines=27 columns=133 guifont=Ubuntu\ Mono\ 11,Monospace\ 9
+"autocmd GUIEnter * set lines=27 columns=133
 autocmd GUIEnter * set guifont=Ubuntu\ Mono\ 11,Monospace\ 9
 autocmd GUIEnter * call system('wmctrl -i -b add,maximized_vert,maximized_horz -r '.v:windowid)
 autocmd VimEnter * if exists('g:vimrc_auto_session') && filereadable('.session.vim') | source .session.vim | endif
