@@ -315,7 +315,7 @@ set wildcharm=<C-Z>
 set wildignore&
 set nowildignorecase
 set wildmenu
-set wildmode=full
+set wildmode=longest:full,list:full
 set wildoptions=tagfile
 set winaltkeys=no
 set winheight&
@@ -453,7 +453,9 @@ nnoremap <silent> ZP :pclose<CR>
 " Vim Unimpaired Mappings: a A b B e f l L ^L n o q Q ^Q t T u x y <Space>
 " Available To Remap:
 " C E F g G h H j J k K M N O r R U v V w W X Y Z 0 1 2 3 4 5 6 7 8 9 $ ~ & % } = ) + ! ; : , < . > ? @ ^ \ | - _ "
-"                                                 + + + + + + + + + +
+" +                         +                     + + + + + + + + + +
+nnoremap [C :colder<CR>
+nnoremap [O :lolder<CR>
 nnoremap [1 :call signature#marker#Goto('prev', 1, v:count)<CR>
 nnoremap [2 :call signature#marker#Goto('prev', 2, v:count)<CR>
 nnoremap [3 :call signature#marker#Goto('prev', 3, v:count)<CR>
@@ -471,7 +473,9 @@ nnoremap [0 :call signature#marker#Goto('prev', 0, v:count)<CR>
 " Vim Unimpaired Mappings: a A b B e f l L ^L n o q Q ^Q t T u x y <Space>
 " Available To Remap:
 " C E F g G h H j J k K M N O r R U v V w W X Y Z 0 1 2 3 4 5 6 7 8 9 $ ~ & % } = ) + ! ; : , < . > ? @ ^ \ | - _ "
-"                                                 + + + + + + + + + +
+" +                         +                     + + + + + + + + + +
+nnoremap ]C :cnewer<CR>
+nnoremap ]O :lnewer<CR>
 nnoremap ]1 :call signature#marker#Goto('next', 1, v:count)<CR>
 nnoremap ]2 :call signature#marker#Goto('next', 2, v:count)<CR>
 nnoremap ]3 :call signature#marker#Goto('next', 3, v:count)<CR>
@@ -490,12 +494,13 @@ nnoremap ]0 :call signature#marker#Goto('next', 0, v:count)<CR>
 " XXX: modifier.
 " Standard Vim Mappings: A C G I M O Q R S T V W X Z [ \ ] ^
 " Available To Map:
-" B D E F H J K L N P U Y 1 2 3 4 5 6 7 8 9 0 $ & { } ( = * ) + ! # ~ % ` ; : , < . > / ? @ | - _ ' " <BS> <Tab> <CR> <Esc> <Space>
-nnoremap <silent> <C-@> <C-L>
+" B D E F H J K L N P Q S U Y 1 2 3 4 5 6 7 8 9 0 $ & { } ( = * ) + ! # ~ % ` ; : , < . > / ? @ | - _ ' " <BS> <Tab> <CR> <Esc> <Space>
+"         + + + +       +
+nnoremap <C-Space> :tag<CR>
+nnoremap <silent> <C-@> :redraw!<CR>
 nnoremap <silent> <C-PageDown> :bnext<CR>
 nnoremap <silent> <C-PageUp> :bprevious<CR>
 nnoremap <silent> <C-E> 2<C-E>
-nnoremap <silent> <C-G> :tag<CR>
 nnoremap <silent> <C-H> <C-W>h
 nnoremap <silent> <C-J> <C-W>j
 nnoremap <silent> <C-K> <C-W>k
@@ -514,12 +519,12 @@ nnoremap <silent> <C-_> <Nop>
 " Available To Map:
 " aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ;,.:<>/@\?^|-_'"$&[{}(=*)+]!#~%7531902468`
 "   +                   +++       +++         +
+nnoremap <A-BS> :qa!<CR>
+nnoremap <A-CR> :wqa<CR>
 nnoremap <silent> <A-b> :Denite buffer
-nnoremap <silent> <A-L> :lolder<CR>
-nnoremap <silent> <A-l> :lnewer<CR>
 nnoremap <silent> <A-m> :<C-U><C-R><C-R>='let @'. v:register .' = '. string(getreg(v:register))<CR><C-F><Left>
-nnoremap <silent> <A-Q> :colder<CR>
-nnoremap <silent> <A-q> :cnewer<CR>
+nnoremap <silent> <A-q> :q<CR>
+nnoremap <silent> <A-Q> :qa<CR>
 nnoremap <silent> <A-r> :nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-L>
 nnoremap <silent> <A-w> :confirm up<CR>
 " }}}

@@ -142,7 +142,11 @@ gitv()
 
 gitk()
 (
-	command gitk "$@" &
+	if [ $* == "" ]; then
+		command gitk --all &
+	else
+		command gitk "$@" &
+	fi
 )
 
 dirdiffv()
