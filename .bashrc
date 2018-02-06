@@ -142,7 +142,7 @@ gitv()
 
 gitk()
 (
-	if [ $* == "" ]; then
+	if [ "$*" == "" ]; then
 		command gitk --all &
 	else
 		command gitk "$@" &
