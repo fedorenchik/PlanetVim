@@ -521,12 +521,13 @@ nnoremap <silent> <C-_> <Nop>
 "   +                   +++       +++         +
 nnoremap <A-BS> :qa!<CR>
 nnoremap <A-CR> :wqa<CR>
-nnoremap <silent> <A-b> :Denite buffer
-nnoremap <silent> <A-m> :<C-U><C-R><C-R>='let @'. v:register .' = '. string(getreg(v:register))<CR><C-F><Left>
-nnoremap <silent> <A-q> :q<CR>
-nnoremap <silent> <A-Q> :qa<CR>
-nnoremap <silent> <A-r> :nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-L>
-nnoremap <silent> <A-w> :confirm up<CR>
+nnoremap <A-b> :Denite buffer
+nnoremap <A-m> :<C-U><C-R><C-R>='let @'. v:register .' = '. string(getreg(v:register))<CR><C-F><Left>
+nnoremap <A-q> :q<CR>
+nnoremap <A-Q> :qa<CR>
+nnoremap <A-r> :nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-L>
+nnoremap <A-w> :confirm up<CR>
+nnoremap <A-W> :wa<CR>
 " }}}
 " Mouse Keys: {{{
 " Mousekeys: <LeftMouse> <MiddleMouse> <RightMouse> <X1Mouse> <X2Mouse>
