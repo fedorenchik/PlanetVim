@@ -341,44 +341,14 @@ let maplocalleader="_"
 " Cannot distinguish between <Tab> and <C-I>.
 " Cannot distinguish between <Enter> and <C-M>.
 " }}}
-" Insert Mode: {{{
-" Standard Vim Mappings i_^: @ A C D E F G H I J K L M N O P Q R
-" S T U V W X Y Z [ \ ] ^ _
-" Available To Remap: @ A B E J L M Q S Y Z _
-" Submodes: <A-...> <C-...> <C-X>... <C-G>...
-inoremap <silent> <C-@> <C-^>
-inoremap <silent> <C-E> <C-R>=pumvisible() ? "\<lt>C-E>" : "\<lt>Esc>"<CR>
-" Insert Mode i_^G: {{{
-" Standard Vim Mappings: j ^J k ^K u U <Up> <Down>
-" }}}
-"inoremap <silent> <C-J> <Nop>
-inoremap <silent> <C-L> <Nop>
-"inoremap <silent> <C-M> <Nop>
-inoremap <silent> <C-Q> <Nop>
-inoremap <silent> <C-R><C-D> <C-O>:Denite register<CR>
-inoremap <silent> <C-S> <Nop>
-" Insert Mode i_^X: {{{
-" Standard Vim Mappings ^: D E F I K L N O P S T U V Y ]
-" Unmappable: C
-" Available To Map: A B G H J M Q R W X Z
-inoremap <expr> <C-X><C-H> deoplete#mappings#manual_complete()
-" }}}
-inoremap <silent> <C-Y> <C-R>=pumvisible() ? "\<lt>C-Y>" : "\<lt>Esc>"<CR>
-inoremap <silent> <C-Z> <Nop>
-inoremap <silent> <C-{> <Esc>
-" Insert Mode i_<A-...>: {{{
-inoremap <silent> <A-e> <Esc>
-inoremap <silent> <A-w> <C-O>:up<CR>
-" }}}
-" }}}
 " Normal (Command) Mode: {{{
 " Metakeys: <BS> <Tab> <CR> <Esc> <Space> <Del> <Up> <Down> <Left> <Right>
 " <F1>..<F12> <Insert> <Home> <End> <PageUp> <PageDown>
-" Commands Expecting Text Objects: d < = >
+" Commands Expecting Text Objects: c d < = >
 " Commands Expecting Marks: m ' `
 " Commands Expecting Registers: q " @
 " Standard Text Objects: b B p s t w W [ { } ( ) ] ` < > ' "
-" Submodes: <Space> - g z Z [ ] <A-...> <C-...>
+" Submodes: <Space> - g z Z [ ] <A-...> <C-...> + <CR> <BS>
 " Normal Keys: {{{
 " Available To Remap: f F h j k l Q s S t T U + ; : , \ - _ <BS> <CR> <Space>
 " TODO: 1. Make f F t T search multiline
@@ -394,6 +364,7 @@ nnoremap <silent> ` '
 nnoremap <silent> ' `
 nnoremap <unique> ; :
 nnoremap <unique> : q:i
+nnoremap + <C-W>
 " Normal Keys: g...: {{{
 " Standard Vim Mappings: a ^A d D e E f F g ^G h H ^H i I j J k m n N o p P q Q
 " r R s t T u U v V w x 0 8 ] ^] # $ & ' ` * + , - ; < ? ^ _ @ ~ <Down> <End>
@@ -534,6 +505,36 @@ nnoremap <A-W> :wa<CR>
 " <ScrollWheelDown> <ScrollWheelUp> <ScrollWheelLeft> <ScrollWheelRight>
 " When remap mousekeys, they send key events to the active window.
 " (by default, they send key events to the window under mouse cursor).
+" }}}
+" }}}
+" Insert Mode: {{{
+" Standard Vim Mappings i_^: @ A C D E F G H I J K L M N O P Q R
+" S T U V W X Y Z [ \ ] ^ _
+" Available To Remap: @ A B E J L M Q S Y Z _
+" Submodes: <A-...> <C-...> <C-X>... <C-G>...
+inoremap <silent> <C-@> <C-^>
+inoremap <silent> <C-E> <C-R>=pumvisible() ? "\<lt>C-E>" : "\<lt>Esc>"<CR>
+" Insert Mode i_^G: {{{
+" Standard Vim Mappings: j ^J k ^K u U <Up> <Down>
+" }}}
+"inoremap <silent> <C-J> <Nop>
+inoremap <silent> <C-L> <Nop>
+"inoremap <silent> <C-M> <Nop>
+inoremap <silent> <C-Q> <Nop>
+inoremap <silent> <C-R><C-D> <C-O>:Denite register<CR>
+inoremap <silent> <C-S> <Nop>
+" Insert Mode i_^X: {{{
+" Standard Vim Mappings ^: D E F I K L N O P S T U V Y ]
+" Unmappable: C
+" Available To Map: A B G H J M Q R W X Z
+inoremap <expr> <C-X><C-H> deoplete#mappings#manual_complete()
+" }}}
+inoremap <silent> <C-Y> <C-R>=pumvisible() ? "\<lt>C-Y>" : "\<lt>Esc>"<CR>
+inoremap <silent> <C-Z> <Nop>
+inoremap <silent> <C-{> <Esc>
+" Insert Mode i_<A-...>: {{{
+inoremap <silent> <A-e> <Esc>
+inoremap <silent> <A-w> <C-O>:up<CR>
 " }}}
 " }}}
 " Visual Mode: {{{
