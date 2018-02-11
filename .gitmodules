@@ -39,7 +39,7 @@
 	path = .vim/pack/evaluating/start/VimCalc3
 	url = https://github.com/fedorenchik/VimCalc3.git
 [submodule ".vim/pack/bundle/start/FastFold"]
-	path = .vim/pack/evaluating/start/FastFold
+	path = .vim/pack/evaluating/opt/FastFold
 	url = https://github.com/Konfekt/FastFold.git
 [submodule ".vim/pack/bundle/start/vim-markdown-preview"]
 	path = .vim/pack/evaluating/start/vim-markdown-preview

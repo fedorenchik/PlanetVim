@@ -152,7 +152,7 @@ set nofoldenable
 set foldlevel=99
 set foldlevelstart=99
 set foldmethod=manual
-set foldminlines=1
+set foldminlines=0
 set foldnestmax=20
 set foldopen=quickfix,tag,undo
 set formatoptions+=1jMmn
