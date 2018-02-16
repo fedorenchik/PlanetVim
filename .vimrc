@@ -409,7 +409,7 @@ nnoremap <silent> Y y$
 " Available To Map:
 " aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ;,.:<>/@\?^|-_'"$&[{}(=*)+]!#~%7531902468`
 "     ++        ++      ++      ++ +                 +
-nnoremap <silent> Zc :copen<CR>
+nnoremap <silent> Zc :botright copen<CR>
 nnoremap <silent> ZC :cclose<CR>
 nnoremap <silent> Zh :help<CR>
 nnoremap <silent> ZH :helpclose<CR>
