@@ -1,6 +1,7 @@
 *~
 .session.vim
 .viminfo
+.exrc
 GPATH
 GRTAGS
 GTAGS
