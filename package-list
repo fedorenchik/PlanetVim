@@ -73,6 +73,7 @@ libosinfo-bin
 libvirt-bin
 oz
 qemu-kvm
+virt-goodies
 virt-manager
 virtinst
 # workaround for virt-builder bug:
