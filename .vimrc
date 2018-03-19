@@ -146,14 +146,14 @@ set exrc
 set fileformats=unix,dos,mac
 set nofileignorecase
 set nofixendofline
-set foldclose=
-set foldcolumn=0
-set nofoldenable
-set foldlevel=99
-set foldlevelstart=99
-set foldmethod=manual
+"set foldclose=
+"set foldcolumn=0
+"set nofoldenable
+"set foldlevel=99
+"set foldlevelstart=99
+"set foldmethod=manual
 set foldminlines=0
-set foldnestmax=20
+"set foldnestmax=20
 set foldopen=quickfix,tag,undo
 set formatoptions+=1jMmn
 set nofsync
@@ -762,7 +762,7 @@ let g:Gitv_OpenHorizontal = 1
 " }}}
 " Plugin: LanguageClient-neovim {{{
 let g:LanguageClient_serverCommands = {
-\ 'cpp': ['cquery', '--log-file=/tmp/cquery.log']
+\ 'cpp': ['cquery', '--log-file=/tmp/cquery.log', '--init={"cacheDirectory":"/tmp/cquery"}']
 \ }
 let g:LanguageClient_loadSettings = 1
 " }}}
