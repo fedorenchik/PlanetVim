@@ -148,7 +148,7 @@ set nofileignorecase
 set nofixendofline
 "set foldclose=
 "set foldcolumn=0
-"set nofoldenable
+set nofoldenable
 "set foldlevel=99
 "set foldlevelstart=99
 "set foldmethod=manual
@@ -756,6 +756,7 @@ let g:xml_syntax_folding = 1
 " External Plugins: {{{
 " Plugin: deoplete {{{
 let g:deoplete#enable_at_startup = 1
+let g:deoplete#enable_yarp = 1
 " }}}
 " Plugin: gitv {{{
 let g:Gitv_OpenHorizontal = 1

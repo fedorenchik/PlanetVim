@@ -69,3 +69,15 @@
 [submodule ".vim/pack/lsp/start/vim-hug-neovim-rpc"]
 	path = .vim/pack/lsp/start/vim-hug-neovim-rpc
 	url = https://github.com/roxma/vim-hug-neovim-rpc.git
+[submodule ".vim/pack/lsp/start/echodoc.vim"]
+	path = .vim/pack/lsp/start/echodoc.vim
+	url = https://github.com/Shougo/echodoc.vim.git
+[submodule ".vim/pack/lsp/start/neoinclude.vim"]
+	path = .vim/pack/lsp/start/neoinclude.vim
+	url = https://github.com/Shougo/neoinclude.vim.git
+[submodule ".vim/pack/lsp/start/context_filetype.vim"]
+	path = .vim/pack/lsp/start/context_filetype.vim
+	url = https://github.com/Shougo/context_filetype.vim.git
+[submodule ".vim/pack/lsp/start/neopairs.vim"]
+	path = .vim/pack/lsp/start/neopairs.vim
+	url = https://github.com/Shougo/neopairs.vim.git
