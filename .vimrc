@@ -762,7 +762,8 @@ let g:Gitv_OpenHorizontal = 1
 " }}}
 " Plugin: LanguageClient-neovim {{{
 let g:LanguageClient_serverCommands = {
-\ 'cpp': ['cquery', '--log-file=/tmp/cquery.log', '--init={"cacheDirectory":"/tmp/cquery"}']
+\ 'cpp': ['cquery', '--log-file=/tmp/cquery.log', '--init={"cacheDirectory":"/tmp/cquery"}'],
+\ 'c': ['cquery', '--log-file=/tmp/cquery.log', '--init={"cacheDirectory":"/tmp/cquery"}']
 \ }
 let g:LanguageClient_loadSettings = 1
 " }}}

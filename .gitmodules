@@ -59,6 +59,7 @@
 [submodule ".vim/pack/lsp/start/LanguageClient-neovim"]
 	path = .vim/pack/lsp/start/LanguageClient-neovim
 	url = https://github.com/autozimu/LanguageClient-neovim.git
+	branch = next
 [submodule ".vim/pack/lsp/start/deoplete.nvim"]
 	path = .vim/pack/lsp/start/deoplete.nvim
 	url = https://github.com/Shougo/deoplete.nvim.git
