@@ -39,7 +39,7 @@
 	path = .vim/pack/evaluating/start/VimCalc3
 	url = https://github.com/fedorenchik/VimCalc3.git
 [submodule ".vim/pack/bundle/start/FastFold"]
-	path = .vim/pack/evaluating/opt/FastFold
+	path = .vim/pack/evaluating/start/FastFold
 	url = https://github.com/Konfekt/FastFold.git
 [submodule ".vim/pack/bundle/start/vim-markdown-preview"]
 	path = .vim/pack/evaluating/start/vim-markdown-preview
@@ -56,15 +56,15 @@
 [submodule ".vim/pack/bundle/opt/gina.vim"]
 	path = .vim/pack/git/start/gina.vim
 	url = https://github.com/lambdalisue/gina.vim.git
-[submodule ".vim/pack/lsp/start/vim-lsp"]
-	path = .vim/pack/lsp/start/vim-lsp
-	url = https://github.com/prabirshrestha/vim-lsp.git
-[submodule ".vim/pack/lsp/start/async.vim"]
-	path = .vim/pack/lsp/start/async.vim
-	url = https://github.com/prabirshrestha/async.vim.git
-[submodule ".vim/pack/lsp/start/asyncomplete.vim"]
-	path = .vim/pack/lsp/start/asyncomplete.vim
-	url = https://github.com/prabirshrestha/asyncomplete.vim.git
-[submodule ".vim/pack/lsp/start/asyncomplete-lsp.vim"]
-	path = .vim/pack/lsp/start/asyncomplete-lsp.vim
-	url = https://github.com/prabirshrestha/asyncomplete-lsp.vim.git
+[submodule ".vim/pack/lsp/start/LanguageClient-neovim"]
+	path = .vim/pack/lsp/start/LanguageClient-neovim
+	url = https://github.com/autozimu/LanguageClient-neovim.git
+[submodule ".vim/pack/lsp/start/deoplete.nvim"]
+	path = .vim/pack/lsp/start/deoplete.nvim
+	url = https://github.com/Shougo/deoplete.nvim.git
+[submodule ".vim/pack/lsp/start/nvim-yarp"]
+	path = .vim/pack/lsp/start/nvim-yarp
+	url = https://github.com/roxma/nvim-yarp.git
+[submodule ".vim/pack/lsp/start/vim-hug-neovim-rpc"]
+	path = .vim/pack/lsp/start/vim-hug-neovim-rpc
+	url = https://github.com/roxma/vim-hug-neovim-rpc.git

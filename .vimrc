@@ -754,8 +754,17 @@ let g:xml_syntax_folding = 1
 " }}}
 " }}}
 " External Plugins: {{{
+" Plugin: deoplete {{{
+let g:deoplete#enable_at_startup = 1
+" }}}
 " Plugin: gitv {{{
 let g:Gitv_OpenHorizontal = 1
+" }}}
+" Plugin: LanguageClient-neovim {{{
+let g:LanguageClient_serverCommands = {
+\ 'cpp': ['cquery', '--log-file=/tmp/cquery.log']
+\ }
+let g:LanguageClient_loadSettings = 1
 " }}}
 " Plugin: signature {{{
 let g:SignatureMap = {
