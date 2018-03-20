@@ -81,3 +81,6 @@
 [submodule ".vim/pack/lsp/start/neopairs.vim"]
 	path = .vim/pack/lsp/start/neopairs.vim
 	url = https://github.com/Shougo/neopairs.vim.git
+[submodule ".vim/pack/tags/start/vim-gutentags"]
+	path = .vim/pack/tags/start/vim-gutentags
+	url = https://github.com/ludovicchabant/vim-gutentags.git
