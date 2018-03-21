@@ -19,9 +19,6 @@
 [submodule ".vim/pack/bundle/start/vim-unimpaired"]
 	path = .vim/pack/essential/start/vim-unimpaired
 	url = https://github.com/tpope/vim-unimpaired.git
-[submodule ".vim/pack/bundle/start/denite.nvim"]
-	path = .vim/pack/essential/start/denite.nvim
-	url = https://github.com/Shougo/denite.nvim.git
 [submodule ".vim/pack/bundle/start/vim-cpp-enhanced-highlight"]
 	path = .vim/pack/development/start/vim-cpp-enhanced-highlight
 	url = https://github.com/fedorenchik/vim-cpp-enhanced-highlight.git
@@ -56,31 +53,12 @@
 [submodule ".vim/pack/bundle/opt/gina.vim"]
 	path = .vim/pack/git/start/gina.vim
 	url = https://github.com/lambdalisue/gina.vim.git
-[submodule ".vim/pack/lsp/start/LanguageClient-neovim"]
-	path = .vim/pack/lsp/start/LanguageClient-neovim
-	url = https://github.com/autozimu/LanguageClient-neovim.git
-	branch = next
-[submodule ".vim/pack/lsp/start/deoplete.nvim"]
-	path = .vim/pack/lsp/start/deoplete.nvim
-	url = https://github.com/Shougo/deoplete.nvim.git
-[submodule ".vim/pack/lsp/start/nvim-yarp"]
-	path = .vim/pack/lsp/start/nvim-yarp
-	url = https://github.com/roxma/nvim-yarp.git
-[submodule ".vim/pack/lsp/start/vim-hug-neovim-rpc"]
-	path = .vim/pack/lsp/start/vim-hug-neovim-rpc
-	url = https://github.com/roxma/vim-hug-neovim-rpc.git
-[submodule ".vim/pack/lsp/start/echodoc.vim"]
-	path = .vim/pack/lsp/start/echodoc.vim
-	url = https://github.com/Shougo/echodoc.vim.git
-[submodule ".vim/pack/lsp/start/neoinclude.vim"]
-	path = .vim/pack/lsp/start/neoinclude.vim
-	url = https://github.com/Shougo/neoinclude.vim.git
-[submodule ".vim/pack/lsp/start/context_filetype.vim"]
-	path = .vim/pack/lsp/start/context_filetype.vim
-	url = https://github.com/Shougo/context_filetype.vim.git
-[submodule ".vim/pack/lsp/start/neopairs.vim"]
-	path = .vim/pack/lsp/start/neopairs.vim
-	url = https://github.com/Shougo/neopairs.vim.git
 [submodule ".vim/pack/tags/start/vim-gutentags"]
 	path = .vim/pack/tags/start/vim-gutentags
 	url = https://github.com/ludovicchabant/vim-gutentags.git
+[submodule ".vim/pack/tags/start/tagbar"]
+	path = .vim/pack/tags/start/tagbar
+	url = https://github.com/majutsushi/tagbar.git
+[submodule ".vim/pack/tags/opt/vim-easytags"]
+	path = .vim/pack/tags/opt/vim-easytags
+	url = https://github.com/xolox/vim-easytags.git

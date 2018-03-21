@@ -2,7 +2,7 @@
 " version: >= 8.0
 " --with-features=huge --enable-luainterp --with-luajit [--enable-perlinterp]
 " --enable-pythoninterp [--enable-tclinterp] [--enable-rubyinterp]
-" --enable-cscope --enable-gui=gnome2
+" --enable-cscope --enable-gui=gtk3
 " }}}
 " External Dependencies Of This Vimrc: {{{
 " ctags (Universal Ctags), [cscope], gtags (GNU Global), wmctrl, trash-cli,
@@ -365,6 +365,11 @@ nnoremap <silent> ' `
 nnoremap <unique> ; :
 nnoremap <unique> : q:i
 nnoremap + <C-W>
+" Normal Keys: - : {{{
+" Available To Map:
+" aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ;,.:<>/@\?^|-_'"$&[{}(=*)+]!#~%7531902468`
+"
+" }}}
 " Normal Keys: g...: {{{
 " Standard Vim Mappings: a ^A d D e E f F g ^G h H ^H i I j J k m n N o p P q Q
 " r R s t T u U v V w x 0 8 ] ^] # $ & ' ` * + , - ; < ? ^ _ @ ~ <Down> <End>
@@ -409,15 +414,16 @@ nnoremap <silent> Y y$
 " Available To Map:
 " aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ;,.:<>/@\?^|-_'"$&[{}(=*)+]!#~%7531902468`
 "     ++        ++      ++      ++ +                 +
-nnoremap <silent> Zc :botright copen<CR>
-nnoremap <silent> ZC :cclose<CR>
-nnoremap <silent> Zh :help<CR>
-nnoremap <silent> ZH :helpclose<CR>
-nnoremap <silent> Zl :lopen<CR>
-nnoremap <silent> ZL :lclose<CR>
-nnoremap Zo :Denite outline<CR>
-nnoremap <silent> Zp :ptag<CR>
-nnoremap <silent> ZP :pclose<CR>
+nnoremap Zc :botright copen<CR>
+nnoremap ZC :cclose<CR>
+nnoremap Zh :help<CR>
+nnoremap ZH :helpclose<CR>
+nnoremap Zl :lopen<CR>
+nnoremap ZL :lclose<CR>
+nnoremap Zp :ptag<CR>
+nnoremap ZP :pclose<CR>
+nnoremap Zt :TagbarOpen<CR>
+nnoremap ZT :TagbarClose<CR>
 " }}}
 " Normal Keys: [...: {{{
 " Standard Vim Mappings: c d D ^D f i I ^I m p P s S z # ' ( * ` / [ ] {
@@ -493,11 +499,13 @@ nnoremap <silent> <C-_> <Nop>
 "   +                   +++       +++         +
 nnoremap <A-BS> :qa!<CR>
 nnoremap <A-CR> :wqa<CR>
-nnoremap <A-b> :Denite buffer
+nnoremap <A-f> :find <Tab>
+nnoremap <A-g> :GtagsCursor<CR>
 nnoremap <A-m> :<C-U><C-R><C-R>='let @'. v:register .' = '. string(getreg(v:register))<CR><C-F><Left>
 nnoremap <A-q> :q<CR>
 nnoremap <A-Q> :qa<CR>
 nnoremap <A-r> :nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-L>
+nnoremap <A-t> :TagbarToggle<CR>
 nnoremap <A-w> :confirm up<CR>
 nnoremap <A-W> :wa<CR>
 " }}}
@@ -522,13 +530,11 @@ inoremap <silent> <C-E> <C-R>=pumvisible() ? "\<lt>C-E>" : "\<lt>Esc>"<CR>
 inoremap <silent> <C-L> <Nop>
 "inoremap <silent> <C-M> <Nop>
 inoremap <silent> <C-Q> <Nop>
-inoremap <silent> <C-R><C-D> <C-O>:Denite register<CR>
 inoremap <silent> <C-S> <Nop>
 " Insert Mode i_^X: {{{
 " Standard Vim Mappings ^: D E F I K L N O P S T U V Y ]
 " Unmappable: C
 " Available To Map: A B G H J M Q R W X Z
-inoremap <expr> <C-X><C-H> deoplete#mappings#manual_complete()
 " }}}
 inoremap <silent> <C-Y> <C-R>=pumvisible() ? "\<lt>C-Y>" : "\<lt>Esc>"<CR>
 inoremap <silent> <C-Z> <Nop>
@@ -559,7 +565,6 @@ xnoremap X y/<C-R>"<CR>
 "inoreabbrev @cc Copyright (C) 2016 Leonid V. Fedorenchik
 "inoreabbrev @sig -- <CR>Leonid V. Fedorenchik
 inoreabbrev teh the
-cnoreabbrev unite Unite
 cnoreabbrev calc Calc
 cnoreabbrev f find
 cnoreabbrev gblame Gblame
@@ -755,20 +760,6 @@ let g:xml_syntax_folding = 1
 " }}}
 " }}}
 " External Plugins: {{{
-" Plugin: deoplete {{{
-let g:deoplete#enable_at_startup = 1
-let g:deoplete#enable_yarp = 1
-" }}}
-" Plugin: gitv {{{
-let g:Gitv_OpenHorizontal = 1
-" }}}
-" Plugin: LanguageClient-neovim {{{
-let g:LanguageClient_serverCommands = {
-\ 'cpp': ['cquery', '--log-file=/tmp/cquery.log', '--init={"cacheDirectory":"/tmp/cquery"}'],
-\ 'c': ['cquery', '--log-file=/tmp/cquery.log', '--init={"cacheDirectory":"/tmp/cquery"}']
-\ }
-let g:LanguageClient_loadSettings = 1
-" }}}
 " Plugin: signature {{{
 let g:SignatureMap = {
         \ 'Leader'             :  "m",
@@ -807,18 +798,6 @@ let g:undotree_WindowLayout=4
 " }}}
 " Plugin: vim-cpp-enhanced-highlight {{{
 let g:cpp_no_function_highlight=1
-" }}}
-" Plugin: vim-lsp {{{
-let g:lsp_async_completion = 1
-if executable('cquery')
-	au User lsp_setup call lsp#register_server({
-				\ 'name': 'cquery',
-				\ 'cmd': {server_info->['cquery']},
-				\ 'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'compile_commands.json'))},
-				\ 'initialization_options': { 'cacheDirectory': '/tmp/cquery' },
-				\ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
-				\ })
-endif
 " }}}
 " Plugin: vim-mark {{{
 let g:mwDefaultHighlightingPalette = 'maximum'

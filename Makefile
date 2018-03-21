@@ -66,7 +66,6 @@ sync-files:
 	for file in $(FILES); do $(RSYNC) $(RSYNC_OPTIONS) $$file $(HOME)/$$file; done
 	/home/leonid/.local/bin/vim -c 'helptags ALL' -c 'q'
 	#vim -c 'runtime spell/cleanadd.vim' -c 'q'
-	cd $$HOME/.vim/pack/lsp/start/LanguageClient-neovim && make release
 
 commit:
 	git submodule sync --recursive
