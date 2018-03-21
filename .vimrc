@@ -253,7 +253,7 @@ set showmode
 set showtabline=2
 set sidescroll=30
 set sidescrolloff=2
-set signcolumn=yes
+set signcolumn=auto
 set smartcase
 set smartindent
 set smarttab
