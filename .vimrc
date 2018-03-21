@@ -499,7 +499,7 @@ nnoremap <silent> <C-_> <Nop>
 "   +                   +++       +++         +
 nnoremap <A-BS> :qa!<CR>
 nnoremap <A-CR> :wqa<CR>
-nnoremap <A-f> :find <Tab>
+nnoremap <A-f> :find <C-Z>
 nnoremap <A-g> :GtagsCursor<CR>
 nnoremap <A-m> :<C-U><C-R><C-R>='let @'. v:register .' = '. string(getreg(v:register))<CR><C-F><Left>
 nnoremap <A-q> :q<CR>
