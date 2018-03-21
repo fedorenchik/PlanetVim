@@ -348,7 +348,7 @@ let maplocalleader="_"
 " Commands Expecting Marks: m ' `
 " Commands Expecting Registers: q " @
 " Standard Text Objects: b B p s t w W [ { } ( ) ] ` < > ' "
-" Submodes: <Space> - g z Z [ ] <A-...> <C-...> + <CR> <BS>
+" Submodes: <Space> g s S z Z - + [ ] <A-...> <C-...> <CR> <BS>
 " Normal Keys: {{{
 " Available To Remap: f F h j k l Q s S t T U + ; : , \ - _ <BS> <CR> <Space>
 " TODO: 1. Make f F t T search multiline
@@ -415,6 +415,7 @@ nnoremap <silent> Zh :help<CR>
 nnoremap <silent> ZH :helpclose<CR>
 nnoremap <silent> Zl :lopen<CR>
 nnoremap <silent> ZL :lclose<CR>
+nnoremap Zo :Denite outline<CR>
 nnoremap <silent> Zp :ptag<CR>
 nnoremap <silent> ZP :pclose<CR>
 " }}}
