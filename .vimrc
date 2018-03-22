@@ -485,6 +485,7 @@ nnoremap <silent> <C-K> <C-W>k
 nnoremap <silent> <C-L> <C-W>l
 nnoremap <silent> <C-S> :emenu <C-Z>
 " Ctrl Key: <C-W>...: {{{
+nnoremap <C-W>V :botright vsplit<CR>
 " Ctrl Key: <C-W>g...: {{{
 " }}}
 " }}}
