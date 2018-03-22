@@ -116,7 +116,7 @@ set cinwords-=switch
 set clipboard=autoselect,autoselectml,exclude:cons\|linux
 set cmdheight=2
 set colorcolumn=80,120,160,+0
-set completeopt=menuone,preview
+set completeopt=menuone,preview,noinsert,noselect
 set confirm
 set copyindent
 set cscopequickfix=s-,g-,d-,c-,t-,e-,f-,i-,a-
@@ -599,6 +599,7 @@ autocmd FileType text,markdown setlocal spell
 autocmd FileType vim setlocal foldenable foldmethod=marker foldlevelstart=0 foldlevel=0
 if exists("+omnifunc")
 	autocmd Filetype * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
+	autocmd Filetype * if &completefunc == "" | setlocal completefunc=syntaxcomplete#Complete | endif
 endif
 "autocmd GUIEnter * set lines=27 columns=133
 autocmd GUIEnter * set guifont=Ubuntu\ Mono\ 11,Monospace\ 9
