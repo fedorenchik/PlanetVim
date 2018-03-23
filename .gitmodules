@@ -56,9 +56,3 @@
 [submodule ".vim/pack/tags/start/vim-gutentags"]
 	path = .vim/pack/tags/start/vim-gutentags
 	url = https://github.com/ludovicchabant/vim-gutentags.git
-[submodule ".vim/pack/tags/start/tagbar"]
-	path = .vim/pack/tags/start/tagbar
-	url = https://github.com/majutsushi/tagbar.git
-[submodule ".vim/pack/tags/opt/vim-easytags"]
-	path = .vim/pack/tags/opt/vim-easytags
-	url = https://github.com/xolox/vim-easytags.git
