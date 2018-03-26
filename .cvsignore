@@ -7,3 +7,4 @@ GRTAGS
 GTAGS
 Session.vim
 tags
+compile_commands.json
