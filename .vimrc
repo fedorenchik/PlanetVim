@@ -236,7 +236,7 @@ set scrolljump=2
 set scrolloff=2
 set scrollopt=ver,hor,jump
 set secure
-set sessionoptions=blank,buffers,folds,globals,help,localoptions,sesdir,slash,tabpages,unix,winsize
+set sessionoptions=blank,buffers,globals,help,localoptions,sesdir,slash,tabpages,unix,winsize
 set shiftround
 set shiftwidth=8
 set shortmess+=mrwsIcF
@@ -299,7 +299,7 @@ set updatetime=1000
 set verbose&
 set verbosefile&
 set viewdir&
-set viewoptions=cursor,folds,localoptions,slash,unix
+set viewoptions=cursor,localoptions,slash,unix
 set viminfo=!,%50,'100,<50,c,f1,h,r/tmp,r/var,r/mnt,r/media,s10,n$PWD/.viminfo
 set virtualedit=block
 set novisualbell
@@ -359,7 +359,7 @@ nnoremap <silent> ` '
 nnoremap <silent> ' `
 nnoremap <unique> ; :
 nnoremap <unique> : q:i
-nnoremap + <C-W>
+nmap + <C-W>
 " Normal Keys: - : {{{
 " Available To Map:
 " aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ;,.:<>/@\?^|-_'"$&[{}(=*)+]!#~%7531902468`
