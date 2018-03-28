@@ -508,8 +508,6 @@ nnoremap <A-W> :wa<CR>
 " Leader: {{{
 nmap <Leader>M <Plug>MarkToggle
 nmap <Leader>N <Plug>MarkConfirmAllClear
-nmap * <Plug>MarkSearchOrCurNext
-nmap # <Plug>MarkSearchOrCurPrev
 " }}}
 " Mouse Keys: {{{
 " Mousekeys: <LeftMouse> <MiddleMouse> <RightMouse> <X1Mouse> <X2Mouse>
