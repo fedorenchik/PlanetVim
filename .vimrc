@@ -886,6 +886,8 @@ let g:mwPalettes = {
 let g:mwDefaultHighlightingPalette = 'mypalette'
 let g:mwAutoLoadMarks = 1
 let g:mwAutoSaveMarks = 1
+nmap <Plug>IgnoreMarkSearchNext <Plug>MarkSearchNext
+nmap <Plug>IgnoreMarkSearchPrev <Plug>MarkSearchPrev
 " }}}
 " Plugin: vim-markdown-preview {{{
 let vim_markdown_preview_hotkey='<A-m>'

@@ -1,2 +1,2 @@
-nmap * <Plug>MarkSearchOrCurNext
-nmap # <Plug>MarkSearchOrCurPrev
+"nmap * <Plug>MarkSearchOrCurNext
+"nmap # <Plug>MarkSearchOrCurPrev
