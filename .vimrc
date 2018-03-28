@@ -505,6 +505,9 @@ nnoremap <A-t> :TagbarToggle<CR>
 nnoremap <A-w> :confirm up<CR>
 nnoremap <A-W> :wa<CR>
 " }}}
+" Leader: {{{
+
+" }}}
 " Mouse Keys: {{{
 " Mousekeys: <LeftMouse> <MiddleMouse> <RightMouse> <X1Mouse> <X2Mouse>
 " <ScrollWheelDown> <ScrollWheelUp> <ScrollWheelLeft> <ScrollWheelRight>
@@ -797,9 +800,14 @@ let g:undotree_WindowLayout=4
 let g:cpp_no_function_highlight=1
 " }}}
 " Plugin: vim-mark {{{
+let g:mwDefaultHighlightingPalette = {
+\	'mypalette': [
+\	
+\	]
+\}
 let g:mwDefaultHighlightingPalette = 'maximum'
-let g:mwAutoLoadMarks = 0
-let g:mwAutoSaveMarks = 0
+let g:mwAutoLoadMarks = 1
+let g:mwAutoSaveMarks = 1
 " }}}
 " Plugin: vim-markdown-preview {{{
 let vim_markdown_preview_hotkey='<A-m>'
