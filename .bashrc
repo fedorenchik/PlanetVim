@@ -122,7 +122,7 @@ r()
 
 S()
 {
-	gvim --cmd 'let g:VIMRC_AUTO_SESSION=1' "$@" 2>>/tmp/gvim.out
+	gvim --cmd 'let g:vimrc_auto_session=1' "$@" 2>>/tmp/gvim.out
 }
 
 gitv()
