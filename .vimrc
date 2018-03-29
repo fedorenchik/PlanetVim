@@ -587,7 +587,6 @@ autocmd CmdWinEnter : noremap <buffer> <S-CR> <CR>q:
 autocmd CmdWinEnter / noremap <buffer> <S-CR> <CR>q/
 autocmd CmdWinEnter ? noremap <buffer> <S-CR> <CR>q?
 autocmd CmdwinEnter * nnoremap <buffer> <CR> <CR>
-autocmd CursorHold *.[ch] nested call PreviewWord()
 autocmd FileType c,cpp setlocal tags+=$HOME/.vim/ctags
 autocmd FileType c,cpp setlocal foldmethod=syntax
 autocmd FileType cpp setlocal define=^\\(#\\s*define\\|[a-z]*\\s*const\\s*[a-z]*\\)
