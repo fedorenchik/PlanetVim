@@ -419,6 +419,8 @@ nnoremap Zp :ptag<CR>
 nnoremap ZP :pclose<CR>
 nnoremap Zt :TagbarOpen<CR>
 nnoremap ZT :TagbarClose<CR>
+nnoremap Zu :UndotreeShow<CR>
+nnoremap ZU :UndotreeHide<CR>
 " }}}
 " Normal Keys: [...: {{{
 " Standard Vim Mappings: c d D ^D f i I ^I m p P s S z # ' ( * ` / [ ] {
