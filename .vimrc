@@ -116,6 +116,9 @@ set cinwords-=switch
 set clipboard=autoselect,autoselectml,exclude:cons\|linux
 set cmdheight=2
 set colorcolumn=80,120,160,+0
+if has("gui_running")
+	set columns=300
+endif
 set completeopt=menuone,preview,noinsert,noselect
 set confirm
 set copyindent
@@ -194,6 +197,9 @@ endif
 set laststatus=2
 set lazyredraw
 set nolinebreak
+if has("gui_running")
+	set lines=100
+endif
 set list
 set listchars=tab:»\ ,trail:·,extends:>,precedes:<
 set magic
