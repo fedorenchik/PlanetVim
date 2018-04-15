@@ -221,7 +221,7 @@ set nonumber
 set opendevice&
 set operatorfunc&
 set patchmode=".orig"
-set path+=/usr/include/c++/6,./include,./../include,./../../include,**
+set path+=./include,../include,../*/include,*/include
 set nopreserveindent
 set previewheight=7
 set printencoding=utf-8
@@ -587,7 +587,7 @@ if has("autocmd")
 augroup vimrc
 autocmd!
 autocmd BufReadPost */linux/*.[ch] setlocal tags+=$HOME/.vim/linuxtags
-autocmd BufReadPost */linux/*.h setlocal filetype=c
+autocmd BufReadPost */linux/*.h setfiletype c
 autocmd BufReadPost *.log normal G
 autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
 autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") && &filetype !~# 'commit' | exe "normal! g`\"" | endif
@@ -597,8 +597,10 @@ autocmd CmdWinEnter ? noremap <buffer> <S-CR> <CR>q?
 autocmd CmdwinEnter * nnoremap <buffer> <CR> <CR>
 autocmd FileType c,cpp setlocal tags+=$HOME/.vim/ctags
 autocmd FileType c,cpp setlocal foldmethod=syntax
+autocmd FileType cpp setlocal path+=/usr/include/c++/7
 autocmd FileType cpp setlocal define=^\\(#\\s*define\\|[a-z]*\\s*const\\s*[a-z]*\\)
 autocmd FileType cpp setlocal tags+=$HOME/.vim/cpptags
+autocmd FileType cpp setlocal omnifunc=lsp#complete
 autocmd FileType html setlocal clipboard=autoselect,autoselectml,html,exclude:cons\|linux
 autocmd FileType sh setlocal formatoptions-=t formatoptions+=croql
 autocmd FileType text setlocal textwidth=72 linebreak breakindent

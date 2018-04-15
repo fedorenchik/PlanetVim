@@ -140,6 +140,11 @@ gitv()
 	fi
 }
 
+magit()
+{
+	gvim -c MagitOnly "$@"
+}
+
 gitk()
 (
 	if [ "$*" == "" ]; then
