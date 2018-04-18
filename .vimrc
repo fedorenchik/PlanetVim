@@ -772,6 +772,9 @@ let g:xml_syntax_folding = 1
 " }}}
 " }}}
 " External Plugins: {{{
+" Plugin: FastFold {{{
+let g:fastfold_force = 1
+" }}}
 " Plugin: signature {{{
 let g:SignatureMap = {
         \ 'Leader'             :  "m",
