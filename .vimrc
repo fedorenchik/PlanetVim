@@ -351,84 +351,104 @@ let maplocalleader="_"
 " Standard Text Objects: b B p s t w W [ { } ( ) ] ` < > ' "
 " Submodes: <Space> g s S z Z - + [ ] <A-...> <C-...> <CR> <BS>
 " Normal Keys: {{{
+" Normal Keys: {{{
 " Available To Remap: f F h j k l Q s S t T U + ; : , \ - _ <BS> <CR> <Space>
 " TODO: 1. Make f F t T search multiline
 " TODO: 2. Make h l behave like f F but input 2 characters
 " TODO: 3. Make j k behave like f F but input 3 characters
-" Normal Keys: <Space>...: {{{
-" Available To Map:
-" aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ;,.:<>/@\?^|-_'"$&[{}(=*)+]!#~%7531902468`
-"
-nnoremap <silent> <Space> <Nop>
-" }}}
-nnoremap <silent> ` '
-nnoremap <silent> ' `
+nnoremap ` '
+nnoremap ' `
 nnoremap <unique> ; :
 nnoremap <unique> : q:i
 nmap + <C-W>
-" Normal Keys: - : {{{
+nnoremap h F
+nnoremap l f
+nnoremap n nzz
+nnoremap N Nzz
+nnoremap Q gq
+nnoremap Y y$
+" }}}
+" -----------: <CR>...: source navigation (gtags): {{{
 " Available To Map:
 " aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ;,.:<>/@\?^|-_'"$&[{}(=*)+]!#~%7531902468`
 "
+nnoremap <CR> <Nop>
 " }}}
-" Normal Keys: g...: {{{
+" -----------: <Space>...: same as <A-...>: {{{
+" Available To Map:
+" aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ;,.:<>/@\?^|-_'"$&[{}(=*)+]!#~%7531902468`
+"
+nnoremap <Space> <Nop>
+" }}}
+" -----------: -...: quickfix management:{{{
+" Available To Map:
+" aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ;,.:<>/@\?^|-_'"$&[{}(=*)+]!#~%7531902468`
+"
+nnoremap -g :grep -IarFw <cword> .<CR>
+nnoremap -/ :grep -IaFw <cword> %<CR>
+" }}}
+" -----------: g...: vim status: {{{
 " Standard Vim Mappings: a ^A d D e E f F g ^G h H ^H i I j J k m n N o p P q Q
 " r R s t T u U v V w x 0 8 ] ^] # $ & ' ` * + , - ; < ? ^ _ @ ~ <Down> <End>
 " <Home> <LeftMouse> <MiddleMouse> <RightMouse> <Up>
 " Available To Map:
 " A b B c C G K l L M O S W X y Y z Z 1 2 3 4 5 6 7 9 % [ { } ( = ) ! : > . / \ | "
 " + + + + +     + +   + + + + +   + +                                 +   +       +
-nnoremap <silent> gA :args<CR>
-nnoremap <silent> gb :tselect<CR>
-nnoremap <silent> gB :tags<CR>
-nnoremap <silent> gc :changes<CR>
-nnoremap <silent> gC :undolist<CR>
-nnoremap <silent> gl :llist<CR>
-nnoremap <silent> gL :lhistory<CR>
-nnoremap <silent> gO :jumps<CR>
-nnoremap <silent> gq :clist<CR>
-nnoremap <silent> gQ :chistory<CR>
-nnoremap <silent> gS ^vg_y:execute @@<CR>:echo 'Sourced: ' . @@<CR>
-nnoremap <silent> gW Q
-nnoremap <silent> gX gQ
-nnoremap <silent> gy :%y+<CR>
-nnoremap <silent> gz :buffers<CR>
-nnoremap <silent> gZ :tabs<CR>
-nnoremap <silent> g: :history<CR>
-nnoremap <silent> g. :marks<CR>
-nnoremap <silent> g" :registers<CR>
+nnoremap gA :args<CR>
+nnoremap gb :tselect<CR>
+nnoremap gB :tags<CR>
+nnoremap gc :changes<CR>
+nnoremap gC :undolist<CR>
+nnoremap gl :llist<CR>
+nnoremap gL :lhistory<CR>
+nnoremap gO :jumps<CR>
+nnoremap gq :clist<CR>
+nnoremap gQ :chistory<CR>
+nnoremap gS ^vg_y:execute @@<CR>:echo 'Sourced: ' . @@<CR>
+nnoremap gW Q
+nnoremap gX gQ
+nnoremap gy :%y+<CR>
+nnoremap gz :buffers<CR>
+nnoremap gZ :tabs<CR>
+nnoremap g: :history<CR>
+nnoremap g. :marks<CR>
+nnoremap g" :registers<CR>
 " }}}
-nnoremap <silent> h F
-nnoremap <silent> l f
-nnoremap <silent> n nzz
-nnoremap <silent> N Nzz
-nnoremap <silent> Q gq
-nnoremap <silent> Y y$
-" Normal Keys: z...: {{{
+" -----------: s...: source navigation (lsp): {{{
+" Available To Map:
+" aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ;,.:<>/@\?^|-_'"$&[{}(=*)+]!#~%7531902468`
+"
+" }}}
+" -----------: S...: open windows: {{{
+" Available To Map:
+" aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ;,.:<>/@\?^|-_'"$&[{}(=*)+]!#~%7531902468`
+"                +       +       + +     + +
+nnoremap SH :help<CR>
+nnoremap SL :lopen<CR>
+nnoremap SP :ptag<CR>
+nnoremap SQ :botright copen<CR>
+nnoremap ST :TagbarOpen<CR>
+nnoremap SU :UndotreeShow<CR>
+" }}}
+" -----------: z...: {{{
 " Standard Vim Mappings: a A b c C d D e E f F g G h H i j k l L m M n N o O r R
 " s t u v w W x X z ^ + - . = <Left> <Right> <CR>
 " Available To Map:
 " B I J K p P q Q S T U V y Y Z $ ~ & % [ { } ( * ) ] ! # ` ; : , < > / ? @ \ | _ ' " 0 1 2 3 4 5 6 7 8 9
 " }}}
-" Normal Keys: Z...: {{{
+" -----------: Z...: close windows: {{{
 " Standard Vim Mappings: Q Z
 " Available To Map:
 " aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ;,.:<>/@\?^|-_'"$&[{}(=*)+]!#~%7531902468`
-"     ++        ++      ++      ++ +                 +
-nnoremap Zc :botright copen<CR>
-nnoremap ZC :cclose<CR>
-nnoremap Zh :help<CR>
+"                +       +       + +     + +         +
 nnoremap ZH :helpclose<CR>
-nnoremap Zl :lopen<CR>
 nnoremap ZL :lclose<CR>
-nnoremap Zp :ptag<CR>
 nnoremap ZP :pclose<CR>
-nnoremap Zt :TagbarOpen<CR>
+nnoremap ZQ :cclose<CR>
 nnoremap ZT :TagbarClose<CR>
-nnoremap Zu :UndotreeShow<CR>
 nnoremap ZU :UndotreeHide<CR>
 " }}}
-" Normal Keys: [...: {{{
+" -----------: [...: {{{
 " Standard Vim Mappings: c d D ^D f i I ^I m p P s S z # ' ( * ` / [ ] {
 " <MiddleMouse>
 " Vim Unimpaired Mappings: a A b B e f l L ^L n o q Q ^Q t T u x y <Space>
@@ -448,7 +468,7 @@ nnoremap [8 :call signature#marker#Goto('prev', 8, v:count)<CR>
 nnoremap [9 :call signature#marker#Goto('prev', 9, v:count)<CR>
 nnoremap [0 :call signature#marker#Goto('prev', 0, v:count)<CR>
 " }}}
-" Normal Keys: ]...: {{{
+" -----------: ]...: {{{
 " Standard Vim Mappings: c d D ^D f i I ^I m p P s S z # ' ) * ` / [ ] }
 " <MiddleMouse>
 " Vim Unimpaired Mappings: a A b B e f l L ^L n o q Q ^Q t T u x y <Space>
@@ -469,18 +489,15 @@ nnoremap ]9 :call signature#marker#Goto('next', 9, v:count)<CR>
 nnoremap ]0 :call signature#marker#Goto('next', 0, v:count)<CR>
 " }}}
 " }}}
-" Ctrl Key: {{{
+" Ctrl Key: tags, quickfix, location list navigation: {{{
 " XXX: Ctrl-Shift modifier does not work neither in terminal nor in GUI.
 " XXX: Uppercase/lowercase distinction is not available with <Ctrl-...>
 " XXX: modifier.
 " Standard Vim Mappings: A C G I M O Q R S T V W X Z [ \ ] ^
 " Available To Map:
 " B D E F H J K L N P Q S U Y 1 2 3 4 5 6 7 8 9 0 $ & { } ( = * ) + ! # ~ % ` ; : , < . > / ? @ | - _ ' " <BS> <Tab> <CR> <Esc> <Space>
-" + + + + + + + + + +   + + +
-nnoremap <C-Space> :tag<CR>
-nnoremap <C-@> :redraw!<CR>
-nnoremap <C-PageDown> :bnext<CR>
-nnoremap <C-PageUp> :bprevious<CR>
+" + + + + + + + + + +   + + +                                                                         +
+nnoremap <C-'> :tag<CR>
 nnoremap <C-b> :colder<CR>
 nnoremap <C-d> :lnewer<CR>
 nnoremap <C-e> :lnext<CR>
@@ -535,27 +552,27 @@ nmap <Leader>N <Plug>MarkConfirmAllClear
 " S T U V W X Y Z [ \ ] ^ _
 " Available To Remap: @ A B E J L M Q S Y Z _
 " Submodes: <A-...> <C-...> <C-X>... <C-G>...
-inoremap <silent> <C-@> <C-^>
-inoremap <silent> <C-E> <C-R>=pumvisible() ? "\<lt>C-E>" : "\<lt>Esc>"<CR>
+inoremap <C-@> <C-^>
+inoremap <C-E> <C-R>=pumvisible() ? "\<lt>C-E>" : "\<lt>Esc>"<CR>
 " Insert Mode i_^G: {{{
 " Standard Vim Mappings: j ^J k ^K u U <Up> <Down>
 " }}}
-"inoremap <silent> <C-J> <Nop>
-inoremap <silent> <C-L> <Nop>
-"inoremap <silent> <C-M> <Nop>
-inoremap <silent> <C-Q> <Nop>
-inoremap <silent> <C-S> <Nop>
+"inoremap <C-J> <Nop>
+inoremap <C-L> <Nop>
+"inoremap <C-M> <Nop>
+inoremap <C-Q> <Nop>
+inoremap <C-S> <Nop>
 " Insert Mode i_^X: {{{
 " Standard Vim Mappings ^: D E F I K L N O P S T U V Y ]
 " Unmappable: C
 " Available To Map: A B G H J M Q R W X Z
 " }}}
-inoremap <silent> <C-Y> <C-R>=pumvisible() ? "\<lt>C-Y>" : "\<lt>Esc>"<CR>
-inoremap <silent> <C-Z> <Nop>
-inoremap <silent> <C-{> <Esc>
+inoremap <C-Y> <C-R>=pumvisible() ? "\<lt>C-Y>" : "\<lt>Esc>"<CR>
+inoremap <C-Z> <Nop>
+inoremap <C-{> <Esc>
 " Insert Mode i_<A-...>: {{{
-inoremap <silent> <A-e> <Esc>
-inoremap <silent> <A-w> <C-O>:up<CR>
+inoremap <A-e> <Esc>
+inoremap <A-w> <C-O>:up<CR>
 " }}}
 " }}}
 " Visual Mode: {{{
@@ -565,8 +582,8 @@ xnoremap / /\v
 xnoremap gy "+y
 " make p in visual mode replace selected text with the yank register
 xnoremap p <Esc>:let current_reg = @"<CR>gvdi<C-R>=current_reg<CR><Esc>
-vmap <silent> <Leader>m <Plug>MarkSet
-vmap <silent> <Leader>r <Plug>MarkRegex
+vmap <Leader>m <Plug>MarkSet
+vmap <Leader>r <Plug>MarkRegex
 xnoremap X y/<C-R>"<CR>
 xmap <Leader>* <Plug>MarkIWhiteSet
 " }}}
@@ -585,8 +602,6 @@ cnoreabbrev f find
 cnoreabbrev gblame Gblame
 cnoreabbrev gtags Gtags
 cnoreabbrev grep grep -IarFw
-cnoreabbrev split rightbelow split
-cnoreabbrev vsplit rightbelow vsplit
 " }}}
 " Autocommands: {{{
 if has("autocmd")
