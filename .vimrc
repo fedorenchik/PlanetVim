@@ -476,24 +476,30 @@ nnoremap ]0 :call signature#marker#Goto('next', 0, v:count)<CR>
 " Standard Vim Mappings: A C G I M O Q R S T V W X Z [ \ ] ^
 " Available To Map:
 " B D E F H J K L N P Q S U Y 1 2 3 4 5 6 7 8 9 0 $ & { } ( = * ) + ! # ~ % ` ; : , < . > / ? @ | - _ ' " <BS> <Tab> <CR> <Esc> <Space>
-"         + + + +       +
+" + + + + + + + + + +   + + +
 nnoremap <C-Space> :tag<CR>
-nnoremap <silent> <C-@> :redraw!<CR>
-nnoremap <silent> <C-PageDown> :bnext<CR>
-nnoremap <silent> <C-PageUp> :bprevious<CR>
-nnoremap <silent> <C-E> 2<C-E>
-nnoremap <silent> <C-H> <C-W>h
-nnoremap <silent> <C-J> <C-W>j
-nnoremap <silent> <C-K> <C-W>k
-nnoremap <silent> <C-L> <C-W>l
-nnoremap <silent> <C-S> :emenu <C-Z>
+nnoremap <C-@> :redraw!<CR>
+nnoremap <C-PageDown> :bnext<CR>
+nnoremap <C-PageUp> :bprevious<CR>
+nnoremap <C-b> :colder<CR>
+nnoremap <C-d> :lnewer<CR>
+nnoremap <C-e> :lnext<CR>
+nnoremap <C-f> :cnewer<CR>
+nnoremap <C-h> <C-W>h
+nnoremap <C-j> <C-W>j
+nnoremap <C-k> <C-W>k
+nnoremap <C-l> <C-W>l
+nnoremap <C-n> :cnext<CR>
+nnoremap <C-p> :cprevious<CR>
+nnoremap <C-s> :emenu <C-Z>
+nnoremap <C-u> :lolder<CR>
 " Ctrl Key: <C-W>...: {{{
 nnoremap <C-W>V :botright vsplit<CR>
 " Ctrl Key: <C-W>g...: {{{
 " }}}
 " }}}
-nnoremap <silent> <C-Y> 2<C-Y>
-nnoremap <silent> <C-_> <Nop>
+nnoremap <C-y> :lprevious<CR>
+nnoremap <C-_> <Nop>
 " Ctrl Key: <C-\>...: {{{
 " }}}
 " }}}
