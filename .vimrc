@@ -372,6 +372,7 @@ nnoremap Y y$
 " Available To Map:
 " aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ;,.:<>/@\?^|-_'"$&[{}(=*)+]!#~%7531902468`
 "
+nnoremap <CR> <Nop>
 nnoremap <CR><CR> :GtagsCursor<CR>
 nnoremap <CR>d :Gtags <cword><CR>
 " }}}
@@ -385,6 +386,7 @@ nnoremap <Space> <Nop>
 " Available To Map:
 " aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ;,.:<>/@\?^|-_'"$&[{}(=*)+]!#~%7531902468`
 "
+nnoremap - <Nop>
 nnoremap -g :lgrep -IarFw <cword> .<CR>
 nnoremap -/ :lgrep -IaFw <cword> %<CR>
 " }}}
@@ -419,6 +421,7 @@ nnoremap g" :registers<CR>
 " Available To Map:
 " aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ;,.:<>/@\?^|-_'"$&[{}(=*)+]!#~%7531902468`
 "
+nnoremap s <Nop>
 nnoremap sb :LspCqueryBase<CR>
 nnoremap sc :LspCqueryCallers<CR>
 nnoremap sd :LspDefinition<CR>
@@ -437,6 +440,7 @@ nnoremap s= :LspDocumentFormat<CR>
 " Available To Map:
 " aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ;,.:<>/@\?^|-_'"$&[{}(=*)+]!#~%7531902468`
 "                +       +       + +     + +
+nnoremap S <Nop>
 nnoremap SH :help<CR>
 nnoremap SL :lopen<CR>
 nnoremap SP :ptag<CR>
