@@ -8,3 +8,4 @@ GTAGS
 Session.vim
 tags
 compile_commands.json
+cscope.out

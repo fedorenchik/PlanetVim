@@ -810,6 +810,9 @@ let g:xml_syntax_folding = 1
 " Plugin: FastFold {{{
 let g:fastfold_force = 1
 " }}}
+" Plugin: gutentags: {{{
+let g:gutentags_modules = [ 'ctags', 'cscope', 'gtags_cscope' ]
+" }}}
 " Plugin: signature {{{
 let g:SignatureMap = {
         \ 'Leader'             :  "m",
