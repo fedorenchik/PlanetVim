@@ -372,7 +372,8 @@ nnoremap Y y$
 " Available To Map:
 " aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ;,.:<>/@\?^|-_'"$&[{}(=*)+]!#~%7531902468`
 "
-nnoremap <CR> <Nop>
+nnoremap <CR><CR> :GtagsCursor<CR>
+nnoremap <CR>d :Gtags <cword><CR>
 " }}}
 " -----------: <Space>...: same as <A-...>: {{{
 " Available To Map:
@@ -384,8 +385,8 @@ nnoremap <Space> <Nop>
 " Available To Map:
 " aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ;,.:<>/@\?^|-_'"$&[{}(=*)+]!#~%7531902468`
 "
-nnoremap -g :grep -IarFw <cword> .<CR>
-nnoremap -/ :grep -IaFw <cword> %<CR>
+nnoremap -g :lgrep -IarFw <cword> .<CR>
+nnoremap -/ :lgrep -IaFw <cword> %<CR>
 " }}}
 " -----------: g...: vim status: {{{
 " Standard Vim Mappings: a ^A d D e E f F g ^G h H ^H i I j J k m n N o p P q Q
@@ -418,6 +419,19 @@ nnoremap g" :registers<CR>
 " Available To Map:
 " aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ;,.:<>/@\?^|-_'"$&[{}(=*)+]!#~%7531902468`
 "
+nnoremap sb :LspCqueryBase<CR>
+nnoremap sc :LspCqueryCallers<CR>
+nnoremap sd :LspDefinition<CR>
+nnoremap sh :LspHover<CR>
+nnoremap si :LspImplementation<CR>
+nnoremap sl :LspDocumentDiagnostics<CR>
+nnoremap sm :LspRename<CR>
+nnoremap so :LspDocumentSymbol<CR>
+nnoremap sr :LspReferences<CR>
+nnoremap st :LspCqueryDerived<CR>
+nnoremap sv :LspCqueryVars<CR>
+nnoremap sw :LspWorkspaceSymbol<CR>
+nnoremap s= :LspDocumentFormat<CR>
 " }}}
 " -----------: S...: open windows: {{{
 " Available To Map:

@@ -77,3 +77,6 @@
 [submodule ".vim/pack/tags/start/tagbar"]
 	path = .vim/pack/tags/start/tagbar
 	url = https://github.com/majutsushi/tagbar.git
+[submodule ".vim/pack/lsp/start/vim-lsp-cquery"]
+	path = .vim/pack/lsp/start/vim-lsp-cquery
+	url = https://github.com/pdavydov108/vim-lsp-cquery.git
