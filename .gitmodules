@@ -80,3 +80,6 @@
 [submodule ".vim/pack/lsp/start/vim-lsp-cquery"]
 	path = .vim/pack/lsp/start/vim-lsp-cquery
 	url = https://github.com/pdavydov108/vim-lsp-cquery.git
+[submodule ".vim/pack/denite/start/denite.nvim"]
+	path = .vim/pack/denite/start/denite.nvim
+	url = https://github.com/Shougo/denite.nvim.git
