@@ -127,9 +127,9 @@ set cscoperelative
 set nocscopetag
 set cscopetagorder=0
 set cscopeverbose
-set nocursorbind
-set nocursorcolumn
-set nocursorline
+"set nocursorbind
+"set nocursorcolumn
+"set nocursorline
 set debug=beep
 set nodelcombine
 set dictionary+=/usr/share/dict/words
@@ -158,7 +158,7 @@ set nofsync
 set nogdefault
 set grepprg=grep\ -nH\ $*
 "TODO: Colorize cursor in different modes.
-set guicursor+=a:blinkon0
+"set guicursor+=a:blinkon0
 if has("gui_gtk2")
 	set guifont=Ubuntu\ Mono\ 11,Monospace\ 9
 	"set guifontwide=WenQuanYi\ Zen\ Hei\ 10
