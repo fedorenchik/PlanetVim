@@ -544,9 +544,11 @@ nnoremap <C-_> <Nop>
 "   +                   +++       +++         +
 nnoremap <A-BS> :qa!<CR>
 nnoremap <A-CR> :wqa<CR>
-nnoremap <A-f> :find <C-Z>
+nnoremap <A-b> :Denite buffer<CR>
+nnoremap <A-f> :Denite file/rec<CR>
 nnoremap <A-g> :GtagsCursor<CR>
 nnoremap <A-m> :<C-U><C-R><C-R>='let @'. v:register .' = '. string(getreg(v:register))<CR><C-F><Left>
+nnoremap <A-o> :Denite -split=no outline<CR>
 nnoremap <A-q> :q<CR>
 nnoremap <A-Q> :qa<CR>
 nnoremap <A-r> :nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-L>
