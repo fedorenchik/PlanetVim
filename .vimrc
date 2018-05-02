@@ -341,6 +341,8 @@ let maplocalleader="_"
 " Shifted cursor keys are not available on all terminals (but available in GUI).
 " Cannot distinguish between <Tab> and <C-I>.
 " Cannot distinguish between <Enter> and <C-M>.
+" Remap <CR> is too troublesome (inconvenient in quickfix and plugins), so
+" do not do it.
 " }}}
 " Normal (Command) Mode: {{{
 " Metakeys: <BS> <Tab> <CR> <Esc> <Space> <Del> <Up> <Down> <Left> <Right>
@@ -349,10 +351,10 @@ let maplocalleader="_"
 " Commands Expecting Marks: m ' `
 " Commands Expecting Registers: q " @
 " Standard Text Objects: b B p s t w W [ { } ( ) ] ` < > ' "
-" Submodes: <Space> g s S z Z - + [ ] <A-...> <C-...> <CR> <BS>
+" Submodes: <Space> g s S z Z - + [ ] <A-...> <C-...> <BS>
 " Normal Keys: {{{
 " Normal Keys: {{{
-" Available To Remap: f F h j k l Q s S t T U + ; : , \ - _ <BS> <CR> <Space>
+" Available To Remap: f F h j k l Q s S t T U + ; : , \ - _ <BS> <Space>
 " TODO: 1. Make f F t T search multiline
 " TODO: 2. Make h l behave like f F but input 2 characters
 " TODO: 3. Make j k behave like f F but input 3 characters
@@ -367,14 +369,6 @@ nnoremap n nzz
 nnoremap N Nzz
 nnoremap Q gq
 nnoremap Y y$
-" }}}
-" -----------: <CR>...: source navigation (gtags): {{{
-" Available To Map:
-" aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ;,.:<>/@\?^|-_'"$&[{}(=*)+]!#~%7531902468`
-"
-nnoremap <CR> <Nop>
-nnoremap <CR><CR> :GtagsCursor<CR>
-nnoremap <CR>d :Gtags <cword><CR>
 " }}}
 " -----------: <Space>...: same as <A-...>: {{{
 " Available To Map:
@@ -417,7 +411,7 @@ nnoremap g: :history<CR>
 nnoremap g. :marks<CR>
 nnoremap g" :registers<CR>
 " }}}
-" -----------: s...: source navigation (lsp): {{{
+" -----------: s...: source navigation (lsp, gtags): {{{
 " Available To Map:
 " aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ;,.:<>/@\?^|-_'"$&[{}(=*)+]!#~%7531902468`
 "
@@ -425,6 +419,7 @@ nnoremap s <Nop>
 nnoremap sb :LspCqueryBase<CR>
 nnoremap sc :LspCqueryCallers<CR>
 nnoremap sd :LspDefinition<CR>
+nnoremap sg :GtagsCursor<CR>
 nnoremap sh :LspHover<CR>
 nnoremap si :LspImplementation<CR>
 nnoremap sl :LspDocumentDiagnostics<CR>
