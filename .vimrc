@@ -233,6 +233,7 @@ set prompt
 set pumheight=10
 set pyxversion=3
 set redrawtime=1000
+set regexpengine=1
 set norelativenumber
 set ruler
 set rulerformat&
