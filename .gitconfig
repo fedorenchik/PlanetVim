@@ -9,6 +9,8 @@
 	tool = vimdiff
 [color]
 	ui = true
+	status = auto
+	branch = auto
 [sendemail]
 	from = Leonid V. Fedorenchik <leonidsbox@gmail.com>
 	smtpserver = smtp.gmail.com
@@ -42,3 +44,5 @@
 [pretty]
 	olp = %h%x09%an%x09%ad%x09%s
 	ll = %C(auto)%h %Cgreen%an%Creset %s
+[branch]
+	autosetuprebase = always
