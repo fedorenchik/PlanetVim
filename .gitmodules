@@ -80,6 +80,15 @@
 [submodule ".vim/pack/lsp/start/vim-lsp-cquery"]
 	path = .vim/pack/lsp/start/vim-lsp-cquery
 	url = https://github.com/pdavydov108/vim-lsp-cquery.git
-[submodule ".vim/pack/denite/start/denite.nvim"]
-	path = .vim/pack/denite/start/denite.nvim
-	url = https://github.com/Shougo/denite.nvim.git
+[submodule ".vim/pack/unite/start/unite.vim"]
+	path = .vim/pack/unite/start/unite.vim
+	url = https://github.com/Shougo/unite.vim.git
+[submodule ".vim/pack/unite/start/unite-outline"]
+	path = .vim/pack/unite/start/unite-outline
+	url = https://github.com/h1mesuke/unite-outline.git
+[submodule ".vim/pack/unite/start/unite-gtags"]
+	path = .vim/pack/unite/start/unite-gtags
+	url = https://github.com/hewes/unite-gtags.git
+[submodule ".vim/pack/unite/start/unite-quickfix"]
+	path = .vim/pack/unite/start/unite-quickfix
+	url = https://github.com/osyo-manga/unite-quickfix.git
