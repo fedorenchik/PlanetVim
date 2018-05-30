@@ -21,10 +21,12 @@ let g:loaded_home_vimrc = 1
 " }}}
 " Basics: {{{
 set nocompatible
-if &t_Co > 2 || has("gui_running")
-	syntax on
+if has('autocmd')
+	filetype plugin indent on
 endif
-filetype plugin indent on
+if has('syntax') && !exists('g:syntax_ox')
+	syntax enable
+endif
 " }}}
 " Functions: {{{
 function GuiTabLabel()
@@ -119,6 +121,7 @@ set colorcolumn=80,120,160,+0
 if has("gui_running")
 	set columns=300
 endif
+set complete-=i
 set completeopt=menuone,preview,noinsert,noselect
 set confirm
 set copyindent
@@ -201,7 +204,7 @@ if has("gui_running")
 	set lines=100
 endif
 set list
-set listchars=tab:»\ ,trail:·,extends:>,precedes:<
+set listchars=tab:»\ ,trail:·,extends:>,precedes:<,nbsp:+
 set magic
 set matchpairs+=<:>
 set menuitems=40
@@ -244,6 +247,9 @@ set scrolloff=2
 set scrollopt=ver,hor,jump
 set secure
 set sessionoptions=blank,buffers,globals,help,localoptions,sesdir,slash,tabpages,unix,winsize
+if &shell =~# 'fish$' && (v:version < 704 || v:version == 704 && !has('patch276'))
+	set shell=/bin/bash
+endif
 set shiftround
 set shiftwidth=8
 set shortmess+=mrwsIcF
@@ -254,7 +260,7 @@ set noshowmatch
 set showmode
 set showtabline=2
 set sidescroll=30
-set sidescrolloff=2
+set sidescrolloff=1
 set signcolumn=auto
 set smartcase
 set smartindent
@@ -271,7 +277,11 @@ set swapfile
 set swapsync=
 set switchbuf=
 set synmaxcol=200
+if &t_Co == 8 && $TERM !~# '^linux\|^Eterm'
+	set t_Co=16
+endif
 set tabline&
+set tabpagemax=50
 set tabstop=8
 set tagbsearch
 set tagcase=followscs
