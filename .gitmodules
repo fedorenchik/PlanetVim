@@ -92,3 +92,15 @@
 [submodule ".vim/pack/unite/start/unite-outline"]
 	path = .vim/pack/unite/start/unite-outline
 	url = https://github.com/Shougo/unite-outline.git
+[submodule ".vim/pack/unite/start/neoyank.vim"]
+	path = .vim/pack/unite/start/neoyank.vim
+	url = https://github.com/Shougo/neoyank.vim.git
+[submodule ".vim/pack/unite/start/vim-unite-history"]
+	path = .vim/pack/unite/start/vim-unite-history
+	url = https://github.com/thinca/vim-unite-history.git
+[submodule ".vim/pack/unite/start/unite-mark"]
+	path = .vim/pack/unite/start/unite-mark
+	url = https://github.com/tacroe/unite-mark.git
+[submodule ".vim/pack/unite/start/vim-unite-giti"]
+	path = .vim/pack/unite/start/vim-unite-giti
+	url = https://github.com/kmnk/vim-unite-giti.git

@@ -345,6 +345,17 @@ let maplocalleader="_"
 " Remap <CR> is too troublesome (inconvenient in quickfix and plugins), so
 " do not do it.
 " }}}
+" Alt: make <A-...> work in terminal {{{
+let c='A'
+while c <= 'z'
+	if (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')
+		exec "set <A-".c.">=\e".c
+		exec "map \e".c." <A-".c.">"
+		exec "map! \e".c." <A-".c.">"
+	endif
+	let c = nr2char(1+char2nr(c))
+endwhile
+" }}}
 " Normal (Command) Mode: {{{
 " Metakeys: <BS> <Tab> <CR> <Esc> <Space> <Del> <Up> <Down> <Left> <Right>
 " <F1>..<F12> <Insert> <Home> <End> <PageUp> <PageDown>
