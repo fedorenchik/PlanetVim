@@ -346,9 +346,10 @@ let maplocalleader="_"
 " do not do it.
 " }}}
 " Alt: make <A-...> work in terminal {{{
-let c='A'
-while c <= 'z'
-	if (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')
+let c=' '
+while c <= '~'
+	if (c != ' ') && (c != '"') && (c != '>') && (c != '[') && (c != '\')
+				\ && (c != ']') && (c != '|')
 		exec "set <A-".c.">=\e".c
 		exec "map \e".c." <A-".c.">"
 		exec "map! \e".c." <A-".c.">"

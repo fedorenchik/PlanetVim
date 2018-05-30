@@ -104,3 +104,9 @@
 [submodule ".vim/pack/unite/start/vim-unite-giti"]
 	path = .vim/pack/unite/start/vim-unite-giti
 	url = https://github.com/kmnk/vim-unite-giti.git
+[submodule ".vim/pack/git/start/gina.vim"]
+	path = .vim/pack/git/start/gina.vim
+	url = https://github.com/lambdalisue/gina.vim.git
+[submodule ".vim/pack/git/start/gv.vim"]
+	path = .vim/pack/git/start/gv.vim
+	url = https://github.com/junegunn/gv.vim.git
