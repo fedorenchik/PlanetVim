@@ -122,3 +122,6 @@
 [submodule ".vim/pack/evaluating/start/vim-dadbod"]
 	path = .vim/pack/evaluating/start/vim-dadbod
 	url = https://github.com/tpope/vim-dadbod.git
+[submodule ".vim/pack/evaluating/start/vim-eunuch"]
+	path = .vim/pack/evaluating/start/vim-eunuch
+	url = https://github.com/tpope/vim-eunuch.git
