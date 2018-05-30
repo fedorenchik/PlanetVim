@@ -384,15 +384,40 @@ nnoremap Q gq
 nnoremap Y y$
 " }}}
 " -----------: <Space>...: same as <A-...>: {{{
-" Available To Map:
-" aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ;,.:<>/@\?^|-_'"$&[{}(=*)+]!#~%7531902468`
-"
+" Available To Map: all
 nnoremap <Space> <Nop>
+nnoremap <Space>a :e #<CR>
+nnoremap <Space>b :Unite -start-insert -smartcase -buffer-name=unite-buffer buffer<CR>
+nnoremap <Space>c :Unite -buffer-name=unite-quickfix quickfix<CR>
+nnoremap <Space>C :Unite -no-resize -no-split -buffer-name=unite-quickfix quickfix<CR>
+nnoremap <Space>e :Unite -start-insert -no-resize -no-split -buffer-name=unite-file file<CR>
+nnoremap <Space>f :Unite -start-insert -smartcase -buffer-name=unite-file file:`expand('%:p:h')`<CR>
+nnoremap <Space>F :Unite -start-insert -smartcase -buffer-name=unite-file file_rec<CR>
+nnoremap <Space>g :GtagsCursor<CR>:Unite -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
+nnoremap <Space>G :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/context<CR>
+nnoremap <Space>h :VimShellPop -buffer-name=vimshell<CR>
+nnoremap <Space>i :Unite -start-insert -buffer-name=unite-line<CR>
+nnoremap <Space>j :Unite -start-insert -smartcase -buffer-name=unite-jump jump<CR>
+nnoremap <Space>k :Unite -start-insert -smartcase -buffer-name=unite-mark mark<CR>
+nnoremap <Space>l :Unite -buffer-name=unite-location-list location_list<CR>
+nnoremap <Space>m :<C-U><C-R><C-R>='let @'. v:register .' = '. string(getreg(v:register))<CR><C-F><Left>
+nnoremap <Space>o :Unite -start-insert -smartcase outline<CR>
+nnoremap <Space>O :Unite -no-resize -no-split -smartcase outline<CR>
+nnoremap <Space>p :Unite -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
+nnoremap <Space>P :Unite -no-resize -no-split -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
+nnoremap <Space>r :Unite -start-insert -smartcase -buffer-name=unite-register register<CR>
+nnoremap <Space>s :Unite -start-insert -smartcase -buffer-name=unite-grep grep:%::`expand('<cword>')`<CR>
+nnoremap <Space>S :Scratch<CR>
+nnoremap <Space>t :TagbarToggle<CR>
+nnoremap <Space>T :Unite -start-insert -smartcase -buffer-name=unite-tab tab<CR>
+nnoremap <Space>u :UniteResume<CR>
+nnoremap <Space>w :confirm up<CR>
+nnoremap <Space>W :wa<CR>
+nnoremap <Space>- :Unite -start-insert -smartcase -buffer-name=unite-window window:no-current<CR>
+nnoremap <Space>_ :Unite -start-insert -smartcase -buffer-name=unite-window window/gui<CR>
 " }}}
 " -----------: -...: quickfix management:{{{
-" Available To Map:
-" aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ;,.:<>/@\?^|-_'"$&[{}(=*)+]!#~%7531902468`
-"
+" Available To Map: all
 nnoremap - <Nop>
 nnoremap -g :lgrep -IarFw <cword> .<CR>
 nnoremap -/ :lgrep -IaFw <cword> %<CR>
@@ -425,9 +450,7 @@ nnoremap g. :marks<CR>
 nnoremap g" :registers<CR>
 " }}}
 " -----------: s...: source navigation (lsp, gtags): {{{
-" Available To Map:
-" aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ;,.:<>/@\?^|-_'"$&[{}(=*)+]!#~%7531902468`
-"
+" Available To Map: all
 nnoremap s <Nop>
 nnoremap sb :LspCqueryBase<CR>
 nnoremap sc :LspCqueryCallers<CR>
@@ -445,9 +468,7 @@ nnoremap sw :LspWorkspaceSymbol<CR>
 nnoremap s= :LspDocumentFormat<CR>
 " }}}
 " -----------: S...: open windows: {{{
-" Available To Map:
-" aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ;,.:<>/@\?^|-_'"$&[{}(=*)+]!#~%7531902468`
-"                +       +       + +     + +
+" Available To Map: all
 nnoremap S <Nop>
 nnoremap SH :help<CR>
 nnoremap SL :lopen<CR>
@@ -464,9 +485,7 @@ nnoremap SU :UndotreeShow<CR>
 " }}}
 " -----------: Z...: close windows: {{{
 " Standard Vim Mappings: Q Z
-" Available To Map:
-" aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ;,.:<>/@\?^|-_'"$&[{}(=*)+]!#~%7531902468`
-"                +       +       + +     + +         +
+" Available To Map: all
 nnoremap ZH :helpclose<CR>
 nnoremap ZL :lclose<CR>
 nnoremap ZP :pclose<CR>
@@ -547,41 +566,14 @@ nnoremap <C-_> <Nop>
 " }}}
 " }}}
 " Alt Key: {{{
-" Available To Map:
-" aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ;,.:<>/@\?^|-_'"$&[{}(=*)+]!#~%7531902468`
-"   +                   +++       +++         +
-nnoremap <A-a> :e #<CR>
-nnoremap <A-b> :Unite -start-insert -smartcase -buffer-name=unite-buffer buffer<CR>
-nnoremap <A-c> :Unite -buffer-name=unite-quickfix quickfix<CR>
-nnoremap <A-C> :Unite -no-resize -no-split -buffer-name=unite-quickfix quickfix<CR>
-nnoremap <A-e> :Unite -start-insert -no-resize -no-split -buffer-name=unite-file file<CR>
-nnoremap <A-f> :Unite -start-insert -smartcase -buffer-name=unite-file file:`expand('%:p:h')`<CR>
-nnoremap <A-F> :Unite -start-insert -smartcase -buffer-name=unite-file file_rec/async<CR>
-nnoremap <A-g> :GtagsCursor<CR>:Unite -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
-nnoremap <A-G> :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/context<CR>
-nnoremap <A-h> :VimShellPop -buffer-name=vimshell<CR>
-nnoremap <A-i> :Unite -start-insert -buffer-name=unite-line<CR>
-nnoremap <A-j> :Unite -start-insert -smartcase -buffer-name=unite-jump jump<CR>
-nnoremap <A-k> :Unite -start-insert -smartcase -buffer-name=unite-mark mark<CR>
-nnoremap <A-l> :Unite -buffer-name=unite-location-list location_list<CR>
+" Available To Map: all keys
 nnoremap <A-m> :<C-U><C-R><C-R>='let @'. v:register .' = '. string(getreg(v:register))<CR><C-F><Left>
-nnoremap <A-o> :Unite -start-insert -smartcase outline<CR>
-nnoremap <A-O> :Unite -no-resize -no-split -smartcase outline<CR>
-nnoremap <A-p> :Unite -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
-nnoremap <A-P> :Unite -no-resize -no-split -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
 nnoremap <A-q> :q<CR>
 nnoremap <A-Q> :qa<CR>
 nnoremap <A-r> :nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-L>
-nnoremap <A-R> :Unite -start-insert -smartcase -buffer-name=unite-register register<CR>
-nnoremap <A-s> :Unite -start-insert -smartcase -buffer-name=unite-grep grep:%::`expand('<cword>')`<CR>
-nnoremap <A-S> :Scratch<CR>
 nnoremap <A-t> :TagbarToggle<CR>
-nnoremap <A-T> :Unite -start-insert -smartcase -buffer-name=unite-tab tab<CR>
-nnoremap <A-u> :UniteResume<CR>
 nnoremap <A-w> :confirm up<CR>
 nnoremap <A-W> :wa<CR>
-nnoremap <A--> :Unite -start-insert -smartcase -buffer-name=unite-window window:no-current<CR>
-nnoremap <A-_> :Unite -start-insert -smartcase -buffer-name=unite-window window/gui<CR>
 " }}}
 " Leader: {{{
 nmap <Leader>M <Plug>MarkToggle
