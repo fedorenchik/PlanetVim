@@ -540,8 +540,8 @@ nnoremap <C-_> <Nop>
 "   +                   +++       +++         +
 nnoremap <A-BS> :qa!<CR>
 nnoremap <A-CR> :wqa<CR>
-nnoremap <A-b> :Denite buffer<CR>
-nnoremap <A-f> :Denite file/rec<CR>
+nnoremap <A-b> :Unite -start-insert -smartcase -buffer-name=unite-buffer buffer<CR>
+nnoremap <A-f> :Unite -start-insert -smartcase -buffer-name=unite-file file:`expand('%:p:h')`<CR>
 nnoremap <A-g> :GtagsCursor<CR>
 nnoremap <A-m> :<C-U><C-R><C-R>='let @'. v:register .' = '. string(getreg(v:register))<CR><C-F><Left>
 nnoremap <A-o> :Denite -split=no outline<CR>
