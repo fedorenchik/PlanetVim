@@ -418,8 +418,7 @@ nnoremap <Space>P :Unite -no-resize -no-split -auto-preview -vertical-preview -b
 nnoremap <Space>r :Unite -start-insert -smartcase -buffer-name=unite-register register<CR>
 nnoremap <Space>s :Unite -start-insert -smartcase -buffer-name=unite-grep grep:%::`expand('<cword>')`<CR>
 nnoremap <Space>S :Scratch<CR>
-nnoremap <Space>t :TagbarToggle<CR>
-nnoremap <Space>T :Unite -start-insert -smartcase -buffer-name=unite-tab tab<CR>
+nnoremap <Space>t :Unite -start-insert -smartcase -buffer-name=unite-tab tab<CR>
 nnoremap <Space>u :UniteResume<CR>
 nnoremap <Space>w :Unite -start-insert -smartcase -buffer-name=unite-window window:all:no-current<CR>
 nnoremap <Space>W :Unite -start-insert -smartcase -buffer-name=unite-window window/gui<CR>
