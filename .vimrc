@@ -397,7 +397,7 @@ nnoremap Y y$
 " Available To Map: all
 nnoremap <Space> <Nop>
 nmap <S-Space> <Space>
-nnoremap <Space>a :e #<CR>
+nnoremap <Space>a :Unite -smartcase -buffer-name=unite-alternate -input=`expand('%:t:r').'.'` file_rec<CR>
 nnoremap <Space>b :Unite -start-insert -smartcase -buffer-name=unite-buffer buffer<CR>
 nnoremap <Space>c :Unite -buffer-name=unite-quickfix quickfix<CR>
 nnoremap <Space>C :Unite -no-resize -no-split -buffer-name=unite-quickfix quickfix<CR>
