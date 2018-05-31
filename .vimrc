@@ -393,9 +393,10 @@ nnoremap N Nzz
 nnoremap Q gq
 nnoremap Y y$
 " }}}
-" -----------: <Space>...: same as <A-...>: {{{
+" -----------: <Space>...: unite.vim mappings: {{{
 " Available To Map: all
 nnoremap <Space> <Nop>
+nmap <S-Space> <Space>
 nnoremap <Space>a :e #<CR>
 nnoremap <Space>b :Unite -start-insert -smartcase -buffer-name=unite-buffer buffer<CR>
 nnoremap <Space>c :Unite -buffer-name=unite-quickfix quickfix<CR>
@@ -408,9 +409,8 @@ nnoremap <Space>G :Unite -auto-preview -vertical-preview -buffer-name=unite-gtag
 nnoremap <Space>h :VimShellPop -buffer-name=vimshell<CR>
 nnoremap <Space>i :Unite -start-insert -buffer-name=unite-line<CR>
 nnoremap <Space>j :Unite -start-insert -smartcase -buffer-name=unite-jump jump<CR>
-nnoremap <Space>k :Unite -start-insert -smartcase -buffer-name=unite-mark mark<CR>
 nnoremap <Space>l :Unite -buffer-name=unite-location-list location_list<CR>
-nnoremap <Space>m :<C-U><C-R><C-R>='let @'. v:register .' = '. string(getreg(v:register))<CR><C-F><Left>
+nnoremap <Space>m :Unite -start-insert -smartcase -buffer-name=unite-mark mark<CR>
 nnoremap <Space>o :Unite -start-insert -smartcase outline<CR>
 nnoremap <Space>O :Unite -no-resize -no-split -smartcase outline<CR>
 nnoremap <Space>p :Unite -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
@@ -421,10 +421,8 @@ nnoremap <Space>S :Scratch<CR>
 nnoremap <Space>t :TagbarToggle<CR>
 nnoremap <Space>T :Unite -start-insert -smartcase -buffer-name=unite-tab tab<CR>
 nnoremap <Space>u :UniteResume<CR>
-nnoremap <Space>w :confirm up<CR>
-nnoremap <Space>W :wa<CR>
-nnoremap <Space>- :Unite -start-insert -smartcase -buffer-name=unite-window window:no-current<CR>
-nnoremap <Space>_ :Unite -start-insert -smartcase -buffer-name=unite-window window/gui<CR>
+nnoremap <Space>w :Unite -start-insert -smartcase -buffer-name=unite-window window:all:no-current<CR>
+nnoremap <Space>W :Unite -start-insert -smartcase -buffer-name=unite-window window/gui<CR>
 " }}}
 " -----------: -...: quickfix management:{{{
 " Available To Map: all
