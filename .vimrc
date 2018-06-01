@@ -397,8 +397,9 @@ nnoremap Y y$
 " Available To Map: all
 nnoremap <Space> <Nop>
 nmap <S-Space> <Space>
-nnoremap <Space>a :Unite -smartcase -buffer-name=unite-alternate -input=`expand('%:t:r').'.'` file_rec<CR>
+nnoremap <Space>a :Unite -start-insert -smartcase -buffer-name=unite-alternate -input=`expand('%:t:r').'.'` file_rec<CR>
 nnoremap <Space>b :Unite -start-insert -smartcase -buffer-name=unite-buffer buffer<CR>
+nnoremap <Space>B :Unite -no-resize -no-split -buffer-name=unite-buffer buffer<CR>
 nnoremap <Space>c :Unite -buffer-name=unite-quickfix quickfix<CR>
 nnoremap <Space>C :Unite -no-resize -no-split -buffer-name=unite-quickfix quickfix<CR>
 nnoremap <Space>e :Unite -start-insert -no-resize -no-split -buffer-name=unite-file file<CR>
@@ -415,7 +416,7 @@ nnoremap <Space>o :Unite -start-insert -smartcase outline<CR>
 nnoremap <Space>O :Unite -no-resize -no-split -smartcase outline<CR>
 nnoremap <Space>p :Unite -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
 nnoremap <Space>P :Unite -no-resize -no-split -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
-nnoremap <Space>r :Unite -start-insert -smartcase -buffer-name=unite-register register<CR>
+nnoremap <Space>R :Unite -start-insert -smartcase -buffer-name=unite-register register<CR>
 nnoremap <Space>s :Unite -start-insert -smartcase -buffer-name=unite-grep grep:%::`expand('<cword>')`<CR>
 nnoremap <Space>S :Scratch<CR>
 nnoremap <Space>t :Unite -start-insert -smartcase -buffer-name=unite-tab tab<CR>
