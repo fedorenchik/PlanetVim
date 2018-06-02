@@ -153,6 +153,7 @@ set fileformats=unix,dos,mac
 set nofileignorecase
 set nofixendofline
 "set foldclose=
+set foldcolumn=4
 set nofoldenable
 set foldminlines=0
 set foldopen=quickfix,tag,undo
@@ -261,7 +262,7 @@ set showmode
 set showtabline=2
 set sidescroll=30
 set sidescrolloff=1
-set signcolumn=auto
+set signcolumn=yes
 set smartcase
 set smartindent
 set smarttab
