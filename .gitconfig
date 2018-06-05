@@ -46,3 +46,5 @@
 	ll = %C(auto)%h %Cgreen%an%Creset %s
 [branch]
 	autosetuprebase = always
+[credential]
+	helper = store

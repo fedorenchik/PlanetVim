@@ -412,7 +412,6 @@ nnoremap <Space>h :VimShellPop -buffer-name=vimshell<CR>
 nnoremap <Space>i :Unite -start-insert -buffer-name=unite-line<CR>
 nnoremap <Space>j :Unite -start-insert -smartcase -buffer-name=unite-jump jump<CR>
 nnoremap <Space>l :Unite -buffer-name=unite-location-list location_list<CR>
-nnoremap <Space>m :Unite -start-insert -smartcase -buffer-name=unite-mark mark<CR>
 nnoremap <Space>o :Unite -start-insert -smartcase outline<CR>
 nnoremap <Space>O :Unite -no-resize -no-split -smartcase outline<CR>
 nnoremap <Space>p :Unite -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
@@ -424,6 +423,7 @@ nnoremap <Space>t :Unite -start-insert -smartcase -buffer-name=unite-tab tab<CR>
 nnoremap <Space>u :UniteResume<CR>
 nnoremap <Space>w :Unite -start-insert -smartcase -buffer-name=unite-window window:all:no-current<CR>
 nnoremap <Space>W :Unite -start-insert -smartcase -buffer-name=unite-window window/gui<CR>
+nnoremap <Space>' :Unite -start-insert -smartcase -buffer-name=unite-mark mark<CR>
 " }}}
 " -----------: -...: quickfix management:{{{
 " Available To Map: all
@@ -435,14 +435,15 @@ nnoremap -/ :lgrep -IaFw <cword> %<CR>
 " Standard Vim Mappings: a ^A d D e E f F g ^G h H ^H i I j J k m n N o p P q Q
 " r R s t T u U v V w x 0 8 ] ^] # $ & ' ` * + , - ; < ? ^ _ @ ~ <Down> <End>
 " <Home> <LeftMouse> <MiddleMouse> <RightMouse> <Up>
+" vim-commentary: gc...
 " Available To Map:
-" A b B c C G K l L M O S W X y Y z Z 1 2 3 4 5 6 7 9 % [ { } ( = ) ! : > . / \ | "
-" + + + + +     + +   + + + + +   + +                                 +   +       +
+" A b B C G K l L M O S W X y Y z Z 1 2 3 4 5 6 7 9 % [ { } ( = ) ! : > . / \ | "
+" + + + + +   + +   + + + + +   + +                                 +   +       +
 nnoremap gA :args<CR>
 nnoremap gb :tselect<CR>
 nnoremap gB :tags<CR>
-nnoremap gc :changes<CR>
 nnoremap gC :undolist<CR>
+nnoremap gG :changes<CR>
 nnoremap gl :llist<CR>
 nnoremap gL :lhistory<CR>
 nnoremap gO :jumps<CR>
