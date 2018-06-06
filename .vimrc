@@ -413,7 +413,7 @@ nnoremap <Space>i :Unite -start-insert -buffer-name=unite-line<CR>
 nnoremap <Space>j :Unite -start-insert -smartcase -buffer-name=unite-jump jump<CR>
 nnoremap <Space>l :Unite -buffer-name=unite-location-list location_list<CR>
 nnoremap <Space>o :Unite -start-insert -smartcase outline<CR>
-nnoremap <Space>O :Unite -no-resize -no-split -smartcase outline<CR>
+nnoremap <Space>O :Unite -start-insert -smartcase -no-resize -no-split outline<CR>
 nnoremap <Space>p :Unite -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
 nnoremap <Space>P :Unite -no-resize -no-split -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
 nnoremap <Space>R :Unite -start-insert -smartcase -buffer-name=unite-register register<CR>
