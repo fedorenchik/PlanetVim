@@ -152,9 +152,9 @@ set exrc
 set fileformats=unix,dos,mac
 set nofileignorecase
 set nofixendofline
-"set foldclose=
 set foldcolumn=4
-set nofoldenable
+set foldlevel=20
+set foldlevelstart=20
 set foldminlines=0
 set foldopen=quickfix,tag,undo
 set formatoptions+=1jMmn
@@ -676,7 +676,7 @@ autocmd FileType sh setlocal formatoptions-=t formatoptions+=croql
 autocmd FileType text setlocal textwidth=72 linebreak breakindent
 autocmd FileType text setlocal complete+=k,s
 autocmd FileType text,markdown setlocal spell
-autocmd FileType vim setlocal foldenable foldmethod=marker foldlevelstart=0 foldlevel=0
+autocmd FileType vim setlocal foldmethod=marker foldlevelstart=0 foldlevel=0
 if exists("+omnifunc")
 	autocmd Filetype * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
 	autocmd Filetype * if &completefunc == "" | setlocal completefunc=syntaxcomplete#Complete | endif
