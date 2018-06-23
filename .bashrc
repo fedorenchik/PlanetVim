@@ -79,7 +79,7 @@ complete -F _longopt l
 alias b=exit
 alias f='nautilus .'
 alias g=git
-complete -F _git g
+complete -o bashdefault -o default -o nospace -F __git_wrap__git_main g
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
