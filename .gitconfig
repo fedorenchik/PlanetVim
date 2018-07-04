@@ -22,7 +22,10 @@
 [alias]
 	a = add
 	aa = add .
-	b = branch
+	b = branch --all
+	ba = branch --all
+	bl = branch
+	br = branch --remote
 	c = commit -v
 	ca = commit -v --amend
 	children = "!f() { git rev-list --all --not $1^@ --children | grep $(git rev-parse $1); }; f" # reachable children of a ref
@@ -31,6 +34,9 @@
 	e = checkout
 	eb = checkout -b
 	f = fetch --all --prune --tags --recurse-submodules=yes --jobs
+	g = grep
+	h = help
+	i = init
 	l = log
 	lg = log --all --decorate --graph --oneline -30
 	ll = log --all --decorate --graph --oneline
@@ -44,8 +50,11 @@
 	rf = reflog
 	ri = rebase -i
 	rs = reset
-	s = status
+	rt = remote
+	s = status --short --branch --show-stash --untracked-files=all
+	t = tag
 	u = pull --ff-only --all
+	w = worktree
 [rerere]
 	enabled = true
 [diff]
