@@ -20,21 +20,32 @@
 [diff "zcat"]
 	textconv = zcat
 [alias]
-	aa = add .
 	a = add
+	aa = add .
 	b = branch
-	c = checkout
-	ct = commit
-	dc = diff --cached
+	c = commit -v
+	ca = commit -v --amend
+	children = "!f() { git rev-list --all --not $1^@ --children | grep $(git rev-parse $1); }; f" # reachable children of a ref
 	d = diff
+	dc = diff --cached
+	e = checkout
+	eb = checkout -b
+	f = fetch --all --prune --tags --recurse-submodules=yes --jobs
+	l = log
 	lg = log --all --decorate --graph --oneline -30
 	ll = log --all --decorate --graph --oneline
-	l = log
 	lreview = log --pretty=format:'%Cred%h%Creset %Cgreen%aD%Creset %Cblue%an%Creset %s'
+	m = merge --no-ff
+	o = clone
 	orphank = !gitk --all `git reflog | cut -c1-7`&
 	orphanl = !git log --pretty=oneline --abbrev-commit --graph --decorate `git reflog | cut -c1-7`
+	p = push
+	rb = rebase
+	rf = reflog
+	ri = rebase -i
+	rs = reset
 	s = status
-	children = "!f() { git rev-list --all --not $1^@ --children | grep $(git rev-parse $1); }; f" # reachable children of a ref
+	u = pull --ff-only --all
 [rerere]
 	enabled = true
 [diff]

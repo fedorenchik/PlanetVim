@@ -13,6 +13,8 @@ HISTFILESIZE=2000
 shopt -s checkwinsize
 shopt -s globstar
 
+[[ -f /usr/share/bash-completion/completions/git ]] && . /usr/share/bash-completion/completions/git
+
 source ~/.git-prompt.sh
 
 # make less more friendly for non-text input files, see lesspipe(1)
@@ -156,7 +158,7 @@ gitk()
 		command gitk "$@" &
 	fi
 )
-complete -F _gitk gitk
+complete -o bashdefault -o default -o nospace -F __git_wrap__gitk_main gitk
 
 dirdiffv()
 {
