@@ -37,15 +37,19 @@
 	g = grep
 	h = help
 	i = init
+	j = stash
+	k = !gitk --all
 	l = log
 	lg = log --all --decorate --graph --oneline -30
 	ll = log --all --decorate --graph --oneline
 	lreview = log --pretty=format:'%Cred%h%Creset %Cgreen%aD%Creset %Cblue%an%Creset %s'
 	m = merge --no-ff
+	#n
 	o = clone
 	orphank = !gitk --all `git reflog | cut -c1-7`&
 	orphanl = !git log --pretty=oneline --abbrev-commit --graph --decorate `git reflog | cut -c1-7`
 	p = push
+	#q
 	rb = rebase
 	rf = reflog
 	ri = rebase -i
@@ -54,7 +58,11 @@
 	s = status --short --branch --show-stash --untracked-files=all
 	t = tag
 	u = pull --ff-only --all
+	#v
 	w = worktree
+	#x
+	#y
+	#z
 [rerere]
 	enabled = true
 [diff]
