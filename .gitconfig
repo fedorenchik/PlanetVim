@@ -31,6 +31,8 @@
 	children = "!f() { git rev-list --all --not $1^@ --children | grep $(git rev-parse $1); }; f" # reachable children of a ref
 	d = diff
 	dc = diff --cached
+	dcs = diff --cached --stat
+	ds = diff --stat
 	e = checkout
 	eb = checkout -b
 	f = fetch --all --prune --tags --recurse-submodules=yes --jobs
@@ -38,6 +40,11 @@
 	h = help
 	i = init
 	j = stash
+	ja = stash apply
+	jd = stash drop
+	jl = stash list
+	jp = stash pop
+	js = stash show
 	k = !gitk --all
 	l = log
 	lg = log --all --decorate --graph --oneline -30
