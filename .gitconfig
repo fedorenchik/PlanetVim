@@ -24,6 +24,8 @@
 	aa = add .
 	b = branch --all
 	ba = branch --all
+	bd = branch --delete
+	bD = branch --delete --force
 	bl = branch
 	br = branch --remote
 	c = commit -v
