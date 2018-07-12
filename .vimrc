@@ -650,7 +650,7 @@ cnoreabbrev calc Calc
 cnoreabbrev f find
 cnoreabbrev gblame Gblame
 cnoreabbrev gtags Gtags
-cnoreabbrev grep grep -IarFw
+cnoreabbrev grep grep -IrFw
 " }}}
 " Autocommands: {{{
 if has("autocmd")
