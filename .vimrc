@@ -759,14 +759,18 @@ if has('syntax') && has('eval')
 endif
 " }}}
 " plugin/netrwPlugin.vim {{{
-"augroup VimStartup
-"	autocmd!
-"	autocmd VimEnter * if expand("%") == "" | e . | endif
-"augroup END
 let g:netrw_fastbrowse = 2
 "let g:netrw_keepdir = 0
 let g:netrw_liststyle = 2
 let g:netrw_special_syntax = 1
+" Dr Chip's Settings
+"let g:netrw_altv          = 1
+"let g:netrw_fastbrowse    = 2
+"let g:netrw_keepdir       = 0
+"let g:netrw_liststyle     = 2
+"let g:netrw_retmap        = 1
+"let g:netrw_silent        = 1
+"let g:netrw_special_syntax= 1
 " }}}
 " plugin/tohtml.vim {{{
 let g:html_number_lines = 1
