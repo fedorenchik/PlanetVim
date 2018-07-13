@@ -38,6 +38,7 @@ git pull --ff-only
 	--enable-fail-if-missing \
 	--prefix=$HOME/.local \
 	--with-features=huge \
+	--disable-darwin \
 	--enable-luainterp=dynamic \
 	--disable-mzschemeinterp \
 	--enable-perlinterp=no \
