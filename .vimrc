@@ -759,13 +759,17 @@ if has('syntax') && has('eval')
 endif
 " }}}
 " plugin/netrwPlugin.vim {{{
-let g:netrw_fastbrowse = 2
-"let g:netrw_keepdir = 0
+let g:netrw_alto = 1
+let g:netrw_altv = 1
+let g:netrw_browsex_viewer = "xdg-open"
+let g:netrw_dirhistmax = 100
+let g:netrw_fastbrowse = 1
 let g:netrw_liststyle = 2
+let g:netrw_winsize = 75
+"let g:netrw_home = '~/.vim/'
+"let g:netrw_keepdir = 0
 let g:netrw_special_syntax = 1
 " Dr Chip's Settings
-"let g:netrw_altv          = 1
-"let g:netrw_fastbrowse    = 2
 "let g:netrw_keepdir       = 0
 "let g:netrw_liststyle     = 2
 "let g:netrw_retmap        = 1
