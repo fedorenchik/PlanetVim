@@ -277,7 +277,7 @@ set suffixes-=.h
 set swapfile
 set swapsync=
 set switchbuf=
-set synmaxcol=200
+set synmaxcol=300
 if &t_Co == 8 && $TERM !~# '^linux\|^Eterm'
 	set t_Co=16
 endif
@@ -424,12 +424,6 @@ nnoremap <Space>u :UniteResume<CR>
 nnoremap <Space>w :Unite -start-insert -smartcase -buffer-name=unite-window window:all:no-current<CR>
 nnoremap <Space>W :Unite -start-insert -smartcase -buffer-name=unite-window window/gui<CR>
 nnoremap <Space>' :Unite -start-insert -smartcase -buffer-name=unite-mark mark<CR>
-" }}}
-" -----------: -...: quickfix management:{{{
-" Available To Map: all
-nnoremap - <Nop>
-nnoremap -g :lgrep -IarFw <cword> .<CR>
-nnoremap -/ :lgrep -IaFw <cword> %<CR>
 " }}}
 " -----------: g...: vim status: {{{
 " Standard Vim Mappings: a ^A d D e E f F g ^G h H ^H i I j J k m n N o p P q Q
@@ -758,7 +752,7 @@ if has('syntax') && has('eval')
 	packadd! matchit
 endif
 " }}}
-" plugin/netrwPlugin.vim {{{
+" plugin/netrwPlzugin.vim {{{
 let g:netrw_alto = 1
 let g:netrw_altv = 1
 let g:netrw_banner = 0
@@ -767,7 +761,7 @@ let g:netrw_dirhistmax = 100
 let g:netrw_fastbrowse = 1
 let g:netrw_hide = 1
 let g:netrw_keepdir = 1
-let g:netrw_list_hide = netrw_gitignore#Hide()
+let g:netrw_list_hide = netrw_gitignore#Hide() . ',\(^\|\s\s\)\zs\.\S\+'
 let g:netrw_liststyle = 2
 let g:netrw_retmap = 1
 let g:netrw_silent = 1
@@ -779,6 +773,9 @@ let g:netrw_usetab = 1
 let g:netrw_winsize = 75
 let g:netrw_wiw = 20
 let g:netrw_xstrlen = 3
+" }}}
+" plugin/tarPlugin.vim {{{
+let g:tar_secure = "--"
 " }}}
 " plugin/tohtml.vim {{{
 let g:html_number_lines = 1

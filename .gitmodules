@@ -128,3 +128,6 @@
 [submodule ".vim/pack/evaluating/start/netrw"]
 	path = .vim/pack/evaluating/start/netrw
 	url = https://github.com/eiginn/netrw.git
+[submodule ".vim/pack/evaluating/start/vim-vinegar"]
+	path = .vim/pack/evaluating/start/vim-vinegar
+	url = https://github.com/tpope/vim-vinegar.git
