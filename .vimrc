@@ -109,6 +109,8 @@ set autoread
 set backspace=
 set backup
 set backupdir=~/.vim/backup,~/tmp,~/,.,/var/tmp,/tmp
+set ballooneval
+set balloonevalterm
 set belloff=all,error
 set nobreakindent
 set browsedir=buffer
@@ -247,7 +249,7 @@ set scrolljump=2
 set scrolloff=2
 set scrollopt=ver,hor,jump
 set secure
-set sessionoptions=blank,buffers,globals,help,localoptions,sesdir,slash,tabpages,unix,winsize
+set sessionoptions=blank,buffers,globals,help,localoptions,resize,sesdir,slash,tabpages,terminal,unix,winpos,winsize
 if &shell =~# 'fish$' && (v:version < 704 || v:version == 704 && !has('patch276'))
 	set shell=/bin/bash
 endif
@@ -633,6 +635,9 @@ xmap <Leader>* <Plug>MarkIWhiteSet
 " Command-line (Cmdline) Mode: {{{
 " Subcommands & submodes: Ctrl-R, Ctrl-\
 " }}}
+" Terminal Window: {{{
+tnoremap <Esc> <C-W>N
+" }}}
 " }}}
 " Abbreviations: {{{
 "inoreabbrev @lf leonid@fedorenchik.ru
@@ -667,6 +672,7 @@ autocmd FileType cpp setlocal tags+=$HOME/.vim/cpptags
 autocmd FileType cpp setlocal omnifunc=lsp#complete
 autocmd FileType html setlocal clipboard=autoselect,autoselectml,html,exclude:cons\|linux
 autocmd FileType sh setlocal formatoptions-=t formatoptions+=croql
+autocmd FileType sh packadd shellmenu
 autocmd FileType text setlocal textwidth=72 linebreak breakindent
 autocmd FileType text setlocal complete+=k,s
 autocmd FileType text,markdown setlocal spell
@@ -747,10 +753,16 @@ let v:this_session = ".session.vim"
 " pack/dist/opt/editexisting/ {{{
 packadd! editexisting
 " }}}
+" pack/dist/opt/justify/ {{{
+packadd! justify
+" }}}
 " pack/dist/opt/matchit/ {{{
 if has('syntax') && has('eval')
 	packadd! matchit
 endif
+" }}}
+" pack/dist/opt/termdebug/ {{{
+packadd! termdebug
 " }}}
 " plugin/netrwPlzugin.vim {{{
 let g:netrw_alto = 1
