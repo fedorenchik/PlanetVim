@@ -111,13 +111,13 @@
 	path = .vim/pack/git/start/gv.vim
 	url = https://github.com/junegunn/gv.vim.git
 [submodule ".vim/pack/evaluating/start/vim-capslock"]
-	path = .vim/pack/evaluating/start/vim-capslock
+	path = .vim/pack/essential/start/vim-capslock
 	url = https://github.com/tpope/vim-capslock.git
 [submodule ".vim/pack/evaluating/start/vim-apathy"]
 	path = .vim/pack/evaluating/start/vim-apathy
 	url = https://github.com/tpope/vim-apathy.git
 [submodule ".vim/pack/evaluating/start/vim-commentary"]
-	path = .vim/pack/evaluating/start/vim-commentary
+	path = .vim/pack/essential/start/vim-commentary
 	url = https://github.com/tpope/vim-commentary.git
 [submodule ".vim/pack/evaluating/start/vim-dadbod"]
 	path = .vim/pack/evaluating/start/vim-dadbod
@@ -126,8 +126,8 @@
 	path = .vim/pack/evaluating/start/vim-eunuch
 	url = https://github.com/tpope/vim-eunuch.git
 [submodule ".vim/pack/evaluating/start/netrw"]
-	path = .vim/pack/evaluating/start/netrw
+	path = .vim/pack/essential/start/netrw
 	url = https://github.com/eiginn/netrw.git
 [submodule ".vim/pack/evaluating/start/vim-vinegar"]
-	path = .vim/pack/evaluating/start/vim-vinegar
+	path = .vim/pack/essential/start/vim-vinegar
 	url = https://github.com/tpope/vim-vinegar.git
