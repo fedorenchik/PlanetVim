@@ -685,6 +685,7 @@ autocmd GUIEnter * set guifont=Ubuntu\ Mono\ 11,Monospace\ 9
 "autocmd GUIEnter * call system('wmctrl -i -b add,maximized_vert,maximized_horz -r '.v:windowid)
 autocmd SessionLoadPost * let g:vimrc_auto_session = 1
 autocmd VimEnter * if exists('g:vimrc_auto_session') && filereadable('.session.vim') | source .session.vim | endif
+autocmd VimEnter * if expand("%") != "" && getcwd() == expand("~") | cd %:h | endif
 autocmd VimLeavePre * if exists('g:vimrc_auto_session') | mksession! .session.vim | endif
 augroup END
 endif
@@ -774,7 +775,8 @@ let g:netrw_hide = 1
 let g:netrw_keepdir = 1
 let g:netrw_list_hide = netrw_gitignore#Hide() . ',\(^\|\s\s\)\zs\.\S\+'
 let g:netrw_liststyle = 2
-let g:netrw_retmap = 1
+"TODO: choose custom mapping for nnoremap xxx <Plug>NetrwReturn
+"let g:netrw_retmap = 1
 let g:netrw_silent = 1
 let g:netrw_sizestyle = "H"
 let g:netrw_sort_options = "i"
@@ -782,7 +784,7 @@ let g:netrw_special_syntax = 1
 let g:netrw_use_errorwindow = 0
 let g:netrw_usetab = 1
 let g:netrw_winsize = 75
-let g:netrw_wiw = 20
+let g:netrw_wiw = 35
 let g:netrw_xstrlen = 3
 " }}}
 " plugin/tarPlugin.vim {{{
