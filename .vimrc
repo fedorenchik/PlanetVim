@@ -681,9 +681,8 @@ if exists("+omnifunc")
 	autocmd Filetype * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
 	autocmd Filetype * if &completefunc == "" | setlocal completefunc=syntaxcomplete#Complete | endif
 endif
-"autocmd GUIEnter * set lines=27 columns=133
 autocmd GUIEnter * set guifont=Ubuntu\ Mono\ 11,Monospace\ 9
-autocmd GUIEnter * call system('wmctrl -i -b add,maximized_vert,maximized_horz -r '.v:windowid)
+"autocmd GUIEnter * call system('wmctrl -i -b add,maximized_vert,maximized_horz -r '.v:windowid)
 autocmd SessionLoadPost * let g:vimrc_auto_session = 1
 autocmd VimEnter * if exists('g:vimrc_auto_session') && filereadable('.session.vim') | source .session.vim | endif
 autocmd VimLeavePre * if exists('g:vimrc_auto_session') | mksession! .session.vim | endif
