@@ -150,7 +150,7 @@ magit()
 	gvim -c MagitOnly "$@"
 }
 
-gitk()
+gk()
 (
 	if [ "$*" == "" ]; then
 		command gitk --all &
@@ -158,7 +158,7 @@ gitk()
 		command gitk "$@" &
 	fi
 )
-complete -o bashdefault -o default -o nospace -F __git_wrap__gitk_main gitk
+complete -o bashdefault -o default -o nospace -F __git_wrap__gitk_main gk
 
 dirdiffv()
 {
