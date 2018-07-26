@@ -30,6 +30,8 @@
 	br = branch --remote
 	c = commit -v
 	ca = commit -v --amend
+	ce = commit --all -v
+	cea = commit --all -v --amend
 	children = "!f() { git rev-list --all --not $1^@ --children | grep $(git rev-parse $1); }; f" # reachable children of a ref
 	d = diff
 	dc = diff --cached
