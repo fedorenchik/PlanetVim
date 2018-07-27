@@ -62,6 +62,11 @@ case "$TERM" in
 		;;
 esac
 
+if [ -f ~/.config/sbp/sbp.conf ]; then
+	sbp_path=/home/leonid/src/sbp
+	source /home/leonid/src/sbp/sbp.bash
+fi
+
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
 	test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
