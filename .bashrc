@@ -46,19 +46,7 @@ GIT_PS1_SHOWUPSTREAM="verbose name git"
 GIT_PS1_DESCRIBE_STYLE="branch"
 GIT_PS1_SHOWCOLORHINTS=1
 
-function custom_prompt() {
-	__git_ps1 "${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h!\l\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]" "\n\[\e[33m\]{\j}\[\em\] \[\e[35m\]\t\[\e[m\] [\$?] \\\$ "
-	VTE_PWD_THING="$(__vte_osc7)"
-	PS1="$PS1$VTE_PWD_THING"
-}
-
-#PROMPT_COMMAND='__git_ps1 "${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h!\l\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]" "\n\[\e[33m\]{\j}\[\em\] \[\e[35m\]\t\[\e[m\] [\$?] \\\$ "'
-PROMPT_COMMAND=`custom_prompt`
-
-# if [ -f ~/.config/sbp/sbp.conf ]; then
-# 	sbp_path=/home/leonid/src/sbp
-# 	source /home/leonid/src/sbp/sbp.bash
-# fi
+PROMPT_COMMAND='__git_ps1 "${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h!\l\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]" "\n\[\e[33m\]{\j}\[\em\] \[\e[35m\]\t\[\e[m\] [\$?] \\\$ " " (%s)"'
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
