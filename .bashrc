@@ -4,6 +4,8 @@ case $- in
 	*) return;;
 esac
 
+set -o vi
+
 ulimit -c unlimited
 
 HISTCONTROL=ignoreboth
@@ -12,6 +14,15 @@ HISTSIZE=1000
 HISTFILESIZE=2000
 shopt -s checkwinsize
 shopt -s globstar
+
+# Fix for VTE + Tilix
+if [ $TILIX_ID ] || [ $VTE_VERSION ]; then
+	if [ -f /etc/profile.d/vte-2.91.sh ]; then
+		source /etc/profile.d/vte-2.91.sh
+	elif [ -f /etc/profile.d/vte.sh ]; then
+		source /etc/profile.d/vte.sh
+	fi
+fi
 
 [[ -f /usr/share/bash-completion/completions/git ]] && . /usr/share/bash-completion/completions/git
 
@@ -25,47 +36,29 @@ if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
 	debian_chroot=$(cat /etc/debian_chroot)
 fi
 
-# set a fancy prompt (non-color, unless we know we "want" color)
-case "$TERM" in
-	xterm-color|*-256color) color_prompt=yes;;
-esac
+PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$(__git_ps1 " (%s)")\$ '
 
-# uncomment for a colored prompt, if the terminal has the capability; turned
-# off by default to not distract the user: the focus in a terminal window
-# should be on the output of commands, not on the prompt
-force_color_prompt=yes
+GIT_PS1_SHOWDIRTYSTATE=1
+GIT_PS1_SHOWSTASHSTATE=1
+GIT_PS1_SHOWUNTRACKEDFILES=1
+GIT_PS1_SHOWUPSTREAM="auto"
+GIT_PS1_SHOWUPSTREAM="verbose name git"
+GIT_PS1_DESCRIBE_STYLE="branch"
+GIT_PS1_SHOWCOLORHINTS=1
 
-if [ -n "$force_color_prompt" ]; then
-	if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-		# We have color support; assume it's compliant with Ecma-48
-		# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-		# a case would tend to support setf rather than setaf.)
-		color_prompt=yes
-	else
-		color_prompt=
-	fi
-fi
+function custom_prompt() {
+	__git_ps1 "${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h!\l\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]" "\n\[\e[33m\]{\j}\[\em\] \[\e[35m\]\t\[\e[m\] [\$?] \\\$ "
+	VTE_PWD_THING="$(__vte_osc7)"
+	PS1="$PS1$VTE_PWD_THING"
+}
 
-if [ "$color_prompt" = yes ]; then
-	PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$(__git_ps1 " (%s)")\$ '
-else
-	PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-fi
-unset color_prompt force_color_prompt
+#PROMPT_COMMAND='__git_ps1 "${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h!\l\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]" "\n\[\e[33m\]{\j}\[\em\] \[\e[35m\]\t\[\e[m\] [\$?] \\\$ "'
+PROMPT_COMMAND=`custom_prompt`
 
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-	xterm*|rxvt*)
-		PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-		;;
-	*)
-		;;
-esac
-
-if [ -f ~/.config/sbp/sbp.conf ]; then
-	sbp_path=/home/leonid/src/sbp
-	source /home/leonid/src/sbp/sbp.bash
-fi
+# if [ -f ~/.config/sbp/sbp.conf ]; then
+# 	sbp_path=/home/leonid/src/sbp
+# 	source /home/leonid/src/sbp/sbp.bash
+# fi
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then

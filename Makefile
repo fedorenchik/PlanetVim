@@ -12,6 +12,7 @@ FILES := \
 	.gdbinit \
 	.gitconfig \
 	.git-prompt.sh \
+	.inputrc \
 	.local/share/applications/GVim-homerc.desktop \
 	.signature \
 	templ/ \
