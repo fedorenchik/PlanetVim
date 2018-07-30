@@ -15,15 +15,6 @@ HISTFILESIZE=2000
 shopt -s checkwinsize
 shopt -s globstar
 
-# Fix for VTE + Tilix
-if [ $TILIX_ID ] || [ $VTE_VERSION ]; then
-	if [ -f /etc/profile.d/vte-2.91.sh ]; then
-		source /etc/profile.d/vte-2.91.sh
-	elif [ -f /etc/profile.d/vte.sh ]; then
-		source /etc/profile.d/vte.sh
-	fi
-fi
-
 [[ -f /usr/share/bash-completion/completions/git ]] && . /usr/share/bash-completion/completions/git
 
 source ~/.git-prompt.sh
