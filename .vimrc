@@ -398,13 +398,17 @@ nnoremap Y y$
 " }}}
 " -----------: <Space>...: unite.vim mappings: {{{
 " Available To Map: all
+" aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ'"
+" + +++++ + +++++ + +   +     ++++  + +++ +   ++      ++
 nnoremap <Space> <Nop>
 nmap <S-Space> <Space>
+nnoremap <Space>] :GtagsCursor<CR>:Unite -buffer-name=unite-gtags quickfix<CR>
 nnoremap <Space>a :Unite -start-insert -smartcase -buffer-name=unite-alternate -input=`expand('%:t:r').'.'` file_rec<CR>
 nnoremap <Space>b :Unite -start-insert -smartcase -buffer-name=unite-buffer buffer<CR>
 nnoremap <Space>B :Unite -no-resize -no-split -buffer-name=unite-buffer buffer<CR>
 nnoremap <Space>c :Unite -buffer-name=unite-quickfix quickfix<CR>
 nnoremap <Space>C :Unite -no-resize -no-split -buffer-name=unite-quickfix quickfix<CR>
+nnoremap <Space>d :Unite -buffer-name=unite-gtags gtags/def<CR>
 nnoremap <Space>e :Unite -start-insert -no-resize -no-split -buffer-name=unite-file file<CR>
 nnoremap <Space>f :Unite -start-insert -smartcase -buffer-name=unite-file file:`expand('%:p:h')`<CR>
 nnoremap <Space>F :Unite -start-insert -smartcase -buffer-name=unite-file file_rec<CR>
@@ -418,7 +422,7 @@ nnoremap <Space>o :Unite -start-insert -smartcase outline<CR>
 nnoremap <Space>O :Unite -start-insert -smartcase -no-resize -no-split outline<CR>
 nnoremap <Space>p :Unite -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
 nnoremap <Space>P :Unite -no-resize -no-split -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
-nnoremap <Space>R :Unite -start-insert -smartcase -buffer-name=unite-register register<CR>
+nnoremap <Space>r :Unite -buffer-name=unite-gtags gtags/ref<CR>
 nnoremap <Space>s :Unite -start-insert -smartcase -buffer-name=unite-grep grep:%::`expand('<cword>')`<CR>
 nnoremap <Space>S :Scratch<CR>
 nnoremap <Space>t :Unite -start-insert -smartcase -buffer-name=unite-tab tab<CR>
@@ -426,19 +430,20 @@ nnoremap <Space>u :UniteResume<CR>
 nnoremap <Space>w :Unite -start-insert -smartcase -buffer-name=unite-window window:all:no-current<CR>
 nnoremap <Space>W :Unite -start-insert -smartcase -buffer-name=unite-window window/gui<CR>
 nnoremap <Space>' :Unite -start-insert -smartcase -buffer-name=unite-mark mark<CR>
+nnoremap <Space>" :Unite -start-insert -smartcase -buffer-name=unite-register register<CR>
 " }}}
 " -----------: g...: vim status: {{{
 " Standard Vim Mappings: a ^A d D e E f F g ^G h H ^H i I j J k m n N o p P q Q
 " r R s t T u U v V w x 0 8 ] ^] # $ & ' ` * + , - ; < ? ^ _ @ ~ <Down> <End>
 " <Home> <LeftMouse> <MiddleMouse> <RightMouse> <Up>
-" vim-commentary: gc...
+" vim-commentary: gc
+" vim-capslock: gC
 " Available To Map:
-" A b B C G K l L M O S W X y Y z Z 1 2 3 4 5 6 7 9 % [ { } ( = ) ! : > . / \ | "
-" + + + + +   + +   + + + + +   + +                                 +   +       +
+" A b B G K l L M O S W X y Y z Z 1 2 3 4 5 6 7 9 % [ { } ( = ) ! : > . / \ | "
+" + + + +   + +   + + + + + + + +                                 +   +       +
 nnoremap gA :args<CR>
 nnoremap gb :tselect<CR>
 nnoremap gB :tags<CR>
-nnoremap gC :undolist<CR>
 nnoremap gG :changes<CR>
 nnoremap gl :llist<CR>
 nnoremap gL :lhistory<CR>
@@ -449,6 +454,7 @@ nnoremap gS ^vg_y:execute @@<CR>:echo 'Sourced: ' . @@<CR>
 nnoremap gW Q
 nnoremap gX gQ
 nnoremap gy :%y+<CR>
+nnoremap gY :undolist<CR>
 nnoremap gz :buffers<CR>
 nnoremap gZ :tabs<CR>
 nnoremap g: :history<CR>
