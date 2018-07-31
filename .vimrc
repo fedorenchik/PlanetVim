@@ -398,37 +398,48 @@ nnoremap Y y$
 " }}}
 " -----------: <Space>...: unite.vim mappings: {{{
 " Available To Map: all
-" aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ'"
-" + +++++ + +++++ + +   +     ++++  + +++ +   ++      ++
+" 0123456789$&[{}(=*)+]!#;,./@\-'~%`:<>?^|_"
+"                          +    +          +
+" aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ
+" + +++++++ +++++ + + ++++    +++++++++++ +   ++  +
 nnoremap <Space> <Nop>
 nmap <S-Space> <Space>
-nnoremap <Space>] :GtagsCursor<CR>:Unite -buffer-name=unite-gtags quickfix<CR>
-nnoremap <Space>a :Unite -start-insert -smartcase -buffer-name=unite-alternate -input=`expand('%:t:r').'.'` file_rec<CR>
+nnoremap <Space>. :UniteResume<CR>
+nnoremap <Space>a :Unite -smartcase -buffer-name=unite-alternate -input=`expand('%:t:r').'.'` file_rec<CR>
 nnoremap <Space>b :Unite -start-insert -smartcase -buffer-name=unite-buffer buffer<CR>
 nnoremap <Space>B :Unite -no-resize -no-split -buffer-name=unite-buffer buffer<CR>
-nnoremap <Space>c :Unite -buffer-name=unite-quickfix quickfix<CR>
-nnoremap <Space>C :Unite -no-resize -no-split -buffer-name=unite-quickfix quickfix<CR>
+nnoremap <Space>c :Unite -buffer-name=unite-gtags gtags/context<CR>
+nnoremap <Space>C :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/context<CR>
 nnoremap <Space>d :Unite -buffer-name=unite-gtags gtags/def<CR>
+nnoremap <Space>D :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/def<CR>
 nnoremap <Space>e :Unite -start-insert -no-resize -no-split -buffer-name=unite-file file<CR>
 nnoremap <Space>f :Unite -start-insert -smartcase -buffer-name=unite-file file:`expand('%:p:h')`<CR>
 nnoremap <Space>F :Unite -start-insert -smartcase -buffer-name=unite-file file_rec<CR>
-nnoremap <Space>g :GtagsCursor<CR>:Unite -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
-nnoremap <Space>G :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/context<CR>
+nnoremap <Space>g :Unite -buffer-name=unite-gtags gtags/completion<CR>
+nnoremap <Space>G :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/completion<CR>
 nnoremap <Space>h :VimShellPop -buffer-name=vimshell<CR>
 nnoremap <Space>i :Unite -start-insert -buffer-name=unite-line<CR>
-nnoremap <Space>j :Unite -start-insert -smartcase -buffer-name=unite-jump jump<CR>
+nnoremap <Space>j :Unite -smartcase -buffer-name=unite-jump jump<CR>
+nnoremap <Space>k :Unite -start-insert -smartcase -buffer-name=unite-gtags gtags/file<CR>
+nnoremap <Space>K :Unite -no-resize -no-split -smartcase -buffer-name=unite-gtags gtags/file<CR>
 nnoremap <Space>l :Unite -buffer-name=unite-location-list location_list<CR>
-nnoremap <Space>o :Unite -start-insert -smartcase outline<CR>
-nnoremap <Space>O :Unite -start-insert -smartcase -no-resize -no-split outline<CR>
+nnoremap <Space>L :Unite -no-resize -no-split -buffer-name=unite-location-list location_list<CR>
+nnoremap <Space>m :Unite -buffer-name=unime-mark mark<CR>
+nnoremap <Space>o :Unite -start-insert -smartcase -buffer-name=unite-outline outline<CR>
+nnoremap <Space>O :Unite -no-resize -no-split -smartcase -buffer-name=unite-outline outline<CR>
 nnoremap <Space>p :Unite -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
 nnoremap <Space>P :Unite -no-resize -no-split -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
+nnoremap <Space>q :Unite -buffer-name=unite-quickfix quickfix<CR>
+nnoremap <Space>Q :Unite -no-resize -no-split -buffer-name=unite-quickfix quickfix<CR>
 nnoremap <Space>r :Unite -buffer-name=unite-gtags gtags/ref<CR>
+nnoremap <Space>R :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/ref<CR>
 nnoremap <Space>s :Unite -start-insert -smartcase -buffer-name=unite-grep grep:%::`expand('<cword>')`<CR>
 nnoremap <Space>S :Scratch<CR>
 nnoremap <Space>t :Unite -start-insert -smartcase -buffer-name=unite-tab tab<CR>
 nnoremap <Space>u :UniteResume<CR>
 nnoremap <Space>w :Unite -start-insert -smartcase -buffer-name=unite-window window:all:no-current<CR>
 nnoremap <Space>W :Unite -start-insert -smartcase -buffer-name=unite-window window/gui<CR>
+nnoremap <Space>y :Unite -buffer-name=unite-yank history/yank<CR>
 nnoremap <Space>' :Unite -start-insert -smartcase -buffer-name=unite-mark mark<CR>
 nnoremap <Space>" :Unite -start-insert -smartcase -buffer-name=unite-register register<CR>
 " }}}
@@ -770,7 +781,7 @@ endif
 " pack/dist/opt/termdebug/ {{{
 packadd! termdebug
 " }}}
-" plugin/netrwPlzugin.vim {{{
+" plugin/netrwPlugin.vim {{{
 let g:netrw_alto = 1
 let g:netrw_altv = 1
 let g:netrw_banner = 0
@@ -1020,5 +1031,11 @@ nmap <Plug>IgnoreMarkSearchPrev <Plug>MarkSearchPrev
 " }}}
 " Plugin: vim-markdown-preview {{{
 let vim_markdown_preview_hotkey='<A-m>'
+" }}}
+" Plugin: unite-mark {{{
+let g:unite_source_mark_marks =
+\   "abcdefghijklmnopqrstuvwxyz"
+\ . "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+\ . "0123456789.'`^<>[]{}()\""
 " }}}
 " }}}
