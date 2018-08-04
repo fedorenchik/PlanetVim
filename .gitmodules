@@ -131,3 +131,9 @@
 [submodule ".vim/pack/evaluating/start/vim-vinegar"]
 	path = .vim/pack/essential/start/vim-vinegar
 	url = https://github.com/tpope/vim-vinegar.git
+[submodule ".vim/pack/evaluating/start/libview.vim"]
+	path = .vim/pack/evaluating/start/libview.vim
+	url = https://github.com/fedorenchik/libview.vim.git
+[submodule ".vim/pack/evaluating/start/vinarise.vim"]
+	path = .vim/pack/evaluating/start/vinarise.vim
+	url = https://github.com/Shougo/vinarise.vim.git
