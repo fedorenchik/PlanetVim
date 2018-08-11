@@ -568,14 +568,14 @@ nnoremap ]0 :call signature#marker#Goto('next', 0, v:count)<CR>
 nnoremap <C-'> :tag<CR>
 nnoremap <C-b> :colder<CR>
 nnoremap <C-d> :lnewer<CR>
-nnoremap <C-e> :lnext<CR>
+nnoremap <C-e> :cnext<CR>
 nnoremap <C-f> :cnewer<CR>
 nnoremap <C-h> <C-W>h
 nnoremap <C-j> <C-W>j
 nnoremap <C-k> <C-W>k
 nnoremap <C-l> <C-W>l
-nnoremap <C-n> :cnext<CR>
-nnoremap <C-p> :cprevious<CR>
+nnoremap <C-n> :UniteNext<CR>
+nnoremap <C-p> :UnitePrevious<CR>
 nnoremap <C-s> :emenu <C-Z>
 nnoremap <C-u> :lolder<CR>
 " Ctrl Key: <C-W>...: {{{
@@ -583,7 +583,7 @@ nnoremap <C-W>V :botright vsplit<CR>
 " Ctrl Key: <C-W>g...: {{{
 " }}}
 " }}}
-nnoremap <C-y> :lprevious<CR>
+nnoremap <C-y> :cprevious<CR>
 nnoremap <C-_> <Nop>
 " Ctrl Key: <C-\>...: {{{
 " }}}
