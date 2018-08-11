@@ -327,7 +327,7 @@ set warn
 set whichwrap=
 set wildchar&
 set wildcharm=<C-Z>
-set wildignore+=netrw_gitignore#Hide()
+let &wildignore=netrw_gitignore#Hide()
 set nowildignorecase
 set wildmenu
 set wildmode=longest:full,list:full
