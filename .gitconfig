@@ -51,7 +51,7 @@
 	js = stash show
 	k = !gitk --all
 	l = log
-	lg = log --all --decorate --graph --oneline -30
+	lg = log --all --decorate --graph --oneline -20
 	ll = log --all --decorate --graph --oneline
 	lreview = log --pretty=format:'%Cred%h%Creset %Cgreen%aD%Creset %Cblue%an%Creset %s'
 	m = merge --no-ff
