@@ -471,6 +471,7 @@ nnoremap gZ :tabs<CR>
 nnoremap g: :history<CR>
 nnoremap g. :marks<CR>
 nnoremap g" :registers<CR>
+nnoremap g= :tabnew<CR>
 " }}}
 " -----------: s...: source navigation (lsp, gtags): {{{
 " Available To Map: all
