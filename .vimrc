@@ -279,7 +279,7 @@ set suffixes-=.h
 set swapfile
 set swapsync=
 set switchbuf=
-set synmaxcol=300
+set synmaxcol=1000
 if &t_Co == 8 && $TERM !~# '^linux\|^Eterm'
 	set t_Co=16
 endif
