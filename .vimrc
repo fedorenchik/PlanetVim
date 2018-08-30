@@ -649,6 +649,10 @@ vmap <Leader>m <Plug>MarkSet
 vmap <Leader>r <Plug>MarkRegex
 xnoremap X y/<C-R>"<CR>
 xmap <Leader>* <Plug>MarkIWhiteSet
+vnoremap / y/\V<C-R>"<CR>
+vnoremap ? y/\V\<<C-R>"\><CR>
+vnoremap * y/\V\<<C-R>"<CR>
+vnoremap # y/\V<C-R>"\><CR>
 " }}}
 " Command-line (Cmdline) Mode: {{{
 " Subcommands & submodes: Ctrl-R, Ctrl-\
