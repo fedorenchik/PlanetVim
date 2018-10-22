@@ -981,7 +981,7 @@
     background_color = "#1b1d1e"
     cursor_color = "#aaaaaa"
     foreground_color = "#f8f8f2"
-    palette = "#181915:#7a0137:#498702:#c5bb63:#3465a4:#75507b:#4194b0:#d3d7cf:#45473c:#e00265:#6dca04:#e6db74:#1d71ca:#af5fff:#5cd1f8:#ffffff"
+    palette = "#000000:#aa0000:#00aa00:#fd971e:#0000aa:#aa00aa:#00aaaa:#7e8d91:#545454:#f92671:#a6e22d:#e6db74:#6666ff:#ae81ff:#66d9ef:#f8f8f2"
     scrollback_lines = 10000
   [[New Profile]]
     cursor_color = "#aaaaaa"
