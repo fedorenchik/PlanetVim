@@ -110,9 +110,6 @@
 [submodule ".vim/pack/evaluating/start/vim-eunuch"]
 	path = .vim/pack/evaluating/start/vim-eunuch
 	url = https://github.com/tpope/vim-eunuch.git
-[submodule ".vim/pack/evaluating/start/netrw"]
-	path = .vim/pack/essential/start/netrw
-	url = https://github.com/eiginn/netrw.git
 [submodule ".vim/pack/evaluating/start/vim-vinegar"]
 	path = .vim/pack/essential/start/vim-vinegar
 	url = https://github.com/tpope/vim-vinegar.git
