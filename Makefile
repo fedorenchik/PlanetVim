@@ -53,7 +53,7 @@ c_headers := $(addprefix /usr/include/,$(addsuffix .h,$(c_headers)))
 ~/.vim/ctags: $(c_headers)
 	-ctags --language-force=c -R -f $@ $^
 
-~/.vim/cpptags: /usr/include/c++/7
+~/.vim/cpptags: /usr/include/c++/8
 	-ctags --language-force=c++ -R -f $@ $^
 
 ~/.vim/linuxtags: /usr/include/linux
@@ -65,7 +65,7 @@ sync-home: sync-files gen-all-ctags
 
 sync-files:
 	for file in $(FILES); do $(RSYNC) $(RSYNC_OPTIONS) $$file $(HOME)/$$file; done
-	/home/leonid/.local/bin/vim -c 'helptags ALL' -c 'q'
+	vim -c 'helptags ALL' -c 'q'
 	#vim -c 'runtime spell/cleanadd.vim' -c 'q'
 
 commit:

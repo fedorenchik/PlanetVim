@@ -476,20 +476,7 @@ nnoremap g= :tabnew<CR>
 " -----------: s...: source navigation (lsp, gtags): {{{
 " Available To Map: all
 nnoremap s <Nop>
-nnoremap sb :LspCqueryBase<CR>
-nnoremap sc :LspCqueryCallers<CR>
-nnoremap sd :LspDefinition<CR>
 nnoremap sg :GtagsCursor<CR>
-nnoremap sh :LspHover<CR>
-nnoremap si :LspImplementation<CR>
-nnoremap sl :LspDocumentDiagnostics<CR>
-nnoremap sm :LspRename<CR>
-nnoremap so :LspDocumentSymbol<CR>
-nnoremap sr :LspReferences<CR>
-nnoremap st :LspCqueryDerived<CR>
-nnoremap sv :LspCqueryVars<CR>
-nnoremap sw :LspWorkspaceSymbol<CR>
-nnoremap s= :LspDocumentFormat<CR>
 " }}}
 " -----------: S...: open windows: {{{
 " Available To Map: all
@@ -691,7 +678,6 @@ autocmd FileType c,cpp setlocal foldmethod=syntax
 autocmd FileType cpp setlocal path+=/usr/include/c++/7
 autocmd FileType cpp setlocal define=^\\(#\\s*define\\|[a-z]*\\s*const\\s*[a-z]*\\)
 autocmd FileType cpp setlocal tags+=$HOME/.vim/cpptags
-autocmd FileType cpp setlocal omnifunc=lsp#complete
 autocmd FileType html setlocal clipboard=autoselect,autoselectml,html,exclude:cons\|linux
 autocmd FileType sh setlocal formatoptions-=t formatoptions+=croql
 autocmd FileType sh packadd shellmenu
@@ -933,18 +919,6 @@ let g:undotree_WindowLayout=4
 " }}}
 " Plugin: vim-cpp-enhanced-highlight {{{
 let g:cpp_no_function_highlight=1
-" }}}
-" Plugin: vim-lsp {{{
-let g:lsp_async_completion = 1
-if executable('cquery')
-	au User lsp_setup call lsp#register_server({
-				\ 'name': 'cquery',
-				\ 'cmd': {server_info->['cquery']},
-				\ 'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'compile_commands.json'))},
-				\ 'initialization_options': { 'cacheDirectory': '/tmp/cquery' },
-				\ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
-				\ })
-endif
 " }}}
 " Plugin: vim-mark {{{
 let g:mwPalettes = {

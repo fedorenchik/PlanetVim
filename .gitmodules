@@ -53,18 +53,6 @@
 [submodule ".vim/pack/tags/start/vim-gutentags"]
 	path = .vim/pack/tags/start/vim-gutentags
 	url = https://github.com/ludovicchabant/vim-gutentags.git
-[submodule ".vim/pack/lsp/start/vim-lsp"]
-	path = .vim/pack/lsp/start/vim-lsp
-	url = https://github.com/prabirshrestha/vim-lsp.git
-[submodule ".vim/pack/lsp/start/async.vim"]
-	path = .vim/pack/lsp/start/async.vim
-	url = https://github.com/prabirshrestha/async.vim.git
-[submodule ".vim/pack/lsp/start/asyncomplete.vim"]
-	path = .vim/pack/lsp/start/asyncomplete.vim
-	url = https://github.com/prabirshrestha/asyncomplete.vim.git
-[submodule ".vim/pack/lsp/start/asyncomplete-lsp.vim"]
-	path = .vim/pack/lsp/start/asyncomplete-lsp.vim
-	url = https://github.com/prabirshrestha/asyncomplete-lsp.vim.git
 [submodule ".vim/pack/git/start/vim-fugitive"]
 	path = .vim/pack/git/start/vim-fugitive
 	url = https://github.com/tpope/vim-fugitive.git
@@ -77,9 +65,6 @@
 [submodule ".vim/pack/tags/start/tagbar"]
 	path = .vim/pack/tags/start/tagbar
 	url = https://github.com/majutsushi/tagbar.git
-[submodule ".vim/pack/lsp/start/vim-lsp-cquery"]
-	path = .vim/pack/lsp/start/vim-lsp-cquery
-	url = https://github.com/pdavydov108/vim-lsp-cquery.git
 [submodule ".vim/pack/unite/start/unite.vim"]
 	path = .vim/pack/unite/start/unite.vim
 	url = https://github.com/Shougo/unite.vim.git

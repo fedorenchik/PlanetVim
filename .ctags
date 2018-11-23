@@ -1,6 +1,6 @@
 --exclude=.git
 --excmd=mixed
---extras=Ffpq
+--extra=Ffpq
 --fields=afiklmsSt
 --if0=yes
 --sort=yes
