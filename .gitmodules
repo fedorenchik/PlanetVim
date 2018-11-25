@@ -11,7 +11,7 @@
 	path = .vim/pack/essential/start/vim-repeat
 	url = https://github.com/tpope/vim-repeat.git
 [submodule ".vim/bundle/vim-signature"]
-	path = .vim/pack/evaluating/start/vim-signature
+	path = .vim/pack/essential/start/vim-signature
 	url = https://github.com/kshenoy/vim-signature.git
 [submodule ".vim/bundle/vim-surround"]
 	path = .vim/pack/evaluating/start/vim-surround
@@ -54,14 +54,8 @@
 	path = .vim/pack/tags/start/vim-gutentags
 	url = https://github.com/ludovicchabant/vim-gutentags.git
 [submodule ".vim/pack/git/start/vim-fugitive"]
-	path = .vim/pack/git/start/vim-fugitive
+	path = .vim/pack/essential/start/vim-fugitive
 	url = https://github.com/tpope/vim-fugitive.git
-[submodule ".vim/pack/git/start/gitv"]
-	path = .vim/pack/git/start/gitv
-	url = https://github.com/gregsexton/gitv.git
-[submodule ".vim/pack/git/start/vimagit"]
-	path = .vim/pack/git/start/vimagit
-	url = https://github.com/jreybert/vimagit.git
 [submodule ".vim/pack/tags/start/tagbar"]
 	path = .vim/pack/tags/start/tagbar
 	url = https://github.com/majutsushi/tagbar.git
@@ -89,12 +83,6 @@
 [submodule ".vim/pack/unite/start/vim-unite-giti"]
 	path = .vim/pack/unite/start/vim-unite-giti
 	url = https://github.com/kmnk/vim-unite-giti.git
-[submodule ".vim/pack/git/start/gina.vim"]
-	path = .vim/pack/git/start/gina.vim
-	url = https://github.com/lambdalisue/gina.vim.git
-[submodule ".vim/pack/git/start/gv.vim"]
-	path = .vim/pack/git/start/gv.vim
-	url = https://github.com/junegunn/gv.vim.git
 [submodule ".vim/pack/evaluating/start/vim-capslock"]
 	path = .vim/pack/essential/start/vim-capslock
 	url = https://github.com/tpope/vim-capslock.git
@@ -108,14 +96,14 @@
 	path = .vim/pack/evaluating/start/vim-dadbod
 	url = https://github.com/tpope/vim-dadbod.git
 [submodule ".vim/pack/evaluating/start/vim-eunuch"]
-	path = .vim/pack/evaluating/start/vim-eunuch
+	path = .vim/pack/essential/start/vim-eunuch
 	url = https://github.com/tpope/vim-eunuch.git
-[submodule ".vim/pack/evaluating/start/vim-vinegar"]
-	path = .vim/pack/essential/start/vim-vinegar
-	url = https://github.com/tpope/vim-vinegar.git
 [submodule ".vim/pack/evaluating/start/libview.vim"]
 	path = .vim/pack/evaluating/start/libview.vim
 	url = https://github.com/fedorenchik/libview.vim.git
 [submodule ".vim/pack/evaluating/start/vinarise.vim"]
 	path = .vim/pack/evaluating/start/vinarise.vim
 	url = https://github.com/Shougo/vinarise.vim.git
+[submodule ".vim/pack/evaluating/start/vim-dirvish"]
+	path = .vim/pack/evaluating/start/vim-dirvish
+	url = https://github.com/justinmk/vim-dirvish.git
