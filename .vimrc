@@ -603,6 +603,7 @@ nmap <Leader>N <Plug>MarkConfirmAllClear
 " Available To Remap: @ A B E J L M Q S Y Z _
 " Submodes: <A-...> <C-...> <C-X>... <C-G>...
 imap <expr> <right> mucomplete#extend_fwd("\<right>")
+inoremap <expr> <CR> pumvisible() ? "<C-Y><CR>" : "<CR>"
 inoremap <C-@> <C-^>
 inoremap <C-E> <C-R>=pumvisible() ? "\<lt>C-E>" : "\<lt>Esc>"<CR>
 " Insert Mode i_^G: {{{
@@ -1014,7 +1015,6 @@ let vim_markdown_preview_hotkey='<A-m>'
 " }}}
 " Plugin: vim-mucomplete {{{
 let g:mucomplete#enable_auto_at_startup = 1
-MucompleteNotify 2
 " }}}
 " Plugin: unite-mark {{{
 let g:unite_source_mark_marks =
