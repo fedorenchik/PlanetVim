@@ -111,7 +111,7 @@ set backup
 set backupdir=~/.vim/backup,~/tmp,~/,.,/var/tmp,/tmp
 set ballooneval
 set balloonevalterm
-set belloff=all,error
+set belloff=all,error,ctrlg
 set nobreakindent
 set browsedir=buffer
 set cindent
@@ -602,6 +602,7 @@ nmap <Leader>N <Plug>MarkConfirmAllClear
 " S T U V W X Y Z [ \ ] ^ _
 " Available To Remap: @ A B E J L M Q S Y Z _
 " Submodes: <A-...> <C-...> <C-X>... <C-G>...
+imap <expr> <right> mucomplete#extend_fwd("\<right>")
 inoremap <C-@> <C-^>
 inoremap <C-E> <C-R>=pumvisible() ? "\<lt>C-E>" : "\<lt>Esc>"<CR>
 " Insert Mode i_^G: {{{
@@ -1010,6 +1011,10 @@ nmap <Plug>IgnoreMarkSearchPrev <Plug>MarkSearchPrev
 " }}}
 " Plugin: vim-markdown-preview {{{
 let vim_markdown_preview_hotkey='<A-m>'
+" }}}
+" Plugin: vim-mucomplete {{{
+let g:mucomplete#enable_auto_at_startup = 1
+MucompleteNotify 2
 " }}}
 " Plugin: unite-mark {{{
 let g:unite_source_mark_marks =

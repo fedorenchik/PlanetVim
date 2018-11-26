@@ -24,7 +24,7 @@
 	url = https://github.com/fedorenchik/vim-cpp-enhanced-highlight.git
 	branch = config-func-hl
 [submodule ".vim/pack/bundle/start/vim-c-posix-syntax"]
-	path = .vim/pack/development/opt/vim-c-posix-syntax
+	path = .vim/pack/development/start/vim-c-posix-syntax
 	url = https://github.com/t6tn4k/vim-c-posix-syntax.git
 [submodule ".vim/pack/bundle/start/vim-mark"]
 	path = .vim/pack/essential/start/vim-mark
@@ -107,3 +107,6 @@
 [submodule ".vim/pack/evaluating/start/vim-dirvish"]
 	path = .vim/pack/evaluating/start/vim-dirvish
 	url = https://github.com/justinmk/vim-dirvish.git
+[submodule ".vim/pack/development/start/vim-mucomplete"]
+	path = .vim/pack/development/start/vim-mucomplete
+	url = https://github.com/lifepillar/vim-mucomplete.git
