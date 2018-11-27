@@ -51,13 +51,13 @@
 	path = .vim/pack/development/start/qt-support.vim
 	url = https://github.com/fedorenchik/qt-support.vim.git
 [submodule ".vim/pack/tags/start/vim-gutentags"]
-	path = .vim/pack/tags/start/vim-gutentags
+	path = .vim/pack/development/start/vim-gutentags
 	url = https://github.com/ludovicchabant/vim-gutentags.git
 [submodule ".vim/pack/git/start/vim-fugitive"]
 	path = .vim/pack/essential/start/vim-fugitive
 	url = https://github.com/tpope/vim-fugitive.git
 [submodule ".vim/pack/tags/start/tagbar"]
-	path = .vim/pack/tags/start/tagbar
+	path = .vim/pack/development/start/tagbar
 	url = https://github.com/majutsushi/tagbar.git
 [submodule ".vim/pack/unite/start/unite.vim"]
 	path = .vim/pack/unite/start/unite.vim
