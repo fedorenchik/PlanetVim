@@ -53,13 +53,10 @@ c_headers := $(addprefix /usr/include/,$(addsuffix .h,$(c_headers)))
 ~/.vim/ctags: $(c_headers)
 	-ctags --language-force=c -R -f $@ $^
 
-~/.vim/cpptags: /usr/include/c++/8
-	-ctags --language-force=c++ -R -f $@ $^
-
 ~/.vim/linuxtags: /usr/include/linux
 	-ctags --language-force=c -R -f $@ $^
 
-gen-all-ctags: ~/.vim/ctags ~/.vim/cpptags ~/.vim/linuxtags
+gen-all-ctags: ~/.vim/ctags  ~/.vim/linuxtags
 
 sync-home: sync-files gen-all-ctags
 
