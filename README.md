@@ -59,7 +59,8 @@ git pull --ff-only
 	--enable-acl \
 	--disable-nls \
 	--with-modified-by='Leonid V. Fedorenchik' \
-	--with-compiledby='Leonid V. Fedorenchik'
+	--with-compiledby='Leonid V. Fedorenchik' \
+	--with-x
 make
 make install
 ```
