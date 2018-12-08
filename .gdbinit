@@ -2,6 +2,11 @@
 set print elements 0
 set print repeats 0
 
+set history save on
+set print pretty on
+set pagination off
+set confirm off
+
 # file gdb_stl_prints
 
 #                                                                                                        
