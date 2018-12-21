@@ -229,7 +229,7 @@ set operatorfunc&
 set patchmode=".orig"
 set path+=./include,../include,../*/include,*/include
 set nopreserveindent
-set previewheight=7
+set previewheight=3
 set printencoding=utf-8
 set printexpr&
 set printfont=Ubuntu\ Mono\ 11,Monospace\ 9
