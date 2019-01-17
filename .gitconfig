@@ -57,7 +57,7 @@
 	lreview = log --pretty=format:'%Cred%h%Creset %Cgreen%aD%Creset %Cblue%an%Creset %s'
 	m = merge --no-ff
 	#n
-	o = clone
+	o = clone --recurse-submodules
 	orphank = !gitk --all `git reflog | cut -c1-7`&
 	orphanl = !git log --pretty=oneline --abbrev-commit --graph --decorate `git reflog | cut -c1-7`
 	p = push
