@@ -68,6 +68,7 @@
 	rs = reset
 	rt = remote
 	s = status --short --branch --show-stash --untracked-files=all
+	sv = status
 	t = tag
 	u = pull --ff-only --all
 	#v
