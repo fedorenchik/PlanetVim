@@ -152,3 +152,5 @@ export GTAGSFORCECPP=
 if [ -d ~/.local/bin ]; then
 	export PATH="$HOME/.local/bin:$PATH"
 fi
+
+export PATH="/home/leonid/.local/opt/anaconda3/bin:$PATH"
