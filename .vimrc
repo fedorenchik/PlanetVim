@@ -677,13 +677,15 @@ autocmd CmdWinEnter ? noremap <buffer> <S-CR> <CR>q?
 autocmd CmdwinEnter * nnoremap <buffer> <CR> <CR>
 autocmd FileType c,cpp setlocal tags+=$HOME/.vim/ctags
 autocmd FileType c,cpp setlocal foldmethod=syntax
-autocmd FileType c,cpp iabbrev #i #include
-autocmd FileType c,cpp iabbrev ,, <<
-autocmd FileType c,cpp iabbrev ;b std::begin
-autocmd FileType c,cpp iabbrev ;c std::cout
-autocmd FileType c,cpp iabbrev ;e std::end
-autocmd FileType c,cpp iabbrev ;m std::map
-autocmd FileType c,cpp iabbrev ;v std::vector
+autocmd FileType c,cpp inoreabbrev #i #include 
+autocmd FileType c,cpp inoreabbrev ,, <<
+autocmd FileType c,cpp inoreabbrev ;b std::begin
+autocmd FileType c,cpp inoreabbrev ;c std::cout
+autocmd FileType c,cpp inoreabbrev ;e std::end
+autocmd FileType c,cpp inoreabbrev ;m std::map
+autocmd FileType c,cpp inoreabbrev ;s std::string
+autocmd FileType c,cpp inoreabbrev ;v std::vector
+autocmd FileType c,cpp inoremap ;; ::
 autocmd FileType cpp setlocal path+=/usr/include/c++/7
 autocmd FileType cpp setlocal define=^\\(#\\s*define\\|[a-z]*\\s*const\\s*[a-z]*\\)
 autocmd FileType cpp setlocal tags+=$HOME/.vim/cpptags
