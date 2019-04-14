@@ -386,6 +386,7 @@ endwhile
 " TODO: 3. Make j k behave like f F but input 3 characters
 nnoremap ` '
 nnoremap ' `
+nnoremap _ :Unite -no-resize -no-split -buffer-name=unite-file fire_rec<CR>
 nnoremap <unique> ; :
 nnoremap <unique> : q:i
 nmap + <C-W>
