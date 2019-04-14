@@ -690,9 +690,9 @@ autocmd FileType cpp setlocal path+=/usr/include/c++/7
 autocmd FileType cpp setlocal define=^\\(#\\s*define\\|[a-z]*\\s*const\\s*[a-z]*\\)
 autocmd FileType cpp setlocal tags+=$HOME/.vim/cpptags
 autocmd FileType html setlocal clipboard=autoselect,autoselectml,html,exclude:cons\|linux
-autocmd FileType python setlocal expandtab
-autocmd FileType python setlocal tabstop=4
-autocmd FileType python setlocal shiftwidth=4
+autocmd FileType dockerfile,python setlocal expandtab
+autocmd FileType dockerfile,python setlocal tabstop=4
+autocmd FileType dockerfile,python setlocal shiftwidth=4
 autocmd FileType sh setlocal formatoptions-=t formatoptions+=croql
 autocmd FileType sh packadd shellmenu
 autocmd FileType text setlocal textwidth=72 linebreak breakindent
