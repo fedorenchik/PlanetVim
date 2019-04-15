@@ -193,6 +193,7 @@ if has('reltime')
 	set incsearch
 endif
 set infercase
+set isfname+=@-@
 set joinspaces
 set keymodel=
 set keywordprg=:Man
@@ -647,7 +648,12 @@ vnoremap # y/\V<C-R>"\><CR>
 " Subcommands & submodes: Ctrl-R, Ctrl-\
 " }}}
 " Terminal Window: {{{
-tnoremap <Esc> <C-W>N
+tnoremap <Esc> <C-w>N
+tnoremap <C-c> <C-w><C-c>
+tnoremap <C-j> <C-w><C-j>
+tnoremap <C-k> <C-w><C-k>
+tnoremap <C-l> <C-w><C-l>
+tnoremap <C-h> <C-w><C-h>
 " }}}
 " }}}
 " Abbreviations: {{{
@@ -693,8 +699,12 @@ autocmd FileType html setlocal clipboard=autoselect,autoselectml,html,exclude:co
 autocmd FileType dockerfile,python setlocal expandtab
 autocmd FileType dockerfile,python setlocal tabstop=4
 autocmd FileType dockerfile,python setlocal shiftwidth=4
+autocmd FileType python setlocal makeprg=pylint3\ --reports=n\ --msg-template=\"{path}:{line}:\ {msg_id}\ {symbol},\ {obj}\ {msg}\"\ %:p
+autocmd FileType python setlocal errorformat=%f:%l:\ %m
 autocmd FileType sh setlocal formatoptions-=t formatoptions+=croql
 autocmd FileType sh packadd shellmenu
+autocmd FileType sh setlocal include=^\\s*\\%(\\.\\\|source\\)\\s
+autocmd FileType sh setlocal define=\\<\\%(\\i\\+\\s*()\\)\\@=
 autocmd FileType text setlocal textwidth=72 linebreak breakindent
 autocmd FileType text setlocal complete+=k,s
 autocmd FileType text,markdown setlocal spell
