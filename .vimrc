@@ -290,8 +290,7 @@ set tagbsearch
 set tagcase=followscs
 set taglength&
 set tagrelative
-set tags-=./TAGS
-set tags-=TAGS
+set tags=tags;
 set tagstack
 set termguicolors
 set textwidth=80
