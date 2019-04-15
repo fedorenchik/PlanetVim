@@ -148,6 +148,12 @@ vess()
 	$cmd "$@"
 }
 
+# argument can be 'c' or 'c++'
+gcc_include_search()
+{
+	gcc -E -v -x "$1" /dev/null
+}
+
 export GTAGSFORCECPP=
 if [ -d ~/.local/bin ]; then
 	export PATH="$HOME/.local/bin:$PATH"
