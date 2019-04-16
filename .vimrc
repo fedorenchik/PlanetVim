@@ -29,7 +29,7 @@ if has('syntax') && !exists('g:syntax_ox')
 endif
 " }}}
 " Functions: {{{
-function GuiTabLabel()
+function! GuiTabLabel() abort
 	let label = ''
 	let bufnrlist = tabpagebuflist(v:lnum)
 
@@ -55,7 +55,7 @@ function GuiTabLabel()
 endfunction
 " Avoid the ":ptag" when there is no word under the cursor, and a few other
 " things. Opens the tag under cursor in Preview window.
-function PreviewWord()
+function! PreviewWord() abort
 	if &previewwindow
 		return
 	endif
@@ -79,6 +79,20 @@ function PreviewWord()
 			wincmd p
 		endif
 	endif
+endfunction
+function! ListMonths() abort
+	let l:line = getline(".")
+	let l:last_word_start_idx = match(l:line, '\w*$')
+	let l:last_word = matchstr(l:line, '\w*$')
+	let l:months = ['January', 'February', 'March', 'April', 'May', 'June',
+				\ 'July', 'August', 'September',
+				\ 'October', 'November', 'December']
+	call filter(l:months, 'v:val =~ "^' . l:last_word . '"')
+	echom 'l:last_word_start_idx = ' . l:last_word_start_idx
+	echom 'l:last_word = ' . l:last_word
+	echom 'l:months = ' . string(l:months)
+	call complete(l:last_word_start_idx + 1, l:months)
+	return ''
 endfunction
 " }}}
 " Colorscheme: {{{
@@ -611,7 +625,6 @@ nmap <Leader>N <Plug>MarkConfirmAllClear
 " S T U V W X Y Z [ \ ] ^ _
 " Available To Remap: @ A B E J L M Q S Y Z _
 " Submodes: <A-...> <C-...> <C-X>... <C-G>...
-imap <expr> <right> mucomplete#extend_fwd("\<right>")
 inoremap <expr> <CR> pumvisible() ? "<C-Y><CR>" : "<CR>"
 inoremap <C-@> <C-^>
 inoremap <C-E> <C-R>=pumvisible() ? "\<lt>C-E>" : "\<lt>Esc>"<CR>
@@ -633,6 +646,9 @@ inoremap <C-Z> <Nop>
 inoremap <C-{> <Esc>
 " Insert Mode i_<A-...>: {{{
 inoremap <A-e> <Esc>
+inoremap <expr> <A-f> pumvisible() ? "<C-N>" : "<C-X><C-F>"
+inoremap <expr> <A-F> pumvisible() ? "<C-P>" : "<C-X><C-F>"
+inoremap <A-m> <C-R>=ListMonths()<CR>
 inoremap <A-w> <C-O>:up<CR>
 " }}}
 " }}}
@@ -1042,9 +1058,6 @@ nmap <Plug>IgnoreMarkSearchPrev <Plug>MarkSearchPrev
 " }}}
 " Plugin: vim-markdown-preview {{{
 let vim_markdown_preview_hotkey='<A-m>'
-" }}}
-" Plugin: vim-mucomplete {{{
-let g:mucomplete#enable_auto_at_startup = 1
 " }}}
 " Plugin: unite-mark {{{
 let g:unite_source_mark_marks =
