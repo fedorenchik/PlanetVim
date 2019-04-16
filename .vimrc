@@ -121,7 +121,7 @@ set clipboard=autoselect,autoselectml,exclude:cons\|linux
 set cmdheight=2
 set colorcolumn=80,120,160,+0
 if has("gui_running")
-	set columns=300
+	set columns=90
 endif
 set complete-=i
 set completeopt=menuone,preview,noinsert,noselect
@@ -206,7 +206,7 @@ set laststatus=2
 set lazyredraw
 set nolinebreak
 if has("gui_running")
-	set lines=100
+	set lines=25
 endif
 set list
 set listchars=tab:»\ ,trail:·,extends:>,precedes:<,nbsp:+
@@ -580,13 +580,16 @@ nnoremap <C-_> <Nop>
 " }}}
 " Alt Key: {{{
 " Available To Map: all keys
-nnoremap <A-m> :<C-U><C-R><C-R>='let @'. v:register .' = '. string(getreg(v:register))<CR><C-F><Left>
+nnoremap <A-n> :<C-U><C-R><C-R>='let @'. v:register .' = '. string(getreg(v:register))<CR><C-F><Left>
 nnoremap <A-q> :q<CR>
 nnoremap <A-Q> :qa<CR>
 nnoremap <A-r> :nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-L>
 nnoremap <A-t> :TagbarToggle<CR>
 nnoremap <A-w> :confirm up<CR>
 nnoremap <A-W> :wa<CR>
+nnoremap <A-m> :call system('wmctrl -i -b add,maximized_vert,maximized_horz -r' . v:windowid)<CR>
+nnoremap <A-M> :call system('wmctrl -i -b remove,maximized_vert,maximized_horz -r' . v:windowid)<CR>
+nnoremap <A-f> :call system('wmctrl -i -b toggle,fullscreen -r' . v:windowid)<CR>
 " }}}
 " Leader: {{{
 nmap <Leader>M <Plug>MarkToggle
