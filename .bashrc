@@ -151,7 +151,7 @@ vess()
 # argument can be 'c' or 'c++'
 gcc_include_search()
 {
-	gcc -E -v -x "$1" /dev/null
+	echo $(gcc -E -v -x "$1" /dev/null 2>&1 | sed -e '1,/#include </d' -e '/^End/,$d')
 }
 
 export GTAGSFORCECPP=

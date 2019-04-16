@@ -56,7 +56,11 @@ c_headers := $(addprefix /usr/include/,$(addsuffix .h,$(c_headers)))
 ~/.vim/linuxtags: /usr/include/linux
 	-ctags --language-force=c -R -f $@ $^
 
-gen-all-ctags: ~/.vim/ctags  ~/.vim/linuxtags
+~/.vim/cxxtags: $(firstword $(shell echo $$(gcc -E -v -x c++ /dev/null 2>&1 | sed -e '1,/#include </d' -e '/^End/,$$d')))
+	@echo $(firstword $(shell echo $$(gcc -E -v -x c++ /dev/null 2>&1 | sed -e '1,/#include </d' -e '/^End/,$$d')))
+	-ctags --language-force=c++ -R -f $@ $^
+
+gen-all-ctags: ~/.vim/ctags  ~/.vim/linuxtags ~/.vim/cxxtags
 
 sync-home: sync-files gen-all-ctags
 

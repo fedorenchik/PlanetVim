@@ -672,7 +672,6 @@ cnoreabbrev grep grep -IrFw
 if has("autocmd")
 augroup vimrc
 autocmd!
-autocmd BufReadPost */linux/*.[ch] setlocal tags+=$HOME/.vim/linuxtags
 autocmd BufReadPost */linux/*.h setfiletype c
 autocmd BufReadPost *.log normal G
 autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
@@ -682,6 +681,7 @@ autocmd CmdWinEnter / noremap <buffer> <S-CR> <CR>q/
 autocmd CmdWinEnter ? noremap <buffer> <S-CR> <CR>q?
 autocmd CmdwinEnter * nnoremap <buffer> <CR> <CR>
 autocmd FileType c,cpp setlocal tags+=$HOME/.vim/ctags
+autocmd FileType c,cpp setlocal tags+=$HOME/.vim/linuxtags
 autocmd FileType c,cpp setlocal foldmethod=syntax
 autocmd FileType c,cpp inoreabbrev #i #include 
 autocmd FileType c,cpp inoreabbrev ,, <<
@@ -694,7 +694,7 @@ autocmd FileType c,cpp inoreabbrev ;v std::vector
 autocmd FileType c,cpp inoremap ;; ::
 autocmd FileType cpp setlocal path+=/usr/include/c++/7
 autocmd FileType cpp setlocal define=^\\(#\\s*define\\|[a-z]*\\s*const\\s*[a-z]*\\)
-autocmd FileType cpp setlocal tags+=$HOME/.vim/cpptags
+autocmd FileType cpp setlocal tags+=$HOME/.vim/cxxtags
 autocmd FileType html setlocal clipboard=autoselect,autoselectml,html,exclude:cons\|linux
 autocmd FileType dockerfile,python setlocal expandtab
 autocmd FileType dockerfile,python setlocal tabstop=4
