@@ -206,7 +206,7 @@ set laststatus=2
 set lazyredraw
 set nolinebreak
 if has("gui_running")
-	set lines=25
+	set lines=28
 endif
 set list
 set listchars=tab:»\ ,trail:·,extends:>,precedes:<,nbsp:+
@@ -295,6 +295,7 @@ set tagrelative
 set tags=tags;
 set tagstack
 set termguicolors
+set termwinsize=10*0
 set textwidth=80
 set thesaurus+=$HOME/.vim/thes/mobythes.txt
 set notildeop
@@ -580,16 +581,19 @@ nnoremap <C-_> <Nop>
 " }}}
 " Alt Key: {{{
 " Available To Map: all keys
+nnoremap <A-Left> <C-o>
+nnoremap <A-Right> <C-i>
+nnoremap <A-f> :call system('wmctrl -i -b toggle,fullscreen -r' . v:windowid)<CR>
+nnoremap <A-m> :call system('wmctrl -i -b add,maximized_vert,maximized_horz -r' . v:windowid)<CR>
+nnoremap <A-M> :call system('wmctrl -i -b remove,maximized_vert,maximized_horz -r' . v:windowid)<CR>
 nnoremap <A-n> :<C-U><C-R><C-R>='let @'. v:register .' = '. string(getreg(v:register))<CR><C-F><Left>
 nnoremap <A-q> :q<CR>
 nnoremap <A-Q> :qa<CR>
 nnoremap <A-r> :nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-L>
+nnoremap <A-s> :botright terminal<CR>
 nnoremap <A-t> :TagbarToggle<CR>
 nnoremap <A-w> :confirm up<CR>
 nnoremap <A-W> :wa<CR>
-nnoremap <A-m> :call system('wmctrl -i -b add,maximized_vert,maximized_horz -r' . v:windowid)<CR>
-nnoremap <A-M> :call system('wmctrl -i -b remove,maximized_vert,maximized_horz -r' . v:windowid)<CR>
-nnoremap <A-f> :call system('wmctrl -i -b toggle,fullscreen -r' . v:windowid)<CR>
 " }}}
 " Leader: {{{
 nmap <Leader>M <Plug>MarkToggle

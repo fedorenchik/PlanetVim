@@ -101,9 +101,6 @@
 [submodule ".vim/pack/evaluating/start/vinarise.vim"]
 	path = .vim/pack/evaluating/start/vinarise.vim
 	url = https://github.com/Shougo/vinarise.vim.git
-[submodule ".vim/pack/development/start/vim-mucomplete"]
-	path = .vim/pack/development/start/vim-mucomplete
-	url = https://github.com/lifepillar/vim-mucomplete.git
 [submodule ".vim/pack/evaluating/start/vim-dispatch"]
 	path = .vim/pack/evaluating/start/vim-dispatch
 	url = https://github.com/tpope/vim-dispatch.git
@@ -113,3 +110,6 @@
 [submodule ".vim/pack/development/start/gutentags_plus"]
 	path = .vim/pack/development/start/gutentags_plus
 	url = https://github.com/skywind3000/gutentags_plus.git
+[submodule ".vim/pack/development/start/VimCompletesMe"]
+	path = .vim/pack/development/start/VimCompletesMe
+	url = https://github.com/ajh17/VimCompletesMe.git
