@@ -153,6 +153,7 @@ set noexpandtab
 set exrc
 set fileformats=unix,dos,mac
 set nofileignorecase
+set fillchars=stl:\ ,stlnc:\ ,vert:\ ,fold:\ ,diff:\ 
 set nofixendofline
 set foldcolumn=4
 set foldlevel=20
@@ -183,7 +184,7 @@ set helpheight=8
 set helplang=en
 set hidden
 set nohlsearch
-set history=1000
+set history=10000
 set icon
 set iconstring=
 set noignorecase
