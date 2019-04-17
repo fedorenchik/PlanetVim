@@ -652,8 +652,8 @@ inoremap <expr> <A-]> pumvisible() ? "<C-N>" : "<C-X><C-]>"
 inoremap <expr> <A-[> pumvisible() ? "<C-P>" : "<C-X><C-]>"
 inoremap <A-{> <Up>
 inoremap <A-}> <Down>
-inoremap <expr> <A-c> <C-N>
-inoremap <expr> <A-C> <C-P>
+inoremap <A-c> <C-N>
+inoremap <A-C> <C-P>
 inoremap <expr> <A-d> pumvisible() ? "<C-N>" : "<C-X><C-D>"
 inoremap <expr> <A-D> pumvisible() ? "<C-P>" : "<C-X><C-D>"
 inoremap <expr> <A-e> pumvisible() ? "<C-E>" : "<Esc>"
