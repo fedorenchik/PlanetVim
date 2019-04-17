@@ -632,7 +632,7 @@ inoremap <C-E> <C-R>=pumvisible() ? "\<lt>C-E>" : "\<lt>Esc>"<CR>
 " Standard Vim Mappings: j ^J k ^K u U <Up> <Down>
 " }}}
 "inoremap <C-J> <Nop>
-inoremap <C-L> <Nop>
+"inoremap <C-L> <Nop>
 "inoremap <C-M> <Nop>
 inoremap <C-Q> <Nop>
 inoremap <C-S> <Nop>
@@ -645,11 +645,42 @@ inoremap <C-Y> <C-R>=pumvisible() ? "\<lt>C-Y>" : "\<lt>Esc>"<CR>
 inoremap <C-Z> <Nop>
 inoremap <C-{> <Esc>
 " Insert Mode i_<A-...>: {{{
-inoremap <A-e> <Esc>
+inoremap <A-+> <PageDown>
+inoremap <A-^> <PageUp>
+inoremap <expr> <A-]> pumvisible() ? "<C-N>" : "<C-X><C-]>"
+inoremap <expr> <A-[> pumvisible() ? "<C-P>" : "<C-X><C-]>"
+inoremap <A-{> <Up>
+inoremap <A-}> <Down>
+inoremap <expr> <A-c> <C-N>
+inoremap <expr> <A-C> <C-P>
+inoremap <expr> <A-d> pumvisible() ? "<C-N>" : "<C-X><C-D>"
+inoremap <expr> <A-D> pumvisible() ? "<C-P>" : "<C-X><C-D>"
+inoremap <expr> <A-e> pumvisible() ? "<C-E>" : "<Esc>"
 inoremap <expr> <A-f> pumvisible() ? "<C-N>" : "<C-X><C-F>"
 inoremap <expr> <A-F> pumvisible() ? "<C-P>" : "<C-X><C-F>"
+inoremap <A-h> <BS>
+inoremap <expr> <A-i> pumvisible() ? "<C-N>" : "<C-X><C-I>"
+inoremap <expr> <A-I> pumvisible() ? "<C-P>" : "<C-X><C-I>"
+inoremap <expr> <A-k> pumvisible() ? "<C-N>" : "<C-X><C-K>"
+inoremap <expr> <A-K> pumvisible() ? "<C-P>" : "<C-X><C-K>"
+inoremap <expr> <A-l> pumvisible() ? "<C-N>" : "<C-X><C-L>"
+inoremap <expr> <A-L> pumvisible() ? "<C-P>" : "<C-X><C-L>"
 inoremap <A-m> <C-R>=ListMonths()<CR>
+inoremap <expr> <A-n> pumvisible() ? "<C-N>" : "<C-X><C-N>"
+inoremap <expr> <A-N> pumvisible() ? "<C-P>" : "<C-X><C-P>"
+inoremap <expr> <A-o> pumvisible() ? "<C-N>" : "<C-X><C-O>"
+inoremap <expr> <A-O> pumvisible() ? "<C-P>" : "<C-X><C-O>"
+inoremap <expr> <A-s> pumvisible() ? "<C-N>" : "<C-X><C-S>"
+inoremap <expr> <A-S> pumvisible() ? "<C-P>" : "<C-X><C-S>"
+inoremap <expr> <A-t> pumvisible() ? "<C-N>" : "<C-X><C-T>"
+inoremap <expr> <A-T> pumvisible() ? "<C-P>" : "<C-X><C-T>"
+inoremap <expr> <A-u> pumvisible() ? "<C-N>" : "<C-X><C-U>"
+inoremap <expr> <A-U> pumvisible() ? "<C-P>" : "<C-X><C-U>"
+inoremap <expr> <A-v> pumvisible() ? "<C-N>" : "<C-X><C-V>"
+inoremap <expr> <A-V> pumvisible() ? "<C-P>" : "<C-X><C-V>"
 inoremap <A-w> <C-O>:up<CR>
+inoremap <A-x> <C-X>
+inoremap <A-y> <C-Y>
 " }}}
 " }}}
 " Visual Mode: {{{
