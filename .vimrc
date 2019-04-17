@@ -645,6 +645,7 @@ inoremap <C-Y> <C-R>=pumvisible() ? "\<lt>C-Y>" : "\<lt>Esc>"<CR>
 inoremap <C-Z> <Nop>
 inoremap <C-{> <Esc>
 " Insert Mode i_<A-...>: {{{
+inoremap <A-*> <C-L>
 inoremap <A-+> <PageDown>
 inoremap <A-^> <PageUp>
 inoremap <expr> <A-]> pumvisible() ? "<C-N>" : "<C-X><C-]>"
