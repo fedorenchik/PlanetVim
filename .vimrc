@@ -6,6 +6,7 @@
 " }}}
 " External Dependencies Of This Vimrc: {{{
 " ctags (Universal Ctags), [cscope], gtags (GNU Global), wmctrl, trash-cli,
+" pylint3
 " latest GNU GLOBAL (compile from source) (6.5.7 as of 25.05.2017)
 " }}}
 " TODO: {{{
@@ -770,7 +771,6 @@ if exists("+omnifunc")
 	autocmd Filetype * if &completefunc == "" | setlocal completefunc=syntaxcomplete#Complete | endif
 endif
 autocmd GUIEnter * set guifont=Ubuntu\ Mono\ 11,Monospace\ 9
-"autocmd GUIEnter * call system('wmctrl -i -b add,maximized_vert,maximized_horz -r '.v:windowid)
 autocmd SessionLoadPost * let g:vimrc_auto_session = 1
 autocmd VimEnter * if exists('g:vimrc_auto_session') && filereadable('.session.vim') | source .session.vim | endif
 autocmd VimEnter * if expand("%") != "" && getcwd() == expand("~") | cd %:h | endif
