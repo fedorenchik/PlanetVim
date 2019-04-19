@@ -113,3 +113,6 @@
 [submodule ".vim/pack/development/start/VimCompletesMe"]
 	path = .vim/pack/development/start/VimCompletesMe
 	url = https://github.com/ajh17/VimCompletesMe.git
+[submodule ".vim/pack/evaluating/opt/vimwiki"]
+	path = .vim/pack/evaluating/opt/vimwiki
+	url = https://github.com/vimwiki/vimwiki.git
