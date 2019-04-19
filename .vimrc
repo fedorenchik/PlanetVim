@@ -1089,7 +1089,11 @@ nmap <Plug>IgnoreMarkSearchNext <Plug>MarkSearchNext
 nmap <Plug>IgnoreMarkSearchPrev <Plug>MarkSearchPrev
 " }}}
 " Plugin: vim-markdown-preview {{{
-let vim_markdown_preview_hotkey='<A-m>'
+let vim_markdown_preview_hotkey='<A-`>'
+" }}}
+" Plugin: vimwiki {{{
+let g:vimwiki_list = [{'path': '~/doc/notes/',
+			\ 'syntax': 'markdown', 'ext': '.md'}]
 " }}}
 " Plugin: unite-mark {{{
 let g:unite_source_mark_marks =
