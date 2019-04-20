@@ -45,7 +45,7 @@
 	g = grep
 	h = help
 	i = init
-	j = stash save --keep-index --include-untracked
+	j = stash push --keep-index --include-untracked --all
 	ja = stash apply
 	jd = stash drop
 	jl = stash list
