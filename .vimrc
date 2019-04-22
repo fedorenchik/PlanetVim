@@ -861,7 +861,7 @@ let g:netrw_dirhistmax = 100
 let g:netrw_fastbrowse = 1
 let g:netrw_hide = 1
 let g:netrw_keepdir = 1
-"let g:netrw_list_hide = netrw_gitignore#Hide() . ',\(^\|\s\s\)\zs\.\S\+'
+let g:netrw_list_hide = netrw_gitignore#Hide() . ',\(^\|\s\s\)\zs\.\S\+'
 let g:netrw_liststyle = 2
 "TODO: choose custom mapping for nnoremap xxx <Plug>NetrwReturn
 "let g:netrw_retmap = 1
