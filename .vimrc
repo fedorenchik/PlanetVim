@@ -853,10 +853,18 @@ endif
 packadd! termdebug
 " }}}
 " plugin/netrwPlugin.vim {{{
+function! NFH_pdf(pdf) abort
+  if executable("xdg-open")
+    exe 'silent! !xdg-open ' . shellescape(a:pdf, 1) . ' &'
+  else
+    return 0
+  endif
+  return 1
+endfunction
 let g:netrw_alto = 1
 let g:netrw_altv = 1
 let g:netrw_banner = 0
-let g:netrw_browsex_viewer = "xdg-open"
+let g:netrw_browsex_viewer = "-"
 let g:netrw_dirhistmax = 100
 let g:netrw_fastbrowse = 1
 let g:netrw_hide = 1
