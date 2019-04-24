@@ -6,7 +6,6 @@ SHELL := /bin/bash
 
 FILES := \
 	.bashrc \
-	.config/terminator/config \
 	.ctags \
 	.cvsignore \
 	.gdbinit \
@@ -15,7 +14,7 @@ FILES := \
 	.inputrc \
 	.local/share/applications/GVim-homerc.desktop \
 	.signature \
-	templ/ \
+	tpl/ \
 	.vim/ \
 	.vimrc
 
