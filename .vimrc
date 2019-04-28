@@ -656,13 +656,15 @@ inoremap <C-{> <Esc>
 " 0123456789$&[{}(=*)+]!#;,./@\-'~%`:<>?^|_"
 "              ++  + ++                 +
 " aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ
-"       + + +   + +   + + + + + +     + + + + + + +
+"     +++ + +   + +   + + + + + +     + + + + + + +
 inoremap <A-*> <C-L>
 inoremap <A-+> <PageDown>
 inoremap <A-^> <PageUp>
 inoremap <A-]> <C-X><C-]>
 inoremap <A-{> <Up>
 inoremap <A-}> <Down>
+inoremap <A-c> <C-X><C-N>
+inoremap <A-C> <C-X><C-P>
 inoremap <A-d> <C-X><C-D>
 inoremap <expr> <A-e> pumvisible() ? "<C-E>" : "<Esc>"
 inoremap <A-f> <C-X><C-F>
@@ -670,10 +672,10 @@ inoremap <A-h> <BS>
 inoremap <A-i> <C-X><C-I>
 inoremap <A-k> <C-X><C-K>
 inoremap <A-l> <C-X><C-L>
-inoremap <expr> <A-m> ListMonths()
-inoremap <A-n> <C-X><C-N>
+inoremap <A-m> <C-R>=ListMonths()<CR>
+inoremap <A-n> <C-N>
 inoremap <A-o> <C-X><C-O>
-inoremap <A-p> <C-X><C-P>
+inoremap <A-p> <C-P>
 inoremap <A-s> <C-X><C-S>
 inoremap <A-t> <C-X><C-T>
 inoremap <A-u> <C-X><C-U>
@@ -751,9 +753,9 @@ autocmd FileType cpp setlocal path+=/usr/include/c++/7
 autocmd FileType cpp setlocal define=^\\(#\\s*define\\|[a-z]*\\s*const\\s*[a-z]*\\)
 autocmd FileType cpp setlocal tags+=$HOME/.vim/cxxtags
 autocmd FileType html setlocal clipboard=autoselect,autoselectml,html,exclude:cons\|linux
-autocmd FileType dockerfile,python setlocal expandtab
-autocmd FileType dockerfile,python setlocal tabstop=4
-autocmd FileType dockerfile,python setlocal shiftwidth=4
+autocmd FileType dockerfile,python,qmake setlocal expandtab
+autocmd FileType dockerfile,python,qmake setlocal tabstop=4
+autocmd FileType dockerfile,python,qmake setlocal shiftwidth=4
 autocmd FileType python setlocal makeprg=pylint3\ --reports=n\ --msg-template=\"{path}:{line}:\ {msg_id}\ {symbol},\ {obj}\ {msg}\"\ %:p
 autocmd FileType python setlocal errorformat=%f:%l:\ %m
 autocmd FileType sh setlocal formatoptions-=t formatoptions+=croql
