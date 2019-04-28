@@ -388,6 +388,7 @@ while c <= '~'
 endwhile
 " }}}
 " Normal (Command) Mode: {{{
+" Keys Description: {{{
 " Metakeys: <BS> <Tab> <CR> <Esc> <Space> <Del> <Up> <Down> <Left> <Right>
 " <F1>..<F12> <Insert> <Home> <End> <PageUp> <PageDown>
 " Commands Expecting Text Objects: c d < = >
@@ -395,6 +396,7 @@ endwhile
 " Commands Expecting Registers: q " @
 " Standard Text Objects: b B p s t w W [ { } ( ) ] ` < > ' "
 " Submodes: <Space> g s S z Z - + [ ] <A-...> <C-...> <BS>
+" }}}
 " Normal Keys: {{{
 " Normal Keys: {{{
 " Available To Remap: f F h j k l Q s S t T U + ; : , \ - _ <BS> <Space>
@@ -622,11 +624,14 @@ nmap <Leader>N <Plug>MarkConfirmAllClear
 " }}}
 " }}}
 " Insert Mode: {{{
+" Keys Description: {{{
 " Standard Vim Mappings i_^: @ A C D E F G H I J K L M N O P Q R
 " S T U V W X Y Z [ \ ] ^ _
 " Available To Remap: @ A B E J L M Q S Y Z _
 " Submodes: <A-...> <C-...> <C-X>... <C-G>...
+" }}}
 inoremap <expr> <CR> pumvisible() ? "<C-Y><CR>" : "<CR>"
+" Ctrl Key: {{{
 inoremap <C-@> <C-^>
 inoremap <C-E> <C-R>=pumvisible() ? "\<lt>C-E>" : "\<lt>Esc>"<CR>
 " Insert Mode i_^G: {{{
@@ -645,44 +650,37 @@ inoremap <C-S> <Nop>
 inoremap <C-Y> <C-R>=pumvisible() ? "\<lt>C-Y>" : "\<lt>Esc>"<CR>
 inoremap <C-Z> <Nop>
 inoremap <C-{> <Esc>
-" Insert Mode i_<A-...>: {{{
+" }}}
+" Alt Key: {{{
+" Available to map:
+" 0123456789$&[{}(=*)+]!#;,./@\-'~%`:<>?^|_"
+"              ++  + ++                 +
+" aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ
+"       + + +   + +   + + + + + +     + + + + + + +
 inoremap <A-*> <C-L>
 inoremap <A-+> <PageDown>
 inoremap <A-^> <PageUp>
-inoremap <expr> <A-]> pumvisible() ? "<C-N>" : "<C-X><C-]>"
-inoremap <expr> <A-[> pumvisible() ? "<C-P>" : "<C-X><C-]>"
+inoremap <A-]> <C-X><C-]>
 inoremap <A-{> <Up>
 inoremap <A-}> <Down>
-inoremap <A-c> <C-N>
-inoremap <A-C> <C-P>
-inoremap <expr> <A-d> pumvisible() ? "<C-N>" : "<C-X><C-D>"
-inoremap <expr> <A-D> pumvisible() ? "<C-P>" : "<C-X><C-D>"
+inoremap <A-d> <C-X><C-D>
 inoremap <expr> <A-e> pumvisible() ? "<C-E>" : "<Esc>"
-inoremap <expr> <A-f> pumvisible() ? "<C-N>" : "<C-X><C-F>"
-inoremap <expr> <A-F> pumvisible() ? "<C-P>" : "<C-X><C-F>"
+inoremap <A-f> <C-X><C-F>
 inoremap <A-h> <BS>
-inoremap <expr> <A-i> pumvisible() ? "<C-N>" : "<C-X><C-I>"
-inoremap <expr> <A-I> pumvisible() ? "<C-P>" : "<C-X><C-I>"
-inoremap <expr> <A-k> pumvisible() ? "<C-N>" : "<C-X><C-K>"
-inoremap <expr> <A-K> pumvisible() ? "<C-P>" : "<C-X><C-K>"
-inoremap <expr> <A-l> pumvisible() ? "<C-N>" : "<C-X><C-L>"
-inoremap <expr> <A-L> pumvisible() ? "<C-P>" : "<C-X><C-L>"
-inoremap <A-m> <C-R>=ListMonths()<CR>
-inoremap <expr> <A-n> pumvisible() ? "<C-N>" : "<C-X><C-N>"
-inoremap <expr> <A-N> pumvisible() ? "<C-P>" : "<C-X><C-P>"
-inoremap <expr> <A-o> pumvisible() ? "<C-N>" : "<C-X><C-O>"
-inoremap <expr> <A-O> pumvisible() ? "<C-P>" : "<C-X><C-O>"
-inoremap <expr> <A-s> pumvisible() ? "<C-N>" : "<C-X><C-S>"
-inoremap <expr> <A-S> pumvisible() ? "<C-P>" : "<C-X><C-S>"
-inoremap <expr> <A-t> pumvisible() ? "<C-N>" : "<C-X><C-T>"
-inoremap <expr> <A-T> pumvisible() ? "<C-P>" : "<C-X><C-T>"
-inoremap <expr> <A-u> pumvisible() ? "<C-N>" : "<C-X><C-U>"
-inoremap <expr> <A-U> pumvisible() ? "<C-P>" : "<C-X><C-U>"
-inoremap <expr> <A-v> pumvisible() ? "<C-N>" : "<C-X><C-V>"
-inoremap <expr> <A-V> pumvisible() ? "<C-P>" : "<C-X><C-V>"
+inoremap <A-i> <C-X><C-I>
+inoremap <A-k> <C-X><C-K>
+inoremap <A-l> <C-X><C-L>
+inoremap <expr> <A-m> ListMonths()
+inoremap <A-n> <C-X><C-N>
+inoremap <A-o> <C-X><C-O>
+inoremap <A-p> <C-X><C-P>
+inoremap <A-s> <C-X><C-S>
+inoremap <A-t> <C-X><C-T>
+inoremap <A-u> <C-X><C-U>
+inoremap <A-v> <C-X><C-V>
 inoremap <A-w> <C-O>:up<CR>
 inoremap <A-x> <C-X>
-inoremap <A-y> <C-Y>
+inoremap <expr> <A-y> pumvisible() ? "<C-Y>" : "<Esc>"
 " }}}
 " }}}
 " Visual Mode: {{{

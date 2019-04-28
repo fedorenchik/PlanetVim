@@ -8,9 +8,6 @@ set -o vi
 
 ulimit -c unlimited
 
-# Needed to run GUI apps in Docker
-xhost local:
-
 HISTCONTROL=ignoreboth
 shopt -s histappend
 HISTSIZE=1000
