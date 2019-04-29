@@ -15,6 +15,10 @@ HISTFILESIZE=2000
 shopt -s checkwinsize
 shopt -s globstar
 
+if [ $TILIX_ID ] || [ $VTE_VERSION ]; then
+	source /etc/profile.d/vte-2.91.sh
+fi
+
 [[ -f /usr/share/bash-completion/completions/git ]] && . /usr/share/bash-completion/completions/git
 
 source ~/.git-prompt.sh
@@ -27,7 +31,49 @@ if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
 	debian_chroot=$(cat /etc/debian_chroot)
 fi
 
-PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$(__git_ps1 " (%s)")\$ '
+ATTR_PREFIX='\e['
+ATTR_SUFFIX='m'
+ATTR_SEPARATOR=';'
+
+ATTR_RESET='0'
+ATTR_BOLD='1'
+ATTR_UNDERLINED='4'
+
+ATTR_DEFAULT='39'
+ATTR_BLACK='30'
+ATTR_RED='31'
+ATTR_GREEN='32'
+ATTR_YELLOW='33'
+ATTR_BLUE='34'
+ATTR_MAGENTA='35'
+ATTR_CYAN='36'
+ATTR_LIGHT_GRAY='37'
+ATTR_DARK_GRAY='90'
+ATTR_LIGHT_RED='91'
+ATTR_LIGHT_GREEN='92'
+ATTR_LIGHT_YELLOW='93'
+ATTR_LIGHT_BLUE='94'
+ATTR_LIGHT_MAGENTA='95'
+ATTR_LIGHT_CYAN='96'
+ATTR_WHITE='97'
+
+ATTR_BG_DEFAULT='49'
+ATTR_BG_BLACK='40'
+ATTR_BG_RED='41'
+ATTR_BG_GREEN='42'
+ATTR_BG_YELLOW='43'
+ATTR_BG_BLUE='44'
+ATTR_BG_MAGENTA='45'
+ATTR_BG_CYAN='46'
+ATTR_BG_LIGHT_GRAY='47'
+ATTR_BG_DARK_GRAY='100'
+ATTR_BG_LIGHT_RED='101'
+ATTR_BG_LIGHT_GREEN='102'
+ATTR_BG_LIGHT_YELLOW='103'
+ATTR_BG_LIGHT_BLUE='104'
+ATTR_BG_LIGHT_MAGENTA='105'
+ATTR_BG_LIGHT_CYAN='106'
+ATTR_BG_WHITE='107'
 
 GIT_PS1_SHOWDIRTYSTATE=1
 GIT_PS1_SHOWSTASHSTATE=1
@@ -37,7 +83,16 @@ GIT_PS1_SHOWUPSTREAM="verbose name git"
 GIT_PS1_DESCRIBE_STYLE="branch"
 GIT_PS1_SHOWCOLORHINTS=1
 
-PROMPT_COMMAND='__git_ps1 "${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h!\l\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]" "\n\[\e[33m\]{\j}\[\em\] \[\e[35m\]\t\[\e[m\] [\$?] \\\$ " " (%s)"'
+PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$(__git_ps1 " (%s)")\$ '
+PS1='${debian_chroot:+($debian_chroot)}\['$ATTR_PREFIX'01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$(__git_ps1 " (%s)")\$ '
+function prompt_command()
+{
+	__git_ps1 "${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h!\l\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]" "\n\[\e[33m\]{\j}\[\em\] \[\e[35m\]\t\[\e[m\] [\$?] \\\$ " " (%s)"
+	VTE_PWD_THING="$(__vte_osc7)"
+	PS1="$PS1$VTE_PWD_THING"
+}
+#PROMPT_COMMAND='__git_ps1 "${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h!\l\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]" "\n\[\e[33m\]{\j}\[\em\] \[\e[35m\]\t\[\e[m\] [\$?] \\\$ " " (%s)"'
+PROMPT_COMMAND=prompt_command
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
@@ -158,5 +213,3 @@ export GTAGSFORCECPP=
 if [ -d ~/.local/bin ]; then
 	export PATH="$HOME/.local/bin:$PATH"
 fi
-
-export PATH="/home/leonid/.local/opt/anaconda3/bin:$PATH"

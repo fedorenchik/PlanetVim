@@ -656,13 +656,14 @@ inoremap <C-{> <Esc>
 " 0123456789$&[{}(=*)+]!#;,./@\-'~%`:<>?^|_"
 "              ++  + ++                 +
 " aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ
-"     +++ + +   + +   + + + + + +     + + + + + + +
+" +   +++ + +   + +   + + + + + +     + + + + + + +
 inoremap <A-*> <C-L>
 inoremap <A-+> <PageDown>
 inoremap <A-^> <PageUp>
 inoremap <A-]> <C-X><C-]>
 inoremap <A-{> <Up>
 inoremap <A-}> <Down>
+inoremap <A-a> <Esc>
 inoremap <A-c> <C-X><C-N>
 inoremap <A-C> <C-X><C-P>
 inoremap <A-d> <C-X><C-D>

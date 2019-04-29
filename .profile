@@ -27,4 +27,4 @@ if [ -d "$HOME/.local/bin" ] ; then
 fi
 
 # Needed to run GUI apps in Docker
-xhost local:
+xhost local: >/dev/null
