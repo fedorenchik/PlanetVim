@@ -961,6 +961,9 @@ let g:xml_syntax_folding = 1
 " }}}
 " }}}
 " External Plugins: {{{
+" Plugin: asyncomplete.vim {{{
+let g:asyncomplete_auto_completeopt = 0
+" }}}
 " Plugin: FastFold {{{
 let g:fastfold_force = 1
 " }}}
@@ -1008,6 +1011,17 @@ let g:undotree_WindowLayout=4
 " }}}
 " Plugin: vim-cpp-enhanced-highlight {{{
 let g:cpp_no_function_highlight=1
+" }}}
+" Plugin: vim-lsp {{{
+if executable('ccls')
+	au User lsp_setup call lsp#register_server({
+				\ 'name': 'ccls',
+				\ 'cmd': {server_info->['ccls']},
+				\ 'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'compile_commands.json'))},
+				\ 'initialization_options': {},
+				\ 'whitelist': ['c', 'cpp', 'objc', 'objcpp', 'cc'],
+				\ })
+endif
 " }}}
 " Plugin: vim-mark {{{
 let g:mwPalettes = {
