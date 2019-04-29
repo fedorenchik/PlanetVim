@@ -31,8 +31,8 @@ if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
 	debian_chroot=$(cat /etc/debian_chroot)
 fi
 
-ATTR_PREFIX='\e['
-ATTR_SUFFIX='m'
+ATTR_PREFIX='\[\e['
+ATTR_SUFFIX='m\]'
 ATTR_SEPARATOR=';'
 
 ATTR_RESET='0'
@@ -75,6 +75,19 @@ ATTR_BG_LIGHT_MAGENTA='105'
 ATTR_BG_LIGHT_CYAN='106'
 ATTR_BG_WHITE='107'
 
+COLOR_RESET=${ATTR_PREFIX}${ATTR_RESET}${ATTR_SUFFIX}
+C_R=$COLOR_RESET
+COLOR_YELLOW=${ATTR_PREFIX}${ATTR_YELLOW}${ATTR_SUFFIX}
+C_Y=$COLOR_YELLOW
+COLOR_MAGENTA=${ATTR_PREFIX}${ATTR_MAGENTA}${ATTR_SUFFIX}
+C_M=$COLOR_MAGENTA
+COLOR_BOLD_GREEN=${ATTR_PREFIX}${ATTR_BOLD}${ATTR_SEPARATOR}${ATTR_GREEN}${ATTR_SUFFIX}
+C_B_G=$COLOR_BOLD_GREEN
+COLOR_BOLD_BLUE=${ATTR_PREFIX}${ATTR_BOLD}${ATTR_SEPARATOR}${ATTR_BLUE}${ATTR_SUFFIX}
+C_B_B=$COLOR_BOLD_BLUE
+COLOR_BOLD_LIGHT_YELLOW=${ATTR_PREFIX}${ATTR_BOLD}${ATTR_SEPARATOR}${ATTR_LIGHT_YELLOW}${ATTR_SUFFIX}
+C_B_L_Y=$COLOR_BOLD_LIGHT_YELLOW
+
 GIT_PS1_SHOWDIRTYSTATE=1
 GIT_PS1_SHOWSTASHSTATE=1
 GIT_PS1_SHOWUNTRACKEDFILES=1
@@ -83,15 +96,12 @@ GIT_PS1_SHOWUPSTREAM="verbose name git"
 GIT_PS1_DESCRIBE_STYLE="branch"
 GIT_PS1_SHOWCOLORHINTS=1
 
-PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$(__git_ps1 " (%s)")\$ '
-PS1='${debian_chroot:+($debian_chroot)}\['$ATTR_PREFIX'01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$(__git_ps1 " (%s)")\$ '
 function prompt_command()
 {
-	__git_ps1 "${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h!\l\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]" "\n\[\e[33m\]{\j}\[\em\] \[\e[35m\]\t\[\e[m\] [\$?] \\\$ " " (%s)"
-	VTE_PWD_THING="$(__vte_osc7)"
+	__git_ps1 "${debian_chroot:+($debian_chroot)}$C_B_G\u@\h!\l$C_R:$C_B_B\w$C_R " " \n $C_Y{\j}$C_R $C_M\t$C_R [\$?] \\\$ " "<%s>"
+	VTE_PWD_THING="\[$(__vte_prompt_command)\\\]"
 	PS1="$PS1$VTE_PWD_THING"
 }
-#PROMPT_COMMAND='__git_ps1 "${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h!\l\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]" "\n\[\e[33m\]{\j}\[\em\] \[\e[35m\]\t\[\e[m\] [\$?] \\\$ " " (%s)"'
 PROMPT_COMMAND=prompt_command
 
 # enable color support of ls and also add handy aliases
