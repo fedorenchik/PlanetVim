@@ -125,3 +125,6 @@
 [submodule ".vim/pack/lsp/start/asyncomplete-lsp.vim"]
 	path = .vim/pack/lsp/start/asyncomplete-lsp.vim
 	url = https://github.com/prabirshrestha/asyncomplete-lsp.vim.git
+[submodule ".vim/pack/tex/start/vimtex"]
+	path = .vim/pack/tex/start/vimtex
+	url = https://github.com/lervag/vimtex.git
