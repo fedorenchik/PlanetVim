@@ -25,8 +25,13 @@ set nocompatible
 if has('autocmd')
 	filetype plugin indent on
 endif
-if has('syntax') && !exists('g:syntax_ox')
-	syntax enable
+if has('syntax') && !exists('g:syntax_on')
+	syntax on
+endif
+" }}}
+" Start Vim Server: {{{
+if empty(v:servername) && exists('*remote_startserver')
+	call remote_startserver('VIM')
 endif
 " }}}
 " Functions: {{{
@@ -831,6 +836,9 @@ let spec_chglog_release_info = 1
 " }}}
 " ftplugin/sql.vim {{{
 let g:ftplugin_sql_statements = 'create,alter'
+" }}}
+" ftplugin/tex.vim {{{
+let g:tex_flavor = "latex"
 " }}}
 " menu.vim {{{
 if !has("gui_running")
