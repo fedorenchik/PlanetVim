@@ -31,7 +31,7 @@ endif
 " }}}
 " Start Vim Server: {{{
 if empty(v:servername) && exists('*remote_startserver')
-	call remote_startserver('VIM')
+	call remote_startserver('GVIM')
 endif
 " }}}
 " Functions: {{{
