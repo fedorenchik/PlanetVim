@@ -1,0 +1,48 @@
+\documentclass[a4paper]{book}
+\usepackage{xspace}
+\usepackage{microtype}
+\usepackage{url}
+\usepackage{parskip}
+\usepackage[english]{babel}
+\usepackage{blindtext}
+\usepackage{fancyhdr}
+\usepackage[a4paper]{geometry}
+\usepackage{setspace}
+\usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{layouts}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{varioref}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{fixltx2e}
+\setcounter{tocdepth}{3}
+\usepackage{index}
+\makeindex
+\begin{document}
+\title{Title}
+\author{Author}
+\date{January 1, 2019}
+\maketitle
+\tableofcontents
+\chapter*{Preface}
+\addcontentsline{toc}{chapter}{Preface}
+\chaptor{Chapter 1}
+\section{Section 1}
+\subsection{Subsection 1}
+Text.
+\blindtext[3]
+\appendix
+\cleardoublepage
+\addtocontents{toc}{\bigskip}
+\addcontentsline{toc}{part}{Appendix}
+\chapter{Glossary}
+\chapter{Symbols}
+\clearpage
+\addcontentsline{toc}{chapter}{Index}
+\printindex
+\end{document}
