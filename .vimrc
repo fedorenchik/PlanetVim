@@ -1021,6 +1021,7 @@ let g:undotree_WindowLayout=4
 let g:cpp_no_function_highlight=1
 " }}}
 " Plugin: vim-lsp {{{
+let g:lsp_highlight_references_enabled = 0
 if executable('ccls')
 	au User lsp_setup call lsp#register_server({
 				\ 'name': 'ccls',
