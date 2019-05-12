@@ -7,9 +7,6 @@
 \usepackage{mathptmx}
 \usepackage{xspace}
 \usepackage{microtype}
-\usepackage{hyperref}
-\hypersetup{colorlinks=true,linkcolor=blue}
-\hypersetup{backref=true}
 \usepackage{url}
 \usepackage{parskip}
 \usepackage{blindtext}
@@ -24,7 +21,6 @@
 \usepackage{graphicx}
 \usepackage{wrapfig}
 \usepackage{varioref}
-\usepackage{cleveref}
 \usepackage{fixltx2e}
 \usepackage{amsmath}
 \usepackage{asmthm}
@@ -33,8 +29,19 @@
 \usepackage{titling}
 \usepackage{notbib}
 \usepackage{tocbibind}
+\usepackage{titlesec}
+\usepackage{xcolor}
 \usepackage{index}
 \makeindex
+\usepackage[unicode]{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue}
+\hypersetup{backref=true}
+\hypersetup{pdfauthor={Your Name},
+	pdftitle={Your Title},
+	pdfsubject={Your Subject},
+pdfkeywords={keyword1,keyword2}}
+\usepackage{cleveref}
+\usepackage{bookmarks}
 \setcounter{tocdepth}{3}
 \begin{document}
 \frontmatter
@@ -59,6 +66,10 @@ Text.
 \addcontentsline{toc}{part}{Appendix}
 \chapter{Glossary}
 \chapter{Symbols}
+% \cleardoublepage
+% \phantomsection
+% \addcontentsline{toc}{chapter}{\bibname}
+% \bibliography{name}
 \nocite{*}
 \bibliographystyle{plainnat}
 % \bibliography{tex}
