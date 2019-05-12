@@ -1,12 +1,19 @@
-\documentclass[a4paper]{book}
+\documentclass{book}
+\usepackage[a4paper]{geometry}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{mathptmx}
 \usepackage{xspace}
 \usepackage{microtype}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue}
+\hypersetup{backref=true}
 \usepackage{url}
 \usepackage{parskip}
-\usepackage[english]{babel}
 \usepackage{blindtext}
 \usepackage{fancyhdr}
-\usepackage[a4paper]{geometry}
 \usepackage{setspace}
 \usepackage{paralist}
 \usepackage{enumitem}
@@ -17,33 +24,44 @@
 \usepackage{graphicx}
 \usepackage{wrapfig}
 \usepackage{varioref}
-\usepackage{hyperref}
 \usepackage{cleveref}
-\setcounter{tocdepth}{3}
-\usepackage{index}
-\makeindex
 \usepackage{fixltx2e}
 \usepackage{amsmath}
+\usepackage{asmthm}
 \usepackage{siunitx}
+\usepackage{mathtools}
+\usepackage{titling}
+\usepackage{notbib}
+\usepackage{tocbibind}
+\usepackage{index}
+\makeindex
+\setcounter{tocdepth}{3}
 \begin{document}
+\frontmatter
 \title{Title}
 \author{Author}
 \date{January 1, 2019}
 \maketitle
 \tableofcontents
-\chapter*{Preface}
-\addcontentsline{toc}{chapter}{Preface}
-\chaptor{Chapter 1}
+% \listoftables
+% \listoffigures
+\chapter{Preface}
+\mainmatter
+\chapter{Chapter 1}
 \section{Section 1}
 \subsection{Subsection 1}
 Text.
 \blindtext[3]
+\backmatter
 \appendix
 \cleardoublepage
 \addtocontents{toc}{\bigskip}
 \addcontentsline{toc}{part}{Appendix}
 \chapter{Glossary}
 \chapter{Symbols}
+\nocite{*}
+\bibliographystyle{plainnat}
+% \bibliography{tex}
 \clearpage
 \addcontentsline{toc}{chapter}{Index}
 \printindex
