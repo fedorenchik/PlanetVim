@@ -128,3 +128,6 @@
 [submodule ".vim/pack/tex/start/vimtex"]
 	path = .vim/pack/tex/start/vimtex
 	url = https://github.com/lervag/vimtex.git
+[submodule ".vim/pack/evaluating/start/ack.vim"]
+	path = .vim/pack/evaluating/start/ack.vim
+	url = https://github.com/mileszs/ack.vim.git
