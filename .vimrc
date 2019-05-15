@@ -888,7 +888,7 @@ let g:netrw_sort_options = "i"
 let g:netrw_special_syntax = 1
 let g:netrw_use_errorwindow = 0
 let g:netrw_usetab = 1
-let g:netrw_winsize = 75
+let g:netrw_winsize = -25
 let g:netrw_wiw = 35
 let g:netrw_xstrlen = 3
 " }}}
