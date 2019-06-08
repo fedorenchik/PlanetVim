@@ -131,3 +131,6 @@
 [submodule ".vim/pack/evaluating/start/ack.vim"]
 	path = .vim/pack/evaluating/start/ack.vim
 	url = https://github.com/mileszs/ack.vim.git
+[submodule ".vim/pack/go/start/vim-go"]
+	path = .vim/pack/go/start/vim-go
+	url = https://github.com/fatih/vim-go.git
