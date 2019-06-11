@@ -132,6 +132,7 @@ set backupdir=~/.vim/backup,~/tmp,~/,.,/var/tmp,/tmp
 set ballooneval
 set balloonevalterm
 set belloff=all,error,ctrlg
+set nobomb
 set nobreakindent
 set browsedir=buffer
 set cindent
