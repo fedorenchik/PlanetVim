@@ -889,7 +889,7 @@ let g:netrw_sort_options = "i"
 let g:netrw_special_syntax = 1
 let g:netrw_use_errorwindow = 0
 let g:netrw_usetab = 1
-let g:netrw_winsize = -25
+let g:netrw_winsize = -40
 let g:netrw_wiw = 35
 let g:netrw_xstrlen = 3
 " }}}
@@ -981,6 +981,9 @@ let g:Gtags_OpenQuickfixWindow = 0
 " }}}
 " Plugin: gutentags: {{{
 let g:gutentags_modules = [ 'ctags', 'gtags_cscope' ]
+" }}}
+" Plugin: nerdtree: {{{
+let NERDTreeWinSize = 41
 " }}}
 " Plugin: signature {{{
 let g:SignatureMap = {
@@ -1123,6 +1126,14 @@ nmap <Plug>IgnoreMarkSearchPrev <Plug>MarkSearchPrev
 " }}}
 " Plugin: vim-markdown-preview {{{
 let vim_markdown_preview_hotkey='<A-`>'
+" }}}
+" Plugin: vim-nerdtree-syntax-highlight: {{{
+let g:NERDTreeLimitedSyntax = 1
+let g:NERDTreeFileExtensionHighlightFullName = 1
+let g:NERDTreeExactMatchHighlightFullName = 1
+let g:NERDTreePatternMatchHighlightFullName = 1
+let g:NERDTreeHighlightFolders = 1
+let g:NERDTreeHighlightFoldersFullName = 1
 " }}}
 " Plugin: vimwiki {{{
 let g:vimwiki_list = [{'path': '~/doc/notes/',
