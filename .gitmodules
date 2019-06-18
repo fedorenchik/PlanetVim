@@ -143,3 +143,6 @@
 [submodule ".vim/pack/evaluating/start/vim-nerdtree-syntax-highlight"]
 	path = .vim/pack/evaluating/start/vim-nerdtree-syntax-highlight
 	url = https://github.com/tiagofumo/vim-nerdtree-syntax-highlight.git
+[submodule ".vim/pack/text/start/vim-grammarous"]
+	path = .vim/pack/text/start/vim-grammarous
+	url = https://github.com/rhysd/vim-grammarous.git
