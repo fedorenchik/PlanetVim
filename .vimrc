@@ -713,7 +713,6 @@ vnoremap # y/\V<C-R>"\><CR>
 " }}}
 " Terminal Window: {{{
 tnoremap <Esc> <C-w>N
-tnoremap <C-c> <C-w><C-c>
 tnoremap <C-j> <C-w><C-j>
 tnoremap <C-k> <C-w><C-k>
 tnoremap <C-l> <C-w><C-l>
