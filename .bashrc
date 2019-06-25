@@ -99,10 +99,20 @@ GIT_PS1_SHOWCOLORHINTS=1
 function prompt_command()
 {
 	__git_ps1 "${debian_chroot:+($debian_chroot)}$C_B_G\u@\h!\l$C_R:$C_B_B\w$C_R " " \n $C_Y{\j}$C_R $C_M\t$C_R [\$?] \\\$ " "<%s>"
+}
+
+function prompt_command_vte()
+{
+	__git_ps1 "${debian_chroot:+($debian_chroot)}$C_B_G\u@\h!\l$C_R:$C_B_B\w$C_R " " \n $C_Y{\j}$C_R $C_M\t$C_R [\$?] \\\$ " "<%s>"
 	VTE_PWD_THING="\[$(__vte_prompt_command)\\\]"
 	PS1="$PS1$VTE_PWD_THING"
 }
-PROMPT_COMMAND=prompt_command
+
+if [ $TILIX_ID ] || [ $VTE_VERSION ]; then
+	PROMPT_COMMAND=prompt_command_vte
+else
+	PROMPT_COMMAND=prompt_command
+fi
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
