@@ -146,3 +146,6 @@
 [submodule ".vim/pack/text/start/vim-grammarous"]
 	path = .vim/pack/text/start/vim-grammarous
 	url = https://github.com/rhysd/vim-grammarous.git
+[submodule ".vim/pack/asm/start/fasm.vim"]
+	path = .vim/pack/asm/start/fasm.vim
+	url = https://github.com/fedorenchik/fasm.vim.git

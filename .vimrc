@@ -736,6 +736,11 @@ cnoreabbrev grep grep -IrFw
 if has("autocmd")
 augroup vimrc
 autocmd!
+autocmd BufReadPost *.asm let g:asmsyntax = fasm
+autocmd BufReadPre *.asm let g:asmsyntax = fasm
+autocmd BufReadPost *.asm setfiletype fasm
+autocmd BufReadPre *.asm setfiletype fasm
+autocmd BufReadPost *.[sS] setfiletype asm
 autocmd BufReadPost */linux/*.h setfiletype c
 autocmd BufReadPost *.log normal G
 autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
