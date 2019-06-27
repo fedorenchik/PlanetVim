@@ -1,3 +1,4 @@
+set disassembly-flavor intel
 # print raw strings/arrays
 set print elements 0
 set print repeats 0
