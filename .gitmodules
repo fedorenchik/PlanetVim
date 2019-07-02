@@ -149,3 +149,6 @@
 [submodule ".vim/pack/asm/start/fasm.vim"]
 	path = .vim/pack/asm/start/fasm.vim
 	url = https://github.com/fedorenchik/fasm.vim.git
+[submodule ".vim/pack/evaluating/start/vim-apathy"]
+	path = .vim/pack/evaluating/start/vim-apathy
+	url = https://github.com/tpope/vim-apathy.git

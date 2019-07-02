@@ -250,7 +250,7 @@ set nonumber
 set opendevice&
 set operatorfunc&
 set patchmode=".orig"
-set path+=./include,../include,../*/include,*/include
+set path+=.,,./include,../include,../*/include,*/include,*,../*,/usr/include,**
 set nopreserveindent
 set previewheight=3
 set printencoding=utf-8
@@ -350,7 +350,7 @@ set warn
 set whichwrap=
 set wildchar&
 set wildcharm=<C-Z>
-let &wildignore=netrw_gitignore#Hide() . ',\(^\|\s\s\)\zs\.\S\+'
+let &wildignore=netrw_gitignore#Hide()
 set nowildignorecase
 set wildmenu
 set wildmode=longest:full,list:full
