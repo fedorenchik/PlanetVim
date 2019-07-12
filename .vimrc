@@ -191,12 +191,8 @@ if has("gui_gtk2")
 	set guifont=Ubuntu\ Mono\ 11,Monospace\ 9
 	"set guifontwide=WenQuanYi\ Zen\ Hei\ 10
 endif
-set guiheadroom=24
-set guioptions-=t
-set guioptions-=T
-set guioptions-=r
-set guioptions-=L
-set guioptions+=cp
+set guiheadroom=0
+set guioptions=!aAceigpk
 set guipty
 set guitablabel&
 "TODO: Add second (and further) lines with useful info
@@ -607,9 +603,9 @@ nnoremap <C-_> <Nop>
 nnoremap <A-Left> <C-o>
 nnoremap <A-Right> <C-i>
 nnoremap <A-f> :NERDTreeToggle<CR>
-nnoremap <A-F> :call system('wmctrl -i -b toggle,fullscreen -r' . v:windowid)<CR>
-nnoremap <A-m> :call system('wmctrl -i -b add,maximized_vert,maximized_horz -r' . v:windowid)<CR>
-nnoremap <A-M> :call system('wmctrl -i -b remove,maximized_vert,maximized_horz -r' . v:windowid)<CR>
+nnoremap <A-F> :silent call system('wmctrl -i -b toggle,fullscreen -r' . v:windowid)<CR>
+nnoremap <A-m> :silent call system('wmctrl -i -b add,maximized_vert,maximized_horz -r' . v:windowid)<CR>
+nnoremap <A-M> :silent call system('wmctrl -i -b remove,maximized_vert,maximized_horz -r' . v:windowid)<CR>
 nnoremap <A-n> :<C-U><C-R><C-R>='let @'. v:register .' = '. string(getreg(v:register))<CR><C-F><Left>
 nnoremap <A-q> :q<CR>
 nnoremap <A-Q> :qa<CR>
@@ -983,6 +979,8 @@ let g:Gtags_OpenQuickfixWindow = 0
 " }}}
 " Plugin: gutentags: {{{
 let g:gutentags_modules = [ 'ctags', 'gtags_cscope' ]
+let g:gutentags_generate_on_missing = 0
+let g:gutentags_generate_on_new = 0
 " }}}
 " Plugin: nerdtree: {{{
 let NERDTreeWinSize = 41
