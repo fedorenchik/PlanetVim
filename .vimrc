@@ -140,7 +140,7 @@ set cinoptions=:0,l1,g0,N-s,E-s,t0,U1,j1,J1
 set cinwords-=switch
 set clipboard=autoselect,autoselectml,exclude:cons\|linux
 set cmdheight=2
-set colorcolumn=80,120,160,+0
+set colorcolumn=80,120,+0
 if has("gui_running")
 	set columns=90
 endif
@@ -192,7 +192,7 @@ if has("gui_gtk2")
 	"set guifontwide=WenQuanYi\ Zen\ Hei\ 10
 endif
 set guiheadroom=0
-set guioptions=!aAceigpk
+set guioptions=aAceigpk
 set guipty
 set guitablabel&
 "TODO: Add second (and further) lines with useful info
