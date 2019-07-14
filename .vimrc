@@ -312,7 +312,7 @@ set tagrelative
 set tags=tags;
 set tagstack
 set termguicolors
-set termwinsize=12x0
+set termwinsize=""
 set textwidth=80
 set thesaurus+=$HOME/.vim/thes/mobythes.txt
 set notildeop
