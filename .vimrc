@@ -1145,4 +1145,7 @@ let g:unite_source_mark_marks =
 \ . "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 \ . "0123456789.'`^<>[]{}()\""
 " }}}
+" Plugin: unite-quickfix {{{
+let g:unite_quickfix_filename_is_pathshorten = 0
+" }}}
 " }}}
