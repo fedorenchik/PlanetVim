@@ -152,3 +152,6 @@
 [submodule ".vim/pack/evaluating/start/vim-apathy"]
 	path = .vim/pack/evaluating/start/vim-apathy
 	url = https://github.com/tpope/vim-apathy.git
+[submodule ".vim/pack/essential/start/calculator.vim"]
+	path = .vim/pack/essential/start/calculator.vim
+	url = git@github.com:fedorenchik/calculator.vim.git

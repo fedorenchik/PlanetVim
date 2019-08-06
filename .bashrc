@@ -98,12 +98,12 @@ GIT_PS1_SHOWCOLORHINTS=1
 
 function prompt_command()
 {
-	__git_ps1 "${debian_chroot:+($debian_chroot)}$C_B_G\u@\h!\l$C_R:$C_B_B\w$C_R " " \n $C_Y{\j}$C_R $C_M\t$C_R [\$?] \\\$ " "<%s>"
+	__git_ps1 "${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+(${VIRTUAL_ENV##*/})}$C_B_G\u@\h!\l$C_R:$C_B_B\w$C_R " " \n $C_Y{\j}$C_R $C_M\t$C_R [\$?] \\\$ " "<%s>"
 }
 
 function prompt_command_vte()
 {
-	__git_ps1 "${debian_chroot:+($debian_chroot)}$C_B_G\u@\h!\l$C_R:$C_B_B\w$C_R " " \n $C_Y{\j}$C_R $C_M\t$C_R [\$?] \\\$ " "<%s>"
+	__git_ps1 "${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+(${VIRTUAL_ENV##*/})}$C_B_G\u@\h!\l$C_R:$C_B_B\w$C_R " " \n $C_Y{\j}$C_R $C_M\t$C_R [\$?] \\\$ " "<%s>"
 	VTE_PWD_THING="\[$(__vte_prompt_command)\\\]"
 	PS1="$PS1$VTE_PWD_THING"
 }
@@ -233,3 +233,9 @@ export GTAGSFORCECPP=
 if [ -d ~/.local/bin ]; then
 	export PATH="$HOME/.local/bin:$PATH"
 fi
+
+# python virtualenv
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+export WORKON_HOME=~/.virtualenvs
+export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
+source /usr/local/bin/virtualenvwrapper.sh
