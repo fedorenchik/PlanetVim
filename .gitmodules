@@ -32,9 +32,6 @@
 [submodule ".vim/pack/bundle/start/vim-ingo-library"]
 	path = .vim/pack/essential/start/vim-ingo-library
 	url = https://github.com/inkarkat/vim-ingo-library.git
-[submodule ".vim/pack/bundle/start/VimCalc3"]
-	path = .vim/pack/evaluating/start/VimCalc3
-	url = https://github.com/fedorenchik/VimCalc3.git
 [submodule ".vim/pack/bundle/start/FastFold"]
 	path = .vim/pack/evaluating/start/FastFold
 	url = https://github.com/Konfekt/FastFold.git
