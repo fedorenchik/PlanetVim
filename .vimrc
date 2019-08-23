@@ -532,9 +532,11 @@ nnoremap ZU :UndotreeHide<CR>
 " Vim Unimpaired Mappings: a A b B e f l L ^L n o q Q ^Q t T u x y <Space>
 " Available To Remap:
 " C E F g G h H j J k K M N O r R U v V w W X Y Z 0 1 2 3 4 5 6 7 8 9 $ ~ & % } = ) + ! ; : , < . > ? @ ^ \ | - _ "
-" +                         +                     + + + + + + + + + +
+" +                         +           + +       + + + + + + + + + +
 nnoremap [C :colder<CR>
 nnoremap [O :lolder<CR>
+nmap <silent> [w <Plug>(ale_previous)
+nmap <silent> [W <Plug>(ale_first)
 nnoremap [1 :call signature#marker#Goto('prev', 1, v:count)<CR>
 nnoremap [2 :call signature#marker#Goto('prev', 2, v:count)<CR>
 nnoremap [3 :call signature#marker#Goto('prev', 3, v:count)<CR>
@@ -552,9 +554,11 @@ nnoremap [0 :call signature#marker#Goto('prev', 0, v:count)<CR>
 " Vim Unimpaired Mappings: a A b B e f l L ^L n o q Q ^Q t T u x y <Space>
 " Available To Remap:
 " C E F g G h H j J k K M N O r R U v V w W X Y Z 0 1 2 3 4 5 6 7 8 9 $ ~ & % } = ) + ! ; : , < . > ? @ ^ \ | - _ "
-" +                         +                     + + + + + + + + + +
+" +                         +           + +       + + + + + + + + + +
 nnoremap ]C :cnewer<CR>
 nnoremap ]O :lnewer<CR>
+nmap <silent> ]w <Plug>(ale_next)
+nmap <silent> ]W <Plug>(ale_last)
 nnoremap ]1 :call signature#marker#Goto('next', 1, v:count)<CR>
 nnoremap ]2 :call signature#marker#Goto('next', 2, v:count)<CR>
 nnoremap ]3 :call signature#marker#Goto('next', 3, v:count)<CR>
@@ -968,6 +972,11 @@ let g:xml_syntax_folding = 1
 " }}}
 " }}}
 " External Plugins: {{{
+" Plugin: ale {{{
+let g:ale_linters = {
+			\ 'javascript': ['eslint'],
+			\ }
+" }}}
 " Plugin: asyncomplete.vim {{{
 let g:asyncomplete_auto_completeopt = 0
 " }}}

@@ -152,3 +152,6 @@
 [submodule ".vim/pack/essential/start/calculator.vim"]
 	path = .vim/pack/essential/start/calculator.vim
 	url = https://github.com/fedorenchik/calculator.vim.git
+[submodule ".vim/pack/development/start/ale"]
+	path = .vim/pack/development/start/ale
+	url = https://github.com/w0rp/ale.git
