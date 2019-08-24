@@ -426,7 +426,7 @@ nnoremap Y y$
 " -----------: <Space>...: unite.vim mappings: {{{
 " Available To Map: all
 " 0123456789$&[{}(=*)+]!#;,./@\-'~%`:<>?^|_"
-"                          +    +          +
+"                  +       +    +          +
 " aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ
 " + +++++++ +++++ + + ++++    +++++++++++ +   ++  +
 nnoremap <Space> <Nop>
@@ -505,7 +505,9 @@ nnoremap g= :tabnew<CR>
 " -----------: s...: source navigation (lsp, gtags): {{{
 " Available To Map: all
 nnoremap s <Nop>
-nnoremap sg :GtagsCursor<CR>
+nnoremap sg :Grepper -tool git<CR>
+nnoremap sG :Grepper -tool rg<CR>
+nnoremap st :GtagsCursor<CR>
 " }}}
 " -----------: S...: open windows: {{{
 " Available To Map: all
