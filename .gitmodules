@@ -155,3 +155,6 @@
 [submodule ".vim/pack/development/start/ale"]
 	path = .vim/pack/development/start/ale
 	url = https://github.com/w0rp/ale.git
+[submodule ".vim/pack/essential/start/vim-grepper"]
+	path = .vim/pack/essential/start/vim-grepper
+	url = https://github.com/mhinz/vim-grepper.git

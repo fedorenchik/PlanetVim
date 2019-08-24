@@ -100,6 +100,11 @@ function! ListMonths() abort
 	call complete(l:last_word_start_idx + 1, l:months)
 	return ''
 endfunction
+function! SetupCommandAlias(input, output) abort
+	exec 'cabbrev <expr> '.a:input
+				\ .' ((getcmdtype() is# ":" && getcmdline() is# "'.a:input.'")'
+				\ .'? ("'.a:output.'") : ("'.a:input.'"))'
+endfunction
 " }}}
 " Colorscheme: {{{
 " set colorscheme
@@ -464,6 +469,7 @@ nnoremap <Space>W :Unite -start-insert -smartcase -buffer-name=unite-window wind
 nnoremap <Space>y :Unite -buffer-name=unite-yank history/yank<CR>
 nnoremap <Space>' :Unite -start-insert -smartcase -buffer-name=unite-mark mark<CR>
 nnoremap <Space>" :Unite -start-insert -smartcase -buffer-name=unite-register register<CR>
+nnoremap <Space>* :Grepper -cword -noprompt<CR>
 " }}}
 " -----------: g...: vim status: {{{
 " Standard Vim Mappings: a ^A d D e E f F g ^G h H ^H i I j J k m n N o p P q Q
@@ -483,6 +489,7 @@ nnoremap gL :lhistory<CR>
 nnoremap gO :jumps<CR>
 nnoremap gq :clist<CR>
 nnoremap gQ :chistory<CR>
+nmap gs <plug>(GrepperOperator)
 nnoremap gS ^vg_y:execute @@<CR>:echo 'Sourced: ' . @@<CR>
 nnoremap gW Q
 nnoremap gX gQ
@@ -697,6 +704,7 @@ inoremap <expr> <A-y> pumvisible() ? "<C-Y>" : "<Esc>"
 " Subcommands & submodes: Ctrl-\, a, g, i.
 xnoremap ; :
 xnoremap / /\v
+xmap gs <plug>(GrepperOperator)
 xnoremap gy "+y
 " make p in visual mode replace selected text with the yank register
 xnoremap p <Esc>:let current_reg = @"<CR>gvdi<C-R>=current_reg<CR><Esc>
@@ -730,7 +738,7 @@ cnoreabbrev calc Calc
 cnoreabbrev f find
 cnoreabbrev gblame Gblame
 cnoreabbrev gtags Gtags
-cnoreabbrev grep grep -IrFw
+call SetupCommandAlias("grep", "GrepperGrep")
 " }}}
 " Autocommands: {{{
 if has("autocmd")
@@ -1032,6 +1040,10 @@ let g:undotree_WindowLayout=4
 " }}}
 " Plugin: vim-cpp-enhanced-highlight {{{
 let g:cpp_no_function_highlight=1
+" }}}
+" Plugin: vim-grepper {{{
+let g:grepper = {}
+let g:grepper.tools = ['grep', 'git', 'rg']
 " }}}
 " Plugin: vim-lsp {{{
 let g:lsp_highlight_references_enabled = 0
