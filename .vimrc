@@ -985,6 +985,7 @@ let g:xml_syntax_folding = 1
 " Plugin: ale {{{
 let g:ale_linters = {
 			\ 'javascript': ['eslint'],
+			\ 'cpp': [],
 			\ }
 " }}}
 " Plugin: asyncomplete.vim {{{
