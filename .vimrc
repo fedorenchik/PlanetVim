@@ -1159,6 +1159,9 @@ let g:NERDTreePatternMatchHighlightFullName = 1
 let g:NERDTreeHighlightFolders = 1
 let g:NERDTreeHighlightFoldersFullName = 1
 " }}}
+" Plugin: vim-test {{{
+let test#strategy = "dispatch"
+" }}}
 " Plugin: vimwiki {{{
 let g:vimwiki_list = [{'path': '~/doc/notes/',
 			\ 'syntax': 'markdown', 'ext': '.md'}]
