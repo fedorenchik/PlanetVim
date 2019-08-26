@@ -728,6 +728,10 @@ tnoremap <C-j> <C-w><C-j>
 tnoremap <C-k> <C-w><C-k>
 tnoremap <C-l> <C-w><C-l>
 tnoremap <C-h> <C-w><C-h>
+if has('nvim')
+	tnoremap <Esc> <C-\><C-n>
+	tnoremap <C-v><Esc> <Esc>
+endif
 " }}}
 " }}}
 " Abbreviations: {{{
