@@ -108,7 +108,7 @@
 	path = .vim/pack/development/start/gutentags_plus
 	url = https://github.com/skywind3000/gutentags_plus.git
 [submodule ".vim/pack/evaluating/opt/vimwiki"]
-	path = .vim/pack/evaluating/opt/vimwiki
+	path = .vim/pack/org/start/vimwiki
 	url = https://github.com/vimwiki/vimwiki.git
 [submodule ".vim/pack/lsp/start/vim-lsp"]
 	path = .vim/pack/lsp/start/vim-lsp
