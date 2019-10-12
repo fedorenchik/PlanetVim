@@ -416,6 +416,7 @@ nnoremap _ :Unite -no-resize -no-split -buffer-name=unite-file fire_rec<CR>
 nnoremap <unique> ; :
 nnoremap <unique> : q:i
 nmap + <C-W>
+nnoremap G G$
 nnoremap h F
 nnoremap l f
 nnoremap n nzz
@@ -483,6 +484,7 @@ nnoremap <Space>* :Grepper -cword -noprompt<CR>
 nnoremap gA :args<CR>
 nnoremap gb :tselect<CR>
 nnoremap gB :tags<CR>
+nnoremap gg gg0
 nnoremap gG :changes<CR>
 nnoremap gl :llist<CR>
 nnoremap gL :lhistory<CR>
