@@ -685,7 +685,7 @@ inoremap <A-a> <Esc>
 inoremap <A-c> <C-X><C-N>
 inoremap <A-C> <C-X><C-P>
 inoremap <A-d> <C-X><C-D>
-inoremap <expr> <A-e> pumvisible() ? "<C-E>" : "<Esc>"
+inoremap <expr> <A-e> pumvisible() ? "<C-E>" : "<Esc>u"
 inoremap <A-f> <C-X><C-F>
 inoremap <A-h> <BS>
 inoremap <A-i> <C-X><C-I>
