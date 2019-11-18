@@ -131,9 +131,9 @@ set keymap=russian-dvp
 " Settings: {{{
 set autoindent
 set autoread
-set backspace=
-set backup
-set backupdir=~/.vim/backup,~/tmp,~/,.,/var/tmp,/tmp
+set backspace=start
+set nobackup
+set backupdir=/tmp
 set ballooneval
 set balloonevalterm
 set belloff=all,error,ctrlg
@@ -349,7 +349,7 @@ set virtualedit=block
 set novisualbell
 set warn
 set whichwrap=
-set wildchar&
+set wildchar=<C-E>
 set wildcharm=<C-Z>
 let &wildignore=netrw_gitignore#Hide()
 set nowildignorecase
@@ -367,7 +367,7 @@ set nowrap
 set wrapmargin&
 set nowrapscan
 set nowriteany
-set writebackup
+set nowritebackup
 " }}}
 " Leaders: {{{
 " should be before any mappings: it affects only mappings below
@@ -433,7 +433,7 @@ nnoremap Y y$
 nnoremap <Space> <Nop>
 nmap <S-Space> <Space>
 nnoremap <Space>. :UniteResume<CR>
-nnoremap <Space>a :Unite -smartcase -buffer-name=unite-alternate -input=`expand('%:t:r').'.'` file_rec<CR>
+nnoremap <Space>a :Unite -smartcase -buffer-name=unite-alternate -input=`expand('%:t:r')` -immediately file_rec<CR>
 nnoremap <Space>b :Unite -start-insert -smartcase -buffer-name=unite-buffer buffer<CR>
 nnoremap <Space>B :Unite -no-resize -no-split -buffer-name=unite-buffer buffer<CR>
 nnoremap <Space>c :Unite -buffer-name=unite-gtags gtags/context<CR>
@@ -648,6 +648,7 @@ nmap <Leader>N <Plug>MarkConfirmAllClear
 " Available To Remap: @ A B E J L M Q S Y Z _
 " Submodes: <A-...> <C-...> <C-X>... <C-G>...
 " }}}
+inoremap <Tab> <Esc>
 inoremap <expr> <CR> pumvisible() ? "<C-Y><CR>" : "<CR>"
 " Ctrl Key: {{{
 inoremap <C-@> <C-^>
@@ -706,6 +707,7 @@ inoremap <expr> <A-y> pumvisible() ? "<C-Y>" : "<Esc>"
 " }}}
 " Visual Mode: {{{
 " Subcommands & submodes: Ctrl-\, a, g, i.
+vnoremap <Tab> <Esc>
 xnoremap ; :
 xnoremap / /\v
 xmap gs <plug>(GrepperOperator)
@@ -723,6 +725,8 @@ vnoremap # y/\V<C-R>"\><CR>
 " }}}
 " Command-line (Cmdline) Mode: {{{
 " Subcommands & submodes: Ctrl-R, Ctrl-\
+cnoremap <Tab> <Esc>
+cnoremap <C-Y> <S-Tab>
 " }}}
 " Terminal Window: {{{
 tnoremap <Esc> <C-w>N
@@ -734,6 +738,12 @@ if has('nvim')
 	tnoremap <Esc> <C-\><C-n>
 	tnoremap <C-v><Esc> <Esc>
 endif
+" }}}
+" Operator-pending Mode: {{{
+onoremap <Tab> <Esc>
+" }}}
+" Lang-Arg Mode: {{{
+lnoremap <Tab> <Esc>
 " }}}
 " }}}
 " Abbreviations: {{{
