@@ -48,7 +48,6 @@ git pull --ff-only
 	--enable-tclinterp=no \
 	--enable-rubyinterp=no \
 	--enable-cscope \
-	--disable-workshop \
 	--enable-netbeans \
 	--enable-channel \
 	--enable-terminal \
