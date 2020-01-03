@@ -166,7 +166,7 @@ set nodelcombine
 set dictionary+=/usr/share/dict/words
 set dictionary+=/usr/share/dict/web2
 set diffopt=filler,context:12,iwhite,vertical,foldcolumn:2,internal,indent-heuristic,algorithm:histogram
-set directory=~/.vim/swap//,~/tmp//,~//,.//,/var/tmp//,/tmp//
+set directory=~/.vim/swap//,~/tmp//,.//,~//,/var/tmp//,/tmp//
 set display=lastline,uhex
 set eadirection=
 set noedcompatible
@@ -300,7 +300,7 @@ set nosplitbelow
 set nosplitright
 set nostartofline
 set suffixes-=.h
-set swapfile
+set noswapfile
 set swapsync=
 set switchbuf=
 set synmaxcol=1000
