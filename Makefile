@@ -70,8 +70,9 @@ sync-files:
 	#vim -c 'runtime spell/cleanadd.vim' -c 'q'
 
 commit:
+	git submodule init
 	git submodule sync --recursive
-	git submodule update --recursive --remote --init
+	git submodule update --recursive --remote
 	git add $(FILES) Makefile package-list README.md
 ifneq "$(DELETED_FILES)" ""
 	git rm --ignore-unmatch -- $(DELETED_FILES)
