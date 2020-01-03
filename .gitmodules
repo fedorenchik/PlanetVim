@@ -83,9 +83,6 @@
 [submodule ".vim/pack/evaluating/start/vim-capslock"]
 	path = .vim/pack/essential/start/vim-capslock
 	url = https://github.com/tpope/vim-capslock.git
-[submodule ".vim/pack/evaluating/start/vim-commentary"]
-	path = .vim/pack/essential/start/vim-commentary
-	url = https://github.com/tpope/vim-commentary.git
 [submodule ".vim/pack/evaluating/start/vim-dadbod"]
 	path = .vim/pack/evaluating/start/vim-dadbod
 	url = https://github.com/tpope/vim-dadbod.git
@@ -110,18 +107,6 @@
 [submodule ".vim/pack/evaluating/opt/vimwiki"]
 	path = .vim/pack/org/start/vimwiki
 	url = https://github.com/vimwiki/vimwiki.git
-[submodule ".vim/pack/lsp/start/vim-lsp"]
-	path = .vim/pack/lsp/start/vim-lsp
-	url = https://github.com/prabirshrestha/vim-lsp.git
-[submodule ".vim/pack/lsp/start/async.vim"]
-	path = .vim/pack/lsp/start/async.vim
-	url = https://github.com/prabirshrestha/async.vim.git
-[submodule ".vim/pack/lsp/start/asyncomplete.vim"]
-	path = .vim/pack/lsp/start/asyncomplete.vim
-	url = https://github.com/prabirshrestha/asyncomplete.vim.git
-[submodule ".vim/pack/lsp/start/asyncomplete-lsp.vim"]
-	path = .vim/pack/lsp/start/asyncomplete-lsp.vim
-	url = https://github.com/prabirshrestha/asyncomplete-lsp.vim.git
 [submodule ".vim/pack/tex/start/vimtex"]
 	path = .vim/pack/tex/start/vimtex
 	url = https://github.com/lervag/vimtex.git
@@ -149,9 +134,6 @@
 [submodule ".vim/pack/essential/start/calculator.vim"]
 	path = .vim/pack/essential/start/calculator.vim
 	url = https://github.com/fedorenchik/calculator.vim.git
-[submodule ".vim/pack/development/start/ale"]
-	path = .vim/pack/development/start/ale
-	url = https://github.com/w0rp/ale.git
 [submodule ".vim/pack/essential/start/vim-grepper"]
 	path = .vim/pack/essential/start/vim-grepper
 	url = https://github.com/mhinz/vim-grepper.git
@@ -170,3 +152,9 @@
 [submodule ".vim/pack/unite/start/unite-unicode"]
 	path = .vim/pack/unite/start/unite-unicode
 	url = https://github.com/MaryHal/unite-unicode.git
+[submodule ".vim/pack/essential/start/nerdcommenter"]
+	path = .vim/pack/essential/start/nerdcommenter
+	url = https://github.com/preservim/nerdcommenter.git
+[submodule ".vim/pack/coc/start/coc.nvim"]
+	path = .vim/pack/coc/start/coc.nvim
+	url = https://github.com/neoclide/coc.nvim.git
