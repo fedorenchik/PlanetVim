@@ -1179,8 +1179,7 @@ let g:NERDTreeHighlightFoldersFullName = 1
 let test#strategy = "dispatch"
 " }}}
 " Plugin: vimwiki {{{
-let g:vimwiki_list = [{'path': '~/doc/notes/',
-			\ 'syntax': 'markdown', 'ext': '.md'}]
+let g:vimwiki_list = [{'path': '~/doc/notes/'}]
 " }}}
 " Plugin: unite-mark {{{
 let g:unite_source_mark_marks =
