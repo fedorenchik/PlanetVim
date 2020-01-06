@@ -876,9 +876,6 @@ if !has("gui_running")
 endif
 let v:this_session = ".session.vim"
 " }}}
-" pack/dist/opt/editexisting/ {{{
-packadd! editexisting
-" }}}
 " pack/dist/opt/justify/ {{{
 packadd! justify
 " }}}
