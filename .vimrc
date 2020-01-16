@@ -507,9 +507,12 @@ nnoremap g= :tabnew<CR>
 " -----------: s...: source navigation (lsp, gtags): {{{
 " Available To Map: all
 nnoremap s <Nop>
+nmap <silent> sd <Plug>(coc-definition)
 nnoremap sg :Grepper -tool git<CR>
 nnoremap sG :Grepper -tool rg<CR>
-nnoremap st :GtagsCursor<CR>
+nmap <silent> si <Plug>(coc-implementation)
+nmap <silent> sr <Plug>(coc-references)
+nmap <silent> st <Plug>(coc-type-definition)
 " }}}
 " -----------: S...: open windows: {{{
 " Available To Map: all
@@ -546,8 +549,8 @@ nnoremap ZU :UndotreeHide<CR>
 " +                         +           + +       + + + + + + + + + +
 nnoremap [C :colder<CR>
 nnoremap [O :lolder<CR>
-nmap <silent> [w <Plug>(ale_previous)
-nmap <silent> [W <Plug>(ale_first)
+nmap <silent> [w <Plug>(coc-diagnostic-prev)
+nmap <silent> [W <Plug>(coc-diagnostic-prev-error)
 nnoremap [1 :call signature#marker#Goto('prev', 1, v:count)<CR>
 nnoremap [2 :call signature#marker#Goto('prev', 2, v:count)<CR>
 nnoremap [3 :call signature#marker#Goto('prev', 3, v:count)<CR>
@@ -568,8 +571,8 @@ nnoremap [0 :call signature#marker#Goto('prev', 0, v:count)<CR>
 " +                         +           + +       + + + + + + + + + +
 nnoremap ]C :cnewer<CR>
 nnoremap ]O :lnewer<CR>
-nmap <silent> ]w <Plug>(ale_next)
-nmap <silent> ]W <Plug>(ale_last)
+nmap <silent> ]w <Plug>(coc-diagnostic-next)
+nmap <silent> ]W <Plug>(coc-diagnostic-next-error)
 nnoremap ]1 :call signature#marker#Goto('next', 1, v:count)<CR>
 nnoremap ]2 :call signature#marker#Goto('next', 2, v:count)<CR>
 nnoremap ]3 :call signature#marker#Goto('next', 3, v:count)<CR>
@@ -651,6 +654,7 @@ nmap <Leader>N <Plug>MarkConfirmAllClear
 inoremap <Tab> <Esc>
 inoremap <expr> <CR> pumvisible() ? "<C-Y><CR>" : "<CR>"
 " Ctrl Key: {{{
+inoremap <silent><expr> <C-Space> coc#refresh()
 inoremap <C-@> <C-^>
 inoremap <C-E> <C-R>=pumvisible() ? "\<lt>C-E>" : "\<lt>Esc>"<CR>
 " Insert Mode i_^G: {{{
@@ -784,6 +788,7 @@ autocmd FileType c,cpp inoreabbrev ;m std::map
 autocmd FileType c,cpp inoreabbrev ;s std::string
 autocmd FileType c,cpp inoreabbrev ;v std::vector
 autocmd FileType c,cpp inoremap ;; ::
+autocmd FileType c,cpp nnoremap <silent> K :call CocAction('doHover')<CR>
 autocmd FileType cpp setlocal path+=/usr/include/c++/7
 autocmd FileType cpp setlocal define=^\\(#\\s*define\\|[a-z]*\\s*const\\s*[a-z]*\\)
 autocmd FileType cpp setlocal tags+=$HOME/.vim/cxxtags
@@ -995,14 +1000,23 @@ let g:xml_syntax_folding = 1
 " }}}
 " }}}
 " External Plugins: {{{
-" Plugin: ale {{{
-let g:ale_linters = {
-			\ 'javascript': ['eslint'],
-			\ 'cpp': [],
-			\ }
-" }}}
 " Plugin: asyncomplete.vim {{{
 let g:asyncomplete_auto_completeopt = 0
+" }}}
+" Plugin: coc.nvim {{{
+autocmd User CocNvimInit call coc#config('languageserver', {
+			\ 'ccls': {
+			\   "command": "ccls",
+			\   "trace.server": "verbose",
+			\   "filetypes": ["c", "cpp", "cuda", "objc", "objcpp"],
+			\   "rootPatterns": [".ccls-root", "compile_commands.json", ".git/", ".ccls"],
+			\   "initializationOptions": {
+			\     "cache": {
+			\       "directory": ".ccls-cache"
+			\     }
+			\   }
+			\ }
+			\})
 " }}}
 " Plugin: FastFold {{{
 let g:fastfold_force = 1
@@ -1010,12 +1024,12 @@ let g:fastfold_force = 1
 " Plugin: gtags {{{
 let g:Gtags_OpenQuickfixWindow = 0
 " }}}
-" Plugin: gutentags: {{{
+" Plugin: gutentags {{{
 let g:gutentags_modules = [ 'ctags', 'gtags_cscope' ]
 let g:gutentags_generate_on_missing = 0
 let g:gutentags_generate_on_new = 0
 " }}}
-" Plugin: nerdtree: {{{
+" Plugin: nerdtree {{{
 let NERDTreeWinSize = 41
 " }}}
 " Plugin: signature {{{
@@ -1164,7 +1178,7 @@ nmap <Plug>IgnoreMarkSearchPrev <Plug>MarkSearchPrev
 " Plugin: vim-markdown-preview {{{
 let vim_markdown_preview_hotkey='<A-`>'
 " }}}
-" Plugin: vim-nerdtree-syntax-highlight: {{{
+" Plugin: vim-nerdtree-syntax-highlight {{{
 let g:NERDTreeLimitedSyntax = 1
 let g:NERDTreeFileExtensionHighlightFullName = 1
 let g:NERDTreeExactMatchHighlightFullName = 1
