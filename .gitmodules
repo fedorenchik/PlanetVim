@@ -153,3 +153,6 @@
 [submodule ".vim/pack/essential/start/QFEnter"]
 	path = .vim/pack/essential/start/QFEnter
 	url = https://github.com/yssl/QFEnter
+[submodule ".vim/pack/essential/start/vim-sleuth"]
+	path = .vim/pack/essential/start/vim-sleuth
+	url = https://github.com/tpope/vim-sleuth.git

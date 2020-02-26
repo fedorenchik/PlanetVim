@@ -6,7 +6,6 @@ SHELL := /bin/bash
 
 FILES := \
 	.bashrc \
-	.ctags \
 	.cvsignore \
 	.gdbinit \
 	.gitconfig \
@@ -40,29 +39,7 @@ help:
 
 sync: sync-home
 
-c_headers := assert complex ctype errno fenv float inttypes iso646 limits \
-	locale math setjmp signal stdalign stdarg stdatomic stdbool stddef \
-	stdint stdio stdlib stdnoreturn string tgmath threads time uchar \
-	wchar wctype
-
-# workaround for bugs
-c_headers := $(filter-out float iso646 stdalign stdarg stdatomic stdbool stddef stdnoreturn threads,$(c_headers))
-
-c_headers := $(addprefix /usr/include/,$(addsuffix .h,$(c_headers)))
-
-~/.vim/ctags: $(c_headers)
-	-ctags --language-force=c -R -f $@ $^
-
-~/.vim/linuxtags: /usr/include/linux
-	-ctags --language-force=c -R -f $@ $^
-
-~/.vim/cxxtags: $(firstword $(shell echo $$(gcc -E -v -x c++ /dev/null 2>&1 | sed -e '1,/#include </d' -e '/^End/,$$d')))
-	@echo $(firstword $(shell echo $$(gcc -E -v -x c++ /dev/null 2>&1 | sed -e '1,/#include </d' -e '/^End/,$$d')))
-	-ctags --language-force=c++ -R -f $@ $^
-
-gen-all-ctags: ~/.vim/ctags  ~/.vim/linuxtags ~/.vim/cxxtags
-
-sync-home: sync-files gen-all-ctags
+sync-home: sync-files
 
 sync-files:
 	for file in $(FILES); do $(RSYNC) $(RSYNC_OPTIONS) $$file $(HOME)/$$file; done
@@ -95,4 +72,4 @@ cycle: commit pull push sync-home
 	notify-send --urgency=low --icon=terminal "homerc" "Updated"
 
 .PHONY: all help sync sync-home commit push pull install uninstall cycle
-.PHONY: gen-all-ctags sync-files
+.PHONY: sync-files

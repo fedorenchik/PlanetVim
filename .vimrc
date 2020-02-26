@@ -504,7 +504,7 @@ nnoremap g. :marks<CR>
 nnoremap g" :registers<CR>
 nnoremap g= :tabnew<CR>
 " }}}
-" -----------: s...: source navigation (lsp, gtags): {{{
+" -----------: s...: source navigation (lsp): {{{
 " Available To Map: all
 nnoremap s <Nop>
 nmap <silent> sd <Plug>(coc-definition)
@@ -680,6 +680,7 @@ inoremap <C-{> <Esc>
 "              ++  + ++                 +
 " aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ
 " +   +++ + +   + +   + + + + + +     + + + + + + +
+inoremap <silent><expr> <A-Space> coc#refresh()
 inoremap <A-*> <C-L>
 inoremap <A-+> <PageDown>
 inoremap <A-^> <PageUp>
@@ -729,7 +730,7 @@ vnoremap # y/\V<C-R>"\><CR>
 " }}}
 " Command-line (Cmdline) Mode: {{{
 " Subcommands & submodes: Ctrl-R, Ctrl-\
-cnoremap <Tab> <Esc>
+cnoremap <Tab> <C-U><BS>
 cnoremap <C-Y> <S-Tab>
 " }}}
 " Terminal Window: {{{
