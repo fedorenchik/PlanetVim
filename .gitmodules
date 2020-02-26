@@ -156,3 +156,6 @@
 [submodule ".vim/pack/essential/start/vim-sleuth"]
 	path = .vim/pack/essential/start/vim-sleuth
 	url = https://github.com/tpope/vim-sleuth.git
+[submodule ".vim/pack/essential/start/vim-flagship"]
+	path = .vim/pack/essential/start/vim-flagship
+	url = https://github.com/tpope/vim-flagship.git
