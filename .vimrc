@@ -199,7 +199,7 @@ endif
 set guiheadroom=0
 set guioptions=aAceigpk
 set guipty
-set guitablabel&
+set guitablabel=%!flagship#tablabel()
 "TODO: Add second (and further) lines with useful info
 set guitabtooltip=%{GuiTabLabel()}
 set helpheight=8
