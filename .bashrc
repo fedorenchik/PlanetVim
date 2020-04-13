@@ -212,6 +212,11 @@ gk()
 )
 complete -o bashdefault -o default -o nospace -F __git_wrap__gitk_main gk
 
+gg()
+(
+	command gitg &
+)
+
 dirdiffv()
 {
 	gvim -c "DirDiff $@" 2>>/tmp/gvim.out
@@ -244,13 +249,13 @@ source /usr/local/bin/virtualenvwrapper.sh
 # !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$('/home/leonid/.local/opt/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
+	eval "$__conda_setup"
 else
-    if [ -f "/home/leonid/.local/opt/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/home/leonid/.local/opt/anaconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/home/leonid/.local/opt/anaconda3/bin:$PATH"
-    fi
+	if [ -f "/home/leonid/.local/opt/anaconda3/etc/profile.d/conda.sh" ]; then
+		. "/home/leonid/.local/opt/anaconda3/etc/profile.d/conda.sh"
+	else
+		export PATH="/home/leonid/.local/opt/anaconda3/bin:$PATH"
+	fi
 fi
 unset __conda_setup
 # <<< conda initialize <<<
