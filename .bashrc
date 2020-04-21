@@ -214,7 +214,11 @@ complete -o bashdefault -o default -o nospace -F __git_wrap__gitk_main gk
 
 gg()
 (
-	command gitg &
+	if [ "$*" == "" ]; then
+		command gitg --all &
+	else
+		command gitg "$@" &
+	fi
 )
 
 dirdiffv()
