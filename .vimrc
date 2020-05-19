@@ -814,7 +814,7 @@ autocmd GUIEnter * set guifont=Ubuntu\ Mono\ 11,Monospace\ 9
 autocmd SessionLoadPost * let g:vimrc_auto_session = 1
 autocmd User Flags call Hoist("global", "%{&ignorecase ? '[IC]' : ''}")
 autocmd User Flags call Hoist("global", "%{coc#status()}")
-autocmd VimEnter * if exists('g:vimrc_auto_session') && filereadable('.session.vim') | source .session.vim | endif
+autocmd GUIEnter * if exists('g:vimrc_auto_session') && filereadable('.session.vim') | source .session.vim | endif
 autocmd VimEnter * if expand("%") != "" && getcwd() == expand("~") | cd %:h | endif
 autocmd VimLeavePre * if exists('g:vimrc_auto_session') | mksession! .session.vim | endif
 augroup END
@@ -1190,7 +1190,6 @@ let g:NERDTreeHighlightFolders = 1
 let g:NERDTreeHighlightFoldersFullName = 1
 " }}}
 " Plugin: vim-plugin-viewdoc {{{
-let g:viewdoc_open='topleft new'
 let g:viewdoc_winwidth_max=80
 " }}}
 " Plugin: vim-test {{{
