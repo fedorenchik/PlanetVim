@@ -273,7 +273,7 @@ set scrolljump=2
 set scrolloff=2
 set scrollopt=ver,hor,jump
 set secure
-set sessionoptions=blank,buffers,globals,help,localoptions,resize,sesdir,slash,tabpages,terminal,unix,winpos,winsize
+set sessionoptions=blank,buffers,globals,help,resize,sesdir,slash,tabpages,terminal,unix,winpos,winsize
 if &shell =~# 'fish$' && (v:version < 704 || v:version == 704 && !has('patch276'))
 	set shell=/bin/bash
 endif
@@ -343,7 +343,7 @@ set updatetime=1000
 set verbose&
 set verbosefile&
 set viewdir&
-set viewoptions=cursor,localoptions,slash,unix
+set viewoptions=cursor,folds,slash,unix,curdir
 set viminfo=!,%50,'100,<50,c,f1,h,r/tmp,r/var,r/mnt,r/media,s10,n$PWD/.viminfo
 set virtualedit=block
 set novisualbell
@@ -1023,6 +1023,7 @@ autocmd User CocNvimInit call coc#config('languageserver', {
 " }}}
 " Plugin: FastFold {{{
 let g:fastfold_force = 1
+let g:fastfold_minlines = 0
 " }}}
 " Plugin: gtags {{{
 let g:Gtags_OpenQuickfixWindow = 0

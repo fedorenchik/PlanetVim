@@ -159,3 +159,6 @@
 [submodule ".vim/pack/essential/start/vim-flagship"]
 	path = .vim/pack/essential/start/vim-flagship
 	url = https://github.com/tpope/vim-flagship.git
+[submodule ".vim/pack/evaluating/start/vim-stay"]
+	path = .vim/pack/evaluating/start/vim-stay
+	url = https://github.com/zhimsel/vim-stay.git
