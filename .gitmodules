@@ -162,3 +162,6 @@
 [submodule ".vim/pack/evaluating/start/vim-stay"]
 	path = .vim/pack/evaluating/start/vim-stay
 	url = https://github.com/zhimsel/vim-stay.git
+[submodule ".vim/pack/evaluating/start/vim-plugin-viewdoc"]
+	path = .vim/pack/evaluating/start/vim-plugin-viewdoc
+	url = https://github.com/powerman/vim-plugin-viewdoc.git

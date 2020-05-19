@@ -789,7 +789,6 @@ autocmd FileType c,cpp inoreabbrev ;m std::map
 autocmd FileType c,cpp inoreabbrev ;s std::string
 autocmd FileType c,cpp inoreabbrev ;v std::vector
 autocmd FileType c,cpp inoremap ;; ::
-autocmd FileType c,cpp nnoremap <silent> K :call CocAction('doHover')<CR>
 autocmd FileType cpp setlocal path+=/usr/include/c++/7
 autocmd FileType cpp setlocal define=^\\(#\\s*define\\|[a-z]*\\s*const\\s*[a-z]*\\)
 autocmd FileType cpp setlocal tags+=$HOME/.vim/cxxtags
@@ -865,8 +864,8 @@ let g:bash_is_sh = 1
 runtime ftplugin/changelog.vim
 " }}}
 " ftplugin/man.vim {{{
-runtime! ftplugin/man.vim
-let g:ft_man_folding_enable = 1
+"runtime! ftplugin/man.vim
+"let g:ft_man_folding_enable = 1
 " }}}
 " ftplugin/spec.vim {{{
 let spec_chglog_release_info = 1
@@ -1189,6 +1188,10 @@ let g:NERDTreeExactMatchHighlightFullName = 1
 let g:NERDTreePatternMatchHighlightFullName = 1
 let g:NERDTreeHighlightFolders = 1
 let g:NERDTreeHighlightFoldersFullName = 1
+" }}}
+" Plugin: vim-plugin-viewdoc {{{
+let g:viewdoc_open='topleft new'
+let g:viewdoc_winwidth_max=80
 " }}}
 " Plugin: vim-test {{{
 let test#strategy = "dispatch"
