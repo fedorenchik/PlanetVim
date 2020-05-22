@@ -174,3 +174,9 @@
 [submodule ".vim/pack/git/start/auto-git-diff"]
 	path = .vim/pack/git/start/auto-git-diff
 	url = https://github.com/hotwatermorning/auto-git-diff.git
+[submodule ".vim/pack/git/start/vim-twiggy"]
+	path = .vim/pack/git/start/vim-twiggy
+	url = https://github.com/sodapopcan/vim-twiggy.git
+[submodule ".vim/pack/git/start/vim-flog"]
+	path = .vim/pack/git/start/vim-flog
+	url = https://github.com/rbong/vim-flog.git
