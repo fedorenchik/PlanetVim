@@ -165,9 +165,6 @@
 [submodule ".vim/pack/evaluating/start/vim-plugin-viewdoc"]
 	path = .vim/pack/evaluating/start/vim-plugin-viewdoc
 	url = https://github.com/powerman/vim-plugin-viewdoc.git
-[submodule ".vim/pack/git/start/gitv"]
-	path = .vim/pack/git/start/gitv
-	url = https://github.com/gregsexton/gitv.git
 [submodule ".vim/pack/git/start/committia.vim"]
 	path = .vim/pack/git/start/committia.vim
 	url = https://github.com/rhysd/committia.vim.git
@@ -180,3 +177,15 @@
 [submodule ".vim/pack/git/start/vim-flog"]
 	path = .vim/pack/git/start/vim-flog
 	url = https://github.com/rbong/vim-flog.git
+[submodule ".vim/pack/evaluating/start/vim-peekaboo"]
+	path = .vim/pack/evaluating/start/vim-peekaboo
+	url = https://github.com/junegunn/vim-peekaboo.git
+[submodule ".vim/pack/evaluating/start/vim-buffest"]
+	path = .vim/pack/evaluating/start/vim-buffest
+	url = https://github.com/rbong/vim-buffest.git
+[submodule ".vim/pack/development/start/vista.vim"]
+	path = .vim/pack/development/start/vista.vim
+	url = https://github.com/liuchengxu/vista.vim.git
+[submodule ".vim/pack/evaluating/start/vim-crystalline"]
+	path = .vim/pack/evaluating/start/vim-crystalline
+	url = https://github.com/rbong/vim-crystalline.git
