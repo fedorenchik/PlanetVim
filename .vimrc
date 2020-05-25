@@ -1019,6 +1019,12 @@ autocmd User CocNvimInit call coc#config('languageserver', {
 			\   }
 			\ }
 			\})
+let g:coc_global_extensions='coc-lists coc-python coc-explorer ' ..
+      \ 'coc-dictionary coc-emoji coc-syntax coc-gocode coc-vimtex coc-yank ' ..
+      \ 'coc-bookmark coc-cmake coc-git coc-snippets coc-gitignore coc-sql ' ..
+      \ 'coc-docker coc-db coc-project coc-terminal coc-lines coc-sh'
+nnoremap <silent> <Space>y  :<C-u>CocList -A --normal yank<CR>
+" Check: coc-word
 " }}}
 " Plugin: FastFold {{{
 let g:fastfold_force = 1
