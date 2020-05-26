@@ -50,30 +50,6 @@
 [submodule ".vim/pack/git/start/vim-fugitive"]
 	path = .vim/pack/essential/start/vim-fugitive
 	url = https://github.com/tpope/vim-fugitive.git
-[submodule ".vim/pack/unite/start/unite.vim"]
-	path = .vim/pack/unite/start/unite.vim
-	url = https://github.com/Shougo/unite.vim.git
-[submodule ".vim/pack/unite/start/unite-gtags"]
-	path = .vim/pack/unite/start/unite-gtags
-	url = https://github.com/hewes/unite-gtags.git
-[submodule ".vim/pack/unite/start/unite-quickfix"]
-	path = .vim/pack/unite/start/unite-quickfix
-	url = https://github.com/osyo-manga/unite-quickfix.git
-[submodule ".vim/pack/unite/start/unite-outline"]
-	path = .vim/pack/unite/start/unite-outline
-	url = https://github.com/Shougo/unite-outline.git
-[submodule ".vim/pack/unite/start/neoyank.vim"]
-	path = .vim/pack/unite/start/neoyank.vim
-	url = https://github.com/Shougo/neoyank.vim.git
-[submodule ".vim/pack/unite/start/vim-unite-history"]
-	path = .vim/pack/unite/start/vim-unite-history
-	url = https://github.com/thinca/vim-unite-history.git
-[submodule ".vim/pack/unite/start/unite-mark"]
-	path = .vim/pack/unite/start/unite-mark
-	url = https://github.com/tacroe/unite-mark.git
-[submodule ".vim/pack/unite/start/vim-unite-giti"]
-	path = .vim/pack/unite/start/vim-unite-giti
-	url = https://github.com/kmnk/vim-unite-giti.git
 [submodule ".vim/pack/evaluating/start/vim-capslock"]
 	path = .vim/pack/essential/start/vim-capslock
 	url = https://github.com/tpope/vim-capslock.git
@@ -107,12 +83,6 @@
 [submodule ".vim/pack/web/start/typescript-vim"]
 	path = .vim/pack/web/start/typescript-vim
 	url = https://github.com/leafgarland/typescript-vim.git
-[submodule ".vim/pack/essential/start/nerdtree"]
-	path = .vim/pack/essential/start/nerdtree
-	url = https://github.com/scrooloose/nerdtree.git
-[submodule ".vim/pack/evaluating/start/vim-nerdtree-syntax-highlight"]
-	path = .vim/pack/evaluating/start/vim-nerdtree-syntax-highlight
-	url = https://github.com/tiagofumo/vim-nerdtree-syntax-highlight.git
 [submodule ".vim/pack/text/start/vim-grammarous"]
 	path = .vim/pack/text/start/vim-grammarous
 	url = https://github.com/rhysd/vim-grammarous.git
@@ -128,21 +98,9 @@
 [submodule ".vim/pack/essential/start/vim-grepper"]
 	path = .vim/pack/essential/start/vim-grepper
 	url = https://github.com/mhinz/vim-grepper.git
-[submodule ".vim/pack/unite/start/unite-help"]
-	path = .vim/pack/unite/start/unite-help
-	url = https://github.com/tsukkee/unite-help.git
-[submodule ".vim/pack/unite/start/unite-tag"]
-	path = .vim/pack/unite/start/unite-tag
-	url = https://github.com/tsukkee/unite-tag.git
-[submodule ".vim/pack/unite/start/unite-session"]
-	path = .vim/pack/unite/start/unite-session
-	url = https://github.com/Shougo/unite-session.git
 [submodule ".vim/pack/evaluating/start/vim-anzu"]
 	path = .vim/pack/evaluating/start/vim-anzu
 	url = https://github.com/osyo-manga/vim-anzu.git
-[submodule ".vim/pack/unite/start/unite-unicode"]
-	path = .vim/pack/unite/start/unite-unicode
-	url = https://github.com/MaryHal/unite-unicode.git
 [submodule ".vim/pack/essential/start/nerdcommenter"]
 	path = .vim/pack/essential/start/nerdcommenter
 	url = https://github.com/preservim/nerdcommenter.git
@@ -162,9 +120,6 @@
 [submodule ".vim/pack/evaluating/start/vim-stay"]
 	path = .vim/pack/evaluating/start/vim-stay
 	url = https://github.com/zhimsel/vim-stay.git
-[submodule ".vim/pack/evaluating/start/vim-plugin-viewdoc"]
-	path = .vim/pack/evaluating/start/vim-plugin-viewdoc
-	url = https://github.com/powerman/vim-plugin-viewdoc.git
 [submodule ".vim/pack/git/start/committia.vim"]
 	path = .vim/pack/git/start/committia.vim
 	url = https://github.com/rhysd/committia.vim.git
@@ -189,3 +144,6 @@
 [submodule ".vim/pack/evaluating/start/vim-crystalline"]
 	path = .vim/pack/evaluating/start/vim-crystalline
 	url = https://github.com/rbong/vim-crystalline.git
+[submodule ".vim/pack/evaluating/start/vim-man"]
+	path = .vim/pack/evaluating/start/vim-man
+	url = https://github.com/vim-utils/vim-man.git

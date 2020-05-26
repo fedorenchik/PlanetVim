@@ -16,94 +16,94 @@
 " }}}
 " Prevent Multiple Sourcing: {{{
 if exists("g:loaded_home_vimrc")
-	finish
+  finish
 endif
 let g:loaded_home_vimrc = 1
 " }}}
 " Basics: {{{
 set nocompatible
 if has('autocmd')
-	filetype plugin indent on
+  filetype plugin indent on
 endif
 if has('syntax') && !exists('g:syntax_on')
-	syntax on
+  syntax on
 endif
 " }}}
 " Start Vim Server: {{{
 if empty(v:servername) && exists('*remote_startserver')
-	call remote_startserver('GVIM')
+  call remote_startserver('GVIM')
 endif
 " }}}
 " Functions: {{{
 function! GuiTabLabel() abort
-	let label = ''
-	let bufnrlist = tabpagebuflist(v:lnum)
+  let label = ''
+  let bufnrlist = tabpagebuflist(v:lnum)
 
-	" Add '+' if one of the buffers in the tab page is modified
-	for bufnr in bufnrlist
-		if getbufvar(bufnr, "&modified")
-			let label = '+'
-			break
-		endif
-	endfor
+  " Add '+' if one of the buffers in the tab page is modified
+  for bufnr in bufnrlist
+    if getbufvar(bufnr, "&modified")
+      let label = '+'
+      break
+    endif
+  endfor
 
-	" Append the number of windows in the tab page if more than one
-	let wincount = tabpagewinnr(v:lnum, '$')
-	if wincount > 1
-		let label .= wincount
-	endif
-	if label != ''
-		let label .= ' '
-	endif
+  " Append the number of windows in the tab page if more than one
+  let wincount = tabpagewinnr(v:lnum, '$')
+  if wincount > 1
+    let label .= wincount
+  endif
+  if label != ''
+    let label .= ' '
+  endif
 
-	" Append the buffer name
-	return label . bufname(bufnrlist[tabpagewinnr(v:lnum) - 1])
+  " Append the buffer name
+  return label . bufname(bufnrlist[tabpagewinnr(v:lnum) - 1])
 endfunction
 " Avoid the ":ptag" when there is no word under the cursor, and a few other
 " things. Opens the tag under cursor in Preview window.
 function! PreviewWord() abort
-	if &previewwindow
-		return
-	endif
-	silent! wincmd P
-	if &previewwindow
-		wincmd p
-		return
-	endif
-	let w = expand("<cword>")
-	if w =~ '\a'
-		try
-			exe "ptag " . w
-		catch
-			return
-		endtry
-		silent! wincmd P
-		if &previewwindow
-			if has("folding")
-				silent! .foldopen
-			endif
-			wincmd p
-		endif
-	endif
+  if &previewwindow
+    return
+  endif
+  silent! wincmd P
+  if &previewwindow
+    wincmd p
+    return
+  endif
+  let w = expand("<cword>")
+  if w =~ '\a'
+    try
+      exe "ptag " . w
+    catch
+      return
+    endtry
+    silent! wincmd P
+    if &previewwindow
+      if has("folding")
+        silent! .foldopen
+      endif
+      wincmd p
+    endif
+  endif
 endfunction
 function! ListMonths() abort
-	let l:line = getline(".")
-	let l:last_word_start_idx = match(l:line, '\w*$')
-	let l:last_word = matchstr(l:line, '\w*$')
-	let l:months = ['January', 'February', 'March', 'April', 'May', 'June',
-				\ 'July', 'August', 'September',
-				\ 'October', 'November', 'December']
-	call filter(l:months, 'v:val =~ "^' . l:last_word . '"')
-	echom 'l:last_word_start_idx = ' . l:last_word_start_idx
-	echom 'l:last_word = ' . l:last_word
-	echom 'l:months = ' . string(l:months)
-	call complete(l:last_word_start_idx + 1, l:months)
-	return ''
+  let l:line = getline(".")
+  let l:last_word_start_idx = match(l:line, '\w*$')
+  let l:last_word = matchstr(l:line, '\w*$')
+  let l:months = ['January', 'February', 'March', 'April', 'May', 'June',
+        \ 'July', 'August', 'September',
+        \ 'October', 'November', 'December']
+  call filter(l:months, 'v:val =~ "^' . l:last_word . '"')
+  echom 'l:last_word_start_idx = ' . l:last_word_start_idx
+  echom 'l:last_word = ' . l:last_word
+  echom 'l:months = ' . string(l:months)
+  call complete(l:last_word_start_idx + 1, l:months)
+  return ''
 endfunction
 function! SetupCommandAlias(input, output) abort
-	exec 'cabbrev <expr> '.a:input
-				\ .' ((getcmdtype() is# ":" && getcmdline() is# "'.a:input.'")'
-				\ .'? ("'.a:output.'") : ("'.a:input.'"))'
+  exec 'cabbrev <expr> '.a:input
+        \ .' ((getcmdtype() is# ":" && getcmdline() is# "'.a:input.'")'
+        \ .'? ("'.a:output.'") : ("'.a:input.'"))'
 endfunction
 " }}}
 " Colorscheme: {{{
@@ -117,11 +117,11 @@ endfunction
 " gui  dark  schemes last evaluation: no
 " gui  light schemes last evaluation: no
 if has("gui_running")
-	set background=dark
-	colorscheme molokai
+  set background=dark
+  colorscheme molokai
 elseif &t_Co >= 256
-	set background=dark
-	colorscheme molokai
+  set background=dark
+  colorscheme molokai
 endif
 highlight lCursor guifg=NONE guibg=Cyan
 " }}}
@@ -147,7 +147,7 @@ set clipboard=autoselect,autoselectml,exclude:cons\|linux
 set cmdheight=2
 set colorcolumn=80,120,+0
 if has("gui_running")
-	set columns=90
+  set columns=90
 endif
 set complete-=i
 set completeopt=menuone,preview,noinsert,noselect
@@ -193,8 +193,8 @@ set grepprg=grep\ -nH\ $*
 "TODO: Colorize cursor in different modes.
 "set guicursor+=a:blinkon0
 if has("gui_gtk2")
-	set guifont=Ubuntu\ Mono\ 11,Monospace\ 9
-	"set guifontwide=WenQuanYi\ Zen\ Hei\ 10
+  set guifont=Ubuntu\ Mono\ 11,Monospace\ 9
+  "set guifontwide=WenQuanYi\ Zen\ Hei\ 10
 endif
 set guiheadroom=0
 set guioptions=aAceigpk
@@ -213,7 +213,7 @@ set noignorecase
 set iminsert=0
 set imsearch=-1
 if has('reltime')
-	set incsearch
+  set incsearch
 endif
 set infercase
 set isfname+=@-@
@@ -222,13 +222,13 @@ set keymodel=
 set keywordprg=:Man
 set langmenu=none
 if has('langmap') && exists('+langremap')
-	set nolangremap
+  set nolangremap
 endif
 set laststatus=2
 set lazyredraw
 set nolinebreak
 if has("gui_running")
-	set lines=28
+  set lines=28
 endif
 set list
 set listchars=tab:»\ ,trail:·,extends:>,precedes:<,nbsp:+
@@ -240,7 +240,7 @@ set modeline
 set modelines=5
 set more
 if has('mouse')
-	set mouse=n
+  set mouse=n
 endif
 set nomousefocus
 set mousehide
@@ -275,7 +275,7 @@ set scrollopt=ver,hor,jump
 set secure
 set sessionoptions=blank,buffers,globals,help,resize,sesdir,slash,tabpages,terminal,unix,winpos,winsize
 if &shell =~# 'fish$' && (v:version < 704 || v:version == 704 && !has('patch276'))
-	set shell=/bin/bash
+  set shell=/bin/bash
 endif
 set shiftround
 set shiftwidth=8
@@ -305,7 +305,7 @@ set swapsync=
 set switchbuf=
 set synmaxcol=1000
 if &t_Co == 8 && $TERM !~# '^linux\|^Eterm'
-	set t_Co=16
+  set t_Co=16
 endif
 set tabline&
 set tabpagemax=50
@@ -333,8 +333,8 @@ set toolbar&
 set toolbariconsize&
 set ttyfast
 if has('persistent_undo')
-	set undodir=$HOME/.vim/undo,.
-	set undofile
+  set undodir=$HOME/.vim/undo,.
+  set undofile
 endif
 set undolevels=1000
 set undoreload&
@@ -385,13 +385,13 @@ let maplocalleader="_"
 " Alt: make <A-...> work in terminal {{{
 let c=' '
 while c <= '~'
-	if (c != ' ') && (c != '"') && (c != '>') && (c != '[') && (c != '\')
-				\ && (c != ']') && (c != '|')
-		exec "set <A-".c.">=\e".c
-		exec "map \e".c." <A-".c.">"
-		exec "map! \e".c." <A-".c.">"
-	endif
-	let c = nr2char(1+char2nr(c))
+  if (c != ' ') && (c != '"') && (c != '>') && (c != '[') && (c != '\')
+        \ && (c != ']') && (c != '|')
+    exec "set <A-".c.">=\e".c
+    exec "map \e".c." <A-".c.">"
+    exec "map! \e".c." <A-".c.">"
+  endif
+  let c = nr2char(1+char2nr(c))
 endwhile
 " }}}
 " Normal (Command) Mode: {{{
@@ -740,8 +740,8 @@ tnoremap <C-k> <C-w><C-k>
 tnoremap <C-l> <C-w><C-l>
 tnoremap <C-h> <C-w><C-h>
 if has('nvim')
-	tnoremap <Esc> <C-\><C-n>
-	tnoremap <C-v><Esc> <Esc>
+  tnoremap <Esc> <C-\><C-n>
+  tnoremap <C-v><Esc> <Esc>
 endif
 " }}}
 " Operator-pending Mode: {{{
@@ -807,8 +807,8 @@ autocmd FileType text setlocal complete+=k,s
 autocmd FileType text,markdown setlocal spell
 autocmd FileType vim setlocal foldmethod=marker foldlevelstart=0 foldlevel=0
 if exists("+omnifunc")
-	autocmd Filetype * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
-	autocmd Filetype * if &completefunc == "" | setlocal completefunc=syntaxcomplete#Complete | endif
+  autocmd Filetype * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
+  autocmd Filetype * if &completefunc == "" | setlocal completefunc=syntaxcomplete#Complete | endif
 endif
 autocmd GUIEnter * set guifont=Ubuntu\ Mono\ 11,Monospace\ 9
 autocmd SessionLoadPost * let g:vimrc_auto_session = 1
@@ -825,35 +825,8 @@ endif
 " file it was loaded from, thus the changes you made.
 " Only define it when not defined already.
 if !exists(":DiffOrig")
-	command DiffOrig vertical new | setlocal buftype=nofile | r ++edit # |
-				\ 0d_ | diffthis | wincmd p | diffthis
-endif
-" }}}
-" Functions: {{{
-function! FoldColumnToggle()
-	if &foldcolumn
-		setlocal foldcolumn=0
-	else
-		setlocal foldcolumn=4
-	endif
-endfunction
-function! ToggleFileExplorer()
-	try
-		Rexplore
-	catch
-		Explore
-	endtry
-endfunction
-" }}}
-" Run Commands: {{{
-if has("cscope")
-	set nocscopeverbose
-	if filereadable("cscope.out")
-		cscope add cscope.out
-	elseif $CSCOPE_DB != ""
-		cscope add $CSCOPE_DB
-	endif
-	set cscopeverbose
+  command DiffOrig vertical new | setlocal buftype=nofile | r ++edit # |
+        \ 0d_ | diffthis | wincmd p | diffthis
 endif
 " }}}
 " $VIMRUNTIME/ {{{
@@ -862,10 +835,6 @@ let g:bash_is_sh = 1
 " }}}
 " ftplugin/changelog.vim {{{
 runtime ftplugin/changelog.vim
-" }}}
-" ftplugin/man.vim {{{
-"runtime! ftplugin/man.vim
-"let g:ft_man_folding_enable = 1
 " }}}
 " ftplugin/spec.vim {{{
 let spec_chglog_release_info = 1
@@ -878,8 +847,8 @@ let g:tex_flavor = "latex"
 " }}}
 " menu.vim {{{
 if !has("gui_running")
-	let do_syntax_sel_menu = 1
-	source $VIMRUNTIME/menu.vim
+  let do_syntax_sel_menu = 1
+  source $VIMRUNTIME/menu.vim
 endif
 let v:this_session = ".session.vim"
 " }}}
@@ -888,42 +857,15 @@ packadd! justify
 " }}}
 " pack/dist/opt/matchit/ {{{
 if has('syntax') && has('eval')
-	packadd! matchit
+  packadd! matchit
 endif
 " }}}
 " pack/dist/opt/termdebug/ {{{
 packadd! termdebug
 " }}}
 " plugin/netrwPlugin.vim {{{
-function! NFH_pdf(pdf) abort
-  if executable("xdg-open")
-    exe 'silent! !xdg-open ' . shellescape(a:pdf, 1) . ' &'
-  else
-    return 0
-  endif
-  return 1
-endfunction
-let g:netrw_alto = 1
-let g:netrw_altv = 1
-let g:netrw_banner = 0
-let g:netrw_browsex_viewer = "-"
-let g:netrw_dirhistmax = 100
-let g:netrw_fastbrowse = 1
-let g:netrw_hide = 1
-let g:netrw_keepdir = 1
-let g:netrw_list_hide = netrw_gitignore#Hide() . ',\(^\|\s\s\)\zs\.\S\+'
-let g:netrw_liststyle = 2
-"TODO: choose custom mapping for nnoremap xxx <Plug>NetrwReturn
-"let g:netrw_retmap = 1
-let g:netrw_silent = 1
-let g:netrw_sizestyle = "H"
-let g:netrw_sort_options = "i"
-let g:netrw_special_syntax = 1
-let g:netrw_use_errorwindow = 0
-let g:netrw_usetab = 1
-let g:netrw_winsize = -40
-let g:netrw_wiw = 35
-let g:netrw_xstrlen = 3
+let g:loaded_netrw = 1
+let g:loaded_netrwPlugin = 1
 " }}}
 " plugin/tarPlugin.vim {{{
 let g:tar_secure = "--"
@@ -943,9 +885,9 @@ let g:spell_clean_limit = 60 * 60
 " }}}
 " synmenu.vim {{{
 if has("gui_running")
-	let do_syntax_sel_menu = 1
-	runtime! synmenu.vim
-	aunmenu &Syntax.&Show\ File\ Types\ in\ Menu
+  let do_syntax_sel_menu = 1
+  runtime! synmenu.vim
+  aunmenu &Syntax.&Show\ File\ Types\ in\ Menu
 endif
 " }}}
 " syntax/c.vim {{{
@@ -1002,23 +944,20 @@ let g:xml_syntax_folding = 1
 " }}}
 " }}}
 " External Plugins: {{{
-" Plugin: asyncomplete.vim {{{
-let g:asyncomplete_auto_completeopt = 0
-" }}}
 " Plugin: coc.nvim {{{
 autocmd User CocNvimInit call coc#config('languageserver', {
-			\ 'ccls': {
-			\   "command": "ccls",
-			\   "trace.server": "verbose",
-			\   "filetypes": ["c", "cpp", "cuda", "objc", "objcpp"],
-			\   "rootPatterns": [".ccls-root", "compile_commands.json", ".git/", ".ccls"],
-			\   "initializationOptions": {
-			\     "cache": {
-			\       "directory": ".ccls-cache"
-			\     }
-			\   }
-			\ }
-			\})
+      \ 'ccls': {
+      \   "command": "ccls",
+      \   "trace.server": "verbose",
+      \   "filetypes": ["c", "cpp", "cuda", "objc", "objcpp"],
+      \   "rootPatterns": [".ccls-root", "compile_commands.json", ".git/", ".ccls"],
+      \   "initializationOptions": {
+      \     "cache": {
+      \       "directory": ".ccls-cache"
+      \     }
+      \   }
+      \ }
+      \})
 let g:coc_global_extensions='coc-lists coc-python coc-explorer ' ..
       \ 'coc-dictionary coc-emoji coc-syntax coc-gocode coc-vimtex coc-yank ' ..
       \ 'coc-bookmark coc-cmake coc-git coc-snippets coc-gitignore coc-sql ' ..
@@ -1029,17 +968,6 @@ nnoremap <silent> <Space>y  :<C-u>CocList -A --normal yank<CR>
 " Plugin: FastFold {{{
 let g:fastfold_force = 1
 let g:fastfold_minlines = 0
-" }}}
-" Plugin: gtags {{{
-let g:Gtags_OpenQuickfixWindow = 0
-" }}}
-" Plugin: gutentags {{{
-let g:gutentags_modules = [ 'ctags', 'gtags_cscope' ]
-let g:gutentags_generate_on_missing = 0
-let g:gutentags_generate_on_new = 0
-" }}}
-" Plugin: nerdtree {{{
-let NERDTreeWinSize = 41
 " }}}
 " Plugin: signature {{{
 let g:SignatureMap = {
@@ -1084,99 +1012,87 @@ let g:cpp_no_function_highlight=1
 let g:grepper = {}
 let g:grepper.tools = ['grep', 'git', 'rg']
 " }}}
-" Plugin: vim-lsp {{{
-let g:lsp_highlight_references_enabled = 0
-if executable('ccls')
-	au User lsp_setup call lsp#register_server({
-				\ 'name': 'ccls',
-				\ 'cmd': {server_info->['ccls']},
-				\ 'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'compile_commands.json'))},
-				\ 'initialization_options': {},
-				\ 'whitelist': ['c', 'cpp', 'objc', 'objcpp', 'cc'],
-				\ })
-endif
-" }}}
 " Plugin: vim-mark {{{
 let g:mwPalettes = {
-\	'mypalette': [
-		\   { 'ctermbg':'Cyan',       'ctermfg':'Black', 'guibg':'#8CCBEA', 'guifg':'Black' },
-		\   { 'ctermbg':'Green',      'ctermfg':'Black', 'guibg':'#A4E57E', 'guifg':'Black' },
-		\   { 'ctermbg':'Yellow',     'ctermfg':'Black', 'guibg':'#FFDB72', 'guifg':'Black' },
-		\   { 'ctermbg':'Magenta',    'ctermfg':'Black', 'guibg':'#FFB3FF', 'guifg':'Black' },
-		\   { 'ctermbg':'Blue',       'ctermfg':'Black', 'guibg':'#9999FF', 'guifg':'Black' },
-		\   { 'ctermfg':'Black',      'ctermbg':'202',   'guifg':'Black',   'guibg':'#ff5f00' },
-		\   { 'ctermfg':'Black',      'ctermbg':'204',   'guifg':'Black',   'guibg':'#ff5f87' },
-		\   { 'ctermfg':'Black',      'ctermbg':'209',   'guifg':'Black',   'guibg':'#ff875f' },
-		\   { 'ctermfg':'Black',      'ctermbg':'212',   'guifg':'Black',   'guibg':'#ff87d7' },
-		\   { 'ctermfg':'Black',      'ctermbg':'215',   'guifg':'Black',   'guibg':'#ffaf5f' },
-		\   { 'ctermfg':'Black',      'ctermbg':'220',   'guifg':'Black',   'guibg':'#ffd700' },
-		\   { 'ctermfg':'Black',      'ctermbg':'224',   'guifg':'Black',   'guibg':'#ffd7d7' },
-		\   { 'ctermfg':'Black',      'ctermbg':'228',   'guifg':'Black',   'guibg':'#ffff87' },
-		\   {                                            'guifg':'Black',   'guibg':'#b3dcff' },
-		\   {                                            'guifg':'Black',   'guibg':'#99cbd6' },
-		\   {                                            'guifg':'Black',   'guibg':'#7afff0' },
-		\   {                                            'guifg':'Black',   'guibg':'#a6ffd2' },
-		\   {                                            'guifg':'Black',   'guibg':'#a2de9e' },
-		\   {                                            'guifg':'Black',   'guibg':'#bcff80' },
-		\   {                                            'guifg':'Black',   'guibg':'#e7ff8c' },
-		\   {                                            'guifg':'Black',   'guibg':'#f2e19d' },
-		\   {                                            'guifg':'Black',   'guibg':'#ffcc73' },
-		\   {                                            'guifg':'Black',   'guibg':'#f7af83' },
-		\   {                                            'guifg':'Black',   'guibg':'#fcb9b1' },
-		\   {                                            'guifg':'Black',   'guibg':'#ff8092' },
-		\   {                                            'guifg':'Black',   'guibg':'#ff73bb' },
-		\   {                                            'guifg':'Black',   'guibg':'#fc97ef' },
-		\   {                                            'guifg':'Black',   'guibg':'#c8a3d9' },
-		\   {                                            'guifg':'Black',   'guibg':'#ac98eb' },
-		\   {                                            'guifg':'Black',   'guibg':'#6a6feb' },
-		\   {                                            'guifg':'Black',   'guibg':'#8caeff' },
-		\   { 'ctermfg':'Black',      'ctermbg':'166',   'guifg':'Black',   'guibg':'#d75f00' },
-		\   { 'ctermfg':'Black',      'ctermbg':'169',   'guifg':'Black',   'guibg':'#d75faf' },
-		\   { 'ctermfg':'Black',      'ctermbg':'174',   'guifg':'Black',   'guibg':'#d78787' },
-		\   { 'ctermfg':'Black',      'ctermbg':'175',   'guifg':'Black',   'guibg':'#d787af' },
-		\   { 'ctermfg':'Black',      'ctermbg':'186',   'guifg':'Black',   'guibg':'#d7d787' },
-		\   { 'ctermfg':'Black',      'ctermbg':'190',   'guifg':'Black',   'guibg':'#d7ff00' },
-		\   { 'ctermfg':'Black',      'ctermbg':'133',   'guifg':'Black',   'guibg':'#af5faf' },
-		\   { 'ctermfg':'Black',      'ctermbg':'138',   'guifg':'Black',   'guibg':'#af8787' },
-		\   { 'ctermfg':'Black',      'ctermbg':'142',   'guifg':'Black',   'guibg':'#afaf00' },
-		\   { 'ctermfg':'Black',      'ctermbg':'152',   'guifg':'Black',   'guibg':'#afd7d7' },
-		\   {                                            'guifg':'Black',   'guibg':'#70b9fa' },
-		\   { 'ctermfg':'Black',      'ctermbg':'101',   'guifg':'Black',   'guibg':'#87875f' },
-		\   { 'ctermfg':'Black',      'ctermbg':'107',   'guifg':'Black',   'guibg':'#87af5f' },
-		\   { 'ctermfg':'Black',      'ctermbg':'114',   'guifg':'Black',   'guibg':'#87d787' },
-		\   { 'ctermfg':'Black',      'ctermbg':'117',   'guifg':'Black',   'guibg':'#87d7ff' },
-		\   { 'ctermfg':'Black',      'ctermbg':'118',   'guifg':'Black',   'guibg':'#87ff00' },
-		\   { 'ctermfg':'Black',      'ctermbg':'122',   'guifg':'Black',   'guibg':'#87ffd7' },
-		\   { 'ctermfg':'Black',      'ctermbg':'66',    'guifg':'Black',   'guibg':'#5f8787' },
-		\   { 'ctermfg':'Black',      'ctermbg':'72',    'guifg':'Black',   'guibg':'#5faf87' },
-		\   { 'ctermfg':'Black',      'ctermbg':'74',    'guifg':'Black',   'guibg':'#5fafd7' },
-		\   { 'ctermfg':'Black',      'ctermbg':'78',    'guifg':'Black',   'guibg':'#5fd787' },
-		\   { 'ctermfg':'Black',      'ctermbg':'79',    'guifg':'Black',   'guibg':'#5fd7af' },
-		\   { 'ctermfg':'Black',      'ctermbg':'85',    'guifg':'Black',   'guibg':'#5fffaf' },
-		\   { 'ctermfg':'White',      'ctermbg':'22',    'guifg':'White',   'guibg':'#005f00' },
-		\   { 'ctermfg':'White',      'ctermbg':'23',    'guifg':'White',   'guibg':'#005f5f' },
-		\   { 'ctermfg':'White',      'ctermbg':'27',    'guifg':'White',   'guibg':'#005fff' },
-		\   { 'ctermfg':'White',      'ctermbg':'29',    'guifg':'White',   'guibg':'#00875f' },
-		\   { 'ctermfg':'White',      'ctermbg':'34',    'guifg':'White',   'guibg':'#00af00' },
-		\   { 'ctermfg':'Black',      'ctermbg':'37',    'guifg':'Black',   'guibg':'#00afaf' },
-		\   { 'ctermfg':'Black',      'ctermbg':'43',    'guifg':'Black',   'guibg':'#00d7af' },
-		\   { 'ctermfg':'Black',      'ctermbg':'47',    'guifg':'Black',   'guibg':'#00ff5f' },
-		\   { 'ctermfg':'White',      'ctermbg':'53',    'guifg':'White',   'guibg':'#5f005f' },
-		\   { 'ctermfg':'White',      'ctermbg':'58',    'guifg':'White',   'guibg':'#5f5f00' },
-		\   { 'ctermfg':'White',      'ctermbg':'60',    'guifg':'White',   'guibg':'#5f5f87' },
-		\   { 'ctermfg':'White',      'ctermbg':'64',    'guifg':'White',   'guibg':'#5f8700' },
-		\   { 'ctermfg':'White',      'ctermbg':'65',    'guifg':'White',   'guibg':'#5f875f' },
-		\   { 'ctermfg':'White',      'ctermbg':'90',    'guifg':'White',   'guibg':'#870087' },
-		\   { 'ctermfg':'White',      'ctermbg':'95',    'guifg':'White',   'guibg':'#875f5f' },
-		\   { 'ctermfg':'White',      'ctermbg':'96',    'guifg':'White',   'guibg':'#875f87' },
-		\   { 'ctermfg':'White',      'ctermbg':'130',   'guifg':'White',   'guibg':'#af5f00' },
-		\   { 'ctermfg':'White',      'ctermbg':'131',   'guifg':'White',   'guibg':'#af5f5f' },
-		\   { 'ctermfg':'White',      'ctermbg':'17',    'guifg':'White',   'guibg':'#00005f' },
-		\   { 'ctermbg':'Red',        'ctermfg':'Black', 'guibg':'#FF7272', 'guifg':'Black' },
-		\   { 'ctermfg':'White',      'ctermbg':'52',    'guifg':'White',   'guibg':'#5f0000' },
-		\   { 'ctermfg':'White',      'ctermbg':'160',   'guifg':'White',   'guibg':'#d70000' },
-		\   { 'ctermfg':'White',      'ctermbg':'198',   'guifg':'White',   'guibg':'#ff0087' },
-\	]
+\  'mypalette': [
+    \   { 'ctermbg':'Cyan',       'ctermfg':'Black', 'guibg':'#8CCBEA', 'guifg':'Black' },
+    \   { 'ctermbg':'Green',      'ctermfg':'Black', 'guibg':'#A4E57E', 'guifg':'Black' },
+    \   { 'ctermbg':'Yellow',     'ctermfg':'Black', 'guibg':'#FFDB72', 'guifg':'Black' },
+    \   { 'ctermbg':'Magenta',    'ctermfg':'Black', 'guibg':'#FFB3FF', 'guifg':'Black' },
+    \   { 'ctermbg':'Blue',       'ctermfg':'Black', 'guibg':'#9999FF', 'guifg':'Black' },
+    \   { 'ctermfg':'Black',      'ctermbg':'202',   'guifg':'Black',   'guibg':'#ff5f00' },
+    \   { 'ctermfg':'Black',      'ctermbg':'204',   'guifg':'Black',   'guibg':'#ff5f87' },
+    \   { 'ctermfg':'Black',      'ctermbg':'209',   'guifg':'Black',   'guibg':'#ff875f' },
+    \   { 'ctermfg':'Black',      'ctermbg':'212',   'guifg':'Black',   'guibg':'#ff87d7' },
+    \   { 'ctermfg':'Black',      'ctermbg':'215',   'guifg':'Black',   'guibg':'#ffaf5f' },
+    \   { 'ctermfg':'Black',      'ctermbg':'220',   'guifg':'Black',   'guibg':'#ffd700' },
+    \   { 'ctermfg':'Black',      'ctermbg':'224',   'guifg':'Black',   'guibg':'#ffd7d7' },
+    \   { 'ctermfg':'Black',      'ctermbg':'228',   'guifg':'Black',   'guibg':'#ffff87' },
+    \   {                                            'guifg':'Black',   'guibg':'#b3dcff' },
+    \   {                                            'guifg':'Black',   'guibg':'#99cbd6' },
+    \   {                                            'guifg':'Black',   'guibg':'#7afff0' },
+    \   {                                            'guifg':'Black',   'guibg':'#a6ffd2' },
+    \   {                                            'guifg':'Black',   'guibg':'#a2de9e' },
+    \   {                                            'guifg':'Black',   'guibg':'#bcff80' },
+    \   {                                            'guifg':'Black',   'guibg':'#e7ff8c' },
+    \   {                                            'guifg':'Black',   'guibg':'#f2e19d' },
+    \   {                                            'guifg':'Black',   'guibg':'#ffcc73' },
+    \   {                                            'guifg':'Black',   'guibg':'#f7af83' },
+    \   {                                            'guifg':'Black',   'guibg':'#fcb9b1' },
+    \   {                                            'guifg':'Black',   'guibg':'#ff8092' },
+    \   {                                            'guifg':'Black',   'guibg':'#ff73bb' },
+    \   {                                            'guifg':'Black',   'guibg':'#fc97ef' },
+    \   {                                            'guifg':'Black',   'guibg':'#c8a3d9' },
+    \   {                                            'guifg':'Black',   'guibg':'#ac98eb' },
+    \   {                                            'guifg':'Black',   'guibg':'#6a6feb' },
+    \   {                                            'guifg':'Black',   'guibg':'#8caeff' },
+    \   { 'ctermfg':'Black',      'ctermbg':'166',   'guifg':'Black',   'guibg':'#d75f00' },
+    \   { 'ctermfg':'Black',      'ctermbg':'169',   'guifg':'Black',   'guibg':'#d75faf' },
+    \   { 'ctermfg':'Black',      'ctermbg':'174',   'guifg':'Black',   'guibg':'#d78787' },
+    \   { 'ctermfg':'Black',      'ctermbg':'175',   'guifg':'Black',   'guibg':'#d787af' },
+    \   { 'ctermfg':'Black',      'ctermbg':'186',   'guifg':'Black',   'guibg':'#d7d787' },
+    \   { 'ctermfg':'Black',      'ctermbg':'190',   'guifg':'Black',   'guibg':'#d7ff00' },
+    \   { 'ctermfg':'Black',      'ctermbg':'133',   'guifg':'Black',   'guibg':'#af5faf' },
+    \   { 'ctermfg':'Black',      'ctermbg':'138',   'guifg':'Black',   'guibg':'#af8787' },
+    \   { 'ctermfg':'Black',      'ctermbg':'142',   'guifg':'Black',   'guibg':'#afaf00' },
+    \   { 'ctermfg':'Black',      'ctermbg':'152',   'guifg':'Black',   'guibg':'#afd7d7' },
+    \   {                                            'guifg':'Black',   'guibg':'#70b9fa' },
+    \   { 'ctermfg':'Black',      'ctermbg':'101',   'guifg':'Black',   'guibg':'#87875f' },
+    \   { 'ctermfg':'Black',      'ctermbg':'107',   'guifg':'Black',   'guibg':'#87af5f' },
+    \   { 'ctermfg':'Black',      'ctermbg':'114',   'guifg':'Black',   'guibg':'#87d787' },
+    \   { 'ctermfg':'Black',      'ctermbg':'117',   'guifg':'Black',   'guibg':'#87d7ff' },
+    \   { 'ctermfg':'Black',      'ctermbg':'118',   'guifg':'Black',   'guibg':'#87ff00' },
+    \   { 'ctermfg':'Black',      'ctermbg':'122',   'guifg':'Black',   'guibg':'#87ffd7' },
+    \   { 'ctermfg':'Black',      'ctermbg':'66',    'guifg':'Black',   'guibg':'#5f8787' },
+    \   { 'ctermfg':'Black',      'ctermbg':'72',    'guifg':'Black',   'guibg':'#5faf87' },
+    \   { 'ctermfg':'Black',      'ctermbg':'74',    'guifg':'Black',   'guibg':'#5fafd7' },
+    \   { 'ctermfg':'Black',      'ctermbg':'78',    'guifg':'Black',   'guibg':'#5fd787' },
+    \   { 'ctermfg':'Black',      'ctermbg':'79',    'guifg':'Black',   'guibg':'#5fd7af' },
+    \   { 'ctermfg':'Black',      'ctermbg':'85',    'guifg':'Black',   'guibg':'#5fffaf' },
+    \   { 'ctermfg':'White',      'ctermbg':'22',    'guifg':'White',   'guibg':'#005f00' },
+    \   { 'ctermfg':'White',      'ctermbg':'23',    'guifg':'White',   'guibg':'#005f5f' },
+    \   { 'ctermfg':'White',      'ctermbg':'27',    'guifg':'White',   'guibg':'#005fff' },
+    \   { 'ctermfg':'White',      'ctermbg':'29',    'guifg':'White',   'guibg':'#00875f' },
+    \   { 'ctermfg':'White',      'ctermbg':'34',    'guifg':'White',   'guibg':'#00af00' },
+    \   { 'ctermfg':'Black',      'ctermbg':'37',    'guifg':'Black',   'guibg':'#00afaf' },
+    \   { 'ctermfg':'Black',      'ctermbg':'43',    'guifg':'Black',   'guibg':'#00d7af' },
+    \   { 'ctermfg':'Black',      'ctermbg':'47',    'guifg':'Black',   'guibg':'#00ff5f' },
+    \   { 'ctermfg':'White',      'ctermbg':'53',    'guifg':'White',   'guibg':'#5f005f' },
+    \   { 'ctermfg':'White',      'ctermbg':'58',    'guifg':'White',   'guibg':'#5f5f00' },
+    \   { 'ctermfg':'White',      'ctermbg':'60',    'guifg':'White',   'guibg':'#5f5f87' },
+    \   { 'ctermfg':'White',      'ctermbg':'64',    'guifg':'White',   'guibg':'#5f8700' },
+    \   { 'ctermfg':'White',      'ctermbg':'65',    'guifg':'White',   'guibg':'#5f875f' },
+    \   { 'ctermfg':'White',      'ctermbg':'90',    'guifg':'White',   'guibg':'#870087' },
+    \   { 'ctermfg':'White',      'ctermbg':'95',    'guifg':'White',   'guibg':'#875f5f' },
+    \   { 'ctermfg':'White',      'ctermbg':'96',    'guifg':'White',   'guibg':'#875f87' },
+    \   { 'ctermfg':'White',      'ctermbg':'130',   'guifg':'White',   'guibg':'#af5f00' },
+    \   { 'ctermfg':'White',      'ctermbg':'131',   'guifg':'White',   'guibg':'#af5f5f' },
+    \   { 'ctermfg':'White',      'ctermbg':'17',    'guifg':'White',   'guibg':'#00005f' },
+    \   { 'ctermbg':'Red',        'ctermfg':'Black', 'guibg':'#FF7272', 'guifg':'Black' },
+    \   { 'ctermfg':'White',      'ctermbg':'52',    'guifg':'White',   'guibg':'#5f0000' },
+    \   { 'ctermfg':'White',      'ctermbg':'160',   'guifg':'White',   'guibg':'#d70000' },
+    \   { 'ctermfg':'White',      'ctermbg':'198',   'guifg':'White',   'guibg':'#ff0087' },
+\  ]
 \}
 let g:mwDefaultHighlightingPalette = 'mypalette'
 let g:mwAutoLoadMarks = 1
@@ -1187,30 +1103,10 @@ nmap <Plug>IgnoreMarkSearchPrev <Plug>MarkSearchPrev
 " Plugin: vim-markdown-preview {{{
 let vim_markdown_preview_hotkey='<A-`>'
 " }}}
-" Plugin: vim-nerdtree-syntax-highlight {{{
-let g:NERDTreeLimitedSyntax = 1
-let g:NERDTreeFileExtensionHighlightFullName = 1
-let g:NERDTreeExactMatchHighlightFullName = 1
-let g:NERDTreePatternMatchHighlightFullName = 1
-let g:NERDTreeHighlightFolders = 1
-let g:NERDTreeHighlightFoldersFullName = 1
-" }}}
-" Plugin: vim-plugin-viewdoc {{{
-let g:viewdoc_winwidth_max=80
-" }}}
 " Plugin: vim-test {{{
 let test#strategy = "dispatch"
 " }}}
 " Plugin: vimwiki {{{
 let g:vimwiki_list = [{'path': '~/doc/notes/'}]
-" }}}
-" Plugin: unite-mark {{{
-let g:unite_source_mark_marks =
-\   "abcdefghijklmnopqrstuvwxyz"
-\ . "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-\ . "0123456789.'`^<>[]{}()\""
-" }}}
-" Plugin: unite-quickfix {{{
-let g:unite_quickfix_filename_is_pathshorten = 0
 " }}}
 " }}}
