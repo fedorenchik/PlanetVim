@@ -41,7 +41,7 @@
 	ds = diff --stat
 	e = checkout
 	eb = checkout -b
-	f = fetch --all --prune --tags --recurse-submodules=yes --jobs 4
+	f = fetch --all --tags --recurse-submodules=yes --jobs 4
 	g = grep
 	h = help
 	i = init
