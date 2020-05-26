@@ -194,12 +194,13 @@ set grepprg=grep\ -nH\ $*
 "set guicursor+=a:blinkon0
 if has("gui_gtk2")
   set guifont=Ubuntu\ Mono\ 11,Monospace\ 9
+  "FIXME: set guifontwide ??? is it needed ??? need to test
   "set guifontwide=WenQuanYi\ Zen\ Hei\ 10
 endif
 set guiheadroom=0
 set guioptions=aAceigpk
 set guipty
-set guitablabel=%!flagship#tablabel()
+"set guitablabel&
 "TODO: Add second (and further) lines with useful info
 set guitabtooltip=%{GuiTabLabel()}
 set helpheight=8
@@ -240,7 +241,7 @@ set modeline
 set modelines=5
 set more
 if has('mouse')
-  set mouse=n
+  set mouse=nicr
 endif
 set nomousefocus
 set mousehide
@@ -248,14 +249,14 @@ set mousemodel=popup_setpos
 set mouseshape+=o:question,c:pencil,e:hand2
 set nrformats+=alpha
 set nonumber
-set opendevice&
-set operatorfunc&
+"set opendevice&
+"set operatorfunc&
 set patchmode=".orig"
 set path+=.,,./include,../include,../*/include,*/include,*,../*,/usr/include,**
 set nopreserveindent
 set previewheight=3
 set printencoding=utf-8
-set printexpr&
+"set printexpr&
 set printfont=Ubuntu\ Mono\ 11,Monospace\ 9
 set printmbcharset=ISO10646
 set printmbfont=r:WenQuanYi\ Zen\ Hei,a:yes
@@ -266,8 +267,8 @@ set redrawtime=1000
 set regexpengine=1
 set norelativenumber
 set ruler
-set rulerformat&
-set scroll&
+"set rulerformat&
+"set scroll&
 set noscrollbind
 set scrolljump=2
 set scrolloff=2
@@ -307,12 +308,12 @@ set synmaxcol=1000
 if &t_Co == 8 && $TERM !~# '^linux\|^Eterm'
   set t_Co=16
 endif
-set tabline&
+"set tabline&
 set tabpagemax=50
 set tabstop=8
 set tagbsearch
 set tagcase=followscs
-set taglength&
+"set taglength&
 set tagrelative
 set tags=tags;
 set tagstack
@@ -324,25 +325,25 @@ set notildeop
 set notimeout
 set timeoutlen=400
 set title
-set titlelen&
+"set titlelen&
 set titleold=$PWD
 set titlestring=%F\ %a%r%m\ -\ VIM
 set ttimeout
 set ttimeoutlen=10
-set toolbar&
-set toolbariconsize&
+"set toolbar&
+"set toolbariconsize&
 set ttyfast
 if has('persistent_undo')
   set undodir=$HOME/.vim/undo,.
   set undofile
 endif
 set undolevels=1000
-set undoreload&
-set updatecount&
+"set undoreload&
+"set updatecount&
 set updatetime=1000
-set verbose&
-set verbosefile&
-set viewdir&
+"set verbose&
+"set verbosefile&
+"set viewdir&
 set viewoptions=cursor,folds,slash,unix,curdir
 set viminfo=!,%50,'100,<50,c,f1,h,r/tmp,r/var,r/mnt,r/media,s10,n$PWD/.viminfo
 set virtualedit=block
@@ -351,20 +352,20 @@ set warn
 set whichwrap=
 set wildchar=<C-E>
 set wildcharm=<C-Z>
-let &wildignore=netrw_gitignore#Hide()
+"set wildignore&
 set nowildignorecase
 set wildmenu
 set wildmode=longest:full,list:full
 set wildoptions=tagfile
 set winaltkeys=no
-set winheight&
-set winfixheight&
-set winfixwidth&
+"set winheight&
+"set winfixheight&
+"set winfixwidth&
 set winminheight=0
 set winminwidth=0
-set winwidth&
+"set winwidth&
 set nowrap
-set wrapmargin&
+"set wrapmargin&
 set nowrapscan
 set nowriteany
 set nowritebackup
@@ -412,7 +413,6 @@ endwhile
 " TODO: 3. Make j k behave like f F but input 3 characters
 nnoremap ` '
 nnoremap ' `
-nnoremap _ :Unite -no-resize -no-split -buffer-name=unite-file fire_rec<CR>
 nnoremap <unique> ; :
 nnoremap <unique> : q:i
 nmap + <C-W>
@@ -432,51 +432,13 @@ nnoremap Y y$
 " + +++++++ +++++ + + ++++    +++++++++++ +   ++  +
 nnoremap <Space> <Nop>
 nmap <S-Space> <Space>
-nnoremap <Space>. :UniteResume<CR>
-nnoremap <Space>a :Unite -smartcase -buffer-name=unite-alternate -input=`expand('%:t:r')` -immediately file_rec<CR>
-nnoremap <Space>b :Unite -start-insert -smartcase -buffer-name=unite-buffer buffer<CR>
-nnoremap <Space>B :Unite -no-resize -no-split -buffer-name=unite-buffer buffer<CR>
-nnoremap <Space>c :Unite -buffer-name=unite-gtags gtags/context<CR>
-nnoremap <Space>C :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/context<CR>
-nnoremap <Space>d :Unite -buffer-name=unite-gtags gtags/def<CR>
-nnoremap <Space>D :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/def<CR>
-nnoremap <Space>e :Unite -start-insert -no-resize -no-split -buffer-name=unite-file file<CR>
-nnoremap <Space>f :Unite -start-insert -smartcase -buffer-name=unite-file file:`expand('%:p:h')`<CR>
-nnoremap <Space>F :Unite -start-insert -smartcase -buffer-name=unite-file file_rec<CR>
-nnoremap <Space>g :Unite -buffer-name=unite-gtags gtags/completion<CR>
-nnoremap <Space>G :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/completion<CR>
-nnoremap <Space>h :VimShellPop -buffer-name=vimshell<CR>
-nnoremap <Space>i :Unite -start-insert -buffer-name=unite-line<CR>
-nnoremap <Space>j :Unite -smartcase -buffer-name=unite-jump jump<CR>
-nnoremap <Space>k :Unite -start-insert -smartcase -buffer-name=unite-gtags gtags/file<CR>
-nnoremap <Space>K :Unite -no-resize -no-split -smartcase -buffer-name=unite-gtags gtags/file<CR>
-nnoremap <Space>l :Unite -buffer-name=unite-location-list location_list<CR>
-nnoremap <Space>L :Unite -no-resize -no-split -buffer-name=unite-location-list location_list<CR>
-nnoremap <Space>m :Unite -buffer-name=unime-mark mark<CR>
-nnoremap <Space>o :Unite -start-insert -smartcase -buffer-name=unite-outline outline<CR>
-nnoremap <Space>O :Unite -no-resize -no-split -smartcase -buffer-name=unite-outline outline<CR>
-nnoremap <Space>p :Unite -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
-nnoremap <Space>P :Unite -no-resize -no-split -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
-nnoremap <Space>q :Unite -buffer-name=unite-quickfix quickfix<CR>
-nnoremap <Space>Q :Unite -no-resize -no-split -buffer-name=unite-quickfix quickfix<CR>
-nnoremap <Space>r :Unite -buffer-name=unite-gtags gtags/ref<CR>
-nnoremap <Space>R :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/ref<CR>
-nnoremap <Space>s :Unite -start-insert -smartcase -buffer-name=unite-grep grep:%::`expand('<cword>')`<CR>
+nnoremap <Space>h :rightbelow terminal<CR>
 nnoremap <Space>S :Scratch<CR>
-nnoremap <Space>t :Unite -start-insert -smartcase -buffer-name=unite-tab tab<CR>
-nnoremap <Space>u :UniteResume<CR>
-nnoremap <Space>w :Unite -start-insert -smartcase -buffer-name=unite-window window:all:no-current<CR>
-nnoremap <Space>W :Unite -start-insert -smartcase -buffer-name=unite-window window/gui<CR>
-nnoremap <Space>y :Unite -buffer-name=unite-yank history/yank<CR>
-nnoremap <Space>' :Unite -start-insert -smartcase -buffer-name=unite-mark mark<CR>
-nnoremap <Space>" :Unite -start-insert -smartcase -buffer-name=unite-register register<CR>
-nnoremap <Space>* :Grepper -cword -noprompt<CR>
 " }}}
 " -----------: g...: vim status: {{{
 " Standard Vim Mappings: a ^A d D e E f F g ^G h H ^H i I j J k m n N o p P q Q
 " r R s t T u U v V w x 0 8 ] ^] # $ & ' ` * + , - ; < ? ^ _ @ ~ <Down> <End>
 " <Home> <LeftMouse> <MiddleMouse> <RightMouse> <Up>
-" vim-commentary: gc
 " vim-capslock: gC
 " Available To Map:
 " A b B G K l L M O S W X y Y z Z 1 2 3 4 5 6 7 9 % [ { } ( = ) ! : > . / \ | "
@@ -491,7 +453,6 @@ nnoremap gL :lhistory<CR>
 nnoremap gO :jumps<CR>
 nnoremap gq :clist<CR>
 nnoremap gQ :chistory<CR>
-nmap gs <plug>(GrepperOperator)
 nnoremap gS ^vg_y:execute @@<CR>:echo 'Sourced: ' . @@<CR>
 nnoremap gW Q
 nnoremap gX gQ
@@ -507,12 +468,6 @@ nnoremap g= :tabnew<CR>
 " -----------: s...: source navigation (lsp): {{{
 " Available To Map: all
 nnoremap s <Nop>
-nmap <silent> sd <Plug>(coc-definition)
-nnoremap sg :Grepper -tool git<CR>
-nnoremap sG :Grepper -tool rg<CR>
-nmap <silent> si <Plug>(coc-implementation)
-nmap <silent> sr <Plug>(coc-references)
-nmap <silent> st <Plug>(coc-type-definition)
 " }}}
 " -----------: S...: open windows: {{{
 " Available To Map: all
@@ -521,24 +476,22 @@ nnoremap SH :help<CR>
 nnoremap SL :lopen<CR>
 nnoremap SP :ptag<CR>
 nnoremap SQ :botright copen<CR>
-nnoremap ST :TagbarOpen<CR>
-nnoremap SU :UndotreeShow<CR>
 " }}}
 " -----------: z...: {{{
 " Standard Vim Mappings: a A b c C d D e E f F g G h H i j k l L m M n N o O r R
 " s t u v w W x X z ^ + - . = <Left> <Right> <CR>
 " Available To Map:
 " B I J K p P q Q S T U V y Y Z $ ~ & % [ { } ( * ) ] ! # ` ; : , < > / ? @ \ | _ ' " 0 1 2 3 4 5 6 7 8 9
+nnoremap z{ 0
+nnoremap z} zLzL
+nnoremap z( zHzH
+nnoremap z) zLzL
 " }}}
 " -----------: Z...: close windows: {{{
-" Standard Vim Mappings: Q Z
-" Available To Map: all
 nnoremap ZH :helpclose<CR>
 nnoremap ZL :lclose<CR>
 nnoremap ZP :pclose<CR>
 nnoremap ZQ :cclose<CR>
-nnoremap ZT :TagbarClose<CR>
-nnoremap ZU :UndotreeHide<CR>
 " }}}
 " -----------: [...: {{{
 " Standard Vim Mappings: c d D ^D f i I ^I m p P s S z # ' ( * ` / [ ] {
@@ -549,18 +502,6 @@ nnoremap ZU :UndotreeHide<CR>
 " +                         +           + +       + + + + + + + + + +
 nnoremap [C :colder<CR>
 nnoremap [O :lolder<CR>
-nmap <silent> [w <Plug>(coc-diagnostic-prev)
-nmap <silent> [W <Plug>(coc-diagnostic-prev-error)
-nnoremap [1 :call signature#marker#Goto('prev', 1, v:count)<CR>
-nnoremap [2 :call signature#marker#Goto('prev', 2, v:count)<CR>
-nnoremap [3 :call signature#marker#Goto('prev', 3, v:count)<CR>
-nnoremap [4 :call signature#marker#Goto('prev', 4, v:count)<CR>
-nnoremap [5 :call signature#marker#Goto('prev', 5, v:count)<CR>
-nnoremap [6 :call signature#marker#Goto('prev', 6, v:count)<CR>
-nnoremap [7 :call signature#marker#Goto('prev', 7, v:count)<CR>
-nnoremap [8 :call signature#marker#Goto('prev', 8, v:count)<CR>
-nnoremap [9 :call signature#marker#Goto('prev', 9, v:count)<CR>
-nnoremap [0 :call signature#marker#Goto('prev', 0, v:count)<CR>
 " }}}
 " -----------: ]...: {{{
 " Standard Vim Mappings: c d D ^D f i I ^I m p P s S z # ' ) * ` / [ ] }
@@ -571,18 +512,6 @@ nnoremap [0 :call signature#marker#Goto('prev', 0, v:count)<CR>
 " +                         +           + +       + + + + + + + + + +
 nnoremap ]C :cnewer<CR>
 nnoremap ]O :lnewer<CR>
-nmap <silent> ]w <Plug>(coc-diagnostic-next)
-nmap <silent> ]W <Plug>(coc-diagnostic-next-error)
-nnoremap ]1 :call signature#marker#Goto('next', 1, v:count)<CR>
-nnoremap ]2 :call signature#marker#Goto('next', 2, v:count)<CR>
-nnoremap ]3 :call signature#marker#Goto('next', 3, v:count)<CR>
-nnoremap ]4 :call signature#marker#Goto('next', 4, v:count)<CR>
-nnoremap ]5 :call signature#marker#Goto('next', 5, v:count)<CR>
-nnoremap ]6 :call signature#marker#Goto('next', 6, v:count)<CR>
-nnoremap ]7 :call signature#marker#Goto('next', 7, v:count)<CR>
-nnoremap ]8 :call signature#marker#Goto('next', 8, v:count)<CR>
-nnoremap ]9 :call signature#marker#Goto('next', 9, v:count)<CR>
-nnoremap ]0 :call signature#marker#Goto('next', 0, v:count)<CR>
 " }}}
 " }}}
 " Ctrl Key: tags, quickfix, location list navigation: {{{
@@ -602,8 +531,6 @@ nnoremap <C-h> <C-W>h
 nnoremap <C-j> <C-W>j
 nnoremap <C-k> <C-W>k
 nnoremap <C-l> <C-W>l
-nnoremap <C-n> :UniteNext<CR>
-nnoremap <C-p> :UnitePrevious<CR>
 nnoremap <C-s> :emenu <C-Z>
 nnoremap <C-u> :lolder<CR>
 " Ctrl Key: <C-W>...: {{{
@@ -620,7 +547,6 @@ nnoremap <C-_> <Nop>
 " Available To Map: all keys
 nnoremap <A-Left> <C-o>
 nnoremap <A-Right> <C-i>
-nnoremap <A-f> :NERDTreeToggle<CR>
 nnoremap <A-F> :silent call system('wmctrl -i -b toggle,fullscreen -r' . v:windowid)<CR>
 nnoremap <A-m> :silent call system('wmctrl -i -b add,maximized_vert,maximized_horz -r' . v:windowid)<CR>
 nnoremap <A-M> :silent call system('wmctrl -i -b remove,maximized_vert,maximized_horz -r' . v:windowid)<CR>
@@ -629,13 +555,8 @@ nnoremap <A-q> :q<CR>
 nnoremap <A-Q> :qa<CR>
 nnoremap <A-r> :nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-L>
 nnoremap <A-s> :rightbelow terminal<CR>
-nnoremap <A-t> :TagbarToggle<CR>
 nnoremap <A-w> :confirm up<CR>
 nnoremap <A-W> :wa<CR>
-" }}}
-" Leader: {{{
-nmap <Leader>M <Plug>MarkToggle
-nmap <Leader>N <Plug>MarkConfirmAllClear
 " }}}
 " Mouse Keys: {{{
 " Mousekeys: <LeftMouse> <MiddleMouse> <RightMouse> <X1Mouse> <X2Mouse>
@@ -654,7 +575,6 @@ nmap <Leader>N <Plug>MarkConfirmAllClear
 inoremap <Tab> <Esc>
 inoremap <expr> <CR> pumvisible() ? "<C-Y><CR>" : "<CR>"
 " Ctrl Key: {{{
-inoremap <silent><expr> <C-Space> coc#refresh()
 inoremap <C-@> <C-^>
 inoremap <C-E> <C-R>=pumvisible() ? "\<lt>C-E>" : "\<lt>Esc>"<CR>
 " Insert Mode i_^G: {{{
@@ -675,12 +595,6 @@ inoremap <C-Z> <Nop>
 inoremap <C-{> <Esc>
 " }}}
 " Alt Key: {{{
-" Available to map:
-" 0123456789$&[{}(=*)+]!#;,./@\-'~%`:<>?^|_"
-"              ++  + ++                 +
-" aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ
-" +   +++ + +   + +   + + + + + +     + + + + + + +
-inoremap <silent><expr> <A-Space> coc#refresh()
 inoremap <A-*> <C-L>
 inoremap <A-+> <PageDown>
 inoremap <A-^> <PageUp>
@@ -715,14 +629,10 @@ inoremap <expr> <A-y> pumvisible() ? "<C-Y>" : "<Esc>"
 vnoremap <Tab> <Esc>
 xnoremap ; :
 xnoremap / /\v
-xmap gs <plug>(GrepperOperator)
 xnoremap gy "+y
 " make p in visual mode replace selected text with the yank register
 xnoremap p <Esc>:let current_reg = @"<CR>gvdi<C-R>=current_reg<CR><Esc>
-vmap <Leader>m <Plug>MarkSet
-vmap <Leader>r <Plug>MarkRegex
 xnoremap X y/<C-R>"<CR>
-xmap <Leader>* <Plug>MarkIWhiteSet
 vnoremap / y/\V<C-R>"<CR>
 vnoremap ? y/\V\<<C-R>"\><CR>
 vnoremap * y/\V\<<C-R>"<CR>
@@ -731,10 +641,14 @@ vnoremap # y/\V<C-R>"\><CR>
 " Command-line (Cmdline) Mode: {{{
 " Subcommands & submodes: Ctrl-R, Ctrl-\
 cnoremap <Tab> <C-U><BS>
+"FIXME: Below does not work. Make <C-Tab> behave as <Tab>.
+cnoremap <C-Tab> <Tab>
 cnoremap <C-Y> <S-Tab>
 " }}}
 " Terminal Window: {{{
 tnoremap <Esc> <C-w>N
+tnoremap <Tab> <C-w>N
+tnoremap <C-e> <Tab>
 tnoremap <C-j> <C-w><C-j>
 tnoremap <C-k> <C-w><C-k>
 tnoremap <C-l> <C-w><C-l>
@@ -752,16 +666,10 @@ lnoremap <Tab> <Esc>
 " }}}
 " }}}
 " Abbreviations: {{{
-"inoreabbrev @lf leonid@fedorenchik.ru
-"inoreabbrev @gm leonidsbox@gmail.com
-"inoreabbrev @cc Copyright (C) 2016 Leonid V. Fedorenchik
-"inoreabbrev @sig -- <CR>Leonid V. Fedorenchik
 inoreabbrev teh the
 cnoreabbrev calc Calc
 cnoreabbrev f find
 cnoreabbrev gblame Gblame
-cnoreabbrev gtags Gtags
-call SetupCommandAlias("grep", "GrepperGrep")
 " }}}
 " Autocommands: {{{
 if has("autocmd")
@@ -771,14 +679,11 @@ autocmd BufReadPre *.asm let g:asmsyntax = "fasm"
 autocmd BufReadPre *.[sS] let g:asmsyntax = "asm"
 autocmd BufReadPost */linux/*.h setfiletype c
 autocmd BufReadPost *.log normal G
-autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
 autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") && &filetype !~# 'commit' | exe "normal! g`\"" | endif
 autocmd CmdWinEnter : noremap <buffer> <S-CR> <CR>q:
 autocmd CmdWinEnter / noremap <buffer> <S-CR> <CR>q/
 autocmd CmdWinEnter ? noremap <buffer> <S-CR> <CR>q?
 autocmd CmdwinEnter * nnoremap <buffer> <CR> <CR>
-autocmd FileType c,cpp setlocal tags+=$HOME/.vim/ctags
-autocmd FileType c,cpp setlocal tags+=$HOME/.vim/linuxtags
 autocmd FileType c,cpp setlocal foldmethod=syntax
 autocmd FileType c,cpp inoreabbrev #i #include 
 autocmd FileType c,cpp inoreabbrev ,, <<
@@ -791,7 +696,6 @@ autocmd FileType c,cpp inoreabbrev ;v std::vector
 autocmd FileType c,cpp inoremap ;; ::
 autocmd FileType cpp setlocal path+=/usr/include/c++/7
 autocmd FileType cpp setlocal define=^\\(#\\s*define\\|[a-z]*\\s*const\\s*[a-z]*\\)
-autocmd FileType cpp setlocal tags+=$HOME/.vim/cxxtags
 autocmd FileType html setlocal clipboard=autoselect,autoselectml,html,exclude:cons\|linux
 autocmd FileType dockerfile,python,qmake setlocal expandtab
 autocmd FileType dockerfile,python,qmake setlocal tabstop=4
@@ -812,8 +716,6 @@ if exists("+omnifunc")
 endif
 autocmd GUIEnter * set guifont=Ubuntu\ Mono\ 11,Monospace\ 9
 autocmd SessionLoadPost * let g:vimrc_auto_session = 1
-autocmd User Flags call Hoist("global", "%{&ignorecase ? '[IC]' : ''}")
-autocmd User Flags call Hoist("global", "%{coc#status()}")
 autocmd GUIEnter * if exists('g:vimrc_auto_session') && filereadable('.session.vim') | source .session.vim | endif
 autocmd VimEnter * if expand("%") != "" && getcwd() == expand("~") | cd %:h | endif
 autocmd VimLeavePre * if exists('g:vimrc_auto_session') | mksession! .session.vim | endif
@@ -821,9 +723,6 @@ augroup END
 endif
 " }}}
 " Commands: {{{
-" Convenient command to see the difference between the current buffer and the
-" file it was loaded from, thus the changes you made.
-" Only define it when not defined already.
 if !exists(":DiffOrig")
   command DiffOrig vertical new | setlocal buftype=nofile | r ++edit # |
         \ 0d_ | diffthis | wincmd p | diffthis
@@ -962,8 +861,60 @@ let g:coc_global_extensions='coc-lists coc-python coc-explorer ' ..
       \ 'coc-dictionary coc-emoji coc-syntax coc-gocode coc-vimtex coc-yank ' ..
       \ 'coc-bookmark coc-cmake coc-git coc-snippets coc-gitignore coc-sql ' ..
       \ 'coc-docker coc-db coc-project coc-terminal coc-lines coc-sh'
-nnoremap <silent> <Space>y  :<C-u>CocList -A --normal yank<CR>
-" Check: coc-word
+nnoremap <silent> <Space>. :UniteResume<CR>
+nnoremap <silent> <Space>a :Unite -smartcase -buffer-name=unite-alternate -input=`expand('%:t:r')` -immediately file_rec<CR>
+nnoremap <silent> <Space>b :Unite -start-insert -smartcase -buffer-name=unite-buffer buffer<CR>
+nnoremap <silent> <Space>B :Unite -no-resize -no-split -buffer-name=unite-buffer buffer<CR>
+nnoremap <silent> <Space>c :Unite -buffer-name=unite-gtags gtags/context<CR>
+nnoremap <silent> <Space>C :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/context<CR>
+nnoremap <silent> <Space>d :Unite -buffer-name=unite-gtags gtags/def<CR>
+nnoremap <silent> <Space>D :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/def<CR>
+nnoremap <silent> <Space>e :Unite -start-insert -no-resize -no-split -buffer-name=unite-file file<CR>
+nnoremap <silent> <Space>f :Unite -start-insert -smartcase -buffer-name=unite-file file:`expand('%:p:h')`<CR>
+nnoremap <silent> <Space>F :Unite -start-insert -smartcase -buffer-name=unite-file file_rec<CR>
+nnoremap <silent> <Space>g :Unite -buffer-name=unite-gtags gtags/completion<CR>
+nnoremap <silent> <Space>G :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/completion<CR>
+nnoremap <silent> <Space>i :Unite -start-insert -buffer-name=unite-line<CR>
+nnoremap <silent> <Space>j :Unite -smartcase -buffer-name=unite-jump jump<CR>
+nnoremap <silent> <Space>k :Unite -start-insert -smartcase -buffer-name=unite-gtags gtags/file<CR>
+nnoremap <silent> <Space>K :Unite -no-resize -no-split -smartcase -buffer-name=unite-gtags gtags/file<CR>
+nnoremap <silent> <Space>l :Unite -buffer-name=unite-location-list location_list<CR>
+nnoremap <silent> <Space>L :Unite -no-resize -no-split -buffer-name=unite-location-list location_list<CR>
+nnoremap <silent> <Space>m :Unite -buffer-name=unime-mark mark<CR>
+nnoremap <silent> <Space>o :Unite -start-insert -smartcase -buffer-name=unite-outline outline<CR>
+nnoremap <silent> <Space>O :Unite -no-resize -no-split -smartcase -buffer-name=unite-outline outline<CR>
+nnoremap <silent> <Space>p :Unite -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
+nnoremap <silent> <Space>P :Unite -no-resize -no-split -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
+nnoremap <silent> <Space>q :Unite -buffer-name=unite-quickfix quickfix<CR>
+nnoremap <silent> <Space>Q :Unite -no-resize -no-split -buffer-name=unite-quickfix quickfix<CR>
+nnoremap <silent> <Space>r :Unite -buffer-name=unite-gtags gtags/ref<CR>
+nnoremap <silent> <Space>R :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/ref<CR>
+nnoremap <silent> <Space>s :Unite -start-insert -smartcase -buffer-name=unite-grep grep:%::`expand('<cword>')`<CR>
+nnoremap <silent> <Space>t :Unite -start-insert -smartcase -buffer-name=unite-tab tab<CR>
+nnoremap <silent> <Space>u :UniteResume<CR>
+nnoremap <silent> <Space>w :Unite -start-insert -smartcase -buffer-name=unite-window window:all:no-current<CR>
+nnoremap <silent> <Space>W :Unite -start-insert -smartcase -buffer-name=unite-window window/gui<CR>
+nnoremap <silent> <Space>y :CocList -A --normal yank<CR>
+nnoremap <silent> <Space>' :Unite -start-insert -smartcase -buffer-name=unite-mark mark<CR>
+nnoremap <silent> <Space>" :Unite -start-insert -smartcase -buffer-name=unite-register register<CR>
+nnoremap <silent> <C-n> :CocNext<CR>
+nnoremap <silent> <C-p> :CocPrev<CR>
+nmap <silent> sd <Plug>(coc-definition)
+nmap <silent> si <Plug>(coc-implementation)
+nmap <silent> sr <Plug>(coc-references)
+nmap <silent> st <Plug>(coc-type-definition)
+nmap <silent> [w <Plug>(coc-diagnostic-prev)
+nmap <silent> [W <Plug>(coc-diagnostic-prev-error)
+nmap <silent> ]w <Plug>(coc-diagnostic-next)
+nmap <silent> ]W <Plug>(coc-diagnostic-next-error)
+inoremap <silent><expr> <C-Space> coc#refresh()
+inoremap <silent><expr> <A-Space> coc#refresh()
+" TODO Check: coc-word
+" coc-explorer {{{
+nnoremap <silent> _ :Unite -no-resize -no-split -buffer-name=unite-file fire_rec<CR>
+nnoremap <silent> _ :CocCommand explorer --position tab<CR>
+nnoremap <silent> <A-f> :CocCommand explorer --toggle<CR>
+" }}}
 " }}}
 " Plugin: FastFold {{{
 let g:fastfold_force = 1
@@ -1004,13 +955,31 @@ let g:SignatureForceMarkerPlacement = 1
 " }}}
 " Plugin: undotree {{{
 let g:undotree_WindowLayout=4
+nnoremap SU :UndotreeShow<CR>
+nnoremap ZU :UndotreeHide<CR>
 " }}}
 " Plugin: vim-cpp-enhanced-highlight {{{
 let g:cpp_no_function_highlight=1
 " }}}
+" Plugin: vim-flagship {{{
+set guitablabel=%!flagship#tablabel()
+autocmd User Flags call Hoist("global", "%{&ignorecase ? '[IC]' : ''}")
+autocmd User Flags call Hoist("global", "%{coc#status()}")
+" }}}
+" Plugin: vim-flog {{{
+augroup Flog
+  au FileType floggraph vnoremap <buffer> <silent> D :<C-U>call flog#run_tmp_command("vertical belowright Git diff %(h'>) %(h'<)")<CR>
+augroup end
+" }}}
 " Plugin: vim-grepper {{{
 let g:grepper = {}
 let g:grepper.tools = ['grep', 'git', 'rg']
+nnoremap <Space>* :Grepper -cword -noprompt<CR>
+nmap gs <plug>(GrepperOperator)
+nnoremap sg :Grepper -tool git<CR>
+nnoremap sG :Grepper -tool rg<CR>
+xmap gs <plug>(GrepperOperator)
+call SetupCommandAlias("grep", "GrepperGrep")
 " }}}
 " Plugin: vim-mark {{{
 let g:mwPalettes = {
@@ -1099,14 +1068,46 @@ let g:mwAutoLoadMarks = 1
 let g:mwAutoSaveMarks = 1
 nmap <Plug>IgnoreMarkSearchNext <Plug>MarkSearchNext
 nmap <Plug>IgnoreMarkSearchPrev <Plug>MarkSearchPrev
+vmap <Leader>m <Plug>MarkSet
+vmap <Leader>r <Plug>MarkRegex
+xmap <Leader>* <Plug>MarkIWhiteSet
+nmap <Leader>M <Plug>MarkToggle
+nmap <Leader>N <Plug>MarkConfirmAllClear
 " }}}
 " Plugin: vim-markdown-preview {{{
 let vim_markdown_preview_hotkey='<A-`>'
+" }}}
+" Plugin: vim-signature {{{
+nnoremap [1 :call signature#marker#Goto('prev', 1, v:count)<CR>
+nnoremap [2 :call signature#marker#Goto('prev', 2, v:count)<CR>
+nnoremap [3 :call signature#marker#Goto('prev', 3, v:count)<CR>
+nnoremap [4 :call signature#marker#Goto('prev', 4, v:count)<CR>
+nnoremap [5 :call signature#marker#Goto('prev', 5, v:count)<CR>
+nnoremap [6 :call signature#marker#Goto('prev', 6, v:count)<CR>
+nnoremap [7 :call signature#marker#Goto('prev', 7, v:count)<CR>
+nnoremap [8 :call signature#marker#Goto('prev', 8, v:count)<CR>
+nnoremap [9 :call signature#marker#Goto('prev', 9, v:count)<CR>
+nnoremap [0 :call signature#marker#Goto('prev', 0, v:count)<CR>
+nnoremap ]1 :call signature#marker#Goto('next', 1, v:count)<CR>
+nnoremap ]2 :call signature#marker#Goto('next', 2, v:count)<CR>
+nnoremap ]3 :call signature#marker#Goto('next', 3, v:count)<CR>
+nnoremap ]4 :call signature#marker#Goto('next', 4, v:count)<CR>
+nnoremap ]5 :call signature#marker#Goto('next', 5, v:count)<CR>
+nnoremap ]6 :call signature#marker#Goto('next', 6, v:count)<CR>
+nnoremap ]7 :call signature#marker#Goto('next', 7, v:count)<CR>
+nnoremap ]8 :call signature#marker#Goto('next', 8, v:count)<CR>
+nnoremap ]9 :call signature#marker#Goto('next', 9, v:count)<CR>
+nnoremap ]0 :call signature#marker#Goto('next', 0, v:count)<CR>
 " }}}
 " Plugin: vim-test {{{
 let test#strategy = "dispatch"
 " }}}
 " Plugin: vimwiki {{{
 let g:vimwiki_list = [{'path': '~/doc/notes/'}]
+" }}}
+" Plugin: vista.vim {{{
+nnoremap <silent> ST :Vista<CR>
+nnoremap <silent> ZT :Vista!<CR>
+nnoremap <silent> <A-t> :Vista coc<CR>
 " }}}
 " }}}
