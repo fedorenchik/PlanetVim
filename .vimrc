@@ -861,7 +861,7 @@ let g:coc_global_extensions='coc-lists coc-python coc-explorer ' ..
       \ 'coc-dictionary coc-emoji coc-syntax coc-gocode coc-vimtex coc-yank ' ..
       \ 'coc-bookmark coc-cmake coc-git coc-snippets coc-gitignore coc-sql ' ..
       \ 'coc-docker coc-db coc-project coc-terminal coc-lines coc-sh'
-nnoremap <silent> <Space>. :UniteResume<CR>
+nnoremap <silent> <Space>. :CocListResume<CR>
 nnoremap <silent> <Space>a :Unite -smartcase -buffer-name=unite-alternate -input=`expand('%:t:r')` -immediately file_rec<CR>
 nnoremap <silent> <Space>b :Unite -start-insert -smartcase -buffer-name=unite-buffer buffer<CR>
 nnoremap <silent> <Space>B :Unite -no-resize -no-split -buffer-name=unite-buffer buffer<CR>
@@ -891,11 +891,11 @@ nnoremap <silent> <Space>r :Unite -buffer-name=unite-gtags gtags/ref<CR>
 nnoremap <silent> <Space>R :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/ref<CR>
 nnoremap <silent> <Space>s :Unite -start-insert -smartcase -buffer-name=unite-grep grep:%::`expand('<cword>')`<CR>
 nnoremap <silent> <Space>t :Unite -start-insert -smartcase -buffer-name=unite-tab tab<CR>
-nnoremap <silent> <Space>u :UniteResume<CR>
-nnoremap <silent> <Space>w :Unite -start-insert -smartcase -buffer-name=unite-window window:all:no-current<CR>
+nnoremap <silent> <Space>u :CocListResume<CR>
+nnoremap <silent> <Space>w :CocList windows<CR>
 nnoremap <silent> <Space>W :Unite -start-insert -smartcase -buffer-name=unite-window window/gui<CR>
 nnoremap <silent> <Space>y :CocList -A --normal yank<CR>
-nnoremap <silent> <Space>' :Unite -start-insert -smartcase -buffer-name=unite-mark mark<CR>
+nnoremap <silent> <Space>' :CocList marks<CR>
 nnoremap <silent> <Space>" :Unite -start-insert -smartcase -buffer-name=unite-register register<CR>
 nnoremap <silent> <C-n> :CocNext<CR>
 nnoremap <silent> <C-p> :CocPrev<CR>
