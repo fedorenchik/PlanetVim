@@ -59,6 +59,28 @@ function! GuiTabLabel() abort
   " Append the buffer name
   return label . bufname(bufnrlist[tabpagewinnr(v:lnum) - 1])
 endfunction
+
+function! GuiTabTooltip() abort
+  let l:tooltip = ''
+  let l:tooltip ..= '[' .. tabpagenr() .. '/' .. tabpagenr('$') .. '] '
+  let l:tooltip ..= tabpagewinnr(v:lnum, '$')
+
+  let l:bufnrlist = tabpagebuflist(v:lnum)
+  for bufnr in l:bufnrlist
+    let l:tooltip ..= "\n"
+    if getbufvar(bufnr, "&modified")
+      let l:tooltip ..= '+'
+    endif
+    let l:cur_buf_name = bufname(l:bufnrlist[tabpagewinnr(v:lnum) - 1])
+    if empty(l:cur_buf_name)
+      let l:cur_buf_name = "[No Name]"
+    endif
+    let l:tooltip ..= l:cur_buf_name
+  endfor
+
+  return l:tooltip
+endfunction
+
 " Avoid the ":ptag" when there is no word under the cursor, and a few other
 " things. Opens the tag under cursor in Preview window.
 function! PreviewWord() abort
@@ -202,7 +224,7 @@ set guioptions=aAceigpk
 set guipty
 "set guitablabel&
 "TODO: Add second (and further) lines with useful info
-set guitabtooltip=%{GuiTabLabel()}
+set guitabtooltip=%{GuiTabTooltip()}
 set helpheight=8
 set helplang=en
 set hidden
