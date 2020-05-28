@@ -882,18 +882,19 @@ autocmd User CocNvimInit call coc#config('languageserver', {
 let g:coc_global_extensions='coc-lists coc-python coc-explorer ' ..
       \ 'coc-dictionary coc-emoji coc-syntax coc-gocode coc-vimtex coc-yank ' ..
       \ 'coc-bookmark coc-cmake coc-git coc-snippets coc-gitignore coc-sql ' ..
-      \ 'coc-docker coc-db coc-project coc-terminal coc-lines coc-sh'
+      \ 'coc-docker coc-db coc-project coc-terminal coc-lines coc-sh' ..
+      \ 'coc-angular coc-css coc-html coc-json coc-tsserver coc-vimlsp'
 nnoremap <silent> <Space>. :CocListResume<CR>
 nnoremap <silent> <Space>a :Unite -smartcase -buffer-name=unite-alternate -input=`expand('%:t:r')` -immediately file_rec<CR>
-nnoremap <silent> <Space>b :Unite -start-insert -smartcase -buffer-name=unite-buffer buffer<CR>
-nnoremap <silent> <Space>B :Unite -no-resize -no-split -buffer-name=unite-buffer buffer<CR>
+nnoremap <silent> <Space>b :CocList buffers<CR>
+nnoremap <silent> <Space>B :CocList --tab buffers<CR>
 nnoremap <silent> <Space>c :Unite -buffer-name=unite-gtags gtags/context<CR>
 nnoremap <silent> <Space>C :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/context<CR>
 nnoremap <silent> <Space>d :Unite -buffer-name=unite-gtags gtags/def<CR>
 nnoremap <silent> <Space>D :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/def<CR>
 nnoremap <silent> <Space>e :Unite -start-insert -no-resize -no-split -buffer-name=unite-file file<CR>
-nnoremap <silent> <Space>f :Unite -start-insert -smartcase -buffer-name=unite-file file:`expand('%:p:h')`<CR>
-nnoremap <silent> <Space>F :Unite -start-insert -smartcase -buffer-name=unite-file file_rec<CR>
+nnoremap <silent> <Space>f :CocList files<CR>
+nnoremap <silent> <Space>F :CocList files<CR>
 nnoremap <silent> <Space>g :Unite -buffer-name=unite-gtags gtags/completion<CR>
 nnoremap <silent> <Space>G :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/completion<CR>
 nnoremap <silent> <Space>i :Unite -start-insert -buffer-name=unite-line<CR>
@@ -902,13 +903,13 @@ nnoremap <silent> <Space>k :Unite -start-insert -smartcase -buffer-name=unite-gt
 nnoremap <silent> <Space>K :Unite -no-resize -no-split -smartcase -buffer-name=unite-gtags gtags/file<CR>
 nnoremap <silent> <Space>l :Unite -buffer-name=unite-location-list location_list<CR>
 nnoremap <silent> <Space>L :Unite -no-resize -no-split -buffer-name=unite-location-list location_list<CR>
-nnoremap <silent> <Space>m :Unite -buffer-name=unime-mark mark<CR>
-nnoremap <silent> <Space>o :Unite -start-insert -smartcase -buffer-name=unite-outline outline<CR>
-nnoremap <silent> <Space>O :Unite -no-resize -no-split -smartcase -buffer-name=unite-outline outline<CR>
+nnoremap <silent> <Space>m :CocList marks<CR>
+nnoremap <silent> <Space>o :CocList outline<CR>
+nnoremap <silent> <Space>O :CocList --tab outline<CR>
 nnoremap <silent> <Space>p :Unite -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
 nnoremap <silent> <Space>P :Unite -no-resize -no-split -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
-nnoremap <silent> <Space>q :Unite -buffer-name=unite-quickfix quickfix<CR>
-nnoremap <silent> <Space>Q :Unite -no-resize -no-split -buffer-name=unite-quickfix quickfix<CR>
+nnoremap <silent> <Space>q :CocList quickfix<CR>
+nnoremap <silent> <Space>Q :CocList --tab quickfix<CR>
 nnoremap <silent> <Space>r :Unite -buffer-name=unite-gtags gtags/ref<CR>
 nnoremap <silent> <Space>R :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/ref<CR>
 nnoremap <silent> <Space>s :Unite -start-insert -smartcase -buffer-name=unite-grep grep:%::`expand('<cword>')`<CR>
@@ -1019,6 +1020,7 @@ set showtabline=2
 set laststatus=2
 " }}}
 " Plugin: vim-flagship {{{
+" TODO: manually set guitablabel, remove vim-flagship
 set guitablabel=%!flagship#tablabel()
 autocmd User Flags call Hoist("global", "%{&ignorecase ? '[IC]' : ''}")
 autocmd User Flags call Hoist("global", "%{coc#status()}")
