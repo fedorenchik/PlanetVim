@@ -718,7 +718,6 @@ autocmd FileType c,cpp inoreabbrev ;v std::vector
 autocmd FileType c,cpp inoremap ;; ::
 autocmd FileType cpp setlocal path+=/usr/include/c++/7
 autocmd FileType cpp setlocal define=^\\(#\\s*define\\|[a-z]*\\s*const\\s*[a-z]*\\)
-autocmd FileType html setlocal clipboard=autoselect,autoselectml,html,exclude:cons\|linux
 autocmd FileType dockerfile,python,qmake setlocal expandtab
 autocmd FileType dockerfile,python,qmake setlocal tabstop=4
 autocmd FileType dockerfile,python,qmake setlocal shiftwidth=4

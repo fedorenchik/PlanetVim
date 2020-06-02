@@ -38,22 +38,20 @@ git pull --ff-only
 	--enable-fail-if-missing \
 	--prefix=$HOME/.local \
 	--with-features=huge \
-	--disable-darwin \
-	--enable-luainterp=dynamic \
+	--enable-luainterp=no \
 	--disable-mzschemeinterp \
 	--enable-perlinterp=no \
 	--enable-pythoninterp=no \
-	--enable-python3interp=dynamic \
-	--with-python3-config-dir=/usr/lib/python3.6/config-3.6m-x86_64-linux-gnu \
+	--enable-python3interp=no \
 	--enable-tclinterp=no \
 	--enable-rubyinterp=no \
 	--enable-cscope \
-	--enable-netbeans \
 	--enable-channel \
 	--enable-terminal \
 	--enable-autoservername \
 	--enable-multibyte \
 	--enable-gui=gtk3 \
+	--enable-gtk3-check \
 	--enable-largefile \
 	--enable-acl \
 	--disable-nls \

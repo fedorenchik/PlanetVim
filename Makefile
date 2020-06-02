@@ -50,7 +50,9 @@ commit:
 	git submodule init
 	git submodule sync --recursive
 	git submodule update --recursive --remote
-	git add $(FILES) Makefile package-list README.md
+	git submodule foreach git checkout master
+	git submodule foreach git pull origin master
+	git add $(FILES) Makefile README.md
 ifneq "$(DELETED_FILES)" ""
 	git rm --ignore-unmatch -- $(DELETED_FILES)
 endif

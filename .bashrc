@@ -182,63 +182,12 @@ S()
 	gvim --cmd 'let g:vimrc_auto_session=1' "$@" 2>>/tmp/gvim.out
 }
 
-gitv()
-{
-	if [ ! -e '.git' ]; then
-		echo "Not a git repository."
-		return 1
-	fi
-	if [ -d '.git' ]; then
-		gvim -c "Gitv $@" .git/index 2>>/tmp/gvim.out
-	elif [ -f '.git' ]; then
-		gvim -c "Gitv $@" .git 2>>/tmp/gvim.out
-	else
-		echo "Not a git repository."
-	fi
-}
-
-magit()
-{
-	gvim -c MagitOnly "$@"
-}
-
-gk()
-(
-	if [ "$*" == "" ]; then
-		command gitk --all &
-	else
-		command gitk "$@" &
-	fi
-)
-complete -o bashdefault -o default -o nospace -F __git_wrap__gitk_main gk
-
-gg()
-(
-	if [ "$*" == "" ]; then
-		command gitg --all &
-	else
-		command gitg "$@" &
-	fi
-)
-
-dirdiffv()
-{
-	gvim -c "DirDiff $@" 2>>/tmp/gvim.out
-}
-
-vess()
-{
-	declare cmd=$(dirname $(dirname $(which vim)))/share/vim/vim80/macros/less.sh
-	$cmd "$@"
-}
-
 # argument can be 'c' or 'c++'
 gcc_include_search()
 {
 	echo $(gcc -E -v -x "$1" /dev/null 2>&1 | sed -e '1,/#include </d' -e '/^End/,$d')
 }
 
-export GTAGSFORCECPP=
 if [ -d ~/.local/bin ]; then
 	export PATH="$HOME/.local/bin:$PATH"
 fi
