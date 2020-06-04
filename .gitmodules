@@ -19,10 +19,6 @@
 [submodule ".vim/pack/bundle/start/vim-unimpaired"]
 	path = .vim/pack/essential/start/vim-unimpaired
 	url = https://github.com/tpope/vim-unimpaired.git
-[submodule ".vim/pack/bundle/start/vim-cpp-enhanced-highlight"]
-	path = .vim/pack/development/start/vim-cpp-enhanced-highlight
-	url = https://github.com/fedorenchik/vim-cpp-enhanced-highlight.git
-	branch = config-func-hl
 [submodule ".vim/pack/bundle/start/vim-c-posix-syntax"]
 	path = .vim/pack/development/start/vim-c-posix-syntax
 	url = https://github.com/t6tn4k/vim-c-posix-syntax.git
@@ -147,3 +143,6 @@
 [submodule ".vim/pack/evaluating/start/vim-man"]
 	path = .vim/pack/evaluating/start/vim-man
 	url = https://github.com/vim-utils/vim-man.git
+[submodule ".vim/pack/development/start/vim-cpp-enhanced-highlight"]
+	path = .vim/pack/development/start/vim-cpp-enhanced-highlight
+	url = https://github.com/octol/vim-cpp-enhanced-highlight.git
