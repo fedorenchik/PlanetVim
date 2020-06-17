@@ -1018,12 +1018,6 @@ let g:crystalline_theme = 'molokai'
 set showtabline=2
 set laststatus=2
 " }}}
-" Plugin: vim-flagship {{{
-" TODO: manually set guitablabel, remove vim-flagship
-set guitablabel=%!flagship#tablabel()
-autocmd User Flags call Hoist("global", "%{&ignorecase ? '[IC]' : ''}")
-autocmd User Flags call Hoist("global", "%{coc#status()}")
-" }}}
 " Plugin: vim-flog {{{
 augroup Flog
   au FileType floggraph vnoremap <buffer> <silent> D :<C-U>call flog#run_tmp_command("vertical belowright Git diff %(h'>) %(h'<)")<CR>
