@@ -48,10 +48,9 @@ sync-files:
 
 commit:
 	git submodule init
-	git submodule sync --recursive
-	git submodule update --recursive
-	git submodule foreach git pull
+	git submodule foreach git pull --ff-only
 	git add $(FILES) Makefile README.md
+	git add .gitmodules .vim/pack/
 ifneq "$(DELETED_FILES)" ""
 	git rm --ignore-unmatch -- $(DELETED_FILES)
 endif

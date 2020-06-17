@@ -110,9 +110,6 @@
 [submodule ".vim/pack/essential/start/vim-sleuth"]
 	path = .vim/pack/essential/start/vim-sleuth
 	url = https://github.com/tpope/vim-sleuth.git
-[submodule ".vim/pack/essential/start/vim-flagship"]
-	path = .vim/pack/essential/start/vim-flagship
-	url = https://github.com/tpope/vim-flagship.git
 [submodule ".vim/pack/evaluating/start/vim-stay"]
 	path = .vim/pack/evaluating/start/vim-stay
 	url = https://github.com/zhimsel/vim-stay.git
@@ -146,3 +143,9 @@
 [submodule ".vim/pack/development/start/vim-cpp-enhanced-highlight"]
 	path = .vim/pack/development/start/vim-cpp-enhanced-highlight
 	url = https://github.com/octol/vim-cpp-enhanced-highlight.git
+[submodule ".vim/pack/cmake/start/cmake4vim"]
+	path = .vim/pack/cmake/start/cmake4vim
+	url = https://github.com/ilyachur/cmake4vim.git
+[submodule ".vim/pack/essential/start/vim-scriptease"]
+	path = .vim/pack/essential/start/vim-scriptease
+	url = https://github.com/tpope/vim-scriptease.git
