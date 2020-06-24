@@ -149,3 +149,6 @@
 [submodule ".vim/pack/essential/start/vim-scriptease"]
 	path = .vim/pack/essential/start/vim-scriptease
 	url = https://github.com/tpope/vim-scriptease.git
+[submodule ".vim/pack/essential/start/vim-AutoSave"]
+	path = .vim/pack/essential/start/vim-AutoSave
+	url = https://github.com/inkarkat/vim-AutoSave.git
