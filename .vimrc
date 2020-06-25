@@ -208,6 +208,7 @@ set foldlevel=20
 set foldlevelstart=20
 set foldminlines=0
 set foldopen=quickfix,tag,undo
+set formatoptions-=t
 set formatoptions+=1jMmn
 set nofsync
 set nogdefault
@@ -723,13 +724,14 @@ autocmd FileType dockerfile,python,qmake setlocal tabstop=4
 autocmd FileType dockerfile,python,qmake setlocal shiftwidth=4
 autocmd FileType python setlocal makeprg=pylint3\ --reports=n\ --msg-template=\"{path}:{line}:\ {msg_id}\ {symbol},\ {obj}\ {msg}\"\ %:p
 autocmd FileType python setlocal errorformat=%f:%l:\ %m
-autocmd FileType sh setlocal formatoptions-=t formatoptions+=croql
+autocmd FileType sh setlocal formatoptions+=croql
 autocmd FileType sh packadd shellmenu
 autocmd FileType sh setlocal include=^\\s*\\%(\\.\\\|source\\)\\s
 autocmd FileType sh setlocal define=\\<\\%(\\i\\+\\s*()\\)\\@=
 autocmd FileType text setlocal textwidth=72 linebreak breakindent
 autocmd FileType text setlocal complete+=k,s
 autocmd FileType text,markdown setlocal spell
+autocmd FileType text,markdown setlocal formatoptions+=t
 autocmd FileType vim setlocal foldmethod=marker foldlevelstart=0 foldlevel=0
 if exists("+omnifunc")
   autocmd Filetype * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
