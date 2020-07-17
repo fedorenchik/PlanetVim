@@ -149,3 +149,6 @@
 [submodule ".vim/pack/essential/start/vim-AutoSave"]
 	path = .vim/pack/essential/start/vim-AutoSave
 	url = https://github.com/inkarkat/vim-AutoSave.git
+[submodule ".vim/pack/web/start/dart-vim-plugin"]
+	path = .vim/pack/web/start/dart-vim-plugin
+	url = https://github.com/dart-lang/dart-vim-plugin.git
