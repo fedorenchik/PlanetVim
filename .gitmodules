@@ -67,9 +67,6 @@
 [submodule ".vim/pack/evaluating/start/vim-test"]
 	path = .vim/pack/evaluating/start/vim-test
 	url = https://github.com/janko/vim-test.git
-[submodule ".vim/pack/evaluating/opt/vimwiki"]
-	path = .vim/pack/org/start/vimwiki
-	url = https://github.com/vimwiki/vimwiki.git
 [submodule ".vim/pack/tex/start/vimtex"]
 	path = .vim/pack/tex/start/vimtex
 	url = https://github.com/lervag/vimtex.git
