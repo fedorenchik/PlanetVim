@@ -62,8 +62,8 @@ endfunction
 
 function! GuiTabTooltip() abort
   let l:tooltip = ''
-  let l:tooltip ..= '[' .. tabpagenr() .. '/' .. tabpagenr('$') .. '] '
-  let l:tooltip ..= tabpagewinnr(v:lnum, '$')
+  let l:tooltip ..= '[Tab: ' .. tabpagenr() .. '/' .. tabpagenr('$') .. '] '
+  let l:tooltip ..= 'win#: ' .. tabpagewinnr(v:lnum, '$')
 
   let l:bufnrlist = tabpagebuflist(v:lnum)
   for bufnr in l:bufnrlist
@@ -80,8 +80,12 @@ function! GuiTabTooltip() abort
     let l:tooltip ..= l:cur_buf_name
     " Suffix
     let l:cur_filetype = getbufvar(bufnr, "&filetype")
-    if l:cur_filetype
+    if l:cur_filetype != ''
       let l:tooltip ..= ' [' .. l:cur_filetype .. ']'
+    endif
+    let l:cur_buftype = getbufvar(bufnr, "&buftype")
+    if l:cur_buftype != ''
+      let l:tooltip ..= ' [' .. l:cur_buftype .. ']'
     endif
   endfor
 
