@@ -149,3 +149,6 @@
 [submodule ".vim/pack/web/start/dart-vim-plugin"]
 	path = .vim/pack/web/start/dart-vim-plugin
 	url = https://github.com/dart-lang/dart-vim-plugin.git
+[submodule ".vim/pack/lists/start/vim-clap"]
+	path = .vim/pack/lists/start/vim-clap
+	url = https://github.com/liuchengxu/vim-clap.git

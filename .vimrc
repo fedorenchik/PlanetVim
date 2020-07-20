@@ -897,8 +897,6 @@ nnoremap <silent> <Space>C :Unite -auto-preview -vertical-preview -buffer-name=u
 nnoremap <silent> <Space>d :Unite -buffer-name=unite-gtags gtags/def<CR>
 nnoremap <silent> <Space>D :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/def<CR>
 nnoremap <silent> <Space>e :Unite -start-insert -no-resize -no-split -buffer-name=unite-file file<CR>
-nnoremap <silent> <Space>f :CocList files<CR>
-nnoremap <silent> <Space>F :CocList files<CR>
 nnoremap <silent> <Space>g :Unite -buffer-name=unite-gtags gtags/completion<CR>
 nnoremap <silent> <Space>G :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/completion<CR>
 nnoremap <silent> <Space>i :Unite -start-insert -buffer-name=unite-line<CR>
@@ -984,6 +982,10 @@ let g:SignatureForceMarkerPlacement = 1
 let g:undotree_WindowLayout=4
 nnoremap SU :UndotreeShow<CR>
 nnoremap ZU :UndotreeHide<CR>
+" }}}
+" Plugin: vim-clap {{{
+nnoremap <silent> <Space>f :CocList files<CR>
+nnoremap <silent> <Space>F :CocList files<CR>
 " }}}
 " Plugin: vim-cpp-enhanced-highlight {{{
 let g:cpp_no_function_highlight=1
