@@ -68,14 +68,21 @@ function! GuiTabTooltip() abort
   let l:bufnrlist = tabpagebuflist(v:lnum)
   for bufnr in l:bufnrlist
     let l:tooltip ..= "\n"
+    " Prefix
     if getbufvar(bufnr, "&modified")
-      let l:tooltip ..= '+'
+      let l:tooltip ..= '+ '
     endif
-    let l:cur_buf_name = bufname(l:bufnrlist[tabpagewinnr(v:lnum) - 1])
+    " Buffer Name
+    let l:cur_buf_name = bufname(bufnr)
     if empty(l:cur_buf_name)
       let l:cur_buf_name = "[No Name]"
     endif
     let l:tooltip ..= l:cur_buf_name
+    " Suffix
+    let l:cur_filetype = getbufvar(bufnr, "&filetype")
+    if l:cur_filetype
+      let l:tooltip ..= ' [' .. l:cur_filetype .. ']'
+    endif
   endfor
 
   return l:tooltip
@@ -670,7 +677,6 @@ cnoremap <C-Y> <S-Tab>
 " }}}
 " Terminal Window: {{{
 tnoremap <Esc> <C-w>N
-tnoremap <Tab> <C-w>N
 tnoremap <C-e> <Tab>
 tnoremap <C-j> <C-w><C-j>
 tnoremap <C-k> <C-w><C-k>
