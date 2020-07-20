@@ -107,9 +107,6 @@
 [submodule ".vim/pack/essential/start/vim-sleuth"]
 	path = .vim/pack/essential/start/vim-sleuth
 	url = https://github.com/tpope/vim-sleuth.git
-[submodule ".vim/pack/evaluating/start/vim-stay"]
-	path = .vim/pack/evaluating/start/vim-stay
-	url = https://github.com/zhimsel/vim-stay.git
 [submodule ".vim/pack/git/start/committia.vim"]
 	path = .vim/pack/git/start/committia.vim
 	url = https://github.com/rhysd/committia.vim.git

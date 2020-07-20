@@ -882,9 +882,12 @@ autocmd User CocNvimInit call coc#config('languageserver', {
       \})
 let g:coc_global_extensions='coc-lists coc-python coc-explorer ' ..
       \ 'coc-dictionary coc-emoji coc-syntax coc-gocode coc-vimtex coc-yank ' ..
-      \ 'coc-bookmark coc-cmake coc-git coc-snippets coc-gitignore coc-sql ' ..
+      \ 'coc-cmake coc-git coc-snippets coc-gitignore coc-sql ' ..
       \ 'coc-docker coc-db coc-terminal coc-lines coc-sh coc-flutter' ..
       \ 'coc-angular coc-css coc-html coc-json coc-tsserver coc-vimlsp'
+let g:coc_user_config = {
+      \ "session.saveOnVimLeave": v:false
+      \ }
 nnoremap <silent> <Space>. :CocListResume<CR>
 nnoremap <silent> <Space>a :Unite -smartcase -buffer-name=unite-alternate -input=`expand('%:t:r')` -immediately file_rec<CR>
 nnoremap <silent> <Space>b :CocList buffers<CR>
