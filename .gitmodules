@@ -152,3 +152,21 @@
 [submodule ".vim/pack/lists/start/vim-clap"]
 	path = .vim/pack/lists/start/vim-clap
 	url = https://github.com/liuchengxu/vim-clap.git
+[submodule ".vim/pack/essential/start/nerdtree"]
+	path = .vim/pack/essential/start/nerdtree
+	url = https://github.com/preservim/nerdtree.git
+[submodule ".vim/pack/essential/start/vim-startify"]
+	path = .vim/pack/essential/start/vim-startify
+	url = https://github.com/mhinz/vim-startify.git
+[submodule ".vim/pack/writing/start/presenting.vim"]
+	path = .vim/pack/writing/start/presenting.vim
+	url = https://github.com/sotte/presenting.vim.git
+[submodule ".vim/pack/development/start/codi.vim"]
+	path = .vim/pack/development/start/codi.vim
+	url = https://github.com/metakirby5/codi.vim.git
+[submodule ".vim/pack/development/start/vim-cpp-modern"]
+	path = .vim/pack/development/start/vim-cpp-modern
+	url = https://github.com/bfrg/vim-cpp-modern.git
+[submodule ".vim/pack/cmake/start/vim-cmake-help"]
+	path = .vim/pack/cmake/start/vim-cmake-help
+	url = https://github.com/bfrg/vim-cmake-help.git
