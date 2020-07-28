@@ -308,7 +308,7 @@ set scrolljump=2
 set scrolloff=2
 set scrollopt=ver,hor,jump
 set secure
-set sessionoptions=blank,buffers,globals,help,resize,sesdir,slash,tabpages,terminal,unix,winpos,winsize
+set sessionoptions=blank,buffers,curdir,globals,help,resize,slash,tabpages,terminal,unix,winpos,winsize
 if &shell =~# 'fish$' && (v:version < 704 || v:version == 704 && !has('patch276'))
   set shell=/bin/bash
 endif
@@ -898,42 +898,6 @@ let g:coc_global_extensions='coc-lists coc-python coc-explorer ' ..
 let g:coc_user_config = {
       \ "session.saveOnVimLeave": v:false
       \ }
-nnoremap <silent> <Space>. :CocListResume<CR>
-nnoremap <silent> <Space>a :Unite -smartcase -buffer-name=unite-alternate -input=`expand('%:t:r')` -immediately file_rec<CR>
-nnoremap <silent> <Space>b :CocList buffers<CR>
-nnoremap <silent> <Space>B :CocList --tab buffers<CR>
-nnoremap <silent> <Space>c :Unite -buffer-name=unite-gtags gtags/context<CR>
-nnoremap <silent> <Space>C :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/context<CR>
-nnoremap <silent> <Space>d :Unite -buffer-name=unite-gtags gtags/def<CR>
-nnoremap <silent> <Space>D :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/def<CR>
-nnoremap <silent> <Space>e :Unite -start-insert -no-resize -no-split -buffer-name=unite-file file<CR>
-nnoremap <silent> <Space>g :Unite -buffer-name=unite-gtags gtags/completion<CR>
-nnoremap <silent> <Space>G :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/completion<CR>
-nnoremap <silent> <Space>i :Unite -start-insert -buffer-name=unite-line<CR>
-nnoremap <silent> <Space>j :Unite -smartcase -buffer-name=unite-jump jump<CR>
-nnoremap <silent> <Space>k :Unite -start-insert -smartcase -buffer-name=unite-gtags gtags/file<CR>
-nnoremap <silent> <Space>K :Unite -no-resize -no-split -smartcase -buffer-name=unite-gtags gtags/file<CR>
-nnoremap <silent> <Space>l :Unite -buffer-name=unite-location-list location_list<CR>
-nnoremap <silent> <Space>L :Unite -no-resize -no-split -buffer-name=unite-location-list location_list<CR>
-nnoremap <silent> <Space>m :CocList marks<CR>
-nnoremap <silent> <Space>o :CocList outline<CR>
-nnoremap <silent> <Space>O :CocList --tab outline<CR>
-nnoremap <silent> <Space>p :Unite -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
-nnoremap <silent> <Space>P :Unite -no-resize -no-split -auto-preview -vertical-preview -buffer-name=unite-quickfix quickfix<CR>
-nnoremap <silent> <Space>q :CocList quickfix<CR>
-nnoremap <silent> <Space>Q :CocList --tab quickfix<CR>
-nnoremap <silent> <Space>r :Unite -buffer-name=unite-gtags gtags/ref<CR>
-nnoremap <silent> <Space>R :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/ref<CR>
-nnoremap <silent> <Space>s :Unite -start-insert -smartcase -buffer-name=unite-grep grep:%::`expand('<cword>')`<CR>
-nnoremap <silent> <Space>t :Unite -start-insert -smartcase -buffer-name=unite-tab tab<CR>
-nnoremap <silent> <Space>u :CocListResume<CR>
-nnoremap <silent> <Space>w :CocList windows<CR>
-nnoremap <silent> <Space>W :Unite -start-insert -smartcase -buffer-name=unite-window window/gui<CR>
-nnoremap <silent> <Space>y :CocList -A --normal yank<CR>
-nnoremap <silent> <Space>' :CocList marks<CR>
-nnoremap <silent> <Space>" :Unite -start-insert -smartcase -buffer-name=unite-register register<CR>
-nnoremap <silent> <C-n> :CocNext<CR>
-nnoremap <silent> <C-p> :CocPrev<CR>
 nmap <silent> sd <Plug>(coc-definition)
 nmap <silent> si <Plug>(coc-implementation)
 nmap <silent> sr <Plug>(coc-references)
@@ -994,8 +958,47 @@ nnoremap SU :UndotreeShow<CR>
 nnoremap ZU :UndotreeHide<CR>
 " }}}
 " Plugin: vim-clap {{{
-nnoremap <silent> <Space>f :CocList files<CR>
-nnoremap <silent> <Space>F :CocList files<CR>
+nnoremap <silent> <Space>. :UniteResume<CR>
+nnoremap <silent> <Space>a :Clap files<CR>
+nnoremap <silent> <Space>b :Clap buffers<CR>
+nnoremap <silent> <Space>B :Clap buffers<CR>
+nnoremap <silent> <Space>c :Unite -buffer-name=unite-gtags gtags/context<CR>
+nnoremap <silent> <Space>C :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/context<CR>
+nnoremap <silent> <Space>d :Unite -buffer-name=unite-gtags gtags/def<CR>
+nnoremap <silent> <Space>D :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/def<CR>
+nnoremap <silent> <Space>e :Clap files<CR>
+nnoremap <silent> <Space>f :Clap files<CR>
+nnoremap <silent> <Space>F :Clap filer<CR>
+nnoremap <silent> <Space>g :Unite -buffer-name=unite-gtags gtags/completion<CR>
+nnoremap <silent> <Space>G :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/completion<CR>
+nnoremap <silent> <Space>h :Clap search_history
+nnoremap <silent> <Space>H :Clap command_history
+nnoremap <silent> <Space>i :Clap blines
+nnoremap <silent> <Space>j :Clap jumps<CR>
+nnoremap <silent> <Space>k :Clap tags<CR>
+nnoremap <silent> <Space>K :Clap tags<CR>
+nnoremap <silent> <Space>l :Clap loclist<CR>
+nnoremap <silent> <Space>L :Clap loclist<CR>
+nnoremap <silent> <Space>m :Clap marks<CR>
+nnoremap <silent> <Space>M :Clap maps<CR>
+nnoremap <silent> <Space>o :Clap tags<CR>
+nnoremap <silent> <Space>O :Clap tags<CR>
+nnoremap <silent> <Space>p :Clap quickfix<CR>
+nnoremap <silent> <Space>P :Clap quickfix<CR>
+nnoremap <silent> <Space>q :Clap quickfix<CR>
+nnoremap <silent> <Space>Q :Clap quickfix<CR>
+nnoremap <silent> <Space>r :Unite -buffer-name=unite-gtags gtags/ref<CR>
+nnoremap <silent> <Space>R :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/ref<CR>
+nnoremap <silent> <Space>s :Clap grep ++query=`expand('<cword>')`<CR>
+nnoremap <silent> <Space>t :Unite -start-insert -smartcase -buffer-name=unite-tab tab<CR>
+nnoremap <silent> <Space>u :UniteResume<CR>
+nnoremap <silent> <Space>w :Clap windows<CR>
+nnoremap <silent> <Space>W :Unite -start-insert -smartcase -buffer-name=unite-window window/gui<CR>
+nnoremap <silent> <Space>y :Clap yanks<CR>
+nnoremap <silent> <Space>' :Clap marks<CR>
+nnoremap <silent> <Space>" :Clap registers<CR>
+nnoremap <silent> <C-n> :UniteNext<CR>
+nnoremap <silent> <C-p> :UniteNext<CR>
 " }}}
 " Plugin: vim-cpp-enhanced-highlight {{{
 let g:cpp_no_function_highlight=1
