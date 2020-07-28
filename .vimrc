@@ -379,7 +379,7 @@ set updatetime=1000
 "set verbosefile&
 "set viewdir&
 set viewoptions=cursor,folds,slash,unix,curdir
-set viminfo=!,%50,'100,<50,c,f1,h,r/tmp,r/var,r/mnt,r/media,s10,n$PWD/.viminfo
+set viminfo=!,%50,'100,<50,c,f1,h,r/tmp,r/var,r/mnt,r/media,s10
 set virtualedit=block
 set novisualbell
 set warn
