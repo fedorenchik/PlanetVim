@@ -170,3 +170,6 @@
 [submodule ".vim/pack/cmake/start/vim-cmake-help"]
 	path = .vim/pack/cmake/start/vim-cmake-help
 	url = https://github.com/bfrg/vim-cmake-help.git
+[submodule ".vim/pack/apps/start/w3m.vim"]
+	path = .vim/pack/apps/start/w3m.vim
+	url = https://github.com/yuratomo/w3m.vim.git

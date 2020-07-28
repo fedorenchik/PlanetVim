@@ -1168,6 +1168,16 @@ nnoremap ]8 :call signature#marker#Goto('next', 8, v:count)<CR>
 nnoremap ]9 :call signature#marker#Goto('next', 9, v:count)<CR>
 nnoremap ]0 :call signature#marker#Goto('next', 0, v:count)<CR>
 " }}}
+" Plugin: vim-startify {{{
+let g:startify_lists = [
+      \ { 'type': 'sessions',  'header': ['   Sessions']       },
+      \ { 'type': 'commands',  'header': ['   Commands']       },
+      \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
+      \ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
+      \ { 'type': 'files',     'header': ['   MRU']            },
+      \ ]
+let g:startify_session_persistence = 1
+" }}}
 " Plugin: vim-test {{{
 let test#strategy = "dispatch"
 " }}}
