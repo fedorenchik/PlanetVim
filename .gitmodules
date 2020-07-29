@@ -173,3 +173,9 @@
 [submodule ".vim/pack/apps/start/w3m.vim"]
 	path = .vim/pack/apps/start/w3m.vim
 	url = https://github.com/yuratomo/w3m.vim.git
+[submodule ".vim/pack/development/start/vim-polyglot"]
+	path = .vim/pack/development/start/vim-polyglot
+	url = https://github.com/sheerun/vim-polyglot.git
+[submodule ".vim/pack/web/start/vim-flutter"]
+	path = .vim/pack/web/start/vim-flutter
+	url = https://github.com/thosakwe/vim-flutter.git
