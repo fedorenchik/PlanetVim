@@ -914,10 +914,11 @@ inoremap <silent><expr> <A-Space> coc#refresh()
 let g:fastfold_force = 1
 let g:fastfold_minlines = 0
 " }}}
-" Plugin: NERDTree {{{
+" Plugin: nerdtree {{{
 nnoremap <silent> _ :Unite -no-resize -no-split -buffer-name=unite-file fire_rec<CR>
 nnoremap <silent> _ :CocCommand explorer --position tab<CR>
 nnoremap <silent> <A-f> :NERDTreeToggle<CR>
+let NERDTreeMapMenu='M'
 " }}}
 " Plugin: signature {{{
 let g:SignatureMap = {
