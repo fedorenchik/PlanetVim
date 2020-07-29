@@ -909,15 +909,15 @@ nmap <silent> ]W <Plug>(coc-diagnostic-next-error)
 inoremap <silent><expr> <C-Space> coc#refresh()
 inoremap <silent><expr> <A-Space> coc#refresh()
 " TODO Check: coc-word
-" coc-explorer {{{
-nnoremap <silent> _ :Unite -no-resize -no-split -buffer-name=unite-file fire_rec<CR>
-nnoremap <silent> _ :CocCommand explorer --position tab<CR>
-nnoremap <silent> <A-f> :CocCommand explorer --toggle<CR>
-" }}}
 " }}}
 " Plugin: FastFold {{{
 let g:fastfold_force = 1
 let g:fastfold_minlines = 0
+" }}}
+" Plugin: NERDTree {{{
+nnoremap <silent> _ :Unite -no-resize -no-split -buffer-name=unite-file fire_rec<CR>
+nnoremap <silent> _ :CocCommand explorer --position tab<CR>
+nnoremap <silent> <A-f> :NERDTreeToggle<CR>
 " }}}
 " Plugin: signature {{{
 let g:SignatureMap = {
