@@ -14,7 +14,6 @@ FILES := \
 	.local/share/applications/GVim-homerc.desktop \
 	.profile \
 	.signature \
-	tpl/ \
 	.vim/ \
 	.vimrc
 
