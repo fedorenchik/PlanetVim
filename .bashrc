@@ -8,6 +8,7 @@ set -o vi
 
 ulimit -c unlimited
 
+HISTTIMEFORMAT="%F %T "
 HISTCONTROL=ignoreboth
 shopt -s histappend
 HISTSIZE=1000

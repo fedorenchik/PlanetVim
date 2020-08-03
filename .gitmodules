@@ -179,3 +179,6 @@
 [submodule ".vim/pack/web/start/vim-flutter"]
 	path = .vim/pack/web/start/vim-flutter
 	url = https://github.com/thosakwe/vim-flutter.git
+[submodule ".vim/pack/development/start/vim-devicons"]
+	path = .vim/pack/development/start/vim-devicons
+	url = https://github.com/ryanoasis/vim-devicons.git
