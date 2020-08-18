@@ -1,12 +1,3 @@
-*~
-.session.vim
-.viminfo
 .exrc
-GPATH
-GRTAGS
-GTAGS
-Session.vim
-tags
 compile_commands.json
-cscope.out
 .ccls-cache

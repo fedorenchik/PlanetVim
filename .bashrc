@@ -4,8 +4,6 @@ case $- in
 	*) return;;
 esac
 
-set -o vi
-
 ulimit -c unlimited
 
 HISTTIMEFORMAT="%F %T "
