@@ -191,6 +191,8 @@ if [ -d ~/.local/bin ]; then
 	export PATH="$HOME/.local/bin:$PATH"
 fi
 
+VAGRANT_DEFAULT_PROVIDER=libvirt
+
 # python virtualenv
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 export WORKON_HOME=~/.virtualenvs
