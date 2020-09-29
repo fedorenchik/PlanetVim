@@ -718,6 +718,8 @@ autocmd CmdWinEnter / noremap <buffer> <S-CR> <CR>q/
 autocmd CmdWinEnter ? noremap <buffer> <S-CR> <CR>q?
 autocmd CmdwinEnter * nnoremap <buffer> <CR> <CR>
 autocmd CursorHold * checktime
+autocmd CursorHold * wa
+autocmd CursorHoldI * wa
 autocmd FileType c,cpp setlocal foldmethod=syntax
 autocmd FileType c,cpp inoreabbrev #i #include 
 autocmd FileType c,cpp inoreabbrev ,, <<
@@ -748,6 +750,7 @@ if exists("+omnifunc")
   autocmd Filetype * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
   autocmd Filetype * if &completefunc == "" | setlocal completefunc=syntaxcomplete#Complete | endif
 endif
+autocmd FocusLost * wa
 autocmd GUIEnter * set guifont=UbuntuMono\ Nerd\ Font\ Mono\ 11,Ubuntu\ Mono\ 11,Monospace\ 9
 autocmd SessionLoadPost * let g:vimrc_auto_session = 1
 autocmd GUIEnter * if exists('g:vimrc_auto_session') && filereadable('.session.vim') | source .session.vim | endif
@@ -1185,9 +1188,6 @@ let g:startify_session_persistence = 1
 " }}}
 " Plugin: vim-test {{{
 let test#strategy = "dispatch"
-" }}}
-" Plugin: vimwiki {{{
-let g:vimwiki_list = [{'path': '~/doc/notes/'}]
 " }}}
 " Plugin: vista.vim {{{
 nnoremap <silent> ST :Vista<CR>
