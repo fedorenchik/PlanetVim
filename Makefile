@@ -5,6 +5,7 @@ SHELL := /bin/bash
 .NOTPARALLEL:
 
 FILES := \
+	.bash_profile \
 	.bashrc \
 	.cvsignore \
 	.gdbinit \
