@@ -281,10 +281,14 @@ VAGRANT_DEFAULT_PROVIDER=libvirt
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 export WORKON_HOME=~/.virtualenvs
 export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
-source /usr/local/bin/virtualenvwrapper.sh
+if [ -x /usr/local/bin/virtualenvwrapper.sh ]; then
+	source /usr/local/bin/virtualenvwrapper.sh
+fi
 
 # direnv
-eval "$(direnv hook bash)"
+if command -v direnv >/dev/null 2>&1; then
+	eval "$(direnv hook bash)"
+fi
 
 export PIP_REQUIRE_VIRTUALENV=true
 gpip() {
