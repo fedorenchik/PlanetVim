@@ -226,8 +226,9 @@ set nogdefault
 set grepprg=grep\ -nH\ $*
 "TODO: Colorize cursor in different modes.
 "set guicursor+=a:blinkon0
-if has("gui_gtk2")
-  set guifont=UbuntuMono\ Nerd\ Font\ Mono\ 11,Ubuntu\ Mono\ 11,Monospace\ 9
+if has("gui")
+  "set guifont=UbuntuMono\ Nerd\ Font\ Mono\ 11,Ubuntu\ Mono\ 11,Monospace\ 9
+  set guifont=Ubuntu\ Mono\ 11,Monospace\ 9
   "FIXME: set guifontwide ??? is it needed ??? need to test
   "set guifontwide=WenQuanYi\ Zen\ Hei\ 10
 endif
@@ -749,7 +750,8 @@ if exists("+omnifunc")
   autocmd Filetype * if &completefunc == "" | setlocal completefunc=syntaxcomplete#Complete | endif
 endif
 autocmd FocusLost * wa
-autocmd GUIEnter * set guifont=UbuntuMono\ Nerd\ Font\ Mono\ 11,Ubuntu\ Mono\ 11,Monospace\ 9
+"autocmd GUIEnter * set guifont=UbuntuMono\ Nerd\ Font\ Mono\ 11,Ubuntu\ Mono\ 11,Monospace\ 9
+autocmd GUIEnter * set guifont=Ubuntu\ Mono\ 11,Monospace\ 9
 autocmd SessionLoadPost * let g:vimrc_auto_session = 1
 autocmd GUIEnter * if exists('g:vimrc_auto_session') && filereadable('.session.vim') | source .session.vim | endif
 autocmd VimEnter * if expand("%") != "" && getcwd() == expand("~") | cd %:h | endif
