@@ -264,7 +264,7 @@ set laststatus=2
 set lazyredraw
 set nolinebreak
 if has("gui_running")
-  set lines=28
+  set lines=36
 endif
 set list
 set listchars=tab:»\ ,trail:·,extends:>,precedes:<,nbsp:+
