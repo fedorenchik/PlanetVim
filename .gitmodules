@@ -182,3 +182,6 @@
 [submodule ".vim/pack/development/start/vim-devicons"]
 	path = .vim/pack/development/start/vim-devicons
 	url = https://github.com/ryanoasis/vim-devicons.git
+[submodule ".vim/pack/arduino/start/vim-arduino"]
+	path = .vim/pack/arduino/start/vim-arduino
+	url = https://github.com/stevearc/vim-arduino.git
