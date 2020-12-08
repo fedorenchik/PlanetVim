@@ -1,1 +1,0 @@
-runtime! ftdetect/polyglot.vim
