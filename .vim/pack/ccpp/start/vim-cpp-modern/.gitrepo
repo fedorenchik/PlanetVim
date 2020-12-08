@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/bfrg/vim-cpp-modern.git
+	branch = master
+	commit = 026472e14c2eed2bb838166f73df1f0d32ca9998
+	parent = f4d30e3d5182bd05e941a323fc123da684008ad8
+	method = merge
+	cmdver = 0.4.3
