@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/puremourning/vimspector.git
+	branch = master
+	commit = 2eb32f31533b79520ca6788fd41634525234d7e5
+	parent = b31bd02dab16dcd60ceb7138b831ae3439798b76
+	method = merge
+	cmdver = 0.4.3
