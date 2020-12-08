@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/rbong/vim-crystalline.git
+	branch = master
+	commit = 32698e3560ddb68bbb648fcfb677e9af45f70a79
+	parent = c6e2f78269eef68e2f81c9314d9de65c1f372f11
+	method = merge
+	cmdver = 0.4.3
