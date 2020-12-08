@@ -880,40 +880,6 @@ let g:xml_syntax_folding = 1
 " }}}
 " }}}
 " External Plugins: {{{
-" Plugin: coc.nvim {{{
-autocmd User CocNvimInit call coc#config('languageserver', {
-      \ 'ccls': {
-      \   "command": "ccls",
-      \   "trace.server": "verbose",
-      \   "filetypes": ["c", "cpp", "cuda", "objc", "objcpp"],
-      \   "rootPatterns": [".ccls-root", "compile_commands.json", ".git/", ".ccls"],
-      \   "initializationOptions": {
-      \     "cache": {
-      \       "directory": ".ccls-cache"
-      \     }
-      \   }
-      \ }
-      \})
-let g:coc_global_extensions='coc-lists coc-python coc-explorer ' ..
-      \ 'coc-dictionary coc-emoji coc-syntax coc-gocode coc-vimtex coc-yank ' ..
-      \ 'coc-cmake coc-git coc-snippets coc-gitignore coc-sql ' ..
-      \ 'coc-docker coc-db coc-terminal coc-lines coc-sh coc-flutter' ..
-      \ 'coc-angular coc-css coc-html coc-json coc-tsserver coc-vimlsp'
-let g:coc_user_config = {
-      \ "session.saveOnVimLeave": v:false
-      \ }
-nmap <silent> sd <Plug>(coc-definition)
-nmap <silent> si <Plug>(coc-implementation)
-nmap <silent> sr <Plug>(coc-references)
-nmap <silent> st <Plug>(coc-type-definition)
-nmap <silent> [w <Plug>(coc-diagnostic-prev)
-nmap <silent> [W <Plug>(coc-diagnostic-prev-error)
-nmap <silent> ]w <Plug>(coc-diagnostic-next)
-nmap <silent> ]W <Plug>(coc-diagnostic-next-error)
-inoremap <silent><expr> <C-Space> coc#refresh()
-inoremap <silent><expr> <A-Space> coc#refresh()
-" TODO Check: coc-word
-" }}}
 " Plugin: FastFold {{{
 let g:fastfold_force = 1
 let g:fastfold_minlines = 0
