@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/kitagry/asyncomplete-tabnine.vim.git
+	branch = master
+	commit = 1aed1e6d87229be7f79ec85f319f01f61245ead8
+	parent = 6f973cacc96662894b795addc55031a684afd9fc
+	method = merge
+	cmdver = 0.4.3
