@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/dart-lang/dart-vim-plugin.git
+	branch = master
+	commit = 8ff9e1abd264f16fd1d192024348f6c63b514a0d
+	parent = 63d16b42b559fa2a7f154f56477c5653197e169d
+	method = merge
+	cmdver = 0.4.3
