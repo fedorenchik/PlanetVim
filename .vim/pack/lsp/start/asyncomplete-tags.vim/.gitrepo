@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/prabirshrestha/asyncomplete-tags.vim.git
+	branch = master
+	commit = fb48ae7faeb77a1d741616c8fc89b26cb712c6e3
+	parent = 086f2a3e0a8b2a615d91afe93dec2a5e6b9cbfa6
+	method = merge
+	cmdver = 0.4.3
