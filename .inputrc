@@ -1,9 +1,0 @@
-set blink-matching-paren
-set colored-completion-prefix
-set colored-stats
-set completion-query-items 200
-set editing-mode emacs
-set emacs-mode-string ""
-set show-mode-in-prompt on
-set vi-cmd-mode-string "\1\e[1;94m\2--CMD--\1\e[0m\2"
-set vi-ins-mode-string "\1\e[1;93m\2--INS--\1\e[0m\2"

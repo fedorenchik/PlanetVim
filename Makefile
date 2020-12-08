@@ -4,19 +4,7 @@ SHELL := /bin/bash
 
 .NOTPARALLEL:
 
-FILES := \
-	.bash_profile \
-	.bashrc \
-	.cvsignore \
-	.gdbinit \
-	.gitconfig \
-	.git-prompt.sh \
-	.inputrc \
-	.local/share/applications/GVim-homerc.desktop \
-	.profile \
-	.signature \
-	.vim/ \
-	.vimrc
+FILES := .vim/ .vimrc
 
 DELETED_FILES :=
 
