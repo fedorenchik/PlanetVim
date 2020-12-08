@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/sheerun/vim-polyglot.git
+	branch = master
+	commit = 73c518717741fb3ebb6822645d38f37ffae7c19b
+	parent = e6b871ed4c155e943b14ca2cee3003684e49d0be
+	method = merge
+	cmdver = 0.4.3
