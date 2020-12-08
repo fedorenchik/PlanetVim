@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/ilyachur/cmake4vim.git
+	branch = master
+	commit = 6dac258a782f1efe09d71978b0c87bb2d3f5cece
+	parent = 81ab6dbd99d9308a8e9985dc7cf262ee8da4b1ea
+	method = merge
+	cmdver = 0.4.3
