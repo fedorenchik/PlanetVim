@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/Shougo/neco-syntax.git
+	branch = master
+	commit = f8d7b748b022aac8ce73458574da5616f1c5fb65
+	parent = 1c8291ac6277aa7ed65b07b12d656f95932360cf
+	method = merge
+	cmdver = 0.4.3
