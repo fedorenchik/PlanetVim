@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/mhinz/vim-grepper.git
+	branch = master
+	commit = e9004ce564891412cfe433cfbb97295cccd06b39
+	parent = 5ff9433e7875c3f5db08eb84f84266b6dcbba361
+	method = merge
+	cmdver = 0.4.3
