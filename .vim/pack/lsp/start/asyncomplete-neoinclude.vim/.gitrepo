@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/kyouryuukunn/asyncomplete-neoinclude.vim.git
+	branch = master
+	commit = de8e478694862874a66d8e047f34f8c4083c3989
+	parent = 18b913c88d726890a0a6a477e52fb1b2add04fb1
+	method = merge
+	cmdver = 0.4.3
