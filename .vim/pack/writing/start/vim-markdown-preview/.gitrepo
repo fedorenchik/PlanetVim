@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/JamshedVesuna/vim-markdown-preview.git
+	branch = master
+	commit = 9b3ec41fb6f0f49d9bb7ca81fa1c62a8a54b1214
+	parent = e1fb4c0716decf17db4e46f3e1920270d368a36d
+	method = merge
+	cmdver = 0.4.3
