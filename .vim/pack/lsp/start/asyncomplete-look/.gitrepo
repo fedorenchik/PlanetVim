@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/htlsne/asyncomplete-look.git
+	branch = master
+	commit = 61a3f69bd67f808fbfa6f1e96cb2886eb0977955
+	parent = 36f1a3a11816bd248a1a90ec5597e500d296d9cd
+	method = merge
+	cmdver = 0.4.3

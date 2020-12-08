@@ -1,0 +1,58 @@
+*asyncomplete-look.txt*  Word dictionary source for asyncomplete.
+*asyncomplete-look*
+
+===============================================================================
+CONTENTS                                           *asyncomplete-look-contents*
+
+    1. Introduction              |asyncomplete-look-introduction|
+    2. Usage                     |asyncomplete-look-usage|
+    2.1. look                    |asyncomplete-look-usage-look|
+    2.2. good words              |asyncomplete-look-usage-good-words|
+    3. Variables                 |asyncomplete-look-variables|
+
+===============================================================================
+1. Introduction                                *asyncomplete-look-introduction*
+
+Word dictionary source for |asyncomplete|.
+
+===============================================================================
+2. Usage                                              *asyncomplete-look-usage*
+
+===============================================================================
+2.1. look                                        *asyncomplete-look-usage-look*
+
+Main feature. Complete English words by using "look" command.
+>
+	au User asyncomplete_setup call asyncomplete#register_source({
+	    \ 'name': 'look',
+	    \ 'allowlist': ['text', 'markdown'],
+	    \ 'completor': function('asyncomplete#sources#look#completor'),
+	    \ })
+<
+===============================================================================
+2.2. good words                            *asyncomplete-look-usage-good-words*
+
+Optional complementary feature. Complete from your |zg| good words file.
+"grep" command is required.
+
+>
+	let g:asc_look_good_words_file = '~/.vim/spell/en.utf-8.add'
+	au User asyncomplete_setup call asyncomplete#register_source({
+		\ 'name': 'look_good_words',
+		\ 'allowlist': ['text', 'markdown'],
+		\ 'completor': function('asyncomplete#sources#look#good_words'),
+		\ })
+<
+===============================================================================
+2.2. Variables                                    *asyncomplete-look-variables*
+
+
+                                                   *g:asc_look_good_words_file*
+g:asc_look_good_words_file
+		Path to your LL.EEE.add file. (cf. |spell|)
+
+		Default: "~/.vim/spell/en.utf-8.add"
+
+===============================================================================
+
+vim:tw=78:ts=4:sts=4:sw=4:ft=help:norl:
