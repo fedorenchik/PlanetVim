@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/rbong/vim-buffest.git
+	branch = master
+	commit = 513ed08b778fb9bcbf76817a6fe5f267dc9ce48b
+	parent = 673b9c0f3ca12d43c1b60dd50b974f988edb6617
+	method = merge
+	cmdver = 0.4.3

@@ -1,0 +1,93 @@
+*buffest.txt*  Easily edit vim registers/macros and lists as buffers.
+
+Author:  Roger Bongers <http://github.com/rbong>
+
+*buffest*
+
+COMMANDS                                                    *buffest-commands*
+
+All commands can be mapped using <Plug>Buffest and the name of the command.
+See |using-<Plug>|.
+
+*:Regsplit* *:Regvsplit* *:Regtabedit* *:Regedit* *:Regpedit*
+
+Each of these commands takes one argument, the name of the register.
+Each command opens the register in the way indicated.
+Only the named registers, as well as {*}, {+}, and {"} are supported.
+
+*:Qflistsplit* *:Qflistvsplit* *:Qflisttabedit* *:Qflistedit*
+
+Each of these commands open the quickfix list in the way indicated.
+These commands support |buffest-list-fields|.
+
+*:Loclistsplit* *:Loclistvsplit* *:Loclisttabedit* *:Locflistedit*
+
+Each of these commands open the location list in the way indicated.
+These commands support |buffest-list-fields|.
+The window always splits using |:aboveleft| and sets the loclist of |winnr()| + 1.
+Buffest will attempt to differentiate location list buffers based on the buffer they are opened next to, if any.
+
+LIST FIELDS                                              *buffest-list-fields*
+
+All list commands can optionally take in field arguments.
+If this list of fields is given, only those fields will be shown in output.
+The unlisted fields will be lost.
+
+The fields will be shown sorted.
+
+The supported fields are based on |getqflist()|, |setqflist()|, |setloclist()|, and |getloclist()|.
+The supported fields are as follows:
+'filename', 'module', 'lnum', 'pattern', 'col', 'vcol', 'nr', 'text', 'type',  and 'valid'.
+
+If 'valid' is excluded from the fields, invalid items will be filtered.
+
+Other fields excluded will result in the field reverting to its default value.
+Notably, if 'vcol' is excluded from the fields, all 'col' fields will be converted to byte index.
+
+USING BUFFERS                                                *buffest-buffers*
+
+On re-opening a buffer it will automatically update from the register or list.
+
+Normal updating: >
+  :e
+
+Force update: >
+  :e!
+
+Buffers will write to the register or list when the buffer is written to.
+
+Write buffer: >
+  :w
+
+Write register in a specific visual mode (defaults to |linewise|): >
+  V:<C-U>w
+  v:<C-U>w
+  <C-V>:<C-U>w
+
+Write and exit: >
+  :wq
+Alternative: >
+  ZZ
+
+MAPPINGS                                                    *buffest-mappings*
+
+All mappings can be overriden by setting the corresponding <Plug> mapping.
+
+c@{regname}                                                  *buffest-c@* *c@*
+
+Edit the register in a split (<Plug>BuffestRegsplit).
+
+c@@                                                        *buffest-c@@* *c@@*
+
+Edit the {"} register in a split.
+Only set when the default register mapping is set.
+
+c\q                                                        *buffest-c\q* *c\q*
+
+Edit the quickfix list in a split (<Plug>BuffestQflistsplit).
+
+c\l                                                        *buffest-c\l* *c\l*
+
+Edit the location list in a split (<Plug>BuffestLoclistsplit).
+
+ vim: ft=help
