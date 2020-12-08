@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/t6tn4k/vim-c-posix-syntax.git
+	branch = master
+	commit = 4a09bafaf0453d267424ee1a213474519d5b08ac
+	parent = 937889c312df747fec354a3316e01dab82afac1d
+	method = merge
+	cmdver = 0.4.3
