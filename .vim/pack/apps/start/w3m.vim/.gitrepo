@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/yuratomo/w3m.vim.git
+	branch = master
+	commit = 228a852b188f1a62ecea55fa48b0ec892fa6bad7
+	parent = fbf0222e5fe35cb4a8b2a9344d520deacaceb2c0
+	method = merge
+	cmdver = 0.4.3
