@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/itchyny/calendar.vim.git
+	branch = master
+	commit = 4a27972d1af6a4a659cebefeed8ec81f3c783c79
+	parent = 754e416f2820f9a78c21dbc8cb34ded987635d59
+	method = merge
+	cmdver = 0.4.3
