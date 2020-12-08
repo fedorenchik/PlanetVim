@@ -47,11 +47,8 @@ sync-files:
 	#vim -c 'runtime spell/cleanadd.vim' -c 'q'
 
 commit:
-	git submodule init
-	git submodule foreach git status --short --branch
-	git submodule foreach git pull --ff-only
 	git add $(FILES) Makefile README.md
-	git add .gitmodules .vim/pack/
+	git add .vim/pack/
 ifneq "$(DELETED_FILES)" ""
 	git rm --ignore-unmatch -- $(DELETED_FILES)
 endif
