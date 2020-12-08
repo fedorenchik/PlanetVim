@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/jsit/asyncomplete-user.vim.git
+	branch = master
+	commit = 960496266b1dd8218efd83785dd22b3221c1ddd7
+	parent = 13feb197b7e3c3376de20943fee319fafc857dac
+	method = merge
+	cmdver = 0.4.3
