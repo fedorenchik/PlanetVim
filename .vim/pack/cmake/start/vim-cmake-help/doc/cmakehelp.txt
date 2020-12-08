@@ -1,0 +1,148 @@
+*cmakehelp.txt*  View CMake documentation inside Vim
+
+Author:     bfrg <http://github.com/bfrg>
+Website:    https://github.com/bfrg/vim-cmake-help
+License:    Same terms as Vim itself (see |license|)
+
+
+==============================================================================
+INTRODUCTION                                                      *cmake-help*
+
+View CMake documentation inside Vim.
+
+The plugin provides three methods for quickly displaying CMake documentation:
+1. Open the documentation in a new |:split| window.
+2. Open the documentation in a |popup-window| at the current cursor (or mouse
+   pointer) position.
+3. Open the CMake Reference Documentation directly in your browser.
+
+==============================================================================
+USAGE                                                       *cmake-help-usage*
+
+Commands ~
+
+:CMakeHelp {arg}                                                  *:CMakeHelp*
+            Open the CMake documentation for {arg} in a 'previewwindow'.
+
+:CMakeHelpPopup {arg}                                        *:CMakeHelpPopup*
+            Open the CMake documentation for {arg} in a |popup-window| at the
+            current cursor position.
+
+            For example, to open the CMake documentation for the word under
+            the cursor in a popup window with |K|, use 'keywordprg': >
+                " in ~/.vim/after/ftplugin/cmake.vim
+                setlocal keywordprg=:CMakeHelpPopup
+
+:CMakeHelpOnline [{arg}]                                    *:CMakeHelpOnline*
+            Open the CMake Reference documentation for {arg} in the browser
+            specified by |cmakehelp.browser| (default: Firefox).
+
+            When {arg} is not given, the command will open the start page
+            https://cmake.org/cmake/help/vX.YY, where X.YY denotes the version
+            of the CMake executable specified in |cmakehelp.exe|.
+
+Mappings ~
+
+<plug>(cmake-help)                                        *<plug>(cmake-help)*
+            Open the CMake documentation for the current word under the cursor
+            in a |preview-window|.
+
+            Example: >
+                " in ~/.vim/after/ftplugin/cmake.vim
+                nmap <buffer> <space>h <plug>(cmake-help)
+<
+<plug>(cmake-help-popup)                            *<plug>(cmake-help-popup)*
+            Open the CMake documentation for the current word under the cursor
+            in a |popup-window|.
+
+            Example: >
+                " in ~/.vim/after/ftplugin/cmake.vim
+                nmap <buffer> <space>h <plug>(cmake-help-popup)
+<
+<plug>(cmake-help-online)                          *<plug>(cmake-help-online)*
+            Open the CMake documentation for the current word under the cursor
+            in the browser specified by |cmakehelp.browser|.
+
+            Example: >
+                " in ~/.vim/after/ftplugin/cmake.vim
+                nmap <buffer> <space>h <plug>(cmake-help-online)
+<
+Mouse hovers ~
+                                                      *cmake-help-balloonexpr*
+A 'balloonexpr' is provided that will display the CMake documentation for the
+word under the mouse pointer in a popup window.
+
+To enable this feature, add the following to after/ftplugin/cmake.vim: >
+    setlocal ballooneval
+    setlocal balloonevalterm
+    setlocal balloonexpr=cmakehelp#balloonexpr()
+<
+Moving the mouse pointer outside the current word closes the popup window.
+
+==============================================================================
+CONFIGURATION                                              *cmake-help-config*
+
+*b:cmakehelp*
+*g:cmakehelp*
+
+Options can be set either through the buffer-local |Dictionary| b:cmakehelp,
+or alternatively through the global |Dictionary| g:cmakehelp. The following
+keys are supported:
+                                                               *cmakehelp.exe*
+"exe" ~
+            Path to CMake executable.
+            Default: value found in $PATH
+                                                           *cmakehelp.browser*
+"browser" ~
+            Command for opening the url.
+            Default: "firefox"
+                                                          *cmakehelp.scrollup*
+"scrollup" ~
+            Key to press for scrolling the text up in the popup window.
+            Default: <S-PageUp>
+                                                        *cmakehelp.scrolldown*
+"scrolldown" ~
+            Key to press for scrolling the text down in the popup window.
+            Default: <S-PageDown>
+                                                         *cmakehelp.maxheight*
+"maxheight" ~
+            Maximum height for the popup window. Set this entry to zero to use
+            as much space as possible.
+            Default: 0
+                                                               *cmakehelp.top*
+"top" ~
+            Key to press for jumping to the top of the buffer in the popup
+            window.
+            Default: <S-Home>
+                                                            *cmakehelp.bottom*
+"bottom" ~
+            Key to press for jumping to the bottom of the buffer in the popup
+            window.
+            Default: <S-End>
+
+Note: The |buffer-variable| b:cmakehelp must be specified for cmake filetypes,
+for example, in after/ftplugin/cmake.vim.
+
+==============================================================================
+HIGHLIGHTING                                            *cmake-help-highlight*
+
+The appearance of the popup window can be configured through the following
+highlight groups:
+
+CMakeHelp                                                       *hl-CMakeHelp*
+                    Popup window background and normal text. This is the
+                    equivalent of the |hl-Normal| highlight group in regular
+                    windows.
+                    Default: |hl-Pmenu|
+
+CMakeHelpScrollbar                                     *hl-CMakeHelpScrollbar*
+                    Highlight group name for the |popup-scrollbar|. The
+                    background color is what matters.
+                    Default: |hl-PmenuSbar|
+
+CMakeHelpThumb                                             *hl-CMakeHelpThumb*
+                    Highlight group name for the |popup-scrollbar| thumb. The
+                    background color is what matters.
+                    Default: |hl-PmenuThumb|
+
+ vim:tw=78:et:ft=help:norl:
