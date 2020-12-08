@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/laixintao/asyncomplete-gitcommit.git
+	branch = master
+	commit = 68b35a7537326d5b21bb61c7cf5d981d425d2f5f
+	parent = 9fd8875350dd420b6ddd207282510bafe207ec9d
+	method = merge
+	cmdver = 0.4.3
