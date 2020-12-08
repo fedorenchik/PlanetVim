@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/janko/vim-test.git
+	branch = master
+	commit = 180c8ced850ed288bf7ce9c44c6b4451f995f275
+	parent = 36b2fbcdbb5ff890848a01b4f7d23d22ef278f4e
+	method = merge
+	cmdver = 0.4.3
