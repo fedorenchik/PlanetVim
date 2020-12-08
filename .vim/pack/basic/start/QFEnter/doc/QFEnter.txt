@@ -1,0 +1,362 @@
+*QFEnter.txt*    Open a Quickfix item in a window you choose.
+*QFEnter*
+
+Author:       yssl <http://github.com/yssl>
+
+==============================================================================
+Contents                                                    *QFEnter-contents*
+
+        1. Introduction ............................... |QFEnter-intro|
+        2. Usage ...................................... |QFEnter-usage|
+        3. Options .................................... |QFEnter-options|
+        4. |switchbuf| option ........................... |QFEnter-switchbuf|
+        5. Deprecated Commands & Options .............. |QFEnter-deprecated|
+        6. Changelog .................................. |QFEnter-changelog|
+
+==============================================================================
+1. Introduction                                                *QFEnter-intro*
+
+QFEnter allows you to open items from the |quickfix| or location list wherever you wish.
+
+You can set a target window by giving it focus just before jumping to the
+|quickfix| (or location list) window, or you can open items in new splits, vsplits, and tabs.
+You can even open multiple items at once by visual selection!
+
+Vim's default means of opening items from the |quickfix| list are limited and
+inconvenient:
+
+- You cannot select a window in which to open a file when you press <Enter>:
+>
+    Hitting the <Enter> key or double-clicking the mouse on a line has the
+    same effect.  The file containing the error is opened *in the window
+    above the quickfix window*.
+                                    -- from :help quickfix
+<
+- It is inconsistent with other |quickfix| commands like |:cnext| and |:cprev|
+  which open a file in a previously focused window.
+
+- You cannot decide where a horizontal split will be created when using
+  |CTRL-W_<Enter>|, Vim always creates the new split window above the
+  |quickfix| window.
+
+- There is no command at all for 'open in a new vertical split window'.
+
+These are confusing and bothered me every time, so I wrote a simple plugin to
+make up for these weak points.  Its name comes from the most basic way to open
+a file from the |quickfix| window -- the <Enter> key.
+
+==============================================================================
+2. Usage                                                       *QFEnter-usage*
+
+In the quickfix (or location list) window,
+
+<Enter>, <2-LeftMouse>  (open)
+Normal mode : Open an item under cursor in the previously focused window.
+Visual mode : Open items in visual selection in the previously focused window.
+              As a result, the last item appears in the window.
+
+<Leader><Enter>  (vopen)
+Normal mode : Open an item under cursor in a new vertical split of the
+              previously focused window.
+Visual mode : Open items in visual selection in a sequence of new vertical
+              splits from the previously focused window.
+
+<Leader><Space>  (hopen)
+Normal mode : Open an item under cursor in a new horizontal split from the
+              previously focused window.
+Visual mode : Open items in visual selection in a sequence of new horizontal
+              splits of the previously focused window.
+
+<Leader><Tab>  (topen)
+Normal mode : Open an item under cursor in a new tab.
+Visual mode : Open items in visual selection in a sequence of new tabs.
+              By default, the |quickfix| window is automatically opened in the
+              new tab to help you open other Quickfix items. This behavior
+              can be changed with the |g:qfenter_enable_autoquickfix| option.
+
+You can change these key mappings in your .vimrc (see |QFEnter-options|).
+
+==============================================================================
+3. Options                                                   *QFEnter-options*
+
+|QFEnter| mappings are enabled only in |quickfix| (or location list) window.
+
+*g:qfenter_keymap*
+Customizable key mapping table for all 24 item-opening cases.
+It is a vimscript dictionary which has 'command' (as key) and 'key list'
+(as value) pairs.
+
+Default: >
+    let g:qfenter_keymap.open = ['<CR>', '<2-LeftMouse>']
+    let g:qfenter_keymap.vopen = ['<Leader><CR>']
+    let g:qfenter_keymap.hopen = ['<Leader><Space>']
+    let g:qfenter_keymap.topen = ['<Leader><Tab>']
+<
+Predefined commands are:
+
+'open':   Open items under cursor or in visual block in a previously focused window.
+'vopen':  Open items under cursor or in visual block in new vertical splits from a previously focused window.
+'hopen':  Open items under cursor or in visual block in new horizontal splits from a previously focused window.
+'topen':  Open items under cursor or in visual block in new tabs.
+
+'cnext':  Open items using |:cnext| command in a previously focused window.
+'vcnext': Open items using |:cnext| command in new vertical splits from a previously focused window.
+'hcnext': Open items using |:cnext| command in new horizontal splits from a previously focused window.
+'tcnext': Open items using |:cnext| command in new tabs.
+
+'cprev':  Open items using |:cprev| command in a previously focused window.
+'vcprev': Open items using |:cprev| command in new vertical splits from a previously focused window.
+'hcprev': Open items using |:cprev| command in new horizontal splits from a previously focused window.
+'tcprev': Open items using |:cprev| command in new tabs.
+
+'open_keep':   Same as 'open', but the quickfix (or location list) window keeps focus after opening items.
+'vopen_keep':  Same as 'vopen', but the quickfix (or location list) window keeps focus after opening items.
+'hopen_keep':  Same as 'hopen', but the quickfix (or location list) window keeps focus after opening items.
+'topen_keep':  Same as 'topen', but the quickfix (or location list) window keeps focus after opening items.
+
+'cnext_keep':  Same as 'cnext', but the quickfix (or location list) window keeps focus after opening items.
+'vcnext_keep': Same as 'vcnext', but the quickfix (or location list) window keeps focus after opening items.
+'hcnext_keep': Same as 'hcnext', but the quickfix (or location list) window keeps focus after opening items.
+'tcnext_keep': Same as 'tcnext', but the quickfix (or location list) window keeps focus after opening items.
+
+'cprev_keep':  Same as 'cprev', but the quickfix (or location list) window keeps focus after opening items.
+'vcprev_keep': Same as 'vcprev', but the quickfix (or location list) window keeps focus after opening items.
+'hcprev_keep': Same as 'hcprev', but the quickfix (or location list) window keeps focus after opening items.
+'tcprev_keep': Same as 'tcprev', but the quickfix (or location list) window keeps focus after opening items.
+
+Note that |g:qfenter_keymap| should be defined as an empty dictionary 
+in your .vimrc to customize key mappings.  >
+    let g:qfenter_keymap = {}
+<
+For example, to open a next quickfix item in a previously focused window while keeping focus in the quickfix window by typing <Leader>a, you can use these:   >
+    let g:qfenter_keymap = {}
+    let g:qfenter_keymap.cnext_keep = ['<Leader>a']
+<
+
+*g:qfenter_enable_autoquickfix*
+Enable or disable automatic opening of quickfix window when 'open in a new
+tab' command is executed.
+If enabled, quickfix window is automatically opened in the new tab with its
+original size, view and position to help you open other quickfix items.
+(not correctly, but smartly determined)
+Default: >
+    let g:qfenter_enable_autoquickfix = 1
+<
+
+*g:qfenter_exclude_filetypes*
+Use this option to prevent quickfix items from opening in windows of certain filetypes.
+Default: >
+    let g:qfenter_exclude_filetypes = []
+<
+For example, you can prevent opening items in NERDTree and Tagbar windows using the following code in your .vimrc: >
+    let g:qfenter_exclude_filetypes = ['nerdtree', 'tagbar']
+<
+You can check *filetype* of the current window using `:echo &filetype`.
+
+
+*g:qfenter_prevtabwin_policy*
+This option determines which window on which tab should have focus when the `wincmd p` is executed after opening a quickfix item.
+
+* 'qf': The previous window and tab are set to the quickfix window from which the QFEnter open command is invoked and the tab the window belongs to.
+* 'none': Do nothing for the previous window and tab.
+        The previous window is the window that previously had focus before the target window, in the process of `tabwinfunc`.
+        For `v*` and `h*` predefined commands, the previous window is the window focused before the quickfix window.
+        For `t*` predefined commands, the previous window and tab are the window focused before the quickfix window and the tab it belongs to.
+* 'legacy': The option for legacy behavior prior to QFEnter 2.4.1.
+          For `t*` predefined commands, follow the 'qf' policy.
+          Otherwise, follow the 'none' policy.
+
+Default: >
+    let g:qfenter_prevtabwin_policy = 'qf'
+<
+
+*g:qfenter_custom_map_list*
+An optional list of custom action mappings to use your 
+custom functions to specify the window to jump to.
+Default: >
+    let g:qfenter_custom_map_list = []
+<
+Each item in |g:qfenter_custom_map_list| should have four key-value pairs:
+
+* 'tabwinfunc': The name of your custom function to specify the target window, 
+ which should not have any parameters.
+ Its return value should be a list of ['tabpagenr', 'winnr', 'hasfocus', 'isnewtabwin'].
+  *'tabpagenr': tabpage number of the target window
+  * 'winnr': window number of the target window
+  * 'hasfocus': whether the target window already has focus or not
+  * 'isnewtabwin': 
+    * `'nt'`: the target window is in a newly created tab
+    * `'nw'`: the target window is a newly created window
+    * otherwise: the target window is one of existing windows
+* 'qfopencmd': One of the following values
+  * `'cc'`: Open a quickfix item using `:cc`.
+  * `'cn'`: Open a quickfix item using `:cnext`.
+  * `'cp'`: Open a quickfix item using `:cprev`.
+* 'keepfocus': `1` to keep focus in the quickfix (or location list) window after opening an item, otherwise `0`.
+* 'keys': shortcut key list
+
+For example, with the following code in .vimrc, 
+* You can open a next quickfix item in a
+previously focused window while keeping focus in the quickfix window by typing `<Leader>n`
+(identical effect to `let g:qfenter_keymap.cnext_keep = ['<Leader>n']`).
+
+* You can open a quickfix item under cursor in the first window (winnr==1) in the first tab (tabnr==1).
+>
+    let g:qfenter_custom_map_list = []
+    call add(g:qfenter_custom_map_list, {
+			\'tabwinfunc': 'QFEnter#GetTabWinNR_Open',
+			\'qfopencmd': 'cn',
+			\'keepfocus': 1,
+			\'keys': ['<Leader>n'],
+			\})
+    call add(g:qfenter_custom_map_list, {
+			\'tabwinfunc': 'TestTab1Win1_Open',
+			\'qfopencmd': 'cc',
+			\'keepfocus': 0,
+			\'keys': ['<Leader>t'],
+			\})
+    func! TestTab1Win1_Open()
+	return [1, 1, 0, '']
+    endfunc
+<
+
+*g:qfenter_cc_cmd*
+*g:qfenter_ll_cmd*
+QFEnter internally uses |:cc| (or |:ll| for the location list) command
+to open an item under cursor.
+If you're using your custom "cc" (or "ll") command instead of vim's 
+default |:cc| (or |:ll|), you can register it by setting this option 
+and make QFEnter use it.
+The option should have "##" which is converted to the line number later.
+Default: >
+    let g:qfenter_cc_cmd = '##cc'
+    let g:qfenter_ll_cmd = '##ll'
+<
+
+*g:qfenter_cn_cmd*
+*g:qfenter_lne_cmd*
+*g:qfenter_cp_cmd*
+*g:qfenter_lp_cmd*
+If you're using your custom "cn" or "cp" command instead of vim's default
+|:cn| or |:cp| (or the equivalent for the location list, |:lne| or |:lp|), you
+can register them by setting these options.
+Default: >
+    let g:qfenter_cn_cmd = 'cn'
+    let g:qfenter_cp_cmd = 'cp'
+    let g:qfenter_lne_cmd = 'lne'
+    let g:qfenter_lp_cmd = 'lp'
+<
+
+==============================================================================
+4. |switchbuf| option                                      *QFEnter-switchbuf*
+
+You can control QFEnter's behavior with vim's |switchbuf| option when opening
+an item.  When each opening command is invoked, QFEnter checks |switchbuf|
+option and adjusts its behavior.  |switchbuf| option can have five values;
+(none), useopen, usetab, split, newtab.
+
+For example, you can set the option in your .vimrc as following:
+>
+    set switchbuf=useopen
+<
+The default value is (none), meaning that:
+>
+    set switchbuf=
+<
+If there is no already opened window of the buffer for the item you selected,
+QFEnter opens the item with its default behavior as described in
+|QFEnter-usage|.
+
+Otherwise, |switchbuf| option choose the window to open the item in.
+You can refer :help switchbuf for more details.
+
+==============================================================================
+5. Deprecated Commands & Options                          *QFEnter-deprecated*
+
+
+==============================================================================
+6. Changelog                                               *QFEnter-changelog*
+
+2.4.1                       2020/10/07
+    - Add an option for the policy to determine the previous window / tab'
+      g:qfenter_custom_map_list. Thanks for the suggestions, Konfekt and mckellyln!
+
+2.4.0                       2020/10/05
+    - Remove the deprecated commands from 2.3.0: g:qfenter_*_map, 
+      g:qfenter_keep_quickfixfocus
+    - Support custom functions to specify target window through 
+      g:qfenter_custom_map_list. Thanks for the suggestion, p0deje!
+    - Add an option to prevent quickfix items from opening in windows 
+      of certain filetypes. Thanks for the suggestion, lsaint!
+    - Fix typo `filetype` to `FileType`. Thanks for the PR, dragonxlwang!
+    - Fix always open quickfix window when 'open in a new tab' command 
+      is executed inside the location list. Thanks for the PR, QMonkey!
+
+2.3.1                       2017/03/04
+    - Bug fix for deprecated variable(g:qfenter_keep_quickfixfocus) checking.
+      Thanks for the report, Leandro!
+    - Update documents for customization.
+
+2.3.0                       2017/02/28
+    - Key mapping setup has totally changed for more flexible customizing.
+      Thanks for the suggestion, qsvui!
+    - Include handling for :lne and :lp. Thanks for the PR, mMontu!
+
+2.2.2                       2015/05/26
+    - Avoid messages when mappings are executed. Thanks for the PR, mMontu!
+    - Catch E553 of cn & cp commands
+    - Modelines, clean up vimdoc formatting and edit text. Thanks to the PR, ches!
+    - Support location list. Thanks to the PR, feix760!
+    
+2.2.1                       2014/03/17
+    - Update the document for 'switchbuf' option.
+
+2.2.0                       2014/03/17
+    - Now QFEnter supports vim's 'switchbuf' option.
+      if you change 'switchbuf' option, QFEnter adapts its behavior to the
+      changed option. Thanks to the suggestion, sergey-vlasov!
+
+2.1.0                       2014/01/28
+    - Subdivide g:qfenter_keep_quickfixfocus option for each command. e.g.
+      g:qfenter_keep_quickfixfocus.open, g:qfenter_keep_quickfixfocus.cnext,
+      g:qfenter_keep_quickfixfocus.cprev
+    - Bug fix : not updated window for already opened file when
+      g:qfenter_keep_quickfixfocus==1
+    - Thanks for the suggestions, mMontu!
+
+2.0.0                       2014/01/27
+    - Visual mode support to open multiple Quickfix items at once
+    - Add option to keep focus in Quicifix window after opening items
+      (g:qfenter_keep_quickfixfocus)
+    - Support :cnext and :cprev command to open items
+
+1.3.0                       2013/12/10
+    - Improve auto quickfix open when 'open in new tab'
+        - Restore view(cursor position, scroll..) of quickfix window to
+          auto-opened quickfix window
+        - Restore size of quickfix window to auto-opened quickfix window
+        - Now you don't need to provide g:qfenter_copen_modifier option.
+          QFEnter now smartly determine whether the new quickfix window is
+          botright or topleft, vertical or horizontal.
+    - Change g:qfenter_ttopen_map option name to g:qfenter_topen_map (backward
+      compatibility ismaintained)
+    - Remove '<Tab><Tab>' from default mapping
+
+1.2.0                       2013/12/08
+    - Now, Quickfix window is automatically opened after "open in a new tab"
+    - Add options about Quickfix auto opening
+    - Add one more default mapping for "open in a new tab"
+    - Code refactoring
+
+1.1.1                       2013/12/06
+    - Change default mapping for "open a file in a new tab"
+
+1.1.0                       2013/12/06
+    - Add new features
+        : open a file under cursor in a new tab.
+        : register custom "cc" command with g:qfenter_cc_cmd
+
+1.0.0                       2013/11/24
+    - First version
+
+ vim: tw=78 ts=8 sts=4 tw=4 et ft=help norl:
