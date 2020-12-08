@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/osyo-manga/vim-anzu.git
+	branch = master
+	commit = 1b95ec384487e559f0ee70e0f46c33683ff533ac
+	parent = fce4c8b421439452386da9ea167771d5d5be0950
+	method = merge
+	cmdver = 0.4.3
