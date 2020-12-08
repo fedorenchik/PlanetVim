@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/sotte/presenting.vim.git
+	branch = master
+	commit = df0704f835a3cef831271df9cf63fd08b295eb44
+	parent = e230c79577cd291ce40a3340a2f82839047cc8fd
+	method = merge
+	cmdver = 0.4.3
