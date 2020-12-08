@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/prabirshrestha/asyncomplete-necovim.vim.git
+	branch = master
+	commit = e45d58673100b5653d9c2dc823f914190c64aaa0
+	parent = 933d4ea77e208730a3801dc6933657b5f31264c6
+	method = merge
+	cmdver = 0.4.3
