@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/hotwatermorning/auto-git-diff.git
+	branch = master
+	commit = a14d52b7ed7e7fb69bf1de9d363f3abdd3410b3a
+	parent = 26f1cbba69f1e091c27a69e204dc46c01bf7baff
+	method = merge
+	cmdver = 0.4.3
