@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/sodapopcan/vim-twiggy.git
+	branch = master
+	commit = 305fa5ab43514b76b15a57596bc514c072b9cdda
+	parent = f0d18803be0a4a129d277700694224b2c38029b8
+	method = merge
+	cmdver = 0.4.3

@@ -1,0 +1,375 @@
+This plugin is only available if compatible is not set and requires that you
+have the |fugitive| plugin installed.
+
+
+INTRODUCTION                                    *twiggy*
+
+Maintain your bearings while working with git branches.
+
+
+COMMANDS                                        *twiggy-commands*
+
+:Twiggy [args]              With no arguments, open a split containing an
+                            interactive and decorated list of branches. See
+                            |twiggy-mappings| for a list of available
+                            buffer-local mappings.
+
+                            If [branch] is given, it will be checked-out -- If
+                            the branch does not exist, it will be created
+                            first.  In this regard, it acts like a cross between
+                            the `git branch` and `git checkout` commands.  You
+                            may also provide the starting point branch as a
+                            second argument.
+
+
+FUGITIVE COMPATIBILITY                         *twiggy-fugitive*
+Twiggy is aware of the |fugitive| commands |:Gstatus|, |:Gcommit| and |:Gblame|.
+Calling these within the twiggy buffer will first jump to the last used buffer
+before running the actual commands.  This avoids a surprisingly claustrophobic
+feeling while inside twiggy's buffer.  You may also opt to automatically close
+twiggy when running these commands by setting:
+>
+  let g:twiggy_close_on_fugitive_command = 1
+<
+
+
+ICONS                                           *twiggy-icons*
+
+As per standard git output, * is used to denote the current branch.  Branches
+may also have secondary icons prepended to them which, for the most part, mean
+they are tracking branches.  Here is the legend:
+
+multi_byte    standard
+✓             =             branch is in synch with its upstream
+↑             +             branch is ahead of its upstream
+↓             -             branch is behind its upstream
+↕             ~             branch is both ahead and behind its upstream
+∅             %             branch is detached
+✗             x             in merge/rebase state
+
+You may also use you own icons by setting the following in your vimrc:
+>
+  let g:twiggy_icons = ['*', '=', '+', '-', '~', '%', 'x']
+<
+The list must have 7, single character entries.  The first position is used
+for the current branch then the rest are in the order listed in the above
+legend.
+
+
+SORTING                                         *twiggy-sorting*
+
+Twiggy can sort your branches.
+
+Alpha-Numeric {alpha}       The standard one you are used to.
+
+Most Recently Used {mru}    Using the reflog, twiggy will sort descending
+                            in the order you checked out each branch.  This
+                            isn't truly mru since if the branch isn't in the
+                            reflog, it will sort near the bottom (new branches
+                            or recently renamed branches, for example).
+
+Tracking {track}            This sort puts tracking branches first followed by
+                            local branches.  The two groups are sorted alpha-
+                            numerically.  This is not available for remote
+                            branches.
+
+Committer Date {date}       Sort by the date of the last commit of each branch.
+
+
+SORTING OPTIONS                                 *twiggy-sorting-options*
+
+                                                *'local_branch_sort'*
+Default 'alpha'
+The default/current sort for local branches.  Values can be 'aplha', 'mru',
+'date' or 'track'.
+>
+  let g:twiggy_local_branch_sort = 'mru'
+<
+                                                *'local_branch_sorts'*
+This is the array of possible local branch sorts.  You can override it
+directly if you want to limit the number of options available.  For example:
+>
+  let g:twiggy_local_branch_sorts = ['mru', 'date']
+<
+Legal values are the same as for |local_branch_sort|.
+
+                                                *'remote_branch_sort'*
+
+Default 'alpha'
+The default/current sort for remote branches.  Values can be 'alpha'or
+'date' .
+>
+  let g:twiggy_remote_branch_sort = 'date'
+<
+                                                *'remote_branch_sorts'*
+As with |local_branch_sorts|, this an array of possible sorts to use.  This is
+really just here for completeness;  It's pretty useless as there are only two
+possible values.
+
+
+GROUPING                                        *twiggy-grouping*
+
+By default, twiggy groups branches via one level of "slash-nesting" for locals
+and one group each for remotes.
+
+Branches are sorted before they are grouped, so this can be a little odd when
+sorting by MRU.  To sort locals as one unified group, use the |twiggy-a|
+mapping (hint: it's a toggle).  You may set this grouping method to the
+default with the following:
+>
+  let g:twiggy_group_locals_by_slash = 0
+<
+
+
+OTHER OPTIONS                                   *twiggy-options*
+
+                                                *'num_columns'*
+Default: 31
+The width of Twiggy's buffer
+>
+  let g:twiggy_num_columns = 25
+<
+                                                *'adapt_columns'*
+Default: 0
+Ensures all branch names are visible in twiggy's buffer (overrides
+|'adapt_columns'|).
+>
+  let g:twiggy_adapt_columns = 1
+<
+                                                *'split_position'*
+Default: ''
+The split method used to show the twiggy buffer.  Can be |leftabove|,
+|rightbelow|, |topleft| or |botright|.
+>
+  let g:twiggy_split_position = 'botright'
+<
+Twiggy only allows a vertical split.
+
+                                                *'git_log_command'*
+Default: ''
+The command to use for the `gl` mapping.  See |twiggy-git-log|.
+
+                                                *'set_upstream'*
+Default: 1
+Whether or not to automatically set the upstream the first time you push
+a each branch.
+>
+  let g:twiggy_set_upstream = 0
+<
+                                                *'refresh_buffers'*
+Default: 1
+After any file-altering git operation has run, twiggy will refresh (call :edit
+on) all visible buffers in the current tab.  To suppress this behaviour, set
+the following: 
+>
+  let g:twiggy_refresh_buffers = 0
+<
+                                                *'prompted_force_push'*
+Default: 1
+Prompts to make sure you really want to force push.  Turn this off with:
+>
+  let g:twiggy_prompted_force_push = 0
+<
+                                                *'enable_quickhelp'*
+Default: 1
+Enables |twiggy-?| for quickhelp.  To turn it off:
+>
+  let g:twiggy_enable_quickhelp = 0
+<
+                                                *'show_full_ui'*
+Default: 1, 0 if 'enable_quickhelp' is 0
+Shows the "press ? for help" hint as well as the recommendation to read
+the mapping docs in the quickhelp buffer.  To turn it off:
+>
+  let g:twiggy_show_full_ui = 0
+
+
+MAPPINGS                                        *twiggy-mappings*
+
+                  Navigation~
+                                                *twiggy-<C-N>*
+<C-N>             Jump to the first branch of the next group
+
+                                                *twiggy-<C-P>*
+<C-P>             Jump to the first branch of the previous group
+
+                                                *twiggy-<C-^>*
+J                 Jump to the current branch
+
+                  Sorting~
+                                                *twiggy-i*
+i                 Cycle through sorts of the group of the branch under the
+                  cursor.  If on a remote, all remote groups will be sorted.
+
+                                                *twiggy-I*
+I                 Like i, but in reverse.
+
+
+                                                *twiggy-gi*
+gi                Cycle through sorts of groups other than that of the branch
+                  under the cursor.  Useful for lazily resorting remote
+                  branches without having to jump down to them.
+
+gI                Like gi, but in reverse... even though there are only two
+                  options.
+
+                                                *twiggy-a*
+a                 Toggle grouping of local branches with slashes (/) in their
+                  names.
+
+                  Checkout~
+                                                *twiggy-c*
+c                 Checkout the branch under the cursor.  If the branch is a
+                  remote, create a tracking branch if one doesn't already
+                  exist, otherwise, checkout in detached HEAD.
+
+                                                *twiggy-C*
+C                 Checkout the remote branch under the cursor in detached
+                  HEAD.  If the branch is a local tracking branch, it will
+                  checkout its remote in detached HEAD.
+
+                                                *twiggy-<CR>*
+<CR>              Same as c
+
+                  ...and, for those of us used to the various plugins that use
+                  o to open (which is kinda sorta almost like a checkout):
+
+                                                *twiggy-o*
+o                 Same as c
+
+                                                *twiggy-O*
+O                 Same as C
+
+                                                *twiggy-gc*
+gc                Prompt to checkout branch with a new name.
+
+                                                *twiggy-go*
+go                Same as gc
+
+                  Fetching~
+                                                *twiggy-f*
+f                 Fetch the remote for the branch under the cursor.
+
+                  Merging and Rebasing~
+                                                *twiggy-m*
+m                 Merge the branch under the cursor into the current branch.
+
+                                                *twiggy-M*
+M                 Merge the branch under the cursor's remote into the current
+                  branch.  This is useful in conjunction with f.  For
+                  example, place your cursor on a branch that isn't the
+                  current one, press f to update its remote, then press M to
+                  merge off the remote.
+
+                                                *twiggy-gm*
+gm                Like m, but with --no-ff
+
+                                                *twiggy-gM*
+gm                Like M, but with --no-ff
+
+                                                *twiggy-r*
+r                 Rebase the current branch off the branch under the cursor.
+
+                                                *twiggy-R*
+R                 Rebase the current branch off the branch under the
+                  cursor's remote (if it has one).
+
+                  Pushing~
+                                                *twiggy-P*
+P                 Push the local branch under the cursor (think of it as an
+                  upward arrow).  It will set the upstream if it's not
+                  currently set--You can turn off this behaviour with:
+                  >
+                    let g:twiggy_set_upstream = 0
+<
+                                                *twiggy-gP*
+gP                Prompt to specify the remote repo before pushing.
+
+                                                *twiggy-!P*
+!P                Force push.  This is prompted by default.  Turn this
+                  behaviour off with:
+>
+                    let g:twiggy_prompted_force_push = 0
+<
+                                                *twiggy-p*
+p                 Pull the branch under the cursor.
+
+                  Naming~
+                                                *twiggy-,*
+,                 Rename the branch under the cursor.
+                  
+                  Deleting~
+                                                *twiggy-dd*
+dd                Delete the branch under the cursor.  If the branch isn't
+                  fully merged, the prompt will warn you of this.  Press <CR>
+                  or y to accept, press <Esc> or n to cancel.
+
+                                                *twiggy-dP*
+dP                If the branch under the cursor is remote, this will prompt
+                  you to delete the branch off of the remote repo.  Since this
+                  can be dangerous in the wrong hands, you have to turn this
+                  mapping on with:
+                  >
+                    let g:twiggy_enable_remote_delete = 1
+<
+.                 Start a `:Git` command line auto-populated with the branch
+                  under the cursor.
+
+                  Git Log~
+
+                  Twiggy is all about branching, not commit history.
+                  But if you install one of these two plugins:
+
+                    gv.vim - https://github.com/junegunn/gv.vim
+                    gitv   - https://github.com/gregsexton/gitv
+
+                  ...you will get the following mappings:
+
+                                                *twiggy-log*
+gl                Git log on the branch under the cursor
+
+                                                *twiggy-log-range*
+gL                Git log on the range of the commits between the branch 
+                  under the cursor and the current branch
+
+                  Stashing~
+                                                *twiggy->>*
+<<                `git stash`
+
+                                                *twiggy-<<*
+>>                `git stash pop`
+
+                  The End~
+                                                *twiggy-q*
+q                 Quit
+
+                                                *twiggy-Q*
+Q                 Quit all twiggy buffers (including the error buffer)
+
+                                                *twiggy-?*
+?                 Open the quickhelp
+
+
+SYNTAX                                        *twiggy-syntax*
+
+Twiggy provides a handful of syntax groups for your customization kicks.
+Below is a list of these groups and their defaults.  To override any of these,
+put something like the following in your vimrc:
+>
+  highlight TwiggyGroup ctermfg=10 guifg=#00FF00
+  highlight link TwiggySortText Normal
+<
+TwiggyGroup                 Type         a group heading (local, origin, ...)
+TwiggySortText              Comment      sort indicator (beside the heading)
+TwiggyBranchStatus          DiffDelete   group name becomes 'rebasing' or
+                                         'merging'
+TwiggyCurrent               Identifier   name of the current branch
+TwiggyNotInReflog           Comment      name of branches not in the reflog
+TwiggyIconCurrent           Identifier   icon: generally the * character
+TwiggyIconTracking          String       icon: an up-to-date tracking branch
+TwiggyIconAhead             Type         icon: branch is ahead of remote
+TwiggyIconAheadBehind       Type         icon: branch is both ahead and behind
+TwiggyIconDetached          Identifier   icon: current branch is detached
+TwiggyIconUnmerged          Type         icon: current branch is unmerged
+
+  vim:tw=78:et:ft=help:norl:
