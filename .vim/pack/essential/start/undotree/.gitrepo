@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/mbbill/undotree.git
+	branch = master
+	commit = 9ceb50062135dd30de3da000d5fd46125f51887d
+	parent = 86aec4b7696d06d72352c58ccbe706f580118d48
+	method = merge
+	cmdver = 0.4.3
