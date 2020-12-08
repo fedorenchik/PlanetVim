@@ -1,13 +1,11 @@
 " Required Vim: {{{
-" version: >= 8.0
+" version: >= 8.2
 " --with-features=huge --enable-luainterp --with-luajit [--enable-perlinterp]
 " --enable-pythoninterp [--enable-tclinterp] [--enable-rubyinterp]
 " --enable-cscope --enable-gui=gtk3
 " }}}
 " External Dependencies Of This Vimrc: {{{
-" ctags (Universal Ctags), [cscope], gtags (GNU Global), wmctrl, trash-cli,
-" pylint3
-" latest GNU GLOBAL (compile from source) (6.5.7 as of 25.05.2017)
+" wmctrl, trash-cli, pylint3
 " }}}
 " TODO: {{{
 " Patches for vim:
@@ -880,6 +878,10 @@ let g:xml_syntax_folding = 1
 " }}}
 " }}}
 " External Plugins: {{{
+" Plugin: asyncomplete.vim {{{
+let g:asyncomplete_log_file = ''
+let g:asyncomplete_auto_completeopt = 0
+" }}}
 " Plugin: FastFold {{{
 let g:fastfold_force = 1
 let g:fastfold_minlines = 0
@@ -1023,6 +1025,100 @@ nnoremap sg :Grepper -tool git<CR>
 nnoremap sG :Grepper -tool rg<CR>
 xmap gs <plug>(GrepperOperator)
 call SetupCommandAlias("grep", "GrepperGrep")
+" }}}
+" Plugin: vim-lsp {{{
+let g:lsp_use_lua = has('nvim-0.4.0') || (has('lua') && has('patch-8.2.0775'))
+let g:lsp_preview_float = 0
+let g:lsp_preview_autoclose = 0
+let g:lsp_documentation_float_docked = 1
+let g:lsp_diagnostics_echo_cursor = 1
+let g:lsp_diagnostics_float_cursor = 0
+let g:lsp_peek_alignment = "top"
+let g:lsp_show_workspace_edits = 1
+let g:lsp_hover_conceal = 1
+let g:lsp_ignorecase = &ignorecase
+let g:lsp_log_file = ''
+let g:lsp_semantic_enabled = 0
+":LspCodeAction
+":LspCodeActionSync
+":LspCodeLens
+":LspCodeLensSync
+":LspDocumentDiagnostics
+":LspDeclaration
+":LspDefinition
+":LspDocumentFold
+":LspDocumentFoldSync
+":LspDocumentFormat
+":LspDocumentFormatSync
+":LspDocumentRangeFormat
+":LspDocumentSymbol
+":LspHover
+":LspNextDiagnostic [-wrap=0]
+":LspNextError [-wrap=0]
+":LspNextReference
+":LspNextWarning [-wrap=0]
+":LspPeekDeclaration
+":LspPeekDefinition
+":LspPeekImplementation
+":LspPeekTypeDefinition
+":LspPreviousDiagnostic [-wrap=0]
+":LspPreviousError [-wrap=0]
+":LspPreviousReference
+":LspPreviousWarning [-wrap=0]
+":LspImplementation
+":LspReferences
+":LspRename
+":LspSemanticScopes
+":LspTypeDefinition
+":LspTypeHierarchy
+":LspWorkspaceSymbol
+":LspStatus
+"nnoremap <plug>(lsp-code-action)
+"nnoremap <plug>(lsp-code-lens)
+"nnoremap <plug>(lsp-declaration)
+"nnoremap <plug>(lsp-peek-declaration)
+"nnoremap <plug>(lsp-definition)
+"nnoremap <plug>(lsp-peek-definition)
+"nnoremap <plug>(lsp-document-symbol)
+"nnoremap <plug>(lsp-document-diagnostics)
+"nnoremap <plug>(lsp-hover)
+"nnoremap <plug>(lsp-next-diagnostic)
+"nnoremap <plug>(lsp-next-diagnostic-nowrap)
+"nnoremap <plug>(lsp-next-error)
+"nnoremap <plug>(lsp-next-error-nowrap)
+"nnoremap <plug>(lsp-next-reference)
+"nnoremap <plug>(lsp-next-warning)
+"nnoremap <plug>(lsp-next-warning-nowrap)
+"nnoremap <plug>(lsp-preview-close)
+"nnoremap <plug>(lsp-preview-focus)
+"nnoremap <plug>(lsp-previous-diagnostic)
+"nnoremap <plug>(lsp-previous-diagnostic-nowrap)
+"nnoremap <plug>(lsp-previous-error)
+"nnoremap <plug>(lsp-previous-error-nowrap)
+"nnoremap <plug>(lsp-previous-reference)
+"nnoremap <plug>(lsp-previous-warning)
+"nnoremap <plug>(lsp-previous-warning-nowrap)
+"nnoremap <plug>(lsp-references)
+"nnoremap <plug>(lsp-rename)
+"nnoremap <plug>(lsp-workspace-symbol)
+"nnoremap <plug>(lsp-document-format)
+"vnoremap <plug>(lsp-document-format)
+"nnoremap <plug>(lsp-document-range-format)
+"xnoremap <plug>(lsp-document-range-format)
+"nnoremap <plug>(lsp-implementation)
+"nnoremap <plug>(lsp-peek-implementation)
+"nnoremap <plug>(lsp-type-definition)
+"nnoremap <plug>(lsp-peek-type-definition)
+"nnoremap <plug>(lsp-type-hierarchy)
+"nnoremap <plug>(lsp-status)
+"nnoremap <plug>(lsp-signature-help)
+"nnoremap <plug>(lsp-preview-close)
+"nnoremap <plug>(lsp-preview-focus)
+"TODO: snippets
+autocmd FileType python setlocal tagfunc=lsp#tagfunc
+autocmd FileType python setlocal foldmethod=expr
+autocmd FileType python setlocal foldexpr=lsp#ui#vim#folding#foldexpr()
+autocmd FileType python setlocal foldtext=lsp#ui#vim#folding#foldtext()
 " }}}
 " Plugin: vim-mark {{{
 let g:mwPalettes = {
