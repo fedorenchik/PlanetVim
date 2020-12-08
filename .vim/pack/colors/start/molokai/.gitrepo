@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/tomasr/molokai.git
+	branch = master
+	commit = c67bdfcdb31415aa0ade7f8c003261700a885476
+	parent = f0902f089ef14b386aed7827d131af73dc44571f
+	method = merge
+	cmdver = 0.4.3
