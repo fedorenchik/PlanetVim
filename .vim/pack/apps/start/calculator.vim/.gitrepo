@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/fedorenchik/calculator.vim.git
+	branch = master
+	commit = 7725539706f60960365c7b1861c9bda28ed48f3e
+	parent = 1e683236265715df703189ff0c8f3f82d2fa34ca
+	method = merge
+	cmdver = 0.4.3

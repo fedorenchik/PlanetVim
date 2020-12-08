@@ -1,0 +1,286 @@
+*calculator.txt*        For |Vim version 8.1|   Last change: 2019 May 18
+
+                               ,------------.
+                              |calculator.vim|
+                     ,--------------------------------.
+                     Interactive calculator inside Vim.
+
+Author:  Leonid V. Fedorenchik <leonid@fedorenchik.com>
+License: Same terms as Vim itself (see |license|).
+URL:     https://github.com/fedorenchik/calculator.vim
+
+This plugin is only available if 'compatible' is not set.
+
+calculator.vim                                   *calculator.vim* *:Calculator*
+
+Introduction                    |calculator-introduction|
+Installation                    |calculator-installation|
+  Requirements                  |calculator-requirements|
+  Installation                  |calculator-install|
+Usage                           |calculator-usage|
+Operators                       |calculator-operators|
+Functions                       |calculator-functions|
+Variables and Literals          |calculator-vars-literals|
+Configuration Options           |calculator-config-options|
+Changelog                       |calculator-changelog|
+Contribute                      |calculator-contribute|
+Feedback                        |calculator-feedback|
+
+==============================================================================
+INTRODUCTION                                        *calculator-introduction*
+
+calculator.vim is interactive calculator inside Vim. It supports
+arbitrary complex arithmetics, expressions, variables, logic statements and
+loops.
+
+==============================================================================
+INSTALLATION                                    *calculator-installation*
+
+------------------------------------------------------------------------------
+REQUIREMENTS                                    *calculator-requirements*
+
+  * Vim 8.1 with +Float
+
+If you're compiling Vim from source, please include --enable-channel
+option.
+
+------------------------------------------------------------------------------
+INSTALLATION                                    *calculator-install*
+
+I recommend using Vim's native package management functionality: simply run
+following commands:
+>
+  mkdir -p ~/.vim/pack/bundle/start
+  cd ~/.vim/pack/bundle/start
+  git clone https://github.com/fedorenchik/calculator.vim.git
+  vim -c 'helptags ALL' -c 'q'
+>
+Otherwise use your favourite package manager for Vim.
+
+==============================================================================
+USAGE                                           *calculator-usage*
+
+Type `:Calculator` to open a new window containing the calculator buffer.
+
+`:Calculator` will place the cursor, in insert mode, at a prompt ready to
+issue commands.  This window should be closed as with any other window by
+issuing a `:q`.
+
+A typical interaction:
+>
+    > 5+4
+    9.0
+<
+The '> ' is the prompt. Lines in the buffer with this prefixing them are
+evaluable by pressing <CR> on them whilst in insert or normal mode. The prompt
+is configurable, see |calculator-prompt|.
+
+'5+4' is the expression that is evaluated. calculator.vim supports many
+operators and functions that are explained later in this documentation. (See
+|calculator-operators|).
+
+Variables can be evaluated by using them in expressions. See
+|calculator-defining-variables| for more about variables.
+
+Here are some further examples:
+>
+    > x = 4
+    4.0
+    > 9 * sqrt(4)
+    18.0
+<
+==============================================================================
+4. Operators                                           *calculator-operators*
+
+calculator.vim supports wrapping expressions in parenthesis to evaluate them
+out of turn. This is done with left-to-right associativity.
+
+    Precedence  Operator    Description                         Associativity~
+
+    0           ()          Function application.               Left-to-right
+
+    1           -           Unary minus sign.                   Left-to-right
+
+    2           * /         Multiplication and division.        Left-to-right
+    2           %           Modulus                             Left-to-right
+
+    3           + -         Addition and subtraction.           Left-to-right
+
+    4           =           Assignment                          Right-to-left
+
+==============================================================================
+5. Functions                                           *calculator-functions*
+
+calculator.vim is supplied with many built-in functions. These are detailed
+here including their expected outputs.
+
+If you find that calculator.vim is missing functions that you would like to
+use please submit requests to me (see |calculator-feedback|). Alternatively it
+is straightforward to add functions to the plugin. It is a matter of defining
+the function and then adding it to the function symbol table. It should be
+fairly obvious how this works upon examining the source. If you do add
+functions that you think others would benefit from please, please send me
+patches.
+
+                                                   *calculator-function-list*
+    Function        Description~
+    abs(x)          Returns the absolute (unsigned) value of x.
+
+    acos(x)         Returns the arc cosine of x (in radians).
+
+    asin(x)         Returns the arc sine (measured in radians) of x.
+
+    atan(x)         Returns the arc tangent (measured in radians) of x.
+
+    atan2(y,x)      Returns the arc tangent (measured in radians) of y/x.
+                    Unlike atan(y/x), the signs of both x and y are considered.
+
+    ceil(x)         Returns the smallest integral value >= x.
+
+    choose(n,k)     Returns the binomial coefficient n `choose` k.
+
+    cos(x)          Returns the cosine of x (measured in radians).
+
+    cosh(x)         Returns the hyperbolic cosine of x.
+
+    deg(x)          Returns the degrees of angle x converted from radians.
+
+    exp(x)          Returns e raised to the power of x.
+
+    floor(x)        Returns the largest integral value <= x.
+
+    hypot(x,y)      Returns the Euclidean distance of x and y
+                    i.e sqrt(x*x + y*y)
+
+    inv(x)          Returns the inverse of x, i.e. (1/x).
+
+    ldexp(x,i)      Returns x * (2**i)
+
+    lg(x)           Returns the logarithm of x, base 2.
+
+    ln(x)           Returns the logarithm of x, base e.
+
+    log(x,b)        Returns the logarithm of x, base b. If b is not specified
+                    it defaults to base e.
+
+    log10(x)        Returns the logarithm of x, base 10.
+
+    max(x,y)        Returns the larger value of x and y.
+
+    min(x,y)        Returns the smaller value of x and y.
+
+    nrt(x,n)        Returns the nth root of x.
+
+    perms(n,k)      Returns the number of k-permutations of an n-set.
+
+    pow(x,y)        Returns x raised to the power of y (x**y).
+
+    rad(x)          Returns the radians of angle x converted from degrees.
+
+    rand()          Returns a random decimal number in the interval [0,1).
+
+    round(x)        Returns the nearest integral to x.
+
+    sin(x)          Returns the sine of x (measured in radians).
+
+    sinh(x)         Returns the hyperbolic sine of x (measured in radians).
+
+    sqrt(x)         Returns the square root of x.
+
+    tan(x)          Returns the tangent of x.
+
+    tanh(x)         Returns the hyperbolic tangent of x.
+
+==============================================================================
+6. Variables and Literals                          *calculator-vars-literals*
+
+It is possible in calculator.vim to define variables for use in evaluating
+expressions. This can be very convenient when the expression is complicated.
+A straightforward example is the quadratic formula.
+>
+    > a = 2
+    2.0
+    > b = -1
+    -1.0
+    > c = -6
+    -6.0
+    > ((b*-1) + sqrt(b**2 - 4*a*c))/(2*a)
+    2.0
+    > ((b*-1) - sqrt(b**2 - 4*a*c))/(2*a)
+    -1.5
+<
+As you can see from this example it is simple to define variables and simpler
+still to use them within expressions. It would now be possible to quickly
+redefine these variables and re-evaluate the two expressions to find the roots
+of another quadratic equation.
+
+6.1 Defining Variables                        *calculator-defining-variables*
+
+To define a variable the syntax is of the form
+>
+    name = expression
+<
+An identifier can begin with any of 'A-Z', 'a-z' or '_', it is then made up of
+any 'A-Z', 'a-z', '0-9' or '_'. Any legal expression can be used and the
+result of which will be bound to the identifier.
+
+It is not necessary to declare a variable before assigning it and the type is
+deduced from expression. Redefining a variable is possible and is done by
+specifying it again in a new assignment.
+
+Note: To get a listing of all currently assigned variables the vars() function
+can be used, see |calculator-functions|.
+
+6.2 Variable Scope                                *calculator-variable-scope*
+
+calculator.vim uses a single global scope for all variables. That is, all
+variables defined are usable at any point for any evaluation. A variable is
+bound to a value until it is redefined.
+
+6.4 Built-in Variables                         *calculator-builtin-variables*
+
+There are five built-in variables in calculator.vim.
+
+These are:
+
+    e   - Euler's constant.
+    pi  - Ratio of any circle's circumference to its diameter in Euclidean space.
+    phi - Golden ratio. Useful when working with Fibonacci sequences.
+    true - boolean true value
+    false - boolean false value
+
+==============================================================================
+7. Configuration Options                          *calculator-config-options*
+
+You can set the following options in your .vimrc to override the values used
+by calculator.vim. The defaults are shown.
+
+7.1 Prompt                                                *calculator-prompt*
+
+The prompt used by calculator.vim. This is used to identify evaluable lines.
+>
+    let g:calculator_prompt = "> "
+<
+==============================================================================
+CHANGELOG                                       *calculator-changelog*
+
+Please see git history at https://github.com/fedorenchik/calculator.vim
+
+==============================================================================
+CONTRIBUTE                                      *calculator-contribute*
+
+If you wish to do development work on the code base or documentation simply
+fork the git repository and submit a pull request or patch to me. If you
+discover a bug or wish to submit a feature request add an issue to the github
+page. Anything else, feel free to email me: leonid@fedorenchik.com.
+
+==============================================================================
+FEEDBACK                                        *calculator-feedback*
+
+Bugs, suggestions and patches are all very welcome. If you find issues with
+calculator.vim please add them to the issues page on the github project.
+
+Check out the latest from github at
+https://github.com/fedorenchik/calculator.vim
+
+ vim:tw=78:ts=8:ft=help:norl:
