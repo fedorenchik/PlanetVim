@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/ryanoasis/vim-devicons.git
+	branch = master
+	commit = 7bfc9bb4a3f6c23cbb24ee8862dc60cf6ab9297c
+	parent = d9c726d3c7b769ba5d7ad929cee4b3de3594165f
+	method = merge
+	cmdver = 0.4.3
