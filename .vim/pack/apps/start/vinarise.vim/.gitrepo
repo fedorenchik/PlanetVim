@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/Shougo/vinarise.vim.git
+	branch = master
+	commit = 9285d3f0dc012c6bbe29210dc4f4628bb4ca5000
+	parent = 0f529d939f28390ddc91d0a054e89fff6d4d7ada
+	method = merge
+	cmdver = 0.4.3
