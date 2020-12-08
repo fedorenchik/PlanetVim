@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/lervag/vimtex.git
+	branch = master
+	commit = eb4c21f969f39f4c68cff6a42a45024427e633ac
+	parent = 3519ae8a631df45a2eb0dc0185fc0eedfa788355
+	method = merge
+	cmdver = 0.4.3
