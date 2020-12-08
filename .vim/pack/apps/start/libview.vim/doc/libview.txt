@@ -1,0 +1,33 @@
+*libview.txt*	Library Visualization Tool			Jul 02, 2015
+
+Author:  Charles E. Campbell  <NdrOchip@ScampbellPfamily.AbizM>
+	  (remove NOSPAM from Campbell's email first)
+Copyright: (c) 2007-2015 by Charles E. Campbell	*libview-copyright*
+           The VIM LICENSE applies to lib.vim, libPlugin.vim, and lib.txt
+           (see |copyright|) except use "libview" instead of "Vim"
+	       No warranty, express or implied.  Use At-Your-Own-Risk.
+
+==============================================================================
+1. Contents					*libview* *libview-contents* {{{1
+   1. Contents...................................: |libview-contents|
+   2. Lib Visualization Manual...................: |libview-manual|
+   3. Lib's History..............................: |libview-history|
+
+
+==============================================================================
+2. Lib Visualization Manual			*libmanual* *libview-manual* {{{1
+
+   This tool is driven by autocmds; hence all one needs do is attempt to edit
+   a *.a, *.o, or a *.so file.
+
+==============================================================================
+3. Lib's History					*libview-history* {{{1
+
+	v1	Oct 17, 2007	* the beginning of the epoch
+   		Jul 02, 2015	* Changed %d to %d _ (uses black hole register)
+		Jul 08, 2015	* Changed %24s to %24S in a printf() call
+		Feb 18, 2016	* Changed =~ to =~# where appropriate
+
+==============================================================================
+Modelines: {{{1
+vim:tw=78:ts=8:ft=help:fdm=marker:

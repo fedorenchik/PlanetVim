@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/fedorenchik/libview.vim.git
+	branch = master
+	commit = 5c56a2071c30648a6b5dd60669df7a547f0bc9f3
+	parent = 0b0d73a73e65ad23e5c3332d138bd94c58ddb63f
+	method = merge
+	cmdver = 0.4.3
