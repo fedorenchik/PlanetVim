@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/thosakwe/vim-flutter.git
+	branch = master
+	commit = 5a6de53adcc72742138b666b305869999fc8066e
+	parent = ccc1904f453f75e93acb9741779179b7fce0107a
+	method = merge
+	cmdver = 0.4.3
