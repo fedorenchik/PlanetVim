@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/fedorenchik/AnsiEsc.git
+	branch = master
+	commit = f84f25686be046bf1a284bced7ac7d478bf6c477
+	parent = f2268480230eb3a83b34e2554110653bd9fdfbab
+	method = merge
+	cmdver = 0.4.3
