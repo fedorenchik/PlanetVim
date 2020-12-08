@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/Shougo/neco-vim.git
+	branch = master
+	commit = 2b1dca6ca16d6f5655748fcd4d54d772fcfd0d81
+	parent = 228b79dbc0f421b2bdeeaf997102a0165c7ae0c4
+	method = merge
+	cmdver = 0.4.3
