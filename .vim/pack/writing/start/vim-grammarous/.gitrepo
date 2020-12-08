@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/rhysd/vim-grammarous.git
+	branch = master
+	commit = db46357465ce587d5325e816235b5e92415f8c05
+	parent = 94911b250f8dd9a6f7fd0b9c3f53be034c7b26d1
+	method = merge
+	cmdver = 0.4.3
