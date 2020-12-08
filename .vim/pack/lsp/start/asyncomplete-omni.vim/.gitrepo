@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/yami-beta/asyncomplete-omni.vim.git
+	branch = master
+	commit = c9873fb643d5dd4c43b392efdd18a801e9f12fa0
+	parent = 00d80743073e69d051337733f7786d6923575335
+	method = merge
+	cmdver = 0.4.3
