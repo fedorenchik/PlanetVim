@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/tpope/vim-capslock.git
+	branch = master
+	commit = 84c9e467a7b8e5aabf33674ed17c6356cf98777c
+	parent = b621d9dadd9fca310217b0f6ec08f45d75394d16
+	method = merge
+	cmdver = 0.4.3
