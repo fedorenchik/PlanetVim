@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/ryanoasis/vim-devicons.git
 	branch = master
-	commit = 7bfc9bb4a3f6c23cbb24ee8862dc60cf6ab9297c
-	parent = d9c726d3c7b769ba5d7ad929cee4b3de3594165f
+	commit = 0d0bd57246b3285caec4737dc0f1c6b17ebb2787
+	parent = e06f9cbb133b06a64d8acb4ba87e1d037bb07331
 	method = merge
 	cmdver = 0.4.3
