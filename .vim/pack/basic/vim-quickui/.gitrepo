@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/skywind3000/vim-quickui.git
 	branch = master
-	commit = b5b472a471ea3ba378ba41c7a43d4f9846bd987c
-	parent = 8de44246ce272fd676b5ef31ab5f02fc74834c8e
+	commit = 043093f7b40a8b97e08993100a9d35d27a400ffa
+	parent = a1d47a85ec5d92e21a580e9a1bc8914ed57c702d
 	method = merge
 	cmdver = 0.4.3
