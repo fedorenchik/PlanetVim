@@ -882,6 +882,10 @@ let g:xml_syntax_folding = 1
 let g:asyncomplete_log_file = ''
 let g:asyncomplete_auto_completeopt = 0
 " }}}
+" Plugin: emmet-vim {{{
+let g:user_emmet_mode='iv'
+let g:user_emmet_leader_key='<C-Z>'
+" }}}
 " Plugin: FastFold {{{
 let g:fastfold_force = 1
 let g:fastfold_minlines = 0
