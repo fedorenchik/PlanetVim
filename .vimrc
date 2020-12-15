@@ -750,10 +750,7 @@ endif
 autocmd FocusLost * wa
 "autocmd GUIEnter * set guifont=UbuntuMono\ Nerd\ Font\ Mono\ 11,Ubuntu\ Mono\ 11,Monospace\ 9
 autocmd GUIEnter * set guifont=Ubuntu\ Mono\ 11,Monospace\ 9
-autocmd SessionLoadPost * let g:vimrc_auto_session = 1
-autocmd GUIEnter * if exists('g:vimrc_auto_session') && filereadable('.session.vim') | source .session.vim | endif
 autocmd VimEnter * if expand("%") != "" && getcwd() == expand("~") | cd %:h | endif
-autocmd VimLeavePre * if exists('g:vimrc_auto_session') | mksession! .session.vim | endif
 augroup END
 endif
 " }}}
