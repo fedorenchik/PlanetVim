@@ -5,15 +5,12 @@ SHELL := /bin/bash
 .NOTPARALLEL:
 
 FILES := .vim/ .vimrc
-
-DELETED_FILES :=
-
 RSYNC := rsync
 
-# TODO: add --delete-after to RSYNC_OPTIONS;
-# TODO: current problem is: delete git-ignored files is error
-# TODO: rsync git metadata files is error
-RSYNC_OPTIONS := -a --delete-missing-args
+RSYNC_OPTIONS := -aHAX --delete-missing-args --delete-after \
+	--exclude='/session/*' \
+	--exclude='/undo/*' \
+	--exclude='/view/*'
 
 all: help
 
