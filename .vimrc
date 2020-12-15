@@ -1032,15 +1032,28 @@ call SetupCommandAlias("grep", "GrepperGrep")
 " }}}
 " Plugin: vim-lsp {{{
 let g:lsp_use_lua = has('nvim-0.4.0') || (has('lua') && has('patch-8.2.0775'))
+let g:lsp_preview_keep_focus = 1
 let g:lsp_preview_float = 0
 let g:lsp_preview_autoclose = 0
-let g:lsp_documentation_float_docked = 1
+let g:lsp_documentation_float_docked = 0 " disable because it will change focus to documentation window
 let g:lsp_diagnostics_echo_cursor = 1
 let g:lsp_diagnostics_float_cursor = 0
+let g:lsp_signs_enabled = 1
+let g:lsp_signs_priority = 10
+let g:lsp_highlights_enabled = 1
+let g:lsp_textprop_enabled = 1
+" make undercurl work in terminal
+let &t_Cs = "\e[4:3m"
+let &t_Ce = "\e[4:0m"
+highlight LspErrorHighlight term=strikethrough cterm=strikethrough ctermul=Red gui=strikethrough guisp=Red
+highlight LspWarningHighlight term=undercurl cterm=undercurl ctermul=Yellow gui=undercurl guisp=Orange
+highlight LspInformationHighlight term=underline cterm=underline ctermul=Blue gui=underline guisp=Blue
+highlight LspHintHighlight term=underline cterm=underline ctermul=Green gui=underline guisp=DarkGreen
 let g:lsp_peek_alignment = "top"
 let g:lsp_show_workspace_edits = 1
+let g:lsp_fold_enabled = 1
 let g:lsp_hover_conceal = 1
-let g:lsp_ignorecase = &ignorecase
+let g:lsp_ignorecase = 1
 let g:lsp_log_file = ''
 let g:lsp_semantic_enabled = 0
 ":LspCodeAction
@@ -1118,8 +1131,9 @@ let g:lsp_semantic_enabled = 0
 "nnoremap <plug>(lsp-signature-help)
 "nnoremap <plug>(lsp-preview-close)
 "nnoremap <plug>(lsp-preview-focus)
-"TODO: snippets
+let g:lsp_async_completion = 1
 autocmd FileType python setlocal tagfunc=lsp#tagfunc
+"TODO: snippets
 autocmd FileType python setlocal foldmethod=expr
 autocmd FileType python setlocal foldexpr=lsp#ui#vim#folding#foldexpr()
 autocmd FileType python setlocal foldtext=lsp#ui#vim#folding#foldtext()
