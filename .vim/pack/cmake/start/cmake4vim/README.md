@@ -16,7 +16,7 @@ I created this plugin in order to improve integration CMake to the Vim editor. I
   * Unix Makefiles
   * Visual Studio
   * Ninja
-* The plugin shows cmake results using quickfix list. If you have installed **[vim-dispatch](https://github.com/tpope/vim-dispatch)** plugin, plugin will use it, this means that if you are using vim with tmux, cmake output will be printed in a separate window.
+* The plugin shows cmake results using quickfix list. If you have installed **[vim-dispatch](https://github.com/tpope/vim-dispatch)** plugin, plugin will use it, this means that if you are using vim with tmux, cmake output will be printed in a separate window. In other case plugin will use `jobs` to async run if your Vim editor supports it.
 * The plugin allows to specify cmake targets in order to avoid building of all project.
 * The plugin has an integration with next fuzzy finder plugins:
    * **[CtrlP](https://github.com/ctrlpvim/ctrlp.vim)**
@@ -75,6 +75,7 @@ Plugin supports special global variables which are allow to change behaviour of 
  - **`g:cmake_usr_args`** allows to set user arguments for cmake. Default is empty.
  - **`g:cmake_compile_commands`** if this variable is not equal 0, plugin will generate compile commands data base. Default is 0.
  - **`g:cmake_compile_commands_link`** set the path for a link on compile_commands.json. Default is empty.
+ - **`g:cmake_build_executor`** allows to force set the build executor. Available values are 'job', 'dispatch', 'system' and ''. Default is empty.
 
 ### **Jump to**
 
