@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/bfrg/vim-cmake-help.git
 	branch = master
-	commit = 06609e3eed91a776c524fc3b2885db3ad46a6b7c
-	parent = b7caf23c2d7344eee160b6c7fc0f3d16250c0c19
+	commit = c75245cbe247851c3d128cbc984260d84f706cb2
+	parent = 404c07dba77df4f086c43812a2c10c3cbf5528b8
 	method = merge
 	cmdver = 0.4.3
