@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/sotte/presenting.vim.git
 	branch = master
-	commit = df0704f835a3cef831271df9cf63fd08b295eb44
-	parent = e230c79577cd291ce40a3340a2f82839047cc8fd
+	commit = 7287778baf4e7f9274005ec44d4112e980d05218
+	parent = e5035cf41644f0fe24dec5cc739b03395afe0d86
 	method = merge
 	cmdver = 0.4.3
