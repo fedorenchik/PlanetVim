@@ -279,6 +279,8 @@ Clientserver~
   To test whether a server was successfully started, |serverlist()| can be
   used. E.g. `:echo serverlist()`
 
+  Note: For |+clientserver| on neovim, see |vimtex-faq-neovim|.
+
 ------------------------------------------------------------------------------
 FEATURES PROVIDED BY OTHER PLUGINS                        *vimtex-non-features*
 
@@ -2081,6 +2083,11 @@ OPTIONS                                                        *vimtex-options*
   A list of commands whose argument should be excluded from spell checking.
 
   Default value: []
+
+*g:vimtex_syntax_nospell_comments*
+  Set to 1 to disable spell checking in comments.
+
+  Default value: 0
 
 *g:vimtex_syntax_packages*
   A dictionary for package specific syntax configuration. Each key represent
@@ -4431,7 +4438,9 @@ Configuration of the wrapper is controlled by the Vim dictionary
 `jar` key to the path of the executable jar file `textidote.jar`. Please note
 that if one installs `textidote` with a package manager e.g. in some common
 Linux distributions, the `.jar` file might be missing. If so, it should be
-possible to download it manually from [1].
+possible to download it manually from [1]. However, before one does that, it
+can be smart to check the top lines of the installed executable, as it may be
+a simple Bash script wrapper.
 
 [1]: https://sylvainhalle.github.io/textidote/
 
