@@ -125,8 +125,6 @@ function! s:IntoRow(icon, kind, item) abort
     let row = printf('%s %s', a:icon, row)
   endif
 
-  let row = printf('%s %s', row, a:item.lnum)
-
   return row
 endfunction
 
@@ -161,33 +159,35 @@ function! vista#finder#PrepareOpts(source, prompt) abort
   let opts = {
           \ 'source': a:source,
           \ 'sink': function('vista#finder#fzf#sink'),
-          \ 'options': ['--prompt', a:prompt] + get(g:, 'vista_fzf_opt', []),
+          \ 'options': ['--prompt', a:prompt, '--nth', '1', '--delimiter', ':'] + get(g:, 'vista_fzf_opt', []),
           \ }
 
-  let idx = 0
-  let opt_preview_window_processed = v:false
-  while idx < len(g:vista_fzf_preview)
-    if g:vista_fzf_preview[idx] =~# '^\(left\|up\|right\|down\)'
-      let g:vista_fzf_preview[idx] = g:vista_fzf_preview[idx] . ':+{-1}-5'
-      let opt_preview_window_processed = v:true
+  if len(g:vista_fzf_preview) > 0
+    let idx = 0
+    let opt_preview_window_processed = v:false
+    while idx < len(g:vista_fzf_preview)
+      if g:vista_fzf_preview[idx] =~# '^\(left\|up\|right\|down\)'
+        let g:vista_fzf_preview[idx] = g:vista_fzf_preview[idx] . ':+{-1}-5'
+        let opt_preview_window_processed = v:true
+      endif
+      let idx = idx + 1
+    endwhile
+    if !opt_preview_window_processed
+      call extend(g:vista_fzf_preview, ['right:+{-1}-5'])
     endif
-    let idx = idx + 1
-  endwhile
-  if !opt_preview_window_processed
-    call extend(g:vista_fzf_preview, ['right:+{-1}-5'])
-  endif
-  let preview_opts = call('fzf#vim#with_preview', g:vista_fzf_preview).options
+    let preview_opts = call('fzf#vim#with_preview', g:vista_fzf_preview).options
 
-  if has('win32')
-    " keeping old code around since we are not sure if / how preview works on windows
-    let preview_opts[-1] = preview_opts[-1][0:-3] . g:vista.source.fpath . (g:vista#renderer#enable_icon ? ':{2}' : ':{1}')
-  else
-    let object_name_index = g:vista#renderer#enable_icon ? '2' : '1'
-    let extract_line_number = ':$(echo {' . object_name_index . "} | grep -o '[^:]*$')"
-    let preview_opts[-1] = preview_opts[-1][0:-3] . fnameescape(g:vista.source.fpath) . extract_line_number
-  endif
+    if has('win32')
+      " keeping old code around since we are not sure if / how preview works on windows
+      let preview_opts[-1] = preview_opts[-1][0:-3] . g:vista.source.fpath . (g:vista#renderer#enable_icon ? ':{2}' : ':{1}')
+    else
+      let object_name_index = g:vista#renderer#enable_icon ? '3' : '2'
+      let extract_line_number = printf(':$(echo {%s})', object_name_index)
+      let preview_opts[-1] = preview_opts[-1][0:-3] . fnameescape(g:vista.source.fpath) . extract_line_number
+    endif
 
-  call extend(opts.options, preview_opts)
+    call extend(opts.options, preview_opts)
+  endif
 
   return opts
 endfunction
