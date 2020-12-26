@@ -64,8 +64,8 @@ function! lsp#enable() abort
         call lsp#ui#vim#signature_help#setup()
     endif
     call lsp#ui#vim#completion#_setup()
+    call lsp#internal#document_highlight#_enable()
     call lsp#internal#diagnostics#_enable()
-    call lsp#internal#highlight_references#_enable()
     call lsp#internal#show_message_request#_enable()
     call s:register_events()
 endfunction
@@ -80,8 +80,8 @@ function! lsp#disable() abort
     call lsp#ui#vim#diagnostics#textprop#disable()
     call lsp#ui#vim#signature_help#_disable()
     call lsp#ui#vim#completion#_disable()
+    call lsp#internal#document_highlight#_disable()
     call lsp#internal#diagnostics#_disable()
-    call lsp#internal#highlight_references#_disable()
     call lsp#internal#show_message_request#_disable()
     call s:unregister_events()
     let s:enabled = 0
@@ -452,21 +452,9 @@ function! s:ensure_start(buf, server_name, cb) abort
 endfunction
 
 function! lsp#default_get_supported_capabilities(server_info) abort
+    " Sorted alphabetically
     return {
-    \   'workspace': {
-    \       'applyEdit': v:true,
-    \       'configuration': v:true
-    \   },
     \   'textDocument': {
-    \       'completion': {
-    \           'completionItem': {
-    \              'documentationFormat': ['plaintext'],
-    \              'snippetSupport': v:false
-    \           },
-    \           'completionItemKind': {
-    \              'valueSet': lsp#omni#get_completion_item_kinds()
-    \           }
-    \       },
     \       'codeAction': {
     \         'dynamicRegistration': v:false,
     \         'codeActionLiteralSupport': {
@@ -475,32 +463,82 @@ function! lsp#default_get_supported_capabilities(server_info) abort
     \           }
     \         }
     \       },
+    \       'completion': {
+    \           'dynamicRegistration': v:false,
+    \           'completionItem': {
+    \              'documentationFormat': ['plaintext'],
+    \              'snippetSupport': v:false,
+    \              'resolveSupport': {
+    \                  'properties': ['additionalTextEdits']
+    \              }
+    \           },
+    \           'completionItemKind': {
+    \              'valueSet': lsp#omni#get_completion_item_kinds()
+    \           }
+    \       },
     \       'declaration': {
+    \           'dynamicRegistration': v:false,
     \           'linkSupport' : v:true
     \       },
     \       'definition': {
+    \           'dynamicRegistration': v:false,
     \           'linkSupport' : v:true
     \       },
-    \       'typeDefinition': {
-    \           'linkSupport' : v:true
-    \       },
-    \       'implementation': {
-    \           'linkSupport' : v:true
+    \       'documentHighlight': {
+    \           'dynamicRegistration': v:false,
     \       },
     \       'documentSymbol': {
+    \           'dynamicRegistration': v:false,
     \           'symbolKind': {
     \              'valueSet': lsp#ui#vim#utils#get_symbol_kinds()
     \           },
-    \           'hierarchicalDocumentSymbolSupport': v:false
+    \           'hierarchicalDocumentSymbolSupport': v:false,
+    \           'labelSupport': v:false
     \       },
     \       'foldingRange': {
-    \           'lineFoldingOnly': v:true
+    \           'dynamicRegistration': v:false,
+    \           'lineFoldingOnly': v:true,
+    \           'rangeLimit': 5000,
+    \       },
+    \       'formatting': {
+    \           'dynamicRegistration': v:false,
+    \       },
+    \       'hover': {
+    \           'dynamicRegistration': v:false,
+    \           'contentFormat': ['markdown', 'plaintext'],
+    \       },
+    \       'implementation': {
+    \           'dynamicRegistration': v:false,
+    \           'linkSupport' : v:true
+    \       },
+    \       'rangeFormatting': {
+    \           'dynamicRegistration': v:false,
+    \       },
+    \       'references': {
+    \           'dynamicRegistration': v:false,
     \       },
     \       'semanticHighlightingCapabilities': {
     \           'semanticHighlighting': lsp#ui#vim#semantic#is_enabled()
     \       },
+    \       'synchronization': {
+    \           'didSave': v:true,
+    \           'dynamicRegistration': v:false,
+    \           'willSave': v:false,
+    \           'willSaveWaitUntil': v:false,
+    \       },
     \       'typeHierarchy': v:false,
-    \   }
+    \       'typeDefinition': {
+    \           'dynamicRegistration': v:false,
+    \           'linkSupport' : v:true
+    \       },
+    \   },
+    \   'window': {
+    \       'workDoneProgress': g:lsp_work_done_progress_enabled ? v:true : v:false,
+    \   },
+    \   'workspace': {
+    \       'applyEdit': v:true,
+    \       'configuration': v:true
+    \   },
     \ }
 endfunction
 
@@ -543,6 +581,7 @@ function! s:ensure_init(buf, server_name, cb) abort
     \   'method': 'initialize',
     \   'params': {
     \     'processId': getpid(),
+    \     'clientInfo': { 'name': 'vim-lsp' },
     \     'capabilities': l:capabilities,
     \     'rootUri': l:root_uri,
     \     'rootPath': lsp#utils#uri_to_path(l:root_uri),
@@ -772,6 +811,8 @@ function! s:on_request(server_name, id, request) abort
     elseif a:request['method'] ==# 'workspace/configuration'
         let l:response_items = map(a:request['params']['items'], { key, val -> lsp#utils#workspace_config#get_value(a:server_name, val) })
         call s:send_response(a:server_name, { 'id': a:request['id'], 'result': l:response_items })
+    elseif a:request['method'] ==# 'window/workDoneProgress/create'
+        call s:send_response(a:server_name, { 'id': a:request['id'], 'result': v:null})
     else
         " TODO: for now comment this out until we figure out a better solution.
         " We need to comment this out so that others outside of vim-lsp can
@@ -915,7 +956,7 @@ endfunction
 
 " lsp#stream {{{
 "
-" example:
+" example 1:
 "
 " function! s:on_textDocumentDiagnostics(x) abort
 "   echom 'Diagnostics for ' . a:x['server'] . ' ' . json_encode(a:x['response'])
@@ -927,8 +968,14 @@ endfunction
 "    \ lsp#callbag#subscribe({ 'next':{x->s:on_textDocumentDiagnostics(x)} }),
 "    \ )
 "
-function! lsp#stream() abort
-    return s:Stream
+" example 2:
+" call lsp#stream(1, { 'command': 'DocumentFormat' })
+function! lsp#stream(...) abort
+    if a:0 == 0
+        return s:Stream
+    else
+        call s:Stream(a:1, a:2)
+    endif
 endfunction
 " }}}
 
@@ -1102,6 +1149,7 @@ endfunction
 
 function! lsp#_new_command() abort
     let s:last_command_id += 1
+    call s:Stream(1, { 'command': 1 })
     return s:last_command_id
 endfunction
 

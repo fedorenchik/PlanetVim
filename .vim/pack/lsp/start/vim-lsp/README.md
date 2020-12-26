@@ -37,6 +37,9 @@ function! s:on_lsp_buffer_enabled() abort
     nmap <buffer> [g <Plug>(lsp-previous-diagnostic)
     nmap <buffer> ]g <Plug>(lsp-next-diagnostic)
     nmap <buffer> K <plug>(lsp-hover)
+
+    let g:lsp_format_sync_timeout = 1000
+    autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
     
     " refer to doc to add more commands
 endfunction
@@ -216,3 +219,9 @@ let g:lsp_log_file = expand('~/vim-lsp.log')
 " for asyncomplete.vim log
 let g:asyncomplete_log_file = expand('~/asyncomplete.log')
 ```
+
+## Tests
+
+[vim-themis](https://github.com/thinca/vim-themis) is used for testing. To run
+integration tests [rust-analyzer](https://github.com/rust-analyzer/rust-analyzer) 
+exectuable must be in path.

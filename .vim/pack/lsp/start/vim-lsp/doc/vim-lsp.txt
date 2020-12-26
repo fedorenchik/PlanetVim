@@ -29,6 +29,7 @@ CONTENTS                                                  *vim-lsp-contents*
       g:lsp_diagnostics_echo_delay          |g:lsp_diagnostics_echo_delay|
       g:lsp_diagnostics_float_cursor        |g:lsp_diagnostics_float_cursor|
       g:lsp_diagnostics_float_delay         |g:lsp_diagnostics_float_delay|
+      g:lsp_format_sync_timeout             |g:lsp_format_sync_timeout|
       g:lsp_signs_enabled                   |g:lsp_signs_enabled|
       g:lsp_signs_priority                  |g:lsp_signs_priority|
       g:lsp_signs_priority_map              |g:lsp_signs_priority_map|
@@ -36,8 +37,8 @@ CONTENTS                                                  *vim-lsp-contents*
       g:lsp_highlights_enabled              |g:lsp_highlights_enabled|
       g:lsp_textprop_enabled                |g:lsp_textprop_enabled|
       g:lsp_use_event_queue                 |g:lsp_use_event_queue|
-      g:lsp_highlight_references_enabled    |g:lsp_highlight_references_enabled|
-      g:lsp_highlight_references_delay      |g:lsp_highlight_references_delay|
+      g:lsp_document_highlight_enabled      |g:lsp_document_highlight_enabled|
+      g:lsp_document_highlight_delay        |g:lsp_document_highlight_delay|
       g:lsp_get_supported_capabilities      |g:lsp_get_supported_capabilities|
       g:lsp_peek_alignment                  |g:lsp_peek_alignment|
       g:lsp_preview_max_width               |g:lsp_preview_max_width|
@@ -53,6 +54,7 @@ CONTENTS                                                  *vim-lsp-contents*
       g:lsp_completion_resolve_timeout      |g:lsp_completion_resolve_timeout|
       g:lsp_tagfunc_source_methods          |g:lsp_tagfunc_source_methods|
       g:lsp_show_message_request_enabled    |g:lsp_show_message_request_enabled|
+      g:lsp_work_done_progress_enabled      |g:lsp_work_done_progress_enabled|
     Functions                             |vim-lsp-functions|
       lsp#enable                            |lsp#enable()|
       lsp#disable                           |lsp#disable()|
@@ -77,6 +79,7 @@ CONTENTS                                                  *vim-lsp-contents*
       LspDocumentFormat                     |:LspDocumentFormat|
       LspDocumentFormatSync                 |:LspDocumentFormatSync|
       LspDocumentRangeFormat                |:LspDocumentRangeFormat|
+      LspDocumentRangeFormatSync            |:LspDocumentRangeFormatSync|
       LspDocumentSymbol                     |:LspDocumentSymbol|
       LspHover                              |:LspHover|
       LspNextDiagnostic                     |:LspNextDiagnostic|
@@ -160,6 +163,8 @@ http://downloads.sourceforge.net/luabinaries/lua-5.3.2_Win32_dllw4_lib.zip
 http://downloads.sourceforge.net/luabinaries/lua-5.3.2_Win64_dllw4_lib.zip
 
 Set |g:lsp_semantic_enabled| to 0.
+
+Set |g:lsp_format_sync_timeout| to a reasonable value such as `1000`.
 
 ==============================================================================
 LANGUAGE SERVERS                                 *vim-lsp-language-servers*
@@ -471,6 +476,20 @@ g:lsp_diagnostics_float_delay                *g:lsp_diagnostics_float_delay*
 	let g:lsp_diagnostics_float_delay = 200
 	let g:lsp_diagnostics_float_delay = 1000
 
+g:lsp_format_sync_timeout                           *g:lsp_format_sync_timeout*
+    Type: |Number|
+    Default: `-1`
+
+    Timeout milliseconds to abort `:LspDocumentFormatSync` or
+    `:LspDocumentRangeFormatSync`. Set to `-1` to disable timeout. Using
+    `BufWritePre` to execute sync commands may cause vim to hang when using
+    some language servers as starting the language server may be slow. Set the
+    timeout value to cancel sync format.
+
+    Example: >
+	let g:lsp_format_sync_timeout = -1
+	let g:lsp_format_sync_timeout = 1000
+
 g:lsp_signs_enabled                                   *g:lsp_signs_enabled*
     Type: |Number|
     Default: `1` for vim/neovim with patch 8.1.0772
@@ -589,15 +608,15 @@ g:lsp_use_event_queue                               *g:lsp_use_event_queue*
 	let g:lsp_use_event_queue = 1
 	let g:lsp_use_event_queue = 0
 
-g:lsp_highlight_references_enabled      *g:lsp_highlight_references_enabled*
+g:lsp_document_highlight_enabled      *g:lsp_document_highlight_enabled*
     Type: |Number|
     Default: `1`
 
     Enable highlighting of the references to the symbol under the cursor.
 
     Example: >
-    let g:lsp_highlight_references_enabled = 1
-    let g:lsp_highlight_references_enabled = 0
+    let g:lsp_document_highlight_enabled = 1
+    let g:lsp_document_highlight_enabled = 0
 <
 
     To change the style of the highlighting, you can set or link the
@@ -606,16 +625,16 @@ g:lsp_highlight_references_enabled      *g:lsp_highlight_references_enabled*
     Example: >
     highlight lspReference ctermfg=red guifg=red ctermbg=green guibg=green
 
-g:lsp_highlight_references_delay            *g:lsp_highlight_references_delay*
+g:lsp_document_highlight_delay            *g:lsp_document_highlight_delay*
     Type: |Number|
     Default: `350`
 
     Delay milliseconds to highlight references. Requires
-    |g:lsp_highlight_references_enabled| set to 1.
+    |g:lsp_document_highlight_enabled| set to 1.
 
     Example: >
-	let g:lsp_highlight_references_delay = 200
-	let g:lsp_highlight_references_delay = 1000
+	let g:lsp_document_highlight_delay = 200
+	let g:lsp_document_highlight_delay = 1000
 
 g:lsp_get_supported_capabilities         *g:lsp_get_supported_capabilities*
     Type: |List|
@@ -756,6 +775,14 @@ g:lsp_show_message_request_enabled         *g:lsp_show_message_request_enabled*
 
     Determines whether or not `window/showMessageRequest` should show message to
     the user or if it should be ignored. Set to `1` to enable.
+
+g:lsp_work_done_progress_enabled         *g:lsp_work_done_progress_enabled*
+    Type: |Number|
+    Default: `0`
+
+    Determines whether or not to ask the server to send `$/progress`
+    notifications. This can be intercepted by listening to |lsp#stream()|.
+    Set to `1` to enable.
 
 ==============================================================================
 FUNCTIONS                                               *vim-lsp-functions*
@@ -1215,7 +1242,8 @@ Format the entire document.
 LspDocumentFormatSync                               *:LspDocumentFormatSync*
 
 Same as |:LspDocumentFormat| but synchronous. Useful when running |:autocmd|
-commands such as formatting before save.
+commands such as formatting before save. Set |g:lsp_format_sync_timeout| to
+configure timeouts.
 
     Example: >
         autocmd BufWritePre <buffer> LspDocumentFormatSync
@@ -1225,6 +1253,13 @@ Note that this may slow down vim.
 LspDocumentRangeFormat                             *:LspDocumentRangeFormat*
 
 Format the current document selection.
+
+LspDocumentRangeFormatSync                     *:LspDocumentRangeFormatSync*
+
+Same as |:LspDocumentRangeFormat| but synchronous. Useful when running running
+:autocmd commands. Set |g:lsp_format_sync_timeout| to configure timeouts.
+
+Note that this may slow down vim.
 
 LspDocumentSymbol                                       *:LspDocumentSymbol*
 
