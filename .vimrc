@@ -740,7 +740,7 @@ autocmd FileType sh setlocal include=^\\s*\\%(\\.\\\|source\\)\\s
 autocmd FileType sh setlocal define=\\<\\%(\\i\\+\\s*()\\)\\@=
 autocmd FileType text setlocal textwidth=72 linebreak breakindent
 autocmd FileType text setlocal complete+=k,s
-autocmd FileType text,markdown setlocal spell
+autocmd FileType text setlocal spell
 autocmd FileType text,markdown setlocal formatoptions+=t
 autocmd FileType vim setlocal foldmethod=marker foldlevelstart=0 foldlevel=0
 if exists("+omnifunc")
