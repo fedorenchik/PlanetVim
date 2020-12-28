@@ -1129,7 +1129,7 @@ let g:lsp_semantic_enabled = 0
 "nnoremap <plug>(lsp-preview-close)
 "nnoremap <plug>(lsp-preview-focus)
 let g:lsp_async_completion = 1
-autocmd FileType python setlocal tagfunc=lsp#tagfunc
+autocmd FileType c,cpp,cmake,python,vim setlocal tagfunc=lsp#tagfunc
 "TODO: snippets
 autocmd FileType python setlocal foldmethod=expr
 autocmd FileType python setlocal foldexpr=lsp#ui#vim#folding#foldexpr()
