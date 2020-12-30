@@ -1044,8 +1044,8 @@ let &t_Cs = "\e[4:3m"
 let &t_Ce = "\e[4:0m"
 highlight LspErrorHighlight term=strikethrough cterm=strikethrough ctermul=Red gui=strikethrough guisp=Red
 highlight LspWarningHighlight term=undercurl cterm=undercurl ctermul=Yellow gui=undercurl guisp=Orange
-highlight LspInformationHighlight term=underline cterm=underline ctermul=Blue gui=underline guisp=Blue
-highlight LspHintHighlight term=underline cterm=underline ctermul=Green gui=underline guisp=DarkGreen
+highlight LspInformationHighlight term=underline cterm=undercurl ctermul=Blue gui=undercurl guisp=Blue
+highlight LspHintHighlight term=underline cterm=undercurl ctermul=Green gui=undercurl guisp=DarkGreen
 let g:lsp_peek_alignment = "top"
 let g:lsp_show_workspace_edits = 1
 let g:lsp_fold_enabled = 1
