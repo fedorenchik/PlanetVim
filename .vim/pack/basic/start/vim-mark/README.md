@@ -71,6 +71,9 @@ plugin offers the following advantages over the original:
 - hi ([vimscript #5887](http://www.vim.org/scripts/script.php?script_id=5887)) highlights words, sentences or regular expressions
   using many configured colors, and can search; also offers separate windows
   for filtering and configuration editing catered towards log analysis.
+- vim-highlight-hero ([vimscript #5922](http://www.vim.org/scripts/script.php?script_id=5922)) can also highlight the current word or
+  selection, has some flexibility with regard to whitespace matching, is
+  limited to the current window.
 
 USAGE
 ------------------------------------------------------------------------------
