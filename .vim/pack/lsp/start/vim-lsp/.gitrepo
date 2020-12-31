@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/prabirshrestha/vim-lsp.git
 	branch = master
-	commit = d025869d045d2f30a20469801209663caca76747
-	parent = 51b171a9c40ebd456238ff82d219586b9a199cf6
+	commit = bc98be823d3fa5b1f6dee33fae3052c9519fd236
+	parent = 3772ae4405b57b40588f4065d01b69d48d407eb1
 	method = merge
 	cmdver = 0.4.3
