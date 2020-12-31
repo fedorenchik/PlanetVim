@@ -1,0 +1,227 @@
+﻿= Godot + Vim
+:experimental:
+:icons: font
+:autofit-option:
+:!source-linenums-option:
+:imagesdir: images
+
+
+== Intro
+
+Godot engine has rock solid built-in editor but I still feel more comfortable
+within my (g)(n)vim environment.
+
+This plugin provides:
+
+* GDScript and GSL syntax highlighing
+* Folding
+* Run commands:
+** Run current scene: `:GodotRunCurrent`
+** Run last scene: `:GodotRunLast`
+** Select and run a scene with standard vim tab completion (default is a main scene): `:GodotRun`
+** Select and run a scene with a FZF (if installed): `:GodotRunFZF`
+
+All commands are local to buffer -- available only in `gdscript` or `gsl` buffers.
+
+For IDE-like completion I suggest to try https://github.com/ycm-core/YouCompleteMe[YouCompleteMe] or https://github.com/neoclide/coc.nvim[coc.nvim] plugin.
+(Both do a really great job providing gdscript completion for me).
+
+https://www.youtube.com/watch?v=ALXN4HJ5bsg
+
+
+== Select And Run Scene
+
+* Use `:GodotRun <TAB>` to select a scene and run it. `:GodotRun<CR>` will run main scene.
+* Use `:GodotRunFZF<CR>` to select a scene using FZF (if installed) and run it.
+
+image::https://user-images.githubusercontent.com/234774/80359547-a5fc6c00-8886-11ea-9cdd-bc027d46db4c.gif[]
+
+
+== Settings
+
+No default mappings are provided.
+
+Good practice is to put your personal filetype specific settings into after directory: 
+`~/.vim/after/ftplugin/gdscript.vim` (or  `~/vimfiles/after/ftplugin/gdscript.vim` if you're on windows).
+
+[source,vim]
+------------------------------------------------------------------------------
+" to use folding provided by plugin
+setlocal foldmethod=expr
+setlocal tabstop=4
+nnoremap <buffer> <F4> :GodotRunLast<CR>
+nnoremap <buffer> <F5> :GodotRun<CR>
+nnoremap <buffer> <F6> :GodotRunCurrent<CR>
+nnoremap <buffer> <F7> :GodotRunFZF<CR>
+------------------------------------------------------------------------------
+
+Or you can use autocommand in your `.vimrc` (example):
+
+[source,vim]
+------------------------------------------------------------------------------
+func! GodotSettings() abort
+    setlocal foldmethod=expr
+    setlocal tabstop=4
+    nnoremap <buffer> <F4> :GodotRunLast<CR>
+    nnoremap <buffer> <F5> :GodotRun<CR>
+    nnoremap <buffer> <F6> :GodotRunCurrent<CR>
+    nnoremap <buffer> <F7> :GodotRunFZF<CR>
+endfunc
+augroup godot | au!
+    au FileType gdscript call GodotSettings()
+augroup end
+------------------------------------------------------------------------------
+
+
+== Installation
+
+Using plugin manager::
+    Follow your plugin manager documentation, for example, link:https://github.com/junegunn/vim-plug[vim-plug] does it this way:
++
+[source,vim]
+------------------------------------------------------------------------------
+" Specify a directory for plugins
+call plug#begin('~/.vim/plugged')
+
+Plug 'habamax/vim-godot'
+
+" ... other plugins ...
+
+" Initialize plugin system
+call plug#end()
+------------------------------------------------------------------------------
+
+Manual with git::
+    Clone this repo to your vim/nvim packages directory:
++
+.Vim on Linux or OSX
+[source,sh]
+------------------------------------------------------------------------------
+git clone https://github.com/habamax/vim-godot ~/.vim/pack/plugins/start/vim-godot
+------------------------------------------------------------------------------
++
+.Neovim on Linux or OSX
+[source,sh]
+------------------------------------------------------------------------------
+git clone https://github.com/habamax/vim-godot ~/.config/nvim/pack/plugins/start/vim-godot
+------------------------------------------------------------------------------
++
+.Vim on Windows
+[source,sh]
+------------------------------------------------------------------------------
+git clone https://github.com/habamax/vim-godot C:/Users/USERNAME/vimfiles/pack/plugins/start/vim-godot <.>
+------------------------------------------------------------------------------
++
+.Neovim on Windows
+[source,sh]
+------------------------------------------------------------------------------
+git clone https://github.com/habamax/vim-godot C:/Users/USERNAME/AppData/Local/nvim/pack/plugins/start/vim-godot <.>
+------------------------------------------------------------------------------
+<.> Change `USERNAME` to your user name
+
+Manual::
+    * Download zip archive (available in menu:Code[Download ZIP])
+    * Unpack it to appropriate folder defined in `Manual with git`
+    * Make sure that contents of the archive is in `.../start/vim-godot` directory:
+        ** `autoload`
+        ** `ftdetect`
+        ** `ftplugin`
+        ** ... etc
+
+
+== Setting up YouCompleteMe for Godot 3.2.2+
+
+. Install and set up YCM according to https://github.com/ycm-core/YouCompleteMe#installation[it's documentation].
+(i.e. install with package manager then run `./install.py`).
+
+. Make sure general completion works for you.
+
+. Follow https://github.com/ycm-core/lsp-examples[instructions for enabling godot].
+
+Or you can just add this to your vimrc:
+
+[source, vim]
+------------------------------------------------------------------------------
+if !has_key( g:, 'ycm_language_server' )
+  let g:ycm_language_server = []
+endif
+
+let g:ycm_language_server += [
+  \   {
+  \     'name': 'godot',
+  \     'filetypes': [ 'gdscript' ],
+  \     'project_root_files': [ 'project.godot' ],
+  \     'port': 6008
+  \   }
+  \ ]
+------------------------------------------------------------------------------
+
+NOTE: This is not a comprehensive `YouCompleteMe` setup guide. It just works
+for me and hopefully would work for you.
+
+
+== Setting up coc.nvim for Godot 3.2.2+
+
+
+. Install https://github.com/neoclide/coc.nvim[coc.nvim], make sure it does general completion for you.
+. Open `:CocConfig` and add following lines:
++
+[source,json]
+------------------------------------------------------------------------------
+{
+    "languageserver": {
+        "godot": {
+            "host": "127.0.0.1",
+            "filetypes": ["gdscript"],
+            "port": 6008
+        }
+    }
+}
+------------------------------------------------------------------------------
+. Save and restart
+
+NOTE: This is not a comprehensive `coc.nvim` setup guide. It just works for me
+and hopefully would work for you.
+
+== Setting up ale for Godot 3.2.2+
+
+
+. Install https://github.com/dense-analysis/ale[ale], make sure it does general
+completion for you and register the Godot LSP server as follows in your vimrc:
++
+[source,vim]
+------------------------------------------------------------------------------
+" Enable ALE auto completion globally
+let g:ale_completion_enabled = 1
+
+" Allow ALE to autoimport completion entries from LSP servers
+let g:ale_completion_autoimport = 1
+
+" Register LSP server for Godot:
+call ale#linter#Define('gdscript', {
+\   'name': 'godot',
+\   'lsp': 'socket',
+\   'address': '127.0.0.1:6008',
+\   'project_root': 'project.godot',
+\})
+------------------------------------------------------------------------------
+. Save and restart
+
+NOTE: This is not a comprehensive ALE setup guide. Make sure to adjust it to your needs.
+
+
+== Setting up ctags
+
+Put the following contents:
+
+[source]
+------------------------------------------------------------------------------
+--langdef=GDScript
+--langmap=GDScript:.gd
+--regex-GDScript=/^func[ \t]+([a-zA-Z0-9_]+)/\1/f,function,function definitions/
+--regex-GDScript=/^(onready[ \t]+)?var[ \t]+([a-zA-Z0-9_]+)/\2/v,variable,variable definitions/
+--regex-GDScript=/^(export[ \t]*(.*)?[ \t]+)?var[ \t]+([a-zA-Z0-9_]+)/\3/v,variable,variable definitions/
+------------------------------------------------------------------------------
+
+* `~/.ctags.d/gdscript.ctags` if you use https://ctags.io/[universal ctags] or
+* `~/.ctags` if you use http://ctags.sourceforge.net/[exuberant ctags]

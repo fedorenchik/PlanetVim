@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/habamax/vim-godot.git
+	branch = master
+	commit = 7697cc88a9ae3e5da923a1739f9753ec4c47617b
+	parent = 8c57b9efb316309e8a14af5f8b3eadc2c1ecc0be
+	method = merge
+	cmdver = 0.4.3
