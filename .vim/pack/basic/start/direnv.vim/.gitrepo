@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/direnv/direnv.vim.git
+	branch = master
+	commit = ff37d76da391e1ef299d2f5eb84006cb27a67799
+	parent = ba16d01b8c1bc3aeaf5bf42fc2c0ef27f81950d7
+	method = merge
+	cmdver = 0.4.3
