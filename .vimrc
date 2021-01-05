@@ -1272,6 +1272,10 @@ let g:startify_use_env = 1
 " Plugin: vim-test {{{
 let test#strategy = "dispatch"
 " }}}
+" Plugin: vimspector {{{
+let g:vimspector_enable_mappings = 'HUMAN'
+let g:vimspector_install_gadgets = [ 'debugpy', 'vscode-cpptools', 'CodeLLDB', 'vscode-bash-debug' ]
+" }}}
 " Plugin: vista.vim {{{
 nnoremap <silent> ST :Vista<CR>
 nnoremap <silent> ZT :Vista!<CR>
