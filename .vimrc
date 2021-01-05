@@ -225,16 +225,12 @@ set grepprg=grep\ -nH\ $*
 "TODO: Colorize cursor in different modes.
 "set guicursor+=a:blinkon0
 if has("gui")
-  "set guifont=UbuntuMono\ Nerd\ Font\ Mono\ 11,Ubuntu\ Mono\ 11,Monospace\ 9
-  set guifont=Ubuntu\ Mono\ 11,Monospace\ 9
-  "FIXME: set guifontwide ??? is it needed ??? need to test
-  "set guifontwide=WenQuanYi\ Zen\ Hei\ 10
+  set guifont=UbuntuMono\ Nerd\ Font\ Mono\ 11,Ubuntu\ Mono\ 11,Monospace\ 9
 endif
 set guiheadroom=0
 set guioptions=aAceigpk
 set guipty
 "set guitablabel&
-"TODO: Add second (and further) lines with useful info
 set guitabtooltip=%{GuiTabTooltip()}
 set helpheight=8
 set helplang=en
@@ -748,8 +744,7 @@ if exists("+omnifunc")
   autocmd Filetype * if &completefunc == "" | setlocal completefunc=syntaxcomplete#Complete | endif
 endif
 autocmd FocusLost * wa
-"autocmd GUIEnter * set guifont=UbuntuMono\ Nerd\ Font\ Mono\ 11,Ubuntu\ Mono\ 11,Monospace\ 9
-autocmd GUIEnter * set guifont=Ubuntu\ Mono\ 11,Monospace\ 9
+autocmd GUIEnter * set guifont=UbuntuMono\ Nerd\ Font\ Mono\ 11,Ubuntu\ Mono\ 11,Monospace\ 9
 autocmd VimEnter * if expand("%") != "" && getcwd() == expand("~") | cd %:h | endif
 augroup END
 endif
