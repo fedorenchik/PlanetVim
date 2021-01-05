@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/puremourning/vimspector.git
 	branch = master
-	commit = 41a98026fa0bc29be35fc8392e38b1caabab0a3a
-	parent = a8afff4a8d4a89a7c80345784b395fc5fe4143ef
+	commit = 65708f55e0a1186c76af9a5a1f14e9157cf588b9
+	parent = 8c57b9efb316309e8a14af5f8b3eadc2c1ecc0be
 	method = merge
 	cmdver = 0.4.3
