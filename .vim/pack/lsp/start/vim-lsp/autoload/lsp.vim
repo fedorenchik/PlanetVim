@@ -31,6 +31,7 @@ augroup _lsp_silent_
     autocmd User lsp_float_closed silent
     autocmd User lsp_buffer_enabled silent
     autocmd User lsp_diagnostics_updated silent
+    autocmd User lsp_progress_updated silent
 augroup END
 
 function! lsp#log_verbose(...) abort
@@ -54,11 +55,6 @@ function! lsp#enable() abort
         let s:already_setup = 1
     endif
     let s:enabled = 1
-    if g:lsp_diagnostics_enabled
-        if g:lsp_signs_enabled | call lsp#ui#vim#signs#enable() | endif
-        if g:lsp_highlights_enabled | call lsp#ui#vim#highlights#enable() | endif
-        if g:lsp_textprop_enabled | call lsp#ui#vim#diagnostics#textprop#enable() | endif
-    endif
     if g:lsp_signature_help_enabled
         call lsp#ui#vim#signature_help#setup()
     endif
@@ -66,6 +62,7 @@ function! lsp#enable() abort
     call lsp#internal#document_highlight#_enable()
     call lsp#internal#diagnostics#_enable()
     call lsp#internal#show_message_request#_enable()
+    call lsp#internal#work_done_progress#_enable()
     call s:register_events()
 endfunction
 
@@ -73,14 +70,12 @@ function! lsp#disable() abort
     if !s:enabled
         return
     endif
-    call lsp#ui#vim#signs#disable()
-    call lsp#ui#vim#highlights#disable()
-    call lsp#ui#vim#diagnostics#textprop#disable()
     call lsp#ui#vim#signature_help#_disable()
     call lsp#ui#vim#completion#_disable()
     call lsp#internal#document_highlight#_disable()
     call lsp#internal#diagnostics#_disable()
     call lsp#internal#show_message_request#_disable()
+    call lsp#internal#work_done_progress#_disable()
     call s:unregister_events()
     let s:enabled = 0
 endfunction
@@ -234,9 +229,8 @@ function! s:on_text_document_did_open(...) abort
     call lsp#log('s:on_text_document_did_open()', l:buf, &filetype, getcwd(), lsp#utils#get_buffer_uri(l:buf))
 
     " Some language server notify diagnostics to the buffer that has not been loaded yet.
-    " This diagnostics was stored `autoload/lsp/ui/vim/diagnostics.vim` but not highlighted.
+    " This diagnostics was stored `autoload/lsp/internal/diagnostics/state.vim` but not highlighted.
     " So we should refresh highlights when buffer opened.
-    call lsp#ui#vim#diagnostics#force_refresh(l:buf)
     call lsp#internal#diagnostics#state#_force_notify_buffer(l:buf)
 
     for l:server_name in lsp#get_allowed_servers(l:buf)
@@ -414,29 +408,40 @@ function! s:ensure_start(buf, server_name, cb) abort
         return
     endif
 
-    let l:cmd_type = type(l:server_info['cmd'])
-    if l:cmd_type == v:t_list
-        let l:cmd = l:server_info['cmd']
-    else
-        let l:cmd = l:server_info['cmd'](l:server_info)
+    if has_key(l:server_info, 'tcp')
+        let l:tcp = l:server_info['tcp'](l:server_info)
+        let l:lsp_id = lsp#client#start({
+            \ 'tcp': l:tcp,
+            \ 'on_stderr': function('s:on_stderr', [a:server_name]),
+            \ 'on_exit': function('s:on_exit', [a:server_name]),
+            \ 'on_notification': function('s:on_notification', [a:server_name]),
+            \ 'on_request': function('s:on_request', [a:server_name]),
+            \ })
+    elseif has_key(l:server_info, 'cmd')
+        let l:cmd_type = type(l:server_info['cmd'])
+        if l:cmd_type == v:t_list
+            let l:cmd = l:server_info['cmd']
+        else
+            let l:cmd = l:server_info['cmd'](l:server_info)
+        endif
+
+        if empty(l:cmd)
+            let l:msg = s:new_rpc_error('ignore server start since cmd is empty', { 'server_name': a:server_name })
+            call lsp#log(l:msg)
+            call a:cb(l:msg)
+            return
+        endif
+
+        call lsp#log('Starting server', a:server_name, l:cmd)
+
+        let l:lsp_id = lsp#client#start({
+            \ 'cmd': l:cmd,
+            \ 'on_stderr': function('s:on_stderr', [a:server_name]),
+            \ 'on_exit': function('s:on_exit', [a:server_name]),
+            \ 'on_notification': function('s:on_notification', [a:server_name]),
+            \ 'on_request': function('s:on_request', [a:server_name]),
+            \ })
     endif
-
-    if empty(l:cmd)
-        let l:msg = s:new_rpc_error('ignore server start since cmd is empty', { 'server_name': a:server_name })
-        call lsp#log(l:msg)
-        call a:cb(l:msg)
-        return
-    endif
-
-    call lsp#log('Starting server', a:server_name, l:cmd)
-
-    let l:lsp_id = lsp#client#start({
-        \ 'cmd': l:cmd,
-        \ 'on_stderr': function('s:on_stderr', [a:server_name]),
-        \ 'on_exit': function('s:on_exit', [a:server_name]),
-        \ 'on_notification': function('s:on_notification', [a:server_name]),
-        \ 'on_request': function('s:on_request', [a:server_name]),
-        \ })
 
     if l:lsp_id > 0
         let l:server['lsp_id'] = l:lsp_id
@@ -461,6 +466,9 @@ function! lsp#default_get_supported_capabilities(server_info) abort
     \             'valueSet': ['', 'quickfix', 'refactor', 'refactor.extract', 'refactor.inline', 'refactor.rewrite', 'source', 'source.organizeImports'],
     \           }
     \         }
+    \       },
+    \       'codeLens': {
+    \           'dynamicRegistration': v:false,
     \       },
     \       'completion': {
     \           'dynamicRegistration': v:false,
@@ -771,21 +779,19 @@ function! s:on_notification(server_name, id, data, event) abort
     let l:response = a:data['response']
     let l:server = s:servers[a:server_name]
     let l:server_info = l:server['server_info']
-    let l:lsp_diagnostics_config_enabled = get(get(l:server_info, 'config', {}), 'diagnostics', v:true)
 
     let l:stream_data = { 'server': a:server_name, 'response': l:response }
     if has_key(a:data, 'request')
         let l:stream_data['request'] = a:data['request']
     endif
-    call s:Stream(1, l:stream_data) " notify stream before callbacks
+    call lsp#stream(1, l:stream_data) " notify stream before callbacks
 
     if lsp#client#is_server_instantiated_notification(a:data)
         if has_key(l:response, 'method')
-            if g:lsp_diagnostics_enabled && l:lsp_diagnostics_config_enabled && l:response['method'] ==# 'textDocument/publishDiagnostics'
-                call lsp#ui#vim#diagnostics#handle_text_document_publish_diagnostics(a:server_name, a:data)
-            elseif l:response['method'] ==# 'textDocument/semanticHighlighting'
+            if l:response['method'] ==# 'textDocument/semanticHighlighting'
                 call lsp#ui#vim#semantic#handle_semantic(a:server_name, a:data)
             endif
+            " NOTE: this is legacy code, use stream instead of handling notifications here
         endif
     else
         let l:request = a:data['request']
@@ -804,7 +810,7 @@ function! s:on_request(server_name, id, request) abort
     call lsp#log_verbose('<---', 's:on_request', a:id, a:request)
 
     let l:stream_data = { 'server': a:server_name, 'request': a:request }
-    call s:Stream(1, l:stream_data) " notify stream before callbacks
+    call lsp#stream(1, l:stream_data) " notify stream before callbacks
 
     if a:request['method'] ==# 'workspace/applyEdit'
         call lsp#utils#workspace_edit#apply_workspace_edit(a:request['params']['edit'])
@@ -973,7 +979,7 @@ endfunction
 " call lsp#stream(1, { 'command': 'DocumentFormat' })
 function! lsp#stream(...) abort
     if a:0 == 0
-        return s:Stream
+        return lsp#callbag#share(s:Stream)
     else
         call s:Stream(a:1, a:2)
     endif
@@ -1112,15 +1118,34 @@ function! s:send_didchange_queue(...) abort
     let s:didchange_queue = []
 endfunction
 
+function! lsp#enable_diagnostics_for_buffer(...) abort
+    let l:bufnr = a:0 > 0 ? a:1 : bufnr('%')
+    call lsp#internal#diagnostics#state#_enable_for_buffer(l:bufnr)
+endfunction
+
+function! lsp#disable_diagnostics_for_buffer(...) abort
+    let l:bufnr = a:0 > 0 ? a:1 : bufnr('%')
+    call lsp#internal#diagnostics#state#_disable_for_buffer(l:bufnr)
+endfunction
+
 " Return dict with diagnostic counts for current buffer
 " { 'error': 1, 'warning': 0, 'information': 0, 'hint': 0 }
 function! lsp#get_buffer_diagnostics_counts() abort
-    return lsp#ui#vim#diagnostics#get_buffer_diagnostics_counts()
+    return lsp#internal#diagnostics#state#_get_diagnostics_count_for_buffer(bufnr('%'))
 endfunction
 
 " Return first error line or v:null if there are no errors
 function! lsp#get_buffer_first_error_line() abort
-    return lsp#ui#vim#diagnostics#get_buffer_first_error_line()
+    return lsp#internal#diagnostics#first_line#get_first_error_line({'bufnr': bufnr('%')})
+endfunction
+
+" Return UI list with window/workDoneProgress
+" The list is most recently update order.
+" [{ 'server': 'clangd', 'token': 'backgroundIndexProgress', 'title': 'indexing', 'messages': '50/100', 'percentage': 50 },
+"  { 'server': 'rust-analyzer', 'token': 'rustAnalyzer/indexing', 'title': 'indexing', 'messages': '9/262 (std)', 'percentage': 3 }]
+" 'percentage': 0 - 100 or not exist
+function! lsp#get_progress() abort
+    return lsp#internal#work_done_progress#get_progress()
 endfunction
 
 function! s:merge_dict(dict_old, dict_new) abort
@@ -1150,7 +1175,7 @@ endfunction
 
 function! lsp#_new_command() abort
     let s:last_command_id += 1
-    call s:Stream(1, { 'command': 1 })
+    call lsp#stream(1, { 'command': 1 })
     return s:last_command_id
 endfunction
 

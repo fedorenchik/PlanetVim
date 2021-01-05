@@ -144,34 +144,6 @@ preferred to turn them off and use other plugins instead (like
 let g:lsp_diagnostics_enabled = 0         " disable diagnostics support
 ```
 
-#### Signs
-
-```viml
-let g:lsp_signs_enabled = 1         " enable signs
-let g:lsp_diagnostics_echo_cursor = 1 " enable echo under cursor when in normal mode
-```
-
-Four groups of signs are defined and used: `LspError`, `LspWarning`, `LspInformation`, `LspHint`. It is possible to set custom text or icon that will be used for each sign (note that icons are only available in GUI). To do this, set some of the following globals: `g:lsp_signs_error`, `g:lsp_signs_warning`, `g:lsp_signs_information`, `g:lsp_signs_hint`. They should be set to a dict, that contains either text that will be used as sign in terminal, or icon that will be used for GUI, or both. For example:
-
-```viml
-let g:lsp_signs_error = {'text': '✗'}
-let g:lsp_signs_warning = {'text': '‼', 'icon': '/path/to/some/icon'} " icons require GUI
-let g:lsp_signs_hint = {'icon': '/path/to/some/other/icon'} " icons require GUI
-```
-
-#### Highlights
-
-Highlighting diagnostics requires either NeoVim 0.3+ or Vim with patch 8.1.0579.
-They are enabled by default when supported, but can be turned off respectively by
-
-```viml
-let g:lsp_highlights_enabled = 0
-let g:lsp_textprop_enabled = 0
-```
-
-Can be customized by setting or linking `LspErrorHighlight`, `LspWarningHighlight`,
-`LspInformationHighlight` and `LspHintHighlight` highlight groups.
-
 ### Highlight references
 
 Highlight references to the symbol under the cursor (enabled by default).
@@ -206,4 +178,4 @@ let g:asyncomplete_log_file = expand('~/asyncomplete.log')
 
 [vim-themis](https://github.com/thinca/vim-themis) is used for testing. To run
 integration tests [rust-analyzer](https://github.com/rust-analyzer/rust-analyzer) 
-exectuable must be in path.
+executable must be in path.
