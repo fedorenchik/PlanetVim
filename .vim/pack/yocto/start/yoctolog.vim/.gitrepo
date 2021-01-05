@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/arnstein/yoctolog.vim.git
+	branch = master
+	commit = 614be65c1c0bc93643e618da6aa26961cad0fe00
+	parent = 63f7fa1158d25f6f099bee465be038f5380becfe
+	method = merge
+	cmdver = 0.4.3
