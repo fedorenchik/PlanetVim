@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/kergoth/vim-bitbake.git
+	branch = master
+	commit = 6d4148c3d200265293040a18c2f772340566554b
+	parent = db72ed45c57789c87d3261ac2bcdc97c7308eb45
+	method = merge
+	cmdver = 0.4.3
