@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/babaybus/DoxygenToolkit.vim.git
+	branch = master
+	commit = db70eb843f26e210f1854505fecb36a8f60d674c
+	parent = 2da37a75321346cea9b6e459c07504f69eb6a822
+	method = merge
+	cmdver = 0.4.3
