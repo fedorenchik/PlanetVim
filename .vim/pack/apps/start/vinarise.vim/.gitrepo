@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/Shougo/vinarise.vim.git
 	branch = master
-	commit = d0493de2112711d327b422a6e5e1425748755ae3
-	parent = a3ded29f0c0bde6b77320e269a2906691babe922
+	commit = 809f883357927d9fc15bf6209bf85e73f899b13d
+	parent = 4c810b51dbc3b553e05602c948dddbe0bea98174
 	method = merge
 	cmdver = 0.4.3
