@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/liuchengxu/vim-clap.git
+	branch = master
+	commit = 07cac9de58ad1f1ce287e47ac41e7eb7bb4db6a3
+	parent = 7cdb7ebadf96992f2ee8dfaba7d94cb3aa1e88c4
+	method = merge
+	cmdver = 0.4.3

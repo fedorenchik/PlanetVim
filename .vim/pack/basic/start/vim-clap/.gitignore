@@ -1,0 +1,26 @@
+# Ignore all hidden files everywhere.
+# Use `git add -f` to add hidden files.
+.*
+__pycache__
+*.pyc
+*.log
+# Ignore all the vim files on the top directory
+/*.vim
+/*.rc
+[1-9]*.vim
+/doc/tags
+target
+/bin
+testdata.txt
+publish.sh
+crates/Cargo.lock
+pythonx/clap/fuzzymatch_rs.so
+
+!.editorconfig
+!.travis.yml
+!.gitignore
+!.github
+!.vintrc.yaml
+!.dependabot
+!bin/.gitkeep
+!src/bin
