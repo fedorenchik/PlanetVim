@@ -111,8 +111,13 @@ endfunction
 
 " }}}1
 function! vimtex#compiler#compile_selected(type) abort range " {{{1
-  let l:file = vimtex#parser#selection_to_texfile(
-        \ {'type':  a:type =~# 'line\|char\|block' ? 'operator' : a:type})
+  " Values of a:firstline and a:lastline are not available in nested function
+  " calls, so we must handle them here.
+  let l:opts = a:type ==# 'command'
+        \ ? {'type': 'range', 'range': [a:firstline, a:lastline]}
+        \ : {'type':  a:type =~# 'line\|char\|block' ? 'operator' : a:type}
+
+  let l:file = vimtex#parser#selection_to_texfile(l:opts)
   if empty(l:file) | return | endif
 
   " Create and initialize temporary compiler
@@ -120,27 +125,27 @@ function! vimtex#compiler#compile_selected(type) abort range " {{{1
         \ 'root' : l:file.root,
         \ 'target' : l:file.base,
         \ 'target_path' : l:file.tex,
-        \ 'backend' : 'process',
         \ 'tex_program' : b:vimtex.tex_program,
-        \ 'background' : 1,
         \ 'continuous' : 0,
         \ 'callback' : 0,
         \}
   let l:compiler = vimtex#compiler#{g:vimtex_compiler_method}#init(l:options)
 
-  call vimtex#log#toggle_verbose()
+  call vimtex#log#info('Compiling selected lines ...')
+  call vimtex#log#set_silent()
   call l:compiler.start()
+  call l:compiler.wait()
 
   " Check if successful
   if vimtex#qf#inquire(l:file.base)
-    call vimtex#log#toggle_verbose()
+    call vimtex#log#set_silent_restore()
     call vimtex#log#warning('Compiling selected lines ... failed!')
     botright cwindow
     return
   else
     call l:compiler.clean(0)
     call b:vimtex.viewer.view(l:file.pdf)
-    call vimtex#log#toggle_verbose()
+    call vimtex#log#set_silent_restore()
     call vimtex#log#info('Compiling selected lines ... done')
   endif
 endfunction
