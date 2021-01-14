@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/liuchengxu/vista.vim.git
+	branch = master
+	commit = 081ca51a8bb572283c0023568e63e35e5f3a2cb4
+	parent = f331820fc3ade1e833571b5f31bcf8d0074f9d8d
+	method = merge
+	cmdver = 0.4.3
