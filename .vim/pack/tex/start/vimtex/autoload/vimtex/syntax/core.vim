@@ -4,6 +4,9 @@
 " Email:      karl.yngve@gmail.com
 "
 
+" This script has a lot of unicode characters (for conceals)
+scriptencoding utf-8
+
 function! vimtex#syntax#core#init() abort " {{{1
   syntax spell toplevel
 
@@ -681,6 +684,13 @@ endfunction
 
 function! s:match_math_sub_super() abort " {{{1
   if !g:vimtex_syntax_conceal.math_super_sub | return | endif
+
+  " This feature does not work unless &encoding = 'utf-8'
+  if &encoding !=# 'utf-8'
+    call vimtex#log#warning(
+          \ "Conceals for math_super_sub require `set encoding='utf-8'`!")
+    return
+  endif
 
   execute 'syntax match texMathSuperSub'
         \ '"\^\%(' . s:re_super . '\)"'
