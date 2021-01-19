@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/liuchengxu/vim-clap.git
 	branch = master
-	commit = d8163a6b69f3b2db718f6a03f6cfa72f05be9a56
-	parent = cc3e30461a444461d8252d79c1d4ec9d25091bf6
+	commit = fb3aba171bceea4f636a9b8119d9524267f75d69
+	parent = 2231a3f35df1a5498d94a5ed62916f10fbf58bbb
 	method = merge
 	cmdver = 0.4.3
