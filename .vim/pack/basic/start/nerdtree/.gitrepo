@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/preservim/nerdtree.git
 	branch = master
-	commit = 7099f638edd3eda5cd5687b4e13d342bb7f9949d
-	parent = 2b6f5ca2127847322cb51d03ec1fdec207c676b4
+	commit = b134f6518b902c7e0482ae770b804fd47c2d2426
+	parent = 1fc950339efdc37b46f90cd82ecbddb3ba1c3132
 	method = merge
 	cmdver = 0.4.3
