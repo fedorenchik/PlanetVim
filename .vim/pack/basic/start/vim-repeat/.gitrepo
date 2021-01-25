@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/tpope/vim-repeat.git
 	branch = master
-	commit = c947ad2b6a16983724a0153bdf7f66d7a80a32ca
-	parent = 2de4cf607cc64b8e6d047db446f456513e010bd6
+	commit = 24afe922e6a05891756ecf331f39a1f6743d3d5a
+	parent = cc053e6973bd5a7efd0705ddb0337d0e49fceb85
 	method = merge
 	cmdver = 0.4.3
