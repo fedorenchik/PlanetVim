@@ -34,7 +34,27 @@ https://www.youtube.com/watch?v=ALXN4HJ5bsg
 * Use `:GodotRun <TAB>` to select a scene and run it. `:GodotRun<CR>` will run main scene.
 * Use `:GodotRunFZF<CR>` to select a scene using FZF (if installed) and run it.
 
+Note that commands assume godot executable is on your `PATH`, i.e. you can run `godot` from your terminal.
+If this is not the case, specify it in your settings:
+
+.For windows
+[source,vim]
+------------------------------------------------------------------------------
+" windows example
+let g:godot_executable = 'C:/Path/To/Godot/godot.exe'
+------------------------------------------------------------------------------
+
+.For OSX
+[source,vim]
+------------------------------------------------------------------------------
+" OSX example
+let g:godot_executable = '/Applications/Godot.app'
+------------------------------------------------------------------------------
+
 image::https://user-images.githubusercontent.com/234774/80359547-a5fc6c00-8886-11ea-9cdd-bc027d46db4c.gif[]
+
+
+NOTE: To run game or a scene in "async way" install either https://github.com/tpope/vim-dispatch[vim-dispatch] or https://github.com/skywind3000/asyncrun.vim[asyncrun.vim].
 
 
 == Settings
@@ -225,3 +245,14 @@ Put the following contents:
 
 * `~/.ctags.d/gdscript.ctags` if you use https://ctags.io/[universal ctags] or
 * `~/.ctags` if you use http://ctags.sourceforge.net/[exuberant ctags]
+
+
+== Setup vim as an external editor for Godot
+
+Note I didn't try it myself, but @macmv https://github.com/habamax/vim-godot/issues/29[had provided] some info about it.
+
+Open menu `Editor/Editor Settings/` then navigate to `General/External/`:
+
+* Tick `Use external editor`
+* Add `vim` to `Exec Path`
+* Add `--servername godot --remote-send "<C-\><C-N>:n {file}<CR>{line}G{col}|"` to `Exec Flags`

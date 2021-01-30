@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/habamax/vim-godot.git
 	branch = master
-	commit = 7697cc88a9ae3e5da923a1739f9753ec4c47617b
-	parent = 8c57b9efb316309e8a14af5f8b3eadc2c1ecc0be
+	commit = 326ee7e3c5162a2aa22617f1e0b74ee6d4b4a567
+	parent = 293898ff01af65168455625b4217b99ac0572d3b
 	method = merge
 	cmdver = 0.4.3
