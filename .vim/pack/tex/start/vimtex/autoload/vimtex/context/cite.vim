@@ -76,7 +76,7 @@ function! s:actions.create(entry) abort dict " {{{1
     let l:pdfs = filter(split(a:entry.file, ';'),
           \ {_, x -> fnamemodify(x, ':e') ==? 'pdf'})
     if !empty(l:pdfs)
-      let l:new.pdfs = l:pdfs
+      let l:new.pdfs = map(l:pdfs, {_, x -> expand(x)})
       call add(l:new.menu, {'name': 'Open PDF', 'func': 'open_pdf'})
     endif
   endif
