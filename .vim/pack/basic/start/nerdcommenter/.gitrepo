@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/preservim/nerdcommenter.git
 	branch = master
-	commit = 2955d669dcb597dc9ced04cf1ee776983053b15e
-	parent = 06bab302a8832040383555c6c250459fdab89514
+	commit = b83e9cdf835161b398e04e4c462103fd21801ee3
+	parent = 14311448ed395600e7a0e3630ecc09a2addbb5c1
 	method = merge
 	cmdver = 0.4.3
