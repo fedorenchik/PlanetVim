@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/lambdalisue/fern-hijack.vim.git
+	branch = master
+	commit = 0e8eb832a41144c3a9704e28ce1463e8ad38a5e3
+	parent = e7b6f9b7fb5c6463bb2c6a2a447c50ff978806ea
+	method = merge
+	cmdver = 0.4.3
