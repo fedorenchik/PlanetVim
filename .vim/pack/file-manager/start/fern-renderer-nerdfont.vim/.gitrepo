@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/lambdalisue/fern-renderer-nerdfont.vim.git
+	branch = master
+	commit = 942be10bda577ba4840c4a939200f05024b8603c
+	parent = 9104a6ffb4d82952fa5abe7d319ded971dc6ab4e
+	method = merge
+	cmdver = 0.4.3
