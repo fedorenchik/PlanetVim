@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/lambdalisue/glyph-palette.vim.git
+	branch = master
+	commit = 9da4d62ec2d9057b923581e906a4231de3150df9
+	parent = b18fe26347fc5cbb40745346633203d2da56724b
+	method = merge
+	cmdver = 0.4.3
