@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/lambdalisue/fern-ssh.git
+	branch = master
+	commit = 87e563c8200e9dd4f85174c784028214cbfdd3e4
+	parent = b36aff62bc96253e0146ff1f6d4ea5b11c4f65d9
+	method = merge
+	cmdver = 0.4.3
