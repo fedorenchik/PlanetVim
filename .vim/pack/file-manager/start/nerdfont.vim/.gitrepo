@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/lambdalisue/nerdfont.vim.git
+	branch = master
+	commit = ebc32d87a086b66d86e7cc52b73c1de8f413678a
+	parent = 7a16dfebe6858af925e829c250479319d610dd35
+	method = merge
+	cmdver = 0.4.3
