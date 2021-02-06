@@ -117,6 +117,7 @@ function! PreviewWord() abort
     endif
   endif
 endfunction
+
 function! ListMonths() abort
   let l:line = getline(".")
   let l:last_word_start_idx = match(l:line, '\w*$')
@@ -135,6 +136,20 @@ function! SetupCommandAlias(input, output) abort
   exec 'cabbrev <expr> '.a:input
         \ .' ((getcmdtype() is# ":" && getcmdline() is# "'.a:input.'")'
         \ .'? ("'.a:output.'") : ("'.a:input.'"))'
+endfunction
+
+let s:did_open_help = v:false
+function s:HelpCurwin(subject) abort
+  let mods = 'silent noautocmd keepalt'
+  if !s:did_open_help
+    execute mods .. ' help'
+    execute mods .. ' helpclose'
+    let s:did_open_help = v:true
+  endif
+  if !getcompletion(a:subject, 'help')->empty()
+    execute mods .. ' edit ' .. &helpfile
+  endif
+  return 'help ' .. a:subject
 endfunction
 " }}}
 " Colorscheme: {{{
@@ -181,7 +196,7 @@ if has("gui_running")
   set columns=90
 endif
 set complete-=i
-set completeopt=menuone,preview,noinsert,noselect
+set completeopt=menuone,preview,popup,popuphidden,noinsert,noselect
 set confirm
 set copyindent
 set cscopequickfix=s-,g-,d-,c-,t-,e-,f-,i-,a-
@@ -189,14 +204,11 @@ set cscoperelative
 set nocscopetag
 set cscopetagorder=0
 set cscopeverbose
-"set nocursorbind
-"set nocursorcolumn
-"set nocursorline
 set debug=beep
 set nodelcombine
 set dictionary+=/usr/share/dict/words
 set dictionary+=/usr/share/dict/web2
-set diffopt=filler,context:12,iwhite,vertical,foldcolumn:2,internal,indent-heuristic,algorithm:histogram
+set diffopt=filler,context:12,iwhite,vertical,foldcolumn:2,internal,indent-heuristic,algorithm:histogram,closeoff,hiddenoff
 set directory=~/.vim/swap//,~/tmp//,.//,~//,/var/tmp//,/tmp//
 set display=lastline,uhex
 set eadirection=
@@ -212,7 +224,7 @@ set fileformats=unix,dos,mac
 set nofileignorecase
 set fillchars=stl:\ ,stlnc:\ ,vert:\ ,fold:\ ,diff:\ 
 set nofixendofline
-set foldcolumn=4
+set foldcolumn=2
 set foldlevel=20
 set foldlevelstart=20
 set foldminlines=0
@@ -228,7 +240,8 @@ if has("gui")
   set guifont=UbuntuMono\ Nerd\ Font\ Mono\ 11,Ubuntu\ Mono\ 11,Monospace\ 9
 endif
 set guiheadroom=0
-set guioptions=aAceigpk
+"XXX: add '!' to guioptions when startify bug #460 will be fixed
+set guioptions=aAcdeigpk
 set guipty
 "set guitablabel&
 set guitabtooltip=%{GuiTabTooltip()}
@@ -277,28 +290,23 @@ set mousehide
 set mousemodel=popup_setpos
 set mouseshape+=o:question,c:pencil,e:hand2
 set nrformats+=alpha
-set nonumber
-"set opendevice&
-"set operatorfunc&
+set number
 set patchmode=".orig"
 set path+=.,,./include,../include,../*/include,*/include,*,../*,/usr/include,**
 set nopreserveindent
 set previewheight=3
 set printencoding=utf-8
-"set printexpr&
-set printfont=Ubuntu\ Mono\ 11,Monospace\ 9
+set printfont=&guifont
 set printmbcharset=ISO10646
 set printmbfont=r:WenQuanYi\ Zen\ Hei,a:yes
 set prompt
 set pumheight=10
 set pyxversion=3
 set redrawtime=1000
-set regexpengine=1
-set norelativenumber
+set relativenumber
 set ruler
-"set rulerformat&
-"set scroll&
 set noscrollbind
+set scrollfocus
 set scrolljump=2
 set scrolloff=2
 set scrollopt=ver,hor,jump
@@ -309,7 +317,7 @@ if &shell =~# 'fish$' && (v:version < 704 || v:version == 704 && !has('patch276'
 endif
 set shiftround
 set shiftwidth=8
-set shortmess+=mrwsIcF
+set shortmess=""
 set showbreak=>>>>>>>>
 set showcmd
 set showfulltag
@@ -318,13 +326,14 @@ set showmode
 set showtabline=2
 set sidescroll=30
 set sidescrolloff=1
-set signcolumn=yes
+set signcolumn=number
 set smartcase
 set smartindent
 set smarttab
 set softtabstop=8
 set spellfile=$HOME/src/homerc/.vim/spell/personal.utf-8.add,/tmp/tmp.utf-8.add
 set spelllang+=cjk
+set spelloptions=camel
 set spellsuggest=fast,10
 set nosplitbelow
 set nosplitright
@@ -337,12 +346,10 @@ set synmaxcol=1000
 if &t_Co == 8 && $TERM !~# '^linux\|^Eterm'
   set t_Co=16
 endif
-"set tabline&
 set tabpagemax=50
 set tabstop=8
 set tagbsearch
 set tagcase=followscs
-"set taglength&
 set tagrelative
 set tags=tags;
 set tagstack
@@ -354,34 +361,27 @@ set notildeop
 set notimeout
 set timeoutlen=400
 set title
-"set titlelen&
 set titleold=$PWD
+"TODO: titlestring -> cur dir, server name
 set titlestring=%F\ %a%r%m\ -\ VIM
 set ttimeout
 set ttimeoutlen=10
-"set toolbar&
-"set toolbariconsize&
 set ttyfast
 if has('persistent_undo')
   set undodir=$HOME/.vim/undo,.
   set undofile
 endif
 set undolevels=1000
-"set undoreload&
-"set updatecount&
 set updatetime=1000
-"set verbose&
-"set verbosefile&
-"set viewdir&
 set viewoptions=cursor,folds,slash,unix,curdir
-set viminfo=!,%50,'100,<50,c,f1,h,r/tmp,r/var,r/mnt,r/media,s10
+set viminfo=!,%50,'100,<50,c,f1,h,r/run,r/tmp,r/var,r/mnt,r/media,s10
+"TODO: set viminfofile="~/.vim/viminfo/$PWD_viminfo.vim"
 set virtualedit=block
 set novisualbell
 set warn
 set whichwrap=
 set wildchar=<C-E>
 set wildcharm=<C-Z>
-"set wildignore&
 set nowildignorecase
 set wildmenu
 set wildmode=longest:full,list:full
@@ -745,6 +745,7 @@ if exists("+omnifunc")
 endif
 autocmd FocusLost * wa
 autocmd GUIEnter * set guifont=UbuntuMono\ Nerd\ Font\ Mono\ 11,Ubuntu\ Mono\ 11,Monospace\ 9
+autocmd StdinReadPost * set nomodified
 autocmd VimEnter * if expand("%") != "" && getcwd() == expand("~") | cd %:h | endif
 augroup END
 endif
@@ -754,13 +755,20 @@ if !exists(":DiffOrig")
   command DiffOrig vertical new | setlocal buftype=nofile | r ++edit # |
         \ 0d_ | diffthis | wincmd p | diffthis
 endif
+command -bar -nargs=? -complete=help HelpCurwin execute s:HelpCurwin(<q-args>)
 " }}}
 " $VIMRUNTIME/ {{{
 " filetype.vim {{{
 let g:bash_is_sh = 1
 " }}}
+" ftplugin/awk.vim {{{
+let g:awk_is_gawk = 1
+" }}}
 " ftplugin/changelog.vim {{{
 runtime ftplugin/changelog.vim
+" }}}
+" ftplugin/rst.vim {{{
+let g:rst_style = 1
 " }}}
 " ftplugin/spec.vim {{{
 let spec_chglog_release_info = 1
@@ -776,7 +784,9 @@ if !has("gui_running")
   let do_syntax_sel_menu = 1
   source $VIMRUNTIME/menu.vim
 endif
-let v:this_session = ".session.vim"
+" }}}
+" pack/dist/opt/cfilter/ {{{
+packadd! cfilter
 " }}}
 " pack/dist/opt/justify/ {{{
 packadd! justify
@@ -786,12 +796,13 @@ if has('syntax') && has('eval')
   packadd! matchit
 endif
 " }}}
-" pack/dist/opt/termdebug/ {{{
-packadd! termdebug
-" }}}
-" plugin/netrwPlugin.vim {{{
+" Do not load following in plugin/*.vim {{{
+let g:loaded_getscript = 1
+let g:loaded_getscriptPlugin = 1
 let g:loaded_netrw = 1
 let g:loaded_netrwPlugin = 1
+let g:loaded_vimball = 1
+let g:loaded_vimballPlugin = 1
 " }}}
 " plugin/tarPlugin.vim {{{
 let g:tar_secure = "--"
@@ -805,6 +816,12 @@ let g:html_no_foldcolumn = 0
 let g:html_prevent_copy = "fn"
 let g:html_hover_unfold = 0
 let g:html_pre_wrap = 1
+" }}}
+" plugin/zipPlugin.vim {{{
+let g:zipPlugin_ext = '*.zip,*.jar,*.xpi,*.ja,*.war,*.ear,*.celzip,
+       \ *.oxt,*.kmz,*.wsz,*.xap,*.docx,*.docm,*.dotx,*.dotm,*.potx,*.potm,
+       \ *.ppsx,*.ppsm,*.pptx,*.pptm,*.ppam,*.sldx,*.thmx,*.xlam,*.xlsx,*.xlsm,
+       \ *.xlsb,*.xltx,*.xltm,*.xlam,*.crtx,*.vdw,*.glox,*.gcsx,*.gqsx,*.epub'
 " }}}
 " spell/ {{{
 let g:spell_clean_limit = 60 * 60
@@ -839,7 +856,6 @@ let perl_fold_anonymous_subs = 1
 let perl_nofold_packages = 1
 " }}}
 " syntax/python.vim {{{
-let python_space_error_highlight = 1
 let python_highlight_all = 1
 " }}}
 " syntax/readline.vim {{{
