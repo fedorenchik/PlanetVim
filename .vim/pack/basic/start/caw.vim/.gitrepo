@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/tyru/caw.vim.git
+	branch = master
+	commit = 26b91ddfcebaee954a3cd2aec1769a5b16779bdd
+	parent = 8a46d1ab81c2a649e33df55ad9c445388466b86e
+	method = merge
+	cmdver = 0.4.3
