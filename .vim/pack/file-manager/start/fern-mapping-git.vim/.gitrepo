@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/lambdalisue/fern-mapping-git.vim.git
+	branch = master
+	commit = df5e7466df8596c95dd355d49a72893018919cf1
+	parent = 334a5ebd6789db0ccb79ffb349b841949228ee84
+	method = merge
+	cmdver = 0.4.3
