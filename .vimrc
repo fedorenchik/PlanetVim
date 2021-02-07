@@ -5,7 +5,9 @@
 " --enable-cscope --enable-gui=gtk3
 " }}}
 " External Dependencies Of This Vimrc: {{{
-" wmctrl, trash-cli, pylint3
+" wmctrl,
+" trash-cli - for fern.vim
+" pylint3
 " }}}
 " TODO: {{{
 " Patches for vim:
@@ -29,7 +31,7 @@ endif
 " }}}
 " Start Vim Server: {{{
 if empty(v:servername) && exists('*remote_startserver')
-  call remote_startserver('GVIM')
+  call remote_startserver('VIM')
 endif
 " }}}
 " Functions: {{{
@@ -898,11 +900,29 @@ let g:user_emmet_leader_key='<C-Z>'
 let g:fastfold_force = 1
 let g:fastfold_minlines = 0
 " }}}
-" Plugin: nerdtree {{{
-nnoremap <silent> _ :Unite -no-resize -no-split -buffer-name=unite-file fire_rec<CR>
-nnoremap <silent> _ :CocCommand explorer --position tab<CR>
-nnoremap <silent> <A-f> :NERDTreeToggle<CR>
-let NERDTreeMapMenu='M'
+" Plugin: fern.vim {{{
+let g:fern#smart_cursor = "hide"
+let g:fern#keepalt_on_edit = 1
+let g:fern#keepjumps_on_edit = 1
+nnoremap <silent> - :Fern -reveal=% .<CR>
+nnoremap <silent> <A-f> :Fern . -drawer -reveal=% -toggle<CR>
+augroup my-fern
+  autocmd!
+  autocmd FileType fern setlocal nonumber norelativenumber signcolumn=yes foldcolumn=0
+augroup END
+" }}}
+" Plugin: fern-bookmark.vim {{{
+let g:fern#scheme#bookmark#store#file = "~/.vim/fern-bookmark.json"
+" }}}
+" Plugin: fern-renderer-nerdfont.vim {{{
+let g:fern#renderer = "nerdfont"
+" }}}
+" Plugin: glyph-palette.vim {{{
+augroup my-glyph-palette
+  autocmd!
+  autocmd FileType fern call glyph_palette#apply()
+  autocmd FileType startify call glyph_palette#apply()
+augroup END
 " }}}
 " Plugin: signature {{{
 let g:SignatureMap = {
