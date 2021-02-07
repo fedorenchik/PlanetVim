@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/Konfekt/FoldText.git
+	branch = master
+	commit = d5aca5af6eae07ed825504ac2943d5d40c349c5f
+	parent = 20a8a40d155ee69b30bca4466bd316ab662a502b
+	method = merge
+	cmdver = 0.4.3
