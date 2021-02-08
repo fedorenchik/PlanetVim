@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/MTDL9/vim-log-highlighting.git
+	branch = master
+	commit = 1037e26f3120e6a6a2c0c33b14a84336dee2a78f
+	parent = 4bf1ae8848efdb171e43a2ad5090273b5d92b212
+	method = merge
+	cmdver = 0.4.3
