@@ -1,0 +1,106 @@
+*verbosity.txt* Mappings and commands for toggling verbose mode
+
+     _    __          __               _ __        ~
+    | |  / /__  _____/ /_  ____  _____(_) /___  __ ~
+    | | / / _ \/ ___/ __ \/ __ \/ ___/ / __/ / / / ~
+    | |/ /  __/ /  / /_/ / /_/ (__  ) / /_/ /_/ /  ~
+    |___/\___/_/  /_.___/\____/____/_/\__/\__, /   ~
+                                         /____/    ~
+
+==============================================================================
+CONTENTS                                                    *verbosity-contents*
+
+    Introduction ....................... |verbosity-introduction|
+    Usage .............................. |verbosity-usage|
+    Configuration ...................... |verbosity-configuration|
+    License ............................ |verbosity-license|
+
+==============================================================================
+INTRODUCTION                                  *verbosity* *verbosity-introduction*
+
+Provides mappings and commands for easily enabling verbose mode while working
+in VIM, printing the verbose output on newly created log files in a temporary 
+directory. 
+
+This is especially useful for debugging just a few actions or auto commands 
+while working inside the editor.
+
+Custom syntax highlighting has been added to Verbosity generated files to show
+more clearly the different types of actions logged by VIM (functions, auto
+commands, etc.)
+
+==============================================================================
+USAGE                    *verbosity-usage* *verbosity-mappings* *verbosity-commands*
+
+The default mappings and commands set by Verbosity are:
+
+Mapping | Command             | Description                                  ~
+--------|---------------------|-----------------------------------------------~
+*[oV*     | *:VerbosityEnable*    | Enables verbose mode
+*]oV*     | *:VerbosityDisable*   | Disables verbose mode
+*=oV*     | *:VerbosityToggle*    | Toggles verbose mode
+*goV*     | *:VerbosityOpenLast*  | Opens last/current verbose output
+*doV*     | *:VerbosityDeleteAll* | Deletes all Verbosity generated log files
+
+Enable and toggle mappings and commands can be prefixed with a number (e.g.
+`12[oV` or `:3VerbosityEnable`) to set a specific verbose level. 
+This level will be treated as the new default level for the rest of the
+session.
+
+==============================================================================
+CONFIGURATION                                          *verbosity-configuration*
+
+*g:verbosity_log_directory*
+By default Verbosity will create verbose log files inside a temporary
+directory, created using the |tempname()| VIM function.
+If you want to write the files in a specific directory, you can customize the
+following variable:
+>
+  let g:verbosity_log_directory = '/tmp'
+<
+
+*g:verbosity_default_level*
+The default verbose level used if none is specified is 10, you can overwrite
+that with the following variable:
+>
+  let g:verbosity_default_level = 5
+<
+
+*verbosity-plug-mappings*
+You can overwrite the key mappings using the provided <Plug> maps, for
+example if you do not need the |gV| mapping in Vim you can use:
+>
+  nmap gVe <Plug>(verbosity-enable)
+  nmap gVd <Plug>(verbosity-disable)
+  nmap gVt <Plug>(verbosity-toggle)
+  nmap gVo <Plug>(verbosity-open-last)
+  nmap gVr <Plug>(verbosity-delete-all)
+<
+
+==============================================================================
+LICENSE                                                      *verbosity-license*
+
+MIT License
+
+Copyright (c) 2018 MTDL9
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+==============================================================================
+vim:tw=78:sw=4:ts=8:ft=help:

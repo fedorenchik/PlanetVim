@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/MTDL9/vim-verbosity.git
+	branch = master
+	commit = 7993c12a7fe36cb60e1d89872d895273485b2626
+	parent = 9ed509b0aa4a549374a75cd663ba0039da12d2b6
+	method = merge
+	cmdver = 0.4.3
