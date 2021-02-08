@@ -1,0 +1,108 @@
+*window-mode.txt* Additional VIM Mode for performing Window operations
+
+  _                                            ,__ __                  ~
+ (_|   |   |_/o             |                 /|  |  |          |      ~
+   |   |   |      _  _    __|   __             |  |  |   __   __|   _  ~
+   |   |   |  |  / |/ |  /  |  /  \_|  |  |_   |  |  |  /  \_/  |  |/  ~
+    \_/ \_/   |_/  |  |_/\_/|_/\__/  \/ \/     |  |  |_/\__/ \_/|_/|__/~
+
+==============================================================================
+CONTENTS                                                  *window-mode-contents*
+
+    Introduction ....................... |window-mode-introduction|
+    Usage .............................. |window-mode-usage|
+    Configuration ...................... |window-mode-configuration|
+    Lightline Integration ...............|window-mode-lightline|
+    License ............................ |window-mode-license|
+
+==============================================================================
+INTRODUCTION                              *window-mode* *window-mode-introduction*
+
+This plugin adds a new VIM mode that allows performing window operations 
+(selecting, moving, resizing...) quickly by removing the `<C-w>` prefix from 
+all the window mappings.
+
+After entering the Window Mode, all inputs will be interpreted as being
+preceded by the `<C-w>` prefix, so for example if while in this mode you press
+`j` and then `K` the inputs VIM will receive will be `<C-w>j` and `<C-w>K`.
+
+==============================================================================
+USAGE              *window-mode-usage* *window-mode-mappings* *window-mode-commands*
+
+*CTRL-W_m* *:WindowMode*
+The Window mode is activated either by pressing `<C-w>m`, or by using the
+command `:WindowMode`.
+
+While the mode is active, all keypresses will act as being prefixed by the
+mapping `<C-w>`.
+
+Pressing `<ESC>` or `<C-c>` will exit the Window Mode, returning to Normal Mode.
+
+The digits `0` through `9` can be used, as in normal mode, to repeat commands.
+
+The repeat mapping `.` will repeat the last non-movement operation.
+
+If the |showmode| option is enabled, the `-- WINDOW --` mode text will be shown
+in the command area when the Window Mode is active
+
+==============================================================================
+CONFIGURATION                                        *window-mode-configuration*
+
+This mode supports custom mappings after the `<C-w>` prefix, for example you
+can define some additional mappings in your |.vimrc| file for switching/deleting
+buffers:
+>
+  nnoremap <C-w>B :bnext<CR>
+  nnoremap <C-w>V :bprev<CR>
+  nnoremap <C-w>D :bdelete<CR>
+<
+==============================================================================
+LIGHTLINE INTEGRATION                                    *window-mode-lightline*
+
+This plugin defines a custom function *window_mode#lightlineComponent* that
+can be used in the Lightline plugin for defining a custom component.
+
+This function will return `'WINDOW'` when Window Mode is enabled or an empty
+string when it is not active.
+
+This is an example of bare-bones Lightline configuration, where Window Mode
+will show an additional marker next to NORMAL (similar to the marker shown
+when PASTE is active)
+>
+  let g:lightline = {}
+  let g:lightline.active = {}
+  let g:lightline.active.left = [
+      \    [ 'mode', 'paste', 'window_mode' ],
+      \    [ 'readonly', 'filename', 'modified' ],
+      \]
+  let g:lightline.component_function = {
+      \     'window_mode': 'window_mode#lightlineComponent',
+      \}
+<
+==============================================================================
+LICENSE                                                    *window-mode-license*
+
+MIT License
+
+Copyright (c) 2018 MTDL9
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+==============================================================================
+vim:tw=78:sw=4:ts=8:ft=help:

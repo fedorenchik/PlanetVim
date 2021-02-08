@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/MTDL9/vim-window-mode.git
+	branch = master
+	commit = dd621d166bc726d22014696f54ba3f6e3230b851
+	parent = ea3328250276a8e002809305abedd7179316327f
+	method = merge
+	cmdver = 0.4.3
