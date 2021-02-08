@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/fedorenchik/qt-support.vim.git
 	branch = master
-	commit = b66a22ecc4e84f2162a6bc6f154f91ee36562a59
-	parent = f3f2e9c9e1020f2e451cf3336edcd34bc35aa8fe
+	commit = c353804b35a006531990191ae975b793d2836092
+	parent = 20d0de72b80e9d2b58194d96b6449560fc927d9f
 	method = merge
 	cmdver = 0.4.3
