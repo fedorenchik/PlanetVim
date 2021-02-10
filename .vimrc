@@ -5,8 +5,11 @@
 " --enable-cscope --enable-gui=gtk3
 " }}}
 " External Dependencies Of This Vimrc: {{{
-" wmctrl,
+" python - for vimspector, codi.vim
+" wmctrl - for WM GUI window control
 " trash-cli - for fern.vim
+" cling, sript - for codi.vim
+" rg (ripgrep) - for vim-grepper
 " pylint3
 " }}}
 " TODO: {{{
@@ -22,6 +25,7 @@ let g:loaded_home_vimrc = 1
 " }}}
 " Basics: {{{
 set nocompatible
+set guioptions+=M
 if has('autocmd')
   filetype plugin indent on
 endif
@@ -134,6 +138,7 @@ function! ListMonths() abort
   call complete(l:last_word_start_idx + 1, l:months)
   return ''
 endfunction
+
 function! SetupCommandAlias(input, output) abort
   exec 'cabbrev <expr> '.a:input
         \ .' ((getcmdtype() is# ":" && getcmdline() is# "'.a:input.'")'
@@ -141,7 +146,7 @@ function! SetupCommandAlias(input, output) abort
 endfunction
 
 let s:did_open_help = v:false
-function s:HelpCurwin(subject) abort
+function! s:HelpCurwin(subject) abort
   let mods = 'silent noautocmd keepalt'
   if !s:did_open_help
     execute mods .. ' help'
@@ -179,6 +184,8 @@ set keymap=russian-dvp
 " Settings: {{{
 set autoindent
 set autoread
+set autowrite
+set autowriteall
 set backspace=start
 set nobackup
 set backupdir=/tmp
@@ -195,7 +202,7 @@ set clipboard=autoselect,autoselectml,exclude:cons\|linux
 set cmdheight=2
 set colorcolumn=80,120,+0
 if has("gui_running")
-  set columns=90
+  set columns=128
 endif
 set complete-=i
 set completeopt=menuone,preview,popup,popuphidden,noinsert,noselect
@@ -243,7 +250,7 @@ if has("gui")
 endif
 set guiheadroom=0
 "XXX: add '!' to guioptions when startify bug #460 will be fixed
-set guioptions=aAcdeigpk
+set guioptions=aAcdeimMgTpk
 set guipty
 "set guitablabel&
 set guitabtooltip=%{GuiTabTooltip()}
@@ -273,7 +280,7 @@ set laststatus=2
 set lazyredraw
 set nolinebreak
 if has("gui_running")
-  set lines=36
+  set lines=64
 endif
 set list
 set listchars=tab:»\ ,trail:·,extends:>,precedes:<,nbsp:+
@@ -340,10 +347,11 @@ set spellsuggest=fast,10
 set nosplitbelow
 set nosplitright
 set nostartofline
+"TODO: set statusline^=%{exists('*CapsLockStatusline')?CapsLockStatusline():''}
 set suffixes-=.h
 set noswapfile
 set swapsync=
-set switchbuf=
+set switchbuf=uselast
 set synmaxcol=1000
 if &t_Co == 8 && $TERM !~# '^linux\|^Eterm'
   set t_Co=16
@@ -513,6 +521,10 @@ nnoremap SQ :botright copen<CR>
 " s t u v w W x X z ^ + - . = <Left> <Right> <CR>
 " Available To Map:
 " B I J K p P q Q S T U V y Y Z $ ~ & % [ { } ( * ) ] ! # ` ; : , < > / ? @ \ | _ ' " 0 1 2 3 4 5 6 7 8 9
+nnoremap <silent> zr zr:<c-u>setlocal foldlevel?<CR>
+nnoremap <silent> zm zm:<c-u>setlocal foldlevel?<CR>
+nnoremap <silent> zR zR:<c-u>setlocal foldlevel?<CR>
+nnoremap <silent> zM zM:<c-u>setlocal foldlevel?<CR>
 nnoremap z{ 0
 nnoremap z} zLzL
 nnoremap z( zHzH
@@ -584,7 +596,7 @@ nnoremap <A-M> :silent call system('wmctrl -i -b remove,maximized_vert,maximized
 nnoremap <A-n> :<C-U><C-R><C-R>='let @'. v:register .' = '. string(getreg(v:register))<CR><C-F><Left>
 nnoremap <A-q> :q<CR>
 nnoremap <A-Q> :qa<CR>
-nnoremap <A-r> :nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-L>
+nnoremap <A-r> :nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR>:FastFoldUpdate<CR>:SignatureRefresh<CR><C-L>
 nnoremap <A-s> :rightbelow terminal<CR>
 nnoremap <A-w> :confirm up<CR>
 nnoremap <A-W> :wa<CR>
@@ -733,7 +745,6 @@ autocmd FileType dockerfile,python,qmake setlocal shiftwidth=4
 autocmd FileType python setlocal makeprg=pylint3\ --reports=n\ --msg-template=\"{path}:{line}:\ {msg_id}\ {symbol},\ {obj}\ {msg}\"\ %:p
 autocmd FileType python setlocal errorformat=%f:%l:\ %m
 autocmd FileType sh setlocal formatoptions+=croql
-autocmd FileType sh packadd shellmenu
 autocmd FileType sh setlocal include=^\\s*\\%(\\.\\\|source\\)\\s
 autocmd FileType sh setlocal define=\\<\\%(\\i\\+\\s*()\\)\\@=
 autocmd FileType text setlocal textwidth=72 linebreak breakindent
@@ -759,9 +770,184 @@ if !exists(":DiffOrig")
 endif
 command -bar -nargs=? -complete=help HelpCurwin execute s:HelpCurwin(<q-args>)
 " }}}
+" Menu: {{{
+" SpartaVim
+an 100.10 SpartaVim.Insert\ Mode<Tab>:set\ im!              :set im!<CR>
+an 100.15 SpartaVim.--1-- :
+an 100.20 SpartaVim.Edit\ Settings                          :confirm e ~/.vimrc<CR>
+an 100.25 SpartaVim.--2-- :
+an 100.30 SpartaVim.Close\ Everything                       :SClose<CR>
+an 100.35 SpartaVim.--3-- :
+an 100.40 SpartaVim.Exit\ SpartaVim                         :qa!<CR>
+
+" File & vim-uenuch
+an 110.10 File.New                                          :confirm enew<CR>
+an 110.20 File.New\ Tab                                     :confirm tabnew<CR>
+an 110.30 File.New\ Window                                  :silent !gvim<CR>
+an 110.30 File.--1-- :
+an 110.30 File.Open\ File                                   :Clap files<CR>
+an 110.30 File.Open\ File\ Manager<Tab>-                    :Fern -reveal=% .<CR>
+function! s:clap_provider_oldfiles_source() abort
+  return split(execute('oldfiles'), "\n")
+endfunction
+let g:clap_provider_oldfiles = {
+      \ 'source': function('s:clap_provider_oldfiles_source'),
+      \ 'sink': 'e',
+      \ }
+an 110.30 File.Open\ Recent                                 :Clap oldfiles<CR>
+an 110.30 File.--2-- :
+an 110.30 File.Save<Tab>:w                                  :if expand("%") == ""<Bar>browse confirm w<Bar>else<Bar>confirm w<Bar>endif<CR>
+an 110.30 File.Save\ As\.\.\.                               :browse confirm saveas<CR>
+an 110.30 File.Save\ All<Tab>:wall                          :confirm wall<CR>
+an 110.30 File.--3-- :
+an 110.30 File.SudoSave                                     :SudoWrite<CR>
+an 110.30 File.Rename                                       :browse confirm Rename<CR>
+an 110.30 File.Change\ File\ Permissions                    :Chmod 0755
+an 110.30 File.Delete\ From\ Disk                           :Delete!<CR>
+an 110.30 File.--4-- :
+an 110.30 File.Close<Tab>:bdelete                           :bdelete<CR>
+
+" Edit
+an 120.10 Edit.Undo<Tab>u                                   u
+an 120.10 Edit.Redo<Tab><C-r>                               <C-r>
+an 120.10 Edit.--1-- :
+an 120.10 Edit.Undo\ History                                :UndotreeToggle<CR>
+an 120.10 Edit.--2-- :
+an 120.10 Edit.Cut                                          "+dd
+an 120.10 Edit.Copy                                         "+yy
+an 120.10 Edit.Paste                                        "+P
+an 120.10 Edit.--3-- :
+an 120.10 Edit.Toggle\ Comment<Tab>gcc                      gcc
+an 120.10 Edit.Toggle\ CAPS<Tab>gC                          gC
+
+" Searching
+an 130.10 Search.Current\ Word<Tab>*                        *
+
+" Vim Registers
+an 135.10 Registers.Choose\ to\ Paste\.\.\.                 :Clap registers<CR>
+function! s:registers_choose_to_edit() abort
+  echohl Question
+  echo "Register: " buffest#reg_complete()
+  let l:reg_to_edit = nr2char(getchar())
+  if l:reg_to_edit == "\<Esc>"
+    return
+  endif
+  echohl None
+  execute("silent Regpedit " .. l:reg_to_edit)
+  execute("silent normal \<C-w>P")
+endfunction
+an 135.10 Registers.Choose\ to\ Edit\.\.\.                  :call <SID>registers_choose_to_edit()<CR>
+"TODO: Add all non-empty registers to this menu
+
+an 140.10 Selection.Select\ All                             ggVG
+
+an 150.10 View.Command\ Palette                             :Clap<CR>
+an 150.10 View.Files\ Side\ Bar                             :Fern . -drawer -reveal=% -toggle<CR>
+
+" Cololr highlight words with mark.vim plugin
+an 160.10 CMark.CMark\ Current                      <Leader>m
+
+an 170.10 Go.Back                                           <C-o>
+
+" signature.vim (marks & markers)
+an 180.10 Marks.Add                                         m,
+tmenu Marks.Add Marks.Add
+
+" quickfix & loclist
+an 190.10 QF/LL.Quickfix\ Open<Tab>:copen                :botright copen<CR>
+an 190.10 QF/LL.Quickfix\ Edit<Tab>c\\q                   :Qflistsplit<CR>
+tmenu QF/LL.Quickfix\ Edit              :Qflistsplit
+an 190.10 QF/LL.--1-- :
+an 190.10 QF/LL.Loclist\ Open<Tab>:lopen                 :lopen<CR>
+an 190.10 QF/LL.Loclist\ Edit<Tab>c\\l                    :Loclistsplit<CR>
+
+" vim-lsp
+an 200.10 LSP.Definition                                    :LspDefinition<CR>
+
+an 210.10 Build.Make                                        :Make<CR>
+
+an 220.10 Run.Configurations                                :
+
+an 230.10 Debug.Start                                       :Vimspector<CR>
+
+an 240.10 Test.Run                                          :TestFile<CR>
+
+an 250.10 Analyze.Check                                     :
+
+an 260.10 Terminal.New                                      :terminal
+
+an 270.10 C++.Test                                          :
+
+an 280.10 Git.Log                                           :
+
+an 290.10 Diff/Patch.DiffOrig                               :DiffOrig<CR>
+an 290.20 Diff/Patch.Diff\ with\ file\.\.\.                 :browse vert diffsplit<CR>
+an 290.30 Diff/Patch.Diff\ with\ patch\.\.\.                :browse vert diffpatch<CR>
+
+an 300.10 Spelling.Enable                                   :
+
+an 310.10 Tools.Select\ Colorscheme                         :Clap colors<CR>
+an 310.10 Tools.Colorize                                    :ColorToggle<CR>
+an 310.10 Tools.direnv.Run\ \.envrc                         :DirenvExport<CR>
+an 310.10 Tools.direnv.Edit\ \.envrc                        :EditEnvrc<CR>
+an 310.10 Tools.direnv.Edit\ direnvrc                       :EditDirenvrc<CR>
+
+" Buffers
+an 320.10 Buffers.Select\.\.\.                              :Clap buffers<CR>
+an 320.15 Buffers.---                                       <Nop>
+an 320.20 Buffers.Alternate                                 :b #<CR>
+an 320.25 Buffers.---                                       <Nop>
+let sparta_buf = 1
+"while buf <= bufnr('$')
+
+" Arg List
+an 330.10 Args.Add                                          :argadd<CR>
+an 330.10 Args.Delete                                       :argdelete<CR>
+an 330.10 Args.Open\ Next                                   :next<CR>
+an 330.10 Args.Open\ Previous                               :previous<CR>
+an 330.10 Args.Open\ First                                  :first<CR>
+an 330.10 Args.Open\ Last                                   :last<CR>
+
+an 340.10 Windows.Window\ Mode                              :WindowMode<CR>
+an 340.15 Windows.---                                       <Nop>
+an 340.20 Windows.Close<Tab>:close<Tab>^Wc                  :close<CR>
+an 340.25 Windows.---                                       <Nop>
+an 340.25 Windows.---                                       <Nop>
+
+" Tabs
+an 350.10 Tabs.New                                          :tabnew<CR>
+
+an 360.10 Session.Save                                      :SSave!<CR>
+an 360.20 Session.Open                                      :SLoad<CR>
+an 360.30 Session.Close                                     :SClose<CR>
+an 360.40 Session.Delete                                    :SDelete<CR>
+an 360.45 Session.---                                       <Nop>
+
+" Control GUI window with wmctrl & vim servers
+an 370.10 GUI.Full\ Screen                                  :
+
+an 380.10 Apps.Calendar                                     :Calendar<CR>
+
+" Show current maps (nnoremap, etc.)
+an 980.10 Maps.Choose\.\.\.                                 :Clap maps<CR>
+
+an 990.10 Help.Lookup\ Current\ Word                        K
+an 990.10 Help.Index                                        :h index<CR>
+an 990.10 Help.QuickRef                                     :h quickref<CR>
+an 990.10 Help.Welcome                                      :intro<CR>
+an 990.20 Help.Check\ for\ Updates                          :TODO
+an 990.20 Help.About                                        :version<CR>
+" }}}
+" ToolBar: {{{
+" }}}
+" PopUp Menus: {{{
+" }}}
+" WinBar Menus: {{{
+" }}}
 " $VIMRUNTIME/ {{{
 " filetype.vim {{{
 let g:bash_is_sh = 1
+let g:tex_flavor = "latex"
 " }}}
 " ftplugin/awk.vim {{{
 let g:awk_is_gawk = 1
@@ -769,23 +955,25 @@ let g:awk_is_gawk = 1
 " ftplugin/changelog.vim {{{
 runtime ftplugin/changelog.vim
 " }}}
+" ftplugin/man.vim {{{
+runtime ftplugin/man.vim
+let g:ft_man_folding_enable = 1
+set keywordprg=:Man
+" }}}
+" ftplugin/markdown.vim {{{
+let g:markdown_folding = 1
+" }}}
 " ftplugin/rst.vim {{{
 let g:rst_style = 1
+" }}}
+" ftplugin/rust.vim {{{
+let g:rust_fold = 1
 " }}}
 " ftplugin/spec.vim {{{
 let spec_chglog_release_info = 1
 " }}}
 " ftplugin/sql.vim {{{
 let g:ftplugin_sql_statements = 'create,alter'
-" }}}
-" ftplugin/tex.vim {{{
-let g:tex_flavor = "latex"
-" }}}
-" menu.vim {{{
-if !has("gui_running")
-  let do_syntax_sel_menu = 1
-  source $VIMRUNTIME/menu.vim
-endif
 " }}}
 " pack/dist/opt/cfilter/ {{{
 packadd! cfilter
@@ -828,13 +1016,6 @@ let g:zipPlugin_ext = '*.zip,*.jar,*.xpi,*.ja,*.war,*.ear,*.celzip,
 " spell/ {{{
 let g:spell_clean_limit = 60 * 60
 " }}}
-" synmenu.vim {{{
-if has("gui_running")
-  let do_syntax_sel_menu = 1
-  runtime! synmenu.vim
-  aunmenu &Syntax.&Show\ File\ Types\ in\ Menu
-endif
-" }}}
 " syntax/c.vim {{{
 let c_gnu = 1
 let c_comment_strings = 1
@@ -847,6 +1028,9 @@ let g:diff_translations = 0
 let g:load_doxygen_syntax = 1
 let g:doxygen_enhanced_color = 1
 " }}}
+" syntax/javascript.vim {{{
+let g:javaScript_fold = 1
+" }}}
 " syntax/lisp.vim {{{
 let g:lisp_rainbow = 1
 " }}}
@@ -857,8 +1041,14 @@ let perl_nofold_subs = 1
 let perl_fold_anonymous_subs = 1
 let perl_nofold_packages = 1
 " }}}
+" syntax/php.vim {{{
+let g:php_folding = 1
+" }}}
 " syntax/python.vim {{{
 let python_highlight_all = 1
+" }}}
+" syntax/r.vim {{{
+let g:r_syntax_folding = 1
 " }}}
 " syntax/readline.vim {{{
 let readline_has_bash = 1
@@ -878,6 +1068,9 @@ let g:sh_fold_enabled = 7
 " }}}
 " syntax/synload.vim {{{
 let g:load_doxygen_syntax = 1
+" }}}
+" syntax/tex.vim {{{
+let g:tex_fold_enabled = 1
 " }}}
 " syntax/vim.vim {{{
 let g:vimsyn_embed = "lmpPrt"
@@ -899,6 +1092,9 @@ let g:user_emmet_leader_key='<C-Z>'
 " Plugin: FastFold {{{
 let g:fastfold_force = 1
 let g:fastfold_minlines = 0
+" fold text objects
+xnoremap iz :<c-u>FastFoldUpdate<cr><esc>:<c-u>normal! ]zv[z<cr>
+xnoremap az :<c-u>FastFoldUpdate<cr><esc>:<c-u>normal! ]zV[z<cr>
 " }}}
 " Plugin: fern.vim {{{
 let g:fern#smart_cursor = "hide"
@@ -924,96 +1120,59 @@ augroup my-glyph-palette
   autocmd FileType startify call glyph_palette#apply()
 augroup END
 " }}}
-" Plugin: signature {{{
-let g:SignatureMap = {
-        \ 'Leader'             :  "m",
-        \ 'PlaceNextMark'      :  "m,",
-        \ 'ToggleMarkAtLine'   :  "m.",
-        \ 'PurgeMarksAtLine'   :  "m-",
-        \ 'DeleteMark'         :  "dm",
-        \ 'PurgeMarks'         :  "m<Space>",
-        \ 'PurgeMarkers'       :  "m<BS>",
-        \ 'GotoNextLineAlpha'  :  "'+",
-        \ 'GotoPrevLineAlpha'  :  "'-",
-        \ 'GotoNextSpotAlpha'  :  "`+",
-        \ 'GotoPrevSpotAlpha'  :  "`-",
-        \ 'GotoNextLineByPos'  :  "]'",
-        \ 'GotoPrevLineByPos'  :  "['",
-        \ 'GotoNextSpotByPos'  :  "]`",
-        \ 'GotoPrevSpotByPos'  :  "[`",
-        \ 'GotoNextMarker'     :  "]-",
-        \ 'GotoPrevMarker'     :  "[-",
-        \ 'GotoNextMarkerAny'  :  "]=",
-        \ 'GotoPrevMarkerAny'  :  "[=",
-        \ 'ListBufferMarks'    :  "m/",
-        \ 'ListBufferMarkers'  :  "m?"
-        \ }
-let g:SignatureIncludeMarkers = '*()}+{][!='
-let g:SignatureWrapJumps = 0
-let g:SignatureMarkTextHLDynamic = 1
-let g:SignatureMarkerTextHLDynamic = 1
-let g:SignatureDeleteConfirmation = 1
-let g:SignaturePurgeConfirmation = 1
-let g:SignatureForceMarkPlacement = 1
-let g:SignatureForceMarkerPlacement = 1
-" }}}
 " Plugin: undotree {{{
 let g:undotree_WindowLayout=4
 nnoremap SU :UndotreeShow<CR>
 nnoremap ZU :UndotreeHide<CR>
 " }}}
 " Plugin: vim-clap {{{
-nnoremap <silent> <Space>. :UniteResume<CR>
-nnoremap <silent> <Space>a :Clap files<CR>
+let g:clap_disable_bottom_top = 1
+let g:clap_provider_yanks_history = "~/.vim/clap_yanks.history"
+nnoremap <silent> <Space><Space> :Clap providers<CR>
+nnoremap <silent> <Space>; :Clap command<CR>
+nnoremap <silent> <Space>: :Clap command_history<CR>
+nnoremap <silent> <Space>/ :Clap search_history<CR>
+nnoremap <silent> <Space>? :Clap help_tags<CR>
 nnoremap <silent> <Space>b :Clap buffers<CR>
-nnoremap <silent> <Space>B :Clap buffers<CR>
-nnoremap <silent> <Space>c :Unite -buffer-name=unite-gtags gtags/context<CR>
-nnoremap <silent> <Space>C :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/context<CR>
-nnoremap <silent> <Space>d :Unite -buffer-name=unite-gtags gtags/def<CR>
-nnoremap <silent> <Space>D :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/def<CR>
-nnoremap <silent> <Space>e :Clap files<CR>
+nnoremap <silent> <Space>C :Clap colors<CR>
 nnoremap <silent> <Space>f :Clap files<CR>
 nnoremap <silent> <Space>F :Clap filer<CR>
-nnoremap <silent> <Space>g :Unite -buffer-name=unite-gtags gtags/completion<CR>
-nnoremap <silent> <Space>G :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/completion<CR>
-nnoremap <silent> <Space>h :Clap search_history
-nnoremap <silent> <Space>H :Clap command_history
-nnoremap <silent> <Space>i :Clap blines
+nnoremap <silent> <Space>g :Clap bcommits<CR>
+nnoremap <silent> <Space>G :Clap commits<CR>
 nnoremap <silent> <Space>j :Clap jumps<CR>
-nnoremap <silent> <Space>k :Clap tags<CR>
-nnoremap <silent> <Space>K :Clap tags<CR>
-nnoremap <silent> <Space>l :Clap loclist<CR>
+nnoremap <silent> <Space>k :Clap lines<CR>
+nnoremap <silent> <Space>l :Clap blines<CR>
 nnoremap <silent> <Space>L :Clap loclist<CR>
 nnoremap <silent> <Space>m :Clap marks<CR>
 nnoremap <silent> <Space>M :Clap maps<CR>
-nnoremap <silent> <Space>o :Clap tags<CR>
-nnoremap <silent> <Space>O :Clap tags<CR>
-nnoremap <silent> <Space>p :Clap quickfix<CR>
-nnoremap <silent> <Space>P :Clap quickfix<CR>
+nnoremap <silent> <Space>o :Clap tags vim_lsp<CR>
 nnoremap <silent> <Space>q :Clap quickfix<CR>
-nnoremap <silent> <Space>Q :Clap quickfix<CR>
-nnoremap <silent> <Space>r :Unite -buffer-name=unite-gtags gtags/ref<CR>
-nnoremap <silent> <Space>R :Unite -auto-preview -vertical-preview -buffer-name=unite-gtags gtags/ref<CR>
+nnoremap <silent> <Space>r :Clap history<CR>
 nnoremap <silent> <Space>s :Clap grep ++query=`expand('<cword>')`<CR>
-nnoremap <silent> <Space>t :Unite -start-insert -smartcase -buffer-name=unite-tab tab<CR>
-nnoremap <silent> <Space>u :UniteResume<CR>
+nnoremap <silent> <Space>S :Clap grep<CR>
+nnoremap <silent> <Space>T :Clap filetypes<CR>
 nnoremap <silent> <Space>w :Clap windows<CR>
-nnoremap <silent> <Space>W :Unite -start-insert -smartcase -buffer-name=unite-window window/gui<CR>
 nnoremap <silent> <Space>y :Clap yanks<CR>
 nnoremap <silent> <Space>' :Clap marks<CR>
 nnoremap <silent> <Space>" :Clap registers<CR>
-nnoremap <silent> <C-n> :UniteNext<CR>
-nnoremap <silent> <C-p> :UniteNext<CR>
-" }}}
-" Plugin: vim-cpp-enhanced-highlight {{{
-let g:cpp_no_function_highlight=1
+"TODO: clap provider for :echo serverlist()
+"TODO: clap provider for GUI windows with wmctrl
+"TODO: clap provider for :args
+"TODO: clap provider for tag stack
+"TODO: clap provider for :changes
+"TODO: clap provider for :lhistory
+"TODO: clap provider for :chistory
+"TODO: clap provider for :undolist
+"TODO: clap provider for :tabs
 " }}}
 " Plugin: vim-crystalline {{{
 function! StatusLine(current, width)
   let l:s = ''
 
   if a:current
-    let l:s .= crystalline#mode() . crystalline#right_mode_sep('')
+    let l:s .= crystalline#mode()
+    let l:s .= window_mode#lightlineComponent()
+    let l:s .= crystalline#right_mode_sep('')
   else
     let l:s .= '%#CrystallineInactive#'
   endif
@@ -1025,6 +1184,8 @@ function! StatusLine(current, width)
   let l:s .= '%='
   if a:current
     let l:s .= crystalline#left_sep('', 'Fill') . ' %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
+    let l:s .= "%{exists('*CapsLockStatusline')?CapsLockStatusline():''}"
+    let l:s .= ' %{grepper#statusline()}'
     let l:s .= crystalline#left_mode_sep('')
   endif
   if a:width > 80
@@ -1050,12 +1211,13 @@ augroup end
 " }}}
 " Plugin: vim-grepper {{{
 let g:grepper = {}
-let g:grepper.tools = ['grep', 'git', 'rg']
-nnoremap <Space>* :Grepper -cword -noprompt<CR>
+let g:grepper.tools = ['rg', 'git', 'grep']
 nmap gs <plug>(GrepperOperator)
-nnoremap sg :Grepper -tool git<CR>
-nnoremap sG :Grepper -tool rg<CR>
 xmap gs <plug>(GrepperOperator)
+nnoremap sg :Grepper -tool rg -cword -noprompt<CR>
+nnoremap sG :Grepper -tool rg<CR>
+nnoremap ss :Grepper -tool git -cword -noprompt<CR>
+nnoremap sS :Grepper -tool git<CR>
 call SetupCommandAlias("grep", "GrepperGrep")
 " }}}
 " Plugin: vim-lsp {{{
@@ -1251,8 +1413,6 @@ let g:mwPalettes = {
 let g:mwDefaultHighlightingPalette = 'mypalette'
 let g:mwAutoLoadMarks = 1
 let g:mwAutoSaveMarks = 1
-nmap <Plug>IgnoreMarkSearchNext <Plug>MarkSearchNext
-nmap <Plug>IgnoreMarkSearchPrev <Plug>MarkSearchPrev
 vmap <Leader>m <Plug>MarkSet
 vmap <Leader>r <Plug>MarkRegex
 xmap <Leader>* <Plug>MarkIWhiteSet
@@ -1263,6 +1423,13 @@ nmap <Leader>N <Plug>MarkConfirmAllClear
 let vim_markdown_preview_hotkey='<A-`>'
 " }}}
 " Plugin: vim-signature {{{
+let g:SignatureWrapJumps = 0
+let g:SignatureMarkTextHLDynamic = 1
+let g:SignatureMarkerTextHLDynamic = 1
+let g:SignatureDeleteConfirmation = 1
+let g:SignaturePurgeConfirmation = 1
+let g:SignatureForceMarkPlacement = 1
+let g:SignatureForceMarkerPlacement = 1
 nnoremap [1 :call signature#marker#Goto('prev', 1, v:count)<CR>
 nnoremap [2 :call signature#marker#Goto('prev', 2, v:count)<CR>
 nnoremap [3 :call signature#marker#Goto('prev', 3, v:count)<CR>
@@ -1287,18 +1454,26 @@ nnoremap ]0 :call signature#marker#Goto('next', 0, v:count)<CR>
 " Plugin: vim-startify {{{
 let g:startify_lists = [
       \ { 'type': 'sessions',  'header': ['   Sessions']       },
+      \ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
       \ { 'type': 'commands',  'header': ['   Commands']       },
       \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
       \ ]
-let g:startify_bookmarks = []
+let g:startify_bookmarks = [
+      \ '~/src',
+      \ '~/.vimrc',
+      \ '~/.bashrc',
+      \ '~/.gitconfig',
+      \ ]
 let g:startify_commands = [
       \ ':help reference',
       \ ]
-let g:startify_session_persistence = 0
-let g:startify_session_delete_buffers = 1
+let g:startify_change_to_vcs_root = 1
+let g:startify_fortune_use_unicode = 0
 let g:startify_enable_unsafe = 1
 let g:startify_session_sort = 1
+let g:startify_custom_indices = ['a', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 'u', 'w', 'x', 'y', 'z']
 let g:startify_use_env = 1
+autocmd User StartifyReady setlocal cursorline
 " }}}
 " Plugin: vim-test {{{
 let test#strategy = "dispatch"
@@ -1308,8 +1483,11 @@ let g:vimspector_enable_mappings = 'HUMAN'
 let g:vimspector_install_gadgets = [ 'debugpy', 'vscode-cpptools', 'CodeLLDB', 'vscode-bash-debug' ]
 " }}}
 " Plugin: vista.vim {{{
+let g:vista_sidebar_keepalt = 1
+let g:vista_stay_on_open = 1
 nnoremap <silent> ST :Vista<CR>
 nnoremap <silent> ZT :Vista!<CR>
-nnoremap <silent> <A-t> :Vista coc<CR>
+nnoremap <silent> <A-t> :Vista!! vim_lsp<CR>
+autocmd FileType markdown nnoremap <silent> <A-t> :Vista!! toc<CR>
 " }}}
 " }}}
