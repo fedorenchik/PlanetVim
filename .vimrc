@@ -1,8 +1,36 @@
 " Required Vim: {{{
+" Approximate compile command:
+" ./configure \
+"	--enable-option-checking \
+"	--enable-fail-if-missing \
+"	--prefix=$HOME/.local \
+"	--with-features=huge \
+"	--enable-luainterp=dynamic \
+"	--with-luajit \
+"	--disable-mzschemeinterp \
+"	--enable-perlinterp=no \
+"	--enable-pythoninterp=no \
+"	--enable-python3interp=dynamic \
+"	--enable-tclinterp=no \
+"	--enable-rubyinterp=no \
+"	--enable-cscope \
+"	--enable-channel \
+"	--enable-terminal \
+"	--enable-autoservername \
+"	--enable-multibyte \
+"	--enable-gui=gtk3 \
+"	--enable-gtk3-check \
+"	--enable-largefile \
+"	--enable-acl \
+"	--disable-nls \
+"	--with-modified-by='Leonid V. Fedorenchik' \
+"	--with-compiledby='Leonid V. Fedorenchik' \
+"	--with-x
+"make
+"make install
 " version: >= 8.2
-" --with-features=huge --enable-luainterp --with-luajit [--enable-perlinterp]
-" --enable-pythoninterp [--enable-tclinterp] [--enable-rubyinterp]
-" --enable-cscope --enable-gui=gtk3
+" --with-features=huge --enable-luainterp --with-luajit
+" --enable-python3interp -enable-cscope --enable-gui=gtk3
 " }}}
 " External Dependencies Of This Vimrc: {{{
 " python - for vimspector, codi.vim

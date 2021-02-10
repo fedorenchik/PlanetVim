@@ -1,63 +1,25 @@
-### Some features of this Vim configuration:
- * automatically source local .vimrc/.exrc file from current directory
-   - set secure to restrict what can be put into local .vimrc/.exrc
- * .viminfo files are local
-   - saved in current directory
- * Minimum window size (width & height) is zero
- * No statusline plugins: they all slow down vim considerably
+# sparta.vim
+
+Vim Distribution from Spartans.
+
+## Distinguishable features
+
+* Persistent undo in $HOME/.vim/undo
+* No swap files (persistent undo is used as alternative)
+* No backup files (persistent undo is used as alternative)
+* automatically source local .vimrc/.exrc file from current directory
+  - `'secure'` option is set to restrict what can be put into local .vimrc/.exrc
+* Auto Save files
+  - `set autowrite autowriteall` and some `autocmd`s.
+* Redefine all menus
+
+### Some unusual technical details
+
+* Minimum window size (width & height) is zero
 
 ### Maps
- * Do not redefine standard Vim maps (except Vim anti-patterns, almost)
+ * Try to not redefine standard Vim maps (except Vim anti-patterns, almost)
  * Do not redefine any vim-obsession mappings
  * Define additional (not mapped originally) mappings in g..., z..., Z...,
      [..., ]..., <A-...>
  * Leader is ',', LocalLeader is `'_'`
-
-### Commands defined in .bashrc
- * e -- start gvim normally
- * r -- start gvim in RO mode
-   - set nomodifiable readonly
- * S -- start gvim in "session" mode
-   - local .session.vim file is automatically loaded/saved on start/exit.
-
-Compile vim:
-------------
-
-```shell
-sudo apt build-dep vim-gtk3
-cd $HOME/src/vim
-make clean
-make distclean
-rm -f auto/config.cache
-git clean -fxd
-git checkout master
-git checkout -- .
-git pull --ff-only
-./configure \
-	--enable-option-checking \
-	--enable-fail-if-missing \
-	--prefix=$HOME/.local \
-	--with-features=huge \
-	--enable-luainterp=no \
-	--disable-mzschemeinterp \
-	--enable-perlinterp=no \
-	--enable-pythoninterp=no \
-	--enable-python3interp=no \
-	--enable-tclinterp=no \
-	--enable-rubyinterp=no \
-	--enable-cscope \
-	--enable-channel \
-	--enable-terminal \
-	--enable-autoservername \
-	--enable-multibyte \
-	--enable-gui=gtk3 \
-	--enable-gtk3-check \
-	--enable-largefile \
-	--enable-acl \
-	--disable-nls \
-	--with-modified-by='Leonid V. Fedorenchik' \
-	--with-compiledby='Leonid V. Fedorenchik' \
-	--with-x
-make
-make install
-```
