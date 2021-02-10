@@ -499,7 +499,7 @@ nnoremap Y y$
 " + +++++++ +++++ + + ++++    +++++++++++ +   ++  +
 nnoremap <Space> <Nop>
 nmap <S-Space> <Space>
-nnoremap <Space>h :rightbelow terminal<CR>
+nnoremap <Space>h :rightbelow terminal ++kill=kill<CR>
 nnoremap <Space>S :Scratch<CR>
 " }}}
 " -----------: g...: vim status: {{{
@@ -625,7 +625,7 @@ nnoremap <A-n> :<C-U><C-R><C-R>='let @'. v:register .' = '. string(getreg(v:regi
 nnoremap <A-q> :q<CR>
 nnoremap <A-Q> :qa<CR>
 nnoremap <A-r> :nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR>:FastFoldUpdate<CR>:SignatureRefresh<CR><C-L>
-nnoremap <A-s> :rightbelow terminal<CR>
+nnoremap <A-s> :rightbelow terminal ++kill=kill<CR>
 nnoremap <A-w> :confirm up<CR>
 nnoremap <A-W> :wa<CR>
 " }}}
@@ -787,6 +787,11 @@ endif
 autocmd FocusLost * wa
 autocmd GUIEnter * set guifont=UbuntuMono\ Nerd\ Font\ Mono\ 11,Ubuntu\ Mono\ 11,Monospace\ 9
 autocmd StdinReadPost * set nomodified
+"XXX: vim bug #7811: TerminalOpen does not work: https://github.com/vim/vim/issues/7811
+au TerminalOpen * call setwinvar(+expand('<abuf>'), '&foldcolumn', 0)
+au TerminalOpen * call setwinvar(+expand('<abuf>'), '&signcolumn', 'no')
+au TerminalOpen * call setwinvar(+expand('<abuf>'), '&number', v:false)
+au TerminalOpen * call setwinvar(+expand('<abuf>'), '&relativenumber', v:false)
 autocmd VimEnter * if expand("%") != "" && getcwd() == expand("~") | cd %:h | endif
 augroup END
 endif
@@ -815,14 +820,7 @@ an 110.30 File.New\ Window                                  :silent !gvim<CR>
 an 110.30 File.--1-- :
 an 110.30 File.Open\ File                                   :Clap files<CR>
 an 110.30 File.Open\ File\ Manager<Tab>-                    :Fern -reveal=% .<CR>
-function! s:clap_provider_oldfiles_source() abort
-  return split(execute('oldfiles'), "\n")
-endfunction
-let g:clap_provider_oldfiles = {
-      \ 'source': function('s:clap_provider_oldfiles_source'),
-      \ 'sink': 'e',
-      \ }
-an 110.30 File.Open\ Recent                                 :Clap oldfiles<CR>
+an 110.30 File.Open\ Recent                                 :Clap history<CR>
 an 110.30 File.--2-- :
 an 110.30 File.Save<Tab>:w                                  :if expand("%") == ""<Bar>browse confirm w<Bar>else<Bar>confirm w<Bar>endif<CR>
 an 110.30 File.Save\ As\.\.\.                               :browse confirm saveas<CR>
@@ -902,7 +900,7 @@ an 240.10 Test.Run                                          :TestFile<CR>
 
 an 250.10 Analyze.Check                                     :
 
-an 260.10 Terminal.New                                      :terminal
+an 260.10 Terminal.New                                      :terminal ++kill=kill<CR>
 
 an 270.10 C++.Test                                          :
 
