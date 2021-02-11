@@ -786,13 +786,8 @@ endif
 autocmd FocusLost * wa
 autocmd GUIEnter * set guifont=UbuntuMono\ Nerd\ Font\ Mono\ 11,Ubuntu\ Mono\ 11,Monospace\ 9
 autocmd StdinReadPost * set nomodified
-" Run autocmd when opening terminal buffer window
-au TerminalOpen * exe printf('au BufWinEnter <buffer=%d> ++once setlocal foldcolumn=0', expand('<abuf>')->str2nr())
-au TerminalOpen * exe printf('au BufWinEnter <buffer=%d> ++once setlocal signcolumn=no', expand('<abuf>')->str2nr())
-au TerminalOpen * exe printf('au BufWinEnter <buffer=%d> ++once setlocal nonumber', expand('<abuf>')->str2nr())
-au TerminalOpen * exe printf('au BufWinEnter <buffer=%d> ++once setlocal norelativenumber', expand('<abuf>')->str2nr())
-"XXX: vim bug #7816: TerminalOpen does not run when open terminal with window: https://github.com/vim/vim/issues/7816
 au TerminalWinOpen * setlocal foldcolumn=0 signcolumn=no nonumber norelativenumber
+au BufWinEnter * if &buftype == 'terminal' | setlocal foldcolumn=0 signcolumn=no nonumber norelativenumber | endif
 autocmd VimEnter * if expand("%") != "" && getcwd() == expand("~") | cd %:h | endif
 augroup END
 endif
@@ -1193,6 +1188,9 @@ nnoremap <silent> <Space>" :Clap registers<CR>
 "TODO: clap provider for :tabs
 " }}}
 " Plugin: vim-crystalline {{{
+function! StatusLine_SearchCount() abort
+endfunction
+
 function! StatusLine(current, width)
   let l:s = ''
 
@@ -1492,13 +1490,14 @@ let g:startify_bookmarks = [
       \ '~/.gitconfig',
       \ ]
 let g:startify_commands = [
-      \ ':help reference',
+      \ { 'c': [ 'Terminal', ':terminal ++curwin ++kill=kill']},
+      \ { 'f': [ 'File Manager', ':Fern .']},
       \ ]
 let g:startify_change_to_vcs_root = 1
 let g:startify_fortune_use_unicode = 0
 let g:startify_enable_unsafe = 1
 let g:startify_session_sort = 1
-let g:startify_custom_indices = ['a', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 'u', 'w', 'x', 'y', 'z']
+let g:startify_custom_indices = ['a', 'd', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 'u', 'w', 'x', 'y', 'z']
 let g:startify_use_env = 1
 autocmd User StartifyReady setlocal cursorline
 " }}}
