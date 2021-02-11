@@ -392,7 +392,6 @@ set tagrelative
 set tags=tags;
 set tagstack
 set termguicolors
-set termwinsize=""
 set textwidth=80
 set thesaurus+=$HOME/.vim/thes/mobythes.txt
 set notildeop
@@ -787,11 +786,13 @@ endif
 autocmd FocusLost * wa
 autocmd GUIEnter * set guifont=UbuntuMono\ Nerd\ Font\ Mono\ 11,Ubuntu\ Mono\ 11,Monospace\ 9
 autocmd StdinReadPost * set nomodified
-"XXX: vim bug #7811: TerminalOpen does not work: https://github.com/vim/vim/issues/7811
-au TerminalOpen * call setwinvar(+expand('<abuf>'), '&foldcolumn', 0)
-au TerminalOpen * call setwinvar(+expand('<abuf>'), '&signcolumn', 'no')
-au TerminalOpen * call setwinvar(+expand('<abuf>'), '&number', v:false)
-au TerminalOpen * call setwinvar(+expand('<abuf>'), '&relativenumber', v:false)
+" Run autocmd when opening terminal buffer window
+au TerminalOpen * exe printf('au BufWinEnter <buffer=%d> ++once setlocal foldcolumn=0', expand('<abuf>')->str2nr())
+au TerminalOpen * exe printf('au BufWinEnter <buffer=%d> ++once setlocal signcolumn=no', expand('<abuf>')->str2nr())
+au TerminalOpen * exe printf('au BufWinEnter <buffer=%d> ++once setlocal nonumber', expand('<abuf>')->str2nr())
+au TerminalOpen * exe printf('au BufWinEnter <buffer=%d> ++once setlocal norelativenumber', expand('<abuf>')->str2nr())
+"XXX: vim bug #7816: TerminalOpen does not run when open terminal with window: https://github.com/vim/vim/issues/7816
+au TerminalWinOpen * setlocal foldcolumn=0 signcolumn=no nonumber norelativenumber
 autocmd VimEnter * if expand("%") != "" && getcwd() == expand("~") | cd %:h | endif
 augroup END
 endif
@@ -805,46 +806,46 @@ command -bar -nargs=? -complete=help HelpCurwin execute s:HelpCurwin(<q-args>)
 " }}}
 " Menu: {{{
 " SpartaVim
-an 100.10 SpartaVim.Insert\ Mode<Tab>:set\ im!              :set im!<CR>
-an 100.15 SpartaVim.--1-- :
-an 100.20 SpartaVim.Edit\ Settings                          :confirm e ~/.vimrc<CR>
-an 100.25 SpartaVim.--2-- :
-an 100.30 SpartaVim.Close\ Everything                       :SClose<CR>
-an 100.35 SpartaVim.--3-- :
-an 100.40 SpartaVim.Exit\ SpartaVim                         :qa!<CR>
+an 100.10  SpartaVim.Insert\ Mode<Tab>:set\ im!             :set im!<CR>
+an 100.20  SpartaVim.--1-- :
+an 100.30  SpartaVim.Edit\ Settings                         :confirm e ~/.vimrc<CR>
+an 100.40  SpartaVim.--2-- :
+an 100.50  SpartaVim.Close\ Everything                      :SClose<CR>
+an 100.60  SpartaVim.--3-- :
+an 100.70  SpartaVim.Exit\ SpartaVim                        :qa!<CR>
 
 " File & vim-uenuch
-an 110.10 File.New                                          :confirm enew<CR>
-an 110.20 File.New\ Tab                                     :confirm tabnew<CR>
-an 110.30 File.New\ Window                                  :silent !gvim<CR>
-an 110.30 File.--1-- :
-an 110.30 File.Open\ File                                   :Clap files<CR>
-an 110.30 File.Open\ File\ Manager<Tab>-                    :Fern -reveal=% .<CR>
-an 110.30 File.Open\ Recent                                 :Clap history<CR>
-an 110.30 File.--2-- :
-an 110.30 File.Save<Tab>:w                                  :if expand("%") == ""<Bar>browse confirm w<Bar>else<Bar>confirm w<Bar>endif<CR>
-an 110.30 File.Save\ As\.\.\.                               :browse confirm saveas<CR>
-an 110.30 File.Save\ All<Tab>:wall                          :confirm wall<CR>
-an 110.30 File.--3-- :
-an 110.30 File.SudoSave                                     :SudoWrite<CR>
-an 110.30 File.Rename                                       :browse confirm Rename<CR>
-an 110.30 File.Change\ File\ Permissions                    :Chmod 0755
-an 110.30 File.Delete\ From\ Disk                           :Delete!<CR>
-an 110.30 File.--4-- :
-an 110.30 File.Close<Tab>:bdelete                           :bdelete<CR>
+an 110.10  &File.New                                        :confirm enew<CR>
+an 110.20  &File.New\ Tab                                   :confirm tabnew<CR>
+an 110.30  &File.New\ Window                                :silent !gvim<CR>
+an 110.40  &File.--1-- :
+an 110.50  &File.Open\ File                                 :Clap files<CR>
+an 110.60  &File.Open\ File\ Manager<Tab>-                  :Fern -reveal=% .<CR>
+an 110.70  &File.Open\ Recent                               :Clap history<CR>
+an 110.80  &File.--2-- :
+an 110.90  &File.Save<Tab>:w                                :if expand("%") == ""<Bar>browse confirm w<Bar>else<Bar>confirm w<Bar>endif<CR>
+an 110.100 &File.Save\ As\.\.\.                             :browse confirm saveas<CR>
+an 110.110 &File.Save\ All<Tab>:wall                        :confirm wall<CR>
+an 110.120 &File.--3-- :
+an 110.130 &File.SudoSave                                   :SudoWrite<CR>
+an 110.140 &File.Rename                                     :browse confirm Rename<CR>
+an 110.150 &File.Change\ File\ Permissions                  :Chmod 0755
+an 110.160 &File.Delete\ From\ Disk                         :Delete!<CR>
+an 110.170 &File.--4-- :
+an 110.180 &File.Close<Tab>:bdelete                         :bdelete<CR>
 
 " Edit
-an 120.10 Edit.Undo<Tab>u                                   u
-an 120.10 Edit.Redo<Tab><C-r>                               <C-r>
-an 120.10 Edit.--1-- :
-an 120.10 Edit.Undo\ History                                :UndotreeToggle<CR>
-an 120.10 Edit.--2-- :
-an 120.10 Edit.Cut                                          "+dd
-an 120.10 Edit.Copy                                         "+yy
-an 120.10 Edit.Paste                                        "+P
-an 120.10 Edit.--3-- :
-an 120.10 Edit.Toggle\ Comment<Tab>gcc                      gcc
-an 120.10 Edit.Toggle\ CAPS<Tab>gC                          gC
+an 120.10  &Edit.&Undo<Tab>u                                u
+an 120.20  &Edit.&Redo<Tab><C-r>                            <C-r>
+an 120.30  &Edit.--1-- :
+an 120.40  &Edit.Undo\ &History                             :UndotreeToggle<CR>
+an 120.50  &Edit.--2-- :
+an 120.60  &Edit.Cu&t                                       "+dd
+an 120.70  &Edit.&Copy                                      "+yy
+an 120.80  &Edit.&Paste                                     "+P
+an 120.90  &Edit.--3-- :
+an 120.100 &Edit.Toggle\ Comment<Tab>gcc                    gcc
+an 120.110 &Edit.Toggle\ CAPS<Tab>gC                        gC
 
 " Searching
 an 130.10 Search.Current\ Word<Tab>*                        *
