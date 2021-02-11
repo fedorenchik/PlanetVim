@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/rakr/vim-one.git
+	branch = master
+	commit = 187f5c85b682c1933f8780d4d419c55d26a82e24
+	parent = c1e31c69fef6f692438cc8b0b9119e67919152df
+	method = merge
+	cmdver = 0.4.3
