@@ -189,14 +189,6 @@ endfunction
 " }}}
 " Colorscheme: {{{
 " set colorscheme
-" nice term dark themes: molokai, skittles_dark, wombat256, wombat256mod
-" nice term light themes:
-" nice gui dark themes:
-" nice gui light themes: default
-" term dark  schemes last evaluation: 2013 Dec 1
-" term light schemes last evaluation: no
-" gui  dark  schemes last evaluation: no
-" gui  light schemes last evaluation: no
 if has("gui_running")
   set background=dark
   colorscheme molokai
