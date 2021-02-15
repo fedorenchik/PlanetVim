@@ -217,16 +217,18 @@ function! vista#(bang, ...) abort
     endif
   endif
 
-  if a:0 == 0
-    call vista#sidebar#Open()
+  if vista#sidebar#IsOpen()
+    call vista#sidebar#Close()
     return
+  else
+    call vista#sidebar#Open()
   endif
 
   if a:0 == 1
     call s:HandleSingleArgument(a:1)
   elseif a:0 == 2
     call s:HandleArguments(a:1, a:2)
-  else
+  elseif a:0 > 0
     return vista#error#('Too many arguments for Vista')
   endif
 endfunction
