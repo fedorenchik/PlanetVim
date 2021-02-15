@@ -1,6 +1,6 @@
-# sparta.vim
+# PlanetVim
 
-Vim Distribution from Spartans.
+Easy and powerful Vim Distribution.
 
 # Features
 
