@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/ilyachur/cmake4vim.git
 	branch = master
-	commit = 05005f0c33838569d2a375f15396165491b34f73
-	parent = 13cec8d0488cbccc8c3761ca70b5abf5e9765cfb
+	commit = 54c2338649a99f895705290e8448aca7e9445385
+	parent = 5efeae13845516b71fe109142caee5f48a32ed4c
 	method = merge
 	cmdver = 0.4.3
