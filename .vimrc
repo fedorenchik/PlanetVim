@@ -33,6 +33,7 @@
 " --enable-python3interp -enable-cscope --enable-gui=gtk3
 " }}}
 " External Dependencies Of This Vimrc: {{{
+" ctags - for tags support
 " python - for vimspector, codi.vim
 " wmctrl - for WM GUI window control
 " trash-cli - for fern.vim
@@ -415,7 +416,7 @@ set nowildignorecase
 set wildmenu
 set wildmode=longest:full,list:full
 set wildoptions=tagfile
-set winaltkeys=no
+set winaltkeys=menu
 "set winheight&
 "set winfixheight&
 "set winfixwidth&
@@ -482,16 +483,8 @@ nnoremap N Nzz
 nnoremap Q gq
 nnoremap Y y$
 " }}}
-" -----------: <Space>...: unite.vim mappings: {{{
-" Available To Map: all
-" 0123456789$&[{}(=*)+]!#;,./@\-'~%`:<>?^|_"
-"                  +       +    +          +
-" aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ
-" + +++++++ +++++ + + ++++    +++++++++++ +   ++  +
-nnoremap <Space> <Nop>
-nmap <S-Space> <Space>
+" -----------: <Space>... mappings: {{{
 nnoremap <Space>h :rightbelow terminal ++kill=kill<CR>
-nnoremap <Space>S :Scratch<CR>
 " }}}
 " -----------: g...: vim status: {{{
 " Standard Vim Mappings: a ^A d D e E f F g ^G h H ^H i I j J k m n N o p P q Q
@@ -609,16 +602,7 @@ nnoremap <C-_> <Nop>
 " Available To Map: all keys
 nnoremap <A-Left> <C-o>
 nnoremap <A-Right> <C-i>
-nnoremap <A-F> :silent call system('wmctrl -i -b toggle,fullscreen -r' . v:windowid)<CR>
-nnoremap <A-m> :silent call system('wmctrl -i -b add,maximized_vert,maximized_horz -r' . v:windowid)<CR>
-nnoremap <A-M> :silent call system('wmctrl -i -b remove,maximized_vert,maximized_horz -r' . v:windowid)<CR>
 nnoremap <A-n> :<C-U><C-R><C-R>='let @'. v:register .' = '. string(getreg(v:register))<CR><C-F><Left>
-nnoremap <A-q> :q<CR>
-nnoremap <A-Q> :qa<CR>
-nnoremap <A-r> :nohlsearch<CR>:diffupdate<CR>:syntax sync fromstart<CR>:FastFoldUpdate<CR>:SignatureRefresh<CR><C-L>
-nnoremap <A-s> :rightbelow terminal ++kill=kill<CR>
-nnoremap <A-w> :confirm up<CR>
-nnoremap <A-W> :wa<CR>
 " }}}
 " Mouse Keys: {{{
 " Mousekeys: <LeftMouse> <MiddleMouse> <RightMouse> <X1Mouse> <X2Mouse>
@@ -792,53 +776,102 @@ endif
 command -bar -nargs=? -complete=help HelpCurwin execute s:HelpCurwin(<q-args>)
 " }}}
 " Menu: {{{
-" SpartaVim
-an 100.10  SpartaVim.Insert\ Mode<Tab>:set\ im!             :set im!<CR>
-an 100.20  SpartaVim.--1-- :
-an 100.30  SpartaVim.Edit\ Settings                         :confirm e ~/.vimrc<CR>
-an 100.40  SpartaVim.--2-- :
-an 100.50  SpartaVim.Close\ Everything                      :SClose<CR>
-an 100.60  SpartaVim.--3-- :
-an 100.70  SpartaVim.Exit\ SpartaVim                        :qa!<CR>
+" PlanetVim
+function! PlanetSaveExit() abort
+  confirm wall
+  qa!
+endfunction
+
+"TODO: Toggle Editing Menus: Search, Registers, Selection, View, CMark, Go, Marks, Bookmarks, Fold, QF, LL
+function! PlanetEditingMenus() abort
+  aunmenu Search\ (/)
+  aunmenu Registers
+  aunmenu Selection
+  aunmenu View
+  aunmenu CMark
+  aunmenu Go
+  aunmenu Marks
+  aunmenu Bookmarks
+  aunmenu Fold(z)
+  aunmenu QF
+  aunmenu LL
+endfunction
+"TODO: Toggle Development Menus: LSP, Tags, Build, Run, Debug, Test, Analyze, Terminal, Diff/Patch
+function! PlanetDevelopmentMenus() abort
+  aunmenu LSP([)
+  aunmenu Tags(])
+  aunmenu Build
+  aunmenu Run
+  aunmenu Debug
+  aunmenu Test(J)
+  aunmenu Analyze
+  aunmenu Terminal
+  aunmenu Diff/Patch(;)
+endfunction
+"TODO: Toggle Navigation Menus: Buffers, Args, Windows, Tabs, Session, GUI, Apps
+function! PlanetNavigationMenus() abort
+  aunmenu Buffers
+  aunmenu Args
+  aunmenu Windows
+  aunmenu Tabs(\.)
+  aunmenu Session
+  aunmenu GUI(X)
+  aunmenu Apps(')
+endfunction
+an 100.10  &PlanetVim.&Insert\ Mode<Tab>:set\ im!           :set im!<CR>
+an 100.20  &PlanetVim.--1-- <Nop>
+an 100.30  &PlanetVim.&Editing\ Menus                       :call PlanetEditingMenus()<CR>
+an 100.40  &PlanetVim.&Development\ Menus                   :call PlanetDevelopmentMenus()<CR>
+an 100.50  &PlanetVim.&Navigation\ Menus                    :call PlanetNavigationMenus()<CR>
+an 100.60  &PlanetVim.--2-- <Nop>
+an 100.70  &PlanetVim.Edit\ &Settings                       :confirm e ~/.vimrc<CR>
+an 100.80  &PlanetVim.--3-- <Nop>
+an 100.90  &PlanetVim.&Close\ Everything                    :SClose<CR>
+an 100.100 &PlanetVim.--4-- <Nop>
+an 100.110 &PlanetVim.E&xit\ PlanetVim                      :call PlanetSaveExit()<CR>
 
 " File & vim-uenuch
-an 110.10  &File.New                                        :confirm enew<CR>
-an 110.20  &File.New\ Tab                                   :confirm tabnew<CR>
-an 110.30  &File.New\ Window                                :silent !gvim<CR>
-an 110.40  &File.--1-- :
-an 110.50  &File.Open\ File                                 :Clap files<CR>
-an 110.60  &File.Open\ File\ Manager<Tab>-                  :Fern -reveal=% .<CR>
-an 110.70  &File.Open\ Recent                               :Clap history<CR>
-an 110.80  &File.--2-- :
-an 110.90  &File.Save<Tab>:w                                :if expand("%") == ""<Bar>browse confirm w<Bar>else<Bar>confirm w<Bar>endif<CR>
-an 110.100 &File.Save\ As\.\.\.                             :browse confirm saveas<CR>
-an 110.110 &File.Save\ All<Tab>:wall                        :confirm wall<CR>
-an 110.120 &File.--3-- :
+an 110.10  &File.&New                                       :confirm enew<CR>
+an 110.20  &File.New\ &Tab                                  :confirm tabnew<CR>
+an 110.30  &File.New\ &Window                               :silent !gvim<CR>
+an 110.40  &File.--1-- <Nop>
+an 110.50  &File.&Open\ File                                :Clap files<CR>
+an 110.60  &File.Open\ &File\ Manager<Tab>-                 :Fern -reveal=% .<CR>
+an 110.70  &File.Open\ &Recent                              :Clap history<CR>
+an 110.80  &File.--2-- <Nop>
+an 110.90  &File.&Save<Tab>:w                               :if expand("%") == ""<Bar>browse confirm w<Bar>else<Bar>confirm w<Bar>endif<CR>
+an 110.100 &File.Save\ &As\.\.\.                            :browse confirm saveas<CR>
+an 110.110 &File.Save\ A&ll<Tab>:wall                       :confirm wall<CR>
+an 110.120 &File.--3-- <Nop>
 an 110.130 &File.SudoSave                                   :SudoWrite<CR>
-an 110.140 &File.Rename                                     :browse confirm Rename<CR>
-an 110.150 &File.Change\ File\ Permissions                  :Chmod 0755
-an 110.160 &File.Delete\ From\ Disk                         :Delete!<CR>
-an 110.170 &File.--4-- :
-an 110.180 &File.Close<Tab>:bdelete                         :bdelete<CR>
+an 110.140 &File.&Rename                                    :browse confirm Rename<CR>
+an 110.150 &File.Change\ File\ &Permissions                 :Chmod 0755
+an 110.160 &File.&Delete\ From\ Disk                        :Delete!<CR>
+an 110.170 &File.--4-- <Nop>
+an 110.180 &File.&Mkdir                                     :Mkdir! <C-z>
+an 110.180 &File.Cd                                         :cd <C-z>
+an 110.180 &File.Tcd                                        :tcd <C-z>
+an 110.190 &File.--5-- <Nop>
+an 110.200 &File.&Close<Tab>:bdelete                        :bdelete<CR>
 
 " Edit
 an 120.10  &Edit.&Undo<Tab>u                                u
 an 120.20  &Edit.&Redo<Tab><C-r>                            <C-r>
-an 120.30  &Edit.--1-- :
+an 120.30  &Edit.--1-- <Nop>
 an 120.40  &Edit.Undo\ &History                             :UndotreeToggle<CR>
-an 120.50  &Edit.--2-- :
+an 120.50  &Edit.--2-- <Nop>
 an 120.60  &Edit.Cu&t                                       "+dd
 an 120.70  &Edit.&Copy                                      "+yy
 an 120.80  &Edit.&Paste                                     "+P
-an 120.90  &Edit.--3-- :
+an 120.90  &Edit.--3-- <Nop>
 an 120.100 &Edit.Toggle\ Comment<Tab>gcc                    gcc
 an 120.110 &Edit.Toggle\ CAPS<Tab>gC                        gC
 
 " Searching
-an 130.10 Search.Current\ Word<Tab>*                        *
+an 130.10 Search\ (&/).Current\ Word<Tab>*                  *
 
 " Vim Registers
-an 135.10 Registers.Choose\ to\ Paste\.\.\.                 :Clap registers<CR>
+an 135.10 Reg&isters.Choose\ to\ Paste\.\.\.                :Clap registers<CR>
 function! s:registers_choose_to_edit() abort
   echohl Question
   echo "Register: " buffest#reg_complete()
@@ -850,107 +883,151 @@ function! s:registers_choose_to_edit() abort
   execute("silent Regpedit " .. l:reg_to_edit)
   execute("silent normal \<C-w>P")
 endfunction
-an 135.10 Registers.Choose\ to\ Edit\.\.\.                  :call <SID>registers_choose_to_edit()<CR>
+an 135.10 Reg&isters.Choose\ to\ Edit\.\.\.                 :call <SID>registers_choose_to_edit()<CR>
 "TODO: Add all non-empty registers to this menu
 
-an 140.10 Selection.Select\ All                             ggVG
+"FIXME: In Insert mode this only works for a SINGLE Normal mode command
+an 140.10 &Selection.Select\ All                            ggVG
 
-an 150.10 View.Command\ Palette                             :Clap<CR>
-an 150.10 View.Files\ Side\ Bar                             :Fern . -drawer -reveal=% -toggle<CR>
+an 150.10 &View.&Command\ Palette                           :Clap<CR>
+an 150.10 &View.&Files\ Side\ Bar                           :Fern . -drawer -reveal=% -toggle<CR>
 
 " Cololr highlight words with mark.vim plugin
-an 160.10 CMark.CMark\ Current                      <Leader>m
+an 160.10 &CMark.CMark\ &Current                            <Leader>m
 
-an 170.10 Go.Back                                           <C-o>
+an 170.10 &Go.Back                                          <C-o>
 
 " signature.vim (marks & markers)
-an 180.10 Marks.Add                                         m,
-tmenu Marks.Add Marks.Add
+an 180.10 &Marks.Add                                        m,
 
-" quickfix & loclist
-an 190.10 QF/LL.Quickfix\ Open<Tab>:copen                :botright copen<CR>
-an 190.10 QF/LL.Quickfix\ Edit<Tab>c\\q                   :Qflistsplit<CR>
-tmenu QF/LL.Quickfix\ Edit              :Qflistsplit
-an 190.10 QF/LL.--1-- :
-an 190.10 QF/LL.Loclist\ Open<Tab>:lopen                 :lopen<CR>
-an 190.10 QF/LL.Loclist\ Edit<Tab>c\\l                    :Loclistsplit<CR>
+" Upper-case marks (mA-mZ)
+an 185.10 Boo&kmarks.Add                                    m,
+
+an 187.10 Fold(&z).Fold\ Everything<Tab>zM                  zM
+an 187.10 Fold(&z).Unfold\ Everything<Tab>zR                zR
+an 187.10 Fold(&z).--1-- <Nop>
+an 187.10 Fold(&z).Fold\ One\ Level<Tab>zm                  zm
+an 187.10 Fold(&z).Unfold\ One\ Level<Tab>zr                zr
+an 187.10 Fold(&z).--2-- <Nop>
+an 187.10 Fold(&z).Fold\ by\ Syntax                         :set foldmethod=syntax<CR>
+an 187.10 Fold(&z).Fold\ by\ Indent                         :set foldmethod=indent<CR>
+an 187.10 Fold(&z).Fold\ by\ Expr                           :set foldmethod=expr<CR>
+an 187.10 Fold(&z).Fold\ by\ {{{,}}}\ Markers               :set foldmethod=marker<CR>
+an 187.10 Fold(&z).Fold\ Manually                           :set foldmethod=manual<CR>
+an 187.10 Fold(&z).--3-- <Nop>
+an 187.10 Fold(&z).Fold\ Selected                           :
+
+" quickfix
+an 190.10 &QF.Sea&rch                                       :Grepper -tool rg -quickfix<CR>
+an 190.10 &QF.&Open<Tab>:copen                              :botright copen<CR>
+an 190.10 &QF.&Edit<Tab>c\\q                                :Qflistsplit<CR>
+
+" loclist
+an 195.10 &LL.Sea&rch                                       :Grepper -tool rg -noquickfix<CR>
+an 195.10 &ll.&Next<Tab>]l                                  ]l
+an 195.10 &ll.&Previous<Tab>[l                              [l
+an 195.10 &LL.&Open<Tab>:lopen                              :lopen<CR>
+an 195.10 &LL.&Edit<Tab>c\\l                                :Loclistsplit<CR>
 
 " vim-lsp
-an 200.10 LSP.Definition                                    :LspDefinition<CR>
+an 200.10 LSP(&[).Definition                                :LspDefinition<CR>
 
-an 210.10 Build.Make                                        :Make<CR>
+an 205.10 Tags(&]).&Jump\ to\ Tag<Tab><C-]>                 <C-]>
 
-an 220.10 Run.Configurations                                :
+an 210.10 B&uild.Make                                       :Make<CR>
 
-an 230.10 Debug.Start                                       :Vimspector<CR>
+an 220.10 &Run.Configurations                               :
 
-an 240.10 Test.Run                                          :TestFile<CR>
+an 230.10 &Debug.Start\ &Debug                              :Vimspector<CR>
 
-an 250.10 Analyze.Check                                     :
+an 240.10 Test(&J).Run                                      :TestFile<CR>
 
-an 260.10 Terminal.New                                      :terminal ++kill=kill<CR>
+an 250.10 Anal&yze.Check                                    :
+
+an 260.10 &Terminal.&New                                    :rightbelow terminal ++kill=kill<CR>
+an 260.10 &Terminal.New\ at\ &Bottom                        :botright terminal ++kill=kill<CR>
 
 an 270.10 C++.Test                                          :
 
-an 280.10 Git.Log                                           :
+an 280.10 Git(&,).Log                                       :
 
-an 290.10 Diff/Patch.DiffOrig                               :DiffOrig<CR>
-an 290.20 Diff/Patch.Diff\ with\ file\.\.\.                 :browse vert diffsplit<CR>
-an 290.30 Diff/Patch.Diff\ with\ patch\.\.\.                :browse vert diffpatch<CR>
+an 290.10 Diff/Patch(&;).DiffOrig                           :DiffOrig<CR>
+an 290.20 Diff/Patch(&;).Diff\ with\ file\.\.\.             :browse vert diffsplit<CR>
+an 290.30 Diff/Patch(&;).Diff\ with\ patch\.\.\.            :browse vert diffpatch<CR>
 
-an 300.10 Spelling.Enable                                   :
+an 300.10 Spelling(&-).Enable                               :
 
-an 310.10 Tools.Select\ Colorscheme                         :Clap colors<CR>
-an 310.10 Tools.Colorize                                    :ColorToggle<CR>
-an 310.10 Tools.direnv.Run\ \.envrc                         :DirenvExport<CR>
-an 310.10 Tools.direnv.Edit\ \.envrc                        :EditEnvrc<CR>
-an 310.10 Tools.direnv.Edit\ direnvrc                       :EditDirenvrc<CR>
+an 310.10 T&ools.Select\ &Colorscheme                       :Clap colors<CR>
+an 310.10 T&ools.Colori&ze                                  :ColorToggle<CR>
+an 310.10 T&ools.--1-- <Nop>
+an 310.10 T&ools.&direnv:\ Run\ \.envrc                     :DirenvExport<CR>
+an 310.10 T&ools.dire&nv:\ Edit\ \.envrc                    :EditEnvrc<CR>
+an 310.10 T&ools.diren&v:\ Edit\ direnvrc                   :EditDirenvrc<CR>
 
 " Buffers
-an 320.10 Buffers.Select\.\.\.                              :Clap buffers<CR>
-an 320.15 Buffers.---                                       <Nop>
-an 320.20 Buffers.Alternate                                 :b #<CR>
-an 320.25 Buffers.---                                       <Nop>
-let sparta_buf = 1
+an 320.10 &Buffers.&Select\.\.\.                            :Clap buffers<CR>
+an 320.15 &Buffers.--1-- <Nop>
+an 320.20 &Buffers.&Alternate                               :b #<CR>
+an 320.25 &Buffers.--2-- <Nop>
+an 320.50 &Buffers.Buffers\ List <Nop>
+an disable &Buffers.Buffers\ List
+let planet_buf = 1
 "while buf <= bufnr('$')
 
 " Arg List
-an 330.10 Args.Add                                          :argadd<CR>
-an 330.10 Args.Delete                                       :argdelete<CR>
-an 330.10 Args.Open\ Next                                   :next<CR>
-an 330.10 Args.Open\ Previous                               :previous<CR>
-an 330.10 Args.Open\ First                                  :first<CR>
-an 330.10 Args.Open\ Last                                   :last<CR>
+an 330.10 &Args.&Add                                        :argadd<CR>
+an 330.10 &Args.&Delete                                     :argdelete<CR>
+an 330.10 &Args.Open\ &Next                                 :next<CR>
+an 330.10 &Args.Open\ &Previous                             :previous<CR>
+an 330.10 &Args.Open\ &First                                :first<CR>
+an 330.10 &Args.Open\ &Last                                 :last<CR>
+an 330.10 &Args.--1-- <Nop>
+an 330.10 &Args.Args\ List <Nop>
+an disable &Args.Args\ List
 
-an 340.10 Windows.Window\ Mode                              :WindowMode<CR>
-an 340.15 Windows.---                                       <Nop>
-an 340.20 Windows.Close<Tab>:close<Tab>^Wc                  :close<CR>
-an 340.25 Windows.---                                       <Nop>
-an 340.25 Windows.---                                       <Nop>
+an 340.10  &Windows.&Window\ Mode                           :WindowMode<CR>
+an 340.20  &Windows.--1-- <Nop>
+an 340.30  &Windows.Horizontal\ &Split<Tab>:split<Tab>+s    <C-w>s
+an 340.40  &Windows.&Vertical\ &Split<Tab>:vsplit<Tab>+v    <C-w>v
+an 340.50  &Windows.Rotate\ Vertica&lly<Tab>+H              <C-w>H
+an 340.60  &Windows.Rotate\ &Horizontally<Tab>+K            <C-w>K
+an 340.70  &Windows.S&wap<Tab>+r                            <C-w>r
+an 340.80  &Windows.Move\ to\ New\ &Tab<Tab>+T              <C-w>T
+an 340.90  &Windows.--2-- <Nop>
+an 340.100 &Windows.&Equal\ Size<Tab>+=                     <C-w>=
+"FIXME: In Insert mode this only works for a SINGLE Normal mode command (:h :an)
+an 340.110 &Windows.&Maximize<Tab>+_+\|                     <C-w>_<C-w>\|
+an 340.120 &Windows.--3-- <Nop>
+an 340.130 &Windows.&Close<Tab>:close<Tab>+c                <C-w>c
+an 340.140 &Windows.Close\ &Other\ Windows<Tab>:only<Tab>+o <C-w>o
 
 " Tabs
-an 350.10 Tabs.New                                          :tabnew<CR>
+an 350.10 Tabs(&\.).&New                                    :tabnew<CR>
 
-an 360.10 Session.Save                                      :SSave!<CR>
-an 360.20 Session.Open                                      :SLoad<CR>
-an 360.30 Session.Close                                     :SClose<CR>
-an 360.40 Session.Delete                                    :SDelete<CR>
-an 360.45 Session.---                                       <Nop>
+an 360.10 Sessio&n.&Save                                    :SSave!<CR>
+an 360.20 Sessio&n.&Open                                    :SLoad<CR>
+an 360.30 Sessio&n.&Close                                   :SClose<CR>
+an 360.40 Sessio&n.&Delete                                  :SDelete<CR>
+an 360.45 Sessio&n.--1-- <Nop>
+an 360.60 Sessio&n.Session\ List <Nop>
+an disable Sessio&n.Session\ List
 
 " Control GUI window with wmctrl & vim servers
-an 370.10 GUI.Full\ Screen                                  :
+an 370.10 GUI(&X).&Maximize             :silent call system('wmctrl -i -b toggle,maximized_vert,maximized_horz -r' . v:windowid)<CR>
+an 370.10 GUI(&X).&Full\ Screen         :silent call system('wmctrl -i -b toggle,fullscreen -r' . v:windowid)<CR>
 
-an 380.10 Apps.Calendar                                     :Calendar<CR>
+an 380.10 Apps(&').Calendar                                 :Calendar<CR>
 
 " Show current maps (nnoremap, etc.)
-an 980.10 Maps.Choose\.\.\.                                 :Clap maps<CR>
+an 980.10 Maps(&\\).Choose\.\.\.                            :Clap maps<CR>
 
-an 990.10 Help.Lookup\ Current\ Word                        K
-an 990.10 Help.Index                                        :h index<CR>
-an 990.10 Help.QuickRef                                     :h quickref<CR>
-an 990.10 Help.Welcome                                      :intro<CR>
-an 990.20 Help.Check\ for\ Updates                          :TODO
-an 990.20 Help.About                                        :version<CR>
+an 990.10 &Help.Lookup\ Current\ Word                       K
+an 990.10 &Help.Index                                       :h index<CR>
+an 990.10 &Help.QuickRef                                    :h quickref<CR>
+an 990.10 &Help.Welcome                                     :intro<CR>
+an 990.20 &Help.Check\ for\ &Updates                        :TODO
+an 990.20 &Help.Submit\ PlanetVim\ &Bug                     :!xdg-open https://github.com/fedorenchik/PlanetVim/issues
+an 990.20 &Help.About                                       :version<CR>
 " }}}
 " ToolBar: {{{
 " }}}
@@ -1181,6 +1258,16 @@ nnoremap <silent> <Space>" :Clap registers<CR>
 " }}}
 " Plugin: vim-crystalline {{{
 function! StatusLine_SearchCount() abort
+  try
+    const search_count = searchcount({'maxcount': 0, 'timeout': 50})
+  catch /^Vim\%((\a\+)\)\=:\%(E486\)\@!/
+    return '[?/??]'
+  endtry
+  if empty(search_count)
+    return ''
+  endif
+  return search_count.total ? search_count.incomplete ? printf('[%d/??]', search_count.current)
+        \ : printf('[%d/%d]', search_count.current, search_count.total) : '[0/0]'
 endfunction
 
 function! StatusLine(current, width)
@@ -1201,6 +1288,7 @@ function! StatusLine(current, width)
   let l:s .= '%='
   if a:current
     let l:s .= crystalline#left_sep('', 'Fill') . ' %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
+    let l:s .= "%{StatusLine_SearchCount()}"
     let l:s .= "%{exists('*CapsLockStatusline')?CapsLockStatusline():''}"
     let l:s .= ' %{grepper#statusline()}'
     let l:s .= crystalline#left_mode_sep('')
