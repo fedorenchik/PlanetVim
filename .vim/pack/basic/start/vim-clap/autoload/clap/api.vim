@@ -39,7 +39,9 @@ let s:has_no_icons = ['blines']
 " Returns the original full line with icon if g:clap_enable_icon is on given
 " the lnum of display buffer.
 function! clap#api#get_origin_line_at(lnum) abort
-  if exists('g:__clap_lines_truncated_map') && has_key(g:__clap_lines_truncated_map, a:lnum)
+  if exists('g:__clap_lines_truncated_map')
+        \ && !empty(g:__clap_lines_truncated_map)
+        \ && has_key(g:__clap_lines_truncated_map, a:lnum)
     let t_line = g:__clap_lines_truncated_map[a:lnum]
     " NOTE: t_line[3] is not 100% right
     if g:clap_enable_icon && index(s:has_no_icons, g:clap.provider.id) == -1 && t_line[3] !=# ' '
@@ -87,6 +89,9 @@ if s:is_nvim
     endif
   endfunction
 
+  function! clap#api#floating_win_is_valid(winid) abort
+    return nvim_win_is_valid(a:winid)
+  endfunction
 else
   function! s:_get_lines() dict abort
     let lines = getbufline(self.bufnr, 0, '$')
@@ -104,6 +109,10 @@ else
 
   function! clap#api#win_execute(winid, command) abort
     return win_execute(a:winid, a:command)
+  endfunction
+
+  function! clap#api#floating_win_is_valid(winid) abort
+    return !empty(popup_getpos(a:winid))
   endfunction
 endif
 
@@ -366,6 +375,7 @@ function! s:init_provider() abort
     endif
     try
       call self._().on_typed()
+      call clap#preview#async_open_with_delay()
     catch
       let l:error_info = ['provider.on_typed:'] + split(v:throwpoint, '\[\d\+\]\zs') + split(v:exception, "\n")
       call g:clap.display.set_lines(l:error_info)
@@ -595,6 +605,10 @@ function! s:init_provider() abort
     " FIXME: remove the vim forerunner job once on_init is supported on the Rust side.
     if clap#maple#is_available() && self.id !=# 'filer'
       call clap#client#notify_on_init('on_init')
+    endif
+    " Try to fill the preview window.
+    if clap#preview#is_enabled()
+      call timer_start(30, { -> clap#impl#on_move#invoke_async() })
     endif
   endfunction
 

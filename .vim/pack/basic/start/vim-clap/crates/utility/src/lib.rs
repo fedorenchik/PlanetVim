@@ -115,7 +115,7 @@ pub fn read_preview_lines<P: AsRef<Path>>(
     let (start, end, hl_line) = if target_line > size {
         (target_line - size, target_line + size, size)
     } else {
-        (0, size, target_line)
+        (0, 2 * size, target_line)
     };
     Ok((
         io::BufReader::new(file)
@@ -125,6 +125,20 @@ pub fn read_preview_lines<P: AsRef<Path>>(
             .take(end - start),
         hl_line,
     ))
+}
+
+/// Returns an iterator of limited lines of `filename` from the line number `start_line`.
+pub fn read_lines_from<P: AsRef<Path>>(
+    filename: P,
+    start_line: usize,
+    size: usize,
+) -> io::Result<impl Iterator<Item = String>> {
+    let file = File::open(filename)?;
+    Ok(io::BufReader::new(file)
+        .lines()
+        .skip(start_line)
+        .filter_map(|i| i.ok())
+        .take(size))
 }
 
 /// Converts `shell_cmd` to `Command` with optional working directory.

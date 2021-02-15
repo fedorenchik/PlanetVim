@@ -65,7 +65,9 @@ pub fn truncate_long_matched_lines<T>(
             let line = item.display_text.unwrap_or(item.raw);
             lnum += 1;
             if !indices.is_empty() {
-                let last_idx = indices.last().expect("indices are non-empty; qed");
+                let last_idx = indices
+                    .last()
+                    .unwrap_or_else(|| panic!("indices are non-empty; qed"));
                 if *last_idx > winwidth {
                     let mut start = *last_idx - winwidth;
                     if start >= indices[0] || (indices.len() > 1 && *last_idx - start > winwidth) {
@@ -98,10 +100,10 @@ pub fn truncate_long_matched_lines<T>(
                     truncated_map.insert(lnum, line);
                     (truncated, score, truncated_indices)
                 } else {
-                    (line.into(), score, indices)
+                    (line, score, indices)
                 }
             } else {
-                (line.into(), score, indices)
+                (line, score, indices)
             }
         })
         .collect::<Vec<_>>();
@@ -111,11 +113,10 @@ pub fn truncate_long_matched_lines<T>(
 /// Returns the info of the truncated top items ranked by the filtering score.
 pub fn process_top_items<T>(
     top_list: impl IntoIterator<Item = (SourceItem, T, Vec<usize>)>,
-    winwidth: Option<usize>,
+    winwidth: usize,
     icon_painter: Option<IconPainter>,
 ) -> (Vec<String>, Vec<Vec<usize>>, LinesTruncatedMap) {
-    let (truncated_lines, truncated_map) =
-        truncate_long_matched_lines(top_list, winwidth.unwrap_or(62), None);
+    let (truncated_lines, truncated_map) = truncate_long_matched_lines(top_list, winwidth, None);
     if let Some(painter) = icon_painter {
         let (lines, indices): (Vec<_>, Vec<Vec<usize>>) = truncated_lines
             .into_iter()
@@ -145,7 +146,7 @@ pub fn process_top_items<T>(
 pub fn print_sync_filter_results(
     ranked: Vec<FilterResult>,
     number: Option<usize>,
-    winwidth: Option<usize>,
+    winwidth: usize,
     icon_painter: Option<IconPainter>,
 ) {
     if let Some(number) = number {
@@ -170,7 +171,7 @@ pub fn print_dyn_filter_results(
     ranked: Vec<FilterResult>,
     total: usize,
     number: usize,
-    winwidth: Option<usize>,
+    winwidth: usize,
     icon_painter: Option<IconPainter>,
 ) {
     let (lines, indices, truncated_map) =

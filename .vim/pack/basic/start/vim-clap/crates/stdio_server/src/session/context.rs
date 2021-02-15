@@ -1,15 +1,21 @@
+use std::path::PathBuf;
 use std::sync::{atomic::AtomicBool, Arc, Mutex};
 
 use super::*;
 use crate::types::ProviderId;
 
+const DEFAULT_DISPLAY_WINWIDTH: u64 = 100;
+const DEFAULT_PREVIEW_WINHEIGHT: u64 = 30;
+
 #[derive(Debug, Clone)]
 pub struct SessionContext {
-    pub cwd: String,
-    pub source_cmd: Option<String>,
-    pub winwidth: Option<u64>,
     pub provider_id: ProviderId,
-    pub start_buffer_path: String,
+    pub cwd: PathBuf,
+    pub start_buffer_path: PathBuf,
+    pub display_winwidth: u64,
+    pub preview_winheight: u64,
+    pub source_cmd: Option<String>,
+    pub runtimepath: Option<String>,
     pub is_running: Arc<Mutex<AtomicBool>>,
     pub source_list: Arc<Mutex<Option<Vec<String>>>>,
 }
@@ -27,27 +33,43 @@ impl From<Message> for SessionContext {
         log::debug!("recv msg for SessionContext: {:?}", msg);
         let provider_id = msg.get_provider_id();
 
-        let cwd = msg.get_cwd();
+        let cwd = msg.get_cwd().into();
+
+        let runtimepath = msg
+            .params
+            .get("runtimepath")
+            .and_then(|x| x.as_str().map(Into::into));
 
         let source_cmd = msg
             .params
             .get("source_cmd")
             .and_then(|x| x.as_str().map(Into::into));
 
-        let winwidth = msg.params.get("winwidth").and_then(|x| x.as_u64());
+        let display_winwidth = msg
+            .params
+            .get("display_winwidth")
+            .and_then(|x| x.as_u64())
+            .unwrap_or(DEFAULT_DISPLAY_WINWIDTH);
+        let preview_winheight = msg
+            .params
+            .get("preview_winheight")
+            .and_then(|x| x.as_u64())
+            .unwrap_or(DEFAULT_PREVIEW_WINHEIGHT);
 
-        let start_buffer_path = String::from(
-            msg.params
-                .get("source_fpath")
-                .and_then(|x| x.as_str())
-                .expect("Missing source_fpath"),
-        );
+        let start_buffer_path = msg
+            .params
+            .get("source_fpath")
+            .and_then(|x| x.as_str())
+            .unwrap_or_else(|| panic!("Missing source_fpath"))
+            .into();
 
         Self {
             provider_id,
             cwd,
             source_cmd,
-            winwidth,
+            runtimepath,
+            display_winwidth,
+            preview_winheight,
             start_buffer_path,
             is_running: Arc::new(Mutex::new(true.into())),
             source_list: Arc::new(Mutex::new(None)),
