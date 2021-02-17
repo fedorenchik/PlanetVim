@@ -67,6 +67,32 @@ if empty(v:servername) && exists('*remote_startserver')
   call remote_startserver('VIM')
 endif
 " }}}
+" Emoji: {{{
+" TODO: make all emojis (including text emojis) double width
+" }}}
+" Nerdfont: {{{
+" Codepoints for Nerdfont v2.1.0
+call setcellwidths([
+      \ [0xe5fa, 0xe62b, 2],
+      \ [0xe700, 0xe7c5, 2],
+      \ [0xf000, 0xf2e0, 2],
+      \ [0xe200, 0xe2a9, 2],
+      \ [0xf500, 0xfd46, 2],
+      \ [0xe300, 0xe3eb, 2],
+      \ [0xf400, 0xf4a8, 2],
+      \ [0x2665, 0x2665, 2],
+      \ [0x26a1, 0x26a1, 2],
+      \ [0xe0a3, 0xe0a3, 2],
+      \ [0xe0b4, 0xe0c8, 2],
+      \ [0xe0ca, 0xe0ca, 2],
+      \ [0xe0cc, 0xe0d2, 2],
+      \ [0xe0d4, 0xe0d4, 2],
+      \ [0x23fb, 0x23fe, 2],
+      \ [0x2b58, 0x2b58, 2],
+      \ [0xf300, 0xf313, 2],
+      \ [0xe000, 0xe00d, 2],
+      \ ])
+" }}}
 " Functions: {{{
 function! GuiTabLabel() abort
   let label = ''
@@ -267,7 +293,7 @@ set grepprg=grep\ -nH\ $*
 "TODO: Colorize cursor in different modes.
 "set guicursor+=a:blinkon0
 if has("gui")
-  set guifont=UbuntuMono\ Nerd\ Font\ Mono\ 11,Ubuntu\ Mono\ 11,Monospace\ 9
+  set guifont=Ubuntu\ Mono\ 11,Monospace\ 9
 endif
 set guiheadroom=0
 "XXX: add '!' to guioptions when startify bug #460 will be fixed
@@ -760,7 +786,7 @@ if exists("+omnifunc")
   autocmd Filetype * if &completefunc == "" | setlocal completefunc=syntaxcomplete#Complete | endif
 endif
 autocmd FocusLost * wa
-autocmd GUIEnter * set guifont=UbuntuMono\ Nerd\ Font\ Mono\ 11,Ubuntu\ Mono\ 11,Monospace\ 9
+autocmd GUIEnter * set guifont=Ubuntu\ Mono\ 11,Monospace\ 9
 autocmd StdinReadPost * set nomodified
 au TerminalWinOpen * setlocal foldcolumn=0 signcolumn=no nonumber norelativenumber
 au BufWinEnter * if &buftype == 'terminal' | setlocal foldcolumn=0 signcolumn=no nonumber norelativenumber | endif
@@ -818,6 +844,9 @@ function! PlanetNavigationMenus() abort
   aunmenu GUI(X)
   aunmenu Apps(')
 endfunction
+function! PlanetFiletypeMenus() abort
+  "TODO
+endfunction
 an 100.10  &PlanetVim.&Insert\ Mode<Tab>:set\ im!           :set im!<CR>
 an 100.20  &PlanetVim.--1-- <Nop>
 an 100.30  &PlanetVim.&Editing\ Menus                       :call PlanetEditingMenus()<CR>
@@ -838,6 +867,7 @@ an 110.40  &File.--1-- <Nop>
 an 110.50  &File.&Open\ File                                :Clap files<CR>
 an 110.60  &File.Open\ &File\ Manager<Tab>-                 :Fern -reveal=% .<CR>
 an 110.70  &File.Open\ &Recent                              :Clap history<CR>
+an 110.70  &File.Find<Tab>:find                             :find 
 an 110.80  &File.--2-- <Nop>
 an 110.90  &File.&Save<Tab>:w                               :if expand("%") == ""<Bar>browse confirm w<Bar>else<Bar>confirm w<Bar>endif<CR>
 an 110.100 &File.Save\ &As\.\.\.                            :browse confirm saveas<CR>
@@ -864,14 +894,20 @@ an 120.60  &Edit.Cu&t                                       "+dd
 an 120.70  &Edit.&Copy                                      "+yy
 an 120.80  &Edit.&Paste                                     "+P
 an 120.90  &Edit.--3-- <Nop>
-an 120.100 &Edit.Toggle\ Comment<Tab>gcc                    gcc
-an 120.110 &Edit.Toggle\ CAPS<Tab>gC                        gC
+an 120.100 &Edit.Choose\ Yank\ History<Tab>:Clap\ yanks     :Clap yanks<CR>
+an 120.110 &Edit.--4-- <Nop>
+an 120.120 &Edit.Toggle\ Comment<Tab>gcc                    gcc
+an 120.130 &Edit.Toggle\ CAPS<Tab>gC<Tab>i_<C-g>c           gC
 
 " Searching
-an 130.10 Search\ (&/).Current\ Word<Tab>*                  *
+an 130.10  Search\ (&/).C&hoose\ Line<Tab>:Clap\ blines     :Clap blines<CR>
+an 130.20  Search\ (&/).--1-- <Nop>
+an 130.20  Search\ (&/).Choose\ from\ Hi&story<Tab>:Clap\ search_history :Clap search_history<CR>
+an 130.30  Search\ (&/).--2-- <Nop>
+an 130.40  Search\ (&/).Current\ Word<Tab>*                 *
 
 " Vim Registers
-an 135.10 Reg&isters.Choose\ to\ Paste\.\.\.                :Clap registers<CR>
+an 135.10  Reg&isters.C&hoose\ to\ Paste\.\.\.              :Clap registers<CR>
 function! s:registers_choose_to_edit() abort
   echohl Question
   echo "Register: " buffest#reg_complete()
@@ -883,151 +919,261 @@ function! s:registers_choose_to_edit() abort
   execute("silent Regpedit " .. l:reg_to_edit)
   execute("silent normal \<C-w>P")
 endfunction
-an 135.10 Reg&isters.Choose\ to\ Edit\.\.\.                 :call <SID>registers_choose_to_edit()<CR>
+an 135.10  Reg&isters.Choose\ to\ Edit\.\.\.                :call <SID>registers_choose_to_edit()<CR>
 "TODO: Add all non-empty registers to this menu
 
 "FIXME: In Insert mode this only works for a SINGLE Normal mode command
-an 140.10 &Selection.Select\ All                            ggVG
+an 140.10  &Selection.Select\ All                           ggVG
 
-an 150.10 &View.&Command\ Palette                           :Clap<CR>
-an 150.10 &View.&Files\ Side\ Bar                           :Fern . -drawer -reveal=% -toggle<CR>
+an 150.10  &View.&Command\ Palette                          :Clap<CR>
+an 150.20  &View.&Files\ Side\ Bar                          :Fern . -drawer -reveal=% -toggle<CR>
+an 150.30  &View.&LSP\ Side\ Bar<Tab>:Vista\ vim_lsp         :Vista vim_lsp<CR>
+an 150.40  &View.&Tags\ Side\ Bar<Tab>:Vista\ ctags         :Vista ctags<CR>
 
 " Cololr highlight words with mark.vim plugin
-an 160.10 &CMark.CMark\ &Current                            <Leader>m
+an 160.10  &CMark.CMark\ &Current                           <Leader>m
 
-an 170.10 &Go.Back                                          <C-o>
+an 170.10  &Go.C&hoose\ Jump<Tab>:Clap\ jumps               :Clap jumps<CR>
+an 170.20  &Go.--1-- <Nop>
+an 170.30  &Go.Back                                         <C-o>
+an 170.20  &Go.--2-- <Nop>
+an 170.30  &Go.File\ under\ Cursor\ in\ Tab<Tab><C-w>gf     <C-w>gf
+an 170.30  &Go.File&&Line\ under\ Cursor\ in\ Tab<Tab><C-w>gF <C-w>gF
 
 " signature.vim (marks & markers)
-an 180.10 &Marks.Add                                        m,
+an 180.10  &Marks.C&hoose<Tab>:Clap\ marks                  :Clap marks<CR>
+an 180.20  &Marks.--1-- <Nop>
+an 180.30  &Marks.Add                                       m,
+
+an 183.30  Markers.Add :
 
 " Upper-case marks (mA-mZ)
-an 185.10 Boo&kmarks.Add                                    m,
+an 185.10  Boo&kmarks.Add                                   m,
 
-an 187.10 Fold(&z).Fold\ Everything<Tab>zM                  zM
-an 187.10 Fold(&z).Unfold\ Everything<Tab>zR                zR
-an 187.10 Fold(&z).--1-- <Nop>
-an 187.10 Fold(&z).Fold\ One\ Level<Tab>zm                  zm
-an 187.10 Fold(&z).Unfold\ One\ Level<Tab>zr                zr
-an 187.10 Fold(&z).--2-- <Nop>
-an 187.10 Fold(&z).Fold\ by\ Syntax                         :set foldmethod=syntax<CR>
-an 187.10 Fold(&z).Fold\ by\ Indent                         :set foldmethod=indent<CR>
-an 187.10 Fold(&z).Fold\ by\ Expr                           :set foldmethod=expr<CR>
-an 187.10 Fold(&z).Fold\ by\ {{{,}}}\ Markers               :set foldmethod=marker<CR>
-an 187.10 Fold(&z).Fold\ Manually                           :set foldmethod=manual<CR>
-an 187.10 Fold(&z).--3-- <Nop>
-an 187.10 Fold(&z).Fold\ Selected                           :
+an 187.10  Fold(&z).Fold\ Everything<Tab>zM                 zM
+an 187.20  Fold(&z).Unfold\ Everything<Tab>zR               zR
+an 187.30  Fold(&z).--1-- <Nop>
+an 187.40  Fold(&z).Fold\ One\ Level<Tab>zm                 zm
+an 187.50  Fold(&z).Unfold\ One\ Level<Tab>zr               zr
+an 187.60  Fold(&z).--2-- <Nop>
+an 187.70  Fold(&z).Fold\ by\ Syntax                        :set foldmethod=syntax<CR>
+an 187.80  Fold(&z).Fold\ by\ Indent                        :set foldmethod=indent<CR>
+an 187.90  Fold(&z).Fold\ by\ Expr                          :set foldmethod=expr<CR>
+an 187.100 Fold(&z).Fold\ by\ {{{,}}}\ Markers              :set foldmethod=marker<CR>
+an 187.110 Fold(&z).Fold\ Manually                          :set foldmethod=manual<CR>
+an 187.120 Fold(&z).--3-- <Nop>
+an 187.130 Fold(&z).Fold\ Selected                          :
 
 " quickfix
-an 190.10 &QF.Sea&rch                                       :Grepper -tool rg -quickfix<CR>
-an 190.10 &QF.&Open<Tab>:copen                              :botright copen<CR>
-an 190.10 &QF.&Edit<Tab>c\\q                                :Qflistsplit<CR>
+an 190.10  &QF.Sea&rch                                      :Grepper -tool rg -quickfix<CR>
+an 190.20  &QF.F&ind<Tab>:Cfind!                            :Cfind! 
+an 190.30  &QF.Loc&ate<Tab>:Clocate!                        :Clocate! 
+an 190.40  &QF.&Grep<Tab>:grep                              :grep 
+an 190.50  &QF.GrepAdd\ (&b)<Tab>:grepadd                   :grepadd 
+an 190.60  &QF.&VimGrep<Tab>:vimgrep                        :vimgrep 
+an 190.70  &QF.Vi&mGrepAdd<Tab>:vimgrepadd                  :vimgrepadd 
+an 190.80  &QF.--1-- <Nop>
+an 190.90  &QF.C&hoose<Tab>:Clap\ quickfix                  :Clap quickfix<CR>
+an 190.100 &QF.--2-- <Nop>
+an 190.110 &QF.N&ext<Tab>]q                                 ]q
+an 190.120 &QF.&Next\ File<Tab>:cnfile<Tab>]<C-q>           :cnfile<CR>
+an 190.130 &QF.&Last<Tab>:clast<Tab>]Q                      ]Q
+an 190.140 &QF.--3-- <Nop>
+an 190.150 &QF.&Previous<Tab>[q                             [q
+an 190.160 &QF.Previou&s\ File<Tab>:cpfile<Tab>[<C-q>       :cpfile<CR>
+an 190.170 &QF.&First<Tab>:cfirst<Tab>[Q                    [Q
+an 190.180 &QF.--4-- <Nop>
+an 190.190 &QF.E&xecute\ for\ each<Tab>:cdo                 :cdo 
+an 190.200 &QF.Execute\ for\ each\ File\ (&z)<Tab>:cfdo     :cfdo 
+an 190.210 &QF.--5-- <Nop>
+an 190.220 &QF.&Open<Tab>:copen                             :copen<CR>
+an 190.230 &QF.Fil&ter<Tab>:Cfilter                         :Cfilter 
+an 190.240 &QF.Filter\ O&ut<Tab>:Cfilter!                   :Cfilter! 
+an 190.250 &QF.E&dit<Tab>:Qflistsplit<Tab>c\\q              :Qflistsplit<CR>
+an 190.260 &QF.Read\ from\ File\ (&w)<Tab>:cgetfile         :cgetfile! 
+an 190.270 &QF.Add\ from\ File\ (&y)<Tab>:caddfile          :caddfile! 
+an 190.280 &QF.Read\ from\ Buffer\ (&,)<Tab>:cgetbuffer     :cgetbuffer! 
+an 190.290 &QF.Add\ from\ Buffer\ (&.)<Tab>:caddbuffer      :caddbuffer! 
+an 190.300 &QF.Read\ from\ Expr\ (&;)<Tab>:cgetexpr         :cgetexpr! 
+an 190.310 &QF.Add\ from\ Expr\ (&')<Tab>:caddexpr          :caddexpr! 
+an 190.320 &QF.&Close<Tab>:cclose<Tab>                      :cclose<CR>
+an 190.330 &QF.--6-- <Nop>
+an 190.340 &QF.Previous\ LocList\ (&k)<Tab>:colder          :colder<CR>
+an 190.350 &QF.Next\ LocList\ (&j)<Tab>:cnewer              :cnewer<CR>
+an 190.360 &QF.List\ LocLists\ (&q)<Tab>:chistory           :chistory<CR>
+an 190.370 &QF.--7-- <Nop>
 
 " loclist
-an 195.10 &LL.Sea&rch                                       :Grepper -tool rg -noquickfix<CR>
-an 195.10 &ll.&Next<Tab>]l                                  ]l
-an 195.10 &ll.&Previous<Tab>[l                              [l
-an 195.10 &LL.&Open<Tab>:lopen                              :lopen<CR>
-an 195.10 &LL.&Edit<Tab>c\\l                                :Loclistsplit<CR>
+an 195.10  &LL.Sea&rch                                      :Grepper -tool rg -noquickfix<CR>
+an 195.20  &LL.F&ind<Tab>:Lfind!                            :Lfind! 
+an 195.30  &LL.Loc&ate<Tab>:Llocate!                        :Llocate! 
+an 195.40  &LL.&Grep<Tab>:lgrep                             :lgrep 
+an 195.50  &LL.GrepAdd\ (&b)<Tab>:lgrepadd                  :lgrepadd 
+an 195.60  &LL.&VimGrep<Tab>:lvimgrep                       :lvimgrep 
+an 195.70  &LL.Vi&mGrepAdd<Tab>:lvimgrepadd                 :lvimgrepadd 
+an 195.80  &LL.--1-- <Nop>
+an 195.90  &LL.C&hoose<Tab>:Clap\ loclist                   :Clap loclist<CR>
+an 195.100 &LL.--2-- <Nop>
+an 195.110 &LL.N&ext<Tab>]l                                 ]l
+an 195.120 &LL.&Next\ File<Tab>:lnfile<Tab>]<C-l>           :lnfile<CR>
+an 195.130 &LL.&Last<Tab>:llast<Tab>]L                      ]L
+an 195.140 &LL.--3-- <Nop>
+an 195.150 &LL.&Previous<Tab>[l                             [l
+an 195.160 &LL.Previou&s\ File<Tab>:lpfile<Tab>[<C-l>       :lpfile<CR>
+an 195.170 &LL.&First<Tab>:lfirst<Tab>[L                    [L
+an 195.180 &LL.--4-- <Nop>
+an 195.190 &LL.E&xecute\ for\ each<Tab>:ldo                 :ldo 
+an 195.200 &LL.Execute\ for\ each\ File\ (&z)<Tab>:lfdo     :lfdo 
+an 195.210 &LL.--5-- <Nop>
+an 195.220 &LL.&Open<Tab>:lopen                             :lopen<CR>
+an 195.230 &LL.Fil&ter<Tab>:Lfilter                         :Lfilter 
+an 195.240 &LL.Filter\ O&ut<Tab>:Lfilter!                   :Lfilter! 
+an 195.250 &LL.E&dit<Tab>:Loclistsplit<Tab>c\\l             :Loclistsplit<CR>
+an 195.260 &LL.Read\ from\ File\ (&w)<Tab>:lgetfile         :lgetfile! 
+an 195.270 &LL.Add\ from\ File\ (&y)<Tab>:laddfile          :laddfile! 
+an 195.280 &LL.Read\ from\ Buffer\ (&,)<Tab>:lgetbuffer     :lgetbuffer! 
+an 195.290 &LL.Add\ from\ Buffer\ (&.)<Tab>:laddbuffer      :laddbuffer! 
+an 195.300 &LL.Read\ from\ Expr\ (&;)<Tab>:lgetexpr         :lgetexpr! 
+an 195.310 &LL.Add\ from\ Expr\ (&')<Tab>:laddexpr          :laddexpr! 
+an 195.320 &LL.&Close<Tab>:lclose<Tab>                      :lclose<CR>
+an 195.330 &LL.--6-- <Nop>
+an 195.340 &LL.Previous\ LocList\ (&k)<Tab>:lolder          :lolder<CR>
+an 195.350 &LL.Next\ LocList\ (&j)<Tab>:lnewer              :lnewer<CR>
+an 195.360 &LL.List\ LocLists\ (&q)<Tab>:lhistory           :lhistory<CR>
+an 195.370 &LL.--7-- <Nop>
 
 " vim-lsp
-an 200.10 LSP(&[).Definition                                :LspDefinition<CR>
+an 200.10  LSP&[.C&hoose\ Symbol<Tab>:Clap\ tags\ vim_lsp   :Clap tags vim_lsp<CR>
+an 200.10  LSP&[.Definition                                 :LspDefinition<CR>
 
-an 205.10 Tags(&]).&Jump\ to\ Tag<Tab><C-]>                 <C-]>
+an 205.10  Tags&].C&hoose<Tab>:Clap\ tags\ ctags            :Clap tags ctags<CR>
+an 205.10  Tags&].&Jump\ to\ Tag<Tab><C-]>                  <C-]>
 
-an 210.10 B&uild.Make                                       :Make<CR>
+an 210.10  B&uild.Make                                      :Make<CR>
 
-an 220.10 &Run.Configurations                               :
+an 220.10  &Run.Configurations                              :
 
-an 230.10 &Debug.Start\ &Debug                              :Vimspector<CR>
+an 230.10  &Debug.Start\ &Debug                             :Vimspector<CR>
 
-an 240.10 Test(&J).Run                                      :TestFile<CR>
+an 240.10  Test(&j).Run                                     :TestFile<CR>
 
-an 250.10 Anal&yze.Check                                    :
+an 250.10  Anal&yze.Check                                   :
 
-an 260.10 &Terminal.&New                                    :rightbelow terminal ++kill=kill<CR>
-an 260.10 &Terminal.New\ at\ &Bottom                        :botright terminal ++kill=kill<CR>
+an 260.10  &Term.&New                                       :rightbelow terminal ++kill=kill<CR>
+an 260.10  &Term.New\ at\ &Bottom                           :botright terminal ++kill=kill<CR>
 
-an 270.10 C++.Test                                          :
+"an 270.10  C++.Test                                         :
 
-an 280.10 Git(&,).Log                                       :
+" Open Log in new window
+an 280.10  Git(&,).Log                                      :
 
-an 290.10 Diff/Patch(&;).DiffOrig                           :DiffOrig<CR>
-an 290.20 Diff/Patch(&;).Diff\ with\ file\.\.\.             :browse vert diffsplit<CR>
-an 290.30 Diff/Patch(&;).Diff\ with\ patch\.\.\.            :browse vert diffpatch<CR>
+an 290.10  Df/Pt(&;).DiffOrig                               :DiffOrig<CR>
+an 290.20  Df/Pt(&;).Diff\ with\ file\.\.\.                 :browse vert diffsplit<CR>
+an 290.30  Df/Pt(&;).Diff\ with\ patch\.\.\.                :browse vert diffpatch<CR>
 
-an 300.10 Spelling(&-).Enable                               :
+an 300.10  Spelling(&-).Enable                              :
 
-an 310.10 T&ools.Select\ &Colorscheme                       :Clap colors<CR>
-an 310.10 T&ools.Colori&ze                                  :ColorToggle<CR>
-an 310.10 T&ools.--1-- <Nop>
-an 310.10 T&ools.&direnv:\ Run\ \.envrc                     :DirenvExport<CR>
-an 310.10 T&ools.dire&nv:\ Edit\ \.envrc                    :EditEnvrc<CR>
-an 310.10 T&ools.diren&v:\ Edit\ direnvrc                   :EditDirenvrc<CR>
+an 310.10  T&ools.C&hoose\ Colorscheme                      :Clap colors<CR>
+an 310.10  T&ools.Colori&ze                                 :ColorToggle<CR>
+an 310.10  T&ools.--1-- <Nop>
+an 310.10  T&ools.&direnv:\ Run\ \.envrc                    :DirenvExport<CR>
+an 310.10  T&ools.dire&nv:\ Edit\ \.envrc                   :EditEnvrc<CR>
+an 310.10  T&ools.diren&v:\ Edit\ direnvrc                  :EditDirenvrc<CR>
 
 " Buffers
-an 320.10 &Buffers.&Select\.\.\.                            :Clap buffers<CR>
-an 320.15 &Buffers.--1-- <Nop>
-an 320.20 &Buffers.&Alternate                               :b #<CR>
-an 320.25 &Buffers.--2-- <Nop>
-an 320.50 &Buffers.Buffers\ List <Nop>
+an 320.10  &Buffers.C&hoose\.\.\.                           :Clap buffers<CR>
+an 320.20  &Buffers.--1-- <Nop>
+an 320.30  &Buffers.&Alternate                              :b #<CR>
+an 320.40  &Buffers.--2-- <Nop>
+an 320.50  &Buffers.Buffers\ List <Nop>
 an disable &Buffers.Buffers\ List
 let planet_buf = 1
 "while buf <= bufnr('$')
 
 " Arg List
-an 330.10 &Args.&Add                                        :argadd<CR>
-an 330.10 &Args.&Delete                                     :argdelete<CR>
-an 330.10 &Args.Open\ &Next                                 :next<CR>
-an 330.10 &Args.Open\ &Previous                             :previous<CR>
-an 330.10 &Args.Open\ &First                                :first<CR>
-an 330.10 &Args.Open\ &Last                                 :last<CR>
-an 330.10 &Args.--1-- <Nop>
-an 330.10 &Args.Args\ List <Nop>
+an 330.10  &Args.&Add                                       :argadd<CR>
+an 330.10  &Args.&Delete                                    :argdelete<CR>
+an 330.10  &Args.Open\ &Next                                :next<CR>
+an 330.10  &Args.Open\ &Previous                            :previous<CR>
+an 330.10  &Args.Open\ &First                               :first<CR>
+an 330.10  &Args.Open\ &Last                                :last<CR>
+an 330.10  &Args.--1-- <Nop>
+an 330.10  &Args.Args\ List <Nop>
 an disable &Args.Args\ List
 
 an 340.10  &Windows.&Window\ Mode                           :WindowMode<CR>
 an 340.20  &Windows.--1-- <Nop>
-an 340.30  &Windows.Horizontal\ &Split<Tab>:split<Tab>+s    <C-w>s
-an 340.40  &Windows.&Vertical\ &Split<Tab>:vsplit<Tab>+v    <C-w>v
-an 340.50  &Windows.Rotate\ Vertica&lly<Tab>+H              <C-w>H
-an 340.60  &Windows.Rotate\ &Horizontally<Tab>+K            <C-w>K
-an 340.70  &Windows.S&wap<Tab>+r                            <C-w>r
-an 340.80  &Windows.Move\ to\ New\ &Tab<Tab>+T              <C-w>T
-an 340.90  &Windows.--2-- <Nop>
-an 340.100 &Windows.&Equal\ Size<Tab>+=                     <C-w>=
+an 340.30  &Windows.C&hoose<Tab>:Clap\ windows              :Clap windows<CR>
+an 340.40  &Windows.--2-- <Nop>
+an 340.50  &Windows.Horizontal\ &Split<Tab>:split<Tab>+s    <C-w>s
+an 340.60  &Windows.&Vertical\ Split<Tab>:vsplit<Tab>+v     <C-w>v
+an 340.70  &Windows.Rotate\ Vertica&lly<Tab>+H              <C-w>H
+an 340.80  &Windows.Rotate\ &Horizontally<Tab>+K            <C-w>K
+an 340.90  &Windows.S&wap<Tab>+r                            <C-w>r
+an 340.100 &Windows.Move\ to\ New\ &Tab<Tab>+T              <C-w>T
+an 340.110 &Windows.--3-- <Nop>
+an 340.120 &Windows.&Equal\ Size<Tab>+=                     <C-w>=
 "FIXME: In Insert mode this only works for a SINGLE Normal mode command (:h :an)
-an 340.110 &Windows.&Maximize<Tab>+_+\|                     <C-w>_<C-w>\|
-an 340.120 &Windows.--3-- <Nop>
-an 340.130 &Windows.&Close<Tab>:close<Tab>+c                <C-w>c
-an 340.140 &Windows.Close\ &Other\ Windows<Tab>:only<Tab>+o <C-w>o
+an 340.130 &Windows.&Maximize<Tab>+_+\|                     <C-w>_<C-w>\|
+an 340.140 &Windows.--4-- <Nop>
+an 340.150 &Windows.&Close<Tab>:close<Tab>+c                <C-w>c
+an 340.160 &Windows.Close\ &Other\ Windows<Tab>:only<Tab>+o <C-w>o
 
 " Tabs
-an 350.10 Tabs(&\.).&New                                    :tabnew<CR>
+an 350.10  Tabs(&\.).&New<Tab>:tabnew                       :tabnew<CR>
+an 350.20  Tabs(&\.).--1-- <Nop>
+an 350.30  Tabs(&\.).F&ind\ File<Tab>:tabfind               :tabfind 
+an 350.40  Tabs(&\.).--2-- <Nop>
+an 350.50  Tabs(&\.).&First<Tab>:tabfirst                   :tabfirst<CR>
+an 350.60  Tabs(&\.).N&ext<Tab>:tabnext<Tab><C-PgDown><Tab>gt gt
+an 350.70  Tabs(&\.).&Previous<tab>:tabprevious<Tab><C-PgUp><Tab>gT gT
+an 350.80  Tabs(&\.).&Last<Tab>:tablast                     :tablast<CR>
+an 350.90  Tabs(&\.).Last\ &accessed<Tab>g\<Tab\>            g<Tab>
+an 350.100 Tabs(&\.).--3-- <Nop>
+an 350.110 Tabs(&\.).E&xecute\ in\ each\ Tab<Tab>:tabdo     :tabdo 
+an 350.120 Tabs(&\.).--4-- <Nop>
+an 350.130 Tabs(&\.).&Close<Tab>:tabclose                   :tabclose<CR>
+an 350.140 Tabs(&\.).Close\ all\ &other\ tabs<Tab>:tabonly  :tabonly<CR>
 
-an 360.10 Sessio&n.&Save                                    :SSave!<CR>
-an 360.20 Sessio&n.&Open                                    :SLoad<CR>
-an 360.30 Sessio&n.&Close                                   :SClose<CR>
-an 360.40 Sessio&n.&Delete                                  :SDelete<CR>
-an 360.45 Sessio&n.--1-- <Nop>
-an 360.60 Sessio&n.Session\ List <Nop>
+an 360.10  Sessio&n.&Save                                   :SSave!<CR>
+an 360.20  Sessio&n.&Open                                   :SLoad<CR>
+an 360.30  Sessio&n.&Close                                  :SClose<CR>
+an 360.40  Sessio&n.&Delete                                 :SDelete<CR>
+an 360.45  Sessio&n.--1-- <Nop>
+an 360.60  Sessio&n.Session\ List <Nop>
 an disable Sessio&n.Session\ List
 
 " Control GUI window with wmctrl & vim servers
-an 370.10 GUI(&X).&Maximize             :silent call system('wmctrl -i -b toggle,maximized_vert,maximized_horz -r' . v:windowid)<CR>
-an 370.10 GUI(&X).&Full\ Screen         :silent call system('wmctrl -i -b toggle,fullscreen -r' . v:windowid)<CR>
+an 370.10  GUI(&X).&Maximize            :silent call system('wmctrl -i -b toggle,maximized_vert,maximized_horz -r' . v:windowid)<CR>
+an 370.10  GUI(&X).&Full\ Screen        :silent call system('wmctrl -i -b toggle,fullscreen -r' . v:windowid)<CR>
+an 370.10  GUI(&X).Minimi&ze<Tab>:suspend<Tab><C-z>         <C-z>
+"TODO: List of GUI windows to focus
 
-an 380.10 Apps(&').Calendar                                 :Calendar<CR>
+" Open in new GUI window
+an 380.10  Apps(&').Calendar                                :Calendar<CR>
+"Terminal
+"FileManager
+"Web Browser
+"Email
+"Calculator
+"Codi
+"difdiff
 
 " Show current maps (nnoremap, etc.)
-an 980.10 Maps(&\\).Choose\.\.\.                            :Clap maps<CR>
+an 980.10  Maps(&\\).C&hoose\.\.\.                          :Clap maps<CR>
 
-an 990.10 &Help.Lookup\ Current\ Word                       K
-an 990.10 &Help.Index                                       :h index<CR>
-an 990.10 &Help.QuickRef                                    :h quickref<CR>
-an 990.10 &Help.Welcome                                     :intro<CR>
-an 990.20 &Help.Check\ for\ &Updates                        :TODO
-an 990.20 &Help.Submit\ PlanetVim\ &Bug                     :!xdg-open https://github.com/fedorenchik/PlanetVim/issues
-an 990.20 &Help.About                                       :version<CR>
+an 990.10  &Help.&Lookup\ Current\ Word                     K
+an 990.20  &Help.Inde&x                                     :h index<CR>
+an 990.30  &Help.&QuickRef                                  :h quickref<CR>
+an 990.40  &Help.&Plugins\ Documentation                    :h local-additions<CR>
+an 990.50  &Help.View\ Log\ Messages<Tab>:messages          :messages<CR>
+an 990.60  &Help.--1-- <Nop>
+an 990.70  &Help.Join\ PlanetVim\ Chat                      :silent !xdg-open https://matrix.to/...<CR>
+an 990.80  &Help.--2-- <Nop>
+an 990.90  &Help.Check\ for\ &Updates                       :silent !xdg-open https://github.com/fedorenchik/PlanetVim/releases<CR>
+an 990.100 &Help.Report\ PlanetVim\ &Issue                  :silent !xdg-open https://github.com/fedorenchik/PlanetVim/issues/new<CR>
+an 990.110 &Help.--3-- <Nop>
+an 990.120 &Help.&About                                     :version<CR>
 " }}}
 " ToolBar: {{{
 " }}}
@@ -1558,9 +1704,9 @@ nnoremap ]0 :call signature#marker#Goto('next', 0, v:count)<CR>
 " }}}
 " Plugin: vim-startify {{{
 let g:startify_lists = [
+      \ { 'type': 'commands' },
       \ { 'type': 'sessions',  'header': ['   Sessions']       },
       \ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
-      \ { 'type': 'commands',  'header': ['   Commands']       },
       \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
       \ ]
 let g:startify_bookmarks = [
@@ -1577,7 +1723,7 @@ let g:startify_change_to_vcs_root = 1
 let g:startify_fortune_use_unicode = 0
 let g:startify_enable_unsafe = 1
 let g:startify_session_sort = 1
-let g:startify_custom_indices = ['a', 'd', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 'u', 'w', 'x', 'y', 'z']
+let g:startify_custom_indices = ['d', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r', 'u', 'w', 'x', 'y', 'z']
 let g:startify_use_env = 1
 autocmd User StartifyReady setlocal cursorline
 " }}}
