@@ -1274,7 +1274,8 @@ an 990.30  &Help.&QuickRef                                  :h quickref<CR>
 an 990.40  &Help.&Plugins\ Documentation                    :h local-additions<CR>
 an 990.50  &Help.View\ Log\ Messages<Tab>:messages          :messages<CR>
 an 990.60  &Help.--1-- <Nop>
-an 990.70  &Help.Join\ PlanetVim\ Chat                      :silent !xdg-open https://matrix.to/...<CR>
+an 990.70  &Help.View\ PlanetVim\ &Community                :silent !xdg-open https://matrix.to/\#/+planetvim:matrix.org<CR>
+an 990.70  &Help.&Join\ PlanetVim\ Chat                     :silent !xdg-open https://matrix.to/\#/\#planetvim_discussion:matrix.org?via=matrix.org<CR>
 an 990.80  &Help.--2-- <Nop>
 an 990.90  &Help.Check\ for\ &Updates                       :silent !xdg-open https://github.com/fedorenchik/PlanetVim/releases<CR>
 an 990.100 &Help.Report\ PlanetVim\ &Issue                  :silent !xdg-open https://github.com/fedorenchik/PlanetVim/issues/new<CR>

@@ -2,6 +2,8 @@
 
 Easy and powerful Vim Distribution.
 
+Release version v0.0.0 (not ready even for testing)
+
 # Features
 
 * GUI
