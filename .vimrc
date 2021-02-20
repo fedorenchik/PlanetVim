@@ -297,7 +297,7 @@ if has("gui")
 endif
 set guiheadroom=0
 "XXX: add '!' to guioptions when startify bug #460 will be fixed
-set guioptions=aAcdeimMgTpk
+set guioptions=aAcdeimMgpk
 set guipty
 "set guitablabel&
 set guitabtooltip=%{GuiTabTooltip()}
@@ -806,38 +806,51 @@ command -bar -nargs=? -complete=help HelpCurwin execute s:HelpCurwin(<q-args>)
 " }}}
 " Menu: {{{
 " PlanetVim
+" TODO: Choise between text, emoji, symbols, nerdicons menus
 function! PlanetSaveExit() abort
   confirm wall
   qa!
 endfunction
 
-"TODO: Toggle Editing Menus: Search, Registers, Selection, View, CMark, Go, Marks, Bookmarks, Fold, QF, LL
-function! PlanetEditingMenus() abort
-  aunmenu Search\ (/)
-  aunmenu Registers
+"TODO: Toggle Basic Menus
+function! PlanetBasicMenus() abort
+  aunmenu File
+  aunmenu Edit
   aunmenu Selection
   aunmenu View
-  aunmenu CMark
   aunmenu Go
+endfunction
+"TODO: Toggle Editing Menus
+function! PlanetEditingMenus() abort
+  aunmenu Registers
+  aunmenu Search(/)
   aunmenu Marks
+  aunmenu Markers
+  aunmenu CMarks
   aunmenu Bookmarks
   aunmenu Fold(z)
   aunmenu QF
   aunmenu LL
 endfunction
-"TODO: Toggle Development Menus: LSP, Tags, Build, Run, Debug, Test, Analyze, Terminal, Diff/Patch
+"TODO: Toggle Development Menus
 function! PlanetDevelopmentMenus() abort
-  aunmenu LSP([)
-  aunmenu Tags(])
+  aunmenu LSP[
+  aunmenu Tags]
   aunmenu Build
   aunmenu Run
   aunmenu Debug
-  aunmenu Test(J)
+  aunmenu Test(j)
   aunmenu Analyze
   aunmenu Terminal
-  aunmenu Diff/Patch(;)
 endfunction
-"TODO: Toggle Navigation Menus: Buffers, Args, Windows, Tabs, Session, GUI, Apps
+"TODO: Toggle Tools Menus
+function! PlanetToolsMenus() abort
+  aunmenu Git(,)
+  aunmenu Diff/Patch(;)
+  aunmenu Spelling(-)
+  aunmenu Tools
+endfunction
+"TODO: Toggle Navigation Menus
 function! PlanetNavigationMenus() abort
   aunmenu Buffers
   aunmenu Args
@@ -848,7 +861,7 @@ function! PlanetNavigationMenus() abort
   aunmenu Apps(')
 endfunction
 function! PlanetFiletypeMenus() abort
-  "TODO
+  "TODO: for arduino, c++, python, etc.
 endfunction
 an 100.10  &PlanetVim.&Insert\ Mode<Tab>:set\ im!           :set im!<CR>
 an 100.20  &PlanetVim.--1-- <Nop>
@@ -1212,6 +1225,7 @@ an 390.50  &Windows.Horizontal\ &Split<Tab>:split<Tab>+s    <C-w>s
 an 390.60  &Windows.&Vertical\ Split<Tab>:vsplit<Tab>+v     <C-w>v
 an 390.90  &Windows.S&wap<Tab>+x                            <C-w>x
 an 390.100 &Windows.Move\ to\ New\ &Tab<Tab>+T              <C-w>T
+an 390.100 &Windows.Move\ to\ New\ &GUI\ Window             :TODO
 an 390.120 &Windows.--3-- <Nop>
 an 390.130 &Windows.Move\ to\ Left<Tab>+H                   <C-w>H
 an 390.140 &Windows.Move\ to\ Right<Tab>+L                  <C-w>L
@@ -1253,17 +1267,19 @@ an disable Sessio&ns.Session\ List
 an 420.10  GUI(&X).&Maximize            :silent call system('wmctrl -i -b toggle,maximized_vert,maximized_horz -r' . v:windowid)<CR>
 an 420.10  GUI(&X).&Full\ Screen        :silent call system('wmctrl -i -b toggle,fullscreen -r' . v:windowid)<CR>
 an 420.10  GUI(&X).Minimi&ze<Tab>:suspend<Tab><C-z>         <C-z>
+an 420.10  GUI(&X).--1-- <Nop>
 "TODO: List of GUI windows to focus
 
 " Open in new GUI window
-an 430.10  Apps(&').Calendar                                :Calendar<CR>
-"Terminal
-"FileManager
-"Web Browser
-"Email
-"Calculator
-"Codi
-"difdiff
+an 430.10  Apps(&').Calendar            :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +Calendar<CR>
+an 430.10  Apps(&').Web\ Browser        :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'W3m https://google.com/'<CR>
+an 430.10  Apps(&').Calculator          :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +Calculator<CR>
+an 430.10  Apps(&').Terminal            :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'terminal ++curwin ++kill=kill'<CR>
+an 430.10  Apps(&').File\ Manager       :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'Fern .'<CR>
+an 430.10  Apps(&').Python\ REPL        :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'Codi python'<CR>
+an 430.10  Apps(&').C++\ REPL           :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'Codi cpp'<CR>
+"TODO: Email
+"TODO: difdiff
 
 " Show current maps (nnoremap, etc.)
 an 980.10  Maps(&\\).C&hoose\.\.\.                          :Clap maps<CR>
@@ -1295,7 +1311,7 @@ an 990.120 &Help.&About                                     :version<CR>
 " TODO: Visual: visual
 " }}}
 " WinBar Menus: {{{
-" TODO: Auto for LL, QF, Terminals
+" TODO: Auto for LL, QF, Terminals, W3m
 " }}}
 " $VIMRUNTIME/ {{{
 " filetype.vim {{{
