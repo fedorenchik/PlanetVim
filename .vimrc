@@ -904,7 +904,7 @@ function! PlanetBasicMenus() abort
     an 990.70  &Help.&Join\ PlanetVim\ Chat                     :silent !xdg-open https://matrix.to/\#/\#planetvim_discussion:matrix.org?via=matrix.org<CR>
     an 990.80  &Help.--2-- <Nop>
     an 990.90  &Help.Check\ for\ &Updates                       :silent !xdg-open https://github.com/fedorenchik/PlanetVim/releases<CR>
-    an 990.100 &Help.Report\ PlanetVim\ &Issue                  :silent !xdg-open https://github.com/fedorenchik/PlanetVim/issues/new<CR>
+    an 990.100 &Help.Report\ PlanetVim\ &Issue                  :silent !xdg-open https://github.com/fedorenchik/PlanetVim/issues/new/choose<CR>
     an 990.110 &Help.--3-- <Nop>
     an 990.120 &Help.&About                                     :version<CR>
   endif
