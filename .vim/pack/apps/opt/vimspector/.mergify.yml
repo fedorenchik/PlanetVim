@@ -1,0 +1,38 @@
+pull_request_rules:
+  - name: Merge owner PR when all checks passed
+    conditions:
+      - author=puremourning
+      - base=master
+      # Review
+      - status-success=code-review/reviewable
+      - "#changes-requested-reviews-by=0"
+      # CI https://doc.mergify.io/conditions.html#github-actions
+      - status-success=PythonLint
+      - status-success=VimscriptLint
+      - status-success=MacOS
+
+
+    actions: &merge-actions
+      merge:
+        method: merge
+        strict: smart
+      delete_head_branch: {}
+
+  - name: Merge PR when all checks passed
+    conditions:
+      - author!=puremourning
+      - base=master
+      # Review
+      - status-success=code-review/reviewable
+      - "#approved-reviews-by>=1"
+      - "#changes-requested-reviews-by=0"
+      - approved-reviews-by=puremourning
+      # CI https://doc.mergify.io/conditions.html#github-actions
+      - status-success=PythonLint
+      - status-success=VimscriptLint
+      - status-success=Linux
+      - status-success=MacOS
+    actions:
+      <<: *merge-actions
+      comment:
+        message: Thanks for sending a PR!

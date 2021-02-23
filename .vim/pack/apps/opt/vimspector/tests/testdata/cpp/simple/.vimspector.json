@@ -1,0 +1,134 @@
+{
+  "$schema": "https://puremourning.github.io/vimspector/schema/vimspector.schema.json",
+  "configurations": {
+    "run-to-entry": {
+      "adapter": "vscode-cpptools",
+      // This makes this configuration the default. Only one default can be set
+      // (having two is the same as having none)
+      "default": true,
+      "configuration": {
+        "request": "launch",
+        "program": "${workspaceRoot}/${fileBasenameNoExtension}",
+        "externalConsole": false,
+        "stopAtEntry": true,
+        "stopOnEntry": true,
+        "MImode": "${VIMSPECTOR_MIMODE}"
+      },
+      "breakpoints": {
+        "exception": {
+          "cpp_catch": "",
+          "cpp_throw": "",
+          "objc_catch": "",
+          "objc_throw": "",
+          "swift_catch": "",
+          "swift_throw": ""
+        }
+      }
+    },
+    "run-to-breakpoint": {
+      "adapter": "vscode-cpptools",
+      "configuration": {
+        "request": "launch",
+        "program": "${workspaceRoot}/${fileBasenameNoExtension}",
+        "externalConsole": false,
+        "stopAtEntry": false,
+        "stopOnEntry": false,
+        "MImode": "${VIMSPECTOR_MIMODE}"
+      },
+      "breakpoints": {
+        "exception": {
+          "cpp_catch": "",
+          "cpp_throw": "",
+          "objc_catch": "",
+          "objc_throw": "",
+          "swift_catch": "",
+          "swift_throw": ""
+        }
+      }
+    },
+    "run-to-breakpoint-specify-file": {
+      "adapter": "vscode-cpptools",
+      "configuration": {
+        "request": "launch",
+        "program": "${workspaceRoot}/${prog}",
+        "cwd": "${workspaceRoot}",
+        "externalConsole": false,
+        "stopAtEntry": false,
+        "stopOnEntry": false,
+        "MImode": "${VIMSPECTOR_MIMODE}"
+      },
+      "breakpoints": {
+        "exception": {
+          "cpp_catch": "",
+          "cpp_throw": "",
+          "objc_catch": "",
+          "objc_throw": "",
+          "swift_catch": "",
+          "swift_throw": ""
+        }
+      }
+    },
+    "calculate-some-variable": {
+      "adapter": "vscode-cpptools",
+      "variables": {
+        "SIMPLE": "This is some text containing: $HOME",
+        "CALCULATED_LIST": {
+          "shell": [ "uuidgen" ]
+        },
+        "CALCULATED_STR": {
+          "shell": [ "uuidgen" ]
+        }
+      },
+      "configuration": {
+        "request": "launch",
+        "program": "${workspaceRoot}/${fileBasenameNoExtension}",
+        "MImode": "${VIMSPECTOR_MIMODE}",
+        "externalConsole": false,
+        "args": [
+          "CALCULATED_LIST", "${CALCULATED_LIST}",
+          "SIMPLE", "${SIMPLE}",
+          "CALCULATED_STR", "${CALCULATED_STR}"
+        ]
+      }
+    },
+    "lldb-vscode": {
+      "adapter": "lldb-vscode",
+      "configuration": {
+        "request": "launch",
+        "program": "${workspaceRoot}/${fileBasenameNoExtension}",
+        "cwd": "${workspaceRoot}",
+        "externalConsole": false,
+        "MIMode": "lldb"
+      }
+    },
+    "CodeLLDB": {
+      "adapter": "CodeLLDB",
+      "configuration": {
+        "request": "launch",
+        "program": "${workspaceRoot}/${fileBasenameNoExtension}",
+        "cwd": "${workspaceRoot}",
+        "expressions": "native"
+      }
+    }
+  },
+  "adapters": {
+    "lldb-vscode": {
+      "variables": {
+        "LLVM": {
+          "shell": "brew --prefix llvm"
+        }
+      },
+      "attach": {
+        "pidProperty": "pid",
+        "pidSelect": "ask"
+      },
+      "command": [
+        "${LLVM}/bin/lldb-vscode"
+      ],
+      "env": {
+        "LLDB_LAUNCH_FLAG_LAUNCH_IN_TTY": "YES"
+      },
+      "name": "lldb"
+    }
+  }
+}
