@@ -100,12 +100,12 @@ command! -bar -nargs=? -complete=custom,vimspector#CompleteOutput
 command! -bar
       \ VimspectorToggleLog
       \ call vimspector#ToggleLog()
-command! -bar -nargs=1 -complete=custom,vimspector#CompleteExpr
+command! -nargs=1 -complete=custom,vimspector#CompleteExpr
       \ VimspectorEval
       \ call vimspector#Evaluate( <f-args> )
 command! -bar
       \ VimspectorReset
-      \ call vimspector#Reset()
+      \ call vimspector#Reset( { 'interactive': v:true } )
 
 " Installer commands
 command! -bar -bang -nargs=* -complete=custom,vimspector#CompleteInstall
