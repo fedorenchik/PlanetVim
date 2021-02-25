@@ -60,6 +60,7 @@ if has('autocmd')
 endif
 if has('syntax') && !exists('g:syntax_on')
   syntax on
+  syntax sync minlines=10000
 endif
 " }}}
 " Start Vim Server: {{{
@@ -359,7 +360,7 @@ set printmbfont=r:WenQuanYi\ Zen\ Hei,a:yes
 set prompt
 set pumheight=10
 set pyxversion=3
-set redrawtime=1000
+set redrawtime=10000
 set relativenumber
 set ruler
 set noscrollbind
@@ -482,15 +483,6 @@ while c <= '~'
 endwhile
 " }}}
 " Normal (Command) Mode: {{{
-" Keys Description: {{{
-" Metakeys: <BS> <Tab> <CR> <Esc> <Space> <Del> <Up> <Down> <Left> <Right>
-" <F1>..<F12> <Insert> <Home> <End> <PageUp> <PageDown>
-" Commands Expecting Text Objects: c d < = >
-" Commands Expecting Marks: m ' `
-" Commands Expecting Registers: q " @
-" Standard Text Objects: b B p s t w W [ { } ( ) ] ` < > ' "
-" Submodes: <Space> g s S z Z - + [ ] <A-...> <C-...> <BS>
-" }}}
 " Normal Keys: {{{
 " Normal Keys: {{{
 " Available To Remap: f F h j k l Q s S t T U + ; : , \ - _ <BS> <Space>
@@ -509,9 +501,6 @@ nnoremap n nzz
 nnoremap N Nzz
 nnoremap Q gq
 nnoremap Y y$
-" }}}
-" -----------: <Space>... mappings: {{{
-nnoremap <Space>h :rightbelow terminal ++kill=kill<CR>
 " }}}
 " -----------: g...: vim status: {{{
 " Standard Vim Mappings: a ^A d D e E f F g ^G h H ^H i I j J k m n N o p P q Q
@@ -544,14 +533,7 @@ nnoremap g. :marks<CR>
 nnoremap g" :registers<CR>
 nnoremap g= :tabnew<CR>
 " }}}
-" -----------: s...: source navigation (lsp): {{{
-" Available To Map: all
-nnoremap s <Nop>
-" }}}
 " -----------: S...: open windows: {{{
-" Available To Map: all
-nnoremap S <Nop>
-nnoremap SH :help<CR>
 nnoremap SL :lopen<CR>
 nnoremap SP :ptag<CR>
 nnoremap SQ :botright copen<CR>
@@ -599,8 +581,7 @@ nnoremap ]O :lnewer<CR>
 " }}}
 " Ctrl Key: tags, quickfix, location list navigation: {{{
 " XXX: Ctrl-Shift modifier does not work neither in terminal nor in GUI.
-" XXX: Uppercase/lowercase distinction is not available with <Ctrl-...>
-" XXX: modifier.
+" XXX: Uppercase/lowercase distinction is not available with <Ctrl-...> modifier.
 " Standard Vim Mappings: A C G I M O Q R S T V W X Z [ \ ] ^
 " Available To Map:
 " B D E F H J K L N P Q S U Y 1 2 3 4 5 6 7 8 9 0 $ & { } ( = * ) + ! # ~ % ` ; : , < . > / ? @ | - _ ' " <BS> <Tab> <CR> <Esc> <Space>
@@ -618,16 +599,10 @@ nnoremap <C-s> :emenu <C-Z>
 nnoremap <C-u> :lolder<CR>
 " Ctrl Key: <C-W>...: {{{
 nnoremap <C-W>V :botright vsplit<CR>
-" Ctrl Key: <C-W>g...: {{{
-" }}}
 " }}}
 nnoremap <C-y> :cprevious<CR>
-nnoremap <C-_> <Nop>
-" Ctrl Key: <C-\>...: {{{
-" }}}
 " }}}
 " Alt Key: {{{
-" Available To Map: all keys
 nnoremap <A-Left> <C-o>
 nnoremap <A-Right> <C-i>
 nnoremap <A-n> :<C-U><C-R><C-R>='let @'. v:register .' = '. string(getreg(v:register))<CR><C-F><Left>
@@ -675,25 +650,20 @@ inoremap <A-^> <PageUp>
 inoremap <A-]> <C-X><C-]>
 inoremap <A-{> <Up>
 inoremap <A-}> <Down>
-inoremap <A-a> <Esc>
 inoremap <A-c> <C-X><C-N>
 inoremap <A-C> <C-X><C-P>
 inoremap <A-d> <C-X><C-D>
 inoremap <expr> <A-e> pumvisible() ? "<C-E>" : "<Esc>u"
 inoremap <A-f> <C-X><C-F>
-inoremap <A-h> <BS>
 inoremap <A-i> <C-X><C-I>
 inoremap <A-k> <C-X><C-K>
 inoremap <A-l> <C-X><C-L>
 inoremap <A-m> <C-R>=ListMonths()<CR>
-inoremap <A-n> <C-N>
 inoremap <A-o> <C-X><C-O>
-inoremap <A-p> <C-P>
 inoremap <A-s> <C-X><C-S>
 inoremap <A-t> <C-X><C-T>
 inoremap <A-u> <C-X><C-U>
 inoremap <A-v> <C-X><C-V>
-inoremap <A-w> <C-O>:up<CR>
 inoremap <A-x> <C-X>
 inoremap <expr> <A-y> pumvisible() ? "<C-Y>" : "<Esc>"
 " }}}
@@ -740,9 +710,8 @@ lnoremap <Tab> <Esc>
 " }}}
 " Abbreviations: {{{
 inoreabbrev teh the
-cnoreabbrev calc Calc
-cnoreabbrev f find
-cnoreabbrev gblame Gblame
+"cnoreabbrev f find
+call SetupCommandAlias("f", "find")
 " }}}
 " Autocommands: {{{
 if has("autocmd")
@@ -807,28 +776,31 @@ command -bar -nargs=? -complete=help HelpCurwin execute s:HelpCurwin(<q-args>)
 " Menu: {{{
 " Custom config file: $HOME/.vim/planetvimrc.vim
 let g:PV_config = "$HOME/.vim/planetvimrc.vim"
-if filereadable(g:PV_config)
-  source g:PV_config
+if filereadable(expand(g:PV_config))
+  silent exe "source " .. fnameescape(g:PV_config)
 endif
+
+function! PlanetVim_AddMenuItem(priority, text, command) abort
+    an 110.10  &File.&New                                       :confirm enew<CR>
+    an a:priority a:text a:command
+    tln 110.10  &File.&New                                      :confirm enew<CR>
+    no <A-f>n :confirm enew<CR>
+    no a:map a:command
+    ln <A-f>n :confirm enew<CR>
+    tno <A-f>n :confirm enew<CR>
+endfunction
+
 " system('sed -i -e s/PV_basic_menus_status/.../ $HOME/.vim/planetvimrc.vim')
 " TODO: Choise between text, emoji, symbols, nerdicons menus
-let g:PV_basic_menus = 0
-function! PlanetBasicMenus() abort
-  if g:PV_basic_menus
-    let g:PV_basic_menus = 0
-    aunmenu &File
-    aunmenu &Edit
-    aunmenu &Selection
-    aunmenu &View
-    aunmenu &Go
-    aunmenu Maps(&\\)
-    aunmenu &Help
-  else
-    let g:PV_basic_menus = 1
+if ! exists("g:PlanetVim_menus_basic")
+  let g:PlanetVim_menus_basic = 1
+endif
+function! PlanetVim_MenusBasicUpdate() abort
+  if g:PlanetVim_menus_basic
     " File & vim-uenuch
     an 110.10  &File.&New                                       :confirm enew<CR>
     an 110.20  &File.New\ &Tab                                  :confirm tabnew<CR>
-    an 110.30  &File.New\ &Window                               :silent !gvim<CR>
+    an 110.30  &File.New\ G&Window                              :silent !gvim<CR>
     an 110.40  &File.--1-- <Nop>
     an 110.50  &File.&Open\ File                                :Clap files<CR>
     an 110.60  &File.Open\ &File\ Manager<Tab>-                 :Fern -reveal=% .<CR>
@@ -907,17 +879,81 @@ function! PlanetBasicMenus() abort
     an 990.100 &Help.Report\ PlanetVim\ &Issue                  :silent !xdg-open https://github.com/fedorenchik/PlanetVim/issues/new/choose<CR>
     an 990.110 &Help.--3-- <Nop>
     an 990.120 &Help.&About                                     :version<CR>
-  endif
-  if filewritable(g:PV_config)
-    call system('sed -i -e s/PV_basic_menus/let g:PV_basic_menus = ' .. g:PV_basic_menus .. '/ ' .. g:PV_config)
-    if v:shell_error
-      call system('echo "let g:PV_basic_menus = ' .. g:PV_basic_menus .. '" >> ' .. g:PV_config)
-    endif
   else
-    call system('echo "let g:PV_basic_menus = ' .. g:PV_basic_menus .. '" > ' .. g:PV_config)
+    aunmenu &File
+    aunmenu &Edit
+    aunmenu &Selection
+    aunmenu &View
+    aunmenu &Go
+    aunmenu Maps(&\\)
+    aunmenu &Help
   endif
 endfunction
-call PlanetBasicMenus()
+call PlanetVim_MenusBasicUpdate()
+
+function! PlanetVim_ConfigUpdate(conf_var) abort
+  if filewritable(expand(g:PV_config))
+    silent call system('grep "let ' .. a:conf_var .. ' =" ' .. g:PV_config)
+    if ! v:shell_error
+      silent call system('sed -i -e "s/^let ' .. a:conf_var .. ' = .*$/let ' .. a:conf_var .. ' = ' .. eval(a:conf_var) .. '/" ' .. g:PV_config)
+    else
+      silent call system('echo "let ' .. a:conf_var .. ' = ' .. eval(a:conf_var) .. '" >> ' .. g:PV_config)
+    endif
+  else
+    silent call system('echo "let ' .. a:conf_var .. ' = ' .. eval(a:conf_var) .. '" > ' .. g:PV_config)
+  endif
+endfunction
+
+"TODO: add session support
+function! PlanetVim_MenusBasicToggle() abort
+  if g:PlanetVim_menus_basic
+    let g:PlanetVim_menus_basic = 0
+  else
+    let g:PlanetVim_menus_basic = 1
+  endif
+  call PlanetVim_MenusBasicUpdate()
+  call PlanetVim_ConfigUpdate('g:PlanetVim_menus_basic')
+endfunction
+
+function! PlanetVim_MenusEditingToggle() abort
+  if g:PlanetVim_menus_editing
+    let g:PlanetVim_menus_editing = 0
+  else
+    let g:PlanetVim_menus_editing = 1
+  endif
+  call PlanetVim_MenusEditingUpdate()
+  call PlanetVim_ConfigUpdate('g:PlanetVim_menus_editing')
+endfunction
+
+function! PlanetVim_MenusDevelopmentToggle() abort
+  if g:PlanetVim_menus_dev
+    let g:PlanetVim_menus_dev = 0
+  else
+    let g:PlanetVim_menus_dev = 1
+  endif
+  call PlanetVim_MenusDevelopmentUpdate()
+  call PlanetVim_ConfigUpdate('g:PlanetVim_menus_dev')
+endfunction
+
+function! PlanetVim_MenusToolsToggle() abort
+  if g:PlanetVim_menus_tools
+    let g:PlanetVim_menus_tools = 0
+  else
+    let g:PlanetVim_menus_tools = 1
+  endif
+  call PlanetVim_MenusToolsUpdate()
+  call PlanetVim_ConfigUpdate('g:PlanetVim_menus_tools')
+endfunction
+
+function! PlanetVim_MenusNavigationToggle() abort
+  if g:PlanetVim_menus_nav
+    let g:PlanetVim_menus_nav = 0
+  else
+    let g:PlanetVim_menus_nav = 1
+  endif
+  call PlanetVim_MenusNavigationUpdate()
+  call PlanetVim_ConfigUpdate('g:PlanetVim_menus_nav')
+endfunction
 
 function! s:registers_choose_to_edit() abort
   echohl Question
@@ -931,21 +967,11 @@ function! s:registers_choose_to_edit() abort
   execute("silent normal \<C-w>P")
 endfunction
 
-let g:PV_editing_menus = 0
-function! PlanetEditingMenus() abort
-  if g:PV_editing_menus
-    let g:PV_editing_menus = 0
-    aunmenu Reg&isters
-    aunmenu Search\(&/)
-    aunmenu &Marks
-    aunmenu Markers(&")
-    aunmenu &CMarks
-    aunmenu Boo&kmarks
-    aunmenu Fold(&z)
-    aunmenu &QF
-    aunmenu &LL
-  else
-    let g:PV_editing_menus = 1
+if ! exists("g:PlanetVim_menus_editing")
+  let g:PlanetVim_menus_editing = 1
+endif
+function! PlanetVim_MenusEditingUpdate() abort
+  if g:PlanetVim_menus_editing
     " Vim Registers
     an 140.10  Reg&isters.C&hoose\ to\ Paste\.\.\.              :Clap registers<CR>
     an 140.10  Reg&isters.Choose\ to\ Edit\.\.\.                :call <SID>registers_choose_to_edit()<CR>
@@ -1119,24 +1145,25 @@ function! PlanetEditingMenus() abort
     an 240.350 &LL.Next\ LocList\ (&j)<Tab>:lnewer              :lnewer<CR>
     an 240.360 &LL.List\ LocLists\ (&q)<Tab>:lhistory           :lhistory<CR>
     an 240.370 &LL.--7-- <Nop>
+  else
+    aunmenu Reg&isters
+    aunmenu Search\(&/)
+    aunmenu &Marks
+    aunmenu Markers(&")
+    aunmenu &CMarks
+    aunmenu Boo&kmarks
+    aunmenu Fold(&z)
+    aunmenu &QF
+    aunmenu &LL
   endif
 endfunction
-call PlanetEditingMenus()
+call PlanetVim_MenusEditingUpdate()
 
-let g:PlanetVim_dev_menus_status = 0
-function! PlanetDevelopmentMenus() abort
-  if g:PlanetVim_dev_menus_status
-    let g:PlanetVim_dev_menus_status = 0
-    aunmenu LSP&[
-    aunmenu Tags&]
-    aunmenu B&uild
-    aunmenu &Run
-    aunmenu &Debug
-    aunmenu Test(&j)
-    aunmenu Anal&yze
-    aunmenu &Terminal
-  else
-    let g:PlanetVim_dev_menus_status = 1
+if ! exists("g:PlanetVim_menus_dev")
+  let g:PlanetVim_menus_dev = 1
+endif
+function! PlanetVim_MenusDevelopmentUpdate() abort
+  if g:PlanetVim_menus_dev
     an 250.10  LSP&[.C&hoose\ Symbol<Tab>:Clap\ tags\ vim_lsp   :Clap tags vim_lsp<CR>
     an 250.10  LSP&[.Definition                                 :LspDefinition<CR>
 
@@ -1170,20 +1197,24 @@ function! PlanetDevelopmentMenus() abort
     an 320.10  &Terminal.New\ at\ &Bottom                       :botright terminal ++kill=kill<CR>
     an 320.10  &Terminal.--1-- <Nop>
     an 320.10  &Terminal.Python\ Shell                          :botright terminal ++kill=kill python<CR>
+  else
+    aunmenu LSP&[
+    aunmenu Tags&]
+    aunmenu B&uild
+    aunmenu &Run
+    aunmenu &Debug
+    aunmenu Test(&j)
+    aunmenu Anal&yze
+    aunmenu &Terminal
   endif
 endfunction
-call PlanetDevelopmentMenus()
+call PlanetVim_MenusDevelopmentUpdate()
 
-let g:PlanetVim_tools_menus_status = 0
-function! PlanetToolsMenus() abort
-  if g:PlanetVim_tools_menus_status
-    let g:PlanetVim_tools_menus_status = 0
-    aunmenu Git(&,)
-    aunmenu Diff/Patch(&;)
-    aunmenu Spelling(&-)
-    aunmenu T&ools
-  else
-    let g:PlanetVim_tools_menus_status = 1
+if ! exists("g:PlanetVim_menus_tools")
+  let g:PlanetVim_menus_tools = 1
+endif
+function! PlanetVim_MenusToolsUpdate() abort
+  if g:PlanetVim_menus_tools
     " Open Log in new window
     an 330.10  Git(&,).Log                                      :
 
@@ -1215,23 +1246,20 @@ function! PlanetToolsMenus() abort
     an 360.10  T&ools.--3-- <Nop>
     an 360.10  T&ools.Toggle\ Verbosity<Tab>=oV                 :VerbosityToggle<CR>
     an 360.10  T&ools.Open\ Verbosity\ Log<Tab>goV              :VerbosityOpenLast<CR>
+  else
+    aunmenu Git(&,)
+    aunmenu Diff/Patch(&;)
+    aunmenu Spelling(&-)
+    aunmenu T&ools
   endif
 endfunction
-call PlanetToolsMenus()
+call PlanetVim_MenusToolsUpdate()
 
-let g:PlanetVim_nav_menus_status = 0
-function! PlanetNavigationMenus() abort
-  if g:PlanetVim_nav_menus_status
-    let g:PlanetVim_nav_menus_status = 0
-    aunmenu &Buffers
-    aunmenu &Args
-    aunmenu &Windows
-    aunmenu Tabs(&\.)
-    aunmenu Sessio&ns
-    aunmenu GUI(&X)
-    aunmenu Apps(&')
-  else
-    let g:PlanetVim_nav_menus_status = 1
+if ! exists("g:PlanetVim_menus_nav")
+  let g:PlanetVim_menus_nav = 1
+endif
+function! PlanetVim_MenusNavigationUpdate() abort
+  if g:PlanetVim_menus_nav
     " Buffers
     an 370.10  &Buffers.C&hoose\.\.\.                           :Clap buffers<CR>
     an 370.20  &Buffers.--1-- <Nop>
@@ -1321,9 +1349,17 @@ function! PlanetNavigationMenus() abort
     an 430.10  Apps(&').C++\ REPL           :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'Codi cpp'<CR>
     "TODO: Email
     "TODO: difdiff
+  else
+    aunmenu &Buffers
+    aunmenu &Args
+    aunmenu &Windows
+    aunmenu Tabs(&\.)
+    aunmenu Sessio&ns
+    aunmenu GUI(&X)
+    aunmenu Apps(&')
   endif
 endfunction
-call PlanetNavigationMenus()
+call PlanetVim_MenusNavigationUpdate()
 
 function! PlanetFiletypeMenus() abort
   "TODO: for arduino, c++, python, etc.
@@ -1336,13 +1372,13 @@ endfunction
 
 an 100.10  &PlanetVim.&Insert\ Mode<Tab>:set\ im!           :set im!<CR>
 an 100.20  &PlanetVim.--1-- <Nop>
-an 100.30  &PlanetVim.&Basic\ Menus                         :call PlanetBasicMenus()<CR>
-an 100.30  &PlanetVim.&Editing\ Menus                       :call PlanetEditingMenus()<CR>
-an 100.50  &PlanetVim.&Development\ Menus                   :call PlanetDevelopmentMenus()<CR>
-an 100.50  &PlanetVim.&Tools\ Menus                         :call PlanetToolsMenus()<CR>
-an 100.40  &PlanetVim.&Navigation\ Menus                    :call PlanetNavigationMenus()<CR>
+an 100.30  &PlanetVim.&Basic\ Menus                         :call PlanetVim_MenusBasicToggle()<CR>
+an 100.30  &PlanetVim.&Editing\ Menus                       :call PlanetVim_MenusEditingToggle()<CR>
+an 100.50  &PlanetVim.&Development\ Menus                   :call PlanetVim_MenusDevelopmentToggle()<CR>
+an 100.50  &PlanetVim.&Tools\ Menus                         :call PlanetVim_MenusToolsToggle()<CR>
+an 100.40  &PlanetVim.&Navigation\ Menus                    :call PlanetVim_MenusNavigationToggle()<CR>
 an 100.60  &PlanetVim.--2-- <Nop>
-an 100.70  &PlanetVim.Edit\ &Settings                       :confirm e ~/.vimrc<CR>
+an 100.70  &PlanetVim.Edit\ &Settings                       :tabedit ~/.vim/planetvimrc.vim<CR>
 an 100.80  &PlanetVim.--3-- <Nop>
 an 100.90  &PlanetVim.&Close\ Everything                    :SClose<CR>
 an 100.100 &PlanetVim.--4-- <Nop>
@@ -1519,8 +1555,8 @@ xnoremap az :<c-u>FastFoldUpdate<cr><esc>:<c-u>normal! ]zV[z<cr>
 let g:fern#smart_cursor = "hide"
 let g:fern#keepalt_on_edit = 1
 let g:fern#keepjumps_on_edit = 1
+let g:fern#drawer_width = 40
 nnoremap <silent> - :Fern -reveal=% .<CR>
-nnoremap <silent> <A-f> :Fern . -drawer -reveal=% -toggle<CR>
 augroup my-fern
   autocmd!
   autocmd FileType fern setlocal nonumber norelativenumber signcolumn=yes foldcolumn=0
