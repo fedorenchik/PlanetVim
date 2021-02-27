@@ -526,6 +526,10 @@ class DebugSession( object ):
     self._variablesView.ExpandVariable( buf, line_num )
 
   @IfConnected()
+  def SetVariableValue( self, new_value = None, buf = None, line_num = None ):
+    self._variablesView.SetVariableValue( new_value, buf, line_num )
+
+  @IfConnected()
   def AddWatch( self, expression ):
     self._variablesView.AddWatch( self._stackTraceView.GetCurrentFrame(),
                                   expression )
@@ -627,6 +631,18 @@ class DebugSession( object ):
     #  - sortText
     return response[ 'body' ][ 'targets' ]
 
+
+  @IfConnected( otherwise=[] )
+  def GetCommandLineCompletions( self, ArgLead, prev_non_keyword_char ):
+    items = []
+    for candidate in self.GetCompletionsSync( ArgLead, prev_non_keyword_char ):
+      label = candidate.get( 'text', candidate[ 'label' ] )
+      start = prev_non_keyword_char - 1
+      if 'start' in candidate and 'length' in candidate:
+        start = candidate[ 'start' ]
+      items.append( ArgLead[ 0 : start ] + label )
+
+    return items
 
   def RefreshSigns( self, file_name ):
     if self._connection:
@@ -987,6 +1003,7 @@ class DebugSession( object ):
     def handle_initialize_response( msg ):
       self._server_capabilities = msg.get( 'body' ) or {}
       self._breakpoints.SetServerCapabilities( self._server_capabilities )
+      self._variablesView.SetServerCapabilities( self._server_capabilities )
       self._Launch()
 
     self._connection.DoRequest( handle_initialize_response, {

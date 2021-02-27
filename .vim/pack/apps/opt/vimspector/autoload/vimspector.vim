@@ -209,6 +209,17 @@ function! vimspector#ExpandVariable() abort
   py3 _vimspector_session.ExpandVariable()
 endfunction
 
+function! vimspector#SetVariableValue( ... ) abort
+  if !s:Enabled()
+    return
+  endif
+  if a:0 == 0
+    py3 _vimspector_session.SetVariableValue()
+  else
+    py3 _vimspector_session.SetVariableValue( new_value = vim.eval( 'a:1' ) )
+  endif
+endfunction
+
 function! vimspector#DeleteWatch() abort
   if !s:Enabled()
     return
@@ -228,7 +239,9 @@ function! vimspector#AddWatch( ... ) abort
     return
   endif
   if a:0 == 0
-    let expr = input( 'Enter watch expression: ' )
+    let expr = input( 'Enter watch expression: ',
+                    \ '',
+                    \ 'custom,vimspector#CompleteExpr' )
   else
     let expr = a:1
   endif
@@ -320,28 +333,6 @@ function! vimspector#CompleteOutput( ArgLead, CmdLine, CursorPos ) abort
   return join( buffers, "\n" )
 endfunction
 
-py3 <<EOF
-def _vimspector_GetExprCompletions( ArgLead, prev_non_keyword_char ):
-  if not _vimspector_session:
-    return []
-
-  items = []
-  for candidate in _vimspector_session.GetCompletionsSync(
-    ArgLead,
-    prev_non_keyword_char ):
-
-    label = candidate.get( 'text', candidate[ 'label' ] )
-
-    start = prev_non_keyword_char - 1
-
-    if 'start' in candidate and 'length' in candidate:
-      start = candidate[ 'start' ]
-
-    items.append( ArgLead[ 0 : start ] + label )
-
-  return items
-EOF
-
 function! vimspector#CompleteExpr( ArgLead, CmdLine, CursorPos ) abort
   if !s:Enabled()
     return
@@ -350,7 +341,7 @@ function! vimspector#CompleteExpr( ArgLead, CmdLine, CursorPos ) abort
   let col = len( a:ArgLead )
   let prev_non_keyword_char = match( a:ArgLead[ 0 : col - 1 ], '\k*$' ) + 1
 
-  return join( py3eval( '_vimspector_GetExprCompletions( '
+  return join( py3eval( '_vimspector_session.GetCommandLineCompletions( '
                       \ . 'vim.eval( "a:ArgLead" ), '
                       \ . 'int( vim.eval( "prev_non_keyword_char" ) ) )' ),
              \ "\n" )
