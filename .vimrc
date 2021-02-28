@@ -898,13 +898,13 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 990.110 ❔&h.--3-- <Nop>
     an 990.120 ❔&h.&About                                     :version<CR>
   else
-    silent! aunmenu &File
-    silent! aunmenu &Edit
-    silent! aunmenu &Selection
-    silent! aunmenu &View
-    silent! aunmenu &Go
-    silent! aunmenu Maps(&\\)
-    silent! aunmenu &Help
+    silent! aunmenu 📁&f
+    silent! aunmenu 📝&e
+    silent! aunmenu 🖍️&s
+    silent! aunmenu 📺&v
+    silent! aunmenu 🔃&g
+    silent! aunmenu ⌨️&\\
+    silent! aunmenu ❔&h
   endif
 endfunction
 call PlanetVim_MenusBasicUpdate()
@@ -1184,13 +1184,13 @@ function! PlanetVim_MenusEditingUpdate() abort
     an 240.360 &LL.List\ LocLists\ (&q)<Tab>:lhistory           :lhistory<CR>
     an 240.370 &LL.--7-- <Nop>
   else
-    silent! aunmenu Reg&isters
-    silent! aunmenu Search\(&/)
-    silent! aunmenu &Marks
-    silent! aunmenu Markers(&")
-    silent! aunmenu &CMarks
-    silent! aunmenu Boo&kmarks
-    silent! aunmenu Fold(&z)
+    silent! aunmenu 📋&i
+    silent! aunmenu 🔎&/
+    silent! aunmenu 🔖&m
+    silent! aunmenu 🏷️&"
+    silent! aunmenu 🖌️&c
+    silent! aunmenu 📎&k
+    silent! aunmenu 📜&z
     silent! aunmenu &QF
     silent! aunmenu &LL
   endif
@@ -1289,14 +1289,14 @@ function! PlanetVim_MenusDevelopmentUpdate() abort
     an 320.10  💻&t.P&ython\ Shell                         :botright terminal ++kill=kill python<CR>
     an 320.10  💻&t.C&++\ Shell                            :botright terminal ++kill=kill cling<CR>
   else
-    silent! aunmenu LSP&[
-    silent! aunmenu Tags&]
-    silent! aunmenu B&uild
-    silent! aunmenu &Run
-    silent! aunmenu &Debug
-    silent! aunmenu Test(&j)
-    silent! aunmenu Anal&yze
-    silent! aunmenu &Terminal
+    silent! aunmenu ❇️&[
+    silent! aunmenu 🪧&]
+    silent! aunmenu 🔨&u
+    silent! aunmenu ▶️&r
+    silent! aunmenu 🐞&d
+    silent! aunmenu 🧪&j
+    silent! aunmenu 🔬&y
+    silent! aunmenu 💻&t
   endif
 endfunction
 call PlanetVim_MenusDevelopmentUpdate()
@@ -1354,10 +1354,10 @@ function! PlanetVim_MenusToolsUpdate() abort
     an 360.10  🔧&o.Toggle\ Verbosity<Tab>=oV                 :VerbosityToggle<CR>
     an 360.10  🔧&o.Open\ Verbosity\ Log<Tab>goV              :VerbosityOpenLast<CR>
   else
-    silent! aunmenu Git(&,)
-    silent! aunmenu Diff/Patch(&;)
-    silent! aunmenu Spelling(&-)
-    silent! aunmenu T&ools
+    silent! aunmenu 🔀&,
+    silent! aunmenu ⛏️&;
+    silent! aunmenu 🔤&-
+    silent! aunmenu 🔧&o
   endif
 endfunction
 call PlanetVim_MenusToolsUpdate()
@@ -1473,13 +1473,13 @@ function! PlanetVim_MenusNavigationUpdate() abort
     "TODO: Email
     "TODO: difdiff
   else
-    silent! aunmenu &Buffers
-    silent! aunmenu &Args
-    silent! aunmenu &Windows
-    silent! aunmenu Tabs(&\.)
-    silent! aunmenu Sessio&ns
-    silent! aunmenu GUI(&X)
-    silent! aunmenu Apps(&')
+    silent! aunmenu 📖&b
+    silent! aunmenu 🗃️&a
+    silent! aunmenu 🪟&w
+    silent! aunmenu 🗂️&\.
+    silent! aunmenu 📚&n
+    silent! aunmenu 🔰&x
+    silent! aunmenu 🧭&'
   endif
 endfunction
 call PlanetVim_MenusNavigationUpdate()
@@ -1497,16 +1497,16 @@ an disable 🌐&p.PlanetVim
 an 100.10  🌐&p.&Insert\ Mode<Tab>:set\ im!           :set im!<CR>
 an 100.20  🌐&p.--1-- <Nop>
 an 100.30  🌐&p.&Basic\ Menus                         :call PlanetVim_MenusBasicToggle()<CR>
-an 100.30  🌐&p.&Editing\ Menus                       :call PlanetVim_MenusEditingToggle()<CR>
+an 100.40  🌐&p.&Editing\ Menus                       :call PlanetVim_MenusEditingToggle()<CR>
 an 100.50  🌐&p.&Development\ Menus                   :call PlanetVim_MenusDevelopmentToggle()<CR>
-an 100.50  🌐&p.&Tools\ Menus                         :call PlanetVim_MenusToolsToggle()<CR>
-an 100.40  🌐&p.&Navigation\ Menus                    :call PlanetVim_MenusNavigationToggle()<CR>
-an 100.60  🌐&p.--2-- <Nop>
-an 100.70  🌐&p.Edit\ &Settings                       :tabedit ~/.vim/planetvimrc.vim<CR>
-an 100.80  🌐&p.--3-- <Nop>
-an 100.90  🌐&p.&Close\ Everything                    :SClose<CR>
-an 100.100 🌐&p.--4-- <Nop>
-an 100.110 🌐&p.E&xit\ PlanetVim                      :call PlanetSaveExit()<CR>
+an 100.60  🌐&p.&Tools\ Menus                         :call PlanetVim_MenusToolsToggle()<CR>
+an 100.70  🌐&p.&Navigation\ Menus                    :call PlanetVim_MenusNavigationToggle()<CR>
+an 100.80  🌐&p.--2-- <Nop>
+an 100.90  🌐&p.Edit\ &Settings                       :tabedit ~/.vim/planetvimrc.vim<CR>
+an 100.100 🌐&p.--3-- <Nop>
+an 100.110 🌐&p.&Close\ Everything                    :SClose<CR>
+an 100.120 🌐&p.--4-- <Nop>
+an 100.130 🌐&p.E&xit\ PlanetVim                      :call PlanetSaveExit()<CR>
 " }}}
 " ToolBar: {{{
 " FIXME: Maybe don't need
