@@ -68,9 +68,6 @@ if empty(v:servername) && exists('*remote_startserver')
   call remote_startserver('VIM')
 endif
 " }}}
-" Emoji: {{{
-" TODO: make all emojis (including text emojis) double width
-" }}}
 " Nerdfont: {{{
 " Codepoints for Nerdfont v2.1.0
 call setcellwidths([
@@ -790,125 +787,6 @@ function! PlanetVim_AddMenuItem(priority, text, command) abort
     tno <A-f>n :confirm enew<CR>
 endfunction
 
-" system('sed -i -e s/PV_basic_menus_status/.../ $HOME/.vim/planetvimrc.vim')
-" TODO: Choise between text, emoji, symbols, nerdicons menus
-if ! exists("g:PlanetVim_menus_basic")
-  let g:PlanetVim_menus_basic = 1
-endif
-function! PlanetVim_MenusBasicUpdate() abort
-  if g:PlanetVim_menus_basic
-    " File & vim-uenuch
-    an 110.10  📁&f.File <Nop>
-    an disable 📁&f.File
-    an 110.10  📁&f.N&ew                                       :confirm enew<CR>
-    an 110.20  📁&f.New\ &Tab                                  :confirm tabnew<CR>
-    an 110.30  📁&f.New\ G&Window                              :silent !gvim<CR>
-    an 110.40  📁&f.--1-- <Nop>
-    an 110.50  📁&f.&Open\ File                                :Clap files<CR>
-    an 110.60  📁&f.Open\ &File\ Manager<Tab>-                 :Fern -reveal=% .<CR>
-    an 110.70  📁&f.Open\ &Recent                              :Clap history<CR>
-    an 110.70  📁&f.F&ind<Tab>:find                            :find 
-    an 110.80  📁&f.--2-- <Nop>
-    an 110.90  📁&f.&Save<Tab>:w                               :if expand("%") == ""<Bar>browse confirm w<Bar>else<Bar>confirm w<Bar>endif<CR>
-    an 110.100 📁&f.Save\ &As\.\.\.                            :browse confirm saveas<CR>
-    an 110.110 📁&f.Save\ Al&l<Tab>:wall                       :confirm wall<CR>
-    an 110.120 📁&f.--3-- <Nop>
-    an 110.120 📁&f.&Previous<Tab>[f                           [f
-    an 110.120 📁&f.&Next<Tab>]f                               ]f
-    an 110.120 📁&f.--4-- <Nop>
-    an 110.130 📁&f.S&udoSave                                  :SudoWrite<CR>
-    an 110.140 📁&f.R&ename                                    :browse confirm Rename<CR>
-    an 110.150 📁&f.Change\ File\ Permissions                  :Chmod 0755
-    an 110.160 📁&f.&Delete\ From\ Disk                        :Delete!<CR>
-    an 110.170 📁&f.--5-- <Nop>
-    an 110.180 📁&f.&Mkdir                                     :Mkdir! <C-z>
-    an 110.180 📁&f.Cd                                         :cd <C-z>
-    an 110.180 📁&f.Tcd                                        :tcd <C-z>
-    an 110.190 📁&f.--6-- <Nop>
-    an 110.200 📁&f.&Close<Tab>:bdelete                        :bdelete<CR>
-
-    " Edit
-    an 120.10  📝&e.Edit <Nop>
-    an disable 📝&e.Edit
-    an 120.10  📝&e.&Undo<Tab>u                                u
-    an 120.20  📝&e.&Redo<Tab><C-r>                            <C-r>
-    an 120.30  📝&e.--1-- <Nop>
-    an 120.40  📝&e.Undo\ &History                             :UndotreeToggle<CR>
-    an 120.50  📝&e.--2-- <Nop>
-    an 120.60  📝&e.Cu&t                                       "+d
-    an 120.70  📝&e.&Copy                                      "+y
-    an 120.80  📝&e.&Paste                                     "+p
-    an 120.90  📝&e.--3-- <Nop>
-    an 120.100 📝&e.Choose\ Yank\ History<Tab>:Clap\ yanks     :Clap yanks<CR>
-    an 120.110 📝&e.--4-- <Nop>
-    an 120.110 📝&e.Swap\ Previous\ Line<Tab>[e                [e
-    an 120.110 📝&e.Swap\ Next\ Line<Tab>]e                    ]e
-    an 120.110 📝&e.--5-- <Nop>
-    an 120.120 📝&e.Toggle\ Comment<Tab>gcc                    gcc
-    an 120.130 📝&e.Toggle\ CAPS<Tab>gC<Tab>i_<C-g>c           gC
-
-    " Selection
-    "FIXME: In Insert mode this only works for a SINGLE Normal mode command
-    an 130.10  🖍️&s.Selection <Nop>
-    an disable 🖍️&s.Selection
-    an 130.10  🖍️&s.Select\ All                           ggVG
-
-    " View
-    an 160.10  📺&v.View <Nop>
-    an disable 📺&v.View
-    an 160.10  📺&v.&Command\ Palette                          :Clap<CR>
-    an 160.20  📺&v.&Files\ Side\ Bar                          :Fern . -drawer -reveal=% -toggle<CR>
-    an 160.30  📺&v.&LSP\ Side\ Bar<Tab>:Vista\ vim_lsp        :Vista vim_lsp<CR>
-    an 160.40  📺&v.&Tags\ Side\ Bar<Tab>:Vista\ ctags         :Vista ctags<CR>
-    an 160.50  📺&v.--1-- <Nop>
-    an 160.60  📺&v.WinBar <Nop>
-    an disable 📺&v.WinBar
-    an 160.70  📺&v.Add\ Current                               :call PV_WinBar_AddCurrent()<CR>
-
-    " Go
-    an 170.10  🔃&g.Go <Nop>
-    an disable 🔃&g.Go
-    an 170.10  🔃&g.C&hoose\ Jump<Tab>:Clap\ jumps               :Clap jumps<CR>
-    an 170.20  🔃&g.--1-- <Nop>
-    an 170.30  🔃&g.Back<Tab><C-o>                               <C-o>
-    an 170.30  🔃&g.Forward<Tab><C-i>                            <C-i>
-    an 170.40  🔃&g.--2-- <Nop>
-    an 170.50  🔃&g.File\ under\ Cursor\ in\ Tab<Tab><C-w>gf     <C-w>gf
-    an 170.60  🔃&g.File&&Line\ under\ Cursor\ in\ Tab<Tab><C-w>gF <C-w>gF
-
-    " Show current maps (nnoremap, etc.)
-    an 980.10  ⌨️&\\.Maps <Nop>
-    an disable ⌨️&\\.Maps
-    an 980.10  ⌨️&\\.C&hoose\.\.\.                          :Clap maps<CR>
-
-    " Help
-    an 990.10  ❔&h.Help <Nop>
-    an disable ❔&h.Help
-    an 990.10  ❔&h.&Lookup\ Current\ Word                     K
-    an 990.20  ❔&h.Inde&x                                     :h index<CR>
-    an 990.30  ❔&h.&QuickRef                                  :h quickref<CR>
-    an 990.40  ❔&h.&Plugins\ Documentation                    :h local-additions<CR>
-    an 990.50  ❔&h.View\ Log\ Messages<Tab>:messages          :messages<CR>
-    an 990.60  ❔&h.--1-- <Nop>
-    an 990.70  ❔&h.View\ PlanetVim\ &Community                :silent !xdg-open https://matrix.to/\#/+planetvim:matrix.org<CR>
-    an 990.70  ❔&h.&Join\ PlanetVim\ Chat                     :silent !xdg-open https://matrix.to/\#/\#planetvim_discussion:matrix.org?via=matrix.org<CR>
-    an 990.80  ❔&h.--2-- <Nop>
-    an 990.90  ❔&h.Check\ for\ &Updates                       :silent !xdg-open https://github.com/fedorenchik/PlanetVim/releases<CR>
-    an 990.100 ❔&h.Report\ PlanetVim\ &Issue                  :silent !xdg-open https://github.com/fedorenchik/PlanetVim/issues/new/choose<CR>
-    an 990.110 ❔&h.--3-- <Nop>
-    an 990.120 ❔&h.&About                                     :version<CR>
-  else
-    silent! aunmenu 📁&f
-    silent! aunmenu 📝&e
-    silent! aunmenu 🖍️&s
-    silent! aunmenu 📺&v
-    silent! aunmenu 🔃&g
-    silent! aunmenu ⌨️&\\
-    silent! aunmenu ❔&h
-  endif
-endfunction
-call PlanetVim_MenusBasicUpdate()
-
 function! PlanetVim_ConfigUpdate(conf_var) abort
   if empty(v:this_session) && filewritable(expand(g:PV_config))
     silent call system('grep "let ' .. a:conf_var .. ' =" ' .. g:PV_config)
@@ -985,207 +863,383 @@ function! s:registers_choose_to_edit() abort
   execute("silent normal \<C-w>P")
 endfunction
 
+" system('sed -i -e s/PV_basic_menus_status/.../ $HOME/.vim/planetvimrc.vim')
+" TODO: Choise between text, emoji, symbols, nerdicons menus
+if ! exists("g:PlanetVim_menus_basic")
+  let g:PlanetVim_menus_basic = 1
+endif
+function! PlanetVim_MenusBasicUpdate() abort
+  if g:PlanetVim_menus_basic
+    " File & vim-uenuch
+    an 110.10  📁&f.File <Nop>
+    an disable 📁&f.File
+    an 110.10  📁&f.N&ew                                       :confirm enew<CR>
+    an 110.20  📁&f.New\ &Tab                                  :confirm tabnew<CR>
+    an 110.30  📁&f.New\ G&Window                              :silent !gvim<CR>
+    an 110.40  📁&f.--1-- <Nop>
+    an 110.50  📁&f.&Open\ File                                :Clap files<CR>
+    an 110.60  📁&f.Open\ &File\ Manager<Tab>-                 :Fern -reveal=% .<CR>
+    an 110.70  📁&f.Open\ &Recent                              :Clap history<CR>
+    an 110.70  📁&f.F&ind<Tab>:find                            :find 
+    an 110.80  📁&f.--2-- <Nop>
+    an 110.90  📁&f.&Save<Tab>:w                               :if expand("%") == ""<Bar>browse confirm w<Bar>else<Bar>confirm w<Bar>endif<CR>
+    an 110.100 📁&f.Save\ &As\.\.\.                            :browse confirm saveas<CR>
+    an 110.110 📁&f.Save\ Al&l<Tab>:wall                       :confirm wall<CR>
+    an 110.120 📁&f.--3-- <Nop>
+    an 110.120 📁&f.&Previous<Tab>[f                           [f
+    an 110.120 📁&f.&Next<Tab>]f                               ]f
+    an 110.120 📁&f.--4-- <Nop>
+    an 110.130 📁&f.S&udoSave                                  :SudoWrite<CR>
+    an 110.140 📁&f.R&ename                                    :browse confirm Rename<CR>
+    an 110.150 📁&f.Change\ File\ Permissions                  :Chmod 0755
+    an 110.160 📁&f.&Delete\ From\ Disk                        :Delete!<CR>
+    an 110.170 📁&f.--5-- <Nop>
+    an 110.180 📁&f.&Mkdir                                     :Mkdir! <C-z>
+    an 110.180 📁&f.Cd                                         :cd <C-z>
+    an 110.180 📁&f.Tcd                                        :tcd <C-z>
+    an 110.190 📁&f.--6-- <Nop>
+    an 110.200 📁&f.&Close<Tab>:bdelete                        :bdelete<CR>
+
+    " Edit
+    an 120.10  📝&e.Edit <Nop>
+    an disable 📝&e.Edit
+    an 120.10  📝&e.&Undo<Tab>u<Tab>g-                         u
+    an 120.20  📝&e.&Redo<Tab><C-r><Tab>g+                     <C-r>
+    an 120.30  📝&e.--1-- <Nop>
+    an 120.40  📝&e.Undo\ &History                             :UndotreeToggle<CR>
+    an 120.50  📝&e.--2-- <Nop>
+    an 120.60  📝&e.Cu&t                                       "+d
+    an 120.70  📝&e.&Copy                                      "+y
+    an 120.80  📝&e.&Paste                                     "+p
+    an 120.90  📝&e.--3-- <Nop>
+    an 120.80  📝&e.&Paste\ Before                             gP
+    an 120.80  📝&e.&Paste\ &&\ Cursor\ After                  gp
+    an 120.90  📝&e.--3-- <Nop>
+    an 120.100 📝&e.Choose\ Yank\ History<Tab>:Clap\ yanks     :Clap yanks<CR>
+    an 120.110 📝&e.--4-- <Nop>
+    an 120.100 📝&e.Edit\ at\ '^\ Mark<Tab>gi                  gi
+    an 120.110 📝&e.--4-- <Nop>
+    an 120.110 📝&e.Swap\ Previous\ Line<Tab>[e                [e
+    an 120.110 📝&e.Swap\ Next\ Line<Tab>]e                    ]e
+    an 120.110 📝&e.--5-- <Nop>
+    an 120.120 📝&e.Toggle\ Comment<Tab>gcc                    gcc
+    an 120.130 📝&e.Toggle\ CAPS<Tab>gC<Tab>i_<C-g>c           gC
+    an 120.130 📝&e.To\ lower<Tab>gu                           gu
+    an 120.130 📝&e.To\ UPPER<Tab>gU                           gU
+    an 120.130 📝&e.Swap\ Case<Tab>g~                          g~
+    an 120.110 📝&e.--5-- <Nop>
+    an 120.130 📝&e.Join\ Lines\ without\ whitespace<Nop>gJ    gJ
+    an 120.110 📝&e.--5-- <Nop>
+    an 120.130 📝&e.Replace\ Mode<Tab>R                        R
+    an 120.130 📝&e.Virtual\ Replace\ Mode<Tab>gR              gR
+    an 120.110 📝&e.--5-- <Nop>
+    an 120.130 📝&e.Call\ 'operatorfunc'<Tab>g@                g@
+    an 120.130 📝&e.Filter\ by\ Program<Tab>!<cmd>             !
+
+    " Searching
+    an 130.10  🔎&/.Searching <Nop>
+    an disable 🔎&/.Searching
+    an 130.10  🔎&/.C&hoose\ Line<Tab>:Clap\ blines     :Clap blines<CR>
+    an 130.20  🔎&/.--1-- <Nop>
+    an 130.20  🔎&/.Choose\ from\ Hi&story<Tab>:Clap\ search_history :Clap search_history<CR>
+    an 130.30  🔎&/.--2-- <Nop>
+    an 130.40  🔎&/.Current\ Word<Tab>*                      *
+    an 130.40  🔎&/.Current\ Word\ Backwards<Tab>#           #
+    an 130.40  🔎&/.Current\ \<word\><Tab>g*                 g*
+    an 130.40  🔎&/.Current\ \<word\>\ Backwards<Tab>g#      g#
+    an 130.30  🔎&/.--3-- <Nop>
+    an 130.40  🔎&/.Previous\ &\ Select<Tab>gN               <Tab>gN
+    an 130.40  🔎&/.Next\ &\ Select<Tab>gn                   <Tab>gn
+    an 130.30  🔎&/.--4-- <Nop>
+    an 130.10  🔎&/.Substitute <Nop>
+    an disable 🔎&/.Substitute
+    an 130.50  🔎&/.Repeat\ Last\ :s<Tab>&                   &
+    an 130.50  🔎&/.Repeat\ Last\ :s<Tab>g&                  g&
+
+    " Selection
+    "FIXME: In Insert mode this only works for a SINGLE Normal mode command
+    an 140.10  🖍️&s.Selection <Nop>
+    an disable 🖍️&s.Selection
+    an 140.10  🖍️&s.Select\ All                           ggVG
+    an 140.10  🖍️&s.Select\ Previous\ Area                gv
+    an 140.10  🖍️&s.--1-- <Nop>
+    an 140.10  🖍️&s.Visual\ Mode<Tab>v                    v
+    an 130.10  🖍️&s.Visual\ Line\ Mode<Tab>V              V
+    an 140.10  🖍️&s.Visual\ Block\ Mode<Tab><C-v>         <C-v>
+    an 140.10  🖍️&s.--2-- <Nop>
+    an 140.10  🖍️&s.Select\ Mode<Tab>gh                   gh
+    an 140.10  🖍️&s.Select\ Line\ Mode<Tab>gH             gH
+    an 140.10  🖍️&s.Select\ Block\ Mode<Tab>g<C-h>        g<C-H>
+
+    " View
+    an 150.10  📺&v.View <Nop>
+    an disable 📺&v.View
+    an 150.10  📺&v.&Command\ Palette                          :Clap<CR>
+    an 150.20  📺&v.&Files\ Side\ Bar                          :Fern . -drawer -reveal=% -toggle<CR>
+    an 150.30  📺&v.&LSP\ Side\ Bar<Tab>:Vista\ vim_lsp        :Vista vim_lsp<CR>
+    an 150.40  📺&v.&Tags\ Side\ Bar<Tab>:Vista\ ctags         :Vista ctags<CR>
+    an 150.50  📺&v.--1-- <Nop>
+    an 150.60  📺&v.WinBar <Nop>
+    an disable 📺&v.WinBar
+    an 150.70  📺&v.Add\ Current                               :call PV_WinBar_AddCurrent()<CR>
+
+    " Go
+    an 160.10  🔃&g.Go <Nop>
+    an disable 🔃&g.Go
+    an 160.10  🔃&g.C&hoose\ Jump<Tab>:Clap\ jumps               :Clap jumps<CR>
+    an 160.20  🔃&g.--1-- <Nop>
+    an 160.30  🔃&g.Back<Tab><C-o>                               <C-o>
+    an 160.30  🔃&g.Forward<Tab><C-i>                            <C-i>
+    an 160.40  🔃&g.--2-- <Nop>
+    an 160.30  🔃&g.Previous\ Change\ Position<Tab>g;            g;
+    an 160.30  🔃&g.Next\ Change\ Position<Tab>g,                g,
+    an 160.40  🔃&g.--3-- <Nop>
+    an 160.30  🔃&g.Definition\ in\ Scope<Tab>gd                 gd
+    an 160.30  🔃&g.Definition\ in\ File<Tab>gD                  gD
+    an 160.40  🔃&g.--4-- <Nop>
+    an 160.30  🔃&g.Percentage\ in\ File<Tab>{count}%            N%
+    an 160.40  🔃&g.--4-- <Nop>
+    an 160.30  🔃&g.Middle\ of\ Text\ Line<Tab>gM                gM
+    an 160.30  🔃&g.Middle\ of\ Screen\ Line<Tab>gM              gm
+    an 160.40  🔃&g.--4-- <Nop>
+    an 160.50  🔃&g.File\ under\ Cursor\ in\ Tab<Tab><C-w>gf     <C-w>gf
+    an 160.60  🔃&g.File&&Line\ under\ Cursor\ in\ Tab<Tab><C-w>gF <C-w>gF
+
+    " Show current maps (nnoremap, etc.)
+    an 980.10  ⌨️&\\.Maps <Nop>
+    an disable ⌨️&\\.Maps
+    an 980.10  ⌨️&\\.C&hoose\.\.\.                          :Clap maps<CR>
+    an 980.10  ⌨️&\\.Information <Nop>
+    an disable ⌨️&\\.Information
+    an 980.10  ⌨️&\\.Cursor\ Filename<Tab><C-g>               <C-g>
+    an 980.10  ⌨️&\\.Cursor\ Position<Tab>g<C-g>              g<C-g>
+    an 980.10  ⌨️&\\.Character\ under\ Cursor<Tab>g8          g8
+    an 980.10  ⌨️&\\.Ascii\ under\ Cursor<Tab>ga              ga
+    an 980.10  ⌨️&\\.Output\ of\ previous\ Command<Tab>g<     g<
+
+    " Help
+    an 990.10  ❔&h.Help <Nop>
+    an disable ❔&h.Help
+    an 990.10  ❔&h.&Lookup\ Current\ Word                     K
+    an 990.20  ❔&h.Inde&x                                     :h index<CR>
+    an 990.30  ❔&h.&QuickRef                                  :h quickref<CR>
+    an 990.40  ❔&h.&Plugins\ Documentation                    :h local-additions<CR>
+    an 990.50  ❔&h.View\ Log\ Messages<Tab>:messages          :messages<CR>
+    an 990.60  ❔&h.--1-- <Nop>
+    an 990.70  ❔&h.View\ PlanetVim\ &Community                :silent !xdg-open https://matrix.to/\#/+planetvim:matrix.org<CR>
+    an 990.70  ❔&h.&Join\ PlanetVim\ Chat                     :silent !xdg-open https://matrix.to/\#/\#planetvim_discussion:matrix.org?via=matrix.org<CR>
+    an 990.80  ❔&h.--2-- <Nop>
+    an 990.90  ❔&h.Check\ for\ &Updates                       :silent !xdg-open https://github.com/fedorenchik/PlanetVim/releases<CR>
+    an 990.100 ❔&h.Report\ PlanetVim\ &Issue                  :silent !xdg-open https://github.com/fedorenchik/PlanetVim/issues/new/choose<CR>
+    an 990.110 ❔&h.--3-- <Nop>
+    an 990.120 ❔&h.&About                                     :version<CR>
+  else
+    silent! aunmenu 📁&f
+    silent! aunmenu 📝&e
+    silent! aunmenu 🔎&/
+    silent! aunmenu 🖍️&s
+    silent! aunmenu 📺&v
+    silent! aunmenu 🔃&g
+    silent! aunmenu ⌨️&\\
+    silent! aunmenu ❔&h
+  endif
+endfunction
+call PlanetVim_MenusBasicUpdate()
+
 if ! exists("g:PlanetVim_menus_editing")
   let g:PlanetVim_menus_editing = 1
 endif
 function! PlanetVim_MenusEditingUpdate() abort
   if g:PlanetVim_menus_editing
     " Vim Registers
-    an 140.10  📋&i.Registers <Nop>
+    an 200.10  📋&i.Registers <Nop>
     an disable 📋&i.Registers
-    an 140.10  📋&i.C&hoose\ to\ Paste\.\.\.              :Clap registers<CR>
-    an 140.10  📋&i.Choose\ to\ Edit\.\.\.                :call <SID>registers_choose_to_edit()<CR>
-    an 140.10  📋&i.Macros <Nop>
+    an 200.10  📋&i.C&hoose\ to\ Paste\.\.\.              :Clap registers<CR>
+    an 200.10  📋&i.Select\ to\ Edit\.\.\.                :call <SID>registers_choose_to_edit()<CR>
+    an 200.10  📋&i.Select\ for\ Operator<Tab>"<a-z>      "
+    an 200.10  📋&i.Macros <Nop>
     an disable 📋&i.Macros
     "TODO: Add all non-empty registers to this menu
 
-    " Search
-    an 150.10  🔎&/.Search <Nop>
-    an disable 🔎&/.Search
-    an 150.10  🔎&/.C&hoose\ Line<Tab>:Clap\ blines     :Clap blines<CR>
-    an 150.20  🔎&/.--1-- <Nop>
-    an 150.20  🔎&/.Choose\ from\ Hi&story<Tab>:Clap\ search_history :Clap search_history<CR>
-    an 150.30  🔎&/.--2-- <Nop>
-    an 150.40  🔎&/.Current\ Word<Tab>*                 *
-
     " signature.vim (marks)
-    an 180.10  🔖&m.Marks <Nop>
+    an 210.10  🔖&m.Marks <Nop>
     an disable 🔖&m.Marks
-    an 180.10  🔖&m.C&hoose<Tab>:Clap\ marks                  :Clap marks<CR>
-    an 180.10  🔖&m.Open\ LocList<Tab>m/                      m/
-    an 180.20  🔖&m.--1-- <Nop>
-    an 180.30  🔖&m.Add<Tab>m,                                m,
-    an 180.40  🔖&m.Toggle<Tab>m.                             m.
-    an 180.50  🔖&m.Delete<Tab>m-                             m-
-    an 180.60  🔖&m.Delete\ All<Tab>m<Space>                  m<Space>
-    an 180.70  🔖&m.--2-- <Nop>
-    an 180.80  🔖&m.To\ Next<Tab>]`                           ]`
-    an 180.90  🔖&m.To\ Previous<Tab>]`                       [`
-    an 180.100 🔖&m.To\ Next\ Alphabetically<Tab>`]           `]
-    an 180.110 🔖&m.To\ Previous\ Alphabetically<Tab>`]       `[
-    an 180.120 🔖&m.--3-- <Nop>
+    an 210.10  🔖&m.C&hoose<Tab>:Clap\ marks                  :Clap marks<CR>
+    an 210.10  🔖&m.Select<Tab>'{a-z}                         '
+    an 210.10  🔖&m.Open\ LocList<Tab>m/                      m/
+    an 210.20  🔖&m.--1-- <Nop>
+    an 210.30  🔖&m.Add<Tab>m,                                m,
+    an 210.40  🔖&m.Toggle<Tab>m.                             m.
+    an 210.50  🔖&m.Delete<Tab>m-                             m-
+    an 210.60  🔖&m.Delete\ All<Tab>m<Space>                  m<Space>
+    an 210.70  🔖&m.--2-- <Nop>
+    an 210.80  🔖&m.Next<Tab>]`                               ]`
+    an 210.90  🔖&m.Previous<Tab>]`                           [`
+    an 210.100 🔖&m.Next\ Alphabetically<Tab>`]               `]
+    an 210.110 🔖&m.Previous\ Alphabetically<Tab>`]           `[
+    an 210.120 🔖&m.--3-- <Nop>
+    an 210.110 🔖&m.Previous\ Jump<Tab>''                     ``
 
     " markers
     "TODO: maybe change to subsubmenus for groups: add, delete, next, prev
-    am 190.10  🏷️&".Markers <Nop>
+    am 220.10  🏷️&".Markers <Nop>
     am disable 🏷️&".Markers
-    am 190.10  🏷️&".Add\ &1                              m1
-    am 190.20  🏷️&".Add\ &2                              m2
-    am 190.30  🏷️&".Add\ &3                              m3
-    am 190.40  🏷️&".Add\ &4                              m4
-    am 190.50  🏷️&".Add\ &5                              m5
-    am 190.60  🏷️&".Add\ &6                              m6
-    am 190.70  🏷️&".Add\ &7                              m7
-    am 190.80  🏷️&".Add\ &8                              m8
-    am 190.90  🏷️&".Add\ &9                              m9
-    am 190.100 🏷️&".Add\ &0                              m0
-    am 190.110 🏷️&".--1-- <Nop>
-    am 190.120 🏷️&".Remove\ 1\ (&!)                      m!
-    am 190.130 🏷️&".Remove\ 2\ (&@)                      m@
-    am 190.140 🏷️&".Remove\ 3\ (&#)                      m#
-    am 190.150 🏷️&".Remove\ 4\ (&$)                      m$
-    am 190.160 🏷️&".Remove\ 5\ (&%)                      m%
-    am 190.170 🏷️&".Remove\ 6\ (&^)                      m^
-    am 190.180 🏷️&".Remove\ 7\ (&&)                      m&
-    am 190.190 🏷️&".Remove\ 8\ (&*)                      m*
-    am 190.200 🏷️&".Remove\ 9\ (&()                      m(
-    am 190.210 🏷️&".Remove\ 0\ (&))                      m)
-    am 190.220 🏷️&".--2-- <Nop>
-    am 190.230 🏷️&".To\ &Next\ of\ Same\ Group<Tab>]-    ]-
-    am 190.240 🏷️&".To\ &Previous\ of\ Same\ Group<Tab>[- [-
-    am 190.250 🏷️&".To\ N&ext\ of\ Any\ Group<Tab>]=     ]=
-    am 190.260 🏷️&".To\ Previous\ of\ Any\ Group<Tab>[=  [=
-    am 190.270 🏷️&".--3-- <Nop>
-    am 190.280 🏷️&".Open\ &LocList<Tab>m?                m?
-    am 190.290 🏷️&".--4-- <Nop>
-    am 190.290 🏷️&".Toggle\ All                          :SignatureToggleSigns<CR>
-    am 190.290 🏷️&".--4-- <Nop>
-    am 190.300 🏷️&".&Remove\ All<Tab>m<BS>               m<BS>
+    am 220.10  🏷️&".Add\ &1                              m1
+    am 220.20  🏷️&".Add\ &2                              m2
+    am 220.30  🏷️&".Add\ &3                              m3
+    am 220.40  🏷️&".Add\ &4                              m4
+    am 220.50  🏷️&".Add\ &5                              m5
+    am 220.60  🏷️&".Add\ &6                              m6
+    am 220.70  🏷️&".Add\ &7                              m7
+    am 220.80  🏷️&".Add\ &8                              m8
+    am 220.90  🏷️&".Add\ &9                              m9
+    am 220.100 🏷️&".Add\ &0                              m0
+    am 220.110 🏷️&".--1-- <Nop>
+    am 220.120 🏷️&".Remove\ 1\ (&!)                      m!
+    am 220.130 🏷️&".Remove\ 2\ (&@)                      m@
+    am 220.140 🏷️&".Remove\ 3\ (&#)                      m#
+    am 220.150 🏷️&".Remove\ 4\ (&$)                      m$
+    am 220.160 🏷️&".Remove\ 5\ (&%)                      m%
+    am 220.170 🏷️&".Remove\ 6\ (&^)                      m^
+    am 220.180 🏷️&".Remove\ 7\ (&&)                      m&
+    am 220.190 🏷️&".Remove\ 8\ (&*)                      m*
+    am 220.200 🏷️&".Remove\ 9\ (&()                      m(
+    am 220.210 🏷️&".Remove\ 0\ (&))                      m)
+    am 220.220 🏷️&".--2-- <Nop>
+    am 220.230 🏷️&".To\ &Next\ of\ Same\ Group<Tab>]-    ]-
+    am 220.240 🏷️&".To\ &Previous\ of\ Same\ Group<Tab>[- [-
+    am 220.250 🏷️&".To\ N&ext\ of\ Any\ Group<Tab>]=     ]=
+    am 220.260 🏷️&".To\ Previous\ of\ Any\ Group<Tab>[=  [=
+    am 220.270 🏷️&".--3-- <Nop>
+    am 220.280 🏷️&".Open\ &LocList<Tab>m?                m?
+    am 220.290 🏷️&".--4-- <Nop>
+    am 220.290 🏷️&".Toggle\ All                          :SignatureToggleSigns<CR>
+    am 220.290 🏷️&".--4-- <Nop>
+    am 220.300 🏷️&".&Remove\ All<Tab>m<BS>               m<BS>
 
     " Cololr highlight words with mark.vim plugin
-    an 200.10  🖌️&c.CMarks <Nop>
+    an 230.10  🖌️&c.CMarks <Nop>
     an disable 🖌️&c.CMarks
-    an 200.10  🖌️&c.CMark\ &Current<Tab>,m                   <Leader>m
-    an 200.10  🖌️&c.CMark\ &Regex<Tab>,r                     <Leader>r
-    an 200.10  🖌️&c.List\ All                                :Marks<CR>
-    an 200.10  🖌️&c.Toggle\ All<Tab>,M                       <Leader>M
-    an 200.10  🖌️&c.Delete\ All<Tab>,N                       :MarkClear<CR>
-    an 200.10  🖌️&c.--1-- <Nop>
+    an 230.10  🖌️&c.CMark\ &Current<Tab>,m                   <Leader>m
+    an 230.10  🖌️&c.CMark\ &Regex<Tab>,r                     <Leader>r
+    an 230.10  🖌️&c.List\ All                                :Marks<CR>
+    an 230.10  🖌️&c.Toggle\ All<Tab>,M                       <Leader>M
+    an 230.10  🖌️&c.Delete\ All<Tab>,N                       :MarkClear<CR>
+    an 230.10  🖌️&c.--1-- <Nop>
 
     " Bookmarks: Upper-case marks (mA-mZ)
-    an 210.10  📎&k.Bookmarks <Nop>
+    an 240.10  📎&k.Bookmarks <Nop>
     an disable 📎&k.Bookmarks
-    an 210.10  📎&k.Open\ LocList                         :SignatureListGlobalMarks<CR>
+    an 240.10  📎&k.Open\ LocList                         :SignatureListGlobalMarks<CR>
 
     " Folds
-    an 220.10  📜&z.Folds <Nop>
+    an 250.10  📜&z.Folds <Nop>
     an disable 📜&z.Folds
-    an 220.10  📜&z.Fold\ Everything<Tab>zM                 zM
-    an 220.20  📜&z.Unfold\ Everything<Tab>zR               zR
-    an 220.30  📜&z.--1-- <Nop>
-    an 220.40  📜&z.Fold\ One\ Level<Tab>zm                 zm
-    an 220.50  📜&z.Unfold\ One\ Level<Tab>zr               zr
-    an 220.60  📜&z.--2-- <Nop>
-    an 220.70  📜&z.Fold\ by\ Syntax                        :set foldmethod=syntax<CR>
-    an 220.80  📜&z.Fold\ by\ Indent                        :set foldmethod=indent<CR>
-    an 220.90  📜&z.Fold\ by\ Expr                          :set foldmethod=expr<CR>
-    an 220.100 📜&z.Fold\ by\ {{{,}}}\ Markers              :set foldmethod=marker<CR>
-    an 220.110 📜&z.Fold\ Manually                          :set foldmethod=manual<CR>
-    an 220.120 📜&z.--3-- <Nop>
-    an 220.130 📜&z.Fold\ Selected                          :
-    an 220.140 📜&z.--4-- <Nop>
-    an 220.150 📜&z.Update\ All\ Folds<Tab>zuz              zuz
+    an 250.10  📜&z.Fold\ Everything<Tab>zM                 zM
+    an 250.20  📜&z.Unfold\ Everything<Tab>zR               zR
+    an 250.30  📜&z.--1-- <Nop>
+    an 250.40  📜&z.Fold\ One\ Level<Tab>zm                 zm
+    an 250.50  📜&z.Unfold\ One\ Level<Tab>zr               zr
+    an 250.60  📜&z.--2-- <Nop>
+    an 250.70  📜&z.Fold\ by\ Syntax                        :set foldmethod=syntax<CR>
+    an 250.80  📜&z.Fold\ by\ Indent                        :set foldmethod=indent<CR>
+    an 250.90  📜&z.Fold\ by\ Expr                          :set foldmethod=expr<CR>
+    an 250.100 📜&z.Fold\ by\ {{{,}}}\ Markers              :set foldmethod=marker<CR>
+    an 250.110 📜&z.Fold\ Manually                          :set foldmethod=manual<CR>
+    an 250.120 📜&z.--3-- <Nop>
+    an 250.130 📜&z.Fold\ Selected                          :
+    an 250.140 📜&z.--4-- <Nop>
+    an 250.150 📜&z.Update\ All\ Folds<Tab>zuz              zuz
 
     " quickfix
-    an 230.10  &QF.QuickFix <Nop>
+    an 260.10  &QF.QuickFix <Nop>
     an disable &QF.QuickFix
-    an 230.10  &QF.Sea&rch                                      :Grepper -tool rg -quickfix<CR>
-    an 240.13  &QF.Search\ Add                                  :Grepper -tool rg -quickfix -append<CR>
-    an 240.17  &QF.Search\ Side                                 :Grepper -tool rg -quickfix -side<CR>
-    an 230.20  &QF.F&ind<Tab>:Cfind!                            :Cfind! 
-    an 230.30  &QF.Loc&ate<Tab>:Clocate!                        :Clocate! 
-    an 230.40  &QF.&Grep<Tab>:grep                              :grep 
-    an 230.50  &QF.GrepAdd\ (&b)<Tab>:grepadd                   :grepadd 
-    an 230.60  &QF.&VimGrep<Tab>:vimgrep                        :vimgrep 
-    an 230.70  &QF.Vi&mGrepAdd<Tab>:vimgrepadd                  :vimgrepadd 
-    an 240.75  &QF.TODO                                         :Grepper -quickfix -noprompt -tool rg -query -E '(TODO\|FIXME\|XXX):'
-    an 230.80  &QF.--1-- <Nop>
-    an 230.90  &QF.C&hoose<Tab>:Clap\ quickfix                  :Clap quickfix<CR>
-    an 230.100 &QF.--2-- <Nop>
-    an 230.110 &QF.&Next<Tab>]q                                 ]q
-    an 230.120 &QF.N&ext\ File<Tab>:cnfile<Tab>]<C-q>           :cnfile<CR>
-    an 230.130 &QF.&Last<Tab>:clast<Tab>]Q                      ]Q
-    an 230.140 &QF.--3-- <Nop>
-    an 230.150 &QF.&Previous<Tab>[q                             [q
-    an 230.160 &QF.Previou&s\ File<Tab>:cpfile<Tab>[<C-q>       :cpfile<CR>
-    an 230.170 &QF.&First<Tab>:cfirst<Tab>[Q                    [Q
-    an 230.180 &QF.--4-- <Nop>
-    an 230.190 &QF.E&xecute\ for\ each<Tab>:cdo                 :cdo 
-    an 230.200 &QF.Execute\ for\ each\ File\ (&z)<Tab>:cfdo     :cfdo 
-    an 230.210 &QF.--5-- <Nop>
-    an 230.220 &QF.&Open<Tab>:copen                             :copen<CR>
-    an 230.230 &QF.Fil&ter<Tab>:Cfilter                         :Cfilter 
-    an 230.240 &QF.Filter\ O&ut<Tab>:Cfilter!                   :Cfilter! 
-    an 230.250 &QF.E&dit<Tab>:Qflistsplit<Tab>c\\q              :Qflistsplit<CR>
-    an 230.260 &QF.Read\ from\ File\ (&w)<Tab>:cgetfile         :cgetfile! 
-    an 230.270 &QF.Add\ from\ File\ (&y)<Tab>:caddfile          :caddfile! 
-    an 230.280 &QF.Read\ from\ Buffer\ (&,)<Tab>:cgetbuffer     :cgetbuffer! 
-    an 230.290 &QF.Add\ from\ Buffer\ (&\.)<Tab>:caddbuffer     :caddbuffer! 
-    an 230.300 &QF.Read\ from\ Expr\ (&;)<Tab>:cgetexpr         :cgetexpr! 
-    an 230.310 &QF.Add\ from\ Expr\ (&')<Tab>:caddexpr          :caddexpr! 
-    an 230.320 &QF.&Close<Tab>:cclose<Tab>                      :cclose<CR>
-    an 230.330 &QF.--6-- <Nop>
-    an 230.340 &QF.Previous\ LocList\ (&k)<Tab>:colder          :colder<CR>
-    an 230.350 &QF.Next\ LocList\ (&j)<Tab>:cnewer              :cnewer<CR>
-    an 230.360 &QF.List\ LocLists\ (&q)<Tab>:chistory           :chistory<CR>
-    an 230.370 &QF.--7-- <Nop>
+    an 260.10  &QF.Sea&rch                                      :Grepper -tool rg -quickfix<CR>
+    an 260.13  &QF.Search\ Add                                  :Grepper -tool rg -quickfix -append<CR>
+    an 260.17  &QF.Search\ Side                                 :Grepper -tool rg -quickfix -side<CR>
+    an 260.20  &QF.F&ind<Tab>:Cfind!                            :Cfind! 
+    an 260.30  &QF.Loc&ate<Tab>:Clocate!                        :Clocate! 
+    an 260.40  &QF.&Grep<Tab>:grep                              :grep 
+    an 260.50  &QF.GrepAdd\ (&b)<Tab>:grepadd                   :grepadd 
+    an 260.60  &QF.&VimGrep<Tab>:vimgrep                        :vimgrep 
+    an 260.70  &QF.Vi&mGrepAdd<Tab>:vimgrepadd                  :vimgrepadd 
+    an 260.75  &QF.TODO                                         :Grepper -quickfix -noprompt -tool rg -query -E '(TODO\|FIXME\|XXX):'
+    an 260.80  &QF.--1-- <Nop>
+    an 260.90  &QF.C&hoose<Tab>:Clap\ quickfix                  :Clap quickfix<CR>
+    an 260.100 &QF.--2-- <Nop>
+    an 260.110 &QF.&Next<Tab>]q                                 ]q
+    an 260.120 &QF.N&ext\ File<Tab>:cnfile<Tab>]<C-q>           :cnfile<CR>
+    an 260.130 &QF.&Last<Tab>:clast<Tab>]Q                      ]Q
+    an 260.140 &QF.--3-- <Nop>
+    an 260.150 &QF.&Previous<Tab>[q                             [q
+    an 260.160 &QF.Previou&s\ File<Tab>:cpfile<Tab>[<C-q>       :cpfile<CR>
+    an 260.170 &QF.&First<Tab>:cfirst<Tab>[Q                    [Q
+    an 260.180 &QF.--4-- <Nop>
+    an 260.190 &QF.E&xecute\ for\ each<Tab>:cdo                 :cdo 
+    an 260.200 &QF.Execute\ for\ each\ File\ (&z)<Tab>:cfdo     :cfdo 
+    an 260.210 &QF.--5-- <Nop>
+    an 260.220 &QF.&Open<Tab>:copen                             :copen<CR>
+    an 260.230 &QF.Fil&ter<Tab>:Cfilter                         :Cfilter 
+    an 260.240 &QF.Filter\ O&ut<Tab>:Cfilter!                   :Cfilter! 
+    an 260.250 &QF.E&dit<Tab>:Qflistsplit<Tab>c\\q              :Qflistsplit<CR>
+    an 260.260 &QF.Read\ from\ File\ (&w)<Tab>:cgetfile         :cgetfile! 
+    an 260.270 &QF.Add\ from\ File\ (&y)<Tab>:caddfile          :caddfile! 
+    an 260.280 &QF.Read\ from\ Buffer\ (&,)<Tab>:cgetbuffer     :cgetbuffer! 
+    an 260.290 &QF.Add\ from\ Buffer\ (&\.)<Tab>:caddbuffer     :caddbuffer! 
+    an 260.300 &QF.Read\ from\ Expr\ (&;)<Tab>:cgetexpr         :cgetexpr! 
+    an 260.310 &QF.Add\ from\ Expr\ (&')<Tab>:caddexpr          :caddexpr! 
+    an 260.320 &QF.&Close<Tab>:cclose<Tab>                      :cclose<CR>
+    an 260.330 &QF.--6-- <Nop>
+    an 260.340 &QF.Previous\ LocList\ (&k)<Tab>:colder          :colder<CR>
+    an 260.350 &QF.Next\ LocList\ (&j)<Tab>:cnewer              :cnewer<CR>
+    an 260.360 &QF.List\ LocLists\ (&q)<Tab>:chistory           :chistory<CR>
+    an 260.370 &QF.--7-- <Nop>
 
     " loclist
-    an 240.10  &LL.LocList <Nop>
+    an 270.10  &LL.LocList <Nop>
     an disable &LL.LocList
-    an 240.10  &LL.Sea&rch                                      :Grepper -tool rg -noquickfix<CR>
-    an 240.13  &LL.Search\ Add                                  :Grepper -tool rg -noquickfix -append<CR>
-    an 240.17  &LL.Search\ Side                                 :Grepper -tool rg -noquickfix -side<CR>
-    an 240.20  &LL.F&ind<Tab>:Lfind!                            :Lfind! 
-    an 240.30  &LL.Loc&ate<Tab>:Llocate!                        :Llocate! 
-    an 240.40  &LL.&Grep<Tab>:lgrep                             :lgrep 
-    an 240.50  &LL.GrepAdd\ (&b)<Tab>:lgrepadd                  :lgrepadd 
-    an 240.60  &LL.&VimGrep<Tab>:lvimgrep                       :lvimgrep 
-    an 240.70  &LL.Vi&mGrepAdd<Tab>:lvimgrepadd                 :lvimgrepadd 
-    an 240.75  &LL.TODO                                         :Grepper -noquickfix -noprompt -tool rg -query -E '(TODO\|FIXME\|XXX):'
-    an 240.80  &LL.--1-- <Nop>
-    an 240.90  &LL.C&hoose<Tab>:Clap\ loclist                   :Clap loclist<CR>
-    an 240.100 &LL.--2-- <Nop>
-    an 240.110 &LL.&Next<Tab>]l                                 ]l
-    an 240.120 &LL.N&ext\ File<Tab>:lnfile<Tab>]<C-l>           :lnfile<CR>
-    an 240.130 &LL.&Last<Tab>:llast<Tab>]L                      ]L
-    an 240.140 &LL.--3-- <Nop>
-    an 240.150 &LL.&Previous<Tab>[l                             [l
-    an 240.160 &LL.Previou&s\ File<Tab>:lpfile<Tab>[<C-l>       :lpfile<CR>
-    an 240.170 &LL.&First<Tab>:lfirst<Tab>[L                    [L
-    an 240.180 &LL.--4-- <Nop>
-    an 240.190 &LL.E&xecute\ for\ each<Tab>:ldo                 :ldo 
-    an 240.200 &LL.Execute\ for\ each\ File\ (&z)<Tab>:lfdo     :lfdo 
-    an 240.210 &LL.--5-- <Nop>
-    an 240.220 &LL.&Open<Tab>:lopen                             :lopen<CR>
-    an 240.230 &LL.Fil&ter<Tab>:Lfilter                         :Lfilter 
-    an 240.240 &LL.Filter\ O&ut<Tab>:Lfilter!                   :Lfilter! 
-    an 240.250 &LL.E&dit<Tab>:Loclistsplit<Tab>c\\l             :Loclistsplit<CR>
-    an 240.260 &LL.Read\ from\ File\ (&w)<Tab>:lgetfile         :lgetfile! 
-    an 240.270 &LL.Add\ from\ File\ (&y)<Tab>:laddfile          :laddfile! 
-    an 240.280 &LL.Read\ from\ Buffer\ (&,)<Tab>:lgetbuffer     :lgetbuffer! 
-    an 240.290 &LL.Add\ from\ Buffer\ (&\.)<Tab>:laddbuffer     :laddbuffer! 
-    an 240.300 &LL.Read\ from\ Expr\ (&;)<Tab>:lgetexpr         :lgetexpr! 
-    an 240.310 &LL.Add\ from\ Expr\ (&')<Tab>:laddexpr          :laddexpr! 
-    an 240.320 &LL.&Close<Tab>:lclose<Tab>                      :lclose<CR>
-    an 240.330 &LL.--6-- <Nop>
-    an 240.340 &LL.Previous\ LocList\ (&k)<Tab>:lolder          :lolder<CR>
-    an 240.350 &LL.Next\ LocList\ (&j)<Tab>:lnewer              :lnewer<CR>
-    an 240.360 &LL.List\ LocLists\ (&q)<Tab>:lhistory           :lhistory<CR>
-    an 240.370 &LL.--7-- <Nop>
+    an 270.10  &LL.Sea&rch                                      :Grepper -tool rg -noquickfix<CR>
+    an 270.13  &LL.Search\ Add                                  :Grepper -tool rg -noquickfix -append<CR>
+    an 270.17  &LL.Search\ Side                                 :Grepper -tool rg -noquickfix -side<CR>
+    an 270.20  &LL.F&ind<Tab>:Lfind!                            :Lfind! 
+    an 270.30  &LL.Loc&ate<Tab>:Llocate!                        :Llocate! 
+    an 270.40  &LL.&Grep<Tab>:lgrep                             :lgrep 
+    an 270.50  &LL.GrepAdd\ (&b)<Tab>:lgrepadd                  :lgrepadd 
+    an 270.60  &LL.&VimGrep<Tab>:lvimgrep                       :lvimgrep 
+    an 270.70  &LL.Vi&mGrepAdd<Tab>:lvimgrepadd                 :lvimgrepadd 
+    an 270.75  &LL.TODO                                         :Grepper -noquickfix -noprompt -tool rg -query -E '(TODO\|FIXME\|XXX):'
+    an 270.80  &LL.--1-- <Nop>
+    an 270.90  &LL.C&hoose<Tab>:Clap\ loclist                   :Clap loclist<CR>
+    an 270.100 &LL.--2-- <Nop>
+    an 270.110 &LL.&Next<Tab>]l                                 ]l
+    an 270.120 &LL.N&ext\ File<Tab>:lnfile<Tab>]<C-l>           :lnfile<CR>
+    an 270.130 &LL.&Last<Tab>:llast<Tab>]L                      ]L
+    an 270.140 &LL.--3-- <Nop>
+    an 270.150 &LL.&Previous<Tab>[l                             [l
+    an 270.160 &LL.Previou&s\ File<Tab>:lpfile<Tab>[<C-l>       :lpfile<CR>
+    an 270.170 &LL.&First<Tab>:lfirst<Tab>[L                    [L
+    an 270.180 &LL.--4-- <Nop>
+    an 270.190 &LL.E&xecute\ for\ each<Tab>:ldo                 :ldo 
+    an 270.200 &LL.Execute\ for\ each\ File\ (&z)<Tab>:lfdo     :lfdo 
+    an 270.210 &LL.--5-- <Nop>
+    an 270.220 &LL.&Open<Tab>:lopen                             :lopen<CR>
+    an 270.230 &LL.Fil&ter<Tab>:Lfilter                         :Lfilter 
+    an 270.240 &LL.Filter\ O&ut<Tab>:Lfilter!                   :Lfilter! 
+    an 270.250 &LL.E&dit<Tab>:Loclistsplit<Tab>c\\l             :Loclistsplit<CR>
+    an 270.260 &LL.Read\ from\ File\ (&w)<Tab>:lgetfile         :lgetfile! 
+    an 270.270 &LL.Add\ from\ File\ (&y)<Tab>:laddfile          :laddfile! 
+    an 270.280 &LL.Read\ from\ Buffer\ (&,)<Tab>:lgetbuffer     :lgetbuffer! 
+    an 270.290 &LL.Add\ from\ Buffer\ (&\.)<Tab>:laddbuffer     :laddbuffer! 
+    an 270.300 &LL.Read\ from\ Expr\ (&;)<Tab>:lgetexpr         :lgetexpr! 
+    an 270.310 &LL.Add\ from\ Expr\ (&')<Tab>:laddexpr          :laddexpr! 
+    an 270.320 &LL.&Close<Tab>:lclose<Tab>                      :lclose<CR>
+    an 270.330 &LL.--6-- <Nop>
+    an 270.340 &LL.Previous\ LocList\ (&k)<Tab>:lolder          :lolder<CR>
+    an 270.350 &LL.Next\ LocList\ (&j)<Tab>:lnewer              :lnewer<CR>
+    an 270.360 &LL.List\ LocLists\ (&q)<Tab>:lhistory           :lhistory<CR>
+    an 270.370 &LL.--7-- <Nop>
   else
     silent! aunmenu 📋&i
-    silent! aunmenu 🔎&/
     silent! aunmenu 🔖&m
     silent! aunmenu 🏷️&"
     silent! aunmenu 🖌️&c
@@ -1203,91 +1257,94 @@ endif
 function! PlanetVim_MenusDevelopmentUpdate() abort
   if g:PlanetVim_menus_dev
     " LSP
-    an 250.10  ❇️&[.LSP <Nop>
+    an 300.10  ❇️&[.LSP <Nop>
     an disable ❇️&[.LSP
-    an 250.10  ❇️&[.C&hoose\ Symbol<Tab>:Clap\ tags\ vim_lsp   :Clap tags vim_lsp<CR>
-    an 250.10  ❇️&[.Definition                                 :LspDefinition<CR>
-    an 250.10  ❇️&[.Declaration                                :
-    an 250.10  ❇️&[.References                                 :
-    an 250.10  ❇️&[.Implementation                             :
-    an 250.10  ❇️&[.Type\ Definition                           :
-    an 250.10  ❇️&[.Type\ Hierarchy                            :
-    an 250.10  ❇️&[.Incoming\ Call\ Hierarchy                  :
-    an 250.10  ❇️&[.Outgoing\ Call\ Hierarchy                  :
-    an 250.10  ❇️&[.Code\ Action                               :
-    an 250.10  ❇️&[.Code\ Lens                                 :
-    an 250.10  ❇️&[.Document\ Diagnostics                      :
-    an 250.10  ❇️&[.Document\ Fold                             :
-    an 250.10  ❇️&[.Document\ Format                           :
-    an 250.10  ❇️&[.Document\ Symbols                          :
-    an 250.10  ❇️&[.Workspace\ Symbols                         :
-    an 250.10  ❇️&[.Document\ Semantic\ Scopes                 :
-    an 250.10  ❇️&[.Document\ Symbols\ Search                  :
-    an 250.10  ❇️&[.Workspace\ Symbols\ Search                 :
-    an 250.10  ❇️&[.Next\ Diagnostic                           :
-    an 250.10  ❇️&[.Next\ Error                                :
-    an 250.10  ❇️&[.Next\ Reference                            :
-    an 250.10  ❇️&[.Next\ Warning                              :
-    an 250.10  ❇️&[.Previous\ Diagnostic                       :
-    an 250.10  ❇️&[.Previous\ Error                            :
-    an 250.10  ❇️&[.Previous\ Reference                        :
-    an 250.10  ❇️&[.Previous\ Warning                          :
-    an 250.10  ❇️&[.Rename                                     :
-    an 250.10  ❇️&[.LSP\ Status                                :
-    an 250.10  ❇️&[.Stop\ all\ LSP                             :
+    an 300.10  ❇️&[.C&hoose\ Symbol<Tab>:Clap\ tags\ vim_lsp   :Clap tags vim_lsp<CR>
+    an 300.10  ❇️&[.Definition                                 :LspDefinition<CR>
+    an 300.10  ❇️&[.Declaration                                :
+    an 300.10  ❇️&[.References                                 :
+    an 300.10  ❇️&[.Implementation                             :
+    an 300.10  ❇️&[.Type\ Definition                           :
+    an 300.10  ❇️&[.Type\ Hierarchy                            :
+    an 300.10  ❇️&[.Incoming\ Call\ Hierarchy                  :
+    an 300.10  ❇️&[.Outgoing\ Call\ Hierarchy                  :
+    an 300.10  ❇️&[.Code\ Action                               :
+    an 300.10  ❇️&[.Code\ Lens                                 :
+    an 300.10  ❇️&[.Document\ Diagnostics                      :
+    an 300.10  ❇️&[.Document\ Fold                             :
+    an 300.10  ❇️&[.Document\ Format                           :
+    an 300.10  ❇️&[.Document\ Symbols                          :
+    an 300.10  ❇️&[.Workspace\ Symbols                         :
+    an 300.10  ❇️&[.Document\ Semantic\ Scopes                 :
+    an 300.10  ❇️&[.Document\ Symbols\ Search                  :
+    an 300.10  ❇️&[.Workspace\ Symbols\ Search                 :
+    an 300.10  ❇️&[.Next\ Diagnostic                           :
+    an 300.10  ❇️&[.Next\ Error                                :
+    an 300.10  ❇️&[.Next\ Reference                            :
+    an 300.10  ❇️&[.Next\ Warning                              :
+    an 300.10  ❇️&[.Previous\ Diagnostic                       :
+    an 300.10  ❇️&[.Previous\ Error                            :
+    an 300.10  ❇️&[.Previous\ Reference                        :
+    an 300.10  ❇️&[.Previous\ Warning                          :
+    an 300.10  ❇️&[.Rename                                     :
+    an 300.10  ❇️&[.LSP\ Status                                :
+    an 300.10  ❇️&[.Stop\ all\ LSP                             :
 
     " Tags
-    an 260.10  🪧&].Tags <Nop>
+    an 310.10  🪧&].Tags <Nop>
     an disable 🪧&].Tags
-    an 260.10  🪧&].C&hoose<Tab>:Clap\ tags\ ctags            :Clap tags ctags<CR>
-    an 260.10  🪧&].&Jump\ to\ Tag<Tab><C-]>                  <C-]>
+    an 310.10  🪧&].C&hoose<Tab>:Clap\ tags\ ctags            :Clap tags ctags<CR>
+    an 310.10  🪧&].&Jump\ to\ Tag<Tab><C-]>                  <C-]>
+    an 310.10  🪧&].&Jump\ Back<Tab><C-t>                     <C-t>
+    an 310.10  🪧&].&Jump\ or\ Select\ Tag<Tab>g<C-]>         g<C-]>
+    an 310.10  🪧&].&Select\ Tag<Tab>g]                       g]
 
     " Build
-    an 270.10  🔨&u.Build <Nop>
+    an 500.10  🔨&u.Build <Nop>
     an disable 🔨&u.Build
-    an 270.10  🔨&u.Make                                      :Make<CR>
-    an 270.10  🔨&u.Make!                                     :Make<CR>
-    an 270.10  🔨&u.Copen                                     :Make<CR>
-    an 270.10  🔨&u.Copen!                                    :Make<CR>
-    an 270.10  🔨&u.Dispatch!                                 :Make<CR>
-    an 270.10  🔨&u.FocusDispatch!                            :Make<CR>
-    an 270.10  🔨&u.AbortDispatch                             :Make<CR>
-    an 270.10  🔨&u.Start                                     :Make<CR>
-    an 270.10  🔨&u.Spawn                                     :Make<CR>
+    an 500.10  🔨&u.Make                                      :Make<CR>
+    an 500.10  🔨&u.Make!                                     :Make<CR>
+    an 500.10  🔨&u.Copen                                     :Make<CR>
+    an 500.10  🔨&u.Copen!                                    :Make<CR>
+    an 500.10  🔨&u.Dispatch!                                 :Make<CR>
+    an 500.10  🔨&u.FocusDispatch!                            :Make<CR>
+    an 500.10  🔨&u.AbortDispatch                             :Make<CR>
+    an 500.10  🔨&u.Start                                     :Make<CR>
+    an 500.10  🔨&u.Spawn                                     :Make<CR>
 
     " Run
-    an 280.10  ▶️&r.Run <Nop>
+    an 510.10  ▶️&r.Run <Nop>
     an disable ▶️&r.Run
-    an 280.10  ▶️&r.Configurations                              :
+    an 510.10  ▶️&r.Configurations                              :
 
     " Debug
-    an 290.10  🐞&d.Debug <Nop>
+    an 520.10  🐞&d.Debug <Nop>
     an disable 🐞&d.Debug
-    an 290.10  🐞&d.Start\ &Debug                             :Vimspector<CR>
+    an 520.10  🐞&d.Start\ &Debug                             :Vimspector<CR>
 
     " Test
-    an 300.10  🧪&j.Test <Nop>
+    an 530.10  🧪&j.Test <Nop>
     an disable 🧪&j.Test
-    an 300.10  🧪&j.Nearest                                 :TestNearest<CR>
-    an 300.10  🧪&j.File                                    :TestFile<CR>
-    an 300.10  🧪&j.Suite                                   :TestSuite<CR>
-    an 300.10  🧪&j.Last                                    :TestLast<CR>
-    an 300.10  🧪&j.Visit                                   :TestVisit<CR>
+    an 530.10  🧪&j.Nearest                                 :TestNearest<CR>
+    an 530.10  🧪&j.File                                    :TestFile<CR>
+    an 530.10  🧪&j.Suite                                   :TestSuite<CR>
+    an 530.10  🧪&j.Last                                    :TestLast<CR>
+    an 530.10  🧪&j.Visit                                   :TestVisit<CR>
 
     " Analyze
-    an 310.10  🔬&y.Analyze <Nop>
+    an 540.10  🔬&y.Analyze <Nop>
     an disable 🔬&y.Analyze
-    an 310.10  🔬&y.Check                                   :
+    an 540.10  🔬&y.Check                                   :
 
     " Terminal
-    an 320.10  💻&t.Terminal <Nop>
+    an 550.10  💻&t.Terminal <Nop>
     an disable 💻&t.Terminal
-    an 320.10  💻&t.N&ew\ Here                             :terminal ++curwin ++kill=kill<CR>
-    an 320.10  💻&t.&New\ Below                            :rightbelow terminal ++kill=kill<CR>
-    an 320.10  💻&t.New\ at\ &Bottom                       :botright terminal ++kill=kill<CR>
-    an 320.10  💻&t.--1-- <Nop>
-    an 320.10  💻&t.P&ython\ Shell                         :botright terminal ++kill=kill python<CR>
-    an 320.10  💻&t.C&++\ Shell                            :botright terminal ++kill=kill cling<CR>
+    an 550.10  💻&t.N&ew\ Here                             :terminal ++curwin ++kill=kill<CR>
+    an 550.10  💻&t.&New\ Below                            :rightbelow terminal ++kill=kill<CR>
+    an 550.10  💻&t.New\ at\ &Bottom                       :botright terminal ++kill=kill<CR>
+    an 550.10  💻&t.--1-- <Nop>
+    an 550.10  💻&t.P&ython\ Shell                         :botright terminal ++kill=kill python<CR>
+    an 550.10  💻&t.C&++\ Shell                            :botright terminal ++kill=kill cling<CR>
   else
     silent! aunmenu ❇️&[
     silent! aunmenu 🪧&]
@@ -1308,51 +1365,56 @@ function! PlanetVim_MenusToolsUpdate() abort
   if g:PlanetVim_menus_tools
     " Git
     " Open Log in new window
-    an 330.10  🔀&,.Git <Nop>
+    an 700.10  🔀&,.Git <Nop>
     an disable 🔀&,.Git
-    an 330.10  🔀&,.Log                                      :
+    an 700.10  🔀&,.Log                                      :
 
     " Diff/Patch
-    an 340.10  ⛏️&;.Diff/Patch <Nop>
+    an 710.10  ⛏️&;.Diff/Patch <Nop>
     an disable ⛏️&;.Diff/Patch
-    an 340.10  ⛏️&;.DiffOrig                          :DiffOrig<CR>
-    an 340.20  ⛏️&;.Diff\ with\ file\.\.\.            :browse vert diffsplit<CR>
-    an 340.30  ⛏️&;.Diff\ with\ patch\.\.\.           :browse vert diffpatch<CR>
-    an 340.40  ⛏️&;.--1-- <Nop>
-    an 340.40  ⛏️&;.Previous\ Hunk<Tab>[n             [n
-    an 340.40  ⛏️&;.Next\ Hunk<Tab>]n                 ]n
-    an 340.40  ⛏️&;.--2-- <Nop>
-    an 340.40  ⛏️&;.Previous\ Conflict\ Marker<Tab>[n [n
-    an 340.40  ⛏️&;.Next\ Conflict\ Marker<Tab>]n     ]n
+    an 710.10  ⛏️&;.DiffOrig                          :DiffOrig<CR>
+    an 710.20  ⛏️&;.Diff\ with\ file\.\.\.            :browse vert diffsplit<CR>
+    an 710.30  ⛏️&;.Diff\ with\ patch\.\.\.           :browse vert diffpatch<CR>
+    an 710.40  ⛏️&;.--1-- <Nop>
+    an 710.40  ⛏️&;.Previous\ Hunk<Tab>[n             [n
+    an 710.40  ⛏️&;.Next\ Hunk<Tab>]n                 ]n
+    an 710.40  ⛏️&;.--2-- <Nop>
+    an 710.40  ⛏️&;.Previous\ Conflict\ Marker<Tab>[n [n
+    an 710.40  ⛏️&;.Next\ Conflict\ Marker<Tab>]n     ]n
 
     " Spelling
-    an 350.10  🔤&-.Spelling <Nop>
+    an 720.10  🔤&-.Spelling <Nop>
     an disable 🔤&-.Spelling
-    an 350.10  🔤&-.Enable                              :
+    an 720.10  🔤&-.Enable                              :
 
     " Tools
-    an 360.10  🔧&o.Tools <Nop>
+    an 730.10  🔧&o.Tools <Nop>
     an disable 🔧&o.Tools
-    an 360.10  🔧&o.C&hoose\ Colorscheme                      :Clap colors<CR>
-    an 360.10  🔧&o.Colori&ze                                 :ColorToggle<CR>
-    an 360.10  🔧&o.--1-- <Nop>
-    an 360.10  🔧&o.&direnv:\ Run\ \.envrc                    :DirenvExport<CR>
-    an 360.10  🔧&o.dire&nv:\ Edit\ \.envrc                   :EditEnvrc<CR>
-    an 360.10  🔧&o.diren&v:\ Edit\ direnvrc                  :EditDirenvrc<CR>
-    an 360.10  🔧&o.--2-- <Nop>
-    an 360.10  🔧&o.XML\ Encode<Tab>[x{motion}                [x
-    an 360.10  🔧&o.XML\ Decode<Tab>]x{motion}                ]x
-    an 360.10  🔧&o.URL\ Encode<Tab>[u{motion}                [u
-    an 360.10  🔧&o.URL\ Decode<Tab>]u{motion}                ]u
-    an 360.10  🔧&o.C\ String\ Encode<Tab>[y{motion}          [y
-    an 360.10  🔧&o.C\ String\ Decode<Tab>]y{motion}          ]y
-    an 360.10  🔧&o.--3-- <Nop>
-    an 360.10  🔧&o.Tabs:\ 2                                  :set et ts=2 sw=2
-    an 360.10  🔧&o.Tabs:\ 4                                  :set et ts=4 sw=4
-    an 360.10  🔧&o.Tabs:\ 8                                  :set noet ts=8 sw=8
-    an 360.10  🔧&o.--4-- <Nop>
-    an 360.10  🔧&o.Toggle\ Verbosity<Tab>=oV                 :VerbosityToggle<CR>
-    an 360.10  🔧&o.Open\ Verbosity\ Log<Tab>goV              :VerbosityOpenLast<CR>
+    an 730.10  🔧&o.C&hoose\ Colorscheme                      :Clap colors<CR>
+    an 730.10  🔧&o.Colori&ze                                 :ColorToggle<CR>
+    an 730.10  🔧&o.--1-- <Nop>
+    an 730.10  🔧&o.&direnv:\ Run\ \.envrc                    :DirenvExport<CR>
+    an 730.10  🔧&o.dire&nv:\ Edit\ \.envrc                   :EditEnvrc<CR>
+    an 730.10  🔧&o.diren&v:\ Edit\ direnvrc                  :EditDirenvrc<CR>
+    an 730.10  🔧&o.--2-- <Nop>
+    an 730.10  🔧&o.Format\ Text<Tab>gq                       gq
+    an 730.10  🔧&o.--2-- <Nop>
+    an 730.10  🔧&o.XML\ Encode<Tab>[x{motion}                [x
+    an 730.10  🔧&o.XML\ Decode<Tab>]x{motion}                ]x
+    an 730.10  🔧&o.URL\ Encode<Tab>[u{motion}                [u
+    an 730.10  🔧&o.URL\ Decode<Tab>]u{motion}                ]u
+    an 730.10  🔧&o.C\ String\ Encode<Tab>[y{motion}          [y
+    an 730.10  🔧&o.C\ String\ Decode<Tab>]y{motion}          ]y
+    an 730.10  🔧&o.--3-- <Nop>
+    an 730.10  🔧&o.Tabs:\ 2                                  :set et ts=2 sw=2
+    an 730.10  🔧&o.Tabs:\ 4                                  :set et ts=4 sw=4
+    an 730.10  🔧&o.Tabs:\ 8                                  :set noet ts=8 sw=8
+    an 730.10  🔧&o.--4-- <Nop>
+    an 730.10  🔧&o.Rot13\ Operator<Tab>g?                    g?
+    an 730.10  🔧&o.Rot13\ Current\ Line<Tab>g??<Tab>g?g?     g??
+    an 730.10  🔧&o.--5-- <Nop>
+    an 730.10  🔧&o.Toggle\ Verbosity<Tab>=oV                 :VerbosityToggle<CR>
+    an 730.10  🔧&o.Open\ Verbosity\ Log<Tab>goV              :VerbosityOpenLast<CR>
   else
     silent! aunmenu 🔀&,
     silent! aunmenu ⛏️&;
@@ -1368,108 +1430,108 @@ endif
 function! PlanetVim_MenusNavigationUpdate() abort
   if g:PlanetVim_menus_nav
     " Buffers
-    an 370.10  📖&b.Buffers <Nop>
+    an 800.10  📖&b.Buffers <Nop>
     an disable 📖&b.Buffers
-    an 370.10  📖&b.C&hoose\.\.\.                           :Clap buffers<CR>
-    an 370.20  📖&b.--1-- <Nop>
-    an 370.30  📖&b.&Alternate                              :b #<CR>
-    an 370.40  📖&b.--2-- <Nop>
-    an 370.40  📖&b.&First<Tab>[B                           :bfirst<CR>
-    an 370.40  📖&b.&Previous<Tab>[b                        :bprevious<CR>
-    an 370.40  📖&b.&Next<Tab>]b                            :bnext<CR>
-    an 370.40  📖&b.&Last<Tab>]B                            :blast<CR>
-    an 370.40  📖&b.--2-- <Nop>
-    an 370.50  📖&b.Buffers\ List <Nop>
+    an 800.10  📖&b.C&hoose\.\.\.                           :Clap buffers<CR>
+    an 800.20  📖&b.--1-- <Nop>
+    an 800.30  📖&b.&Alternate<Tab>:b\ #<Tab><C-^>          :b #<CR>
+    an 800.40  📖&b.--2-- <Nop>
+    an 800.40  📖&b.&First<Tab>[B                           :bfirst<CR>
+    an 800.40  📖&b.&Previous<Tab>[b                        :bprevious<CR>
+    an 800.40  📖&b.&Next<Tab>]b                            :bnext<CR>
+    an 800.40  📖&b.&Last<Tab>]B                            :blast<CR>
+    an 800.40  📖&b.--2-- <Nop>
+    an 800.50  📖&b.Buffers\ List <Nop>
     an disable 📖&b.Buffers\ List
     let planet_buf = 1
     "while buf <= bufnr('$')
 
     " Arg List
-    an 380.10  🗃️&a.Args <Nop>
+    an 810.10  🗃️&a.Args <Nop>
     an disable 🗃️&a.Args
-    an 380.10  🗃️&a.&Add                                       :argadd<CR>
-    an 380.10  🗃️&a.&Delete                                    :argdelete<CR>
-    an 380.10  🗃️&a.Open\ &First<Tab>[A                        :first<CR>
-    an 380.10  🗃️&a.Open\ &Previous<Tab>[a                     :previous<CR>
-    an 380.10  🗃️&a.Open\ &Next<Tab>]a                         :next<CR>
-    an 380.10  🗃️&a.Open\ &Last<Tab>]A                         :last<CR>
-    an 380.10  🗃️&a.--1-- <Nop>
-    an 380.10  🗃️&a.Args\ List <Nop>
+    an 810.10  🗃️&a.&Add                                       :argadd<CR>
+    an 810.10  🗃️&a.&Delete                                    :argdelete<CR>
+    an 810.10  🗃️&a.Open\ &First<Tab>[A                        :first<CR>
+    an 810.10  🗃️&a.Open\ &Previous<Tab>[a                     :previous<CR>
+    an 810.10  🗃️&a.Open\ &Next<Tab>]a                         :next<CR>
+    an 810.10  🗃️&a.Open\ &Last<Tab>]A                         :last<CR>
+    an 810.10  🗃️&a.--1-- <Nop>
+    an 810.10  🗃️&a.Args\ List <Nop>
     an disable 🗃️&a.Args\ List
 
     " Vim Windows
-    an 390.10  🪟&w.Windows <Nop>
+    an 820.10  🪟&w.Windows <Nop>
     an disable 🪟&w.Windows
-    an 390.10  🪟&w.&Window\ Mode                           :WindowMode<CR>
-    an 390.20  🪟&w.--1-- <Nop>
-    an 390.30  🪟&w.C&hoose<Tab>:Clap\ windows              :Clap windows<CR>
-    an 390.40  🪟&w.--2-- <Nop>
-    an 390.50  🪟&w.Horizontal\ &Split<Tab>:split<Tab>+s    <C-w>s
-    an 390.60  🪟&w.&Vertical\ Split<Tab>:vsplit<Tab>+v     <C-w>v
-    an 390.90  🪟&w.S&wap<Tab>+x                            <C-w>x
-    an 390.100 🪟&w.Move\ to\ New\ &Tab<Tab>+T              <C-w>T
-    an 390.100 🪟&w.Move\ to\ New\ &GUI\ Window             :TODO
-    an 390.120 🪟&w.--3-- <Nop>
-    an 390.130 🪟&w.Move\ to\ Left<Tab>+H                   <C-w>H
-    an 390.140 🪟&w.Move\ to\ Right<Tab>+L                  <C-w>L
-    an 390.150 🪟&w.Move\ to\ Top<Tab>+K                    <C-w>K
-    an 390.160 🪟&w.Move\ to\ Bottom<Tab>+J                 <C-w>J
-    an 390.170 🪟&w.--4-- <Nop>
-    an 390.180 🪟&w.&Equal\ Size<Tab>+=                     <C-w>=
+    an 820.10  🪟&w.&Window\ Mode                           :WindowMode<CR>
+    an 820.20  🪟&w.--1-- <Nop>
+    an 820.30  🪟&w.C&hoose<Tab>:Clap\ windows              :Clap windows<CR>
+    an 820.40  🪟&w.--2-- <Nop>
+    an 820.50  🪟&w.Horizontal\ &Split<Tab>:split<Tab>+s    <C-w>s
+    an 820.60  🪟&w.&Vertical\ Split<Tab>:vsplit<Tab>+v     <C-w>v
+    an 820.90  🪟&w.S&wap<Tab>+x                            <C-w>x
+    an 820.100 🪟&w.Move\ to\ New\ &Tab<Tab>+T              <C-w>T
+    an 820.100 🪟&w.Move\ to\ New\ &GUI\ Window             :TODO
+    an 820.120 🪟&w.--3-- <Nop>
+    an 820.130 🪟&w.Move\ to\ Left<Tab>+H                   <C-w>H
+    an 820.140 🪟&w.Move\ to\ Right<Tab>+L                  <C-w>L
+    an 820.150 🪟&w.Move\ to\ Top<Tab>+K                    <C-w>K
+    an 820.160 🪟&w.Move\ to\ Bottom<Tab>+J                 <C-w>J
+    an 820.170 🪟&w.--4-- <Nop>
+    an 820.180 🪟&w.&Equal\ Size<Tab>+=                     <C-w>=
     "FIXME: In Insert mode this only works for a SINGLE Normal mode command (:h :an)
-    an 390.190 🪟&w.&Maximize<Tab>+_+\|                     <C-w>_<C-w>\|
-    an 390.200 🪟&w.--5-- <Nop>
-    an 390.210 🪟&w.&Close<Tab>:close<Tab>+c                <C-w>c
-    an 390.220 🪟&w.Close\ &Other\ Windows<Tab>:only<Tab>+o <C-w>o
+    an 820.190 🪟&w.&Maximize<Tab>+_+\|                     <C-w>_<C-w>\|
+    an 820.200 🪟&w.--5-- <Nop>
+    an 820.210 🪟&w.&Close<Tab>:close<Tab>+c                <C-w>c
+    an 820.220 🪟&w.Close\ &Other\ Windows<Tab>:only<Tab>+o <C-w>o
 
     " Tabs
-    an 400.10  🗂️&\..Tabs <Tabs>
+    an 830.10  🗂️&\..Tabs <Tabs>
     an disable 🗂️&\..Tabs
-    an 400.10  🗂️&\..N&ew<Tab>:tabnew                       :tabnew<CR>
-    an 400.20  🗂️&\..--1-- <Nop>
-    an 400.30  🗂️&\..F&ind\ File<Tab>:tabfind               :tabfind 
-    an 400.40  🗂️&\..--2-- <Nop>
-    an 400.50  🗂️&\..&First<Tab>:tabfirst                   :tabfirst<CR>
-    an 400.60  🗂️&\..&Previous<tab>:tabprevious<Tab><C-PgUp><Tab>gT gT
-    an 400.70  🗂️&\..&Next<Tab>:tabnext<Tab><C-PgDown><Tab>gt gt
-    an 400.80  🗂️&\..&Last<Tab>:tablast                     :tablast<CR>
-    an 400.90  🗂️&\..Last\ &accessed<Tab>g\<Tab\>            g<Tab>
-    an 400.100 🗂️&\..--3-- <Nop>
-    an 400.110 🗂️&\..E&xecute\ in\ each\ Tab<Tab>:tabdo     :tabdo 
-    an 400.120 🗂️&\..--4-- <Nop>
-    an 400.130 🗂️&\..&Close<Tab>:tabclose                   :tabclose<CR>
-    an 400.140 🗂️&\..Close\ all\ &other\ tabs<Tab>:tabonly  :tabonly<CR>
+    an 830.10  🗂️&\..N&ew<Tab>:tabnew                       :tabnew<CR>
+    an 830.20  🗂️&\..--1-- <Nop>
+    an 830.30  🗂️&\..F&ind\ File<Tab>:tabfind               :tabfind 
+    an 830.40  🗂️&\..--2-- <Nop>
+    an 830.50  🗂️&\..&First<Tab>:tabfirst                   :tabfirst<CR>
+    an 830.60  🗂️&\..&Previous<tab>:tabprevious<Tab><C-PgUp><Tab>gT gT
+    an 830.70  🗂️&\..&Next<Tab>:tabnext<Tab><C-PgDown><Tab>gt gt
+    an 830.80  🗂️&\..&Last<Tab>:tablast                     :tablast<CR>
+    an 830.90  🗂️&\..Last\ &accessed<Tab>g\<Tab\>            g<Tab>
+    an 830.100 🗂️&\..--3-- <Nop>
+    an 830.110 🗂️&\..E&xecute\ in\ each\ Tab<Tab>:tabdo     :tabdo 
+    an 830.120 🗂️&\..--4-- <Nop>
+    an 830.130 🗂️&\..&Close<Tab>:tabclose                   :tabclose<CR>
+    an 830.140 🗂️&\..Close\ all\ &other\ tabs<Tab>:tabonly  :tabonly<CR>
 
     " Sessions
-    an 410.10  📚&n.Sessions <Nop>
+    an 840.10  📚&n.Sessions <Nop>
     an disable 📚&n.Sessions
-    an 410.10  📚&n.&Save                                  :SSave!<CR>
-    an 410.20  📚&n.&Open                                  :SLoad<CR>
-    an 410.30  📚&n.&Close                                 :SClose<CR>
-    an 410.40  📚&n.&Delete                                :SDelete<CR>
-    an 410.45  📚&n.--1-- <Nop>
-    an 410.60  📚&n.Session\ List <Nop>
+    an 840.10  📚&n.&Save                                  :SSave!<CR><CR>
+    an 840.20  📚&n.&Open                                  :SLoad<CR>
+    an 840.30  📚&n.&Close                                 :SClose<CR>
+    an 840.40  📚&n.&Delete                                :SDelete<CR>
+    an 840.45  📚&n.--1-- <Nop>
+    an 840.60  📚&n.Session\ List <Nop>
     an disable 📚&n.Session\ List
 
     " Control GUI window with wmctrl & vim servers
-    an 420.10  🔰&x.GUI <Nop>
+    an 850.10  🔰&x.GUI <Nop>
     an disable 🔰&x.GUI
-    an 420.10  🔰&x.&Maximize            :silent call system('wmctrl -i -b toggle,maximized_vert,maximized_horz -r' . v:windowid)<CR>
-    an 420.10  🔰&x.&Full\ Screen        :silent call system('wmctrl -i -b toggle,fullscreen -r' . v:windowid)<CR>
-    an 420.10  🔰&x.Minimi&ze<Tab>:suspend<Tab><C-z>         <C-z>
-    an 420.10  🔰&x.--1-- <Nop>
+    an 850.10  🔰&x.&Maximize            :silent call system('wmctrl -i -b toggle,maximized_vert,maximized_horz -r' . v:windowid)<CR>
+    an 850.10  🔰&x.&Full\ Screen        :silent call system('wmctrl -i -b toggle,fullscreen -r' . v:windowid)<CR>
+    an 850.10  🔰&x.Minimi&ze<Tab>:suspend<Tab><C-z>         <C-z>
+    an 850.10  🔰&x.--1-- <Nop>
     "TODO: List of GUI windows to focus
 
     " Vim Apps: Open in new GUI window
-    an 430.10  🧭&'.Apps <Nop>
+    an 860.10  🧭&'.Apps <Nop>
     an disable 🧭&'.Apps
-    an 430.10  🧭&'.Calendar            :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +Calendar<CR>
-    an 430.10  🧭&'.Web\ Browser        :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'W3m https://google.com/'<CR>
-    an 430.10  🧭&'.Calculator          :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +Calculator<CR>
-    an 430.10  🧭&'.Terminal            :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'terminal ++curwin ++kill=kill'<CR>
-    an 430.10  🧭&'.File\ Manager       :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'Fern .'<CR>
-    an 430.10  🧭&'.Python\ Notebook    :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'Codi python'<CR>
-    an 430.10  🧭&'.C++\ Notebook       :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'Codi cpp'<CR>
+    an 860.10  🧭&'.Calendar            :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +Calendar<CR>
+    an 860.10  🧭&'.Web\ Browser        :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'W3m https://google.com/'<CR>
+    an 860.10  🧭&'.Calculator          :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +Calculator<CR>
+    an 860.10  🧭&'.Terminal            :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'terminal ++curwin ++kill=kill'<CR>
+    an 860.10  🧭&'.File\ Manager       :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'Fern .'<CR>
+    an 860.10  🧭&'.Python\ Notebook    :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'Codi python'<CR>
+    an 860.10  🧭&'.C++\ Notebook       :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'Codi cpp'<CR>
     "TODO: Email
     "TODO: difdiff
   else
@@ -1494,7 +1556,8 @@ function! PlanetSaveExit() abort
 endfunction
 an 100.10  🌐&p.PlanetVim <Nop>
 an disable 🌐&p.PlanetVim
-an 100.10  🌐&p.&Insert\ Mode<Tab>:set\ im!           :set im!<CR>
+"TODO: Modeless: Visual->Select mode, disable startify
+an 100.10  🌐&p.&Modeless\ Mode<Tab>:set\ im!         :set im!<CR>
 an 100.20  🌐&p.--1-- <Nop>
 an 100.30  🌐&p.&Basic\ Menus                         :call PlanetVim_MenusBasicToggle()<CR>
 an 100.40  🌐&p.&Editing\ Menus                       :call PlanetVim_MenusEditingToggle()<CR>

@@ -31,6 +31,7 @@ sync-files:
 	for file in $(FILES); do $(RSYNC) $(RSYNC_OPTIONS) $$file $(HOME)/$$file; done
 	vim -c 'helptags ALL' -c 'q'
 	#vim -c 'runtime spell/cleanadd.vim' -c 'q'
+	#cd $(HOME)/.vim/pack/basic/start/vim-clap && cargo build --release
 
 commit:
 	git add $(FILES) Makefile README.md
