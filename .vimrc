@@ -863,6 +863,8 @@ function! s:registers_choose_to_edit() abort
   execute("silent normal \<C-w>P")
 endfunction
 
+"TODO: add setting 'equalprg' for formatting wih == (clang-format, etc.)
+
 " system('sed -i -e s/PV_basic_menus_status/.../ $HOME/.vim/planetvimrc.vim')
 " TODO: Choise between text, emoji, symbols, nerdicons menus
 if ! exists("g:PlanetVim_menus_basic")
@@ -906,6 +908,10 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 120.10  📝&e.&Undo<Tab>u<Tab>g-                         u
     an 120.20  📝&e.&Redo<Tab><C-r><Tab>g+                     <C-r>
     an 120.30  📝&e.--1-- <Nop>
+    an 120.40  📝&e.Repeat<Tab>\.                               .
+    an 120.130 📝&e.Repeat\ Ex\ Command<Tab>@:                 @:
+    an 120.130 📝&e.Repeat\ Macro<Tab>@@                       @@
+    an 120.30  📝&e.--1-- <Nop>
     an 120.40  📝&e.Undo\ &History                             :UndotreeToggle<CR>
     an 120.50  📝&e.--2-- <Nop>
     an 120.60  📝&e.Cu&t                                       "+d
@@ -922,12 +928,17 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 120.110 📝&e.Swap\ Previous\ Line<Tab>[e                [e
     an 120.110 📝&e.Swap\ Next\ Line<Tab>]e                    ]e
     an 120.110 📝&e.--5-- <Nop>
+    an 120.120 📝&e.Unindent<Tab><                             <
+    an 120.120 📝&e.Indent<Tab>>                               >
+    an 120.120 📝&e.Auto\ Indent<Tab>=                         =
+    an 120.120 📝&e.Auto\ Indent\ File<Tab>gg=G                gg=G
     an 120.120 📝&e.Toggle\ Comment<Tab>gcc                    gcc
     an 120.130 📝&e.Toggle\ CAPS<Tab>gC<Tab>i_<C-g>c           gC
     an 120.130 📝&e.To\ lower<Tab>gu                           gu
     an 120.130 📝&e.To\ UPPER<Tab>gU                           gU
     an 120.130 📝&e.Swap\ Case<Tab>g~                          g~
     an 120.110 📝&e.--5-- <Nop>
+    an 120.130 📝&e.Join\ Lines<Nop>J                          J
     an 120.130 📝&e.Join\ Lines\ without\ whitespace<Nop>gJ    gJ
     an 120.110 📝&e.--5-- <Nop>
     an 120.130 📝&e.Replace\ Mode<Tab>R                        R
@@ -936,13 +947,18 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 120.130 📝&e.Call\ 'operatorfunc'<Tab>g@                g@
     an 120.130 📝&e.Filter\ by\ Program<Tab>!<cmd>             !
 
-    " Searching
-    an 130.10  🔎&/.Searching <Nop>
-    an disable 🔎&/.Searching
+    " Search
+    an 130.10  🔎&/.Search <Nop>
+    an disable 🔎&/.Search
     an 130.10  🔎&/.C&hoose\ Line<Tab>:Clap\ blines     :Clap blines<CR>
     an 130.20  🔎&/.--1-- <Nop>
     an 130.20  🔎&/.Choose\ from\ Hi&story<Tab>:Clap\ search_history :Clap search_history<CR>
     an 130.30  🔎&/.--2-- <Nop>
+    an 130.40  🔎&/.Previous<Tab>N                           N
+    an 130.40  🔎&/.Next<Tab>n                               n
+    an 130.30  🔎&/.--2-- <Nop>
+    an 130.40  🔎&/.Last\ Search<Tab>/<CR>                   /<CR>
+    an 130.40  🔎&/.Last\ Search\ Backwards<Tab>?<CR>        ?<CR>
     an 130.40  🔎&/.Current\ Word<Tab>*                      *
     an 130.40  🔎&/.Current\ Word\ Backwards<Tab>#           #
     an 130.40  🔎&/.Current\ \<word\><Tab>g*                 g*
@@ -984,26 +1000,37 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 150.70  📺&v.Add\ Current                               :call PV_WinBar_AddCurrent()<CR>
 
     " Go
-    an 160.10  🔃&g.Go <Nop>
-    an disable 🔃&g.Go
-    an 160.10  🔃&g.C&hoose\ Jump<Tab>:Clap\ jumps               :Clap jumps<CR>
-    an 160.20  🔃&g.--1-- <Nop>
-    an 160.30  🔃&g.Back<Tab><C-o>                               <C-o>
-    an 160.30  🔃&g.Forward<Tab><C-i>                            <C-i>
-    an 160.40  🔃&g.--2-- <Nop>
-    an 160.30  🔃&g.Previous\ Change\ Position<Tab>g;            g;
-    an 160.30  🔃&g.Next\ Change\ Position<Tab>g,                g,
-    an 160.40  🔃&g.--3-- <Nop>
-    an 160.30  🔃&g.Definition\ in\ Scope<Tab>gd                 gd
-    an 160.30  🔃&g.Definition\ in\ File<Tab>gD                  gD
-    an 160.40  🔃&g.--4-- <Nop>
-    an 160.30  🔃&g.Percentage\ in\ File<Tab>{count}%            N%
-    an 160.40  🔃&g.--4-- <Nop>
-    an 160.30  🔃&g.Middle\ of\ Text\ Line<Tab>gM                gM
-    an 160.30  🔃&g.Middle\ of\ Screen\ Line<Tab>gM              gm
-    an 160.40  🔃&g.--4-- <Nop>
-    an 160.50  🔃&g.File\ under\ Cursor\ in\ Tab<Tab><C-w>gf     <C-w>gf
-    an 160.60  🔃&g.File&&Line\ under\ Cursor\ in\ Tab<Tab><C-w>gF <C-w>gF
+    an 160.10  ↕️&g.Go <Nop>
+    an disable ↕️&g.Go
+    an 160.10  ↕️&g.C&hoose\ Jump<Tab>:Clap\ jumps               :Clap jumps<CR>
+    an 160.20  ↕️&g.--1-- <Nop>
+    an 160.30  ↕️&g.Back<Tab><C-o>                               <C-o>
+    an 160.30  ↕️&g.Forward<Tab><C-i>                            <C-i>
+    an 160.40  ↕️&g.--2-- <Nop>
+    an 160.30  ↕️&g.Previous\ Change\ Position<Tab>g;            g;
+    an 160.30  ↕️&g.Next\ Change\ Position<Tab>g,                g,
+    an 160.40  ↕️&g.--3-- <Nop>
+    an 160.30  ↕️&g.Definition\ in\ Scope<Tab>gd                 gd
+    an 160.30  ↕️&g.Definition\ in\ File<Tab>gD                  gD
+    an 160.40  ↕️&g.--4-- <Nop>
+    an 160.30  ↕️&g.Percentage\ in\ File<Tab>{count}%            N%
+    an 160.40  ↕️&g.--4-- <Nop>
+    an 160.30  ↕️&g.Middle\ of\ Text\ Line<Tab>gM                gM
+    an 160.30  ↕️&g.Middle\ of\ Screen\ Line<Tab>gM              gm
+    an 160.40  ↕️&g.--4-- <Nop>
+    an 160.50  ↕️&g.File\ under\ Cursor\ in\ Tab<Tab><C-w>gf     <C-w>gf
+    an 160.60  ↕️&g.File&&Line\ under\ Cursor\ in\ Tab<Tab><C-w>gF <C-w>gF
+    an 160.40  ↕️&g.--4-- <Nop>
+    an 160.30  ↕️&g.Sentence\ Backward<Tab>(                     (
+    an 160.30  ↕️&g.Sentence\ Forward<Tab>)                      )
+    an 160.30  ↕️&g.ftFT\ Backward<Tab>,                         ,
+    an 160.30  ↕️&g.ftFT\ Forward<Tab>;                          ;
+    an 160.30  ↕️&g.Start\ of\ Selected\ Area<Tab>'<             `<
+    an 160.30  ↕️&g.End\ of\ Selected\ Area<Tab>'>               `>
+    an 160.30  ↕️&g.Start\ of\ Changed\ Text<Tab>'[              `[
+    an 160.30  ↕️&g.End\ of\ Changed\ Text<Tab>']                `]
+    an 160.30  ↕️&g.Start\ of\ Paragraph<Tab>{                   {
+    an 160.30  ↕️&g.End\ of\ Paragraph<Tab>}                     }
 
     " Show current maps (nnoremap, etc.)
     an 980.10  ⌨️&\\.Maps <Nop>
@@ -1039,7 +1066,7 @@ function! PlanetVim_MenusBasicUpdate() abort
     silent! aunmenu 🔎&/
     silent! aunmenu 🖍️&s
     silent! aunmenu 📺&v
-    silent! aunmenu 🔃&g
+    silent! aunmenu ↕️&g
     silent! aunmenu ⌨️&\\
     silent! aunmenu ❔&h
   endif
@@ -1059,6 +1086,9 @@ function! PlanetVim_MenusEditingUpdate() abort
     an 200.10  📋&i.Select\ for\ Operator<Tab>"<a-z>      "
     an 200.10  📋&i.Macros <Nop>
     an disable 📋&i.Macros
+    an 200.10  📋&i.Start/Stop\ Record<Tab>q{0-9a-z"}     q
+    an 200.10  📋&i.Execute<Tab>@{a-z}                    @
+    an 200.10  📋&i.Repeat\ Execute<Tab>@@                @@
     "TODO: Add all non-empty registers to this menu
 
     " signature.vim (marks)
@@ -1079,6 +1109,9 @@ function! PlanetVim_MenusEditingUpdate() abort
     an 210.110 🔖&m.Previous\ Alphabetically<Tab>`]           `[
     an 210.120 🔖&m.--3-- <Nop>
     an 210.110 🔖&m.Previous\ Jump<Tab>''                     ``
+    an 210.110 🔖&m.Go\ to\ Mark<Tab>'{a-z}                   `
+    an 210.120 🔖&m.--3-- <Nop>
+    an 210.110 🔖&m.Set\ Mark<Tab>m{a-z}                      m
 
     " markers
     "TODO: maybe change to subsubmenus for groups: add, delete, next, prev
@@ -1381,13 +1414,17 @@ function! PlanetVim_MenusToolsUpdate() abort
     an 710.40  ⛏️&;.--2-- <Nop>
     an 710.40  ⛏️&;.Previous\ Conflict\ Marker<Tab>[n [n
     an 710.40  ⛏️&;.Next\ Conflict\ Marker<Tab>]n     ]n
+    an 710.40  ⛏️&;.--2-- <Nop>
+    an 710.40  ⛏️&;.Get\ Diff<Tab>:diffget<Tab>do     do
+    an 710.40  ⛏️&;.Put\ Diff<Tab>:diffput<Tab>dp     dp
 
     " Spelling
-    an 720.10  🔤&-.Spelling <Nop>
-    an disable 🔤&-.Spelling
-    an 720.10  🔤&-.Enable                              :
+    an 720.10  🔠&-.Spelling <Nop>
+    an disable 🔠&-.Spelling
+    an 720.10  🔠&-.Enable                              :
 
     " Tools
+    " TODO: add all '*.prg' options, eg: equalprg, keywordprg, etc.
     an 730.10  🔧&o.Tools <Nop>
     an disable 🔧&o.Tools
     an 730.10  🔧&o.C&hoose\ Colorscheme                      :Clap colors<CR>
@@ -1413,8 +1450,13 @@ function! PlanetVim_MenusToolsUpdate() abort
     an 730.10  🔧&o.Rot13\ Operator<Tab>g?                    g?
     an 730.10  🔧&o.Rot13\ Current\ Line<Tab>g??<Tab>g?g?     g??
     an 730.10  🔧&o.--5-- <Nop>
+    an 730.10  🔧&o.Edit\ Command<Tab>:                       q:
+    an 730.10  🔧&o.Edit\ Search<Tab>q/                       q/
+    an 730.10  🔧&o.Edit\ Search\ Backwards<Tab>q?            q?
+    an 730.10  🔧&o.--5-- <Nop>
     an 730.10  🔧&o.Toggle\ Verbosity<Tab>=oV                 :VerbosityToggle<CR>
     an 730.10  🔧&o.Open\ Verbosity\ Log<Tab>goV              :VerbosityOpenLast<CR>
+    an 730.10  🔧&o.Loo&kup\ word\ under\ Cursor<Tab>K         K
   else
     silent! aunmenu 🔀&,
     silent! aunmenu ⛏️&;
