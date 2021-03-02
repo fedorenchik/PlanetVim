@@ -875,11 +875,15 @@ function! PlanetVim_MenusBasicUpdate() abort
     " File & vim-uenuch
     an 110.10  📁&f.File <Nop>
     an disable 📁&f.File
-    an 110.10  📁&f.N&ew                                       :confirm enew<CR>
+    an 110.10  📁&f.N&ew<Tab>:enew                             :confirm enew<CR>
+    an 110.10  📁&f.N&ew\ Split<Tab>:new<Tab>+n                <C-w>n
     an 110.20  📁&f.New\ &Tab                                  :confirm tabnew<CR>
     an 110.30  📁&f.New\ G&Window                              :silent !gvim<CR>
     an 110.40  📁&f.--1-- <Nop>
     an 110.50  📁&f.&Open\ File                                :Clap files<CR>
+    an 110.50  📁&f.Open\ File\ under\ Cursor<Tab>gF           gF
+    an 110.50  📁&f.Split\ Open\ File\ under\ Cursor<Tab>+F    <C-w>F
+    an 110.50  📁&f.Tab\ Open\ File\ under\ Cursor<Tab>+gF     <C-w>gF
     an 110.60  📁&f.Open\ &File\ Manager<Tab>-                 :Fern -reveal=% .<CR>
     an 110.70  📁&f.Open\ &Recent                              :Clap history<CR>
     an 110.70  📁&f.F&ind<Tab>:find                            :find 
@@ -909,7 +913,7 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 120.20  📝&e.&Redo<Tab><C-r><Tab>g+                     <C-r>
     an 120.30  📝&e.--1-- <Nop>
     an 120.40  📝&e.Repeat<Tab>\.                               .
-    an 120.130 📝&e.Repeat\ Ex\ Command<Tab>@:                 @:
+    an 120.130 📝&e.Repeat\ Command<Tab>@:                     @:
     an 120.130 📝&e.Repeat\ Macro<Tab>@@                       @@
     an 120.30  📝&e.--1-- <Nop>
     an 120.40  📝&e.Undo\ &History                             :UndotreeToggle<CR>
@@ -1012,11 +1016,13 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 160.40  ↕️&g.--3-- <Nop>
     an 160.30  ↕️&g.Definition\ in\ Scope<Tab>gd                 gd
     an 160.30  ↕️&g.Definition\ in\ File<Tab>gD                  gD
+    an 160.30  ↕️&g.Definition\ Split<Tab>+d                     <C-w>d
+    an 160.30  ↕️&g.Declaration\ Split<Tab>+i                    <C-w>i
     an 160.40  ↕️&g.--4-- <Nop>
     an 160.30  ↕️&g.Percentage\ in\ File<Tab>{count}%            N%
     an 160.40  ↕️&g.--4-- <Nop>
     an 160.30  ↕️&g.Middle\ of\ Text\ Line<Tab>gM                gM
-    an 160.30  ↕️&g.Middle\ of\ Screen\ Line<Tab>gM              gm
+    an 160.30  ↕️&g.Middle\ of\ Screen\ Line<Tab>gm              gm
     an 160.40  ↕️&g.--4-- <Nop>
     an 160.50  ↕️&g.File\ under\ Cursor\ in\ Tab<Tab><C-w>gf     <C-w>gf
     an 160.60  ↕️&g.File&&Line\ under\ Cursor\ in\ Tab<Tab><C-w>gF <C-w>gF
@@ -1031,6 +1037,9 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 160.30  ↕️&g.End\ of\ Changed\ Text<Tab>']                `]
     an 160.30  ↕️&g.Start\ of\ Paragraph<Tab>{                   {
     an 160.30  ↕️&g.End\ of\ Paragraph<Tab>}                     }
+    an 160.40  ↕️&g.--4-- <Nop>
+    an 160.30  ↕️&g.First\ #define<Tab>[<C-d>                    [<C-d>
+    an 160.30  ↕️&g.Next\ #define<Tab>]<C-d>                     ]<C-d>
 
     " Show current maps (nnoremap, etc.)
     an 980.10  ⌨️&\\.Maps <Nop>
@@ -1331,6 +1340,12 @@ function! PlanetVim_MenusDevelopmentUpdate() abort
     an 310.10  🪧&].&Jump\ Back<Tab><C-t>                     <C-t>
     an 310.10  🪧&].&Jump\ or\ Select\ Tag<Tab>g<C-]>         g<C-]>
     an 310.10  🪧&].&Select\ Tag<Tab>g]                       g]
+    an 310.10  🪧&].Jump\ Split\ to\ Tag<Tab>+]                <C-w>]
+    an 310.10  🪧&].Jump\ or\ Select\ Split\ to\ Tag<Tab>+g<C-]> <C-w>g<C-]>
+    an 310.10  🪧&].Select\ Split\ Tag<Tab>+g]                <C-w>g]
+    an 310.10  🪧&].Preview\ Tag<Tab>+}                       <C-w>}
+    an 310.10  🪧&].Select\ Preview\ Tag<Tab>+g}              <C-w>g}
+    an 310.10  🪧&].Close\ Preview<Tab>+z                     <C-w>z
 
     " Build
     an 500.10  🔨&u.Build <Nop>
@@ -1477,6 +1492,7 @@ function! PlanetVim_MenusNavigationUpdate() abort
     an 800.10  📖&b.C&hoose\.\.\.                           :Clap buffers<CR>
     an 800.20  📖&b.--1-- <Nop>
     an 800.30  📖&b.&Alternate<Tab>:b\ #<Tab><C-^>          :b #<CR>
+    an 800.30  📖&b.&Alternate\ Split<Tab>+^                <C-w>^
     an 800.40  📖&b.--2-- <Nop>
     an 800.40  📖&b.&First<Tab>[B                           :bfirst<CR>
     an 800.40  📖&b.&Previous<Tab>[b                        :bprevious<CR>
@@ -1510,7 +1526,9 @@ function! PlanetVim_MenusNavigationUpdate() abort
     an 820.40  🪟&w.--2-- <Nop>
     an 820.50  🪟&w.Horizontal\ &Split<Tab>:split<Tab>+s    <C-w>s
     an 820.60  🪟&w.&Vertical\ Split<Tab>:vsplit<Tab>+v     <C-w>v
-    an 820.90  🪟&w.S&wap<Tab>+x                            <C-w>x
+    an 820.90  🪟&w.Swap\ (&x)<Tab>+x                       <C-w>x
+    an 820.90  🪟&w.Rotate Up<Tab>R                         <C-w>R
+    an 820.90  🪟&w.Rotate Down<Tab>r                       <C-w>r
     an 820.100 🪟&w.Move\ to\ New\ &Tab<Tab>+T              <C-w>T
     an 820.100 🪟&w.Move\ to\ New\ &GUI\ Window             :TODO
     an 820.120 🪟&w.--3-- <Nop>
@@ -1522,9 +1540,24 @@ function! PlanetVim_MenusNavigationUpdate() abort
     an 820.180 🪟&w.&Equal\ Size<Tab>+=                     <C-w>=
     "FIXME: In Insert mode this only works for a SINGLE Normal mode command (:h :an)
     an 820.190 🪟&w.&Maximize<Tab>+_+\|                     <C-w>_<C-w>\|
+    an 820.190 🪟&w.Increase\ Height<Tab>++                 <C-w>+
+    an 820.190 🪟&w.Decrease\ Height<Tab>+-                 <C-w>-
+    an 820.190 🪟&w.Increase\ Width<Tab>+>                  <C-w>>
+    an 820.190 🪟&w.Decrease\ Width<Tab>+<                  <C-w><
     an 820.200 🪟&w.--5-- <Nop>
     an 820.210 🪟&w.&Close<Tab>:close<Tab>+c                <C-w>c
     an 820.220 🪟&w.Close\ &Other\ Windows<Tab>:only<Tab>+o <C-w>o
+    an 820.200 🪟&w.--5-- <Nop>
+    an 820.180 🪟&w.Focus\ Preview\ Window<Tab>+P           <C-w>P
+    an 820.180 🪟&w.Focus\ Previous\ Window<Tab>+W          <C-w>W
+    an 820.180 🪟&w.Focus\ Next\ Window<Tab>+w              <C-w>w
+    an 820.180 🪟&w.Focus\ Top\ Window<Tab>+t               <C-w>t
+    an 820.180 🪟&w.Focus\ Bottom\ Window<Tab>+b            <C-w>b
+    an 820.180 🪟&w.Focus\ Left<Tab>+h                      <C-w>h
+    an 820.180 🪟&w.Focus\ Right<Tab>+l                     <C-w>l
+    an 820.180 🪟&w.Focus\ Up<Tab>+k                        <C-w>k
+    an 820.180 🪟&w.Focus\ Down<Tab>+j                      <C-w>j
+    an 820.180 🪟&w.Focus\ Alternate<Tab>+p                 <C-w>p
 
     " Tabs
     an 830.10  🗂️&\..Tabs <Tabs>
@@ -1537,7 +1570,7 @@ function! PlanetVim_MenusNavigationUpdate() abort
     an 830.60  🗂️&\..&Previous<tab>:tabprevious<Tab><C-PgUp><Tab>gT gT
     an 830.70  🗂️&\..&Next<Tab>:tabnext<Tab><C-PgDown><Tab>gt gt
     an 830.80  🗂️&\..&Last<Tab>:tablast                     :tablast<CR>
-    an 830.90  🗂️&\..Last\ &accessed<Tab>g\<Tab\>            g<Tab>
+    an 830.90  🗂️&\..&Alternate<Tab>g\<Tab\>                g<Tab>
     an 830.100 🗂️&\..--3-- <Nop>
     an 830.110 🗂️&\..E&xecute\ in\ each\ Tab<Tab>:tabdo     :tabdo 
     an 830.120 🗂️&\..--4-- <Nop>
