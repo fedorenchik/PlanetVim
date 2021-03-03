@@ -1091,6 +1091,7 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 160.30  ↕️&g.Next\ Empty\ Line<Tab>}                      }
     an 160.30  ↕️&g.Previous\ Enclosing\ {<Tab>[{                [{
     an 160.30  ↕️&g.Next\ Enclosing\ ]<Tab>]]                    ]]
+    an 160.30  ↕️&g.Next\ MatchIt<Ta>%                           %
     an 160.40  ↕️&g.--4-- <Nop>
     an 160.30  ↕️&g.First\ #define<Tab>[<C-d>                    [<C-d>
     an 160.30  ↕️&g.Next\ #define<Tab>]<C-d>                     ]<C-d>
@@ -1567,7 +1568,7 @@ function! PlanetVim_MenusNavigationUpdate() abort
     an disable 📖&b.Buffers
     an 800.10  📖&b.C&hoose\.\.\.                           :Clap buffers<CR>
     an 800.20  📖&b.--1-- <Nop>
-    an 800.30  📖&b.&Alternate<Tab>:b\ #<Tab><C-^>          :b #<CR>
+    an 800.30  📖&b.&Alternate<Tab>:b\ #<Tab><C-@>          <C-^>
     an 800.30  📖&b.&Alternate\ Split<Tab>+^                <C-w>^
     an 800.40  📖&b.--2-- <Nop>
     an 800.40  📖&b.&First<Tab>[B                           :bfirst<CR>
