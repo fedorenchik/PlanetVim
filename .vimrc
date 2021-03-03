@@ -430,7 +430,6 @@ set undolevels=1000
 set updatetime=1000
 set viewoptions=cursor,folds,slash,unix,curdir
 set viminfo=!,%50,'100,<50,c,f1,h,r/run,r/tmp,r/var,r/mnt,r/media,s10
-"TODO: set viminfofile="~/.vim/viminfo/$PWD_viminfo.vim"
 set virtualedit=block
 set novisualbell
 set warn
@@ -585,17 +584,18 @@ nnoremap ]O :lnewer<CR>
 " Available To Map:
 " B D E F H J K L N P Q S U Y 1 2 3 4 5 6 7 8 9 0 $ & { } ( = * ) + ! # ~ % ` ; : , < . > / ? @ | - _ ' " <BS> <Tab> <CR> <Esc> <Space>
 " + + + + + + + + + +   + + +                                                                         +
-nnoremap <C-'> :tag<CR>
-nnoremap <C-b> :colder<CR>
-nnoremap <C-d> :lnewer<CR>
-nnoremap <C-e> :cnext<CR>
-nnoremap <C-f> :cnewer<CR>
-nnoremap <C-h> <C-W>h
-nnoremap <C-j> <C-W>j
-nnoremap <C-k> <C-W>k
-nnoremap <C-l> <C-W>l
-nnoremap <C-s> :emenu <C-Z>
-nnoremap <C-u> :lolder<CR>
+nn <C-'> :tag<CR>
+nn <C-@> <C-^>
+nn <C-b> :colder<CR>
+nn <C-d> :lnewer<CR>
+nn <C-e> :cnext<CR>
+nn <C-f> :cnewer<CR>
+nn <C-h> <C-W>h
+nn <C-j> <C-W>j
+nn <C-k> <C-W>k
+nn <C-l> <C-W>l
+nn <C-s> :emenu <C-Z>
+nn <C-u> :lolder<CR>
 " Ctrl Key: <C-W>...: {{{
 nnoremap <C-W>V :botright vsplit<CR>
 " }}}
@@ -758,6 +758,9 @@ endif
 autocmd FocusLost * wa
 autocmd GUIEnter * set guifont=Ubuntu\ Mono\ 11,Monospace\ 9
 autocmd GUIEnter * silent call system('wmctrl -i -b add,maximized_vert,maximized_horz -r' . v:windowid)
+autocmd SessionLoadPost * exe "set viminfofile=~/.vim/viminfo/" .. fnamemodify(v:this_session, ":t") .. ".viminfo"
+autocmd SessionLoadPost * silent! rviminfo!
+"TODO: auto-save and auto-load quickfix/loclist files (up to 10 of each)
 autocmd StdinReadPost * set nomodified
 au TerminalWinOpen * setlocal foldcolumn=0 signcolumn=no nonumber norelativenumber
 au BufWinEnter * if &buftype == 'terminal' | setlocal foldcolumn=0 signcolumn=no nonumber norelativenumber | endif
@@ -1036,6 +1039,12 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 150.70  📺&v.Remove\ Others                             :call PV_WinBar_RemoveOthers()<CR>
     an 150.50  📺&v.--1-- <Nop>
     an 150.70  📺&v.Clear                                      :unmenu WinBar<CR>
+    an 150.50  📺&v.--1-- <Nop>
+    an 150.60  📺&v.Colorscheme <Nop>
+    an disable 📺&v.Colorscheme
+    an 150.70  📺&v.Set\ Dark\ Background<Tab>set\ bg=dark :set bg=dark<CR>
+    an 150.70  📺&v.Set\ Light\ Background<Tab>set\ bg=light :set bg=light<CR>
+    an 150.70  📺&v.Choose\ Colorscheme<Tab>:Clap colors  :Clap colors<CR>
 
     " Go
     an 160.10  ↕️&g.Go <Nop>
@@ -1408,6 +1417,8 @@ function! PlanetVim_MenusDevelopmentUpdate() abort
     " Build
     an 500.10  🔨&u.Build <Nop>
     an disable 🔨&u.Build
+    an 500.10  🔨&u.Choose\ Make\ Target                      :make <C-z>"TODO
+    an 500.10  🔨&u.Rerun\ Previous\ Make                     :make prev_target
     an 500.10  🔨&u.Make                                      :Make<CR>
     an 500.10  🔨&u.Make!                                     :Make<CR>
     an 500.10  🔨&u.Copen                                     :Make<CR>

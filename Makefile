@@ -11,6 +11,7 @@ RSYNC_OPTIONS := -aHAX --delete-missing-args --delete-after \
 	--exclude='/session/*' \
 	--exclude='/undo/*' \
 	--exclude='/view/*' \
+	--exclude='/viminfo/*' \
 	--exclude='/planetvimrc.vim'
 
 all: help
