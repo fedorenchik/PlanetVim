@@ -878,35 +878,35 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 110.10  📁&f.File <Nop>
     an disable 📁&f.File
     an 110.10  📁&f.N&ew<Tab>:enew                             :confirm enew<CR>
-    an 110.10  📁&f.N&ew\ Split<Tab>:new<Tab>+n                <C-w>n
-    an 110.20  📁&f.New\ &Tab                                  :confirm tabnew<CR>
-    an 110.30  📁&f.New\ G&Window                              :silent !gvim<CR>
-    an 110.40  📁&f.--1-- <Nop>
-    an 110.50  📁&f.&Open\ File                                :Clap files<CR>
-    an 110.50  📁&f.Open\ File\ under\ Cursor<Tab>gF           gF
-    an 110.50  📁&f.Split\ Open\ File\ under\ Cursor<Tab>+F    <C-w>F
-    an 110.50  📁&f.Tab\ Open\ File\ under\ Cursor<Tab>+gF     <C-w>gF
-    an 110.60  📁&f.Open\ &File\ Manager<Tab>-                 :Fern -reveal=% .<CR>
-    an 110.70  📁&f.Open\ &Recent                              :Clap history<CR>
-    an 110.70  📁&f.F&ind<Tab>:find                            :find 
-    an 110.80  📁&f.--2-- <Nop>
-    an 110.90  📁&f.&Save<Tab>:w                               :if expand("%") == ""<Bar>browse confirm w<Bar>else<Bar>confirm w<Bar>endif<CR>
-    an 110.100 📁&f.Save\ &As\.\.\.                            :browse confirm saveas<CR>
-    an 110.110 📁&f.Save\ Al&l<Tab>:wall                       :confirm wall<CR>
-    an 110.120 📁&f.--3-- <Nop>
-    an 110.120 📁&f.&Previous<Tab>[f                           [f
-    an 110.120 📁&f.&Next<Tab>]f                               ]f
-    an 110.120 📁&f.--4-- <Nop>
-    an 110.130 📁&f.S&udoSave                                  :SudoWrite<CR>
-    an 110.140 📁&f.R&ename                                    :browse confirm Rename<CR>
-    an 110.150 📁&f.Change\ File\ Permissions                  :Chmod 0755
-    an 110.160 📁&f.&Delete\ From\ Disk                        :Delete!<CR>
-    an 110.170 📁&f.--5-- <Nop>
-    an 110.180 📁&f.&Mkdir                                     :Mkdir! <C-z>
-    an 110.180 📁&f.Cd                                         :cd <C-z>
-    an 110.180 📁&f.Tcd                                        :tcd <C-z>
-    an 110.190 📁&f.--6-- <Nop>
-    an 110.200 📁&f.&Close<Tab>:bdelete                        :bdelete<CR>
+    an 110.20  📁&f.N&ew\ Split<Tab>:new<Tab>+n                <C-w>n
+    an 110.30  📁&f.New\ &Tab                                  :confirm tabnew<CR>
+    an 110.40  📁&f.New\ G&Window                              :silent !gvim<CR>
+    an 110.50  📁&f.--1-- <Nop>
+    an 110.60  📁&f.&Open\ File                                :Clap files<CR>
+    an 110.70  📁&f.Open\ File\ under\ Cursor<Tab>gF           gF
+    an 110.80  📁&f.Split\ Open\ File\ under\ Cursor<Tab>+F    <C-w>F
+    an 110.90  📁&f.Tab\ Open\ File\ under\ Cursor<Tab>+gF     <C-w>gF
+    an 110.100 📁&f.Open\ &File\ Manager<Tab>-                 :Fern -reveal=% .<CR>
+    an 110.110 📁&f.Open\ &Recent                              :Clap history<CR>
+    an 110.120 📁&f.F&ind<Tab>:find                            :find 
+    an 110.130 📁&f.--2-- <Nop>
+    an 110.140 📁&f.&Save<Tab>:w                               :if expand("%") == ""<Bar>browse confirm w<Bar>else<Bar>confirm w<Bar>endif<CR>
+    an 110.150 📁&f.Save\ &As\.\.\.                            :browse confirm saveas<CR>
+    an 110.160 📁&f.Save\ Al&l<Tab>:wall                       :confirm wall<CR>
+    an 110.170 📁&f.--3-- <Nop>
+    an 110.180 📁&f.&Previous<Tab>[f                           [f
+    an 110.190 📁&f.&Next<Tab>]f                               ]f
+    an 110.200 📁&f.--4-- <Nop>
+    an 110.210 📁&f.S&udoSave                                  :SudoWrite<CR>
+    an 110.220 📁&f.R&ename                                    :browse confirm Rename<CR>
+    an 110.230 📁&f.Change\ File\ Permissions                  :Chmod 0755
+    an 110.240 📁&f.&Delete\ From\ Disk                        :Delete!<CR>
+    an 110.250 📁&f.--5-- <Nop>
+    an 110.260 📁&f.&Mkdir                                     :Mkdir! <C-z>
+    an 110.270 📁&f.Cd                                         :cd <C-z>
+    an 110.280 📁&f.Tcd                                        :tcd <C-z>
+    an 110.290 📁&f.--6-- <Nop>
+    an 110.300 📁&f.&Close<Tab>:bdelete                        :bdelete<CR>
 
     " Edit
     an 120.10  📝&e.Edit <Nop>
