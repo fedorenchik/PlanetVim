@@ -493,6 +493,8 @@ nnoremap <unique> : q:i
 nmap + <C-W>
 nnoremap G G$
 nnoremap h F
+nnoremap gm gM
+nnoremap gM gm
 nnoremap l f
 nnoremap n nzz
 nnoremap N Nzz
@@ -922,8 +924,11 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 120.70  📝&e.&Copy                                      "+y
     an 120.80  📝&e.&Paste                                     "+p
     an 120.90  📝&e.--3-- <Nop>
-    an 120.80  📝&e.&Paste\ Before                             gP
-    an 120.80  📝&e.&Paste\ &&\ Cursor\ After                  gp
+    an 120.80  📝&e.&Paste                                     "+P
+    an 120.80  📝&e.&Paste\ Before                             "+gP
+    an 120.80  📝&e.&Paste\ &&\ Cursor\ After                  "+gp
+    an 120.80  📝&e.Paste\ &&\ Indent<Tab>"+]p                 "+]p
+    an 120.80  📝&e.Paste Before\ &&\ Indent<Tab>"+[p          "+[P
     an 120.90  📝&e.--3-- <Nop>
     an 120.100 📝&e.Choose\ Yank\ History<Tab>:Clap\ yanks     :Clap yanks<CR>
     an 120.110 📝&e.--4-- <Nop>
@@ -948,6 +953,18 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 120.130 📝&e.Replace\ Mode<Tab>R                        R
     an 120.130 📝&e.Virtual\ Replace\ Mode<Tab>gR              gR
     an 120.110 📝&e.--5-- <Nop>
+    an 120.130 📝&e.Insert<Tab>i                               i
+    an 120.130 📝&e.Continue\ Insert<Tab>gi                    gi
+    an 120.130 📝&e.Insert\ at\ First\ Non-blank<Tab>I         I
+    an 120.130 📝&e.Insert\ at\ Beginning\ of\ Line<Tab>gI     gI
+    an 120.130 📝&e.Insert\ New\ Line\ Before<Tab>O            O
+    an 120.130 📝&e.Insert\ New\ Line\ After<Tab>o             o
+    an 120.130 📝&e.Append<Tab>a                               a
+    an 120.130 📝&e.Append\ at\ End\ of\ Line<Tab>A            A
+    an 120.110 📝&e.--5-- <Nop>
+    an 120.130 📝&e.Replace\ Line<Tab>cc                       cc
+    an 120.130 📝&e.Replace\ to\ the\ End\ of\ Line<Tab>C      C
+    an 120.110 📝&e.--5-- <Nop>
     an 120.130 📝&e.Call\ 'operatorfunc'<Tab>g@                g@
     an 120.130 📝&e.Filter\ by\ Program<Tab>!<cmd>             !
 
@@ -961,8 +978,21 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 130.40  🔎&/.Previous<Tab>N                           N
     an 130.40  🔎&/.Next<Tab>n                               n
     an 130.30  🔎&/.--2-- <Nop>
-    an 130.40  🔎&/.Last\ Search<Tab>/<CR>                   /<CR>
-    an 130.40  🔎&/.Last\ Search\ Backwards<Tab>?<CR>        ?<CR>
+    an 130.40  🔎&/.Select\ Previous<Tab>gN                  gN
+    an 130.40  🔎&/.Select\ Next<Tab>gn                      gn
+    an 130.30  🔎&/.--2-- <Nop>
+    an 130.40  🔎&/.Repeat\ Search<Tab>/<CR>                   /<CR>
+    an 130.40  🔎&/.Repeat\ Search\ Backwards<Tab>?<CR>        ?<CR>
+    an 130.30  🔎&/.--2-- <Nop>
+    an 130.40  🔎&/.First\ Identifier<Tab>[<C-i>              [<C-i>
+    an 130.40  🔎&/.Next\ Identifier<Tab>]<C-i>               ]<C-i>
+    an 130.40  🔎&/.List\ All\ Identifier<Tab>[I              [I
+    an 130.40  🔎&/.List\ Next\ Identifier<Tab>]I             ]I
+    an 130.40  🔎&/.Show\ First\ Identifier<Tab>[i            [i
+    an 130.40  🔎&/.Show\ Next\ Identifier<Tab>]i             ]i
+    an 130.40  🔎&/.Previous\ #if/#else/#endif<Tab>[#         [#
+    an 130.40  🔎&/.Next\ #if/#else/#endif<Tab>]#             ]#
+    an 130.30  🔎&/.--2-- <Nop>
     an 130.40  🔎&/.Current\ Word<Tab>*                      *
     an 130.40  🔎&/.Current\ Word\ Backwards<Tab>#           #
     an 130.40  🔎&/.Current\ \<word\><Tab>g*                 g*
@@ -981,7 +1011,7 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 140.10  🖍️&s.Selection <Nop>
     an disable 🖍️&s.Selection
     an 140.10  🖍️&s.Select\ All                           ggVG
-    an 140.10  🖍️&s.Select\ Previous\ Area                gv
+    an 140.10  🖍️&s.Reselect\ Previous\ Area                gv
     an 140.10  🖍️&s.--1-- <Nop>
     an 140.10  🖍️&s.Visual\ Mode<Tab>v                    v
     an 130.10  🖍️&s.Visual\ Line\ Mode<Tab>V              V
@@ -1011,6 +1041,15 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 160.30  ↕️&g.Back<Tab><C-o>                               <C-o>
     an 160.30  ↕️&g.Forward<Tab><C-i>                            <C-i>
     an 160.40  ↕️&g.--2-- <Nop>
+    an 160.30  ↕️&g.Previous\ section<Tab>[[                     [[
+    an 160.30  ↕️&g.Next\ section<Tab>][                         ][
+    an 160.30  ↕️&g.Previous\ SECTION<Tab>[]                     []
+    an 160.30  ↕️&g.Next\ SECTION<Tab>]]                         ]]
+    an 160.30  ↕️&g.Previous\ Start\ of\ Function<Tab>[m         [m
+    an 160.30  ↕️&g.Next\ Start\ of\ Function<Tab>[m             [m
+    an 160.30  ↕️&g.Previous\ End\ of\ Function<Tab>[M           [M
+    an 160.30  ↕️&g.Next\ End\ of\ Function<Tab>]M               ]M
+    an 160.40  ↕️&g.--2-- <Nop>
     an 160.30  ↕️&g.Previous\ Change\ Position<Tab>g;            g;
     an 160.30  ↕️&g.Next\ Change\ Position<Tab>g,                g,
     an 160.40  ↕️&g.--3-- <Nop>
@@ -1021,8 +1060,8 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 160.40  ↕️&g.--4-- <Nop>
     an 160.30  ↕️&g.Percentage\ in\ File<Tab>{count}%            N%
     an 160.40  ↕️&g.--4-- <Nop>
-    an 160.30  ↕️&g.Middle\ of\ Text\ Line<Tab>gM                gM
-    an 160.30  ↕️&g.Middle\ of\ Screen\ Line<Tab>gm              gm
+    an 160.30  ↕️&g.Middle\ of\ Text\ Line<Tab>gm                gM
+    an 160.30  ↕️&g.Middle\ of\ Screen\ Line<Tab>gM              gm
     an 160.40  ↕️&g.--4-- <Nop>
     an 160.50  ↕️&g.File\ under\ Cursor\ in\ Tab<Tab><C-w>gf     <C-w>gf
     an 160.60  ↕️&g.File&&Line\ under\ Cursor\ in\ Tab<Tab><C-w>gF <C-w>gF
@@ -1035,11 +1074,22 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 160.30  ↕️&g.End\ of\ Selected\ Area<Tab>'>               `>
     an 160.30  ↕️&g.Start\ of\ Changed\ Text<Tab>'[              `[
     an 160.30  ↕️&g.End\ of\ Changed\ Text<Tab>']                `]
-    an 160.30  ↕️&g.Start\ of\ Paragraph<Tab>{                   {
-    an 160.30  ↕️&g.End\ of\ Paragraph<Tab>}                     }
+    an 160.30  ↕️&g.Previous\ Empty\ Line<Tab>{                  {
+    an 160.30  ↕️&g.Next\ Empty\ Line<Tab>}                      }
+    an 160.30  ↕️&g.Previous\ Enclosing\ {<Tab>[{                [{
+    an 160.30  ↕️&g.Next\ Enclosing\ ]<Tab>]]                    ]]
     an 160.40  ↕️&g.--4-- <Nop>
     an 160.30  ↕️&g.First\ #define<Tab>[<C-d>                    [<C-d>
     an 160.30  ↕️&g.Next\ #define<Tab>]<C-d>                     ]<C-d>
+    an 160.30  ↕️&g.Previous\ Enclosing\ (<Tab>[(                [(
+    an 160.30  ↕️&g.Next\ Enclosing\ (<Tab>])                    ])
+    an 160.30  ↕️&g.Previous\ comment<Tab>[*<Tab>[/              [/
+    an 160.30  ↕️&g.Next\ comment<Tab>]*<Tab>]/                  ]/
+    an 160.30  ↕️&g.Next\ comment<Tab>]*<Tab>]/                  ]/
+    an 160.30  ↕️&g.List\ All\ #define<Tab>[D                    [D
+    an 160.30  ↕️&g.List\ Next\ #define<Tab>]D                   ]D
+    an 160.30  ↕️&g.Show\ First\ #define<Tab>[d                  [d
+    an 160.30  ↕️&g.Show\ Next\ #define<Tab>]d                   ]d
 
     " Show current maps (nnoremap, etc.)
     an 980.10  ⌨️&\\.Maps <Nop>
@@ -1052,6 +1102,7 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 980.10  ⌨️&\\.Character\ under\ Cursor<Tab>g8          g8
     an 980.10  ⌨️&\\.Ascii\ under\ Cursor<Tab>ga              ga
     an 980.10  ⌨️&\\.Output\ of\ previous\ Command<Tab>g<     g<
+    an 980.10  ⌨️&\\.Ex\ Mode<Tab>gX                          gQ
 
     " Help
     an 990.10  ❔&h.Help <Nop>
@@ -1112,8 +1163,8 @@ function! PlanetVim_MenusEditingUpdate() abort
     an 210.50  🔖&m.Delete<Tab>m-                             m-
     an 210.60  🔖&m.Delete\ All<Tab>m<Space>                  m<Space>
     an 210.70  🔖&m.--2-- <Nop>
-    an 210.80  🔖&m.Next<Tab>]`                               ]`
-    an 210.90  🔖&m.Previous<Tab>]`                           [`
+    an 210.90  🔖&m.Previous<Tab>['                           [`
+    an 210.80  🔖&m.Next<Tab>]'                               ]`
     an 210.100 🔖&m.Next\ Alphabetically<Tab>`]               `]
     an 210.110 🔖&m.Previous\ Alphabetically<Tab>`]           `[
     an 210.120 🔖&m.--3-- <Nop>
@@ -1190,6 +1241,9 @@ function! PlanetVim_MenusEditingUpdate() abort
     an 250.110 📜&z.Fold\ Manually                          :set foldmethod=manual<CR>
     an 250.120 📜&z.--3-- <Nop>
     an 250.130 📜&z.Fold\ Selected                          :
+    an 250.140 📜&z.--4-- <Nop>
+    an 250.130 📜&z.To\ Start\ of\ Fold<Tab>[z                 [z
+    an 250.130 📜&z.To\ End\ of\ Fold<Tab>]z                   ]z
     an 250.140 📜&z.--4-- <Nop>
     an 250.150 📜&z.Update\ All\ Folds<Tab>zuz              zuz
 
@@ -1424,6 +1478,9 @@ function! PlanetVim_MenusToolsUpdate() abort
     an 710.20  ⛏️&;.Diff\ with\ file\.\.\.            :browse vert diffsplit<CR>
     an 710.30  ⛏️&;.Diff\ with\ patch\.\.\.           :browse vert diffpatch<CR>
     an 710.40  ⛏️&;.--1-- <Nop>
+    an 710.40  ⛏️&;.Previous\ Hunk<Tab>[c             [c
+    an 710.40  ⛏️&;.Next\ Hunk<Tab>]c                 ]c
+    an 710.40  ⛏️&;.--1-- <Nop>
     an 710.40  ⛏️&;.Previous\ Hunk<Tab>[n             [n
     an 710.40  ⛏️&;.Next\ Hunk<Tab>]n                 ]n
     an 710.40  ⛏️&;.--2-- <Nop>
@@ -1437,6 +1494,9 @@ function! PlanetVim_MenusToolsUpdate() abort
     an 720.10  🔠&-.Spelling <Nop>
     an disable 🔠&-.Spelling
     an 720.10  🔠&-.Enable                              :
+    an 720.10  🔠&-.--1-- <Nop>
+    an 720.10  🔠&-.Previous\ Misspelled<Tab>[s         [s
+    an 720.10  🔠&-.Next\ Misspelled<Tab>]s             ]s
 
     " Tools
     " TODO: add all '*.prg' options, eg: equalprg, keywordprg, etc.
@@ -1450,6 +1510,7 @@ function! PlanetVim_MenusToolsUpdate() abort
     an 730.10  🔧&o.diren&v:\ Edit\ direnvrc                  :EditDirenvrc<CR>
     an 730.10  🔧&o.--2-- <Nop>
     an 730.10  🔧&o.Format\ Text<Tab>gq                       gq
+    an 730.10  🔧&o.Format\ Text\ Keep\ Cursor<Tab>gw         gw
     an 730.10  🔧&o.--2-- <Nop>
     an 730.10  🔧&o.XML\ Encode<Tab>[x{motion}                [x
     an 730.10  🔧&o.XML\ Decode<Tab>]x{motion}                ]x
