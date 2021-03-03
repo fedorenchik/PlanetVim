@@ -1032,6 +1032,10 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 150.60  📺&v.WinBar <Nop>
     an disable 📺&v.WinBar
     an 150.70  📺&v.Add\ Current                               :call PV_WinBar_AddCurrent()<CR>
+    an 150.70  📺&v.Remove\ Current                            :call PV_WinBar_RemoveCurrent()<CR>
+    an 150.70  📺&v.Remove\ Others                             :call PV_WinBar_RemoveOthers()<CR>
+    an 150.50  📺&v.--1-- <Nop>
+    an 150.70  📺&v.Clear                                      :unmenu WinBar<CR>
 
     " Go
     an 160.10  ↕️&g.Go <Nop>
@@ -1692,7 +1696,7 @@ function! PlanetSaveExit() abort
 endfunction
 an 100.10  🌐&p.PlanetVim <Nop>
 an disable 🌐&p.PlanetVim
-"TODO: Modeless: Visual->Select mode, disable startify
+"TODO: Modeless: Visual->Insert mode, Select mode, disable startify
 an 100.10  🌐&p.&Modeless\ Mode<Tab>:set\ im!         :set im!<CR>
 an 100.20  🌐&p.--1-- <Nop>
 an 100.30  🌐&p.&Basic\ Menus                         :call PlanetVim_MenusBasicToggle()<CR>
