@@ -919,62 +919,75 @@ function! PlanetVim_MenusBasicUpdate() abort
     " Edit
     an 120.10  📝&e.Edit <Nop>
     an disable 📝&e.Edit
-    an 120.10  📝&e.&Undo<Tab>u<Tab>g-                         u
-    an 120.20  📝&e.&Redo<Tab><C-r><Tab>g+                     <C-r>
-    an 120.30  📝&e.--1-- <Nop>
-    an 120.40  📝&e.Repeat<Tab>\.                               .
-    an 120.130 📝&e.Repeat\ Command<Tab>@:                     @:
-    an 120.130 📝&e.Repeat\ Macro<Tab>@@                       @@
-    an 120.30  📝&e.--1-- <Nop>
-    an 120.40  📝&e.Undo\ &History                             :UndotreeToggle<CR>
-    an 120.50  📝&e.--2-- <Nop>
-    an 120.60  📝&e.Cu&t                                       "+d
-    an 120.70  📝&e.&Copy                                      "+y
-    an 120.80  📝&e.&Paste                                     "+p
-    an 120.90  📝&e.--3-- <Nop>
-    an 120.80  📝&e.&Paste                                     "+P
-    an 120.80  📝&e.&Paste\ Before                             "+gP
-    an 120.80  📝&e.&Paste\ &&\ Cursor\ After                  "+gp
-    an 120.80  📝&e.Paste\ &&\ Indent<Tab>"+]p                 "+]p
-    an 120.80  📝&e.Paste Before\ &&\ Indent<Tab>"+[p          "+[P
-    an 120.90  📝&e.--3-- <Nop>
-    an 120.100 📝&e.Choose\ Yank\ History<Tab>:Clap\ yanks     :Clap yanks<CR>
-    an 120.110 📝&e.--4-- <Nop>
-    an 120.100 📝&e.Edit\ at\ '^\ Mark<Tab>gi                  gi
-    an 120.110 📝&e.--4-- <Nop>
-    an 120.110 📝&e.Swap\ Previous\ Line<Tab>[e                [e
-    an 120.110 📝&e.Swap\ Next\ Line<Tab>]e                    ]e
-    an 120.110 📝&e.--5-- <Nop>
-    an 120.120 📝&e.Unindent<Tab><                             <
-    an 120.120 📝&e.Indent<Tab>>                               >
-    an 120.120 📝&e.Auto\ Indent<Tab>=                         =
-    an 120.120 📝&e.Auto\ Indent\ File<Tab>gg=G                gg=G
-    an 120.120 📝&e.Toggle\ Comment<Tab>gcc                    gcc
-    an 120.130 📝&e.Toggle\ CAPS<Tab>gC<Tab>i_<C-g>c           gC
-    an 120.130 📝&e.To\ lower<Tab>gu                           gu
-    an 120.130 📝&e.To\ UPPER<Tab>gU                           gU
-    an 120.130 📝&e.Swap\ Case<Tab>g~                          g~
-    an 120.110 📝&e.--5-- <Nop>
-    an 120.130 📝&e.Join\ Lines<Nop>J                          J
-    an 120.130 📝&e.Join\ Lines\ without\ whitespace<Nop>gJ    gJ
-    an 120.110 📝&e.--5-- <Nop>
-    an 120.130 📝&e.Replace\ Mode<Tab>R                        R
-    an 120.130 📝&e.Virtual\ Replace\ Mode<Tab>gR              gR
-    an 120.110 📝&e.--5-- <Nop>
-    an 120.130 📝&e.Insert<Tab>i                               i
-    an 120.130 📝&e.Continue\ Insert<Tab>gi                    gi
-    an 120.130 📝&e.Insert\ at\ First\ Non-blank<Tab>I         I
-    an 120.130 📝&e.Insert\ at\ Beginning\ of\ Line<Tab>gI     gI
-    an 120.130 📝&e.Insert\ New\ Line\ Before<Tab>O            O
-    an 120.130 📝&e.Insert\ New\ Line\ After<Tab>o             o
-    an 120.130 📝&e.Append<Tab>a                               a
-    an 120.130 📝&e.Append\ at\ End\ of\ Line<Tab>A            A
-    an 120.110 📝&e.--5-- <Nop>
-    an 120.130 📝&e.Replace\ Line<Tab>cc                       cc
-    an 120.130 📝&e.Replace\ to\ the\ End\ of\ Line<Tab>C      C
-    an 120.110 📝&e.--5-- <Nop>
-    an 120.130 📝&e.Call\ 'operatorfunc'<Tab>g@                g@
-    an 120.130 📝&e.Filter\ by\ Program<Tab>!<cmd>             !
+    an 120.20  📝&e.&Undo<Tab>u<Tab>g-                         u
+    an 120.30  📝&e.&Redo<Tab><C-r><Tab>g+                     <C-r>
+    an 120.40  📝&e.--1-- <Nop>
+    an 120.50  📝&e.Repeat\ Edit<Tab>\.                        .
+    an 120.60  📝&e.Repeat\ Command<Tab>@:                     @:
+    an 120.70  📝&e.Repeat\ Macro<Tab>@@                       @@
+    an 120.80  📝&e.--2-- <Nop>
+    an 120.90  📝&e.Undo\ &History                             :UndotreeToggle<CR>
+    an 120.100 📝&e.--3-- <Nop>
+    an 120.110 📝&e.Cu&t<Tab>"+d                               "+d
+    an 120.120 📝&e.&Copy<Tab>"+y                              "+y
+    an 120.130 📝&e.&Paste<Tab>"+p                             "+p
+    an 120.140 📝&e.--4-- <Nop>
+    an 120.150 📝&e.Paste\ Other.&Paste\ Before<Tab>"+P                     "+P
+    an 120.160 📝&e.Paste\ Other.&Paste\ Before<Tab>"+gP                    "+gP
+    an 120.170 📝&e.Paste\ Other.&Paste\ &&\ Cursor\ After<Tab>"+gp         "+gp
+    an 120.180 📝&e.Paste\ Other.Paste\ with\ Indent<Tab>"+]p               "+]p
+    an 120.190 📝&e.Paste\ Other.Paste\ Before\ with\ Indent<Tab>"+[P       "+[P
+    an 120.200 📝&e.--5-- <Nop>
+    an 120.210 📝&e.Choose\ Yank\ History<Tab>:Clap\ yanks     :Clap yanks<CR>
+    an 120.220 📝&e.--6-- <Nop>
+    an 120.230 📝&e.Swap\ Preious\ Line<Tab>[e                 [e
+    an 120.240 📝&e.Swap\ Next\ Line<Tab>]e                    ]e
+    an 120.250 📝&e.--7-- <Nop>
+    an 120.260 📝&e.Unindent<Tab><                             <
+    an 120.270 📝&e.Indent<Tab>>                               >
+    an 120.280 📝&e.Auto\ Indent<Tab>=                         =
+    an 120.290 📝&e.Auto\ Indent\ File<Tab>gg=G                gg=G
+    an 120.300 📝&e.Auto\ Format\ File                         :!clang-format<CR>
+    an 120.310 📝&e.--8-- <Nop>
+    an 120.320 📝&e.Format\ Text<Tab>gq                       gq
+    an 120.330 📝&e.Format\ Text\ Keep\ Cursor<Tab>gw         gw
+    an 120.340 📝&e.--9-- <Nop>
+    an 120.350 📝&e.Toggle\ Comment<Tab>gcc                    gcc
+    an 120.360 📝&e.Toggle\ Caps\ Lock<Tab>gC<Tab>i_<C-g>c     gC
+    an 120.370 📝&e.To\ lower<Tab>gu                           gu
+    an 120.380 📝&e.To\ UPPER<Tab>gU                           gU
+    an 120.390 📝&e.Swap\ Case<Tab>g~                          g~
+    an 120.400 📝&e.--10-- <Nop>
+    an 120.410 📝&e.Join\ Lines<Tab>J                          J
+    an 120.420 📝&e.Join\ Lines\ without\ Whitespace<Tab>gJ    gJ
+    an 120.430 📝&e.--11-- <Nop>
+    an 120.440 📝&e.Replace\ Mode<Tab>R                        R
+    an 120.450 📝&e.Virtual\ Replace\ Mode<Tab>gR              gR
+    an 120.460 📝&e.--12-- <Nop>
+    an 120.470 📝&e.Start\ Insert.Insert<Tab>i                               i
+    an 120.480 📝&e.Start\ Insert.Continue\ Insert<Tab>gi                    gi
+    an 120.490 📝&e.Start\ Insert.Insert\ at\ First\ Non-blank<Tab>I         I
+    an 120.500 📝&e.Start\ Insert.Insert\ at\ Beginning\ of\ Line<Tab>gI     gI
+    an 120.510 📝&e.Start\ Insert.Insert\ New\ Line\ Before<Tab>O            O
+    an 120.520 📝&e.Start\ Insert.Insert\ New\ Line\ After<Tab>o             o
+    an 120.530 📝&e.Start\ Insert.Append<Tab>a                               a
+    an 120.540 📝&e.Start\ Insert.Append\ at\ End\ of\ Line<Tab>A            A
+    an 120.550 📝&e.Start\ Insert.Replace\ Line<Tab>cc                       cc
+    an 120.560 📝&e.Start\ Insert.Replace\ to\ the\ End\ of\ Line<Tab>C      C
+    an 120.570 📝&e.--13-- <Nop>
+    an 120.580 📝&e.Remove\ Trailing\ Whitespace               :TODO
+    an 120.590 📝&e.--14-- <Nop>
+    an 120.600 📝&e.Call\ 'operatorfunc'<Tab>g@                g@
+    an 120.610 📝&e.Filter<Tab>:g/re/p                         :g!/re/d<CR>
+    an 120.620 📝&e.Filter\ Out<Tab>:g/re/p                    :g/re/d<CR>
+    an 120.630 📝&e.Sort<Tab>!sort                             !sort<CR>
+    an 120.640 📝&e.Reverse<Tab>!tac                           !tac<CR>
+    an 120.650 📝&e.Uniq<Tab>!uniq                             !uniq<CR>
+    an 120.660 📝&e.Filter\ by\ Program<Tab>!<cmd>             !
+    an 120.670 📝&e.Emmet <Nop>
+    an disable 📝&e.Emmet
+    an 120.680 📝&e.Snippets <Nop>
+    an disable 📝&e.Snippets
 
     " Search
     an 130.10  🔎&/.Search <Nop>
@@ -1586,9 +1599,6 @@ function! PlanetVim_MenusToolsUpdate() abort
     an 730.10  🔧&o.&direnv:\ Run\ \.envrc                    :DirenvExport<CR>
     an 730.10  🔧&o.dire&nv:\ Edit\ \.envrc                   :EditEnvrc<CR>
     an 730.10  🔧&o.diren&v:\ Edit\ direnvrc                  :EditDirenvrc<CR>
-    an 730.10  🔧&o.--2-- <Nop>
-    an 730.10  🔧&o.Format\ Text<Tab>gq                       gq
-    an 730.10  🔧&o.Format\ Text\ Keep\ Cursor<Tab>gw         gw
     an 730.10  🔧&o.--2-- <Nop>
     an 730.10  🔧&o.XML\ Encode<Tab>[x{motion}                [x
     an 730.10  🔧&o.XML\ Decode<Tab>]x{motion}                ]x
