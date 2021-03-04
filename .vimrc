@@ -236,7 +236,7 @@ set nobackup
 set backupdir=/tmp
 set ballooneval
 set balloonevalterm
-set belloff=all,error,ctrlg
+set belloff=all,backspace,cursor,complete,copy,ctrlg,error,esc,ex,insertmode,lang,mess,showmatch,operator,register,shell,spell,wildmode
 set nobomb
 set nobreakindent
 set browsedir=buffer
@@ -372,7 +372,7 @@ if &shell =~# 'fish$' && (v:version < 704 || v:version == 704 && !has('patch276'
 endif
 set shiftround
 set shiftwidth=8
-set shortmess=""
+set shortmess="I"
 set showbreak=>>>>>>>>
 set showcmd
 set showfulltag
@@ -402,6 +402,7 @@ set synmaxcol=1000
 if &t_Co == 8 && $TERM !~# '^linux\|^Eterm'
   set t_Co=16
 endif
+set t_vb=
 set tabpagemax=50
 set tabstop=8
 set tagbsearch
@@ -431,7 +432,7 @@ set updatetime=1000
 set viewoptions=cursor,folds,slash,unix,curdir
 set viminfo=!,%50,'100,<50,c,f1,h,r/run,r/tmp,r/var,r/mnt,r/media,s10
 set virtualedit=block
-set novisualbell
+set visualbell
 set warn
 set whichwrap=
 set wildchar=<C-E>
@@ -757,11 +758,12 @@ if exists("+omnifunc")
   autocmd Filetype * if &completefunc == "" | setlocal completefunc=syntaxcomplete#Complete | endif
 endif
 autocmd FocusLost * wa
+autocmd GUIEnter * set t_vb=
 autocmd GUIEnter * set guifont=Ubuntu\ Mono\ 11,Monospace\ 9
 autocmd GUIEnter * silent call system('wmctrl -i -b add,maximized_vert,maximized_horz -r' . v:windowid)
 autocmd SessionLoadPost * exe "set viminfofile=~/.vim/viminfo/" .. fnamemodify(v:this_session, ":t") .. ".viminfo"
 autocmd SessionLoadPost * silent! rviminfo!
-"TODO: auto-save and auto-load quickfix/loclist files (up to 10 of each)
+"TODO: auto-save and auto-load quickfix/loclist files (up to 10 of each, loclists: for each window)
 autocmd StdinReadPost * set nomodified
 au TerminalWinOpen * setlocal foldcolumn=0 signcolumn=no nonumber norelativenumber
 au BufWinEnter * if &buftype == 'terminal' | setlocal foldcolumn=0 signcolumn=no nonumber norelativenumber | endif
@@ -870,8 +872,6 @@ function! s:registers_choose_to_edit() abort
 endfunction
 
 "TODO: add setting 'equalprg' for formatting wih == (clang-format, etc.)
-
-" system('sed -i -e s/PV_basic_menus_status/.../ $HOME/.vim/planetvimrc.vim')
 " TODO: Choise between text, emoji, symbols, nerdicons menus
 if ! exists("g:PlanetVim_menus_basic")
   let g:PlanetVim_menus_basic = 1
@@ -881,37 +881,40 @@ function! PlanetVim_MenusBasicUpdate() abort
     " File & vim-uenuch
     an 110.10  📁&f.File <Nop>
     an disable 📁&f.File
-    an 110.10  📁&f.N&ew<Tab>:enew                             :confirm enew<CR>
-    an 110.20  📁&f.N&ew\ Split<Tab>:new<Tab>+n                <C-w>n
-    an 110.30  📁&f.New\ &Tab                                  :confirm tabnew<CR>
-    an 110.40  📁&f.New\ G&Window                              :silent !gvim<CR>
-    an 110.50  📁&f.--1-- <Nop>
-    an 110.60  📁&f.&Open\ File                                :Clap files<CR>
-    an 110.70  📁&f.Open\ File\ under\ Cursor<Tab>gF           gF
-    an 110.80  📁&f.Split\ Open\ File\ under\ Cursor<Tab>+F    <C-w>F
-    an 110.90  📁&f.Tab\ Open\ File\ under\ Cursor<Tab>+gF     <C-w>gF
-    an 110.100 📁&f.Open\ &File\ Manager<Tab>-                 :Fern -reveal=% .<CR>
-    an 110.100 📁&f.Files\ Side\ Bar                           :Fern -reveal=% -drawer .<CR>
+    an 110.20  📁&f.N&ew<Tab>:enew                             :confirm enew<CR>
+    an 110.30  📁&f.New\ Split<Tab>:new<Tab>+n                 <C-w>n
+    an 110.40  📁&f.New\ &VSplit<Tab>:vnew                     :vnew<CR>
+    an 110.50  📁&f.New\ &Tab                                  :confirm tabnew<CR>
+    an 110.60  📁&f.New\ G&Window                              :silent !gvim<CR>
+    an 110.70  📁&f.--1-- <Nop>
+    an 110.80  📁&f.&Open\ File                                :Clap files<CR>
+    an 110.90  📁&f.Open\ &File\ Manager<Tab>-                 :Fern . -reveal=%<CR>
+    an 110.100 📁&f.File\ &Manager\ Side\ Bar                  :Fern . -reveal=% -drawer -toggle<CR>
     an 110.110 📁&f.Open\ &Recent                              :Clap history<CR>
     an 110.120 📁&f.F&ind<Tab>:find                            :find 
     an 110.130 📁&f.--2-- <Nop>
-    an 110.140 📁&f.&Save<Tab>:w                               :if expand("%") == ""<Bar>browse confirm w<Bar>else<Bar>confirm w<Bar>endif<CR>
-    an 110.150 📁&f.Save\ &As\.\.\.                            :browse confirm saveas<CR>
-    an 110.160 📁&f.Save\ Al&l<Tab>:wall                       :confirm wall<CR>
+    an 110.140 📁&f.&Save<Tab>:w                               :if expand("%") == ""<Bar>browse confirm up<Bar>else<Bar>confirm up<Bar>endif<CR>
+    an 110.150 📁&f.Save\ &As\.\.\.<Tab>:saveas                :browse confirm saveas<CR>
+    an 110.160 📁&f.Save\ A&ll<Tab>:wall                       :confirm wall<CR>
     an 110.170 📁&f.--3-- <Nop>
-    an 110.180 📁&f.&Previous<Tab>[f                           [f
-    an 110.190 📁&f.&Next<Tab>]f                               ]f
+    an 110.180 📁&f.&Previous\ in\ Folder<Tab>[f               [f
+    an 110.190 📁&f.&Next\ in\ Folder<Tab>]f                   ]f
     an 110.200 📁&f.--4-- <Nop>
-    an 110.210 📁&f.S&udoSave                                  :SudoWrite<CR>
-    an 110.220 📁&f.R&ename                                    :browse confirm Rename<CR>
-    an 110.230 📁&f.Change\ File\ Permissions                  :Chmod 0755
-    an 110.240 📁&f.&Delete\ From\ Disk                        :Delete!<CR>
-    an 110.250 📁&f.--5-- <Nop>
-    an 110.260 📁&f.&Mkdir                                     :Mkdir! <C-z>
-    an 110.270 📁&f.Cd                                         :cd <C-z>
-    an 110.280 📁&f.Tcd                                        :tcd <C-z>
-    an 110.290 📁&f.--6-- <Nop>
-    an 110.300 📁&f.&Close<Tab>:bdelete                        :bdelete<CR>
+    an 110.210 📁&f.Open\ File\ under\ Cursor<Tab>gF           gF
+    an 110.220 📁&f.Split\ Open\ File\ under\ Cursor<Tab>+F    <C-w>F
+    an 110.230 📁&f.Tab\ Open\ File\ under\ Cursor<Tab>+gF     <C-w>gF
+    an 110.240 📁&f.--5-- <Nop>
+    an 110.250 📁&f.SudoSave                                  :SudoWrite<CR>
+    an 110.260 📁&f.Rename                                     :browse confirm Rename<CR>
+    an 110.270 📁&f.Change\ File\ Permissions                  :Chmod 0755
+    an 110.280 📁&f.Delete\ From\ Disk                        :Delete!<CR>
+    an 110.280 📁&f.--6-- <Nop>
+    an 110.290 📁&f.Mkdir                                     :Mkdir! <C-z>
+    an 110.300 📁&f.Cd<Tab>:cd                                 :cd <C-z>
+    an 110.310 📁&f.Cd\ current\ Tab<Tab>:tcd                  :tcd <C-z>
+    an 110.320 📁&f.Cd\ current\ File<Tab>:lcd                 :lcd <C-z>
+    an 110.330 📁&f.--7-- <Nop>
+    an 110.340 📁&f.&Close<Tab>:bdelete                        :bdelete<CR>
 
     " Edit
     an 120.10  📝&e.Edit <Nop>
@@ -1710,6 +1713,11 @@ function! PlanetVim_MenusNavigationUpdate() abort
     an 830.100 🗂️&\..--3-- <Nop>
     an 830.110 🗂️&\..E&xecute\ in\ each\ Tab<Tab>:tabdo     :tabdo 
     an 830.120 🗂️&\..--4-- <Nop>
+    an 830.50  🗂️&\..Move\ First<Tab>:0tabmove              :0tabmove<CR>
+    an 830.50  🗂️&\..Move\ Left<Tab>:-tabmove               :-tabmove<CR>
+    an 830.50  🗂️&\..Move\ Right<Tab>:+tabmove              :+tabmove<CR>
+    an 830.50  🗂️&\..Move\ Last<Tab>:tabmove                :tabmove<CR>
+    an 830.120 🗂️&\..--5-- <Nop>
     an 830.130 🗂️&\..&Close<Tab>:tabclose                   :tabclose<CR>
     an 830.140 🗂️&\..Close\ all\ &other\ tabs<Tab>:tabonly  :tabonly<CR>
 
@@ -1765,22 +1773,22 @@ function! PlanetSaveExit() abort
   confirm wall
   qa!
 endfunction
-an 100.10  🌐&p.PlanetVim <Nop>
-an disable 🌐&p.PlanetVim
+an 100.10  🌐&P.PlanetVim <Nop>
+an disable 🌐&P.PlanetVim
 "TODO: Modeless: Visual->Insert mode, Select mode, disable startify
-an 100.10  🌐&p.&Modeless\ Mode<Tab>:set\ im!         :set im!<CR>
-an 100.20  🌐&p.--1-- <Nop>
-an 100.30  🌐&p.&Basic\ Menus                         :call PlanetVim_MenusBasicToggle()<CR>
-an 100.40  🌐&p.&Editing\ Menus                       :call PlanetVim_MenusEditingToggle()<CR>
-an 100.50  🌐&p.&Development\ Menus                   :call PlanetVim_MenusDevelopmentToggle()<CR>
-an 100.60  🌐&p.&Tools\ Menus                         :call PlanetVim_MenusToolsToggle()<CR>
-an 100.70  🌐&p.&Navigation\ Menus                    :call PlanetVim_MenusNavigationToggle()<CR>
-an 100.80  🌐&p.--2-- <Nop>
-an 100.90  🌐&p.Edit\ &Settings                       :tabedit ~/.vim/planetvimrc.vim<CR>
-an 100.100 🌐&p.--3-- <Nop>
-an 100.110 🌐&p.&Close\ Everything                    :SClose<CR>
-an 100.120 🌐&p.--4-- <Nop>
-an 100.130 🌐&p.E&xit\ PlanetVim                      :call PlanetSaveExit()<CR>
+an 100.10  🌐&P.&Modeless\ Mode<Tab>:set\ im!         :set im!<CR>
+an 100.20  🌐&P.--1-- <Nop>
+an 100.30  🌐&P.&Basic\ Menus                         :call PlanetVim_MenusBasicToggle()<CR>
+an 100.40  🌐&P.&Editing\ Menus                       :call PlanetVim_MenusEditingToggle()<CR>
+an 100.50  🌐&P.&Development\ Menus                   :call PlanetVim_MenusDevelopmentToggle()<CR>
+an 100.60  🌐&P.&Tools\ Menus                         :call PlanetVim_MenusToolsToggle()<CR>
+an 100.70  🌐&P.&Navigation\ Menus                    :call PlanetVim_MenusNavigationToggle()<CR>
+an 100.80  🌐&P.--2-- <Nop>
+an 100.90  🌐&P.Edit\ &Settings                       :tabedit ~/.vim/planetvimrc.vim<CR>
+an 100.100 🌐&P.--3-- <Nop>
+an 100.110 🌐&P.&Close\ Everything                    :SClose<CR>
+an 100.120 🌐&P.--4-- <Nop>
+an 100.130 🌐&P.E&xit\ PlanetVim                      :call PlanetSaveExit()<CR>
 " }}}
 " ToolBar: {{{
 " FIXME: Maybe don't need
