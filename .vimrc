@@ -541,14 +541,15 @@ nnoremap SQ :botright copen<CR>
 " s t u v w W x X z ^ + - . = <Left> <Right> <CR>
 " Available To Map:
 " B I J K p P q Q S T U V y Y Z $ ~ & % [ { } ( * ) ] ! # ` ; : , < > / ? @ \ | _ ' " 0 1 2 3 4 5 6 7 8 9
-nnoremap <silent> zr zr:<c-u>setlocal foldlevel?<CR>
-nnoremap <silent> zm zm:<c-u>setlocal foldlevel?<CR>
-nnoremap <silent> zR zR:<c-u>setlocal foldlevel?<CR>
-nnoremap <silent> zM zM:<c-u>setlocal foldlevel?<CR>
-nnoremap z{ 0
-nnoremap z} zLzL
-nnoremap z( zHzH
-nnoremap z) zLzL
+nn <silent> zr zr:<c-u>setlocal foldlevel?<CR>
+nn <silent> zm zm:<c-u>setlocal foldlevel?<CR>
+nn <silent> zR zR:<c-u>setlocal foldlevel?<CR>
+nn <silent> zM zM:<c-u>setlocal foldlevel?<CR>
+nn z{ 0
+nn z} zLzL
+nn z( zHzH
+nn z) zLzL
+nn z@ z^
 " }}}
 " -----------: Z...: close windows: {{{
 nnoremap ZH :helpclose<CR>
@@ -890,6 +891,7 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 110.80  📁&f.Split\ Open\ File\ under\ Cursor<Tab>+F    <C-w>F
     an 110.90  📁&f.Tab\ Open\ File\ under\ Cursor<Tab>+gF     <C-w>gF
     an 110.100 📁&f.Open\ &File\ Manager<Tab>-                 :Fern -reveal=% .<CR>
+    an 110.100 📁&f.Files\ Side\ Bar                           :Fern -reveal=% -drawer .<CR>
     an 110.110 📁&f.Open\ &Recent                              :Clap history<CR>
     an 110.120 📁&f.F&ind<Tab>:find                            :find 
     an 110.130 📁&f.--2-- <Nop>
@@ -1031,6 +1033,8 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 150.20  📺&v.&Files\ Side\ Bar                          :Fern . -drawer -reveal=% -toggle<CR>
     an 150.30  📺&v.&LSP\ Side\ Bar<Tab>:Vista\ vim_lsp        :Vista vim_lsp<CR>
     an 150.40  📺&v.&Tags\ Side\ Bar<Tab>:Vista\ ctags         :Vista ctags<CR>
+    an 150.40  📺&v.QuickFix                                   :botright copen<CR>
+    an 150.40  📺&v.LocList                                    :lopen<CR>
     an 150.50  📺&v.--1-- <Nop>
     an 150.60  📺&v.WinBar <Nop>
     an disable 📺&v.WinBar
@@ -1071,7 +1075,9 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 160.30  ↕️&g.Definition\ Split<Tab>+d                     <C-w>d
     an 160.30  ↕️&g.Declaration\ Split<Tab>+i                    <C-w>i
     an 160.40  ↕️&g.--4-- <Nop>
-    an 160.30  ↕️&g.Percentage\ in\ File<Tab>{count}%            N%
+    an 160.30  ↕️&g.Start\ of\ File<Tab>gg                       gg
+    an 160.30  ↕️&g.Percentage\ in\ File<Tab>{count}%            :TODO:N%
+    an 160.30  ↕️&g.End\ of\ File<Tab>G                          G
     an 160.40  ↕️&g.--4-- <Nop>
     an 160.30  ↕️&g.Middle\ of\ Text\ Line<Tab>gm                gM
     an 160.30  ↕️&g.Middle\ of\ Screen\ Line<Tab>gM              gm
@@ -1091,7 +1097,7 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 160.30  ↕️&g.Next\ Empty\ Line<Tab>}                      }
     an 160.30  ↕️&g.Previous\ Enclosing\ {<Tab>[{                [{
     an 160.30  ↕️&g.Next\ Enclosing\ ]<Tab>]]                    ]]
-    an 160.30  ↕️&g.Next\ MatchIt<Ta>%                           %
+    an 160.30  ↕️&g.Next\ MatchIt<Tab>%                          %
     an 160.40  ↕️&g.--4-- <Nop>
     an 160.30  ↕️&g.First\ #define<Tab>[<C-d>                    [<C-d>
     an 160.30  ↕️&g.Next\ #define<Tab>]<C-d>                     ]<C-d>
@@ -1104,6 +1110,16 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 160.30  ↕️&g.List\ Next\ #define<Tab>]D                   ]D
     an 160.30  ↕️&g.Show\ First\ #define<Tab>[d                  [d
     an 160.30  ↕️&g.Show\ Next\ #define<Tab>]d                   ]d
+    an 160.40  ↕️&g.--4-- <Nop>
+    an 160.30  ↕️&g.Scroll\ Left<Tab>zH                          zH
+    an 160.30  ↕️&g.Scroll\ Right<Tab>zL                         zL
+    an 160.30  ↕️&g.Scroll\ Left<Tab>zh                          zh
+    an 160.30  ↕️&g.Scroll\ Right<Tab>zl                         zl
+    an 160.30  ↕️&g.Scroll\ Right\ to\ Cursor<Tab>zs             zs
+    an 160.30  ↕️&g.Scroll\ Left\ to\ Cursor<Tab>ze              ze
+    an 160.40  ↕️&g.--4-- <Nop>
+    an 160.30  ↕️&g.Next\ Fold<Tab>zj                            zj
+    an 160.30  ↕️&g.Previous\ Fold<Tab>zk                        zk
 
     " Show current maps (nnoremap, etc.)
     an 980.10  ⌨️&\\.Maps <Nop>
@@ -1116,7 +1132,8 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 980.10  ⌨️&\\.Character\ under\ Cursor<Tab>g8          g8
     an 980.10  ⌨️&\\.Ascii\ under\ Cursor<Tab>ga              ga
     an 980.10  ⌨️&\\.Output\ of\ previous\ Command<Tab>g<     g<
-    an 980.10  ⌨️&\\.Ex\ Mode<Tab>gX                          gQ
+    an 980.10  ⌨️&\\.Ex\ Vim\ Mode<Tab>gX                     gQ
+    an 980.10  ⌨️&\\.Ex\ Mode                                 Q
 
     " Help
     an 990.10  ❔&h.Help <Nop>
@@ -1173,7 +1190,7 @@ function! PlanetVim_MenusEditingUpdate() abort
     an 210.10  🔖&m.Open\ LocList<Tab>m/                      m/
     an 210.20  🔖&m.--1-- <Nop>
     an 210.30  🔖&m.Add<Tab>m,                                m,
-    an 210.40  🔖&m.Toggle<Tab>m.                             m.
+    an 210.40  🔖&m.Toggle<Tab>m\.                            m.
     an 210.50  🔖&m.Delete<Tab>m-                             m-
     an 210.60  🔖&m.Delete\ All<Tab>m<Space>                  m<Space>
     an 210.70  🔖&m.--2-- <Nop>
@@ -1242,24 +1259,46 @@ function! PlanetVim_MenusEditingUpdate() abort
     " Folds
     an 250.10  📜&z.Folds <Nop>
     an disable 📜&z.Folds
-    an 250.10  📜&z.Fold\ Everything<Tab>zM                 zM
-    an 250.20  📜&z.Unfold\ Everything<Tab>zR               zR
+    an 250.10  📜&z.Fold\ Everything<Tab>zM               zM
+    an 250.20  📜&z.Unfold\ Everything<Tab>zR             zR
     an 250.30  📜&z.--1-- <Nop>
-    an 250.40  📜&z.Fold\ One\ Level<Tab>zm                 zm
-    an 250.50  📜&z.Unfold\ One\ Level<Tab>zr               zr
+    an 250.40  📜&z.Fold\ One\ Level<Tab>zm               zm
+    an 250.50  📜&z.Unfold\ One\ Level<Tab>zr             zr
     an 250.60  📜&z.--2-- <Nop>
-    an 250.70  📜&z.Fold\ by\ Syntax                        :set foldmethod=syntax<CR>
-    an 250.80  📜&z.Fold\ by\ Indent                        :set foldmethod=indent<CR>
-    an 250.90  📜&z.Fold\ by\ Expr                          :set foldmethod=expr<CR>
-    an 250.100 📜&z.Fold\ by\ {{{,}}}\ Markers              :set foldmethod=marker<CR>
-    an 250.110 📜&z.Fold\ Manually                          :set foldmethod=manual<CR>
+    an 250.70  📜&z.Fold\ by\ Syntax                      :set foldmethod=syntax<CR>
+    an 250.80  📜&z.Fold\ by\ Indent                      :set foldmethod=indent<CR>
+    an 250.90  📜&z.Fold\ by\ Expr                        :set foldmethod=expr<CR>
+    an 250.100 📜&z.Fold\ by\ {{{,}}}\ Markers            :set foldmethod=marker<CR>
+    an 250.110 📜&z.Fold\ Manually                        :set foldmethod=manual<CR>
     an 250.120 📜&z.--3-- <Nop>
-    an 250.130 📜&z.Fold\ Selected                          :
+    an 250.130 📜&z.Fold\ Selected                        :
     an 250.140 📜&z.--4-- <Nop>
-    an 250.130 📜&z.To\ Start\ of\ Fold<Tab>[z                 [z
-    an 250.130 📜&z.To\ End\ of\ Fold<Tab>]z                   ]z
+    an 250.130 📜&z.To\ Start\ of\ Fold<Tab>[z            [z
+    an 250.130 📜&z.To\ End\ of\ Fold<Tab>]z              ]z
     an 250.140 📜&z.--4-- <Nop>
-    an 250.150 📜&z.Update\ All\ Folds<Tab>zuz              zuz
+    an 250.150 📜&z.Update\ All\ Folds<Tab>zuz            zuz
+    an 250.140 📜&z.--4-- <Nop>
+    an 250.150 📜&z.Toggle\ All\ at\ Cursor<Tab>zA        zA
+    an 250.150 📜&z.Close\ All\ at\ Cursor<Tab>zC         zC
+    an 250.150 📜&z.Delete\ All\ at\ Cursor<Tab>zD        zD
+    an 250.150 📜&z.Delete\ All<Tab>zE                    zE
+    an 250.150 📜&z.Create\ Fold<Tab>zF                   zF
+    an 250.150 📜&z.Close\ All<Tab>zM                     zM
+    an 250.150 📜&z.Enable<Tab>zN                         zN
+    an 250.150 📜&z.Open\ All\ at\ Cursor<Tab>zO          zO
+    an 250.150 📜&z.Open\ All<Tab>zR                      zR
+    an 250.150 📜&z.Apply\ 'foldlevel'<Tab>zX             zX
+    an 250.150 📜&z.Toggle\ at\ Cursor<Tab>za             za
+    an 250.150 📜&z.Close<Tab>zc                          zc
+    an 250.150 📜&z.Delete<Tab>zd                         zd
+    an 250.150 📜&z.Create<Tab>zf                         zf
+    an 250.150 📜&z.Toggle\ Enable<Tab>zi                 zi
+    an 250.150 📜&z.Close\ One\ Level\ All<Tab>zm         zm
+    an 250.150 📜&z.Disable<Tab>zn                        zn
+    an 250.150 📜&z.Open\ at\ Cursor<Tab>zo               zo
+    an 250.150 📜&z.Open\ One\ Level\ All<Tab>zr          zr
+    an 250.150 📜&z.Open\ till\ Cursor<Tab>zv             zv
+    an 250.150 📜&z.Apply\ 'foldlevel'\ &&\ Open\ till\ Cursor<Tab>zx zx
 
     " quickfix
     an 260.10  &QF.QuickFix <Nop>
@@ -1439,6 +1478,9 @@ function! PlanetVim_MenusDevelopmentUpdate() abort
     an 520.10  🐞&d.Debug <Nop>
     an disable 🐞&d.Debug
     an 520.10  🐞&d.Start\ &Debug                             :Vimspector<CR>
+    an 520.10  🐞&d.Detach\ Debugger                          :Vimspector<CR>
+    an 520.10  🐞&d.Stop\ &Debug                              :Vimspector<CR>
+    an 520.10  🐞&d.--1-- <Nop>
 
     " Test
     an 530.10  🧪&j.Test <Nop>
@@ -1453,6 +1495,13 @@ function! PlanetVim_MenusDevelopmentUpdate() abort
     an 540.10  🔬&y.Analyze <Nop>
     an disable 🔬&y.Analyze
     an 540.10  🔬&y.Check                                   :
+    an 540.10  🐞&d.Clang-Tidy                                :Vimspector<CR>
+    an 540.10  🐞&d.Clazy                                     :Vimspector<CR>
+    an 540.10  🐞&d.Cppcheck                                  :Vimspector<CR>
+    an 540.10  🐞&d.Chrome\ Trace\ Format\ Visualizer         :Vimspector<CR>
+    an 540.10  🐞&d.Performance\ Analyzer                     :Vimspector<CR>
+    an 540.10  🐞&d.Memcheck                                  :Vimspector<CR>
+    an 540.10  🐞&d.Callgrind                                 :Vimspector<CR>
 
     " Terminal
     an 550.10  💻&t.Terminal <Nop>
@@ -1513,6 +1562,16 @@ function! PlanetVim_MenusToolsUpdate() abort
     an 720.10  🔠&-.--1-- <Nop>
     an 720.10  🔠&-.Previous\ Misspelled<Tab>[s         [s
     an 720.10  🔠&-.Next\ Misspelled<Tab>]s             ]s
+    an 720.10  🔠&-.--1-- <Nop>
+    an 720.10  🔠&-.Spelling\ Suggestions<Tab>z=        z=
+    an 720.10  🔠&-.Mark\ as\ Correct\ Temp<Tab>zG      zG
+    an 720.10  🔠&-.Mark\ as\ Incorrect\ Temp<Tab>zG    zW
+    an 720.10  🔠&-.Mark\ as\ Correct<Tab>zg            zg
+    an 720.10  🔠&-.Mark\ as\ Incorrect<Tab>zw          zw
+    an 720.10  🔠&-.Unmark\ as\ Correct\ Temp<Tab>zG    zuG
+    an 720.10  🔠&-.Unmark\ as\ Incorrect\ Temp<Tab>zG  zuW
+    an 720.10  🔠&-.Unmark\ as\ Correct<Tab>zg          zug
+    an 720.10  🔠&-.Unmark\ as\ Incorrect<Tab>zw        zuw
 
     " Tools
     " TODO: add all '*.prg' options, eg: equalprg, keywordprg, etc.
