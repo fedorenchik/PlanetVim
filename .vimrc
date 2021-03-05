@@ -725,7 +725,7 @@ call SetupCommandAlias("f", "find")
 " }}}
 " Autocommands: {{{
 if has("autocmd")
-augroup vimrc
+aug vimrc
 autocmd!
 autocmd BufReadPre *.asm let g:asmsyntax = "fasm"
 autocmd BufReadPre *.[sS] let g:asmsyntax = "asm"
@@ -777,7 +777,7 @@ autocmd StdinReadPost * set nomodified
 au TerminalWinOpen * setlocal foldcolumn=0 signcolumn=no nonumber norelativenumber
 au BufWinEnter * if &buftype == 'terminal' | setlocal foldcolumn=0 signcolumn=no nonumber norelativenumber | endif
 autocmd VimEnter * if expand("%") != "" && getcwd() == expand("~") | cd %:h | endif
-augroup END
+aug END
 endif
 " }}}
 " Commands: {{{
@@ -1857,8 +1857,26 @@ an 100.130 🌐&P.E&xit\ PlanetVim                      :call PlanetSaveExit()<C
 " TODO: Auto for LL, QF, Terminals, W3m
 " QF, LL: colder, cnewer, chistory popup, merge with prev, filter, filter-out,
 " min size, std size(10lines), max size
+function! PlanetVim_WinBarQfInit() abort
+endfunction
 " Terminals: Previous, Next, List (popup with choose), New, Close (send Ctrl-D)
 " W3m: Back, Forward, History, AddressBar
+function! PlanetVim_WinBarTerminalInit() abort
+  nnoremenu 1.10 WinBar.Previous :TODO
+  nnoremenu 1.20 WinBar.Next     :TODO
+  nnoremenu 1.30 WinBar.List     :TODO
+  nnoremenu 1.40 WinBar.New      :terminal ++curwin ++kill=kill<CR>
+  nnoremenu 1.50 WinBar.Close    i<C-d>
+  nnoremenu 1.50 WinBar.Maximize <C-w>_
+  nnoremenu 1.50 WinBar.Normal\ Size :make size 10 lines
+  nnoremenu 1.50 WinBar.Minimize :make min size
+endfunction
+aug PlanetVim_AugroupWinBar
+au!
+au BufWinEnter * if &buftype == 'quickfix' | call PlanetVim_WinBarTerminalInit() | endif
+au TerminalWinOpen * call PlanetVim_WinBarTerminalInit()
+au BufWinEnter * if &buftype == 'terminal' | call PlanetVim_WinBarTerminalInit() | endif
+aug END
 " }}}
 " $VIMRUNTIME/ {{{
 " filetype.vim {{{
