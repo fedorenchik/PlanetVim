@@ -295,6 +295,7 @@ if has("gui")
 endif
 set guiheadroom=0
 "XXX: add '!' to guioptions when startify bug #460 will be fixed
+" Adding '!' to guioptions causes too much redraw & 'hit enter' prompts
 set guioptions=aAcdeimMgpk
 set guipty
 "set guitablabel&
@@ -435,7 +436,6 @@ set virtualedit=block
 set visualbell
 set warn
 set whichwrap=
-set wildchar=<C-E>
 set wildcharm=<C-Z>
 set nowildignorecase
 set wildmenu
@@ -604,9 +604,20 @@ nnoremap <C-W>V :botright vsplit<CR>
 nnoremap <C-y> :cprevious<CR>
 " }}}
 " Alt Key: {{{
-nnoremap <A-Left> <C-o>
-nnoremap <A-Right> <C-i>
-nnoremap <A-n> :<C-U><C-R><C-R>='let @'. v:register .' = '. string(getreg(v:register))<CR><C-F><Left>
+nn <A-Left> <C-o>
+nn <A-Right> <C-i>
+nn <A-<> gT
+nn <A->> gt
+nn <A-1> 1gt
+nn <A-2> 2gt
+nn <A-3> 3gt
+nn <A-4> 4gt
+nn <A-5> 5gt
+nn <A-6> 6gt
+nn <A-7> 7gt
+nn <A-8> 8gt
+nn <A-9> 9gt
+nn <A-0> 10gt
 " }}}
 " Mouse Keys: {{{
 " Mousekeys: <LeftMouse> <MiddleMouse> <RightMouse> <X1Mouse> <X2Mouse>
@@ -685,10 +696,8 @@ vnoremap # y/\V<C-R>"\><CR>
 " }}}
 " Command-line (Cmdline) Mode: {{{
 " Subcommands & submodes: Ctrl-R, Ctrl-\
-cnoremap <Tab> <C-U><BS>
-"FIXME: Below does not work. Make <C-Tab> behave as <Tab>.
-cnoremap <C-Tab> <Tab>
-cnoremap <C-Y> <S-Tab>
+cnoremap <expr> <C-u> ((getcmdtype() is# ":" && getcmdline() is# "") ? ("<Esc>") : ("<C-u>"))
+cnoremap <expr> <Tab> ((getcmdtype() is# ":" && getcmdline() is# "") ? ("<Esc>") : ("<C-z>"))
 " }}}
 " Terminal Window: {{{
 tnoremap <Esc> <C-w>N
@@ -785,7 +794,7 @@ if filereadable(expand(g:PV_config))
   silent exe "source " .. fnameescape(g:PV_config)
 endif
 
-function! PlanetVim_AddMenuItem(priority, text, command) abort
+function! PlanetVim_AddMenuItem(priority, text, command, tooltip) abort
     an 110.10  &File.&New                                       :confirm enew<CR>
     an a:priority a:text a:command
     tln 110.10  &File.&New                                      :confirm enew<CR>
@@ -1541,6 +1550,29 @@ function! PlanetVim_MenusDevelopmentUpdate() abort
 endfunction
 call PlanetVim_MenusDevelopmentUpdate()
 
+"TODO: menus:
+"C++
+"Python
+"Arduino
+"PlatformIO
+"CMake
+"Meson
+"Conan
+"Qt (uic, moc, rcc, lupdate, lrelease, shiboken)
+"SWIG, 
+"Latex
+"Writing
+"Docker
+"Yocto
+"ROS
+"gdb/lldb
+"cppcheck/clazy/clang-tidy
+"indent/astyle/clang-format
+"LKD: linux kernel development: patches, checkpatch.pl, get-maintainers.sh, send-email
+"kvm,virsh,qemu cli
+"chroot,schroot,conan_venv
+"unreal engine, godot
+
 if ! exists("g:PlanetVim_menus_tools")
   let g:PlanetVim_menus_tools = 1
 endif
@@ -1570,6 +1602,14 @@ function! PlanetVim_MenusToolsUpdate() abort
     an 710.40  ⛏️&;.--2-- <Nop>
     an 710.40  ⛏️&;.Get\ Diff<Tab>:diffget<Tab>do     do
     an 710.40  ⛏️&;.Put\ Diff<Tab>:diffput<Tab>dp     dp
+
+    " Writing
+    an 720.10  ]Writing.Writing <Nop>
+    an disable ]Writing.Writing
+    an 720.20  ]Writing.Swap\ Words                   :TODO
+    an 720.20  ]Writing.Swap\ Words\ After            :TODO
+    an 720.40  ]Writing.Thesaurus                     :TODO
+    an 720.50  ]Writing.Generate\ Sample\ Text        :TODO
 
     " Spelling
     an 720.10  🔠&-.Spelling <Nop>
@@ -1785,6 +1825,7 @@ function! PlanetSaveExit() abort
 endfunction
 an 100.10  🌐&P.PlanetVim <Nop>
 an disable 🌐&P.PlanetVim
+an 100.10  🌐&P.New\ &PlanetVim                       :silent !gvim<CR>
 "TODO: Modeless: Visual->Insert mode, Select mode, disable startify
 an 100.10  🌐&P.&Modeless\ Mode<Tab>:set\ im!         :set im!<CR>
 an 100.20  🌐&P.--1-- <Nop>
@@ -1801,7 +1842,7 @@ an 100.120 🌐&P.--4-- <Nop>
 an 100.130 🌐&P.E&xit\ PlanetVim                      :call PlanetSaveExit()<CR>
 " }}}
 " ToolBar: {{{
-" FIXME: Maybe don't need
+" TODO: Add option to use toolbar instead of menu
 " }}}
 " PopUp Menus: {{{
 " TODO: different for each mode:
@@ -1814,6 +1855,10 @@ an 100.130 🌐&P.E&xit\ PlanetVim                      :call PlanetSaveExit()<C
 " }}}
 " WinBar Menus: {{{
 " TODO: Auto for LL, QF, Terminals, W3m
+" QF, LL: colder, cnewer, chistory popup, merge with prev, filter, filter-out,
+" min size, std size(10lines), max size
+" Terminals: Previous, Next, List (popup with choose), New, Close (send Ctrl-D)
+" W3m: Back, Forward, History, AddressBar
 " }}}
 " $VIMRUNTIME/ {{{
 " filetype.vim {{{
