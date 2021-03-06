@@ -68,8 +68,8 @@ if empty(v:servername) && exists('*remote_startserver')
   call remote_startserver('VIM')
 endif
 " }}}
-" Nerdfont: {{{
-" Codepoints for Nerdfont v2.1.0
+" Emoji, Nerdfont: {{{
+" only last setcellwidths() call has effect
 call setcellwidths([
       \ [0xe5fa, 0xe62b, 2],
       \ [0xe700, 0xe7c5, 2],
@@ -89,6 +89,12 @@ call setcellwidths([
       \ [0x2b58, 0x2b58, 2],
       \ [0xf300, 0xf313, 2],
       \ [0xe000, 0xe00d, 2],
+      \
+      \ [0x2328, 0x2328, 2],
+      \ [0x2747, 0x2747, 2],
+      \ [0x25b6, 0x25b6, 2],
+      \ [0x2b06, 0x2b07, 2],
+      \ [0x2195, 0x2195, 2],
       \ ])
 " }}}
 " Functions: {{{
@@ -1537,6 +1543,8 @@ function! PlanetVim_MenusDevelopmentUpdate() abort
     an 550.10  💻&t.--1-- <Nop>
     an 550.10  💻&t.P&ython\ Shell                         :botright terminal ++kill=kill python<CR>
     an 550.10  💻&t.C&++\ Shell                            :botright terminal ++kill=kill cling<CR>
+    an 550.10  💻&t.Terminal\ List <Nop>
+    an disable 💻&t.Terminal\ List
   else
     silent! aunmenu ❇️&[
     silent! aunmenu 🪧&]
@@ -1573,6 +1581,14 @@ call PlanetVim_MenusDevelopmentUpdate()
 "chroot,schroot,conan_venv
 "unreal engine, godot
 
+" Writing
+an 720.10  ]Writing.Writing <Nop>
+an disable ]Writing.Writing
+an 720.20  ]Writing.Swap\ Words                   :TODO
+an 720.20  ]Writing.Swap\ Words\ After            :TODO
+an 720.40  ]Writing.Thesaurus                     :TODO
+an 720.50  ]Writing.Generate\ Sample\ Text        :TODO
+
 if ! exists("g:PlanetVim_menus_tools")
   let g:PlanetVim_menus_tools = 1
 endif
@@ -1602,14 +1618,6 @@ function! PlanetVim_MenusToolsUpdate() abort
     an 710.40  ⛏️&;.--2-- <Nop>
     an 710.40  ⛏️&;.Get\ Diff<Tab>:diffget<Tab>do     do
     an 710.40  ⛏️&;.Put\ Diff<Tab>:diffput<Tab>dp     dp
-
-    " Writing
-    an 720.10  ]Writing.Writing <Nop>
-    an disable ]Writing.Writing
-    an 720.20  ]Writing.Swap\ Words                   :TODO
-    an 720.20  ]Writing.Swap\ Words\ After            :TODO
-    an 720.40  ]Writing.Thesaurus                     :TODO
-    an 720.50  ]Writing.Generate\ Sample\ Text        :TODO
 
     " Spelling
     an 720.10  🔠&-.Spelling <Nop>
@@ -1857,7 +1865,27 @@ an 100.130 🌐&P.E&xit\ PlanetVim                      :call PlanetSaveExit()<C
 " TODO: Auto for LL, QF, Terminals, W3m
 " QF, LL: colder, cnewer, chistory popup, merge with prev, filter, filter-out,
 " min size, std size(10lines), max size
+function! PlanetVim_WinBarFilter(bang) abort
+  let m = mode()
+  if m == 'n'
+    exe "Cfilter" .. a:bang .. " " .. expand('<cword>')
+  elseif match("vVsS", m) != -1
+    normal! y
+    exe 'Cfilter' .. a:bang .. ' <C-r>"'
+  endif
+endfunction
 function! PlanetVim_WinBarQfInit() abort
+  nnoremenu 1.10 WinBar.⏪ :colder<CR>
+  "TODO: turn :chistory into popup menu
+  nnoremenu 1.10 WinBar.📙 :chistory<CR>
+  nnoremenu 1.10 WinBar.⏩ :cnewer<CR>
+  nnoremenu 1.10 WinBar.✅ <CR>
+  nnoremenu 1.10 WinBar.📤 :call PlanetVim_WinBarFilter('!')<CR>
+  nnoremenu 1.10 WinBar.📥 :call PlanetVim_WinBarFilter('')<CR>
+  nnoremenu 1.10 WinBar.⬇️ z0<CR>
+  nnoremenu 1.10 WinBar.↕️ 10<C-w>_
+  nnoremenu 1.10 WinBar.⬆️ <C-w>_
+  nnoremenu 1.10 WinBar.❌ :cclose<CR>
 endfunction
 " Terminals: Previous, Next, List (popup with choose), New, Close (send Ctrl-D)
 " W3m: Back, Forward, History, AddressBar
@@ -1873,7 +1901,8 @@ function! PlanetVim_WinBarTerminalInit() abort
 endfunction
 aug PlanetVim_AugroupWinBar
 au!
-au BufWinEnter * if &buftype == 'quickfix' | call PlanetVim_WinBarTerminalInit() | endif
+au BufWinEnter * if &buftype == 'quickfix' | call PlanetVim_WinBarQfInit() | endif
+au BufWinLeave * if &buftype == 'quickfix' | nunmenu WinBar | endif
 au TerminalWinOpen * call PlanetVim_WinBarTerminalInit()
 au BufWinEnter * if &buftype == 'terminal' | call PlanetVim_WinBarTerminalInit() | endif
 aug END
