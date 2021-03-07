@@ -1073,6 +1073,7 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 140.10  🖍️&s.Select\ Block\ Mode<Tab>g<C-h>        g<C-H>
 
     " View
+    "TODO: add 'scrollbind' file in split
     an 150.10  📺&v.View <Nop>
     an disable 📺&v.View
     an 150.10  📺&v.&Command\ Palette                          :Clap<CR>
@@ -1168,29 +1169,29 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 160.30  ↕️&g.Previous\ Fold<Tab>zk                        zk
 
     " Settings (Options) (unimpaired settings)
-    an 970.10  ⚙️&\|.Settings <Nop>
-    an disable ⚙️&\|.Settings
-    an 970.10  ⚙️&\|.--3-- <Nop>
-    an 970.10  ⚙️&\|.Tabs:\ 2                                  :set et ts=2 sw=2
-    an 970.10  ⚙️&\|.Tabs:\ 4                                  :set et ts=4 sw=4
-    an 970.10  ⚙️&\|.Tabs:\ 8                                  :set noet ts=8 sw=8
-    an 970.10  ⚙️&\|.--5-- <Nop>
-    an 970.10  ⚙️&\|.Toggle\ Verbosity<Tab>=oV                 :VerbosityToggle<CR>
-    an 970.10  ⚙️&\|.Open\ Verbosity\ Log<Tab>goV              :VerbosityOpenLast<CR>
+    an 970.10  ⚙️&\\.Settings <Nop>
+    an disable ⚙️&\\.Settings
+    an 970.10  ⚙️&\\.Tabs:\ &2<Tab>et\ ts=2\ sw=2           :set et ts=2 sw=2<CR>
+    an 970.10  ⚙️&\\.Tabs:\ &4<Tab>et\ ts=4\ sw=4           :set et ts=4 sw=4<CR>
+    an 970.10  ⚙️&\\.Tabs:\ &8<Tab>noet\ ts=8\ sw=8         :set noet ts=8 sw=8<CR>
+    an 970.10  ⚙️&\\.--1-- <Nop>
+    an 970.10  ⚙️&\\.--5-- <Nop>
+    an 970.10  ⚙️&\\.Toggle\ Verbosity<Tab>=oV              :VerbosityToggle<CR>
+    an 970.10  ⚙️&\\.Open\ Verbosity\ Log<Tab>goV           :VerbosityOpenLast<CR>
 
     " Show current maps (nnoremap, etc.)
-    an 980.10  ⌨️&\\.Maps <Nop>
-    an disable ⌨️&\\.Maps
-    an 980.10  ⌨️&\\.C&hoose\.\.\.                          :Clap maps<CR>
-    an 980.10  ⌨️&\\.Information <Nop>
-    an disable ⌨️&\\.Information
-    an 980.10  ⌨️&\\.Cursor\ Filename<Tab><C-g>               <C-g>
-    an 980.10  ⌨️&\\.Cursor\ Position<Tab>g<C-g>              g<C-g>
-    an 980.10  ⌨️&\\.Character\ under\ Cursor<Tab>g8          g8
-    an 980.10  ⌨️&\\.Ascii\ under\ Cursor<Tab>ga              ga
-    an 980.10  ⌨️&\\.Output\ of\ previous\ Command<Tab>g<     g<
-    an 980.10  ⌨️&\\.Ex\ Vim\ Mode<Tab>gX                     gQ
-    an 980.10  ⌨️&\\.Ex\ Mode                                 Q
+    an 980.10  ⌨️&\|.Maps <Nop>
+    an disable ⌨️&\|.Maps
+    an 980.10  ⌨️&\|.C&hoose\.\.\.                          :Clap maps<CR>
+    an 980.10  ⌨️&\|.Information <Nop>
+    an disable ⌨️&\|.Information
+    an 980.10  ⌨️&\|.Cursor\ Filename<Tab><C-g>             <C-g>
+    an 980.10  ⌨️&\|.Cursor\ Position<Tab>g<C-g>            g<C-g>
+    an 980.10  ⌨️&\|.Character\ under\ Cursor<Tab>g8        g8
+    an 980.10  ⌨️&\|.Ascii\ under\ Cursor<Tab>ga            ga
+    an 980.10  ⌨️&\|.Output\ of\ previous\ Command<Tab>g<   g<
+    an 980.10  ⌨️&\|.Ex\ Vim\ Mode\ (Dangerous!)<Tab>gX     gQ
+    an 980.10  ⌨️&\|.Ex\ Mode\ (Dangerous!)                 Q
 
     " Help
     an 990.10  ❔&?.Help <Nop>
@@ -1318,51 +1319,46 @@ function! PlanetVim_MenusEditingUpdate() abort
     " Folds
     an 250.10  📜&z.Folds <Nop>
     an disable 📜&z.Folds
-    an 250.70  📜&z.Update\ with\ Syntax                    :set foldmethod=syntax<bar>set foldmethod=manual<CR>
-    an 250.80  📜&z.Update\ with\ Indent                    :set foldmethod=indent<bar>set foldmethod=manual<CR>
-    an 250.90  📜&z.Update\ with\ Expr                      :set foldmethod=expr<bar>set foldmethod=manual<CR>
-    an 250.100 📜&z.Update\ with\ {{{,}}}\ Markers          :set foldmethod=marker<bar>set foldmethod=manual<CR>
-    an 250.60  📜&z.--1-- <Nop>
-    an 250.70  📜&z.Fold\ Method:\ Syntax                   :set foldmethod=syntax<CR>
-    an 250.80  📜&z.Fold\ Method:\ Indent                   :set foldmethod=indent<CR>
-    an 250.90  📜&z.Fold\ Method:\ Expr                     :set foldmethod=expr<CR>
-    an 250.100 📜&z.Fold\ Method:\ Markers                  :set foldmethod=marker<CR>
-    an 250.110 📜&z.Fold\ Method:\ Manual                   :set foldmethod=manual<CR>
-    an 250.30  📜&z.--3-- <Nop>
-    an 250.40  📜&z.Fold\ One\ Level<Tab>zm                 zm
-    an 250.50  📜&z.Unfold\ One\ Level<Tab>zr               zr
-    an 250.60  📜&z.--2-- <Nop>
-    an 250.10  📜&z.Fold\ Everything<Tab>zM                 zM
-    an 250.20  📜&z.Unfold\ Everything<Tab>zR               zR
-    an 250.120 📜&z.--3-- <Nop>
-    an 250.130 📜&z.Fold\ Selected                          :
-    an 250.140 📜&z.--4-- <Nop>
-    an 250.130 📜&z.To\ Start\ of\ Fold<Tab>[z              [z
-    an 250.130 📜&z.To\ End\ of\ Fold<Tab>]z                ]z
-    an 250.140 📜&z.--4-- <Nop>
-    an 250.150 📜&z.Update\ All\ Folds<Tab>zuz              zuz
-    an 250.140 📜&z.--4-- <Nop>
-    an 250.150 📜&z.Toggle\ All\ at\ Cursor<Tab>zA          zA
-    an 250.150 📜&z.Close\ All\ at\ Cursor<Tab>zC           zC
-    an 250.150 📜&z.Delete\ All\ at\ Cursor<Tab>zD          zD
-    an 250.150 📜&z.Delete\ All<Tab>zE                      zE
-    an 250.150 📜&z.Create\ Fold<Tab>zF                     zF
-    an 250.150 📜&z.Close\ All<Tab>zM                       zM
-    an 250.150 📜&z.Enable<Tab>zN                           zN
-    an 250.150 📜&z.Open\ All\ at\ Cursor<Tab>zO            zO
-    an 250.150 📜&z.Open\ All<Tab>zR                        zR
-    an 250.150 📜&z.Apply\ 'foldlevel'<Tab>zX               zX
-    an 250.150 📜&z.Toggle\ at\ Cursor<Tab>za               za
-    an 250.150 📜&z.Close<Tab>zc                            zc
-    an 250.150 📜&z.Delete<Tab>zd                           zd
-    an 250.150 📜&z.Create<Tab>zf                           zf
-    an 250.150 📜&z.Toggle\ Enable<Tab>zi                   zi
-    an 250.150 📜&z.Close\ One\ Level\ All<Tab>zm           zm
-    an 250.150 📜&z.Disable<Tab>zn                          zn
-    an 250.150 📜&z.Open\ at\ Cursor<Tab>zo                 zo
-    an 250.150 📜&z.Open\ One\ Level\ All<Tab>zr            zr
-    an 250.150 📜&z.Open\ till\ Cursor<Tab>zv               zv
-    an 250.150 📜&z.Apply\ 'foldlevel'\ &&\ Open\ till\ Cursor<Tab>zx zx
+    an 250.20  📜&z.Fold\ by\ &Syntax<Tab><A-z>s            :set foldmethod=syntax<CR>
+    an 250.30  📜&z.Fold\ by\ &Indent<Tab><A-z>i            :set foldmethod=indent<CR>
+    an 250.40  📜&z.Fold\ by\ E&xpr<Tab><A-z>x              :set foldmethod=expr<CR>
+    an 250.50  📜&z.Fold\ by\ Mar&kers<Tab><A-z>k           :set foldmethod=marker<CR>
+    an 250.60  📜&z.Manual\ from\ S&yntax<Tab><A-z>y        :set foldmethod=syntax<bar>set foldmethod=manual<CR>
+    an 250.70  📜&z.Manual\ from\ Inden&t<Tab><A-z>t        :set foldmethod=indent<bar>set foldmethod=manual<CR>
+    an 250.80  📜&z.Man&ual\ from\ Expr<Tab><A-z>u          :set foldmethod=expr<bar>set foldmethod=manual<CR>
+    an 250.90  📜&z.Manual\ &from\ Markers<Tab><A-z>f       :set foldmethod=marker<bar>set foldmethod=manual<CR>
+    an 250.100 📜&z.Manua&l<Tab><A-z>l                      :set foldmethod=manual<CR>
+    an 250.110 📜&z.--1-- <Nop>
+    an 250.120 📜&z.&Open<Tab>zo                            zo
+    an 250.130 📜&z.&Close<Tab>zc                           zc
+    an 250.140 📜&z.Toggle\ (&a)<Tab>za                     za
+    an 250.150 📜&z.Open\ One\ Level\ (&w)<Tab>zr           zr
+    an 250.160 📜&z.Close\ One\ Level\ (&b)<Tab>zm          zm
+    an 250.170 📜&z.Open\ All\ (&r)<Tab>zR                  zR
+    an 250.180 📜&z.Close\ All\ (&m)<Tab>zM                 zM
+    an 250.190 📜&z.--2-- <Nop>
+    an 250.200 📜&z.Open\ till\ Cursor\ &Visible<Tab>zv     zv
+    an 250.210 📜&z.Open\ All\ at\ Cursor\ (&g)<Tab>zO      zO
+    an 250.220 📜&z.Close\ All\ at\ Cursor\ (&h)<Tab>zC     zC
+    an 250.230 📜&z.Toggle\ All\ at\ Cursor\ (&z)<Tab>zA    zA
+    an 250.240 📜&z.Apply\ 'foldlevel'\ &&\ Open\ at\ Cursor\ (&j)<Tab>zx zx
+    an 250.250 📜&z.Apply\ 'foldlevel'\ (&q)<Tab>zX         zX
+    an 250.260 📜&z.--3-- <Nop>
+    an 250.270 📜&z.&Previous<Tab>[z                        [z
+    an 250.280 📜&z.&Next<Tab>]z                            ]z
+    an 250.290 📜&z.--4-- <Nop>
+    an 250.300 📜&z.Cr&eate<Tab>zf                          zf
+    an 250.310 📜&z.Create\ Fold\ (&/)<Tab>zF               zF
+    an 250.320 📜&z.--5-- <Nop>
+    an 250.330 📜&z.&Delete<Tab>zd                          zd
+    an 250.340 📜&z.Delete\ All\ at\ Cursor\ (&@)<Tab>zD    zD
+    an 250.350 📜&z.Delete\ All\ (&\\)<Tab>zE               zE
+    an 250.360 📜&z.--6-- <Nop>
+    an 250.370 📜&z.Update\ All\ Folds\ (&')<Tab>zuz        zuz
+    an 250.380 📜&z.--7-- <Nop>
+    an 250.390 📜&z.Enable\ (&\.)<Tab>zN                    zN
+    an 250.400 📜&z.Disable\ (&,)<Tab>zn                    zn
+    an 250.410 📜&z.Toggle\ Enable\ (&;)<Tab>zi             zi
 
     " quickfix
     an 260.10  &QF.QuickFix <Nop>
@@ -1631,9 +1627,28 @@ function! PlanetVim_MenusToolsUpdate() abort
     " Open Log in new window
     an 700.10  🔀&,.Git <Nop>
     an disable 🔀&,.Git
-    an 700.10  🔀&,.Log                                      :
-    an 700.10  🔀&,.AutoCommit\ Now :TODO
-    an 700.10  🔀&,.Commit\ Everything :TODO
+    an 700.10  🔀&,.AutoCommit\ File                      :TODO
+    an 700.10  🔀&,.AutoCommit\ File\ &&\ Push            :TODO
+    an 700.10  🔀&,.AutoCommit\ All                       :TODO
+    an 700.10  🔀&,.AutoCommit\ &&\ Push                  :TODO
+    an 700.10  🔀&,.Set\ AutoCommit\ on\ File\ Write      :TODO
+    an 700.10  🔀&,.Stop\ AutoCommit\ on\ File\ Write     :TODO
+    an 700.10  🔀&,.--1-- <Nop>
+    an 700.10  🔀&,.Log\ File\ QF                         :TODO
+    an 700.10  🔀&,.Log\ File\ LL                         :TODO
+    an 700.10  🔀&,.Log\ QF                               :TODO
+    an 700.10  🔀&,.Log\ LL                               :TODO
+    an 700.10  🔀&,.Log\ in\ New\ GWindow                 :TODO
+    an 700.10  🔀&,.Status                                :TODO
+    an 700.10  🔀&,.Commit\ All                           :TODO
+    an 700.10  🔀&,.Commit\ File                          :TODO
+    an 700.10  🔀&,.Commit\ File                          :TODO
+    an 700.10  🔀&,.Clone\ Project                        :TODO
+    an 700.10  🔀&,.Init\ Project                         :TODO
+    an 700.10  🔀&,.Blame                                 :TODO
+    " tpope/rhubarb.vim plugin for GitHub
+    an 700.10  🔀&,.GitHub <Nop>
+    an disable 🔀&,.GitHub
 
     " Diff/Patch
     an 710.10  ⛏️&;.Diff/Patch <Nop>
