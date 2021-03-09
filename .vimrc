@@ -1009,6 +1009,24 @@ func s:XxdFind()
     endif
   endif
 endfun
+
+function! s:AddBuffers()
+  let buf = 1
+  while buf <= bufnr('$')
+    let name = bufname(buf)
+    if isdirectory(name) || !buflisted(buf)
+      continue
+    endif
+    let type = getbufvar(buf, '&buftype')
+    if buftype != '' && buftype != 'nofile' && buftype != 'nowrite'
+      continue
+    endif
+    if !bufexists(buf)
+      continue
+    endif
+    exe 'an 800.500 📖&b.' .. name .. ' :confirm b ' .. buf .. '<CR>'
+  endwhile
+endfunction
 "TODO: Add function to follow DE night mode & theme settings (auto switch
 "TODO: guioptions+=d when dark theme, auto switch to dark colorscheme variant)
 
@@ -1346,6 +1364,7 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 970.10  ⚙️&\\.--6-- <Nop>
     an 970.10.10  ⚙️&\\.Syntax.On                           :syn on<CR>
     an 970.10.10  ⚙️&\\.Syntax.Manual                       :syn manual<CR>
+    an 970.10.10  ⚙️&\\.Syntax.Off                          :syn off<CR>
     an 970.10  ⚙️&\\.--7-- <Nop>
     an 970.10  ⚙️&\\.Toggle\ Verbosity<Tab>=oV              :VerbosityToggle<CR>
     an 970.10  ⚙️&\\.Open\ Verbosity\ Log<Tab>goV           :VerbosityOpenLast<CR>
@@ -1940,8 +1959,6 @@ function! PlanetVim_MenusNavigationUpdate() abort
     an 800.40  📖&b.--2-- <Nop>
     an 800.50  📖&b.Buffers\ List <Nop>
     an disable 📖&b.Buffers\ List
-    let planet_buf = 1
-    "while buf <= bufnr('$')
 
     " Arg List
     an 810.10  🗃️&a.Args <Nop>
