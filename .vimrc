@@ -253,6 +253,7 @@ set cinoptions=:0,l1,g0,N-s,E-s,t0,U1,j1,J1
 set cinwords-=switch
 set clipboard=autoselect,autoselectml,exclude:cons\|linux
 set cmdheight=2
+set cmdwinheight=5
 set colorcolumn=80,120,+0
 if has("gui_running")
   set columns=128
@@ -797,6 +798,10 @@ endif
 command -bar -nargs=? -complete=help HelpCurwin execute s:HelpCurwin(<q-args>)
 " }}}
 " Menu: {{{
+" TODO: Vim default menu
+" TODO: VS Code
+" TODO: Qt Creator
+" TODO: LibreOffice
 " Custom config file: $HOME/.vim/planetvimrc.vim
 let g:PV_config = "$HOME/.vim/planetvimrc.vim"
 if filereadable(expand(g:PV_config))
@@ -889,8 +894,126 @@ function! s:registers_choose_to_edit() abort
   execute("silent normal \<C-w>P")
 endfunction
 
+function! s:SelectAll()
+  exe "norm! gg" . (&slm == "" ? "VG" : "gH\<C-O>G")
+endfunction
+
+function! s:AutoFoldEnable()
+  set foldclose=all
+  set foldopen=all
+  set foldlevel=0
+  set foldlevelstart=0
+endfunction
+
+function! s:AutoFoldDisable()
+  set foldclose=
+  set foldopen=quickfix,tag,undo
+  set foldlevel=20
+  set foldlevelstart=20
+endfunction
+
+fun! s:SetPath()
+  if !exists("g:menutrans_path_dialog")
+    let g:menutrans_path_dialog = "Enter search path for files.\nSeparate directory names with a comma."
+  endif
+  let n = inputdialog(g:menutrans_path_dialog, substitute(&path, '\\ ', ' ', 'g'))
+  if n != ""
+    let &path = substitute(n, ' ', '\\ ', 'g')
+  endif
+endfun
+
+fun! s:SetTags()
+  if !exists("g:menutrans_tags_dialog")
+    let g:menutrans_tags_dialog = "Enter names of tag files.\nSeparate the names with a comma."
+  endif
+  let n = inputdialog(g:menutrans_tags_dialog, substitute(&tags, '\\ ', ' ', 'g'))
+  if n != ""
+    let &tags = substitute(n, ' ', '\\ ', 'g')
+  endif
+endfun
+
+fun! s:SetTextWidth()
+  if !exists("g:menutrans_textwidth_dialog")
+    let g:menutrans_textwidth_dialog = "Enter new text width (0 to disable formatting): "
+  endif
+  let n = inputdialog(g:menutrans_textwidth_dialog, &tw)
+  if n != ""
+    " Remove leading zeros to avoid it being used as an octal number.
+    " But keep a zero by itself.
+    let tw = substitute(n, "^0*", "", "")
+    let &tw = tw == '' ? 0 : tw
+  endif
+endfun
+
+fun! s:SetLineEndings()
+  if !exists("g:menutrans_fileformat_dialog")
+    let g:menutrans_fileformat_dialog = "Select format for writing the file"
+  endif
+  if !exists("g:menutrans_fileformat_choices")
+    let g:menutrans_fileformat_choices = "&Unix\n&Dos\n&Mac\n&Cancel"
+  endif
+  if &ff == "dos"
+    let def = 2
+  elseif &ff == "mac"
+    let def = 3
+  else
+    let def = 1
+  endif
+  let n = confirm(g:menutrans_fileformat_dialog, g:menutrans_fileformat_choices, def, "Question")
+  if n == 1
+    set ff=unix
+  elseif n == 2
+    set ff=dos
+  elseif n == 3
+    set ff=mac
+  endif
+endfun
+
+func s:XxdToHex()
+  let mod = &mod
+  if has("vms")
+    %!mc vim:xxd
+  else
+    call s:XxdFind()
+    exe '%!' . g:xxdprogram
+  endif
+  if getline(1) =~ "^0000000:"		" only if it worked
+    set ft=xxd
+  endif
+  let &mod = mod
+endfun
+
+func s:XxdFromHex()
+  let mod = &mod
+  if has("vms")
+    %!mc vim:xxd -r
+  else
+    call s:XxdFind()
+    exe '%!' . g:xxdprogram . ' -r'
+  endif
+  set ft=
+  doautocmd filetypedetect BufReadPost
+  let &mod = mod
+endfun
+
+func s:XxdFind()
+  if !exists("g:xxdprogram")
+    " On the PC xxd may not be in the path but in the install directory
+    if has("win32") && !executable("xxd")
+      let g:xxdprogram = $VIMRUNTIME . (&shellslash ? '/' : '\') . "xxd.exe"
+      if g:xxdprogram =~ ' '
+	let g:xxdprogram = '"' .. g:xxdprogram .. '"'
+      endif
+    else
+      let g:xxdprogram = "xxd"
+    endif
+  endif
+endfun
+"TODO: Add function to follow DE night mode & theme settings (auto switch
+"TODO: guioptions+=d when dark theme, auto switch to dark colorscheme variant)
+
 "TODO: add setting 'equalprg' for formatting wih == (clang-format, etc.)
-" TODO: Choise between text, emoji, symbols, nerdicons menus
+"TODO: Choise between text, emoji, symbols, nerdicons menus
 if ! exists("g:PlanetVim_menus_basic")
   let g:PlanetVim_menus_basic = 1
 endif
@@ -911,28 +1034,30 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 110.110 📁&f.Open\ &Recent                              :Clap history<CR>
     an 110.120 📁&f.F&ind<Tab>:find                            :find 
     an 110.130 📁&f.--2-- <Nop>
-    an 110.140 📁&f.&Save<Tab>:w                               :if expand("%") == ""<Bar>browse confirm up<Bar>else<Bar>confirm up<Bar>endif<CR>
+    an 110.140 📁&f.&Save<Tab>:w                               :if expand("%") == ""<Bar>browse confirm w<Bar>else<Bar>confirm up<Bar>endif<CR>
     an 110.150 📁&f.Save\ &As\.\.\.<Tab>:saveas                :browse confirm saveas<CR>
     an 110.160 📁&f.Save\ A&ll<Tab>:wall                       :confirm wall<CR>
     an 110.170 📁&f.--3-- <Nop>
-    an 110.180 📁&f.&Previous\ in\ Folder<Tab>[f               [f
-    an 110.190 📁&f.&Next\ in\ Folder<Tab>]f                   ]f
-    an 110.200 📁&f.--4-- <Nop>
-    an 110.210 📁&f.Open\ File\ under\ Cursor<Tab>gF           gF
-    an 110.220 📁&f.Split\ Open\ File\ under\ Cursor<Tab>+F    <C-w>F
-    an 110.230 📁&f.Tab\ Open\ File\ under\ Cursor<Tab>+gF     <C-w>gF
-    an 110.240 📁&f.--5-- <Nop>
-    an 110.250 📁&f.SudoSave                                  :SudoWrite<CR>
-    an 110.260 📁&f.Rename                                     :browse confirm Rename<CR>
-    an 110.270 📁&f.Change\ File\ Permissions                  :Chmod 0755
-    an 110.280 📁&f.Delete\ From\ Disk                        :Delete!<CR>
-    an 110.280 📁&f.--6-- <Nop>
-    an 110.290 📁&f.Mkdir                                     :Mkdir! <C-z>
-    an 110.300 📁&f.Cd<Tab>:cd                                 :cd <C-z>
-    an 110.310 📁&f.Cd\ current\ Tab<Tab>:tcd                  :tcd <C-z>
-    an 110.320 📁&f.Cd\ current\ File<Tab>:lcd                 :lcd <C-z>
-    an 110.330 📁&f.--7-- <Nop>
-    an 110.340 📁&f.&Close<Tab>:bdelete                        :bdelete<CR>
+    an 110.180 📁&f.Export\ (Selected)\ as\ HTML               :TOhtml<CR>
+    an 110.190 📁&f.--4-- <Nop>
+    am 110.200 📁&f.&Previous\ in\ Folder<Tab>[f               [f
+    am 110.210 📁&f.&Next\ in\ Folder<Tab>]f                   ]f
+    an 110.220 📁&f.--5-- <Nop>
+    an 110.230 📁&f.Open\ File\ under\ Cursor<Tab>gF           gF
+    an 110.240 📁&f.Split\ Open\ File\ under\ Cursor<Tab>+F    <C-w>F
+    an 110.250 📁&f.Tab\ Open\ File\ under\ Cursor<Tab>+gF     <C-w>gF
+    an 110.260 📁&f.--6-- <Nop>
+    an 110.270 📁&f.SudoSave                                  :SudoWrite<CR>
+    an 110.280 📁&f.Rename                                     :browse confirm Rename<CR>
+    an 110.290 📁&f.Change\ File\ Permissions                  :Chmod 0755
+    an 110.300 📁&f.Delete\ From\ Disk                        :Delete!<CR>
+    an 110.300 📁&f.--7-- <Nop>
+    an 110.310 📁&f.Mkdir                                     :Mkdir! <C-z>
+    an 110.320 📁&f.Cd<Tab>:cd                                 :cd <C-z>
+    an 110.330 📁&f.Cd\ current\ Tab<Tab>:tcd                  :tcd <C-z>
+    an 110.340 📁&f.Cd\ current\ File<Tab>:lcd                 :lcd <C-z>
+    an 110.350 📁&f.--8-- <Nop>
+    an 110.360 📁&f.&Close<Tab>:bdelete                        :bdelete<CR>
 
     " Edit
     an 120.10  📝&e.Edit <Nop>
@@ -958,8 +1083,8 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 120.200 📝&e.--5-- <Nop>
     an 120.210 📝&e.Choose\ Yank\ History<Tab>:Clap\ yanks     :Clap yanks<CR>
     an 120.220 📝&e.--6-- <Nop>
-    an 120.230 📝&e.Swap\ Preious\ Line<Tab>[e                 [e
-    an 120.240 📝&e.Swap\ Next\ Line<Tab>]e                    ]e
+    am 120.230 📝&e.Swap\ Preious\ Line<Tab>[e                 [e
+    am 120.240 📝&e.Swap\ Next\ Line<Tab>]e                    ]e
     an 120.250 📝&e.--7-- <Nop>
     an 120.260 📝&e.Unindent<Tab><                             <
     an 120.270 📝&e.Indent<Tab>>                               >
@@ -1007,15 +1132,18 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 125.650 ✏️&m.Uniq<Tab>!uniq                             !uniq<CR>
     an 125.660 ✏️&m.Filter\ by\ Program<Tab>!<cmd>             !
     an 125.660 ✏️&m.--2-- <Nop>
-    an 125.660 ✏️&m.XML\ Encode<Tab>[x{motion}                [x
-    an 125.660 ✏️&m.XML\ Decode<Tab>]x{motion}                ]x
-    an 125.660 ✏️&m.URL\ Encode<Tab>[u{motion}                [u
-    an 125.660 ✏️&m.URL\ Decode<Tab>]u{motion}                ]u
-    an 125.660 ✏️&m.C\ String\ Encode<Tab>[y{motion}          [y
-    an 125.660 ✏️&m.C\ String\ Decode<Tab>]y{motion}          ]y
+    am 125.660 ✏️&m.XML\ Encode<Tab>[x{motion}                [x
+    am 125.660 ✏️&m.XML\ Decode<Tab>]x{motion}                ]x
+    am 125.660 ✏️&m.URL\ Encode<Tab>[u{motion}                [u
+    am 125.660 ✏️&m.URL\ Decode<Tab>]u{motion}                ]u
+    am 125.660 ✏️&m.C\ String\ Encode<Tab>[y{motion}          [y
+    am 125.660 ✏️&m.C\ String\ Decode<Tab>]y{motion}          ]y
     an 125.660 ✏️&m.--4-- <Nop>
     an 125.660 ✏️&m.Rot13\ Operator<Tab>g?                    g?
     an 125.660 ✏️&m.Rot13\ Line<Tab>g??<Tab>g?g?     g??
+    an 125.660 ✏️&m.--4-- <Nop>
+    am 125.660 ✏️&m.Empty\ Line\ Before<Tab>[<Space>          [<Space>
+    am 125.660 ✏️&m.Empty\ Line\ After<Tab>]<Space>           ]<Space>
     an 125.670 ✏️&m.Snippets <Nop>
     an disable ✏️&m.Snippets
     an 125.680 ✏️&m.Emmet <Nop>
@@ -1063,16 +1191,16 @@ function! PlanetVim_MenusBasicUpdate() abort
     "FIXME: In Insert mode this only works for a SINGLE Normal mode command
     an 140.10  🖍️&s.Selection <Nop>
     an disable 🖍️&s.Selection
-    an 140.10  🖍️&s.Select\ All                           ggVG
+    an 140.10  🖍️&s.Select\ All                             :<C-U>call <SID>SelectAll()<CR>
     an 140.10  🖍️&s.Reselect\ Previous\ Area                gv
     an 140.10  🖍️&s.--1-- <Nop>
-    an 140.10  🖍️&s.Visual\ Mode<Tab>v                    v
-    an 130.10  🖍️&s.Visual\ Line\ Mode<Tab>V              V
-    an 140.10  🖍️&s.Visual\ Block\ Mode<Tab><C-v>         <C-v>
+    an 140.10  🖍️&s.Visual\ Mode<Tab>v                      v
+    an 130.10  🖍️&s.Visual\ Line\ Mode<Tab>V                V
+    an 140.10  🖍️&s.Visual\ Block\ Mode<Tab><C-v>           <C-v>
     an 140.10  🖍️&s.--2-- <Nop>
-    an 140.10  🖍️&s.Select\ Mode<Tab>gh                   gh
-    an 140.10  🖍️&s.Select\ Line\ Mode<Tab>gH             gH
-    an 140.10  🖍️&s.Select\ Block\ Mode<Tab>g<C-h>        g<C-H>
+    an 140.10  🖍️&s.Select\ Mode<Tab>gh                     gh
+    an 140.10  🖍️&s.Select\ Line\ Mode<Tab>gH               gH
+    an 140.10  🖍️&s.Select\ Block\ Mode<Tab>g<C-h>          g<C-H>
 
     " View
     "TODO: add 'scrollbind' file in split
@@ -1095,9 +1223,23 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 150.70  📺&v.--1-- <Nop>
     an 150.70  📺&v.Colorscheme <Nop>
     an disable 📺&v.Colorscheme
-    an 150.70  📺&v.Set\ Dark\ Background<Tab>set\ bg=dark :set bg=dark<CR>
+    an 150.70.10  📺&v.Set\ Colorscheme.Dark <Nop>
+    an disable    📺&v.Set\ Colorscheme.Dark
+    an 150.70.10  📺&v.Set\ Colorscheme.Dracula             :set bg=dark<CR>:colorscheme dracula<CR>
+    an 150.70.10  📺&v.Set\ Colorscheme.Gruvbox\ Dark       :set bg=dark<CR>:colorscheme gruvbox<CR>
+    an 150.70.10  📺&v.Set\ Colorscheme.Molokai             :set bg=dark<CR>:colorscheme molokai<CR>
+    an 150.70.10  📺&v.Set\ Colorscheme.One\ Dark           :set bg=dark<CR>:colorscheme one<CR>
+    an 150.70.10  📺&v.Set\ Colorscheme.PaperColor\ Dark    :set bg=dark<CR>:colorscheme PaperColor<CR>
+    an 150.70.10  📺&v.Set\ Colorscheme.Solarized\ Dark     :set bg=dark<CR>:colorscheme solarized<CR>
+    an 150.70.500 📺&v.Set\ Colorscheme.Light <Nop>
+    an disable    📺&v.Set\ Colorscheme.Light
+    an 150.70.500 📺&v.Set\ Colorscheme.Gruvbox\ Light      :set bg=light<CR>:colorscheme gruvbox<CR>
+    an 150.70.500 📺&v.Set\ Colorscheme.One\ Light          :set bg=light<CR>:colorscheme one<CR>
+    an 150.70.500 📺&v.Set\ Colorscheme.PaperColor\ Light   :set bg=light<CR>:colorscheme PaperColor<CR>
+    an 150.70.500 📺&v.Set\ Colorscheme.Solarized\ Light    :set bg=light<CR>:colorscheme solarized<CR>
+    an 150.70  📺&v.Set\ Dark\ Background<Tab>set\ bg=dark  :set bg=dark<CR>
     an 150.70  📺&v.Set\ Light\ Background<Tab>set\ bg=light :set bg=light<CR>
-    an 150.70  📺&v.Choose\ Colorscheme<Tab>:Clap colors  :Clap colors<CR>
+    an 150.70  📺&v.Choose\ Colorscheme<Tab>:Clap\ colors   :Clap colors<CR>
 
     " Go
     an 160.10  ↕️&g.Go <Nop>
@@ -1175,9 +1317,40 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 970.10  ⚙️&\\.Tabs:\ &4<Tab>et\ ts=4\ sw=4           :set et ts=4 sw=4<CR>
     an 970.10  ⚙️&\\.Tabs:\ &8<Tab>noet\ ts=8\ sw=8         :set noet ts=8 sw=8<CR>
     an 970.10  ⚙️&\\.--1-- <Nop>
+    am 970.10  ⚙️&\\.Toggle\ 'cursorline'<Tab>yoc           yoc
+    am 970.10  ⚙️&\\.Toggle\ 'hlsearch'<Tab>yoh             yoh
+    am 970.10  ⚙️&\\.Toggle\ 'ignorecase'<Tab>yoi           yoi
+    am 970.10  ⚙️&\\.Toggle\ 'number'<Tab>yon               yon
+    am 970.10  ⚙️&\\.Toggle\ 'relativenumber'<Tab>yor       yor
+    am 970.10  ⚙️&\\.Toggle\ 'cursorcolumn'<Tab>you         you
+    am 970.10  ⚙️&\\.Toggle\ 'virtualedit'<Tab>yov          yov
+    am 970.10  ⚙️&\\.Toggle\ 'wrap'<Tab>yow                 yow
+    am 970.10  ⚙️&\\.Toggle\ word\ wrap                     :set lbr! lbr?<CR>
+    am 970.10  ⚙️&\\.Toggle\ 'cursorline'\ &&\ 'cursorcolumn'<Tab>yox yox
+    an 970.10  ⚙️&\\.--2-- <Nop>
+    am 970.10  ⚙️&\\.'scrolloff':\ 0                        :set so=0<CR>
+    am 970.10  ⚙️&\\.'scrolloff':\ 2\ (default)             :set so=2<CR>
+    am 970.10  ⚙️&\\.'scrolloff':\ 1000                     :set so=1000<CR>
+    an 970.10  ⚙️&\\.--3-- <Nop>
+    an 970.10  ⚙️&\\.Set\ Text\ Width                       :call <SID>SetTextWidth()<CR>
+    an 970.10  ⚙️&\\.Set\ Line\ Endings                     :call <SID>SetLineEndings()<CR>
+    an 970.10  ⚙️&\\.--4-- <Nop>
+    an 970.10  ⚙️&\\.Set\ 'path'                            :call <SID>SetPath()<CR>
+    an 970.10  ⚙️&\\.Set\ 'tags'                            :call <SID>SetTags()<CR>
+    "TODO: add set *prg
+    "TODO: add set *path
     an 970.10  ⚙️&\\.--5-- <Nop>
+    if has("win32") || has("gui_motif") || has("gui_gtk") || has("gui_kde") || has("gui_photon") || has("gui_mac")
+      an 970.10 ⚙️&\\.Select\ Fo&nt\.\.\.                   :set guifont=*<CR>
+    endif
+    an 970.10  ⚙️&\\.--6-- <Nop>
+    an 970.10.10  ⚙️&\\.Syntax.On                           :syn on<CR>
+    an 970.10.10  ⚙️&\\.Syntax.Manual                       :syn manual<CR>
+    an 970.10  ⚙️&\\.--7-- <Nop>
     an 970.10  ⚙️&\\.Toggle\ Verbosity<Tab>=oV              :VerbosityToggle<CR>
     an 970.10  ⚙️&\\.Open\ Verbosity\ Log<Tab>goV           :VerbosityOpenLast<CR>
+    an 970.10  ⚙️&\\.--8-- <Nop>
+    an 970.10  ⚙️&\\.Settings\ Buffer<Tab>:options          :options<CR>
 
     " Show current maps (nnoremap, etc.)
     an 980.10  ⌨️&\|.Maps <Nop>
@@ -1190,8 +1363,10 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 980.10  ⌨️&\|.Character\ under\ Cursor<Tab>g8        g8
     an 980.10  ⌨️&\|.Ascii\ under\ Cursor<Tab>ga            ga
     an 980.10  ⌨️&\|.Output\ of\ previous\ Command<Tab>g<   g<
+    an 980.10  ⌨️&\|.Co&lor\ Test                           :sp $VIMRUNTIME/syntax/colortest.vim<Bar>so %<CR>
+    an 980.10  ⌨️&\|.&Highlight\ Test                       :runtime syntax/hitest.vim<CR>
     an 980.10  ⌨️&\|.Ex\ Vim\ Mode\ (Dangerous!)<Tab>gX     gQ
-    an 980.10  ⌨️&\|.Ex\ Mode\ (Dangerous!)                 Q
+    an 980.10  ⌨️&\|.Ex\ Mode\ (Dangerous!)<Tab>Q           Q
 
     " Help
     an 990.10  ❔&?.Help <Nop>
@@ -1335,6 +1510,7 @@ function! PlanetVim_MenusEditingUpdate() abort
     an 250.180 📜&z.Close\ All\ (&m)<Tab>zM                 zM
     an 250.190 📜&z.--2-- <Nop>
     an 250.200 📜&z.Open\ till\ Cursor\ &Visible<Tab>zv     zv
+    an 250.200 📜&z.Open\ only\ Cursor\ Line<Tab>zMzx       zMzx
     an 250.210 📜&z.Open\ All\ at\ Cursor\ (&g)<Tab>zO      zO
     an 250.220 📜&z.Close\ All\ at\ Cursor\ (&h)<Tab>zC     zC
     an 250.230 📜&z.Toggle\ All\ at\ Cursor\ (&z)<Tab>zA    zA
@@ -1358,14 +1534,15 @@ function! PlanetVim_MenusEditingUpdate() abort
     an 250.410 📜&z.Advanced\ (&\.).--8-- <Nop>
     an 250.410 📜&z.Advanced\ (&\.).&Increase\ 'foldcolumn' :set foldcolumn+=1<CR>
     an 250.410 📜&z.Advanced\ (&\.).Dec&rease\ 'foldcolumn' :set foldcolumn-=1<CR>
+    an 250.410 📜&z.Advanced\ (&\.).--9-- <Nop>
     an 250.410 📜&z.Advanced\ (&\.).Run\ Command\ on\ &Visible\ Lines :folddoopen 
     an 250.410 📜&z.Advanced\ (&\.).Run\ Command\ on\ &Folded\ Lines  :folddoclosed 
     an 250.410 📜&z.AutoFold <Nop>
     an disable 📜&z.AutoFold
-    an 250.410 📜&z.Enable\ Au&toFold                       :set foldclose="all"<CR>
+    an 250.410 📜&z.Enable\ Au&toFold                       :call <SID>AutoFoldEnable()<CR>
     an 250.410 📜&z.Increase\ 'foldlevel'\ (&y)             :setlocal foldlevel+=1<CR>
     an 250.410 📜&z.Decrease\ '&foldlevel'                  :setlocal foldlevel-=1<CR>
-    an 250.410 📜&z.Disable\ A&utoFold                      :set foldclose=""<CR>
+    an 250.410 📜&z.Disable\ A&utoFold                      :call <SID>AutoFoldDisable()<CR>
 
     " quickfix
     an 260.10  &QF.QuickFix <Nop>
@@ -1383,13 +1560,13 @@ function! PlanetVim_MenusEditingUpdate() abort
     an 260.80  &QF.--1-- <Nop>
     an 260.90  &QF.C&hoose<Tab>:Clap\ quickfix                  :Clap quickfix<CR>
     an 260.100 &QF.--2-- <Nop>
-    an 260.110 &QF.&Next<Tab>]q                                 ]q
+    am 260.110 &QF.&Next<Tab>]q                                 ]q
     an 260.120 &QF.N&ext\ File<Tab>:cnfile<Tab>]<C-q>           :cnfile<CR>
-    an 260.130 &QF.&Last<Tab>:clast<Tab>]Q                      ]Q
+    am 260.130 &QF.&Last<Tab>:clast<Tab>]Q                      ]Q
     an 260.140 &QF.--3-- <Nop>
-    an 260.150 &QF.&Previous<Tab>[q                             [q
+    am 260.150 &QF.&Previous<Tab>[q                             [q
     an 260.160 &QF.Previou&s\ File<Tab>:cpfile<Tab>[<C-q>       :cpfile<CR>
-    an 260.170 &QF.&First<Tab>:cfirst<Tab>[Q                    [Q
+    am 260.170 &QF.&First<Tab>:cfirst<Tab>[Q                    [Q
     an 260.180 &QF.--4-- <Nop>
     an 260.190 &QF.E&xecute\ for\ each<Tab>:cdo                 :cdo 
     an 260.200 &QF.Execute\ for\ each\ File\ (&z)<Tab>:cfdo     :cfdo 
@@ -1427,13 +1604,13 @@ function! PlanetVim_MenusEditingUpdate() abort
     an 270.80  &LL.--1-- <Nop>
     an 270.90  &LL.C&hoose<Tab>:Clap\ loclist                   :Clap loclist<CR>
     an 270.100 &LL.--2-- <Nop>
-    an 270.110 &LL.&Next<Tab>]l                                 ]l
+    am 270.110 &LL.&Next<Tab>]l                                 ]l
     an 270.120 &LL.N&ext\ File<Tab>:lnfile<Tab>]<C-l>           :lnfile<CR>
-    an 270.130 &LL.&Last<Tab>:llast<Tab>]L                      ]L
+    am 270.130 &LL.&Last<Tab>:llast<Tab>]L                      ]L
     an 270.140 &LL.--3-- <Nop>
-    an 270.150 &LL.&Previous<Tab>[l                             [l
+    am 270.150 &LL.&Previous<Tab>[l                             [l
     an 270.160 &LL.Previou&s\ File<Tab>:lpfile<Tab>[<C-l>       :lpfile<CR>
-    an 270.170 &LL.&First<Tab>:lfirst<Tab>[L                    [L
+    am 270.170 &LL.&First<Tab>:lfirst<Tab>[L                    [L
     an 270.180 &LL.--4-- <Nop>
     an 270.190 &LL.E&xecute\ for\ each<Tab>:ldo                 :ldo 
     an 270.200 &LL.Execute\ for\ each\ File\ (&z)<Tab>:lfdo     :lfdo 
@@ -1509,17 +1686,27 @@ function! PlanetVim_MenusDevelopmentUpdate() abort
     " Tags
     an 310.10  🪧&].Tags <Nop>
     an disable 🪧&].Tags
-    an 310.10  🪧&].C&hoose<Tab>:Clap\ tags\ ctags            :Clap tags ctags<CR>
-    an 310.10  🪧&].&Jump\ to\ Tag<Tab><C-]>                  <C-]>
-    an 310.10  🪧&].&Jump\ Back<Tab><C-t>                     <C-t>
-    an 310.10  🪧&].&Jump\ or\ Select\ Tag<Tab>g<C-]>         g<C-]>
-    an 310.10  🪧&].&Select\ Tag<Tab>g]                       g]
-    an 310.10  🪧&].Jump\ Split\ to\ Tag<Tab>+]                <C-w>]
+    an 310.10  🪧&].C&hoose<Tab>:Clap\ tags\ ctags           :Clap tags ctags<CR>
+    an 310.10  🪧&].&Jump\ to\ Tag<Tab><C-]>                 <C-]>
+    an 310.10  🪧&].&Jump\ Back<Tab><C-t>                    <C-t>
+    an 310.10  🪧&].&Jump\ or\ Select\ Tag<Tab>g<C-]>        g<C-]>
+    an 310.10  🪧&].&Select\ Tag<Tab>g]                      g]
+    an 310.10  🪧&].Jump\ Split\ to\ Tag<Tab>+]              <C-w>]
     an 310.10  🪧&].Jump\ or\ Select\ Split\ to\ Tag<Tab>+g<C-]> <C-w>g<C-]>
-    an 310.10  🪧&].Select\ Split\ Tag<Tab>+g]                <C-w>g]
-    an 310.10  🪧&].Preview\ Tag<Tab>+}                       <C-w>}
-    an 310.10  🪧&].Select\ Preview\ Tag<Tab>+g}              <C-w>g}
-    an 310.10  🪧&].Close\ Preview<Tab>+z                     <C-w>z
+    an 310.10  🪧&].Select\ Split\ Tag<Tab>+g]               <C-w>g]
+    an 310.10  🪧&].Preview\ Tag<Tab>+}                      <C-w>}
+    an 310.10  🪧&].Select\ Preview\ Tag<Tab>+g}             <C-w>g}
+    an 310.10  🪧&].Close\ Preview<Tab>+z                    <C-w>z
+    an 310.10  🪧&].--1-- <Nop>
+    am 310.10  🪧&].First<Tab>[T                             [T
+    am 310.10  🪧&].Previous<Tab>[t                          [t
+    am 310.10  🪧&].Next<Tab>]t                              ]t
+    am 310.10  🪧&].Last<Tab>]T                              ]T
+    an 310.10  🪧&].--2-- <Nop>
+    am 310.10  🪧&].Preview\ Previous<Tab>[<C-t>             [<C-t>
+    am 310.10  🪧&].Preview\ Next<Tab>]<C-t>                 ]<C-t>
+    an 310.10  🪧&].--3-- <Nop>
+    am 310.10  🪧&].Build\ tags\ File                        :!ctags -R .<CR>
 
     " Build
     an 500.10  🔨&u.Build <Nop>
@@ -1535,6 +1722,9 @@ function! PlanetVim_MenusDevelopmentUpdate() abort
     an 500.10  🔨&u.AbortDispatch                             :Make<CR>
     an 500.10  🔨&u.Start                                     :Make<CR>
     an 500.10  🔨&u.Spawn                                     :Make<CR>
+    an 500.10  🔨&u.--1-- <Nop>
+    an 500.10  🔨&u.Set\ Global\ Compiler<Tab>:compiler!\ {compiler} :compiler! 
+    an 500.10  🔨&u.Set\ Local\ Compiler<Tab>:compiler\ {compiler} :compiler 
 
     " Run
     an 510.10  ▶️&r.Run <Nop>
@@ -1574,11 +1764,11 @@ function! PlanetVim_MenusDevelopmentUpdate() abort
     an 550.10  💻&t.Terminal <Nop>
     an disable 💻&t.Terminal
     an 550.10  💻&t.N&ew\ Here                             :terminal ++curwin ++kill=kill<CR>
-    an 550.10  💻&t.&New\ Below                            :rightbelow terminal ++kill=kill<CR>
-    an 550.10  💻&t.New\ at\ &Bottom                       :botright terminal ++kill=kill<CR>
+    an 550.10  💻&t.&New\ Below                            :rightbelow terminal ++kill=kill ++rows=10<CR>
+    an 550.10  💻&t.New\ at\ &Bottom                       :botright terminal ++kill=kill ++rows=10<CR>
     an 550.10  💻&t.--1-- <Nop>
-    an 550.10  💻&t.P&ython\ Shell                         :botright terminal ++kill=kill python<CR>
-    an 550.10  💻&t.C&++\ Shell                            :botright terminal ++kill=kill cling<CR>
+    an 550.10  💻&t.P&ython\ Shell                         :botright terminal ++kill=kill ++rows=10 python<CR>
+    an 550.10  💻&t.C&++\ Shell                            :botright terminal ++kill=kill ++rows=10 cling<CR>
     an 550.10  💻&t.Terminal\ List <Nop>
     an disable 💻&t.Terminal\ List
   else
@@ -1624,6 +1814,9 @@ an 720.20  ]Writing.Swap\ Words                   :TODO
 an 720.20  ]Writing.Swap\ Words\ After            :TODO
 an 720.40  ]Writing.Thesaurus                     :TODO
 an 720.50  ]Writing.Generate\ Sample\ Text        :TODO
+an 720.50  ]Writing.Left\ Align<Tab>:left         :left<CR>
+an 720.50  ]Writing.Center\ Align<Tab>:center     :center<CR>
+an 720.50  ]Writing.Right\ Align<Tab>:right       :right<CR>
 
 if ! exists("g:PlanetVim_menus_tools")
   let g:PlanetVim_menus_tools = 1
@@ -1666,27 +1859,31 @@ function! PlanetVim_MenusToolsUpdate() abort
     an 710.40  ⛏️&;.--1-- <Nop>
     an 710.40  ⛏️&;.Previous\ Hunk<Tab>[c             [c
     an 710.40  ⛏️&;.Next\ Hunk<Tab>]c                 ]c
-    an 710.40  ⛏️&;.--1-- <Nop>
-    an 710.40  ⛏️&;.Previous\ Hunk<Tab>[n             [n
-    an 710.40  ⛏️&;.Next\ Hunk<Tab>]n                 ]n
     an 710.40  ⛏️&;.--2-- <Nop>
-    an 710.40  ⛏️&;.Previous\ Conflict\ Marker<Tab>[n [n
-    an 710.40  ⛏️&;.Next\ Conflict\ Marker<Tab>]n     ]n
-    an 710.40  ⛏️&;.--2-- <Nop>
+    am 710.40  ⛏️&;.Previous\ Conflict\ Marker<Tab>[n [n
+    am 710.40  ⛏️&;.Next\ Conflict\ Marker<Tab>]n     ]n
+    an 710.40  ⛏️&;.--3-- <Nop>
     an 710.40  ⛏️&;.Get\ Diff<Tab>:diffget<Tab>do     do
     an 710.40  ⛏️&;.Put\ Diff<Tab>:diffput<Tab>dp     dp
-    an 710.40  ⛏️&;.--2-- <Nop>
+    an 710.40  ⛏️&;.--4-- <Nop>
+    an 710.40  ⛏️&;.Diff\ All\ in\ Tab                :windo diffthis<CR>
+    an 710.40  ⛏️&;.Diff\ with\ Alternate\ Winodw     :diffthis<CR>:wincmd p<CR>:diffthis<CR>
+    an 710.40  ⛏️&;.--4-- <Nop>
     an 710.40  ⛏️&;.Set\ Context\ Lines               :set diffopt+=context=12<CR>
 
     " Spelling (& Dictionary & Thesaurus)
     an 720.10  🔠&-.Spelling <Nop>
     an disable 🔠&-.Spelling
-    an 720.10  🔠&-.Enable                              :
+    an 720.10  🔠&-.Enable<Tab>:set\ spell                  :set spell<CR>
+    an 720.10  🔠&-.Disable<Tab>:set\ nospell               :set nospell<CR>
+    am 720.10  🔠&-.Toggle<Tab>yos                          yos
     an 720.10  🔠&-.--1-- <Nop>
     an 720.10  🔠&-.Previous\ Misspelled<Tab>[s         [s
     an 720.10  🔠&-.Next\ Misspelled<Tab>]s             ]s
     an 720.10  🔠&-.--1-- <Nop>
     an 720.10  🔠&-.Spelling\ Suggestions<Tab>z=        z=
+    an 720.10  🔠&-.Repeat Correction<Tab>:spellrepall  :spellrepall<CR>
+    an 720.10  🔠&-.--1-- <Nop>
     an 720.10  🔠&-.Mark\ as\ Correct\ Temp<Tab>zG      zG
     an 720.10  🔠&-.Mark\ as\ Incorrect\ Temp<Tab>zG    zW
     an 720.10  🔠&-.Mark\ as\ Correct<Tab>zg            zg
@@ -1695,12 +1892,13 @@ function! PlanetVim_MenusToolsUpdate() abort
     an 720.10  🔠&-.Unmark\ as\ Incorrect\ Temp<Tab>zG  zuW
     an 720.10  🔠&-.Unmark\ as\ Correct<Tab>zg          zug
     an 720.10  🔠&-.Unmark\ as\ Incorrect<Tab>zw        zuw
+    an 720.10  🔠&-.--1-- <Nop>
+    an 720.10  🔠&-.Set\ Language\ to\ "en"             :set spl=en spell<CR>
 
     " Tools
     " TODO: add all '*.prg' options, eg: equalprg, keywordprg, etc.
     an 730.10  🔧&o.Tools <Nop>
     an disable 🔧&o.Tools
-    an 730.10  🔧&o.C&hoose\ Colorscheme                      :Clap colors<CR>
     an 730.10  🔧&o.Colori&ze                                 :ColorToggle<CR>
     an 730.10  🔧&o.--1-- <Nop>
     an 730.10  🔧&o.&direnv:\ Run\ \.envrc                    :DirenvExport<CR>
@@ -1710,6 +1908,9 @@ function! PlanetVim_MenusToolsUpdate() abort
     an 730.10  🔧&o.Edit\ Command<Tab>:                       q:
     an 730.10  🔧&o.Edit\ Search<Tab>q/                       q/
     an 730.10  🔧&o.Edit\ Search\ Backwards<Tab>q?            q?
+    an 730.10  🔧&o.--5-- <Nop>
+    an 730.10  🔧&o.Convert\ to\ HEX<Tab>:%!xxd             :call <SID>XxdToHex()<CR>
+    an 730.10  🔧&o.Convert\ from\ HEX<Tab>:%!xxd\ -r       :call <SID>XxdFromHex()<CR>
   else
     silent! aunmenu 🔀&,
     silent! aunmenu ⛏️&;
@@ -1838,6 +2039,10 @@ function! PlanetVim_MenusNavigationUpdate() abort
     an 850.10  🔰&x.&Full\ Screen        :silent call system('wmctrl -i -b toggle,fullscreen -r' . v:windowid)<CR>
     an 850.10  🔰&x.Minimi&ze<Tab>:suspend<Tab><C-z>         <C-z>
     an 850.10  🔰&x.--1-- <Nop>
+    an 850.10  🔰&x.Vim\ Servers <Nop>
+    an disable 🔰&x.Vim\ Servers
+    an 850.10  🔰&x.GUI\ Windows <Nop>
+    an disable 🔰&x.GUI\ Windows
     "TODO: List of GUI windows to focus
 
     " Vim Apps: Open in new GUI window
@@ -1872,22 +2077,39 @@ function! PlanetSaveExit() abort
   confirm wall
   qa!
 endfunction
+
+fun! s:ToggleGuiOption(option)
+    " If a:option is already set in guioptions, then we want to remove it
+    if match(&guioptions, "\\C" . a:option) > -1
+	exec "set go-=" . a:option
+    else
+	exec "set go+=" . a:option
+    endif
+endfun
+
+function! PlanetVim_ModelessToggle() abort
+  set im!
+  set sm!
+  call <SID>ToggleGuiOption('c')
+  call <SID>ToggleGuiOption('r')
+endfunction
+
 an 100.10  🌐&P.PlanetVim <Nop>
 an disable 🌐&P.PlanetVim
-an 100.10  🌐&P.New\ &PlanetVim                       :silent !gvim<CR>
-"TODO: Modeless: Visual->Insert mode, Select mode, disable startify
-an 100.10  🌐&P.&Modeless\ Mode<Tab>:set\ im!         :set im!<CR>
+an 100.10  🌐&P.New\ &PlanetVim                             :silent !gvim<CR>
 an 100.20  🌐&P.--1-- <Nop>
+an 100.10  🌐&P.&Toggle\ Modeless                           :call PlanetVim_ModelessToggle()<CR>
+an 100.20  🌐&P.--2-- <Nop>
 an 100.30  🌐&P.&Basic\ Menus                         :call PlanetVim_MenusBasicToggle()<CR>
 an 100.40  🌐&P.&Editing\ Menus                       :call PlanetVim_MenusEditingToggle()<CR>
 an 100.50  🌐&P.&Development\ Menus                   :call PlanetVim_MenusDevelopmentToggle()<CR>
 an 100.60  🌐&P.&Tools\ Menus                         :call PlanetVim_MenusToolsToggle()<CR>
 an 100.70  🌐&P.&Navigation\ Menus                    :call PlanetVim_MenusNavigationToggle()<CR>
-an 100.80  🌐&P.--2-- <Nop>
+an 100.80  🌐&P.--3-- <Nop>
 an 100.90  🌐&P.Edit\ &Settings                       :tabedit ~/.vim/planetvimrc.vim<CR>
-an 100.100 🌐&P.--3-- <Nop>
+an 100.100 🌐&P.--4-- <Nop>
 an 100.110 🌐&P.&Close\ Everything                    :SClose<CR>
-an 100.120 🌐&P.--4-- <Nop>
+an 100.120 🌐&P.--5-- <Nop>
 an 100.130 🌐&P.E&xit\ PlanetVim                      :call PlanetSaveExit()<CR>
 " }}}
 " ToolBar: {{{
@@ -2503,7 +2725,7 @@ let g:startify_change_to_vcs_root = 1
 let g:startify_fortune_use_unicode = 1
 let g:startify_enable_unsafe = 1
 let g:startify_session_sort = 1
-let g:startify_custom_indices = ['d', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r', 'u', 'w', 'x', 'y', 'z']
+let g:startify_custom_indices = ['d', 'g', 'h', 'l', 'm', 'n', 'p', 'r', 'u', 'w', 'x', 'y', 'z']
 let g:startify_use_env = 1
 autocmd User StartifyReady setlocal cursorline
 " }}}
