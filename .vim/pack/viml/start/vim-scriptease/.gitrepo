@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/tpope/vim-scriptease.git
 	branch = master
-	commit = 6755d1fdb88b2b384990a0d131629b76e92831fa
-	parent = 51ad15c6dcc9a4ebe140a932446ee27f703cc0d7
+	commit = 9450c4ea654649b6199750edc9f3f84637268d7b
+	parent = 20a3e13809db307e29981996f8befc4e21191c8c
 	method = merge
 	cmdver = 0.4.3
