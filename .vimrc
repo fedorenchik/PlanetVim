@@ -97,6 +97,8 @@ call setcellwidths([
       \ [0x25b6, 0x25b6, 2],
       \ [0x2b06, 0x2b07, 2],
       \ [0x2195, 0x2195, 2],
+      \ [0x1fa9f, 0x1fa9f, 2],
+      \ [0x1faa7, 0x1faa7, 2],
       \ ])
 " }}}
 " Functions: {{{
@@ -302,7 +304,7 @@ set grepprg=grep\ -nH\ $*
 "TODO: Colorize cursor in different modes.
 "set guicursor+=a:blinkon0
 if has("gui")
-  set guifont=Ubuntu\ Mono\ 11,Monospace\ 9
+  set guifont=DejaVu\ Sans\ Mono\ 9,Monospace\ 9
 endif
 set guiheadroom=0
 "XXX: add '!' to guioptions when startify bug #460 will be fixed
@@ -778,7 +780,7 @@ if exists("+omnifunc")
 endif
 "autocmd FocusLost * wa
 autocmd GUIEnter * set t_vb=
-autocmd GUIEnter * set guifont=Ubuntu\ Mono\ 11,Monospace\ 9
+autocmd GUIEnter * set guifont=DejaVu\ Sans\ Mono\ 9,Monospace\ 9
 autocmd GUIEnter * silent call system('wmctrl -i -b add,maximized_vert,maximized_horz -r' . v:windowid)
 autocmd SessionLoadPost * exe "set viminfofile=~/.vim/viminfo/" .. fnamemodify(v:this_session, ":t") .. ".viminfo"
 autocmd SessionLoadPost * silent! rviminfo!
@@ -1010,23 +1012,43 @@ func s:XxdFind()
   endif
 endfun
 
-function! s:AddBuffers()
+function! PlanetVim_AddBuffers()
   let buf = 1
   while buf <= bufnr('$')
     let name = bufname(buf)
     if isdirectory(name) || !buflisted(buf)
+      let buf += 1
       continue
     endif
     let type = getbufvar(buf, '&buftype')
     if buftype != '' && buftype != 'nofile' && buftype != 'nowrite'
+      let buf += 1
       continue
     endif
     if !bufexists(buf)
+      let buf += 1
       continue
     endif
     exe 'an 800.500 📖&b.' .. name .. ' :confirm b ' .. buf .. '<CR>'
+    let buf += 1
   endwhile
 endfunction
+
+function! PlanetVim_MenuSessionSetCurrent() abort
+  if exists('g:last_session')
+    exe 'aun 📚&h.Current:\ ' .. g:last_session
+    unlet g:last_session
+  endif
+  if ! empty(v:this_session)
+    exe 'an 840.20  📚&h.Current:\ ' .. fnamemodify(v:this_session, ":t") .. ' <Nop>'
+    let g:last_session = fnamemodify(v:this_session, ":t")
+  endif
+endfunction
+aug PlanetVim_AugroupSessions
+au!
+au SessionLoadPost call PlanetVim_MenuSessionSetCurrent()
+aug END
+
 "TODO: Add function to follow DE night mode & theme settings (auto switch
 "TODO: guioptions+=d when dark theme, auto switch to dark colorscheme variant)
 
@@ -1370,6 +1392,7 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 970.10  ⚙️&\\.Open\ Verbosity\ Log<Tab>goV           :VerbosityOpenLast<CR>
     an 970.10  ⚙️&\\.--8-- <Nop>
     an 970.10  ⚙️&\\.Settings\ Buffer<Tab>:options          :options<CR>
+    an 970.10  ⚙️&\\.Open\ $VIMRUNTIME\ Folder              :tabnew<CR>:Fern $VIMRUNTIME<CR>
 
     " Show current maps (nnoremap, etc.)
     an 980.10  ⌨️&\|.Maps <Nop>
@@ -2041,12 +2064,20 @@ function! PlanetVim_MenusNavigationUpdate() abort
     " Sessions
     an 840.10  📚&h.Sessions <Nop>
     an disable 📚&h.Sessions
-    an 840.10  📚&h.&Save                                  :SSave!<CR><CR>
-    an 840.20  📚&h.&Open                                  :SLoad<CR>
-    an 840.30  📚&h.&Close                                 :SClose<CR>
-    an 840.40  📚&h.&Delete                                :SDelete<CR>
-    an 840.45  📚&h.--1-- <Nop>
-    an 840.60  📚&h.Session\ List <Nop>
+    "TODO: add autocmd SessionLoadPost to update current session
+    "an 840.10  📚&h.Current:\ v:this_session               <Nop>
+    an 840.40  📚&h.--1-- <Nop>
+    an 840.50  📚&h.&Save                                  :exe 'SSave! ' .. v:this_session<CR>
+    an 840.60  📚&h.Save\ &As\.\.\.                        :SSave<CR>
+    an 840.70  📚&h.--2-- <Nop>
+    an 840.80  📚&h.&Open                                  :SLoad<CR>
+    an 840.90  📚&h.Open\ &Last\ Session                   :SLoad!<CR>
+    an 840.100 📚&h.&Reopen                                :exe 'SLoad ' .. v:this_session<CR>
+    an 840.110 📚&h.--3-- <Nop>
+    an 840.120 📚&h.&Close                                 :SClose<CR>
+    an 840.130 📚&h.--4-- <Nop>
+    an 840.140 📚&h.&Delete                                :SDelete<CR>
+    an 840.150 📚&h.Session\ List <Nop>
     an disable 📚&h.Session\ List
 
     " Control GUI window with wmctrl & vim servers
@@ -2091,6 +2122,9 @@ function! PlanetFiletypeMenus() abort
 endfunction
 
 function! PlanetSaveExit() abort
+  if ! empty(v:this_session)
+    SSave! v:this_session
+  endif
   confirm wall
   qa!
 endfunction
