@@ -713,16 +713,28 @@ cnoremap <expr> <C-u> ((getcmdtype() is# ":" && getcmdline() is# "") ? ("<Esc>")
 cnoremap <expr> <Tab> ((getcmdtype() is# ":" && getcmdline() is# "") ? ("<Esc>") : ("<C-z>"))
 " }}}
 " Terminal Window: {{{
-tnoremap <Esc> <C-w>N
-tnoremap <C-e> <Tab>
-tnoremap <C-j> <C-w><C-j>
-tnoremap <C-k> <C-w><C-k>
-tnoremap <C-l> <C-w><C-l>
-tnoremap <C-h> <C-w><C-h>
+tno <Esc> <C-w>N
+tno <C-e> <Tab>
+tno <C-j> <C-w><C-j>
+tno <C-k> <C-w><C-k>
+tno <C-l> <C-w><C-l>
+tno <C-h> <C-w><C-h>
 if has('nvim')
-  tnoremap <Esc> <C-\><C-n>
-  tnoremap <C-v><Esc> <Esc>
+  tno <Esc> <C-\><C-n>
+  tno <C-v><Esc> <Esc>
 endif
+tno <A-<> <C-w>gT
+tno <A->> <C-w>gt
+tno <A-1> <C-w>:1tabn<CR>
+tno <A-2> <C-w>:2tabn<CR>
+tno <A-3> <C-w>:3tabn<CR>
+tno <A-4> <C-w>:4tabn<CR>
+tno <A-5> <C-w>:5tabn<CR>
+tno <A-6> <C-w>:6tabn<CR>
+tno <A-7> <C-w>:7tabn<CR>
+tno <A-8> <C-w>:8tabn<CR>
+tno <A-9> <C-w>:9tabn<CR>
+tno <A-0> <C-w>:10tabn<CR>
 " }}}
 " Operator-pending Mode: {{{
 onoremap <Tab> <Esc>
@@ -811,9 +823,9 @@ if filereadable(expand(g:PV_config))
 endif
 
 function! PlanetVim_AddMenuItem(priority, text, command, tooltip) abort
-    an 110.10  &File.&New                                       :confirm enew<CR>
+    an 110.10  &File.&New                                   :confirm enew<CR>
     an a:priority a:text a:command
-    tln 110.10  &File.&New                                      :confirm enew<CR>
+    tln 110.10  &File.&New                                  :confirm enew<CR>
     no <A-f>n :confirm enew<CR>
     no a:map a:command
     ln <A-f>n :confirm enew<CR>
