@@ -1058,7 +1058,7 @@ function! PlanetVim_MenuSessionSetCurrent() abort
 endfunction
 aug PlanetVim_AugroupSessions
 au!
-au SessionLoadPost call PlanetVim_MenuSessionSetCurrent()
+au SessionLoadPost * call PlanetVim_MenuSessionSetCurrent()
 aug END
 
 "TODO: Add function to follow DE night mode & theme settings (auto switch
@@ -1385,14 +1385,14 @@ function! PlanetVim_MenusBasicUpdate() abort
     am 970.10  ⚙️&\\.'scrolloff':\ 1000                     :set so=1000<CR>
     an 970.10  ⚙️&\\.--3-- <Nop>
     an 970.10  ⚙️&\\.Set\ Text\ Width                       :call <SID>SetTextWidth()<CR>
-    an 970.10  ⚙️&\\.Set\ Line\ Endings                     :call <SID>SetLineEndings()<CR>
+    an 970.10  ⚙️&\\.Set\ Line\ Endings\ ('fileformat')     :call <SID>SetLineEndings()<CR>
     an 970.10  ⚙️&\\.--4-- <Nop>
     an 970.10  ⚙️&\\.Set\ 'path'                            :call <SID>SetPath()<CR>
     an 970.10  ⚙️&\\.Set\ 'tags'                            :call <SID>SetTags()<CR>
     "TODO: add set *prg
     "TODO: add set *path
     an 970.10  ⚙️&\\.--5-- <Nop>
-    if has("win32") || has("gui_motif") || has("gui_gtk") || has("gui_kde") || has("gui_photon") || has("gui_mac")
+    if has("win32") || has("gui_gtk") || has("gui_mac")
       an 970.10 ⚙️&\\.Select\ Fo&nt\.\.\.                   :set guifont=*<CR>
     endif
     an 970.10  ⚙️&\\.--6-- <Nop>
@@ -2079,12 +2079,12 @@ function! PlanetVim_MenusNavigationUpdate() abort
     "TODO: add autocmd SessionLoadPost to update current session
     "an 840.10  📚&h.Current:\ v:this_session               <Nop>
     an 840.40  📚&h.--1-- <Nop>
-    an 840.50  📚&h.&Save                                  :exe 'SSave! ' .. v:this_session<CR>
+    an 840.50  📚&h.&Save                                  :exe 'SSave! ' .. fnamemodify(v:this_session, ":t")<CR>
     an 840.60  📚&h.Save\ &As\.\.\.                        :SSave<CR>
     an 840.70  📚&h.--2-- <Nop>
     an 840.80  📚&h.&Open                                  :SLoad<CR>
     an 840.90  📚&h.Open\ &Last\ Session                   :SLoad!<CR>
-    an 840.100 📚&h.&Reopen                                :exe 'SLoad ' .. v:this_session<CR>
+    an 840.100 📚&h.&Reopen                                :exe 'SLoad ' .. fnamemodify(v:this_session, ":t")<CR>
     an 840.110 📚&h.--3-- <Nop>
     an 840.120 📚&h.&Close                                 :SClose<CR>
     an 840.130 📚&h.--4-- <Nop>
