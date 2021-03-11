@@ -961,10 +961,10 @@ endfun
 
 fun! s:SetLineEndings()
   if !exists("g:menutrans_fileformat_dialog")
-    let g:menutrans_fileformat_dialog = "Select format for writing the file"
+    let g:menutrans_fileformat_dialog = "Select line endings for file"
   endif
   if !exists("g:menutrans_fileformat_choices")
-    let g:menutrans_fileformat_choices = "&Unix\n&Dos\n&Mac\n&Cancel"
+    let g:menutrans_fileformat_choices = "&Linux/Mac/Unix\n&Windows/Dos\n&Old Mac\n&Cancel"
   endif
   if &ff == "dos"
     let def = 2
@@ -1056,9 +1056,15 @@ function! PlanetVim_MenuSessionSetCurrent() abort
     let g:last_session = fnamemodify(v:this_session, ":t")
   endif
 endfunction
+function! PlanetVim_MenuSessionList() abort
+  for session in startify#session_list('')
+    exe 'an 840.500 📚&h.' .. session .. ' :SLoad ' .. session .. '<CR>'
+  endfor
+endfunction
 aug PlanetVim_AugroupSessions
 au!
 au SessionLoadPost * call PlanetVim_MenuSessionSetCurrent()
+au VimEnter * call PlanetVim_MenuSessionList()
 aug END
 
 "TODO: Add function to follow DE night mode & theme settings (auto switch
@@ -1385,7 +1391,7 @@ function! PlanetVim_MenusBasicUpdate() abort
     am 970.10  ⚙️&\\.'scrolloff':\ 1000                     :set so=1000<CR>
     an 970.10  ⚙️&\\.--3-- <Nop>
     an 970.10  ⚙️&\\.Set\ Text\ Width                       :call <SID>SetTextWidth()<CR>
-    an 970.10  ⚙️&\\.Set\ Line\ Endings\ ('fileformat')     :call <SID>SetLineEndings()<CR>
+    an <silent> 970.10  ⚙️&\\.Set\ Line\ Endings\ ('fileformat')     :call <SID>SetLineEndings()<CR>
     an 970.10  ⚙️&\\.--4-- <Nop>
     an 970.10  ⚙️&\\.Set\ 'path'                            :call <SID>SetPath()<CR>
     an 970.10  ⚙️&\\.Set\ 'tags'                            :call <SID>SetTags()<CR>
