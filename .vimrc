@@ -1056,16 +1056,23 @@ function! PlanetVim_MenuSessionSetCurrent() abort
     let g:last_session = fnamemodify(v:this_session, ":t")
   endif
 endfunction
+
 function! PlanetVim_MenuSessionList() abort
   for session in startify#session_list('')
     exe 'an 840.500 📚&h.' .. session .. ' :SLoad ' .. session .. '<CR>'
   endfor
 endfunction
+
 aug PlanetVim_AugroupSessions
 au!
 au SessionLoadPost * call PlanetVim_MenuSessionSetCurrent()
 au VimEnter * call PlanetVim_MenuSessionList()
 aug END
+
+function! PlanetVim_LSPUpdateFolds() abort
+  set foldmethod=expr foldexpr=lsp#ui#vim#folding#foldexpr() foldtext=lsp#ui#vim#folding#foldtext()
+  LspDocumentFold
+endfunction
 
 "TODO: Add function to follow DE night mode & theme settings (auto switch
 "TODO: guioptions+=d when dark theme, auto switch to dark colorscheme variant)
@@ -1737,7 +1744,7 @@ function! PlanetVim_MenusDevelopmentUpdate() abort
     an 300.10  ❇️&[.Code\ &Lens                             :LspCodeLens<CR>
     an 300.10  ❇️&[.Format\ Document                        :LspDocumentFormat<CR>
     an 300.10  ❇️&[.Format\ Document\ Selection             :LspDocumentRangeFormat<CR>
-    an 300.10  ❇️&[.Document\ Update\ Folds                 :LspDocumentFold<CR>
+    an 300.10  ❇️&[.Update\ Document\ Folds                 :call PlanetVim_LSPUpdateFolds()<CR>
     an 300.10  ❇️&[.--1-- <Nop>
     an 300.10  ❇️&[.Document\ Symbols                       :LspDocumentSymbol<CR>
     an 300.10  ❇️&[.Workspace\ Symbols                      :LspWorkspaceSymbol<CR>
