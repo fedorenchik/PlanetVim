@@ -1712,36 +1712,53 @@ function! PlanetVim_MenusDevelopmentUpdate() abort
     " LSP
     an 300.10  ❇️&[.LSP <Nop>
     an disable ❇️&[.LSP
-    an 300.10  ❇️&[.C&hoose\ Symbol<Tab>:Clap\ tags\ vim_lsp   :Clap tags vim_lsp<CR>
-    an 300.10  ❇️&[.Definition                                 :LspDefinition<CR>
-    an 300.10  ❇️&[.Declaration                                :
-    an 300.10  ❇️&[.References                                 :
-    an 300.10  ❇️&[.Implementation                             :
-    an 300.10  ❇️&[.Type\ Definition                           :
-    an 300.10  ❇️&[.Type\ Hierarchy                            :
-    an 300.10  ❇️&[.Incoming\ Call\ Hierarchy                  :
-    an 300.10  ❇️&[.Outgoing\ Call\ Hierarchy                  :
-    an 300.10  ❇️&[.Code\ Action                               :
-    an 300.10  ❇️&[.Code\ Lens                                 :
-    an 300.10  ❇️&[.Document\ Diagnostics                      :
-    an 300.10  ❇️&[.Document\ Fold                             :
-    an 300.10  ❇️&[.Document\ Format                           :
-    an 300.10  ❇️&[.Document\ Symbols                          :
-    an 300.10  ❇️&[.Workspace\ Symbols                         :
-    an 300.10  ❇️&[.Document\ Semantic\ Scopes                 :
-    an 300.10  ❇️&[.Document\ Symbols\ Search                  :
-    an 300.10  ❇️&[.Workspace\ Symbols\ Search                 :
-    an 300.10  ❇️&[.Next\ Diagnostic                           :
-    an 300.10  ❇️&[.Next\ Error                                :
-    an 300.10  ❇️&[.Next\ Reference                            :
-    an 300.10  ❇️&[.Next\ Warning                              :
-    an 300.10  ❇️&[.Previous\ Diagnostic                       :
-    an 300.10  ❇️&[.Previous\ Error                            :
-    an 300.10  ❇️&[.Previous\ Reference                        :
-    an 300.10  ❇️&[.Previous\ Warning                          :
-    an 300.10  ❇️&[.Rename                                     :
-    an 300.10  ❇️&[.LSP\ Status                                :
-    an 300.10  ❇️&[.Stop\ all\ LSP                             :
+    an 300.10  ❇️&[.Choose\ Symbol<Tab>:Clap\ tags\ vim_lsp :Clap tags vim_lsp<CR>
+    an 300.10  ❇️&[.Document\ Symbol\ Choose                :LspDocumentSymbolSearch<CR>
+    an 300.10  ❇️&[.Workspace\ Symbols\ Choose              :LspWorkspaceSymbolSearch<CR>
+    an 300.10  ❇️&[.--1-- <Nop>
+    an 300.10  ❇️&[.&Definition                             :LspDefinition<CR>
+    an 300.10  ❇️&[.De&claration                            :LspDeclaration<CR>
+    an 300.10  ❇️&[.&References                             :LspReferences<CR>
+    an 300.10  ❇️&[.&Implementation                         :LspImplementation<CR>
+    an 300.10  ❇️&[.&Type\ Definition                       :LspTypeDefinition<CR>
+    an 300.10  ❇️&[.Type\ &Hierarchy                        :LspTypeHierarchy<CR>
+    an 300.10  ❇️&[.&Incoming\ Call\ Hierarchy              :LspCallHierarchyIncoming<CR>
+    an 300.10  ❇️&[.&Outgoing\ Call\ Hierarchy              :LspCallHierarchyOutgoing<CR>
+    an 300.10  ❇️&[.Symbol\ Hover                           :LspHover<CR>
+    an 300.10  ❇️&[.Document\ Semantic\ Scopes              :LspSemanticScopes<CR>
+    an 300.10  ❇️&[.--1-- <Nop>
+    an 300.10  ❇️&[.Preview\ Definition                     :LspPeekDefinition<CR>
+    an 300.10  ❇️&[.Preview\ Declaration                    :LspPeekDeclaration<CR>
+    an 300.10  ❇️&[.Preview\ Implementation                 :LspPeekImplementation<CR>
+    an 300.10  ❇️&[.Preview\ Type\ Definition               :LspPeekTypeDefinition<CR>
+    an 300.10  ❇️&[.--1-- <Nop>
+    an 300.10  ❇️&[.Rename                                  :LspRename<CR>
+    an 300.10  ❇️&[.Code\ &Action\ (LSP\ Quick\ Fix)        :LspCodeAction<CR>
+    an 300.10  ❇️&[.Code\ &Lens                             :LspCodeLens<CR>
+    an 300.10  ❇️&[.Format\ Document                        :LspDocumentFormat<CR>
+    an 300.10  ❇️&[.Format\ Document\ Selection             :LspDocumentRangeFormat<CR>
+    an 300.10  ❇️&[.Document\ Update\ Folds                 :LspDocumentFold<CR>
+    an 300.10  ❇️&[.--1-- <Nop>
+    an 300.10  ❇️&[.Document\ Symbols                       :LspDocumentSymbol<CR>
+    an 300.10  ❇️&[.Workspace\ Symbols                      :LspWorkspaceSymbol<CR>
+    an 300.10  ❇️&[.--1-- <Nop>
+    an 300.10  ❇️&[.&Previous\ Reference                    :LspPreviousReference<CR>
+    an 300.10  ❇️&[.&Next\ Reference                        :LspNextReference<CR>
+    an 300.10  ❇️&[.--1-- <Nop>
+    an 300.10  ❇️&[.Document\ Diagnostics                   :LspDocumentDiagnostics<CR>
+    an 300.10  ❇️&[.Diagnostics\ (all\ buffers)             :LspDocumentDiagnostics --buffers=*<CR>
+    an 300.10  ❇️&[.--1-- <Nop>
+    an 300.10  ❇️&[.Previous\ Error                         :LspPreviousError -wrap=0<CR>
+    an 300.10  ❇️&[.Next\ Error                             :LspNextError -wrap=0<CR>
+    an 300.10  ❇️&[.--1-- <Nop>
+    an 300.10  ❇️&[.Previous\ Warning                       :LspPreviousWarning -wrap=0<CR>
+    an 300.10  ❇️&[.Next\ Warning                           :LspNextWarning -wrap=0<CR>
+    an 300.10  ❇️&[.--1-- <Nop>
+    an 300.10  ❇️&[.Previous\ Diagnostic                    :LspPreviousDiagnostic -wrap=0<CR>
+    an 300.10  ❇️&[.Next\ Diagnostic                        :LspNextDiagnostic -wrap=0<CR>
+    an 300.10  ❇️&[.--1-- <Nop>
+    an 300.10  ❇️&[.Status.LSP\ Status                      :LspStatus<CR>
+    an 300.10  ❇️&[.Status.Disable\ LSP                     :LspStopServer<CR>
 
     " Tags
     an 310.10  🪧&].Tags <Nop>
@@ -2095,7 +2112,7 @@ function! PlanetVim_MenusNavigationUpdate() abort
     an 840.120 📚&h.&Close                                 :SClose<CR>
     an 840.130 📚&h.--4-- <Nop>
     an 840.140 📚&h.&Delete                                :SDelete<CR>
-    an 840.150 📚&h.Session\ List <Nop>
+    an 840.500 📚&h.Session\ List <Nop>
     an disable 📚&h.Session\ List
 
     " Control GUI window with wmctrl & vim servers
