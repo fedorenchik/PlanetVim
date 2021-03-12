@@ -256,7 +256,7 @@ set cinwords-=switch
 set clipboard=autoselect,autoselectml,exclude:cons\|linux
 set cmdheight=2
 set cmdwinheight=5
-set colorcolumn=80,120,+0
+set colorcolumn=80,120
 if has("gui_running")
   set columns=128
 endif
@@ -776,6 +776,7 @@ autocmd FileType cpp setlocal define=^\\(#\\s*define\\|[a-z]*\\s*const\\s*[a-z]*
 autocmd FileType dockerfile,python,qmake setlocal expandtab
 autocmd FileType dockerfile,python,qmake setlocal tabstop=4
 autocmd FileType dockerfile,python,qmake setlocal shiftwidth=4
+autocmd FileType help,markdown,text setlocal colorcolumn=+0
 autocmd FileType python setlocal makeprg=pylint3\ --reports=n\ --msg-template=\"{path}:{line}:\ {msg_id}\ {symbol},\ {obj}\ {msg}\"\ %:p
 autocmd FileType python setlocal errorformat=%f:%l:\ %m
 autocmd FileType sh setlocal formatoptions+=croql
@@ -1249,8 +1250,8 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 130.310 🔎&/.--8-- <Nop>
     an 130.320 🔎&/.Substitute <Nop>
     an disable 🔎&/.Substitute
-    an 130.330 🔎&/.Repeat\ Last\ :s<Tab>&                   &
-    an 130.340 🔎&/.Repeat\ Last\ :s<Tab>g&                  g&
+    an 130.330 🔎&/.Repeat\ on\ Line<Tab>&                   &
+    an 130.340 🔎&/.Repeat\ on\ File<Tab>g&                  g&
 
     " Selection
     "FIXME: In Insert mode this only works for a SINGLE Normal mode command
@@ -1393,29 +1394,31 @@ function! PlanetVim_MenusBasicUpdate() abort
     am 970.10  ⚙️&\\.Toggle\ word\ wrap                     :set lbr! lbr?<CR>
     am 970.10  ⚙️&\\.Toggle\ 'cursorline'\ &&\ 'cursorcolumn'<Tab>yox yox
     an 970.10  ⚙️&\\.--2-- <Nop>
+    am 970.10  ⚙️&\\.'cmdheight':\ 2                        :set cmdheight=2<CR>
+    an 970.10  ⚙️&\\.--3-- <Nop>
     am 970.10  ⚙️&\\.'scrolloff':\ 0                        :set so=0<CR>
     am 970.10  ⚙️&\\.'scrolloff':\ 2\ (default)             :set so=2<CR>
     am 970.10  ⚙️&\\.'scrolloff':\ 1000                     :set so=1000<CR>
-    an 970.10  ⚙️&\\.--3-- <Nop>
+    an 970.10  ⚙️&\\.--4-- <Nop>
     an 970.10  ⚙️&\\.Set\ Text\ Width                       :call <SID>SetTextWidth()<CR>
     an <silent> 970.10  ⚙️&\\.Set\ Line\ Endings\ ('fileformat')     :call <SID>SetLineEndings()<CR>
-    an 970.10  ⚙️&\\.--4-- <Nop>
+    an 970.10  ⚙️&\\.--5-- <Nop>
     an 970.10  ⚙️&\\.Set\ 'path'                            :call <SID>SetPath()<CR>
     an 970.10  ⚙️&\\.Set\ 'tags'                            :call <SID>SetTags()<CR>
     "TODO: add set *prg
     "TODO: add set *path
-    an 970.10  ⚙️&\\.--5-- <Nop>
+    an 970.10  ⚙️&\\.--6-- <Nop>
     if has("win32") || has("gui_gtk") || has("gui_mac")
       an 970.10 ⚙️&\\.Select\ Fo&nt\.\.\.                   :set guifont=*<CR>
     endif
-    an 970.10  ⚙️&\\.--6-- <Nop>
+    an 970.10  ⚙️&\\.--7-- <Nop>
     an 970.10.10  ⚙️&\\.Syntax.On                           :syn on<CR>
     an 970.10.10  ⚙️&\\.Syntax.Manual                       :syn manual<CR>
     an 970.10.10  ⚙️&\\.Syntax.Off                          :syn off<CR>
-    an 970.10  ⚙️&\\.--7-- <Nop>
+    an 970.10  ⚙️&\\.--8-- <Nop>
     an 970.10  ⚙️&\\.Toggle\ Verbosity<Tab>=oV              :VerbosityToggle<CR>
     an 970.10  ⚙️&\\.Open\ Verbosity\ Log<Tab>goV           :VerbosityOpenLast<CR>
-    an 970.10  ⚙️&\\.--8-- <Nop>
+    an 970.10  ⚙️&\\.--9-- <Nop>
     an 970.10  ⚙️&\\.Settings\ Buffer<Tab>:options          :options<CR>
     an 970.10  ⚙️&\\.Open\ $VIMRUNTIME\ Folder              :tabnew<CR>:Fern $VIMRUNTIME<CR>
 
@@ -1836,18 +1839,20 @@ function! PlanetVim_MenusDevelopmentUpdate() abort
     an 540.10  🔬&y.Analyze <Nop>
     an disable 🔬&y.Analyze
     an 540.10  🔬&y.Check                                   :
-    an 540.10  🐞&d.Clang-Tidy                                :Vimspector<CR>
-    an 540.10  🐞&d.Clazy                                     :Vimspector<CR>
-    an 540.10  🐞&d.Cppcheck                                  :Vimspector<CR>
-    an 540.10  🐞&d.Chrome\ Trace\ Format\ Visualizer         :Vimspector<CR>
-    an 540.10  🐞&d.Performance\ Analyzer                     :Vimspector<CR>
-    an 540.10  🐞&d.Memcheck                                  :Vimspector<CR>
-    an 540.10  🐞&d.Callgrind                                 :Vimspector<CR>
+    an 540.10  🔬&d.Clang-Tidy                                :Vimspector<CR>
+    an 540.10  🔬&d.Clazy                                     :Vimspector<CR>
+    an 540.10  🔬&d.Cppcheck                                  :Vimspector<CR>
+    an 540.10  🔬&d.Chrome\ Trace\ Format\ Visualizer         :Vimspector<CR>
+    an 540.10  🔬&d.Performance\ Analyzer                     :Vimspector<CR>
+    an 540.10  🔬&d.Memcheck                                  :Vimspector<CR>
+    an 540.10  🔬&d.Callgrind                                 :Vimspector<CR>
 
     " Terminal
     an 550.10  💻&t.Terminal <Nop>
     an disable 💻&t.Terminal
     an 550.10  💻&t.N&ew\ Here                             :terminal ++curwin ++kill=kill<CR>
+    an 550.10  💻&t.N&ew\ VSplit                           :vertical terminal ++kill=kill<CR>
+    an 550.10  💻&t.N&ew\ Tab                              :tab terminal ++kill=kill<CR>
     an 550.10  💻&t.&New\ Below                            :rightbelow terminal ++kill=kill ++rows=10<CR>
     an 550.10  💻&t.New\ at\ &Bottom                       :botright terminal ++kill=kill ++rows=10<CR>
     an 550.10  💻&t.--1-- <Nop>
@@ -2253,7 +2258,7 @@ function! PlanetVim_WinBarTerminalInit() abort
   nnoremenu 1.100 WinBar.⬇️       z0<CR>
   nnoremenu 1.110 WinBar.↕️       10<C-w>_
   nnoremenu 1.120 WinBar.⬆️       <C-w>_
-  nnoremenu 1.130 WinBar.❌       :echo 'TODO'<CR>
+  nnoremenu 1.130 WinBar.❌       <C-w><C-c>
 endfunction
 aug PlanetVim_AugroupWinBar
 au!
@@ -2450,6 +2455,7 @@ nnoremap ZU :UndotreeHide<CR>
 " Plugin: vim-clap {{{
 let g:clap_disable_bottom_top = 1
 let g:clap_provider_yanks_history = "~/.vim/clap_yanks.history"
+let g:clap_provider_colors_ignore_default = v:true
 nnoremap <silent> <Space><Space> :Clap providers<CR>
 nnoremap <silent> <Space>; :Clap command<CR>
 nnoremap <silent> <Space>: :Clap command_history<CR>
