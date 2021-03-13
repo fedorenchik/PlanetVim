@@ -2222,13 +2222,17 @@ an 100.130 🌐&P.E&xit\ PlanetVim                      :call PlanetSaveExit()<C
 " TODO: Add option to use toolbar instead of menu
 " }}}
 " PopUp Menus: {{{
-" TODO: different for each mode:
-" TODO: Operator-Pending mode: text objects
-" TODO: Normal Mode: normal
-" TODO: Cmdline Mode: cmdline completion
-" TODO: Insert Mode: insert
-" TODO: Terminal Mode: terminal
-" TODO: Visual: visual
+" Normal Mode:
+nnoremenu PopUp.Close                   <C-w>c
+" Operator-Pending Mode: text objects
+onoremenu PopUp.Word                    w
+" Visual:
+vnoremenu PopUp.Yank                    y
+" Select Mode:
+" Insert Mode:
+" Terminal Mode:
+tlnoremenu PopUp.Close                  <C-w><C-c>
+" Cmdline Mode: cmdline completion
 " }}}
 " WinBar Menus: {{{
 " TODO: Auto for LL, QF, Terminals, W3m
