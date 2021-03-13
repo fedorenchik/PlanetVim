@@ -1075,6 +1075,12 @@ function! PlanetVim_LSPUpdateFolds() abort
   LspDocumentFold
 endfunction
 
+function! PlanetVim_EmergencyExit() abort
+  set noautowrite
+  set noautowriteall
+  cquit!
+endfunction
+
 "TODO: Add function to follow DE night mode & theme settings (auto switch
 "TODO: guioptions+=d when dark theme, auto switch to dark colorscheme variant)
 
@@ -1453,6 +1459,8 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 990.90  ❔&?.Check\ for\ &Updates                       :silent !xdg-open https://github.com/fedorenchik/PlanetVim/releases<CR>
     an 990.100 ❔&?.Report\ PlanetVim\ &Issue                  :silent !xdg-open https://github.com/fedorenchik/PlanetVim/issues/new/choose<CR>
     an 990.110 ❔&?.--3-- <Nop>
+    an 990.110 ❔&?.Others.Emergency\ Exit                     :call PlanetVim_EmergencyExit()<CR>
+    an 990.110 ❔&?.--4-- <Nop>
     an 990.120 ❔&?.&About                                     :version<CR>
   else
     silent! aunmenu 📁&f
