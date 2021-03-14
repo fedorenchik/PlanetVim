@@ -1847,13 +1847,13 @@ function! PlanetVim_MenusDevelopmentUpdate() abort
     an 540.10  🔬&y.Analyze <Nop>
     an disable 🔬&y.Analyze
     an 540.10  🔬&y.Check                                   :
-    an 540.10  🔬&d.Clang-Tidy                                :Vimspector<CR>
-    an 540.10  🔬&d.Clazy                                     :Vimspector<CR>
-    an 540.10  🔬&d.Cppcheck                                  :Vimspector<CR>
-    an 540.10  🔬&d.Chrome\ Trace\ Format\ Visualizer         :Vimspector<CR>
-    an 540.10  🔬&d.Performance\ Analyzer                     :Vimspector<CR>
-    an 540.10  🔬&d.Memcheck                                  :Vimspector<CR>
-    an 540.10  🔬&d.Callgrind                                 :Vimspector<CR>
+    an 540.10  🔬&y.Clang-Tidy                                :Vimspector<CR>
+    an 540.10  🔬&y.Clazy                                     :Vimspector<CR>
+    an 540.10  🔬&y.Cppcheck                                  :Vimspector<CR>
+    an 540.10  🔬&y.Chrome\ Trace\ Format\ Visualizer         :Vimspector<CR>
+    an 540.10  🔬&y.Performance\ Analyzer                     :Vimspector<CR>
+    an 540.10  🔬&y.Memcheck                                  :Vimspector<CR>
+    an 540.10  🔬&y.Callgrind                                 :Vimspector<CR>
 
     " Terminal
     an 550.10  💻&t.Terminal <Nop>
