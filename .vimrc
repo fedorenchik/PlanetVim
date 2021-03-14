@@ -1017,7 +1017,7 @@ func s:XxdFind()
     if has("win32") && !executable("xxd")
       let g:xxdprogram = $VIMRUNTIME . (&shellslash ? '/' : '\') . "xxd.exe"
       if g:xxdprogram =~ ' '
-	let g:xxdprogram = '"' .. g:xxdprogram .. '"'
+        let g:xxdprogram = '"' .. g:xxdprogram .. '"'
       endif
     else
       let g:xxdprogram = "xxd"
@@ -2217,9 +2217,6 @@ an 100.100 🌐&P.--4-- <Nop>
 an 100.110 🌐&P.&Close\ Everything                    :SClose<CR>
 an 100.120 🌐&P.--5-- <Nop>
 an 100.130 🌐&P.E&xit\ PlanetVim                      :call PlanetSaveExit()<CR>
-" }}}
-" ToolBar: {{{
-" TODO: Add option to use toolbar instead of menu
 " }}}
 " PopUp Menus: {{{
 " Normal Mode:
