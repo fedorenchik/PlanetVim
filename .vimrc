@@ -358,7 +358,7 @@ set mousehide
 set mousemodel=popup_setpos
 set mouseshape+=o:question,c:pencil,e:hand2
 set nrformats+=alpha
-set number
+set nonumber
 set numberwidth=3
 set patchmode=".orig"
 set path+=.,,./include,../include,../*/include,*/include,*,../*,/usr/include,**
@@ -372,7 +372,7 @@ set prompt
 set pumheight=10
 set pyxversion=3
 set redrawtime=10000
-set relativenumber
+set norelativenumber
 set ruler
 set noscrollbind
 set scrollfocus
@@ -395,7 +395,7 @@ set showmode
 set showtabline=2
 set sidescroll=30
 set sidescrolloff=1
-set signcolumn=number
+set signcolumn=yes
 set smartcase
 set smartindent
 set smarttab
@@ -2224,15 +2224,18 @@ an 100.130 🌐&P.E&xit\ PlanetVim                      :call PlanetSaveExit()<C
 " PopUp Menus: {{{
 " Normal Mode:
 nnoremenu PopUp.Close                   <C-w>c
-" Operator-Pending Mode: text objects
-onoremenu PopUp.Word                    w
+" Operator Pending Mode: text objects
+onoremenu PopUp.Word                 w
 " Visual:
 vnoremenu PopUp.Yank                    y
 " Select Mode:
+snoremenu PopUp.Cut                     "+d
 " Insert Mode:
+inoremenu PopUp.Close                   <C-w>c
+" Cmdline Mode: cmdline completion
+cnoremenu PopUp.Close                  <Esc>
 " Terminal Mode:
 tlnoremenu PopUp.Close                  <C-w><C-c>
-" Cmdline Mode: cmdline completion
 " }}}
 " WinBar Menus: {{{
 " TODO: Auto for LL, QF, Terminals, W3m
