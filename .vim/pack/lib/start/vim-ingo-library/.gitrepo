@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/inkarkat/vim-ingo-library.git
 	branch = master
-	commit = d62e4c020681e98bed74371a4033671fe50fd5eb
-	parent = 1f077b0d269d5aabd3e727059a5c5b96b18f54fd
+	commit = 1b6002acd09953d1c587e4bf06ed2eb2158fe952
+	parent = 0c87a22ac033cc9649ea5bbe799d434e4274a4d6
 	method = merge
 	cmdver = 0.4.3
