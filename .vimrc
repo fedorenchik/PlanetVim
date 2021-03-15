@@ -256,7 +256,6 @@ set cinwords-=switch
 set clipboard=autoselect,autoselectml,exclude:cons\|linux
 set cmdheight=2
 set cmdwinheight=5
-set colorcolumn=80,120
 if has("gui_running")
   set columns=128
 endif
@@ -755,6 +754,7 @@ autocmd!
 autocmd BufReadPre *.asm let g:asmsyntax = "fasm"
 autocmd BufReadPre *.[sS] let g:asmsyntax = "asm"
 autocmd BufReadPost */linux/*.h setfiletype c
+autocmd BufReadPost */linux/*.h setlocal colorcolumn=100
 autocmd BufReadPost *.log normal G
 autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") && &filetype !~# 'commit' | exe "normal! g`\"" | endif
 autocmd CmdWinEnter : noremap <buffer> <S-CR> <CR>q:
@@ -771,8 +771,10 @@ autocmd FileType c,cpp inoreabbrev ;m std::map
 autocmd FileType c,cpp inoreabbrev ;s std::string
 autocmd FileType c,cpp inoreabbrev ;v std::vector
 autocmd FileType c,cpp inoremap ;; ::
+autocmd FileType c setlocal colorcolumn=80
 autocmd FileType cpp setlocal path+=/usr/include/c++/7
 autocmd FileType cpp setlocal define=^\\(#\\s*define\\|[a-z]*\\s*const\\s*[a-z]*\\)
+autocmd FileType cpp setlocal colorcolumn=120
 autocmd FileType dockerfile,python,qmake setlocal expandtab
 autocmd FileType dockerfile,python,qmake setlocal tabstop=4
 autocmd FileType dockerfile,python,qmake setlocal shiftwidth=4
@@ -1050,10 +1052,14 @@ function! PlanetVim_BufferIsNormal(name, num)
 endfunction
 
 func! PlanetVim_MenuName(name)
-    let menu_name = escape(a:name, "\\. \t|")
-    let menu_name = substitute(menu_name, "&", "&&", "g")
-    let menu_name = substitute(menu_name, "\n", "^@", "g")
-    return menu_name
+  let menu_name = a:name
+  if empty(menu_name)
+    let menu_name = "[No Name]"
+  endif
+  let menu_name = escape(menu_name, "\\. \t|")
+  let menu_name = substitute(menu_name, "&", "&&", "g")
+  let menu_name = substitute(menu_name, "\n", "^@", "g")
+  return menu_name
 endfunc
 
 func! PlanetVim_MenuBufers_AddBuffer(name, num)
@@ -2071,6 +2077,7 @@ function! PlanetVim_MenusNavigationUpdate() abort
     an 800.10  📖&b.Buffers <Nop>
     an disable 📖&b.Buffers
     an 800.10  📖&b.C&hoose\.\.\.                           :Clap buffers<CR>
+    an 800.10  📖&b.Manager\.\.\.                           :Bufexplorer<CR>
     an 800.20  📖&b.--1-- <Nop>
     an 800.30  📖&b.&Alternate<Tab>:b\ #<Tab><C-@>          <C-^>
     an 800.30  📖&b.&Alternate\ Split<Tab>+^                <C-w>^
@@ -2079,7 +2086,12 @@ function! PlanetVim_MenusNavigationUpdate() abort
     an 800.40  📖&b.&Previous<Tab>[b                        :bprevious<CR>
     an 800.40  📖&b.&Next<Tab>]b                            :bnext<CR>
     an 800.40  📖&b.&Last<Tab>]B                            :blast<CR>
-    an 800.40  📖&b.--2-- <Nop>
+    an 800.40  📖&b.--3-- <Nop>
+    an 800.40  📖&b.Run\ Command\ in\ Each\ Buffer<Tab>:bufdo :bufdo 
+    an 800.40  📖&b.--3-- <Nop>
+    an 800.40  📖&b.Unload\ (Free\ Memory)                  :bun<CR>
+    an 800.40  📖&b.Delete\ (Unload\ &&\ Unlist)            :bd<CR>
+    an 800.40  📖&b.Wipeout\ (Delete\ &&\ Clear\ Everything) :bw<CR>
     an 800.50  📖&b.Buffers\ List <Nop>
     an disable 📖&b.Buffers\ List
 
@@ -2259,7 +2271,7 @@ an 100.70  🌐&P.&Navigation\ Menus                    :call PlanetVim_MenusNav
 an 100.80  🌐&P.--3-- <Nop>
 an 100.90  🌐&P.Edit\ &Settings                       :tabedit ~/.vim/planetvimrc.vim<CR>
 an 100.100 🌐&P.--4-- <Nop>
-an 100.110 🌐&P.&Close\ Everything                    :SClose<CR>
+an 100.110 🌐&P.&Close\ Everything                    :cd<CR>:SClose<CR>
 an 100.120 🌐&P.--5-- <Nop>
 an 100.130 🌐&P.Save\ &&\ E&xit\ PlanetVim            :call PlanetSaveExit()<CR>
 " }}}
