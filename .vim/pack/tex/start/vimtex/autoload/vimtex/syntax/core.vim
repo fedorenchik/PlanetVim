@@ -51,6 +51,21 @@ function! vimtex#syntax#core#init() abort " {{{1
 
   " }}}2
 
+  " {{{2 TeX symbols and special characters
+
+  syntax match texLigature "--"
+  syntax match texLigature "---"
+  syntax match texLigature "\v%(``|''|,,)"
+  syntax match texTabularChar "&"
+  syntax match texTabularChar "\\\\"
+
+  " E.g.:  \$ \& \% \# \{ \} \_ \S \P
+  syntax match texSpecialChar "\\[$&%#{}_]"
+  syntax match texSpecialChar "\\[SP@]\ze[^a-zA-Z@]"
+  syntax match texSpecialChar "\^\^\%(\S\|[0-9a-f]\{2}\)"
+  syntax match texSpecialChar "\\[,;:!]"
+
+  " }}}2
   " {{{2 Comments
 
   " * In documented TeX Format, actual comments are defined by leading "^^A".
@@ -80,21 +95,6 @@ function! vimtex#syntax#core#init() abort " {{{1
   syntax keyword texCommentTodo combak fixme todo xxx
         \ containedin=texComment contained
   syntax case match
-
-  " }}}2
-  " {{{2 TeX symbols and special characters
-
-  syntax match texLigature "--"
-  syntax match texLigature "---"
-  syntax match texLigature "\v%(``|''|,,)"
-  syntax match texTabularChar "&"
-  syntax match texTabularChar "\\\\"
-
-  " E.g.:  \$ \& \% \# \{ \} \_ \S \P
-  syntax match texSpecialChar "\\[$&%#{}_]"
-  syntax match texSpecialChar "\\[SP@]\ze[^a-zA-Z@]"
-  syntax match texSpecialChar "\^\^\%(\S\|[0-9a-f]\{2}\)"
-  syntax match texSpecialChar "\\[,;:!]"
 
   " }}}2
   " {{{2 Commands: general
@@ -336,8 +336,8 @@ function! vimtex#syntax#core#init() abort " {{{1
   " {{{2 Zone: Expl3
 
   syntax region texE3Zone matchgroup=texCmdE3
-        \ start='\\\%(ExplSyntaxOn\|ProvidesExpl\%(Package\|Class\|File\)\)'
-        \ end='\\ExplSyntaxOff\|\%$'
+        \ start="\\\%(ExplSyntaxOn\|ProvidesExpl\%(Package\|Class\|File\)\)"
+        \ end="\\ExplSyntaxOff\|\%$"
         \ transparent
         \ contains=TOP,@NoSpell
 
@@ -405,7 +405,7 @@ function! vimtex#syntax#core#init() abort " {{{1
   syntax match texMathSuperSub "[_^]" contained
 
   " Text Inside Math regions
-  syntax match texCmdMathText "\\\(\(inter\)\?text\|mbox\)\>" nextgroup=texMathTextArg
+  syntax match texCmdMathText "\\\(\(inter\)\?text\|mbox\|fbox\)\>" nextgroup=texMathTextArg
   call vimtex#syntax#core#new_arg('texMathTextArg')
 
   " Math style commands
