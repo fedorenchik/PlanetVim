@@ -7,9 +7,42 @@ endfunction
 execute join(['function! vital#_lsp#VS#Vim#Syntax#Markdown#import() abort', printf("return map({'apply': ''}, \"vital#_lsp#function('<SNR>%s_' . v:key)\")", s:_SID()), 'endfunction'], "\n")
 delfunction s:_SID
 " ___vital___
+"
+" apply
+"
+" NOTE: Currently, this module supports only tpope/vim-markdown or vim/neovim's syntax.
+"
 function! s:apply(...) abort
   if !exists('b:___VS_Vim_Syntax_Markdown')
-    runtime! syntax/markdown.vim
+    call s:_execute('runtime! syntax/markdown.vim')
+
+    " Remove markdownCodeBlock because we support it manually.
+    silent! syntax clear markdownCodeBlock
+
+    " Modify markdownCode (`codes...`)
+    silent! syntax clear markdownCode
+    syntax region markdownCode matchgroup=Conceal start=/\%(``\)\@!`/ matchgroup=Conceal end=/\%(``\)\@!`/ containedin=TOP keepend concealends
+
+    " Modify markdownEscape (_bold\_text_)
+    silent! syntax clear markdownEscape
+    let l:name = 0
+    for l:char in split('!"#$%&()*+,-.g:;<=>?@[]^_`{|}~' . "'", '\zs')
+      let l:name += 1
+      execute printf('syntax match vital_vs_vim_syntax_markdown_escape_%s /[^\\]\?\zs\\\V%s/ conceal cchar=%s containedin=ALL',
+      \   l:name,
+      \   l:char,
+      \   l:char,
+      \ )
+    endfor
+    syntax match vital_vs_vim_syntax_markdown_escape_escape /[^\\]\?\zs\\\\/ conceal cchar=\ containedin=ALL
+
+    " Add syntax for basic html entities.
+    syntax match vital_vs_vim_syntax_markdown_entities_lt /&lt;/ containedin=ALL conceal cchar=<
+    syntax match vital_vs_vim_syntax_markdown_entities_gt /&gt;/ containedin=ALL conceal cchar=>
+    syntax match vital_vs_vim_syntax_markdown_entities_amp /&amp;/ containedin=ALL conceal cchar=&
+    syntax match vital_vs_vim_syntax_markdown_entities_quot /&quot;/ containedin=ALL conceal cchar="
+    syntax match vital_vs_vim_syntax_markdown_entities_nbsp /&nbsp;/ containedin=ALL conceal cchar= 
+
     let b:___VS_Vim_Syntax_Markdown = {}
   endif
 
@@ -23,23 +56,33 @@ function! s:apply(...) abort
       let b:___VS_Vim_Syntax_Markdown[l:group] = v:true
 
       try
-        if exists('b:current_syntax')
-          unlet b:current_syntax
-        endif
-        execute printf('syntax include @%s syntax/%s.vim', l:group, l:filetype)
-        execute printf('syntax region %s matchgroup=Conceal start=/%s/rs=e matchgroup=Conceal end=/%s/re=s contains=@%s containedin=ALL keepend concealends',
+        call s:_execute('syntax include @%s syntax/%s.vim', l:group, l:filetype)
+        call s:_execute('syntax region %s matchgroup=Conceal start=/%s/rs=e matchgroup=Conceal end=/%s/re=s contains=@%s containedin=TOP keepend concealends',
         \   l:group,
-        \   printf('^\s*```\s*%s\s*', l:mark),
-        \   '\s*```\s*$',
+        \   printf('```\s*%s\s*', l:mark),
+        \   '```\s*\%(\s\|' . "\n" . '\|$\)',
         \   l:group
         \ )
       catch /.*/
-        echomsg printf('[VS.Vim.Syntax.Markdown] The `%s` is not valid filetype! You can add `"let g:markdown_fenced_languages = ["FILETYPE=%s"]`.', l:mark, l:mark)
+        unsilent echomsg printf('[VS.Vim.Syntax.Markdown] The `%s` is not valid filetype! You can add `"let g:markdown_fenced_languages = ["FILETYPE=%s"]`.', l:mark, l:mark)
       endtry
     endfor
   catch /.*/
-    echomsg string({ 'exception': v:exception, 'throwpoint': v:throwpoint })
+    unsilent echomsg string({ 'exception': v:exception, 'throwpoint': v:throwpoint })
   endtry
+endfunction
+
+"
+"  _execute
+"
+function! s:_execute(command, ...) abort
+  let b:current_syntax = ''
+  unlet b:current_syntax
+
+  let g:main_syntax = ''
+  unlet g:main_syntax
+
+  execute call('printf', [a:command] + a:000)
 endfunction
 
 "
@@ -63,12 +106,12 @@ function! s:_find_marks(bufnr) abort
   let l:text = join(getbufline(a:bufnr, '^', '$'), "\n")
   let l:pos = 0
   while 1
-    let l:match = matchlist(l:text, '```\s*\(\w\+\)', l:pos, 1)
-    if empty(l:match)
+    let l:match = matchstrpos(l:text, '```\s*\zs\w\+', l:pos, 1)
+    if empty(l:match[0])
       break
     endif
-    let l:marks[l:match[1]] = v:true
-    let l:pos = matchend(l:text, '```\s*\(\w\+\)', l:pos, 1)
+    let l:marks[l:match[0]] = v:true
+    let l:pos = l:match[2]
   endwhile
 
   return keys(l:marks)
