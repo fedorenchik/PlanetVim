@@ -854,7 +854,9 @@ function! PlanetVim_MenusBasicToggle() abort
     let g:PlanetVim_menus_basic = 1
   endif
   call PlanetVim_MenusBasicUpdate()
-  call PlanetVim_ConfigUpdate('g:PlanetVim_menus_basic')
+  if empty(v:this_session)
+    call PlanetVim_ConfigUpdate('g:PlanetVim_menus_basic')
+  endif
 endfunction
 
 function! PlanetVim_MenusEditingToggle() abort
@@ -864,7 +866,9 @@ function! PlanetVim_MenusEditingToggle() abort
     let g:PlanetVim_menus_editing = 1
   endif
   call PlanetVim_MenusEditingUpdate()
-  call PlanetVim_ConfigUpdate('g:PlanetVim_menus_editing')
+  if empty(v:this_session)
+    call PlanetVim_ConfigUpdate('g:PlanetVim_menus_editing')
+  endif
 endfunction
 
 function! PlanetVim_MenusDevelopmentToggle() abort
@@ -874,7 +878,9 @@ function! PlanetVim_MenusDevelopmentToggle() abort
     let g:PlanetVim_menus_dev = 1
   endif
   call PlanetVim_MenusDevelopmentUpdate()
-  call PlanetVim_ConfigUpdate('g:PlanetVim_menus_dev')
+  if empty(v:this_session)
+    call PlanetVim_ConfigUpdate('g:PlanetVim_menus_dev')
+  endif
 endfunction
 
 function! PlanetVim_MenusToolsToggle() abort
@@ -884,7 +890,9 @@ function! PlanetVim_MenusToolsToggle() abort
     let g:PlanetVim_menus_tools = 1
   endif
   call PlanetVim_MenusToolsUpdate()
-  call PlanetVim_ConfigUpdate('g:PlanetVim_menus_tools')
+  if empty(v:this_session)
+    call PlanetVim_ConfigUpdate('g:PlanetVim_menus_tools')
+  endif
 endfunction
 
 function! PlanetVim_MenusNavigationToggle() abort
@@ -894,7 +902,9 @@ function! PlanetVim_MenusNavigationToggle() abort
     let g:PlanetVim_menus_nav = 1
   endif
   call PlanetVim_MenusNavigationUpdate()
-  call PlanetVim_ConfigUpdate('g:PlanetVim_menus_nav')
+  if empty(v:this_session)
+    call PlanetVim_ConfigUpdate('g:PlanetVim_menus_nav')
+  endif
 endfunction
 
 function! s:registers_choose_to_edit() abort
@@ -1025,27 +1035,62 @@ func s:XxdFind()
   endif
 endfun
 
+function! PlanetVim_BufferIsNormal(name, num)
+    if !bufexists(a:num)
+      return 0
+    endif
+    if isdirectory(a:name) || !buflisted(a:num)
+      return 0
+    endif
+    let type = getbufvar(a:num, '&buftype')
+    if type != '' && type != 'nofile' && type != 'nowrite'
+      return 0
+    endif
+    return 1
+endfunction
+
+func! PlanetVim_MenuName(name)
+    let menu_name = escape(a:name, "\\. \t|")
+    let menu_name = substitute(menu_name, "&", "&&", "g")
+    let menu_name = substitute(menu_name, "\n", "^@", "g")
+    return menu_name
+endfunc
+
+func! PlanetVim_MenuBufers_AddBuffer(name, num)
+  if PlanetVim_BufferIsNormal(a:name, a:num)
+    let menu_name = PlanetVim_MenuName(a:name)
+    exe 'an 800.500 📖&b.' .. menu_name .. ' :confirm b ' .. a:num .. '<CR>'
+  endif
+endfunc
+
+func! PlanetVim_MenuBuffers_AddBufferAu()
+  let name = expand("<afile>")
+  let num = expand("<abuf>") + 0
+  call PlanetVim_MenuBufers_AddBuffer(name, num)
+endfunc
+
+func! PlanetVim_MenuBuffers_RemoveBufferAu()
+  let name = expand("<afile>")
+  let menu_name = PlanetVim_MenuName(name)
+  if ! empty(menu_name)
+    exe 'silent! aun 800.500 📖&b.' .. menu_name
+  endif
+endfunc
+
 function! PlanetVim_AddBuffers()
   let buf = 1
   while buf <= bufnr('$')
     let name = bufname(buf)
-    if isdirectory(name) || !buflisted(buf)
-      let buf += 1
-      continue
-    endif
-    let type = getbufvar(buf, '&buftype')
-    if buftype != '' && buftype != 'nofile' && buftype != 'nowrite'
-      let buf += 1
-      continue
-    endif
-    if !bufexists(buf)
-      let buf += 1
-      continue
-    endif
-    exe 'an 800.500 📖&b.' .. name .. ' :confirm b ' .. buf .. '<CR>'
+    call PlanetVim_MenuBufers_AddBuffer(name, num)
     let buf += 1
   endwhile
 endfunction
+
+aug PlanetVim_AugMenuBuffers
+au!
+au BufCreate,BufFilePost * call PlanetVim_MenuBuffers_AddBufferAu()
+au BufDelete,BufFilePre * call PlanetVim_MenuBuffers_RemoveBufferAu()
+aug END
 
 function! PlanetVim_MenuSessionSetCurrent() abort
   if exists('g:last_session')
@@ -2178,7 +2223,7 @@ endfunction
 
 function! PlanetSaveExit() abort
   if ! empty(v:this_session)
-    SSave! v:this_session
+    exe 'SSave! ' .. fnamemodify(v:this_session, ":t")
   endif
   confirm wall
   qa!
@@ -2187,9 +2232,9 @@ endfunction
 fun! s:ToggleGuiOption(option)
     " If a:option is already set in guioptions, then we want to remove it
     if match(&guioptions, "\\C" . a:option) > -1
-	exec "set go-=" . a:option
+      exec "set go-=" . a:option
     else
-	exec "set go+=" . a:option
+      exec "set go+=" . a:option
     endif
 endfun
 
@@ -2216,7 +2261,7 @@ an 100.90  🌐&P.Edit\ &Settings                       :tabedit ~/.vim/planetvi
 an 100.100 🌐&P.--4-- <Nop>
 an 100.110 🌐&P.&Close\ Everything                    :SClose<CR>
 an 100.120 🌐&P.--5-- <Nop>
-an 100.130 🌐&P.E&xit\ PlanetVim                      :call PlanetSaveExit()<CR>
+an 100.130 🌐&P.Save\ &&\ E&xit\ PlanetVim            :call PlanetSaveExit()<CR>
 " }}}
 " PopUp Menus: {{{
 " Normal Mode:
@@ -2468,6 +2513,7 @@ nnoremap ZU :UndotreeHide<CR>
 let g:clap_disable_bottom_top = 1
 let g:clap_provider_yanks_history = "~/.vim/clap_yanks.history"
 let g:clap_provider_colors_ignore_default = v:true
+let g:clap_preview_direction = 'UD'
 nnoremap <silent> <Space><Space> :Clap providers<CR>
 nnoremap <silent> <Space>; :Clap command<CR>
 nnoremap <silent> <Space>: :Clap command_history<CR>
