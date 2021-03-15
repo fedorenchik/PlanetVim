@@ -2,8 +2,11 @@
 
 ## [unreleased]
 
+
+## [0.24] 2021-03-13
 ### Added
 
+- Add user autocmd `ClapOnInitialize`, can be used to ignore some buffers when opening clap. #653
 - Add `g:clap_provider_colors_ignore_default` to ignore the default colors in `VIMRUNTIME`. #632
 - Support neovim floating_win based action menu. #655
 
@@ -11,6 +14,7 @@
 
 - Truncate the lines of `grep` provider. #650
 - Support unordered substring query. #652
+- Add `hi default link ClapIndicator ClapInput` for the default theme.
 
 ### Fixed
 
