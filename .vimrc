@@ -221,6 +221,26 @@ function! s:HelpCurwin(subject) abort
   endif
   return 'help ' .. a:subject
 endfunction
+
+func! FocusWindow(direction) abort
+  exe 'wincmd ' .. a:direction
+  if empty(&buftype) || &buftype == 'nowrite' || &buftype == 'acwrite'
+    let win_width = 80
+    if &textwidth > 0
+      let win_width = &textwidth
+    elseif str2nr(&colorcolumn) > 0
+      let wid_width = str2nr(&colorcolumn)
+    endif
+    let win_width += &foldcolumn
+    if &number || &relativenumber
+      let win_width += &numberwidth
+    endif
+    if &signcolumn == 'yes' || &signcolumn == 'auto'
+      let win_width += 2
+    endif
+    exe win_width .. 'wincmd |'
+  endif
+endfunc
 " }}}
 " Colorscheme: {{{
 " set colorscheme
@@ -306,8 +326,6 @@ if has("gui")
   set guifont=DejaVu\ Sans\ Mono\ 9,Monospace\ 9
 endif
 set guiheadroom=0
-"XXX: add '!' to guioptions when startify bug #460 will be fixed
-" Adding '!' to guioptions causes too much redraw & 'hit enter' prompts
 set guioptions=aAcdeimMgpk
 set guipty
 "set guitablabel&
@@ -454,16 +472,11 @@ set wildmenu
 set wildmode=longest:full,list:full
 set wildoptions=tagfile
 set winaltkeys=menu
-"set winheight&
-"set winfixheight&
-"set winfixwidth&
 set winminheight=0
 set winminwidth=0
-"set winwidth&
+set winwidth=1
 set nowrap
-"set wrapmargin&
 set nowrapscan
-set nowriteany
 set nowritebackup
 " }}}
 " Leaders: {{{
@@ -604,10 +617,10 @@ nn <C-b> :colder<CR>
 nn <C-d> :lnewer<CR>
 nn <C-e> :cnext<CR>
 nn <C-f> :cnewer<CR>
-nn <C-h> <C-W>h
+nn <C-h> :call FocusWindow('h')<CR>
 nn <C-j> <C-W>j
 nn <C-k> <C-W>k
-nn <C-l> <C-W>l
+nn <C-l> :call FocusWindow('l')<CR>
 nn <C-s> :emenu <C-Z>
 nn <C-u> :lolder<CR>
 " Ctrl Key: <C-W>...: {{{
@@ -1156,6 +1169,11 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 110.100 📁&f.File\ &Manager\ Side\ Bar                  :Fern . -reveal=% -drawer -toggle<CR>
     an 110.110 📁&f.Open\ &Recent                              :Clap history<CR>
     an 110.120 📁&f.F&ind<Tab>:find                            :find 
+    an 110.110 📁&f.Advanced.Open\ Read\ Only                  :browse view<CR>
+    an 110.110 📁&f.Advanced.Split\ Read\ Only                 :browse sview<CR>
+    an 110.110 📁&f.Advanced.VSplit\ Read\ Only                :browse view<CR>
+    an 110.110 📁&f.Advanced.Tab\ Read\ Only                   :browse view<CR>
+    an 110.110 📁&f.Advanced.Split\ Find                       :sfind<CR>
     an 110.130 📁&f.--2-- <Nop>
     an 110.140 📁&f.&Save<Tab>:w                               :if expand("%") == ""<Bar>browse confirm w<Bar>else<Bar>confirm up<Bar>endif<CR>
     an 110.150 📁&f.Save\ &As\.\.\.<Tab>:saveas                :browse confirm saveas<CR>
@@ -1512,6 +1530,8 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 990.110 ❔&?.--3-- <Nop>
     an 990.110 ❔&?.Others.Emergency\ Exit                     :call PlanetVim_EmergencyExit()<CR>
     an 990.110 ❔&?.--4-- <Nop>
+    an 990.110 ❔&?.Close\ Help\ Window                        :helpclose<CR>
+    an 990.110 ❔&?.--5-- <Nop>
     an 990.120 ❔&?.&About                                     :version<CR>
   else
     silent! aunmenu 📁&f
@@ -2118,8 +2138,8 @@ function! PlanetVim_MenusNavigationUpdate() abort
     an 820.50  🪟&w.Horizontal\ &Split<Tab>:split<Tab>+s    <C-w>s
     an 820.60  🪟&w.&Vertical\ Split<Tab>:vsplit<Tab>+v     <C-w>v
     an 820.90  🪟&w.Swap\ (&x)<Tab>+x                       <C-w>x
-    an 820.90  🪟&w.Rotate Up<Tab>R                         <C-w>R
-    an 820.90  🪟&w.Rotate Down<Tab>r                       <C-w>r
+    an 820.90  🪟&w.Rotate\ Up<Tab>R                        <C-w>R
+    an 820.90  🪟&w.Rotate\ Down<Tab>r                      <C-w>r
     an 820.100 🪟&w.Move\ to\ New\ &Tab<Tab>+T              <C-w>T
     an 820.100 🪟&w.Move\ to\ New\ &GUI\ Window             :TODO
     an 820.120 🪟&w.--3-- <Nop>
@@ -2144,8 +2164,8 @@ function! PlanetVim_MenusNavigationUpdate() abort
     an 820.180 🪟&w.Focus\ Next\ Window<Tab>+w              <C-w>w
     an 820.180 🪟&w.Focus\ Top\ Window<Tab>+t               <C-w>t
     an 820.180 🪟&w.Focus\ Bottom\ Window<Tab>+b            <C-w>b
-    an 820.180 🪟&w.Focus\ Left<Tab>+h                      <C-w>h
-    an 820.180 🪟&w.Focus\ Right<Tab>+l                     <C-w>l
+    an 820.180 🪟&w.Focus\ Left<Tab>+h                      :call FocusWindow('h')<CR>
+    an 820.180 🪟&w.Focus\ Right<Tab>+l                     :call FocusWindow('l')<CR>
     an 820.180 🪟&w.Focus\ Up<Tab>+k                        <C-w>k
     an 820.180 🪟&w.Focus\ Down<Tab>+j                      <C-w>j
     an 820.180 🪟&w.Focus\ Alternate<Tab>+p                 <C-w>p
@@ -2493,7 +2513,7 @@ xnoremap iz :<c-u>FastFoldUpdate<cr><esc>:<c-u>normal! ]zv[z<cr>
 xnoremap az :<c-u>FastFoldUpdate<cr><esc>:<c-u>normal! ]zV[z<cr>
 " }}}
 " Plugin: fern.vim {{{
-let g:fern#smart_cursor = "hide"
+let g:fern#hide_cursor = 1
 let g:fern#keepalt_on_edit = 1
 let g:fern#keepjumps_on_edit = 1
 let g:fern#drawer_width = 40
@@ -2896,7 +2916,15 @@ let g:startify_enable_unsafe = 1
 let g:startify_session_sort = 1
 let g:startify_custom_indices = ['d', 'g', 'h', 'l', 'm', 'n', 'p', 'r', 'u', 'w', 'x', 'y', 'z']
 let g:startify_use_env = 1
+aug PlanetVim_Startify
+au!
 autocmd User StartifyReady setlocal cursorline
+autocmd User Startified nmap <buffer> I i
+autocmd User Startified nmap <buffer> o i
+autocmd User Startified nmap <buffer> O i
+autocmd User Startified nmap <buffer> a i
+autocmd User Startified nmap <buffer> A i
+aug END
 " }}}
 " Plugin: vim-test {{{
 let test#strategy = "dispatch"
