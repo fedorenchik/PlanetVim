@@ -229,7 +229,7 @@ func! FocusWindow(direction) abort
     if &textwidth > 0
       let win_width = &textwidth
     elseif str2nr(&colorcolumn) > 0
-      let wid_width = str2nr(&colorcolumn)
+      let win_width = str2nr(&colorcolumn)
     endif
     let win_width += &foldcolumn
     if &number || &relativenumber
@@ -238,7 +238,10 @@ func! FocusWindow(direction) abort
     if &signcolumn == 'yes' || &signcolumn == 'auto'
       let win_width += 2
     endif
-    exe win_width .. 'wincmd |'
+    echo 'win_width=' .. win_width
+    if win_width > winwidth(0)
+      exe win_width .. 'wincmd |'
+    endif
   endif
 endfunc
 " }}}
@@ -326,6 +329,8 @@ if has("gui")
   set guifont=DejaVu\ Sans\ Mono\ 9,Monospace\ 9
 endif
 set guiheadroom=0
+"XXX: add '!' to guioptions when startify bug will be fixed
+" Adding '!' to guioptions causes too much redraw & 'hit enter' prompts (vim bug)
 set guioptions=aAcdeimMgpk
 set guipty
 "set guitablabel&
@@ -442,7 +447,6 @@ set tagrelative
 set tags=tags;
 set tagstack
 set termguicolors
-set textwidth=80
 set thesaurus+=$HOME/.vim/thes/mobythes.txt
 set notildeop
 set notimeout
@@ -1177,7 +1181,7 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 110.130 📁&f.--2-- <Nop>
     an 110.140 📁&f.&Save<Tab>:w                               :if expand("%") == ""<Bar>browse confirm w<Bar>else<Bar>confirm up<Bar>endif<CR>
     an 110.150 📁&f.Save\ &As\.\.\.<Tab>:saveas                :browse confirm saveas<CR>
-    an 110.160 📁&f.Save\ A&ll<Tab>:wall                       :confirm wall<CR>
+    an 110.160 📁&f.Save\ A&ll<Tab>:wall                       :silent confirm wall<CR>
     an 110.170 📁&f.--3-- <Nop>
     an 110.180 📁&f.Export\ (Selected)\ as\ HTML               :TOhtml<CR>
     an 110.190 📁&f.--4-- <Nop>
@@ -2627,7 +2631,11 @@ function! StatusLine(current, width)
     let l:s .= crystalline#left_mode_sep('')
   endif
   if a:width > 80
-    let l:s .= ' %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P '
+    let l:s .= ' %{&ft}[%{&fenc!=#""?&fenc:&enc}]'
+    if &ff != 'unix'
+      let l:s .= '[%{&ff}]'
+    endif
+    let l:s .= ' %l/%L %c%V %P '
   else
     let l:s .= ' '
   endif
