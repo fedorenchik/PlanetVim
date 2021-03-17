@@ -298,7 +298,6 @@ set dictionary+=/usr/share/dict/web2
 set diffopt=filler,context:12,iwhite,vertical,foldcolumn:2,internal,indent-heuristic,algorithm:histogram,closeoff,hiddenoff
 set directory=~/.vim/swap//,~/tmp//,.//,~//,/var/tmp//,/tmp//
 set display=lastline,uhex
-set eadirection=
 set noedcompatible
 set emoji
 set encoding=utf-8
@@ -1169,6 +1168,7 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 110.60  📁&f.New\ G&Window                              :silent !gvim<CR>
     an 110.70  📁&f.--1-- <Nop>
     an 110.80  📁&f.&Open\ File                                :Clap files<CR>
+    an 110.80  📁&f.Open\ File\ Dialog                         :browse confirm e<CR>
     an 110.90  📁&f.Open\ &File\ Manager<Tab>-                 :Fern . -reveal=%<CR>
     an 110.100 📁&f.File\ &Manager\ Side\ Bar                  :Fern . -reveal=% -drawer -toggle<CR>
     an 110.110 📁&f.Open\ &Recent                              :Clap history<CR>
@@ -1184,6 +1184,7 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 110.160 📁&f.Save\ A&ll<Tab>:wall                       :silent confirm wall<CR>
     an 110.170 📁&f.--3-- <Nop>
     an 110.180 📁&f.Export\ (Selected)\ as\ HTML               :TOhtml<CR>
+    an 110.180 📁&f.Convert\ to\ HTML                          :runtime syntax/2html.vim<CR>
     an 110.190 📁&f.--4-- <Nop>
     am 110.200 📁&f.&Previous\ in\ Folder<Tab>[f               [f
     am 110.210 📁&f.&Next\ in\ Folder<Tab>]f                   ]f
@@ -1327,10 +1328,12 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 130.290 🔎&/.Previous\ &\ Select<Tab>gN               <Tab>gN
     an 130.300 🔎&/.Next\ &\ Select<Tab>gn                   <Tab>gn
     an 130.310 🔎&/.--8-- <Nop>
+    an 130.300 🔎&/.Search\ Dialog<Tab>:promptfind           :promptfind<CR>
     an 130.320 🔎&/.Substitute <Nop>
     an disable 🔎&/.Substitute
     an 130.330 🔎&/.Repeat\ on\ Line<Tab>&                   &
     an 130.340 🔎&/.Repeat\ on\ File<Tab>g&                  g&
+    an 130.340 🔎&/.Substitute\ Dialog<Tab>:promptrepl       :promptrepl<CR>
 
     " Selection
     "FIXME: In Insert mode this only works for a SINGLE Normal mode command
@@ -1514,6 +1517,7 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 980.10  ⌨️&\|.Output\ of\ previous\ Command<Tab>g<   g<
     an 980.10  ⌨️&\|.Co&lor\ Test                           :sp $VIMRUNTIME/syntax/colortest.vim<Bar>so %<CR>
     an 980.10  ⌨️&\|.&Highlight\ Test                       :runtime syntax/hitest.vim<CR>
+    an 980.10  ⌨️&\|.Run\ Vim\ Script                       :browse so<CR>
     an 980.10  ⌨️&\|.Ex\ Vim\ Mode\ (Dangerous!)<Tab>gX     gQ
     an 980.10  ⌨️&\|.Ex\ Mode\ (Dangerous!)<Tab>Q           Q
 
@@ -2129,6 +2133,11 @@ function! PlanetVim_MenusNavigationUpdate() abort
     an 810.10  🗃️&a.Open\ &Next<Tab>]a                         :next<CR>
     an 810.10  🗃️&a.Open\ &Last<Tab>]A                         :last<CR>
     an 810.10  🗃️&a.--1-- <Nop>
+    an 810.10  🗃️&a.Set\ Local                                 :argl<CR>
+    an 810.10  🗃️&a.Set\ Global                                :argg<CR>
+    an 810.10  🗃️&a.--2-- <Nop>
+    an 810.10  🗃️&a.Run\ Each                                  :argdo<CR>
+    an 810.10  🗃️&a.--3-- <Nop>
     an 810.10  🗃️&a.Args\ List <Nop>
     an disable 🗃️&a.Args\ List
 
@@ -2300,20 +2309,109 @@ an 100.120 🌐&P.--5-- <Nop>
 an 100.130 🌐&P.Save\ &&\ E&xit\ PlanetVim            :call PlanetSaveExit()<CR>
 " }}}
 " PopUp Menus: {{{
+
+if has("spell")
+  " Spell suggestions in the popup menu.  Note that this will slow down the
+  " appearance of the menu!
+  func s:SpellPopup()
+    if exists("s:changeitem") && s:changeitem != ''
+      call <SID>SpellDel()
+    endif
+
+    " Return quickly if spell checking is not enabled.
+    if !&spell || &spelllang == ''
+      return
+    endif
+
+    let curcol = col('.')
+    let [w, a] = spellbadword()
+    if col('.') > curcol		" don't use word after the cursor
+      let w = ''
+    endif
+    if w != ''
+      if a == 'caps'
+	let s:suglist = [substitute(w, '.*', '\u&', '')]
+      else
+	let s:suglist = spellsuggest(w, 10)
+      endif
+      if len(s:suglist) > 0
+	if !exists("g:menutrans_spell_change_ARG_to")
+	  let g:menutrans_spell_change_ARG_to = 'Change\ "%s"\ to'
+	endif
+	let s:changeitem = printf(g:menutrans_spell_change_ARG_to, escape(w, ' .'))
+	let s:fromword = w
+	let pri = 1
+	" set 'cpo' to include the <CR>
+	let cpo_save = &cpo
+	set cpo&vim
+	for sug in s:suglist
+	  exe 'anoremenu 1.5.' . pri . ' PopUp.' . s:changeitem . '.' . escape(sug, ' .')
+		\ . ' :call <SID>SpellReplace(' . pri . ')<CR>'
+	  let pri += 1
+	endfor
+
+	if !exists("g:menutrans_spell_add_ARG_to_word_list")
+	  let g:menutrans_spell_add_ARG_to_word_list = 'Add\ "%s"\ to\ Word\ List'
+	endif
+	let s:additem = printf(g:menutrans_spell_add_ARG_to_word_list, escape(w, ' .'))
+	exe 'anoremenu 1.6 PopUp.' . s:additem . ' :spellgood ' . w . '<CR>'
+
+	if !exists("g:menutrans_spell_ignore_ARG")
+	  let g:menutrans_spell_ignore_ARG = 'Ignore\ "%s"'
+	endif
+	let s:ignoreitem = printf(g:menutrans_spell_ignore_ARG, escape(w, ' .'))
+	exe 'anoremenu 1.7 PopUp.' . s:ignoreitem . ' :spellgood! ' . w . '<CR>'
+
+	anoremenu 1.8 PopUp.-SpellSep- :
+	let &cpo = cpo_save
+      endif
+    endif
+    call cursor(0, curcol)	" put the cursor back where it was
+  endfunc
+
+  func s:SpellReplace(n)
+    let l = getline('.')
+    " Move the cursor to the start of the word.
+    call spellbadword()
+    call setline('.', strpart(l, 0, col('.') - 1) . s:suglist[a:n - 1]
+	  \ . strpart(l, col('.') + len(s:fromword) - 1))
+  endfunc
+
+  func s:SpellDel()
+    exe "aunmenu PopUp." . s:changeitem
+    exe "aunmenu PopUp." . s:additem
+    exe "aunmenu PopUp." . s:ignoreitem
+    aunmenu PopUp.-SpellSep-
+    let s:changeitem = ''
+  endfun
+
+  augroup SpellPopupMenu
+    au! MenuPopup * call <SID>SpellPopup()
+  augroup END
+endif
+
 " Normal Mode:
-nnoremenu PopUp.Close                   <C-w>c
+nnoremenu 1.10 PopUp.&Paste                  "+gP
+nnoremenu 1.10 PopUp.Close                   <C-w>c
 " Operator Pending Mode: text objects
-onoremenu PopUp.Word                 w
+onoremenu PopUp.Word                         w
 " Visual:
-vnoremenu PopUp.Yank                    y
+vnoremenu 1.10 PopUp.Cu&t                    "+x
+vnoremenu 1.10 PopUp.&Copy                   "+y
+vnoremenu 1.10 PopUp.&Yank                   y
+vnoremenu 1.10 PopUp.&Replace                "_x"+gP
+vnoremenu 1.10 PopUp.&Paste                  "_x"+gP
+vnoremenu 1.10 PopUp.&Delete                 "_x
 " Select Mode:
-snoremenu PopUp.Cut                     "+d
+snoremenu 1.10 PopUp.Cut                     "+d
 " Insert Mode:
-inoremenu PopUp.Close                   <C-w>c
+inoremenu 1.10 PopUp.&Paste                  <C-o>"+gP
+inoremenu 1.10 PopUp.Close                   <C-w>c
 " Cmdline Mode: cmdline completion
-cnoremenu PopUp.Close                  <Esc>
+cnoremenu 1.10 PopUp.&Copy                  <C-y>
+cnoremenu 1.10 PopUp.&Paste                 <C-r>+
 " Terminal Mode:
-tlnoremenu PopUp.Close                  <C-w><C-c>
+tlnoremenu 1.10 PopUp.Close                  <C-w><C-c>
 " }}}
 " WinBar Menus: {{{
 " TODO: Auto for LL, QF, Terminals, W3m
