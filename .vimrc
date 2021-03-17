@@ -223,6 +223,10 @@ function! s:HelpCurwin(subject) abort
 endfunction
 
 func! FocusWindow(direction) abort
+  let owmw = &wmw
+  let owiw = &wiw
+  " TODO: somehow calculate reasonable wiw & wmw values
+  set wiw=20 wmw=20
   exe 'wincmd ' .. a:direction
   if empty(&buftype) || &buftype == 'nowrite' || &buftype == 'acwrite'
     let win_width = 80
@@ -243,6 +247,8 @@ func! FocusWindow(direction) abort
       exe win_width .. 'wincmd |'
     endif
   endif
+  let &wmw = owmw
+  let &wiw = owiw
 endfunc
 " }}}
 " Colorscheme: {{{
