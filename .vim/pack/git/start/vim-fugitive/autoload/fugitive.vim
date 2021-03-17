@@ -101,13 +101,15 @@ function! s:Mods(mods, ...) abort
   return substitute(mods, '\s\+', ' ', 'g')
 endfunction
 
-function! s:Slash(path) abort
-  if exists('+shellslash')
+if exists('+shellslash')
+  function! s:Slash(path) abort
     return tr(a:path, '\', '/')
-  else
+  endfunction
+else
+  function! s:Slash(path) abort
     return a:path
-  endif
-endfunction
+  endfunction
+endif
 
 function! s:Resolve(path) abort
   let path = resolve(a:path)
@@ -936,9 +938,11 @@ function! fugitive#Find(object, ...) abort
     let prefix = matchstr(a:object, '^[~$]\i*')
     let owner = expand(prefix)
     return FugitiveVimPath((len(owner) ? owner : prefix) . strpart(a:object, len(prefix)))
-  elseif s:Slash(a:object) =~# '^$\|^/\|^\%(\a\a\+:\).*\%(//\|::\)' . (has('win32') ? '\|^\a:/' : '')
+  endif
+  let rev = s:Slash(a:object)
+  if rev =~# '^$\|^/\|^\%(\a\a\+:\).*\%(//\|::\)' . (has('win32') ? '\|^\a:/' : '')
     return FugitiveVimPath(a:object)
-  elseif s:Slash(a:object) =~# '^\.\.\=\%(/\|$\)'
+  elseif rev =~# '^\.\.\=\%(/\|$\)'
     return FugitiveVimPath(simplify(getcwd() . '/' . a:object))
   endif
   let dir = a:0 ? a:1 : s:Dir()
@@ -949,7 +953,6 @@ function! fugitive#Find(object, ...) abort
       return fnamemodify(FugitiveVimPath(len(file) ? file : a:object), ':p')
     endif
   endif
-  let rev = s:Slash(a:object)
   let tree = s:Tree(dir)
   let base = len(tree) ? tree : 'fugitive://' . dir . '//0'
   if rev ==# '.git'
@@ -2108,6 +2111,7 @@ function! fugitive#BufReadCmd(...) abort
     if empty(dir)
       return 'echo "Invalid Fugitive URL"'
     endif
+    let b:git_dir = dir
     if rev =~# '^:\d$'
       let b:fugitive_type = 'stage'
     else
@@ -2211,12 +2215,6 @@ function! fugitive#BufReadCmd(...) abort
 
     setlocal modifiable
 
-    let browsex = maparg('<Plug>NetrwBrowseX', 'n')
-    let remote_check = '\Cnetrw#CheckIfRemote(\%(netrw#GX()\)\=)'
-    if browsex =~# remote_check
-      exe 'nnoremap <silent> <buffer> <Plug>NetrwBrowseX' substitute(browsex, remote_check, '0', 'g')
-    endif
-
     return 'silent ' . s:DoAutocmd('BufReadPost') .
           \ (modifiable ? '' : '|setl nomodifiable') . '|silent ' .
           \ s:DoAutocmd('User Fugitive' . substitute(b:fugitive_type, '^\l', '\u&', ''))
@@ -2272,7 +2270,10 @@ function! s:TempReadPost(file) abort
   if has_key(s:temp_files, s:cpath(a:file))
     let dict = s:temp_files[s:cpath(a:file)]
     setlocal nobuflisted
-    if has_key(dict, 'filetype') && dict.filetype !=# &l:filetype
+    if get(dict, 'filetype', '') ==# 'git'
+      call fugitive#MapJumps()
+    endif
+    if has_key(dict, 'filetype')
       let &l:filetype = dict.filetype
     endif
     setlocal foldmarker=<<<<<<<,>>>>>>>
@@ -3422,7 +3423,9 @@ function! s:StageInline(mode, ...) abort
   endif
   let lnum1 = a:0 ? a:1 : line('.')
   let lnum = lnum1 + 1
-  if a:0 > 1 && a:2 == 0
+  if a:0 > 1 && a:2 == 0 && lnum1 == 1
+    let lnum = line('$') - 1
+  elseif a:0 > 1 && a:2 == 0
     let info = s:StageInfo(lnum - 1)
     if empty(info.paths) && len(info.section)
       while len(getline(lnum))
@@ -3489,6 +3492,9 @@ function! s:StageInline(mode, ...) abort
       silent call append(lnum, diff)
       let b:fugitive_expanded[info.section][info.filename] = [start, len(diff)]
       setlocal nomodifiable readonly nomodified
+      if foldclosed(lnum+1) > 0
+        silent exe (lnum+1) . ',' . (lnum+len(diff)) . 'foldopen!'
+      endif
     endif
   endwhile
   return lnum
@@ -3608,6 +3614,7 @@ endfunction
 function! s:StageDelete(lnum1, lnum2, count) abort
   let restore = []
   let err = ''
+  let did_conflict_err = 0
   try
     for info in s:Selection(a:lnum1, a:lnum2)
       if empty(info.paths)
@@ -3628,7 +3635,7 @@ function! s:StageDelete(lnum1, lnum2, count) abort
         continue
       endif
       if info.status ==# 'D'
-        let undo = 'Gremove'
+        let undo = 'GRemove'
       elseif info.paths[0] =~# '/$'
         let err .= '|echoerr ' . string('fugitive: will not delete directory ' . string(info.relative[0]))
         break
@@ -3640,14 +3647,30 @@ function! s:StageDelete(lnum1, lnum2, count) abort
       elseif info.status ==# '?'
         call s:TreeChomp('clean', '-f', '--', info.paths[0])
       elseif a:count == 2
-        call s:TreeChomp('checkout', '--ours', '--', info.paths[0])
+        if get(b:fugitive_files['Staged'], info.filename, {'status': ''}).status ==# 'D'
+          call delete(FugitiveVimPath(info.paths[0]))
+        else
+          call s:TreeChomp('checkout', '--ours', '--', info.paths[0])
+        endif
       elseif a:count == 3
-        call s:TreeChomp('checkout', '--theirs', '--', info.paths[0])
+        if get(b:fugitive_files['Unstaged'], info.filename, {'status': ''}).status ==# 'D'
+          call delete(FugitiveVimPath(info.paths[0]))
+        else
+          call s:TreeChomp('checkout', '--theirs', '--', info.paths[0])
+        endif
       elseif info.status =~# '[ADU]' &&
             \ get(b:fugitive_files[info.section ==# 'Staged' ? 'Unstaged' : 'Staged'], info.filename, {'status': ''}).status =~# '[AU]'
-        call s:TreeChomp('checkout', info.section ==# 'Staged' ? '--ours' : '--theirs', '--', info.paths[0])
+        if get(g:, 'fugitive_conflict_x', 0)
+          call s:TreeChomp('checkout', info.section ==# 'Unstaged' ? '--ours' : '--theirs', '--', info.paths[0])
+        else
+          if !did_conflict_err
+            let err .= '|echoerr "Use 2X for --ours or 3X for --theirs"'
+            let did_conflict_err = 1
+          endif
+          continue
+        endif
       elseif info.status ==# 'U'
-        call s:TreeChomp('rm', '--', info.paths[0])
+        call delete(FugitiveVimPath(info.paths[0]))
       elseif info.status ==# 'A'
         call s:TreeChomp('rm', '-f', '--', info.paths[0])
       elseif info.section ==# 'Unstaged'
@@ -3655,7 +3678,9 @@ function! s:StageDelete(lnum1, lnum2, count) abort
       else
         call s:TreeChomp('checkout', 'HEAD^{}', '--', info.paths[0])
       endif
-      call add(restore, ':Gsplit ' . s:fnameescape(info.relative[0]) . '|' . undo)
+      if len(undo)
+        call add(restore, ':Gsplit ' . s:fnameescape(info.relative[0]) . '|' . undo)
+      endif
     endfor
   catch /^fugitive:/
     let err .= '|echoerr ' . string(v:exception)
@@ -5081,7 +5106,7 @@ function! fugitive#Diffsplit(autodir, keepfocus, mods, arg, args) abort
   endtry
 endfunction
 
-" Section: :Gmove, :Gremove
+" Section: :GMove, :GRemove
 
 function! s:Move(force, rename, destination) abort
   let dir = s:Dir()
@@ -6112,10 +6137,31 @@ function! fugitive#MapJumps(...) abort
     call s:Map('n', 'g?',    ":<C-U>help fugitive-map<CR>", '<silent>')
     call s:Map('n', '<F1>',  ":<C-U>help fugitive-map<CR>", '<silent>')
   endif
+
+  let old_browsex = maparg('<Plug>NetrwBrowseX', 'n')
+  let new_browsex = substitute(old_browsex, '\Cnetrw#CheckIfRemote(\%(netrw#GX()\)\=)', '0', 'g')
+  let new_browsex = substitute(new_browsex, 'netrw#GX()\|expand((exists("g:netrw_gx")? g:netrw_gx : ''<cfile>''))', 'fugitive#GX()', 'g')
+  if new_browsex !=# old_browsex
+    exe 'nnoremap <silent> <buffer> <Plug>NetrwBrowseX' new_browsex
+  endif
+endfunction
+
+function! fugitive#GX() abort
+  try
+    let results = &filetype ==# 'fugitive' ? s:StatusCfile() : &filetype ==# 'git' ? s:cfile() : []
+    if len(results) && len(results[0])
+      return FugitiveReal(s:Generate(results[0]))
+    endif
+  catch /^fugitive:/
+  endtry
+  return expand(get(g:, 'netrw_gx', expand('<cfile>')))
 endfunction
 
 function! s:StatusCfile(...) abort
   let tree = s:Tree()
+  if empty(tree)
+    return ['']
+  endif
   let lead = s:cpath(tree, getcwd()) ? './' : tree . '/'
   let info = s:StageInfo()
   let line = getline('.')
@@ -6145,6 +6191,9 @@ endfunction
 
 function! s:MessageCfile(...) abort
   let tree = s:Tree()
+  if empty(tree)
+    return ''
+  endif
   let lead = s:cpath(tree, getcwd()) ? './' : tree . '/'
   if getline('.') =~# '^.\=\trenamed:.* -> '
     return lead . matchstr(getline('.'),' -> \zs.*')
@@ -6171,6 +6220,9 @@ function! fugitive#MessageCfile() abort
 endfunction
 
 function! s:cfile() abort
+  if empty(FugitiveGitDir())
+    return []
+  endif
   try
     let myhash = s:DirRev(@%)[1]
     if len(myhash)
