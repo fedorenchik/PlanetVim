@@ -1171,7 +1171,15 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 110.30  📁&f.New\ Split<Tab>:new<Tab>+n                 <C-w>n
     an 110.40  📁&f.New\ &VSplit<Tab>:vnew                     :vnew<CR>
     an 110.50  📁&f.New\ &Tab                                  :confirm tabnew<CR>
-    an 110.60  📁&f.New\ G&Window                              :silent !gvim<CR>
+    an 110.60  📁&f.New\ GUI\ &Window                          :silent !gvim<CR>
+    an 110.70  📁&f.--1-- <Nop>
+    an 110.60  📁&f.New\ Project.Vim\ Plugin                   :TODO
+    an 110.60  📁&f.New\ Project.Blender\ Addon                :TODO
+    an 110.60  📁&f.New\ Project.Nextcloud\ App                :TODO
+    an 110.60  📁&f.New\ Project.Linux\ Kernel\ Module         :TODO
+    an 110.60  📁&f.New\ Project.Wordpress\ Plugin             :TODO
+    an 110.60  📁&f.New\ Project.Yocto\ System                 :TODO
+    an 110.60  📁&f.New\ Project.ROS\ Package                  :TODO
     an 110.70  📁&f.--1-- <Nop>
     an 110.80  📁&f.&Open\ File                                :Clap files<CR>
     an 110.80  📁&f.Open\ File\ Dialog                         :browse confirm e<CR>
@@ -1179,6 +1187,7 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 110.100 📁&f.File\ &Manager\ Side\ Bar                  :Fern . -reveal=% -drawer -toggle<CR>
     an 110.110 📁&f.Open\ &Recent                              :Clap history<CR>
     an 110.120 📁&f.F&ind<Tab>:find                            :find 
+    an 110.120 📁&f.F&ind\ in\ Tab<Tab>:tabfind                :tabfind 
     an 110.110 📁&f.Advanced.Open\ Read\ Only                  :browse view<CR>
     an 110.110 📁&f.Advanced.Split\ Read\ Only                 :browse sview<CR>
     an 110.110 📁&f.Advanced.VSplit\ Read\ Only                :browse view<CR>
@@ -1540,7 +1549,8 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 990.70  ❔&?.&Join\ PlanetVim\ Chat                     :silent !xdg-open https://matrix.to/\#/\#planetvim_discussion:matrix.org?via=matrix.org<CR>
     an 990.80  ❔&?.--2-- <Nop>
     an 990.90  ❔&?.Check\ for\ &Updates                       :silent !xdg-open https://github.com/fedorenchik/PlanetVim/releases<CR>
-    an 990.100 ❔&?.Report\ PlanetVim\ &Issue                  :silent !xdg-open https://github.com/fedorenchik/PlanetVim/issues/new/choose<CR>
+    an 990.100 ❔&?.Add\ Feature\ Request                      :silent !xdg-open 'https://github.com/fedorenchik/PlanetVim/issues/new?assignees=&labels=enhancement&template=feature_request.md&title='<CR>
+    an 990.100 ❔&?.Report\ PlanetVim\ &Issue                  :silent !xdg-open 'https://github.com/fedorenchik/PlanetVim/issues/new?assignees=&labels=&template=bug_report.md&title'=<CR>
     an 990.110 ❔&?.--3-- <Nop>
     an 990.110 ❔&?.Others.Emergency\ Exit                     :call PlanetVim_EmergencyExit()<CR>
     an 990.110 ❔&?.--4-- <Nop>
@@ -2121,7 +2131,7 @@ function! PlanetVim_MenusNavigationUpdate() abort
     an 800.40  📖&b.&Next<Tab>]b                            :bnext<CR>
     an 800.40  📖&b.&Last<Tab>]B                            :blast<CR>
     an 800.40  📖&b.--3-- <Nop>
-    an 800.40  📖&b.Run\ Command\ in\ Each\ Buffer<Tab>:bufdo :bufdo 
+    an 800.40  📖&b.Execute\ in\ Each\ Buffer<Tab>:bufdo    :bufdo 
     an 800.40  📖&b.--3-- <Nop>
     an 800.40  📖&b.Unload\ (Free\ Memory)                  :bun<CR>
     an 800.40  📖&b.Delete\ (Unload\ &&\ Unlist)            :bd<CR>
@@ -2151,66 +2161,76 @@ function! PlanetVim_MenusNavigationUpdate() abort
     an 820.10  🪟&w.Windows <Nop>
     an disable 🪟&w.Windows
     an 820.10  🪟&w.&Window\ Mode                           :WindowMode<CR>
-    an 820.20  🪟&w.--1-- <Nop>
-    an 820.30  🪟&w.C&hoose<Tab>:Clap\ windows              :Clap windows<CR>
-    an 820.40  🪟&w.--2-- <Nop>
-    an 820.50  🪟&w.Horizontal\ &Split<Tab>:split<Tab>+s    <C-w>s
-    an 820.60  🪟&w.&Vertical\ Split<Tab>:vsplit<Tab>+v     <C-w>v
-    an 820.90  🪟&w.Swap\ (&x)<Tab>+x                       <C-w>x
-    an 820.90  🪟&w.Rotate\ Up<Tab>R                        <C-w>R
-    an 820.90  🪟&w.Rotate\ Down<Tab>r                      <C-w>r
-    an 820.100 🪟&w.Move\ to\ New\ &Tab<Tab>+T              <C-w>T
-    an 820.100 🪟&w.Move\ to\ New\ &GUI\ Window             :TODO
-    an 820.120 🪟&w.--3-- <Nop>
-    an 820.130 🪟&w.Move\ to\ Left<Tab>+H                   <C-w>H
-    an 820.140 🪟&w.Move\ to\ Right<Tab>+L                  <C-w>L
-    an 820.150 🪟&w.Move\ to\ Top<Tab>+K                    <C-w>K
-    an 820.160 🪟&w.Move\ to\ Bottom<Tab>+J                 <C-w>J
-    an 820.170 🪟&w.--4-- <Nop>
-    an 820.180 🪟&w.&Equal\ Size<Tab>+=                     <C-w>=
-    "FIXME: In Insert mode this only works for a SINGLE Normal mode command (:h :an)
-    an 820.190 🪟&w.&Maximize<Tab>+_+\|                     <C-w>_<C-w>\|
-    an 820.190 🪟&w.Increase\ Height<Tab>++                 <C-w>+
-    an 820.190 🪟&w.Decrease\ Height<Tab>+-                 <C-w>-
-    an 820.190 🪟&w.Increase\ Width<Tab>+>                  <C-w>>
-    an 820.190 🪟&w.Decrease\ Width<Tab>+<                  <C-w><
-    an 820.200 🪟&w.--5-- <Nop>
-    an 820.210 🪟&w.&Close<Tab>:close<Tab>+c                <C-w>c
-    an 820.220 🪟&w.Close\ &Other\ Windows<Tab>:only<Tab>+o <C-w>o
-    an 820.200 🪟&w.--5-- <Nop>
-    an 820.180 🪟&w.Focus\ Preview\ Window<Tab>+P           <C-w>P
-    an 820.180 🪟&w.Focus\ Previous\ Window<Tab>+W          <C-w>W
-    an 820.180 🪟&w.Focus\ Next\ Window<Tab>+w              <C-w>w
-    an 820.180 🪟&w.Focus\ Top\ Window<Tab>+t               <C-w>t
-    an 820.180 🪟&w.Focus\ Bottom\ Window<Tab>+b            <C-w>b
-    an 820.180 🪟&w.Focus\ Left<Tab>+h                      :call FocusWindow('h')<CR>
-    an 820.180 🪟&w.Focus\ Right<Tab>+l                     :call FocusWindow('l')<CR>
-    an 820.180 🪟&w.Focus\ Up<Tab>+k                        <C-w>k
-    an 820.180 🪟&w.Focus\ Down<Tab>+j                      <C-w>j
-    an 820.180 🪟&w.Focus\ Alternate<Tab>+p                 <C-w>p
+    an 820.10  🪟&w.--1-- <Nop>
+    an 820.10  🪟&w.C&hoose<Tab>:Clap\ windows              :Clap windows<CR>
+    an 820.10  🪟&w.--2-- <Nop>
+    an 820.10  🪟&w.&Vertical\ Split<Tab>:vsplit<Tab>+v     <C-w>v
+    an 820.10  🪟&w.Horizontal\ &Split<Tab>:split<Tab>+s    <C-w>s
+    an 820.10  🪟&w.--3-- <Nop>
+    an 820.10  🪟&w.Swap\ (&x)<Tab>+x                       <C-w>x
+    an 820.10  🪟&w.Rotate\ Up<Tab>R                        <C-w>R
+    an 820.10  🪟&w.Rotate\ Down<Tab>r                      <C-w>r
+    an 820.10  🪟&w.Move\ to\ Left<Tab>+H                   <C-w>H
+    an 820.10  🪟&w.Move\ to\ Right<Tab>+L                  <C-w>L
+    an 820.10  🪟&w.Move\ to\ Top<Tab>+K                    <C-w>K
+    an 820.10  🪟&w.Move\ to\ Bottom<Tab>+J                 <C-w>J
+    an 820.10  🪟&w.Move\ to\ New\ &Tab<Tab>+T              <C-w>T
+    an 820.10  🪟&w.Move\ to\ New\ &GUI\ Window             :TODO
+    an 820.10  🪟&w.--4-- <Nop>
+    an 820.10  🪟&w.&Equal\ Size<Tab>+=                     <C-w>=
+    an 820.10  🪟&w.&Maximize<Tab>+_+\|                     <C-w>_<C-w>\|
+    an 820.10  🪟&w.Resize.Maximize\ &Vertically            <C-w>_
+    an 820.10  🪟&w.Resize.Maximize\ &Horizontally          <C-w>\|
+    an 820.10  🪟&w.Resize.Increase\ Height<Tab>++          <C-w>+
+    an 820.10  🪟&w.Resize.Decrease\ Height<Tab>+-          <C-w>-
+    an 820.10  🪟&w.Resize.Increase\ Width<Tab>+>           <C-w>>
+    an 820.10  🪟&w.Resize.Decrease\ Width<Tab>+<           <C-w><
+    an 820.10  🪟&w.--6-- <Nop>
+    an 820.10  🪟&w.Focus\ Alternate<Tab>+p                 <C-w>p
+    an 820.10  🪟&w.Focus\ Preview\ Window<Tab>+P           <C-w>P
+    an 820.10  🪟&w.Focus\ Previous\ Window<Tab>+W          <C-w>W
+    an 820.10  🪟&w.Focus\ Next\ Window<Tab>+w              <C-w>w
+    an 820.10  🪟&w.Focus\ Top\ Window<Tab>+t               <C-w>t
+    an 820.10  🪟&w.Focus\ Bottom\ Window<Tab>+b            <C-w>b
+    an 820.10  🪟&w.Focus\ Left<Tab>+h                      :call FocusWindow('h')<CR>
+    an 820.10  🪟&w.Focus\ Right<Tab>+l                     :call FocusWindow('l')<CR>
+    an 820.10  🪟&w.Focus\ Up<Tab>+k                        <C-w>k
+    an 820.10  🪟&w.Focus\ Down<Tab>+j                      <C-w>j
+    an 820.10  🪟&w.--8-- <Nop>
+    an 820.10  🪟&w.View.Save                               :mkview<CR>
+    an 820.10  🪟&w.View.Load\.\.\.                         :loadview<CR>
+    an 820.10  🪟&w.--7-- <Nop>
+    an 820.10  🪟&w.Execute\ in\ Window\ in\ This\ Tab      :windo 
+    an 820.10  🪟&w.Execute\ in\ each\ Window               :tabdo windo 
+    an 820.10  🪟&w.--5-- <Nop>
+    an 820.10  🪟&w.--9-- <Nop>
+    an 820.10  🪟&w.&Close<Tab>:close<Tab>+c                <C-w>c
+    an 820.10  🪟&w.Close\ &Other\ Windows<Tab>:only<Tab>+o <C-w>o
 
     " Tabs
     an 830.10  🗂️&\..Tabs <Tabs>
     an disable 🗂️&\..Tabs
     an 830.10  🗂️&\..N&ew<Tab>:tabnew                       :tabnew<CR>
-    an 830.20  🗂️&\..--1-- <Nop>
-    an 830.30  🗂️&\..F&ind\ File<Tab>:tabfind               :tabfind 
-    an 830.40  🗂️&\..--2-- <Nop>
-    an 830.50  🗂️&\..&First<Tab>:tabfirst                   :tabfirst<CR>
-    an 830.60  🗂️&\..&Previous<tab>:tabprevious<Tab><C-PgUp><Tab>gT gT
-    an 830.70  🗂️&\..&Next<Tab>:tabnext<Tab><C-PgDown><Tab>gt gt
-    an 830.80  🗂️&\..&Last<Tab>:tablast                     :tablast<CR>
-    an 830.90  🗂️&\..&Alternate<Tab>g\<Tab\>                g<Tab>
-    an 830.100 🗂️&\..--3-- <Nop>
-    an 830.110 🗂️&\..E&xecute\ in\ each\ Tab<Tab>:tabdo     :tabdo 
-    an 830.120 🗂️&\..--4-- <Nop>
-    an 830.50  🗂️&\..Move\ First<Tab>:0tabmove              :0tabmove<CR>
-    an 830.50  🗂️&\..Move\ Left<Tab>:-tabmove               :-tabmove<CR>
-    an 830.50  🗂️&\..Move\ Right<Tab>:+tabmove              :+tabmove<CR>
-    an 830.50  🗂️&\..Move\ Last<Tab>:tabmove                :tabmove<CR>
-    an 830.120 🗂️&\..--5-- <Nop>
-    an 830.130 🗂️&\..&Close<Tab>:tabclose                   :tabclose<CR>
-    an 830.140 🗂️&\..Close\ all\ &other\ tabs<Tab>:tabonly  :tabonly<CR>
+    an 830.10  🗂️&\..--1-- <Nop>
+    an 830.10  🗂️&\..&Alternate<Tab>g\<Tab\>                g<Tab>
+    an 830.10  🗂️&\..--2-- <Nop>
+    an 830.10  🗂️&\..&First<Tab>:tabfirst                   :tabfirst<CR>
+    an 830.10  🗂️&\..&Previous<Tab><C-PgUp><Tab>gT          gT
+    an 830.10  🗂️&\..&Next<Tab><C-PgDown><Tab>gt            gt
+    an 830.10  🗂️&\..&Last<Tab>:tablast                     :tablast<CR>
+    an 830.10  🗂️&\..--3-- <Nop>
+    an 830.10  🗂️&\..Move\ First<Tab>:0tabmove              :0tabmove<CR>
+    an 830.10  🗂️&\..Move\ Previous<Tab>:-tabmove           :-tabmove<CR>
+    an 830.10  🗂️&\..Move\ Next<Tab>:+tabmove               :+tabmove<CR>
+    an 830.10  🗂️&\..Move\ Last<Tab>:tabmove                :tabmove<CR>
+    an 830.10  🗂️&\..--4-- <Nop>
+    an 830.10  🗂️&\..Save\ Current\ Tab                     :TODO"save session without tabpages (as .vimtab file)
+    an 830.10  🗂️&\..Load\ Tab\.\.\.                        :TODO"open .vimtab file in new tab
+    an 830.10  🗂️&\..--5-- <Nop>
+    an 830.10  🗂️&\..E&xecute\ in\ each\ Tab<Tab>:tabdo     :tabdo 
+    an 830.10  🗂️&\..--6-- <Nop>
+    an 830.10  🗂️&\..&Close<Tab>:tabclose                   :tabclose<CR>
+    an 830.10  🗂️&\..Close\ all\ &other\ tabs<Tab>:tabonly  :tabonly<CR>
 
     " Sessions
     an 840.10  📚&h.Sessions <Nop>
@@ -2220,6 +2240,11 @@ function! PlanetVim_MenusNavigationUpdate() abort
     an 840.40  📚&h.--1-- <Nop>
     an 840.50  📚&h.&Save                                  :exe 'SSave! ' .. fnamemodify(v:this_session, ":t")<CR>
     an 840.60  📚&h.Save\ &As\.\.\.                        :SSave<CR>
+    an 840.70  📚&h.--2-- <Nop>
+    an 840.50  📚&h.Advanced\ Save.Save\ with\ Relative\ Paths :TODO"set sessionoptions-=sesdir,+=curdir,v:this_session=dirname
+    an 840.50  📚&h.Advanced\ Save.Save\ with\ Options     :TODO"set sessionoptions+=localoptions,options
+    an 840.50  📚&h.Advanced\ Save.Save\ Current\ Tabpage  :TODO"set sessionoptions-=tabpages,winpos
+    an 840.50  📚&h.Advanced\ Save.Save\ without\ Globals  :TODO"set sessionoptions-=globals
     an 840.70  📚&h.--2-- <Nop>
     an 840.80  📚&h.&Open                                  :SLoad<CR>
     an 840.90  📚&h.Open\ &Last\ Session                   :SLoad!<CR>
@@ -2735,7 +2760,11 @@ function! StatusLine(current, width)
     let l:s .= crystalline#left_mode_sep('')
   endif
   if a:width > 80
-    let l:s .= ' %{&ft}[%{&fenc!=#""?&fenc:&enc}]'
+    let l:s .= ' %{&ft}'
+    let l:e = &fenc!=#""?&fenc:&enc
+    if l:e != 'utf-8'
+      let l:s .= '[%{&fenc!=#""?&fenc:&enc}]'
+    endif
     if &ff != 'unix'
       let l:s .= '[%{&ff}]'
     endif
