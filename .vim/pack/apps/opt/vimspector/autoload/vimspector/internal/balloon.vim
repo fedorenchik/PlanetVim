@@ -69,14 +69,9 @@ function! vimspector#internal#balloon#CreateTooltip( is_hover, ... ) abort
       \ 'resize': 1,
       \ 'close': 'button',
       \ 'callback': 'vimspector#internal#balloon#CloseCallback',
-      \ 'mapping': 0
       \ }
 
-    " When ambiwidth is single, use prettier characters for the border. This
-    " would look silly when ambiwidth is double.
-    if &ambiwidth ==# 'single' && &encoding ==? 'utf-8'
-      let config[ 'borderchars' ] = [ '─', '│', '─', '│', '╭', '╮', '┛', '╰' ]
-    endif
+    let config = vimspector#internal#popup#SetBorderChars( config )
 
     if a:is_hover
       let config[ 'filter' ] = 'vimspector#internal#balloon#MouseFilter'
@@ -86,6 +81,7 @@ function! vimspector#internal#balloon#CreateTooltip( is_hover, ... ) abort
       let config[ 'filter' ] = 'vimspector#internal#balloon#CursorFilter'
       let config[ 'moved' ] = 'any'
       let config[ 'cursorline' ] = 1
+      let config[ 'mapping' ] = 0
       let s:popup_win_id = popup_atcursor( body, config )
     endif
 
