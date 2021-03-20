@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/tpope/vim-dispatch.git
 	branch = master
-	commit = fe6a34322829e466a7e8ce710a6ac5eabddff9fd
-	parent = cd1caa49ee977aa36f75cc1f365cb334b4ece8fa
+	commit = 895c8fa958018fa3366f0e70a18cfeb73a204588
+	parent = 060dba64176a3fd9013b42cfce11e7751b2b89b2
 	method = merge
 	cmdver = 0.4.3
