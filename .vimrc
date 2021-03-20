@@ -103,34 +103,34 @@ call setcellwidths([
 " }}}
 " Functions: {{{
 function! GuiTabLabel() abort
-  let label = ''
+  let l = '[' .. v:lnum .. ']'
   let bufnrlist = tabpagebuflist(v:lnum)
 
-  " Add '+' if one of the buffers in the tab page is modified
+  "TODO: add '!' if has terminal window in tab page
+  let m = ' '
   for bufnr in bufnrlist
     if getbufvar(bufnr, "&modified")
-      let label = '+'
+      let m = '+'
       break
     endif
   endfor
+  let l ..= m
+  let l ..= ' '
 
-  " Append the number of windows in the tab page if more than one
-  let wincount = tabpagewinnr(v:lnum, '$')
-  if wincount > 1
-    let label .= wincount
+  let f = fnamemodify(bufname(bufnrlist[tabpagewinnr(v:lnum) - 1]), ':t')
+  if empty(f)
+    let f = '[No Name]'
   endif
-  if label != ''
-    let label .= ' '
-  endif
-
-  " Append the buffer name
-  return label . bufname(bufnrlist[tabpagewinnr(v:lnum) - 1])
+  return l .. f
 endfunction
 
 function! GuiTabTooltip() abort
   let l:tooltip = ''
-  let l:tooltip ..= '[Tab: ' .. tabpagenr() .. '/' .. tabpagenr('$') .. '] '
-  let l:tooltip ..= 'win#: ' .. tabpagewinnr(v:lnum, '$')
+  let l:tooltip ..= '[' .. v:lnum .. '/' .. tabpagenr('$') .. ']'
+  let l:tooltip ..= '[#:' .. tabpagewinnr(v:lnum, '$') .. ']'
+  if haslocaldir(-1) == 2
+    let l:tooltip ..= ' tcd: ' .. getcwd(-1, 0)
+  endif
 
   let l:bufnrlist = tabpagebuflist(v:lnum)
   for bufnr in l:bufnrlist
@@ -140,11 +140,21 @@ function! GuiTabTooltip() abort
       let l:tooltip ..= '+ '
     endif
     " Buffer Name
+    let l:cur_win = v:false
+    if bufnr == bufnrlist[tabpagewinnr(v:lnum) - 1]
+      let l:cur_win = v:true
+    endif
+    if l:cur_win
+      let l:tooltip ..= '**'
+    endif
     let l:cur_buf_name = bufname(bufnr)
     if empty(l:cur_buf_name)
       let l:cur_buf_name = "[No Name]"
     endif
     let l:tooltip ..= l:cur_buf_name
+    if l:cur_win
+      let l:tooltip ..= '**'
+    endif
     " Suffix
     let l:cur_filetype = getbufvar(bufnr, "&filetype")
     if l:cur_filetype != ''
@@ -154,20 +164,21 @@ function! GuiTabTooltip() abort
     if l:cur_buftype != ''
       let l:tooltip ..= ' [' .. l:cur_buftype .. ']'
     endif
+    if haslocaldir(bufwinnr(bufnr)) == 1
+      let l:tooltip ..= ' [lcd: ' .. getcwd() .. ']'
+    endif
   endfor
+
+  let l:tooltip ..= "\npwd: " .. getcwd(-1)
 
   return l:tooltip
 endfunction
 
 " Avoid the ":ptag" when there is no word under the cursor, and a few other
 " things. Opens the tag under cursor in Preview window.
-function! PreviewWord() abort
+hi previewWord term=bold ctermbg=green guibg=green
+func! PreviewWord() abort
   if &previewwindow
-    return
-  endif
-  silent! wincmd P
-  if &previewwindow
-    wincmd p
     return
   endif
   let w = expand("<cword>")
@@ -182,12 +193,16 @@ function! PreviewWord() abort
       if has("folding")
         silent! .foldopen
       endif
+      call search("$", "b")
+      let w = substitute(w, '\\', '\\\\', "")
+      call search('\<\V' . w . '\>')
+      exe 'match previewWord "\%' . line(".") . 'l\%' . col(".") . 'c\k*"'
       wincmd p
     endif
   endif
-endfunction
+endfunc
 
-function! ListMonths() abort
+func! ListMonths() abort
   let l:line = getline(".")
   let l:last_word_start_idx = match(l:line, '\w*$')
   let l:last_word = matchstr(l:line, '\w*$')
@@ -200,7 +215,7 @@ function! ListMonths() abort
   echom 'l:months = ' . string(l:months)
   call complete(l:last_word_start_idx + 1, l:months)
   return ''
-endfunction
+endfunc
 
 function! SetupCommandAlias(input, output) abort
   exec 'cabbrev <expr> '.a:input
@@ -273,6 +288,7 @@ set autowriteall
 set backspace=start
 set nobackup
 set backupdir=/tmp
+"TODO: set & show baloons
 set ballooneval
 set balloonevalterm
 set belloff=all,backspace,cursor,complete,copy,ctrlg,error,esc,ex,insertmode,lang,mess,showmatch,operator,register,shell,spell,wildmode
@@ -284,7 +300,7 @@ set cinoptions=:0,l1,g0,N-s,E-s,t0,U1,j1,J1
 set cinwords-=switch
 set clipboard=autoselect,autoselectml,exclude:cons\|linux
 set cmdheight=2
-set cmdwinheight=5
+set cmdwinheight=2
 if has("gui_running")
   set columns=128
 endif
@@ -338,7 +354,7 @@ set guiheadroom=0
 " Adding '!' to guioptions causes too much redraw & 'hit enter' prompts (vim bug)
 set guioptions=aAcdeimMgpk
 set guipty
-"set guitablabel&
+set guitablabel=%{GuiTabLabel()}
 set guitabtooltip=%{GuiTabTooltip()}
 set helpheight=8
 set helplang=en
@@ -444,7 +460,7 @@ if &t_Co == 8 && $TERM !~# '^linux\|^Eterm'
   set t_Co=16
 endif
 set t_vb=
-set tabpagemax=50
+set tabpagemax=20
 set tabstop=8
 set tagbsearch
 set tagcase=followscs
@@ -837,7 +853,8 @@ endif
 command -bar -nargs=? -complete=help HelpCurwin execute s:HelpCurwin(<q-args>)
 " }}}
 " Menu: {{{
-" TODO: Vim default menu
+" TODO: $VIMRUNTIME folder
+" TODO: Vim help reference
 " TODO: VS Code
 " TODO: Qt Creator
 " TODO: LibreOffice
@@ -999,7 +1016,7 @@ fun! s:SetLineEndings()
     let g:menutrans_fileformat_dialog = "Select line endings for file"
   endif
   if !exists("g:menutrans_fileformat_choices")
-    let g:menutrans_fileformat_choices = "&Linux/Mac/Unix\n&Windows/Dos\n&Old Mac\n&Cancel"
+    let g:menutrans_fileformat_choices = "&Linux/Mac/Unix/Windows\nOld &Windows/Dos\nOld &Mac\n&Cancel"
   endif
   if &ff == "dos"
     let def = 2
@@ -1154,11 +1171,78 @@ function! PlanetVim_EmergencyExit() abort
   cquit!
 endfunction
 
+func! PlanetVim_Window_Maximize() abort
+  let g:PV_win_restore_cmd = winrestcmd()
+  wincmd _
+  wincmd |
+endfunc
+
+func! PlanetVim_Window_Restore() abort
+  if exists('g:PV_win_restore_cmd')
+    exe g:PV_win_restore_cmd
+    "FIXME: Remove second exe call after vim bug #7988 is fixed
+    exe g:PV_win_restore_cmd
+  endif
+endfunc
+
+func! PlanetVim_View_ToggleAutosave() abort
+  if exists('g:PV_view_autosave')
+    let g:PV_view_autosave = ! g:PV_view_autosave
+  else
+    let g:PV_view_autosave = v:true
+  endif
+  if g:PV_view_autosave
+    aug PlanetVim_augroup_autosave_views
+      au!
+      au BufWinLeave * mkview 9
+      au BufWinEnter * silent loadview 9
+    aug END
+    echo "AutoSave Views"
+  else
+    aug PlanetVim_augroup_autosave_views
+      au!
+    aug END
+    echo "Do not AutoSave Views"
+  endif
+endfunc
+
+func! PlanetVim_DeleteBuffers()
+  let buf = 1
+  while buf <= bufnr('$')
+    if !buflisted(buf) && !bufloaded(buf)
+      continue
+    endif
+    bdelete buf
+    let buf += 1
+  endwhile
+endfunc
+
+func! PlanetVim_TagsAutoPreview_Toggle() abort
+  if exists('g:PV_tags_auto_preview')
+    let g:PV_tags_auto_preview = ! g:PV_tags_auto_preview
+  else
+    let g:PV_tags_auto_preview = v:true
+  endif
+  if g:PV_tags_auto_preview
+    aug AUG_PV_TagsPreview
+      au!
+      au! CursorHold * ++nested call PreviewWord()
+    aug END
+    echo "AutoPreview Tags"
+  else
+    aug AUG_PV_TagsPreview
+      au!
+    aug END
+    echo "Do not AutoPreview Tags"
+  endif
+endfunc
+
 "TODO: Add function to follow DE night mode & theme settings (auto switch
 "TODO: guioptions+=d when dark theme, auto switch to dark colorscheme variant)
 
 "TODO: add setting 'equalprg' for formatting wih == (clang-format, etc.)
 "TODO: Choise between text, emoji, symbols, nerdicons menus
+"TODO: Customize tabline-menu when vim bug #7991 is fixed
 if ! exists("g:PlanetVim_menus_basic")
   let g:PlanetVim_menus_basic = 1
 endif
@@ -1213,10 +1297,13 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 110.290 📁&f.Change\ File\ Permissions                  :Chmod 0755
     an 110.300 📁&f.Delete\ From\ Disk                        :Delete!<CR>
     an 110.300 📁&f.--7-- <Nop>
-    an 110.310 📁&f.Mkdir                                     :Mkdir! <C-z>
-    an 110.320 📁&f.Cd<Tab>:cd                                 :cd <C-z>
-    an 110.330 📁&f.Cd\ current\ Tab<Tab>:tcd                  :tcd <C-z>
-    an 110.340 📁&f.Cd\ current\ File<Tab>:lcd                 :lcd <C-z>
+    an 110.310 📁&f.Mkdir                                   :Mkdir! <C-z>
+    an 110.320 📁&f.Cd<Tab>:cd                              :cd <C-z>
+    an 110.330 📁&f.Cd\ in\ Tab<Tab>:tcd                    :tcd <C-z>
+    an 110.340 📁&f.Cd\ in\ Window<Tab>:lcd                 :lcd <C-z>
+    an 110.320 📁&f.Cd\ to\ Previous\ Directory<Tab>:cd\ -  :cd -<CR>
+    an 110.330 📁&f.Cd\ to\ Previous\ Directory\ in\ Tab<Tab>:tcd\ - :tcd -<CR>
+    an 110.340 📁&f.Cd\ to\ Previous\ Directory\ in\ Window<Tab>:lcd\ - :lcd -<CR>
     an 110.350 📁&f.--8-- <Nop>
     an 110.360 📁&f.&Close<Tab>:bdelete                        :bdelete<CR>
 
@@ -1464,6 +1551,8 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 160.10  🧭&n.List\ Next\ #define<Tab>]D                   ]D
     an 160.10  🧭&n.Show\ First\ #define<Tab>[d                  [d
     an 160.10  🧭&n.Show\ Next\ #define<Tab>]d                   ]d
+    an 160.10  🧭&n.First\ keyword<Tab>[<C-i>                    [<C-i>
+    an 160.10  🧭&n.Next\ keyword<Tab>]<C-i>                     ]<C-i>
     an 160.10  🧭&n.--4-- <Nop>
     an 160.10  🧭&n.File\ under\ Cursor\ in\ Tab<Tab><C-w>gF     <C-w>gF
     an 160.10  🧭&n.Previous\ Start\ of\ Function<Tab>[m         [m
@@ -1659,6 +1748,13 @@ function! PlanetVim_MenusEditingUpdate() abort
     an 230.10  🖌️&c.Toggle\ All<Tab>,M                       <Leader>M
     an 230.10  🖌️&c.Delete\ All<Tab>,N                       :MarkClear<CR>
     an 230.10  🖌️&c.--1-- <Nop>
+    an 230.10  🖌️&c.Matches <Nop>
+    an disable 🖌️&c.Matches
+    an 230.10  🖌️&c.Add\ Match\ Regex                        :call matchadd(highlight_group, pattern)<CR>
+    " Add Match Position is useful when editing binary/hex files
+    an 230.10  🖌️&c.Add\ Match\ Position                     :call matchaddpos(highlight_group, visual_position)<CR>
+    an 230.10  🖌️&c.Delete\ Match                            :call matchdelete(id)<CR>
+    an 230.10  🖌️&c.Clear\ All\ Matches                      :call clearmatches()<CR>
 
     " Bookmarks: Upper-case marks (mA-mZ)
     an 240.10  📎&k.Bookmarks <Nop>
@@ -1884,18 +1980,26 @@ function! PlanetVim_MenusDevelopmentUpdate() abort
     an 310.10  🪧&].Jump\ Split\ to\ Tag<Tab>+]              <C-w>]
     an 310.10  🪧&].Jump\ or\ Select\ Split\ to\ Tag<Tab>+g<C-]> <C-w>g<C-]>
     an 310.10  🪧&].Select\ Split\ Tag<Tab>+g]               <C-w>g]
+    an 310.10  🪧&].Go\ to\ Tag\ VSplit<Tab>:vert stag       :vert stag <cword><CR>
+    an 310.10  🪧&].--1-- <Nop>
     an 310.10  🪧&].Preview\ Tag<Tab>+}                      <C-w>}
     an 310.10  🪧&].Select\ Preview\ Tag<Tab>+g}             <C-w>g}
+    an 310.10  🪧&].Preview\ Previous\ Tag<Tab>:ppop         :ppop<CR>
     an 310.10  🪧&].Close\ Preview<Tab>+z                    <C-w>z
-    an 310.10  🪧&].--1-- <Nop>
+    an 310.10  🪧&].--2-- <Nop>
+    an 310.10  🪧&].Preview\ File<Tab>:pedit                 :pedit 
+    an 310.10  🪧&].Preview\ Search<Tab>:psearch             :psearch 
+    an 310.10  🪧&].--2-- <Nop>
     am 310.10  🪧&].First<Tab>[T                             [T
     am 310.10  🪧&].Previous<Tab>[t                          [t
     am 310.10  🪧&].Next<Tab>]t                              ]t
     am 310.10  🪧&].Last<Tab>]T                              ]T
-    an 310.10  🪧&].--2-- <Nop>
+    an 310.10  🪧&].--3-- <Nop>
     am 310.10  🪧&].Preview\ Previous<Tab>[<C-t>             [<C-t>
     am 310.10  🪧&].Preview\ Next<Tab>]<C-t>                 ]<C-t>
-    an 310.10  🪧&].--3-- <Nop>
+    an 310.10  🪧&].--4-- <Nop>
+    am 310.10  🪧&].Toggle\ AutoPreview\ Tags                :call PlanetVim_TagsAutoPreview_Toggle()<CR>
+    an 310.10  🪧&].--4-- <Nop>
     am 310.10  🪧&].Build\ tags\ File                        :!ctags -R .<CR>
 
     " Build
@@ -2122,32 +2226,67 @@ function! PlanetVim_MenusNavigationUpdate() abort
     an disable 📖&b.Buffers
     an 800.10  📖&b.C&hoose\.\.\.                           :Clap buffers<CR>
     an 800.10  📖&b.Manager\.\.\.                           :Bufexplorer<CR>
+    an 800.10  📖&b.Open<Tab>:b                             :b 
+    an 800.10  📖&b.Open\ VSplit<Tab>:vert sb               :vert sb 
+    an 800.10  📖&b.Open\ Tab<Tab>:tab sb                   :tab sb 
+    an 800.10  📖&b.Open\ All\ Loaded\ VSplit<Tab>:vert unh :vert unh<CR>
+    an 800.10  📖&b.Open\ All\ Loaded\ Tab<Tab>:tab unh     :tab unh<CR>
+    an 800.10  📖&b.Open\ All\ VSplit<Tab>:vert ba          :vert ba<CR>
+    an 800.10  📖&b.Open\ All\ Tab<Tab>:tab ba              :tab ba<CR>
     an 800.20  📖&b.--1-- <Nop>
     an 800.30  📖&b.&Alternate<Tab>:b\ #<Tab><C-@>          <C-^>
     an 800.30  📖&b.&Alternate\ Split<Tab>+^                <C-w>^
     an 800.40  📖&b.--2-- <Nop>
-    an 800.40  📖&b.&First<Tab>[B                           :bfirst<CR>
-    an 800.40  📖&b.&Previous<Tab>[b                        :bprevious<CR>
-    an 800.40  📖&b.&Next<Tab>]b                            :bnext<CR>
-    an 800.40  📖&b.&Last<Tab>]B                            :blast<CR>
+    an 800.30  📖&b.Next\ Modified<Tab>:bm                  :bm<CR>
+    an 800.30  📖&b.Next\ Modified\ VSplit<Tab>:vert sbm    :vert sbm<CR>
+    an 800.30  📖&b.Next\ Modified\ Tab<Tab>:tab sbm        :tab sbm<CR>
     an 800.40  📖&b.--3-- <Nop>
-    an 800.40  📖&b.Execute\ in\ Each\ Buffer<Tab>:bufdo    :bufdo 
-    an 800.40  📖&b.--3-- <Nop>
+    an 800.40  📖&b.&First<Tab>[B                           :bf<CR>
+    an 800.40  📖&b.&Previous<Tab>[b                        :bp<CR>
+    an 800.40  📖&b.&Next<Tab>]b                            :bn<CR>
+    an 800.40  📖&b.&Last<Tab>]B                            :bl<CR>
+    an 800.40  📖&b.&First\ VSplit<Tab>:vert sbf            :vert sbf<CR>
+    an 800.40  📖&b.&Previous\ VSplit<Tab>:vert sbp         :vert sbp<CR>
+    an 800.40  📖&b.&Next\ VSplit<Tab>:vert sbn             :vert sbn<CR>
+    an 800.40  📖&b.&Last\ VSplit<Tab>:vert sbl             :vert sbl<CR>
+    an 800.40  📖&b.&First\ Tab<Tab>:tab sbf                :tab sbf<CR>
+    an 800.40  📖&b.&Previous\ Tab<Tab>:tab sbp             :tab sbp<CR>
+    an 800.40  📖&b.&Next\ Tab<Tab>:tab sbn                 :tab sbn<CR>
+    an 800.40  📖&b.&Last\ Tab<Tab>:tab sbl                 :tab sbl<CR>
+    an 800.40  📖&b.--4-- <Nop>
+    an 800.40  📖&b.Add<Tab>:badd                           :badd 
+    an 800.40  📖&b.Add\ as\ Alternate<Tab>:balt            :balt 
     an 800.40  📖&b.Unload\ (Free\ Memory)                  :bun<CR>
     an 800.40  📖&b.Delete\ (Unload\ &&\ Unlist)            :bd<CR>
     an 800.40  📖&b.Wipeout\ (Delete\ &&\ Clear\ Everything) :bw<CR>
+    an 800.40  📖&b.--5-- <Nop>
+    an 800.40  📖&b.Delete\ All\ Hidden\ Buffers            :call PlanetVim_DeleteBuffers()<CR>
+    an 800.40  📖&b.Execute\ in\ Each\ Buffer<Tab>:bufdo    :bufdo 
     an 800.50  📖&b.Buffers\ List <Nop>
     an disable 📖&b.Buffers\ List
 
     " Arg List
     an 810.10  🗃️&a.Args <Nop>
     an disable 🗃️&a.Args
+    an 810.10  🗃️&a.Drop<Tab>:drop                             :drop %<CR>
     an 810.10  🗃️&a.&Add                                       :argadd<CR>
     an 810.10  🗃️&a.&Delete                                    :argdelete<CR>
-    an 810.10  🗃️&a.Open\ &First<Tab>[A                        :first<CR>
-    an 810.10  🗃️&a.Open\ &Previous<Tab>[a                     :previous<CR>
-    an 810.10  🗃️&a.Open\ &Next<Tab>]a                         :next<CR>
-    an 810.10  🗃️&a.Open\ &Last<Tab>]A                         :last<CR>
+    an 810.10  🗃️&a.&First<Tab>[A                              :first<CR>
+    an 810.10  🗃️&a.&Previous<Tab>[a                           :previous<CR>
+    an 810.10  🗃️&a.&Next<Tab>]a                               :next<CR>
+    an 810.10  🗃️&a.&Last<Tab>]A                               :last<CR>
+    an 810.10  🗃️&a.&First\ VSplit<Tab>[A                      :vert sfirst<CR>
+    an 810.10  🗃️&a.&Previous\ VSplit<Tab>[a                   :vert sprevious<CR>
+    an 810.10  🗃️&a.&Next\ VSplit<Tab>]a                       :vert snext<CR>
+    an 810.10  🗃️&a.&Last\ VSplit<Tab>]A                       :vert slast<CR>
+    an 810.10  🗃️&a.&First\ Tab<Tab>[A                         :tab first<CR>
+    an 810.10  🗃️&a.&Previous\ Tab<Tab>[a                      :tab previous<CR>
+    an 810.10  🗃️&a.&Next\ Tab<Tab>]a                          :tab next<CR>
+    an 810.10  🗃️&a.&Last\ Tab<Tab>]A                          :tab last<CR>
+    an 810.10  🗃️&a.All\ VSplit<Tab>:vert\ all                 :tabnew<CR>:vert all<CR>
+    an 810.10  🗃️&a.All\ Tab<Tab>:tab\ all                     :tab all<CR>
+    an 810.10  🗃️&a.--1-- <Nop>
+    an 810.10  🗃️&a.Execute\ in\ Each\ Argument<Tab>:argdo     :argdo 
     an 810.10  🗃️&a.--1-- <Nop>
     an 810.10  🗃️&a.Set\ Local                                 :argl<CR>
     an 810.10  🗃️&a.Set\ Global                                :argg<CR>
@@ -2176,11 +2315,13 @@ function! PlanetVim_MenusNavigationUpdate() abort
     an 820.10  🪟&w.Move\ to\ Bottom<Tab>+J                 <C-w>J
     an 820.10  🪟&w.Move\ to\ New\ &Tab<Tab>+T              <C-w>T
     an 820.10  🪟&w.Move\ to\ New\ &GUI\ Window             :TODO
+    an 820.10  🪟&w.Copy\ to\ New\ Tab<Tab>+s+T             <C-w>s<C-w>T
     an 820.10  🪟&w.--4-- <Nop>
     an 820.10  🪟&w.&Equal\ Size<Tab>+=                     <C-w>=
-    an 820.10  🪟&w.&Maximize<Tab>+_+\|                     <C-w>_<C-w>\|
-    an 820.10  🪟&w.Resize.Maximize\ &Vertically            <C-w>_
-    an 820.10  🪟&w.Resize.Maximize\ &Horizontally          <C-w>\|
+    an 820.10  🪟&w.&Maximize<Tab>+_+\|                     :call PlanetVim_Window_Maximize()<CR>
+    an 820.10  🪟&w.&Unmaximize<Tab>                        :call PlanetVim_Window_Restore()<CR>
+    an 820.10  🪟&w.Resize.Maximize\ &Vertically<Tab>+_     <C-w>_
+    an 820.10  🪟&w.Resize.Maximize\ &Horizontally<Tab>+\|  <C-w>\|
     an 820.10  🪟&w.Resize.Increase\ Height<Tab>++          <C-w>+
     an 820.10  🪟&w.Resize.Decrease\ Height<Tab>+-          <C-w>-
     an 820.10  🪟&w.Resize.Increase\ Width<Tab>+>           <C-w>>
@@ -2198,7 +2339,30 @@ function! PlanetVim_MenusNavigationUpdate() abort
     an 820.10  🪟&w.Focus\ Down<Tab>+j                      <C-w>j
     an 820.10  🪟&w.--8-- <Nop>
     an 820.10  🪟&w.View.Save                               :mkview<CR>
-    an 820.10  🪟&w.View.Load\.\.\.                         :loadview<CR>
+    an 820.10  🪟&w.View.Save\ 1                            :mkview 1<CR>
+    an 820.10  🪟&w.View.Save\ 2                            :mkview 2<CR>
+    an 820.10  🪟&w.View.Save\ 3                            :mkview 3<CR>
+    an 820.10  🪟&w.View.Save\ 4                            :mkview 4<CR>
+    an 820.10  🪟&w.View.Save\ 5                            :mkview 5<CR>
+    an 820.10  🪟&w.View.Save\ 6                            :mkview 6<CR>
+    an 820.10  🪟&w.View.Save\ 7                            :mkview 7<CR>
+    an 820.10  🪟&w.View.Save\ 8                            :mkview 8<CR>
+    an 820.10  🪟&w.View.Save\ 9\ (AutoSave)                :mkview 9<CR>
+    an 820.10  🪟&w.View.--1-- <Nop>
+    an 820.10  🪟&w.View.Load                               :loadview<CR>
+    an 820.10  🪟&w.View.Load\ 1                            :loadview 1<CR>
+    an 820.10  🪟&w.View.Load\ 2                            :loadview 2<CR>
+    an 820.10  🪟&w.View.Load\ 3                            :loadview 3<CR>
+    an 820.10  🪟&w.View.Load\ 4                            :loadview 4<CR>
+    an 820.10  🪟&w.View.Load\ 5                            :loadview 5<CR>
+    an 820.10  🪟&w.View.Load\ 6                            :loadview 6<CR>
+    an 820.10  🪟&w.View.Load\ 7                            :loadview 7<CR>
+    an 820.10  🪟&w.View.Load\ 8                            :loadview 8<CR>
+    an 820.10  🪟&w.View.Load\ 9\ (AutoSave)                :loadview 9<CR>
+    an 820.10  🪟&w.View.--2-- <Nop>
+    an 820.10  🪟&w.View.Toggle\ AutoSave\ Views            :call PlanetVim_View_ToggleAutosave()<CR>
+    an 820.10  🪟&w.View.--2-- <Nop>
+    an 820.10  🪟&w.View.Toggle\ Save\ Local\ Options       :TODO
     an 820.10  🪟&w.--7-- <Nop>
     an 820.10  🪟&w.Execute\ in\ Window\ in\ This\ Tab      :windo 
     an 820.10  🪟&w.Execute\ in\ each\ Window               :tabdo windo 
@@ -2224,8 +2388,8 @@ function! PlanetVim_MenusNavigationUpdate() abort
     an 830.10  🗂️&\..Move\ Next<Tab>:+tabmove               :+tabmove<CR>
     an 830.10  🗂️&\..Move\ Last<Tab>:tabmove                :tabmove<CR>
     an 830.10  🗂️&\..--4-- <Nop>
-    an 830.10  🗂️&\..Save\ Current\ Tab                     :TODO"save session without tabpages (as .vimtab file)
-    an 830.10  🗂️&\..Load\ Tab\.\.\.                        :TODO"open .vimtab file in new tab
+    an 830.10  🗂️&\..Save\ Current\ Tab                     :TODO"save session without tabpages (as .vimtab file)(set sessionoptions-=tabpages,winpos)
+    an 830.10  🗂️&\..Open\ Tab\.\.\.                        :TODO"open (source) .vimtab file in new tab
     an 830.10  🗂️&\..--5-- <Nop>
     an 830.10  🗂️&\..E&xecute\ in\ each\ Tab<Tab>:tabdo     :tabdo 
     an 830.10  🗂️&\..--6-- <Nop>
@@ -2242,9 +2406,9 @@ function! PlanetVim_MenusNavigationUpdate() abort
     an 840.60  📚&h.Save\ &As\.\.\.                        :SSave<CR>
     an 840.70  📚&h.--2-- <Nop>
     an 840.50  📚&h.Advanced\ Save.Save\ with\ Relative\ Paths :TODO"set sessionoptions-=sesdir,+=curdir,v:this_session=dirname
-    an 840.50  📚&h.Advanced\ Save.Save\ with\ Options     :TODO"set sessionoptions+=localoptions,options
-    an 840.50  📚&h.Advanced\ Save.Save\ Current\ Tabpage  :TODO"set sessionoptions-=tabpages,winpos
-    an 840.50  📚&h.Advanced\ Save.Save\ without\ Globals  :TODO"set sessionoptions-=globals
+    an 840.50  📚&h.Advanced\ Save.Save\ with\ Local\ Options :TODO"set sessionoptions+=localoptions
+    an 840.50  📚&h.Advanced\ Save.Save\ with\ All\ Options :TODO"set sessionoptions+=localoptions,options
+    an 840.50  📚&h.Advanced\ Save.Save\ without\ Global\ Vars :TODO"set sessionoptions-=globals
     an 840.70  📚&h.--2-- <Nop>
     an 840.80  📚&h.&Open                                  :SLoad<CR>
     an 840.90  📚&h.Open\ &Last\ Session                   :SLoad!<CR>
@@ -2317,6 +2481,16 @@ endfun
 function! PlanetVim_ModelessToggle() abort
   set im!
   set sm!
+  if empty(&selectmode)
+    set selectmode=mouse,key
+  else
+    set selectmode=
+  endif
+  if empty(&keymodel)
+    set keymodel=startsel,stopsel
+  else
+    set keymodel=
+  endif
   call <SID>ToggleGuiOption('c')
   call <SID>ToggleGuiOption('r')
 endfunction
