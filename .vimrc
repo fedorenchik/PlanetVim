@@ -1774,33 +1774,31 @@ function! PlanetVim_MenusEditingUpdate() abort
     an 260.120 &QF.--1-- <Nop>
     an 260.130 &QF.C&hoose<Tab>:Clap\ quickfix                  :Clap quickfix<CR>
     an 260.140 &QF.--2-- <Nop>
-    am 260.150 &QF.&Next<Tab>]q                                 ]q
-    an 260.160 &QF.N&ext\ File<Tab>:cnfile<Tab>]<C-q>           :cnfile<CR>
-    am 260.170 &QF.&Last<Tab>:clast<Tab>]Q                      ]Q
-    an 260.180 &QF.--3-- <Nop>
-    am 260.190 &QF.&Previous<Tab>[q                             [q
-    an 260.200 &QF.Previou&s\ File<Tab>:cpfile<Tab>[<C-q>       :cpfile<CR>
-    am 260.210 &QF.&First<Tab>:cfirst<Tab>[Q                    [Q
-    an 260.220 &QF.--4-- <Nop>
-    an 260.230 &QF.E&xecute\ for\ each<Tab>:cdo                 :cdo 
-    an 260.240 &QF.Execute\ for\ each\ File\ (&z)<Tab>:cfdo     :cfdo 
-    an 260.250 &QF.--5-- <Nop>
-    an 260.260 &QF.&Open<Tab>:copen                             :copen<CR>
-    an 260.270 &QF.Fil&ter<Tab>:Cfilter                         :Cfilter 
-    an 260.280 &QF.Filter\ O&ut<Tab>:Cfilter!                   :Cfilter! 
-    an 260.290 &QF.E&dit<Tab>:Qflistsplit<Tab>c\\q              :Qflistsplit<CR>
-    an 260.300 &QF.Read\ from\ File\ (&w)<Tab>:cgetfile         :cgetfile! 
-    an 260.310 &QF.Add\ from\ File\ (&y)<Tab>:caddfile          :caddfile! 
-    an 260.320 &QF.Read\ from\ Buffer\ (&,)<Tab>:cgetbuffer     :cgetbuffer! 
-    an 260.330 &QF.Add\ from\ Buffer\ (&\.)<Tab>:caddbuffer     :caddbuffer! 
-    an 260.340 &QF.Read\ from\ Expr\ (&;)<Tab>:cgetexpr         :cgetexpr! 
-    an 260.350 &QF.Add\ from\ Expr\ (&')<Tab>:caddexpr          :caddexpr! 
-    an 260.360 &QF.&Close<Tab>:cclose<Tab>                      :cclose<CR>
-    an 260.370 &QF.--6-- <Nop>
-    an 260.380 &QF.Previous\ LocList\ (&k)<Tab>:colder          :colder<CR>
-    an 260.390 &QF.Next\ LocList\ (&j)<Tab>:cnewer              :cnewer<CR>
-    an 260.400 &QF.List\ LocLists\ (&q)<Tab>:chistory           :chistory<CR>
-    an 260.410 &QF.--7-- <Nop>
+    am 260.150 &QF.&First<Tab>:cfirst<Tab>[Q                    [Q
+    an 260.160 &QF.Previou&s\ File<Tab>:cpfile<Tab>[<C-q>       :cpfile<CR>
+    am 260.170 &QF.&Previous<Tab>[q                             [q
+    am 260.180 &QF.&Next<Tab>]q                                 ]q
+    an 260.190 &QF.N&ext\ File<Tab>:cnfile<Tab>]<C-q>           :cnfile<CR>
+    am 260.200 &QF.&Last<Tab>:clast<Tab>]Q                      ]Q
+    an 260.210 &QF.--3-- <Nop>
+    an 260.220 &QF.E&xecute\ for\ each<Tab>:cdo                 :cdo 
+    an 260.230 &QF.Execute\ for\ each\ File\ (&z)<Tab>:cfdo     :cfdo 
+    an 260.240 &QF.--4-- <Nop>
+    an 260.250 &QF.&Open<Tab>:copen                             :copen<CR>
+    an 260.260 &QF.Fil&ter<Tab>:Cfilter                         :Cfilter 
+    an 260.270 &QF.Filter\ O&ut<Tab>:Cfilter!                   :Cfilter! 
+    an 260.280 &QF.E&dit<Tab>:Qflistsplit<Tab>c\\q              :Qflistsplit<CR>
+    an 260.290 &QF.Read\ from\ File\ (&w)<Tab>:cgetfile         :cgetfile! 
+    an 260.300 &QF.Add\ from\ File\ (&y)<Tab>:caddfile          :caddfile! 
+    an 260.310 &QF.Read\ from\ Buffer\ (&,)<Tab>:cgetbuffer     :cgetbuffer! 
+    an 260.320 &QF.Add\ from\ Buffer\ (&\.)<Tab>:caddbuffer     :caddbuffer! 
+    an 260.330 &QF.Read\ from\ Expr\ (&;)<Tab>:cgetexpr         :cgetexpr! 
+    an 260.340 &QF.Add\ from\ Expr\ (&')<Tab>:caddexpr          :caddexpr! 
+    an 260.350 &QF.&Close<Tab>:cclose<Tab>                      :cclose<CR>
+    an 260.360 &QF.--5-- <Nop>
+    an 260.370 &QF.Previous\ LocList\ (&k)<Tab>:colder          :colder<CR>
+    an 260.380 &QF.Next\ LocList\ (&j)<Tab>:cnewer              :cnewer<CR>
+    an 260.390 &QF.List\ LocLists\ (&q)<Tab>:chistory           :chistory<CR>
 
     " loclist
     an 270.10  &LL.LocList <Nop>
@@ -1818,33 +1816,31 @@ function! PlanetVim_MenusEditingUpdate() abort
     an 270.120 &LL.--1-- <Nop>
     an 270.130 &LL.C&hoose<Tab>:Clap\ loclist                   :Clap loclist<CR>
     an 270.140 &LL.--2-- <Nop>
-    am 270.150 &LL.&Next<Tab>]l                                 ]l
-    an 270.160 &LL.N&ext\ File<Tab>:lnfile<Tab>]<C-l>           :lnfile<CR>
-    am 270.170 &LL.&Last<Tab>:llast<Tab>]L                      ]L
-    an 270.180 &LL.--3-- <Nop>
-    am 270.190 &LL.&Previous<Tab>[l                             [l
-    an 270.200 &LL.Previou&s\ File<Tab>:lpfile<Tab>[<C-l>       :lpfile<CR>
-    am 270.210 &LL.&First<Tab>:lfirst<Tab>[L                    [L
-    an 270.220 &LL.--4-- <Nop>
-    an 270.230 &LL.E&xecute\ for\ each<Tab>:ldo                 :ldo 
-    an 270.240 &LL.Execute\ for\ each\ File\ (&z)<Tab>:lfdo     :lfdo 
-    an 270.250 &LL.--5-- <Nop>
-    an 270.260 &LL.&Open<Tab>:lopen                             :lopen<CR>
-    an 270.270 &LL.Fil&ter<Tab>:Lfilter                         :Lfilter 
-    an 270.280 &LL.Filter\ O&ut<Tab>:Lfilter!                   :Lfilter! 
-    an 270.290 &LL.E&dit<Tab>:Loclistsplit<Tab>c\\l             :Loclistsplit<CR>
-    an 270.300 &LL.Read\ from\ File\ (&w)<Tab>:lgetfile         :lgetfile! 
-    an 270.310 &LL.Add\ from\ File\ (&y)<Tab>:laddfile          :laddfile! 
-    an 270.320 &LL.Read\ from\ Buffer\ (&,)<Tab>:lgetbuffer     :lgetbuffer! 
-    an 270.330 &LL.Add\ from\ Buffer\ (&\.)<Tab>:laddbuffer     :laddbuffer! 
-    an 270.340 &LL.Read\ from\ Expr\ (&;)<Tab>:lgetexpr         :lgetexpr! 
-    an 270.350 &LL.Add\ from\ Expr\ (&')<Tab>:laddexpr          :laddexpr! 
-    an 270.360 &LL.&Close<Tab>:lclose<Tab>                      :lclose<CR>
-    an 270.370 &LL.--6-- <Nop>
-    an 270.380 &LL.Previous\ LocList\ (&k)<Tab>:lolder          :lolder<CR>
-    an 270.390 &LL.Next\ LocList\ (&j)<Tab>:lnewer              :lnewer<CR>
-    an 270.400 &LL.List\ LocLists\ (&q)<Tab>:lhistory           :lhistory<CR>
-    an 270.410 &LL.--7-- <Nop>
+    am 270.150 &LL.&First<Tab>:lfirst<Tab>[L                    [L
+    an 270.160 &LL.Previou&s\ File<Tab>:lpfile<Tab>[<C-l>       :lpfile<CR>
+    am 270.170 &LL.&Previous<Tab>[l                             [l
+    am 270.180 &LL.&Next<Tab>]l                                 ]l
+    an 270.190 &LL.N&ext\ File<Tab>:lnfile<Tab>]<C-l>           :lnfile<CR>
+    am 270.200 &LL.&Last<Tab>:llast<Tab>]L                      ]L
+    an 270.210 &LL.--3-- <Nop>
+    an 270.220 &LL.E&xecute\ for\ each<Tab>:ldo                 :ldo 
+    an 270.230 &LL.Execute\ for\ each\ File\ (&z)<Tab>:lfdo     :lfdo 
+    an 270.240 &LL.--4-- <Nop>
+    an 270.250 &LL.&Open<Tab>:lopen                             :lopen<CR>
+    an 270.260 &LL.Fil&ter<Tab>:Lfilter                         :Lfilter 
+    an 270.270 &LL.Filter\ O&ut<Tab>:Lfilter!                   :Lfilter! 
+    an 270.280 &LL.E&dit<Tab>:Loclistsplit<Tab>c\\l             :Loclistsplit<CR>
+    an 270.290 &LL.Read\ from\ File\ (&w)<Tab>:lgetfile         :lgetfile! 
+    an 270.300 &LL.Add\ from\ File\ (&y)<Tab>:laddfile          :laddfile! 
+    an 270.310 &LL.Read\ from\ Buffer\ (&,)<Tab>:lgetbuffer     :lgetbuffer! 
+    an 270.320 &LL.Add\ from\ Buffer\ (&\.)<Tab>:laddbuffer     :laddbuffer! 
+    an 270.330 &LL.Read\ from\ Expr\ (&;)<Tab>:lgetexpr         :lgetexpr! 
+    an 270.340 &LL.Add\ from\ Expr\ (&')<Tab>:laddexpr          :laddexpr! 
+    an 270.350 &LL.&Close<Tab>:lclose<Tab>                      :lclose<CR>
+    an 270.360 &LL.--5-- <Nop>
+    an 270.370 &LL.Previous\ LocList\ (&k)<Tab>:lolder          :lolder<CR>
+    an 270.380 &LL.Next\ LocList\ (&j)<Tab>:lnewer              :lnewer<CR>
+    an 270.390 &LL.List\ LocLists\ (&q)<Tab>:lhistory           :lhistory<CR>
   else
     silent! aunmenu 📋&i
     silent! aunmenu 🔖&'
