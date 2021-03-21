@@ -531,67 +531,41 @@ endwhile
 " }}}
 " Normal (Command) Mode: {{{
 " Normal Keys: {{{
-" Normal Keys: {{{
-" Available To Remap: f F h j k l Q s S t T U + ; : , \ - _ <BS> <Space>
-" TODO: 1. Make f F t T search multiline
-" TODO: 2. Make h l behave like f F but input 2 characters
-" TODO: 3. Make j k behave like f F but input 3 characters
-nnoremap ` '
-nnoremap ' `
-nnoremap <unique> ; :
-nnoremap <unique> : q:i
-nmap + <C-W>
-nnoremap G G$
-nnoremap h F
-nnoremap gm gM
-nnoremap gM gm
-nnoremap l f
-nnoremap n nzz
-nnoremap N Nzz
-nnoremap Q gq
-nnoremap Y y$
-" }}}
-" -----------: g...: vim status: {{{
-" Standard Vim Mappings: a ^A d D e E f F g ^G h H ^H i I j J k m n N o p P q Q
-" r R s t T u U v V w x 0 8 ] ^] # $ & ' ` * + , - ; < ? ^ _ @ ~ <Down> <End>
-" <Home> <LeftMouse> <MiddleMouse> <RightMouse> <Up>
-" vim-capslock: gC
-" Available To Map:
-" A b B G K l L M O S W X y Y z Z 1 2 3 4 5 6 7 9 % [ { } ( = ) ! : > . / \ | "
-" + + + +   + +   + + + + + + + +                                 +   +       +
-nnoremap gA :args<CR>
-nnoremap gb :tselect<CR>
-nnoremap gB :tags<CR>
-nnoremap gg gg0
-nnoremap gG :changes<CR>
-nnoremap gl :llist<CR>
-nnoremap gL :lhistory<CR>
-nnoremap gO :jumps<CR>
-nnoremap gq :clist<CR>
-nnoremap gQ :chistory<CR>
-nnoremap gS ^vg_y:execute @@<CR>:echo 'Sourced: ' . @@<CR>
-nnoremap gW Q
-nnoremap gx :silent !xdg-open <cWORD><CR>
-nnoremap gX gQ
-nnoremap gy :%y+<CR>
-nnoremap gY :undolist<CR>
-nnoremap gz :buffers<CR>
-nnoremap gZ :tabs<CR>
-nnoremap g: :history<CR>
-nnoremap g. :marks<CR>
-nnoremap g" :registers<CR>
-nnoremap g= :tabnew<CR>
-" }}}
-" -----------: S...: open windows: {{{
-nnoremap SL :lopen<CR>
-nnoremap SP :ptag<CR>
-nnoremap SQ :botright copen<CR>
-" }}}
-" -----------: z...: {{{
-" Standard Vim Mappings: a A b c C d D e E f F g G h H i j k l L m M n N o O r R
-" s t u v w W x X z ^ + - . = <Left> <Right> <CR>
-" Available To Map:
-" B I J K p P q Q S T U V y Y Z $ ~ & % [ { } ( * ) ] ! # ` ; : , < > / ? @ \ | _ ' " 0 1 2 3 4 5 6 7 8 9
+nn ` '
+nn ' `
+nn <unique> ; q:i
+nm + <C-W>
+nn gA :args<CR>
+nn gb :tselect<CR>
+nn gB :tags<CR>
+nn gg gg0
+nn gG :changes<CR>
+nn gl :llist<CR>
+nn gL :lhistory<CR>
+nn gm gM
+nn gM gm
+nn gO :jumps<CR>
+nn gq :clist<CR>
+nn gQ :chistory<CR>
+nn gS ^vg_y:execute @@<CR>:echo 'Sourced: ' . @@<CR>
+nn gW Q
+nn gx :silent !xdg-open <cWORD><CR>
+nn gX gQ
+nn gy :%y+<CR>
+nn gY :undolist<CR>
+nn gz :buffers<CR>
+nn gZ :tabs<CR>
+nn g: :history<CR>
+nn g. :marks<CR>
+nn g" :registers<CR>
+nn g= :tabnew<CR>
+nn G G$
+nn h F
+nn j :lne<CR>
+nn k :lp<CR>
+nn l f
+nn Q gq
+nn Y y$
 nn <silent> zr zr:<c-u>setlocal foldlevel?<CR>
 nn <silent> zm zm:<c-u>setlocal foldlevel?<CR>
 nn <silent> zR zR:<c-u>setlocal foldlevel?<CR>
@@ -601,41 +575,14 @@ nn z} zLzL
 nn z( zHzH
 nn z) zLzL
 nn z@ z^
+nn [C :colder<CR>
+nn [O :lolder<CR>
+nn ]C :cnewer<CR>
+nn ]O :lnewer<CR>
 " }}}
-" -----------: Z...: close windows: {{{
-nnoremap ZH :helpclose<CR>
-nnoremap ZL :lclose<CR>
-nnoremap ZP :pclose<CR>
-nnoremap ZQ :cclose<CR>
-" }}}
-" -----------: [...: {{{
-" Standard Vim Mappings: c d D ^D f i I ^I m p P s S z # ' ( * ` / [ ] {
-" <MiddleMouse>
-" Vim Unimpaired Mappings: a A b B e f l L ^L n o q Q ^Q t T u x y <Space>
-" Available To Remap:
-" C E F g G h H j J k K M N O r R U v V w W X Y Z 0 1 2 3 4 5 6 7 8 9 $ ~ & % } = ) + ! ; : , < . > ? @ ^ \ | - _ "
-" +                         +           + +       + + + + + + + + + +
-nnoremap [C :colder<CR>
-nnoremap [O :lolder<CR>
-" }}}
-" -----------: ]...: {{{
-" Standard Vim Mappings: c d D ^D f i I ^I m p P s S z # ' ) * ` / [ ] }
-" <MiddleMouse>
-" Vim Unimpaired Mappings: a A b B e f l L ^L n o q Q ^Q t T u x y <Space>
-" Available To Remap:
-" C E F g G h H j J k K M N O r R U v V w W X Y Z 0 1 2 3 4 5 6 7 8 9 $ ~ & % } = ) + ! ; : , < . > ? @ ^ \ | - _ "
-" +                         +           + +       + + + + + + + + + +
-nnoremap ]C :cnewer<CR>
-nnoremap ]O :lnewer<CR>
-" }}}
-" }}}
-" Ctrl Key: tags, quickfix, location list navigation: {{{
+" Ctrl Key: {{{
 " XXX: Ctrl-Shift modifier does not work neither in terminal nor in GUI.
 " XXX: Uppercase/lowercase distinction is not available with <Ctrl-...> modifier.
-" Standard Vim Mappings: A C G I M O Q R S T V W X Z [ \ ] ^
-" Available To Map:
-" B D E F H J K L N P Q S U Y 1 2 3 4 5 6 7 8 9 0 $ & { } ( = * ) + ! # ~ % ` ; : , < . > / ? @ | - _ ' " <BS> <Tab> <CR> <Esc> <Space>
-" + + + + + + + + + +   + + +                                                                         +
 nn <C-'> :tag<CR>
 nn <C-@> <C-^>
 nn <C-b> :colder<CR>
@@ -648,10 +595,8 @@ nn <C-k> <C-W>k
 nn <C-l> :call FocusWindow('l')<CR>
 nn <C-s> :emenu <C-Z>
 nn <C-u> :lolder<CR>
-" Ctrl Key: <C-W>...: {{{
-nnoremap <C-W>V :botright vsplit<CR>
-" }}}
-nnoremap <C-y> :cprevious<CR>
+nn <C-W>V :botright vsplit<CR>
+nn <C-y> :cprevious<CR>
 " }}}
 " Alt Key: {{{
 nn <A-Left> <C-o>
@@ -1634,7 +1579,7 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 990.40  ❔&?.&Plugins\ Documentation                    :h local-additions<CR>
     an 990.50  ❔&?.View\ Log\ Messages<Tab>:messages          :messages<CR>
     an 990.60  ❔&?.--1-- <Nop>
-    an 990.70  ❔&?.View\ PlanetVim\ &Community                :silent !xdg-open https://matrix.to/\#/+planetvim:matrix.org<CR>
+    an 990.70  ❔&?.View\ &PlanetVim\ Community                :silent !xdg-open https://matrix.to/\#/+planetvim:matrix.org<CR>
     an 990.70  ❔&?.&Join\ PlanetVim\ Chat                     :silent !xdg-open https://matrix.to/\#/\#planetvim_discussion:matrix.org?via=matrix.org<CR>
     an 990.80  ❔&?.--2-- <Nop>
     an 990.90  ❔&?.Check\ for\ &Updates                       :silent !xdg-open https://github.com/fedorenchik/PlanetVim/releases<CR>
@@ -1643,7 +1588,7 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 990.110 ❔&?.--3-- <Nop>
     an 990.110 ❔&?.Others.Emergency\ Exit                     :call PlanetVim_EmergencyExit()<CR>
     an 990.110 ❔&?.--4-- <Nop>
-    an 990.110 ❔&?.Close\ Help\ Window                        :helpclose<CR>
+    an 990.110 ❔&?.&Close\ Help\ Window                       :helpclose<CR>
     an 990.110 ❔&?.--5-- <Nop>
     an 990.120 ❔&?.&About                                     :version<CR>
   else
@@ -1816,90 +1761,90 @@ function! PlanetVim_MenusEditingUpdate() abort
     " quickfix
     an 260.10  &QF.QuickFix <Nop>
     an disable &QF.QuickFix
-    an 260.10  &QF.Sea&rch                                      :Grepper -tool rg -quickfix<CR>
-    an 260.13  &QF.Search\ Add                                  :Grepper -tool rg -quickfix -append<CR>
-    an 260.17  &QF.Search\ Side                                 :Grepper -tool rg -quickfix -side<CR>
-    an 260.20  &QF.F&ind<Tab>:Cfind!                            :Cfind! 
-    an 260.30  &QF.Loc&ate<Tab>:Clocate!                        :Clocate! 
-    an 260.40  &QF.&Grep<Tab>:grep                              :grep 
-    an 260.50  &QF.GrepAdd\ (&b)<Tab>:grepadd                   :grepadd 
-    an 260.60  &QF.&VimGrep<Tab>:vimgrep                        :vimgrep 
-    an 260.70  &QF.Vi&mGrepAdd<Tab>:vimgrepadd                  :vimgrepadd 
-    an 260.75  &QF.TODO                                         :Grepper -quickfix -noprompt -tool rg -query -E '(TODO\|FIXME\|XXX):'
-    an 260.80  &QF.--1-- <Nop>
-    an 260.90  &QF.C&hoose<Tab>:Clap\ quickfix                  :Clap quickfix<CR>
-    an 260.100 &QF.--2-- <Nop>
-    am 260.110 &QF.&Next<Tab>]q                                 ]q
-    an 260.120 &QF.N&ext\ File<Tab>:cnfile<Tab>]<C-q>           :cnfile<CR>
-    am 260.130 &QF.&Last<Tab>:clast<Tab>]Q                      ]Q
-    an 260.140 &QF.--3-- <Nop>
-    am 260.150 &QF.&Previous<Tab>[q                             [q
-    an 260.160 &QF.Previou&s\ File<Tab>:cpfile<Tab>[<C-q>       :cpfile<CR>
-    am 260.170 &QF.&First<Tab>:cfirst<Tab>[Q                    [Q
-    an 260.180 &QF.--4-- <Nop>
-    an 260.190 &QF.E&xecute\ for\ each<Tab>:cdo                 :cdo 
-    an 260.200 &QF.Execute\ for\ each\ File\ (&z)<Tab>:cfdo     :cfdo 
-    an 260.210 &QF.--5-- <Nop>
-    an 260.220 &QF.&Open<Tab>:copen                             :copen<CR>
-    an 260.230 &QF.Fil&ter<Tab>:Cfilter                         :Cfilter 
-    an 260.240 &QF.Filter\ O&ut<Tab>:Cfilter!                   :Cfilter! 
-    an 260.250 &QF.E&dit<Tab>:Qflistsplit<Tab>c\\q              :Qflistsplit<CR>
-    an 260.260 &QF.Read\ from\ File\ (&w)<Tab>:cgetfile         :cgetfile! 
-    an 260.270 &QF.Add\ from\ File\ (&y)<Tab>:caddfile          :caddfile! 
-    an 260.280 &QF.Read\ from\ Buffer\ (&,)<Tab>:cgetbuffer     :cgetbuffer! 
-    an 260.290 &QF.Add\ from\ Buffer\ (&\.)<Tab>:caddbuffer     :caddbuffer! 
-    an 260.300 &QF.Read\ from\ Expr\ (&;)<Tab>:cgetexpr         :cgetexpr! 
-    an 260.310 &QF.Add\ from\ Expr\ (&')<Tab>:caddexpr          :caddexpr! 
-    an 260.320 &QF.&Close<Tab>:cclose<Tab>                      :cclose<CR>
-    an 260.330 &QF.--6-- <Nop>
-    an 260.340 &QF.Previous\ LocList\ (&k)<Tab>:colder          :colder<CR>
-    an 260.350 &QF.Next\ LocList\ (&j)<Tab>:cnewer              :cnewer<CR>
-    an 260.360 &QF.List\ LocLists\ (&q)<Tab>:chistory           :chistory<CR>
-    an 260.370 &QF.--7-- <Nop>
+    an 260.20  &QF.Sea&rch                                      :Grepper -tool rg -quickfix<CR>
+    an 260.30  &QF.Search\ Add                                  :Grepper -tool rg -quickfix -append<CR>
+    an 260.40  &QF.Search\ Side                                 :Grepper -tool rg -quickfix -side<CR>
+    an 260.50  &QF.F&ind<Tab>:Cfind!                            :Cfind! 
+    an 260.60  &QF.Loc&ate<Tab>:Clocate!                        :Clocate! 
+    an 260.70  &QF.&Grep<Tab>:grep                              :grep 
+    an 260.80  &QF.GrepAdd\ (&b)<Tab>:grepadd                   :grepadd 
+    an 260.90  &QF.&VimGrep<Tab>:vimgrep                        :vimgrep 
+    an 260.100 &QF.Vi&mGrepAdd<Tab>:vimgrepadd                  :vimgrepadd 
+    an 260.110 &QF.TODO                                         :Grepper -quickfix -noprompt -tool rg -query -E '(TODO\|FIXME\|XXX):'
+    an 260.120 &QF.--1-- <Nop>
+    an 260.130 &QF.C&hoose<Tab>:Clap\ quickfix                  :Clap quickfix<CR>
+    an 260.140 &QF.--2-- <Nop>
+    am 260.150 &QF.&Next<Tab>]q                                 ]q
+    an 260.160 &QF.N&ext\ File<Tab>:cnfile<Tab>]<C-q>           :cnfile<CR>
+    am 260.170 &QF.&Last<Tab>:clast<Tab>]Q                      ]Q
+    an 260.180 &QF.--3-- <Nop>
+    am 260.190 &QF.&Previous<Tab>[q                             [q
+    an 260.200 &QF.Previou&s\ File<Tab>:cpfile<Tab>[<C-q>       :cpfile<CR>
+    am 260.210 &QF.&First<Tab>:cfirst<Tab>[Q                    [Q
+    an 260.220 &QF.--4-- <Nop>
+    an 260.230 &QF.E&xecute\ for\ each<Tab>:cdo                 :cdo 
+    an 260.240 &QF.Execute\ for\ each\ File\ (&z)<Tab>:cfdo     :cfdo 
+    an 260.250 &QF.--5-- <Nop>
+    an 260.260 &QF.&Open<Tab>:copen                             :copen<CR>
+    an 260.270 &QF.Fil&ter<Tab>:Cfilter                         :Cfilter 
+    an 260.280 &QF.Filter\ O&ut<Tab>:Cfilter!                   :Cfilter! 
+    an 260.290 &QF.E&dit<Tab>:Qflistsplit<Tab>c\\q              :Qflistsplit<CR>
+    an 260.300 &QF.Read\ from\ File\ (&w)<Tab>:cgetfile         :cgetfile! 
+    an 260.310 &QF.Add\ from\ File\ (&y)<Tab>:caddfile          :caddfile! 
+    an 260.320 &QF.Read\ from\ Buffer\ (&,)<Tab>:cgetbuffer     :cgetbuffer! 
+    an 260.330 &QF.Add\ from\ Buffer\ (&\.)<Tab>:caddbuffer     :caddbuffer! 
+    an 260.340 &QF.Read\ from\ Expr\ (&;)<Tab>:cgetexpr         :cgetexpr! 
+    an 260.350 &QF.Add\ from\ Expr\ (&')<Tab>:caddexpr          :caddexpr! 
+    an 260.360 &QF.&Close<Tab>:cclose<Tab>                      :cclose<CR>
+    an 260.370 &QF.--6-- <Nop>
+    an 260.380 &QF.Previous\ LocList\ (&k)<Tab>:colder          :colder<CR>
+    an 260.390 &QF.Next\ LocList\ (&j)<Tab>:cnewer              :cnewer<CR>
+    an 260.400 &QF.List\ LocLists\ (&q)<Tab>:chistory           :chistory<CR>
+    an 260.410 &QF.--7-- <Nop>
 
     " loclist
     an 270.10  &LL.LocList <Nop>
     an disable &LL.LocList
-    an 270.10  &LL.Sea&rch                                      :Grepper -tool rg -noquickfix<CR>
-    an 270.13  &LL.Search\ Add                                  :Grepper -tool rg -noquickfix -append<CR>
-    an 270.17  &LL.Search\ Side                                 :Grepper -tool rg -noquickfix -side<CR>
-    an 270.20  &LL.F&ind<Tab>:Lfind!                            :Lfind! 
-    an 270.30  &LL.Loc&ate<Tab>:Llocate!                        :Llocate! 
-    an 270.40  &LL.&Grep<Tab>:lgrep                             :lgrep 
-    an 270.50  &LL.GrepAdd\ (&b)<Tab>:lgrepadd                  :lgrepadd 
-    an 270.60  &LL.&VimGrep<Tab>:lvimgrep                       :lvimgrep 
-    an 270.70  &LL.Vi&mGrepAdd<Tab>:lvimgrepadd                 :lvimgrepadd 
-    an 270.75  &LL.TODO                                         :Grepper -noquickfix -noprompt -tool rg -query -E '(TODO\|FIXME\|XXX):'
-    an 270.80  &LL.--1-- <Nop>
-    an 270.90  &LL.C&hoose<Tab>:Clap\ loclist                   :Clap loclist<CR>
-    an 270.100 &LL.--2-- <Nop>
-    am 270.110 &LL.&Next<Tab>]l                                 ]l
-    an 270.120 &LL.N&ext\ File<Tab>:lnfile<Tab>]<C-l>           :lnfile<CR>
-    am 270.130 &LL.&Last<Tab>:llast<Tab>]L                      ]L
-    an 270.140 &LL.--3-- <Nop>
-    am 270.150 &LL.&Previous<Tab>[l                             [l
-    an 270.160 &LL.Previou&s\ File<Tab>:lpfile<Tab>[<C-l>       :lpfile<CR>
-    am 270.170 &LL.&First<Tab>:lfirst<Tab>[L                    [L
-    an 270.180 &LL.--4-- <Nop>
-    an 270.190 &LL.E&xecute\ for\ each<Tab>:ldo                 :ldo 
-    an 270.200 &LL.Execute\ for\ each\ File\ (&z)<Tab>:lfdo     :lfdo 
-    an 270.210 &LL.--5-- <Nop>
-    an 270.220 &LL.&Open<Tab>:lopen                             :lopen<CR>
-    an 270.230 &LL.Fil&ter<Tab>:Lfilter                         :Lfilter 
-    an 270.240 &LL.Filter\ O&ut<Tab>:Lfilter!                   :Lfilter! 
-    an 270.250 &LL.E&dit<Tab>:Loclistsplit<Tab>c\\l             :Loclistsplit<CR>
-    an 270.260 &LL.Read\ from\ File\ (&w)<Tab>:lgetfile         :lgetfile! 
-    an 270.270 &LL.Add\ from\ File\ (&y)<Tab>:laddfile          :laddfile! 
-    an 270.280 &LL.Read\ from\ Buffer\ (&,)<Tab>:lgetbuffer     :lgetbuffer! 
-    an 270.290 &LL.Add\ from\ Buffer\ (&\.)<Tab>:laddbuffer     :laddbuffer! 
-    an 270.300 &LL.Read\ from\ Expr\ (&;)<Tab>:lgetexpr         :lgetexpr! 
-    an 270.310 &LL.Add\ from\ Expr\ (&')<Tab>:laddexpr          :laddexpr! 
-    an 270.320 &LL.&Close<Tab>:lclose<Tab>                      :lclose<CR>
-    an 270.330 &LL.--6-- <Nop>
-    an 270.340 &LL.Previous\ LocList\ (&k)<Tab>:lolder          :lolder<CR>
-    an 270.350 &LL.Next\ LocList\ (&j)<Tab>:lnewer              :lnewer<CR>
-    an 270.360 &LL.List\ LocLists\ (&q)<Tab>:lhistory           :lhistory<CR>
-    an 270.370 &LL.--7-- <Nop>
+    an 270.20  &LL.Sea&rch                                      :Grepper -tool rg -noquickfix<CR>
+    an 270.30  &LL.Search\ Add                                  :Grepper -tool rg -noquickfix -append<CR>
+    an 270.40  &LL.Search\ Side                                 :Grepper -tool rg -noquickfix -side<CR>
+    an 270.50  &LL.F&ind<Tab>:Lfind!                            :Lfind! 
+    an 270.60  &LL.Loc&ate<Tab>:Llocate!                        :Llocate! 
+    an 270.70  &LL.&Grep<Tab>:lgrep                             :lgrep 
+    an 270.80  &LL.GrepAdd\ (&b)<Tab>:lgrepadd                  :lgrepadd 
+    an 270.90  &LL.&VimGrep<Tab>:lvimgrep                       :lvimgrep 
+    an 270.100 &LL.Vi&mGrepAdd<Tab>:lvimgrepadd                 :lvimgrepadd 
+    an 270.110 &LL.TODO                                         :Grepper -noquickfix -noprompt -tool rg -query -E '(TODO\|FIXME\|XXX):'
+    an 270.120 &LL.--1-- <Nop>
+    an 270.130 &LL.C&hoose<Tab>:Clap\ loclist                   :Clap loclist<CR>
+    an 270.140 &LL.--2-- <Nop>
+    am 270.150 &LL.&Next<Tab>]l                                 ]l
+    an 270.160 &LL.N&ext\ File<Tab>:lnfile<Tab>]<C-l>           :lnfile<CR>
+    am 270.170 &LL.&Last<Tab>:llast<Tab>]L                      ]L
+    an 270.180 &LL.--3-- <Nop>
+    am 270.190 &LL.&Previous<Tab>[l                             [l
+    an 270.200 &LL.Previou&s\ File<Tab>:lpfile<Tab>[<C-l>       :lpfile<CR>
+    am 270.210 &LL.&First<Tab>:lfirst<Tab>[L                    [L
+    an 270.220 &LL.--4-- <Nop>
+    an 270.230 &LL.E&xecute\ for\ each<Tab>:ldo                 :ldo 
+    an 270.240 &LL.Execute\ for\ each\ File\ (&z)<Tab>:lfdo     :lfdo 
+    an 270.250 &LL.--5-- <Nop>
+    an 270.260 &LL.&Open<Tab>:lopen                             :lopen<CR>
+    an 270.270 &LL.Fil&ter<Tab>:Lfilter                         :Lfilter 
+    an 270.280 &LL.Filter\ O&ut<Tab>:Lfilter!                   :Lfilter! 
+    an 270.290 &LL.E&dit<Tab>:Loclistsplit<Tab>c\\l             :Loclistsplit<CR>
+    an 270.300 &LL.Read\ from\ File\ (&w)<Tab>:lgetfile         :lgetfile! 
+    an 270.310 &LL.Add\ from\ File\ (&y)<Tab>:laddfile          :laddfile! 
+    an 270.320 &LL.Read\ from\ Buffer\ (&,)<Tab>:lgetbuffer     :lgetbuffer! 
+    an 270.330 &LL.Add\ from\ Buffer\ (&\.)<Tab>:laddbuffer     :laddbuffer! 
+    an 270.340 &LL.Read\ from\ Expr\ (&;)<Tab>:lgetexpr         :lgetexpr! 
+    an 270.350 &LL.Add\ from\ Expr\ (&')<Tab>:laddexpr          :laddexpr! 
+    an 270.360 &LL.&Close<Tab>:lclose<Tab>                      :lclose<CR>
+    an 270.370 &LL.--6-- <Nop>
+    an 270.380 &LL.Previous\ LocList\ (&k)<Tab>:lolder          :lolder<CR>
+    an 270.390 &LL.Next\ LocList\ (&j)<Tab>:lnewer              :lnewer<CR>
+    an 270.400 &LL.List\ LocLists\ (&q)<Tab>:lhistory           :lhistory<CR>
+    an 270.410 &LL.--7-- <Nop>
   else
     silent! aunmenu 📋&i
     silent! aunmenu 🔖&'
@@ -1923,7 +1868,7 @@ function! PlanetVim_MenusDevelopmentUpdate() abort
     an disable ❇️&[.LSP
     an 300.10  ❇️&[.Choose\ Symbol<Tab>:Clap\ tags\ vim_lsp :Clap tags vim_lsp<CR>
     an 300.10  ❇️&[.Document\ Symbol\ Choose                :LspDocumentSymbolSearch<CR>
-    an 300.10  ❇️&[.Workspace\ Symbols\ Choose              :LspWorkspaceSymbolSearch<CR>
+    an 300.10  ❇️&[.&Workspace\ Symbols\ Choose             :LspWorkspaceSymbolSearch<CR>
     an 300.10  ❇️&[.--1-- <Nop>
     an 300.10  ❇️&[.&Definition                             :LspDefinition<CR>
     an 300.10  ❇️&[.De&claration                            :LspDeclaration<CR>
@@ -1942,7 +1887,7 @@ function! PlanetVim_MenusDevelopmentUpdate() abort
     an 300.10  ❇️&[.Preview\ Type\ Definition               :LspPeekTypeDefinition<CR>
     an 300.10  ❇️&[.--1-- <Nop>
     an 300.10  ❇️&[.Rename                                  :LspRename<CR>
-    an 300.10  ❇️&[.Code\ &Action\ (LSP\ Quick\ Fix)        :LspCodeAction<CR>
+    an 300.10  ❇️&[.Code\ Action\ (LSP\ Quick\ &Fix)        :LspCodeAction<CR>
     an 300.10  ❇️&[.Code\ &Lens                             :LspCodeLens<CR>
     an 300.10  ❇️&[.Format\ Document                        :LspDocumentFormat<CR>
     an 300.10  ❇️&[.Format\ Document\ Selection             :LspDocumentRangeFormat<CR>
