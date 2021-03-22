@@ -265,6 +265,20 @@ func! FocusWindow(direction) abort
   let &wmw = owmw
   let &wiw = owiw
 endfunc
+
+func! PlanetVim_QF_OldFiles()
+  call setqflist([], ' ', {'lines' : v:oldfiles, 'efm' : '%f', 'quickfixtextfunc' : 'QfOldFiles'})
+endfunc
+
+func QfOldFiles(info)
+  let items = getqflist({'id' : a:info.id, 'items' : 1}).items
+  let l = []
+  for idx in range(a:info.start_idx - 1, a:info.end_idx - 1)
+    call add(l, fnamemodify(bufname(items[idx].bufnr), ':p:.'))
+  endfor
+  return l
+endfunc
+
 " }}}
 " Colorscheme: {{{
 " set colorscheme
@@ -300,7 +314,7 @@ set cinoptions=:0,l1,g0,N-s,E-s,t0,U1,j1,J1
 set cinwords-=switch
 set clipboard=autoselect,autoselectml,exclude:cons\|linux
 set cmdheight=2
-set cmdwinheight=2
+set cmdwinheight=1
 if has("gui_running")
   set columns=128
 endif
@@ -387,6 +401,7 @@ endif
 set list
 set listchars=tab:»\ ,trail:·,extends:>,precedes:<,nbsp:+
 set magic
+set makeencoding=char
 set matchpairs+=<:>
 set menuitems=40
 set mkspellmem=900000,3000,800
@@ -762,6 +777,7 @@ autocmd FileType dockerfile,python,qmake setlocal expandtab
 autocmd FileType dockerfile,python,qmake setlocal tabstop=4
 autocmd FileType dockerfile,python,qmake setlocal shiftwidth=4
 autocmd FileType help,markdown,text setlocal colorcolumn=+0
+autocmd FileType markdown setlocal foldmethod=expr
 autocmd FileType python setlocal makeprg=pylint3\ --reports=n\ --msg-template=\"{path}:{line}:\ {msg_id}\ {symbol},\ {obj}\ {msg}\"\ %:p
 autocmd FileType python setlocal errorformat=%f:%l:\ %m
 autocmd FileType sh setlocal formatoptions+=croql
@@ -1215,6 +1231,7 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 110.90  📁&f.Open\ &File\ Manager<Tab>-                 :Fern . -reveal=%<CR>
     an 110.100 📁&f.File\ &Manager\ Side\ Bar                  :Fern . -reveal=% -drawer -toggle<CR>
     an 110.110 📁&f.Open\ &Recent                              :Clap history<CR>
+    an 110.110 📁&f.QF\ &Recent                                :call PlanetVim_QF_OldFiles()<CR>
     an 110.120 📁&f.F&ind<Tab>:find                            :find 
     an 110.120 📁&f.F&ind\ in\ Tab<Tab>:tabfind                :tabfind 
     an 110.110 📁&f.Advanced.Open\ Read\ Only                  :browse view<CR>
@@ -1564,6 +1581,10 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 980.10  ⌨️&\|.Character\ under\ Cursor<Tab>g8        g8
     an 980.10  ⌨️&\|.Ascii\ under\ Cursor<Tab>ga            ga
     an 980.10  ⌨️&\|.Output\ of\ previous\ Command<Tab>g<   g<
+    an 980.10  ⌨️&\|.List\ All\ QF                          :clist!<CR>
+    an 980.10  ⌨️&\|.List\ All\ LL                          :llist!<CR>
+    an 980.10  ⌨️&\|.List\ QF\ Lists                        :chistory<CR>
+    an 980.10  ⌨️&\|.List\ LL\ Lists                        :lhistory<CR>
     an 980.10  ⌨️&\|.Co&lor\ Test                           :sp $VIMRUNTIME/syntax/colortest.vim<Bar>so %<CR>
     an 980.10  ⌨️&\|.&Highlight\ Test                       :runtime syntax/hitest.vim<CR>
     an 980.10  ⌨️&\|.Run\ Vim\ Script                       :browse so<CR>
@@ -1759,6 +1780,10 @@ function! PlanetVim_MenusEditingUpdate() abort
     an 250.410 📜&z.Disable\ A&utoFold                      :call <SID>AutoFoldDisable()<CR>
 
     " quickfix
+    " TODO: set 'errorfile' 'makeef' 'errorformat' 'makeprg' 'grepprg'
+    " TODO: 'grepformat'
+    " TODO: Add copy to LL, merge with previous, choose list, delete current,
+    " TODO: delete all
     an 260.10  &QF.QuickFix <Nop>
     an disable &QF.QuickFix
     an 260.20  &QF.Sea&rch                                      :Grepper -tool rg -quickfix<CR>
@@ -1958,8 +1983,8 @@ function! PlanetVim_MenusDevelopmentUpdate() abort
     an 500.10  🔨&u.Start                                     :Make<CR>
     an 500.10  🔨&u.Spawn                                     :Make<CR>
     an 500.10  🔨&u.--1-- <Nop>
-    an 500.10  🔨&u.Set\ Global\ Compiler<Tab>:compiler!\ {compiler} :compiler! 
-    an 500.10  🔨&u.Set\ Local\ Compiler<Tab>:compiler\ {compiler} :compiler 
+    an 500.10  🔨&u.Set\ Compiler\ Globally<Tab>:compiler!\ {compiler} :compiler! 
+    an 500.10  🔨&u.Set\ Compiler\ for\ Buffer<Tab>:compiler\ {compiler} :compiler 
 
     " Run
     an 510.10  ▶️&r.Run <Nop>
