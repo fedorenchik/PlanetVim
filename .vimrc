@@ -421,7 +421,7 @@ set numberwidth=3
 set patchmode=".orig"
 set path+=.,,./include,../include,../*/include,*/include,*,../*,/usr/include,**
 set nopreserveindent
-set previewheight=3
+set previewheight=12
 set printencoding=utf-8
 set printfont=&guifont
 set printmbcharset=ISO10646
@@ -546,6 +546,9 @@ endwhile
 " }}}
 " Normal (Command) Mode: {{{
 " Normal Keys: {{{
+" TODO: f/F - search 1 char
+" TODO: t/T - search 2 chars
+" TODO: l/h - repeat last f/F/t/T
 nn ` '
 nn ' `
 nn <unique> ; q:i
@@ -580,6 +583,8 @@ nn j :lne<CR>
 nn k :lp<CR>
 nn l f
 nn Q gq
+nn s <Nop>
+nn S <Nop>
 nn Y y$
 nn <silent> zr zr:<c-u>setlocal foldlevel?<CR>
 nn <silent> zm zm:<c-u>setlocal foldlevel?<CR>
@@ -732,6 +737,7 @@ tno <A-7> <C-w>:7tabn<CR>
 tno <A-8> <C-w>:8tabn<CR>
 tno <A-9> <C-w>:9tabn<CR>
 tno <A-0> <C-w>:10tabn<CR>
+tno <ScrollWheelUp> <C-w>N
 " }}}
 " Operator-pending Mode: {{{
 onoremap <Tab> <Esc>
@@ -756,9 +762,11 @@ autocmd BufReadPost */linux/*.h setlocal colorcolumn=100
 autocmd BufReadPost *.log normal G
 autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") && &filetype !~# 'commit' | exe "normal! g`\"" | endif
 autocmd CmdWinEnter : noremap <buffer> <S-CR> <CR>q:
+autocmd CmdWinEnter : noremap! <buffer> <S-CR> <CR>q:
+autocmd CmdWinEnter : noremap <buffer> <C-c> <C-w>c
+autocmd CmdWinEnter : noremap! <buffer> <C-c> <C-\><C-n><C-w>c
 autocmd CmdWinEnter / noremap <buffer> <S-CR> <CR>q/
 autocmd CmdWinEnter ? noremap <buffer> <S-CR> <CR>q?
-autocmd CmdwinEnter * nnoremap <buffer> <CR> <CR>
 autocmd FileType c,cpp setlocal foldmethod=syntax
 autocmd FileType c,cpp inoreabbrev #i #include 
 autocmd FileType c,cpp inoreabbrev ,, <<
@@ -1969,6 +1977,116 @@ function! PlanetVim_MenusDevelopmentUpdate() abort
     am 310.10  🪧&].Build\ tags\ File                        :!ctags -R .<CR>
 
     " Build
+    " Build process:
+    " * Project Settings
+    "         * direnv
+    "         * editorconfig
+    "         * arduino
+    "         * platformio
+    " * Setup Libs
+    "         * qt
+    "         * pkgbuild
+    "         * meson-wrapdb
+    "         * boost
+    " * Package manager
+    "         * conan
+    "         * pip
+    " * virtual envs
+    "         * pipenv
+    "         * conan virtual env
+    "         * docker
+    "         * vagrant
+    " * Choose build system
+    "         * Make
+    "         * Autotools
+    "         * CMake
+    "         * Meson
+    "         * QMake
+    "         * qbs
+    "         * scons
+    "         * KBuild
+    "         * gradle
+    " * Choose Build Generator
+    "         * Makefile
+    "         * Ninja
+    " * Choose compiler
+    "         * gcc
+    "         * clang
+    "         * wasm / emcc / emscripten
+    " * Set Cross-Compiler (build, host)
+    "         * gcc-mingw
+    "         * gcc-arm
+    "         * etc...
+    " * Set Canadian-Cross (build, host, target)
+    " * Choose debugger
+    "         * gdb
+    "         * lldb
+    " * Select build folder
+    "   (search for ./build* and ../build* folders), choose new
+    " * Configure
+    "         * ./autotools
+    "         * cmake ..
+    "         * meson ..
+    " * Build
+    "         * cmake --build .
+    "         * meson --build
+    "         * make
+    "         * ninja
+    " * Run
+    " * Debug
+    " * Test
+    "         * Qt Test
+    "         * Google Test
+    "         * Boost Test
+    "         * Catch2
+    " * Analyze
+    "         * clang-tidy
+    "         * clazy
+    "         * cppcheck
+    "         * performance analyzer (qtcreator)
+    "         * valgrind memcheck
+    "         * valgrind memcheck gdb
+    "         * valgrind function profiler (qtcreator)
+    "         * QML profiler (qtcreator)
+    " * Package
+    "         * fpm
+    "         * pyinstaller
+    "         * cpack
+    "         * appimage
+    "         * snap
+    "         * deb
+    "         * rpm
+    "         * flatpak
+    " * Deploy
+    "         * winqtdeploy
+    "         * macqtdeploy
+    "         * linuxdeploy
+    " * l10n & i18n:
+    "         * qt tools: lupdate / lrelease (+ auto-translation)
+    "         * gettext
+    "         * weblate.org
+    " * Documentation
+    "         * doxygen
+    "         * qt doc
+    "         * qt help
+    "         * readthedocs
+    " * Create installer
+    "         * qt-installer
+    " * Tools
+    "         * uic
+    "         * moc
+    "         * rcc
+    "         * flex / lex
+    "         * bison /yacc
+    "         * `$QMAKE -query QT_INSTALL_BINS`/designer
+    "         * qt.conf support (generate, update)
+    " * Choose Build Target
+    " Menus:
+    " Build
+    " Run
+    " Debug
+    " Test
+    " Analyze
     an 500.10  🔨&u.Build <Nop>
     an disable 🔨&u.Build
     an 500.10  🔨&u.Choose\ Make\ Target                      :make <C-z>"TODO
@@ -2466,6 +2584,7 @@ an disable 🌐&P.PlanetVim
 an 100.10  🌐&P.New\ &PlanetVim                             :silent !gvim<CR>
 an 100.20  🌐&P.--1-- <Nop>
 an 100.10  🌐&P.&Toggle\ Modeless                           :call PlanetVim_ModelessToggle()<CR>
+an 100.10  🌐&P.&Toggle\ HJKL                               :call PlanetVim_HJKLToggle()<CR>
 an 100.20  🌐&P.--2-- <Nop>
 an 100.30  🌐&P.&Basic\ Menus                         :call PlanetVim_MenusBasicToggle()<CR>
 an 100.40  🌐&P.&Editing\ Menus                       :call PlanetVim_MenusEditingToggle()<CR>
