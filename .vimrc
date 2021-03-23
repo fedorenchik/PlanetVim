@@ -2075,6 +2075,7 @@ function! PlanetVim_MenusDevelopmentUpdate() abort
     " * Tools
     "         * uic
     "         * moc
+    "         * moc-ng
     "         * rcc
     "         * flex / lex
     "         * bison /yacc
