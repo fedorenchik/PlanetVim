@@ -279,6 +279,41 @@ func QfOldFiles(info)
   return l
 endfunc
 
+let g:PV_p = '.'
+func! PlanetVim_f()
+  let c1 = nr2char(getchar())
+  let g:PV_p = c1
+  silent! exe "keepp keepj normal /\\V" .. g:PV_p .. "\<CR>"
+endfunc
+
+func! PlanetVim_F()
+  let c1 = nr2char(getchar())
+  let g:PV_p = c1
+  silent! exe "keepp keepj normal ?\\V" .. g:PV_p .. "\<CR>"
+endfunc
+
+func! PlanetVim_t()
+  let c1 = nr2char(getchar())
+  let c2 = nr2char(getchar())
+  let g:PV_p = c1 .. c2
+  silent! exe "keepp keepj normal /\\V" .. g:PV_p .. "\<CR>"
+endfunc
+
+func! PlanetVim_T()
+  let c1 = nr2char(getchar())
+  let c2 = nr2char(getchar())
+  let g:PV_p = c1 .. c2
+  silent! exe "keepp keepj normal ?\\V" .. g:PV_p .. "\<CR>"
+endfunc
+
+func! PlanetVim_l()
+  silent! exe "keepp keepj normal /\\V" .. g:PV_p .. "\<CR>"
+endfunc
+
+func! PlanetVim_h()
+  silent! exe "keepp keepj normal ?\\V" .. g:PV_p .. "\<CR>"
+endfunc
+
 " }}}
 " Colorscheme: {{{
 " set colorscheme
@@ -553,6 +588,8 @@ nn ` '
 nn ' `
 nn <unique> ; q:i
 nm + <C-W>
+nn <silent> f :call PlanetVim_f()<CR>
+nn <silent> F :call PlanetVim_F()<CR>
 nn gA :args<CR>
 nn gb :tselect<CR>
 nn gB :tags<CR>
@@ -578,13 +615,20 @@ nn g. :marks<CR>
 nn g" :registers<CR>
 nn g= :tabnew<CR>
 nn G G$
-nn h F
-nn j :lne<CR>
-nn k :lp<CR>
-nn l f
+nn <silent> h :call PlanetVim_h()<CR>
+nn <silent> j :lne<CR>
+nn <silent> k :lp<CR>
+nn <silent> l :call PlanetVim_l()<CR>
 nn Q gq
 nn s <Nop>
+nn sb <Cmd>exe "lvimgrep /^" .. expand('<cword>') .. "/gj %"<CR>
+nn sj :lvimgrep /^.*$/gj %<CR>
+nn sk :lvimgrep /{{{/gj %<CR>
+" fake marker for previous pattern: }}}
+nn sw <Cmd>exe "lvimgrep /" .. expand('<cword>') .. "/gj %"<CR>
 nn S <Nop>
+nn <silent> t :call PlanetVim_t()<CR>
+nn <silent> T :call PlanetVim_T()<CR>
 nn Y y$
 nn <silent> zr zr:<c-u>setlocal foldlevel?<CR>
 nn <silent> zm zm:<c-u>setlocal foldlevel?<CR>
@@ -2585,7 +2629,7 @@ an disable 🌐&P.PlanetVim
 an 100.10  🌐&P.New\ &PlanetVim                             :silent !gvim<CR>
 an 100.20  🌐&P.--1-- <Nop>
 an 100.10  🌐&P.&Toggle\ Modeless                           :call PlanetVim_ModelessToggle()<CR>
-an 100.10  🌐&P.&Toggle\ HJKL                               :call PlanetVim_HJKLToggle()<CR>
+an 100.10  🌐&P.&Toggle\ hjklfFtT                           :call PlanetVim_HJKLToggle()<CR>
 an 100.20  🌐&P.--2-- <Nop>
 an 100.30  🌐&P.&Basic\ Menus                         :call PlanetVim_MenusBasicToggle()<CR>
 an 100.40  🌐&P.&Editing\ Menus                       :call PlanetVim_MenusEditingToggle()<CR>
