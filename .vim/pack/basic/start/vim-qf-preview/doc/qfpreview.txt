@@ -1,0 +1,210 @@
+*qfpreview.txt*  Preview the current quickfix item in a popup window.
+
+Author:     bfrg <https://github.com/bfrg>
+Website:    https://github.com/bfrg/vim-qf-preview
+License:    Same terms as Vim itself (see |license|)
+
+==============================================================================
+INTRODUCTION                                        *vim-qf-preview* *qfpreview*
+
+vim-qf-preview is a |ftplugin| for the |quickfix-window| and |location-list-window|
+to quickly preview the file with the quickfix error under the cursor in a
+|popup-window|.
+
+The popup window is opened directly above the quickfix window (or below,
+depending on its position), without rearranging the current window layout.
+
+Moving the cursor in any direction while the popup window is displayed will
+close it.
+
+==============================================================================
+MAPPINGS                                                  *qfpreview-mappings*
+
+Quickfix window ~
+
+<plug>(qf-preview-open)                              *<plug>(qf-preview-open)*
+            Open a popup window with the file containing the quickfix error
+            the cursor is currently on. The window will be scrolled such that
+            the buffer line with the error is at the top of the popup window.
+
+            Note: To avoid conflicts with other plugins, the key mapping is
+            not bound to any key-sequence by default. You will first have to
+            bind <plug>(qf-preview-open) to a key of your choice.
+
+            For example, to open the popup window with "p", add the following
+            to |qf.vim|: >
+                " in ~/.vim/after/ftplugin/qf.vim
+                nmap <buffer> p <plug>(qf-preview-open)
+<
+            Or alternatively, if you prefer keeping your plugin settings in
+            your |vimrc|: >
+                augroup qfpreview
+                  autocmd!
+                  autocmd FileType qf nmap <buffer> p <plug>(qf-preview-open)
+                augroup END
+<
+                                                    *qfpreview-popup-mappings*
+Popup window mappings ~
+
+The following default keys can be used while the popup window is open:
+
+CTRL-J      Scroll popup window down one text line.
+CTRL-K      Scroll popup window up one text line.
+SHIFT-HOME  Scroll to first line of displayed buffer.
+SHIFT-END   Scroll to bottom of displayed buffer.
+r           Scroll back to error line ("reset").
+CTRL-C, q   Close the popup window.
+
+All keys are configurable. See |qfpreview-config| below.
+
+==============================================================================
+MOUSE EVENTS                                                 *qfpreview-mouse*
+
+While the mouse pointer is on the popup window, mouse scroll events will cause
+the text to scroll up or down as one would expect. Click on "X" in the top
+right corner to close the window.
+
+==============================================================================
+CONFIGURATION                                               *qfpreview-config*
+
+b:qfpreview                                                      *b:qfpreview*
+g:qfpreview                                                      *g:qfpreview*
+
+The default key mappings and the appearance of the popup window can be changed
+through b:qfpreview in |qf.vim|, or through g:qfpreview. The variable must be
+a |Dictionary| containing any of the following entries:
+
+                                                             *qfpreview.close*
+    close           Key to press for closing the popup window.
+                    Note: CTRL-C always closes the popup window.
+                    Default: q
+                                                        *qfpreview.scrolldown*
+    scrolldown      Key to press for scrolling the text down.
+                    Default: CTRL-J
+                                                          *qfpreview.scrollup*
+    scrollup        Key to press for scrolling the text up.
+                    Default: CTRL-K
+                                                      *qfpreview.halfpagedown*
+    halfpagedown    Key to press for scrolling the popup window one half page
+                    down.
+                    Default: none
+                                                        *qfpreview.halfpageup*
+    halfpageup      Key to press for scrolling the popup window one half page
+                    up.
+                    Default: none
+                                                      *qfpreview.fullpagedown*
+    fullpagedown    Key to press for scrolling the popup window one full page
+                    down.
+                    Default: none
+                                                        *qfpreview.fullpageup*
+    fullpageup      Key to press for scrolling the popup window one full page
+                    up.
+                    Default: none
+                                                               *qfpreview.top*
+    top             Key to press for scrolling the popup window to the top of
+                    the buffer.
+                    Default: SHIFT-HOME
+                                                            *qfpreview.bottom*
+    bottom          Key to press for scrolling the popup window to the bottom
+                    of the buffer.
+                    Default: SHIFT-END
+                                                             *qfpreview.reset*
+    reset           Key to press for scrolling the popup window back to the
+                    error line.
+                    Default: r
+                                                              *qfpreview.next*
+    next            Key to press for jumping to the next quickfix item in the
+                    current list. This is the same as if you closed the popup
+                    window, moved the cursor to the next valid quickfix entry
+                    and opened it again.
+                    Default: none
+                                                          *qfpreview.previous*
+    previous        Key to press for jumping to the previous quickfix item in
+                    the current list.
+                    Default: none
+                                                            *qfpreview.height*
+    height          Number of text lines to display in the popup window.
+                    Default: 15
+                                                            *qfpreview.offset*
+    offset          Number of buffer lines to show above the error line when
+                    the popup window is opened.
+                    Default: 0
+                                                            *qfpreview.number*
+    number          Enable 'number' in the popup window.
+                    Default: |v:false|
+                                                              *qfpreview.sign*
+    sign            Place a |sign| at the error line in the displayed buffer.
+                    This entry must be a dictionary with sign attributes. See
+                    the {dict} argument in |sign_define()| for valid entries
+                    and the examples below.
+                    Default: {}
+                                                       *qfpreview.matchcolumn*
+    matchcolumn     Highlight the column of the current quickfix item in the
+                    popup window using the highlight group |QfPreviewColumn|.
+                    Default: |v:false|
+
+==============================================================================
+EXAMPLES                                                  *qfpreview-examples*
+
+1. Override the popup scrolling keys: >
+    " Option 1: in your vimrc
+    let g:qfpreview = {
+            \ 'scrolldown': 'j',
+            \ 'scrollup': 'k',
+            \ 'halfpagedown': 'd',
+            \ 'halfpageup': 'u',
+            \ 'fullpagedown': 'f',
+            \ 'fullpageup': 'b',
+            \ 'number': v:true,
+            \ 'offset': 5,
+            \ 'height': 20
+            \ }
+
+    " Option 2: in ~/.vim/after/ftplugin/qf.vim
+    let b:qfpreview = {
+            \ 'scrolldown': "\<C-e>",
+            \ 'scrollup': "\<C-y>",
+            \ 'close': "\<Esc>",
+            \ 'height': 10
+            \ }
+<
+2. Place a sign in the buffer at the error line and highlight the whole line
+   using |hl-CursorLine|: >
+    let g:qfpreview = {'sign': {'linehl': 'CursorLine'}}
+<
+3. Instead of highlighting the whole line, display a sign in the
+   'signcolumn': >
+    let g:qfpreview = {'sign': {'text': '>>', 'texthl': 'Todo'}}
+<
+4. Same as 3., but also enable the 'number' column. In this case the placed
+   sign is shown in the 'number' column: >
+    let g:qfpreview = {
+        \ 'number': 1,
+        \ 'sign': {'text': '>>', 'texthl': 'Search'}
+        \ }
+<
+==============================================================================
+HIGHLIGHTING                                             *qfpreview-highlight*
+
+The following highlighting groups are used by the plugin:
+                                                                *hl-QfPreview*
+QfPreview           Normal text in the popup window. This is the equivalent of
+                    the |hl-Normal| highlight group in regular windows.
+                    By default links to |hl-Pmenu|.
+                                                           *hl-QfPreviewTitle*
+QfPreviewTitle      Title (top line) of the popup window.
+                    By default links to |hl-Pmenu|.
+                                                       *hl-QfPreviewScrollbar*
+QfPreviewScrollbar  Highlight group name for the |popup-scrollbar|. The
+                    background color is what matters.
+                    By default links to |hl-PmenuSbar|.
+                                                           *hl-QfPreviewThumb*
+QfPreviewThumb      Highlight group name for the |popup-scrollbar| thumb. The
+                    background color is what matters.
+                    By default links to |hl-PmenuThumb|.
+                                                          *hl-QfPreviewColumn*
+QfPreviewColumn     Highlight group name for highlighting the column of the
+                    current quickfix item in the popup window.
+                    By default links to |hl-QuickFixLine|.
+
+ vim:tw=78:et:ft=help:norl:
