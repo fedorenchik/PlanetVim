@@ -2347,13 +2347,16 @@ function! PlanetVim_MenusToolsUpdate() abort
     an 730.10  🔧&o.&direnv:\ Run\ \.envrc                    :DirenvExport<CR>
     an 730.10  🔧&o.dire&nv:\ Edit\ \.envrc                   :EditEnvrc<CR>
     an 730.10  🔧&o.diren&v:\ Edit\ direnvrc                  :EditDirenvrc<CR>
-    an 730.10  🔧&o.--5-- <Nop>
+    an 730.10  🔧&o.--2-- <Nop>
     an 730.10  🔧&o.Edit\ Command<Tab>:                       q:
     an 730.10  🔧&o.Edit\ Search<Tab>q/                       q/
     an 730.10  🔧&o.Edit\ Search\ Backwards<Tab>q?            q?
-    an 730.10  🔧&o.--5-- <Nop>
+    an 730.10  🔧&o.--3-- <Nop>
     an 730.10  🔧&o.Convert\ to\ HEX<Tab>:%!xxd             :call <SID>XxdToHex()<CR>
     an 730.10  🔧&o.Convert\ from\ HEX<Tab>:%!xxd\ -r       :call <SID>XxdFromHex()<CR>
+    an 730.10  🔧&o.--4-- <Nop>
+    an 730.10  🔧&o.Reload\ \.editorconfig                  :EditorConfigReload<CR>
+    an 730.10  🔧&o.Disable\ \.editorconfig\ for\ buffer    :let b:EditorConfig_disable=1<CR>
   else
     silent! aunmenu 🔀&,
     silent! aunmenu ⛏️&;
