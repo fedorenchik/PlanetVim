@@ -41,11 +41,6 @@
 " rg (ripgrep) - for vim-grepper
 " pylint3
 " }}}
-" TODO: {{{
-" Patches for vim:
-" * Max number of quickfix lists change to 100 (from 10)
-" * tag stack size change to 200 (from 20)
-" }}}
 " Prevent Multiple Sourcing: {{{
 if exists("g:loaded_home_vimrc")
   finish
@@ -64,6 +59,7 @@ if has('syntax') && !exists('g:syntax_on')
 endif
 " }}}
 " Start Vim Server: {{{
+" TODO: add menu to start server
 if empty(v:servername) && exists('*remote_startserver')
   call remote_startserver('VIM')
 endif
@@ -279,7 +275,7 @@ func QfOldFiles(info)
   return l
 endfunc
 
-let g:PV_p = '.'
+let g:PV_p = '\.'
 func! PlanetVim_f()
   let c1 = nr2char(getchar())
   let g:PV_p = c1
@@ -581,9 +577,6 @@ endwhile
 " }}}
 " Normal (Command) Mode: {{{
 " Normal Keys: {{{
-" TODO: f/F - search 1 char
-" TODO: t/T - search 2 chars
-" TODO: l/h - repeat last f/F/t/T
 nn ` '
 nn ' `
 nn <unique> ; q:i
@@ -616,8 +609,8 @@ nn g" :registers<CR>
 nn g= :tabnew<CR>
 nn G G$
 nn <silent> h :call PlanetVim_h()<CR>
-nn <silent> j :lne<CR>
-nn <silent> k :lp<CR>
+nn <silent> j :lbel<CR>
+nn <silent> k :lab<CR>
 nn <silent> l :call PlanetVim_l()<CR>
 nn Q gq
 nn s <Nop>
@@ -686,31 +679,16 @@ nn <A-0> 10gt
 " }}}
 " }}}
 " Insert Mode: {{{
-" Keys Description: {{{
-" Standard Vim Mappings i_^: @ A C D E F G H I J K L M N O P Q R
-" S T U V W X Y Z [ \ ] ^ _
-" Available To Remap: @ A B E J L M Q S Y Z _
-" Submodes: <A-...> <C-...> <C-X>... <C-G>...
-" }}}
 inoremap <Tab> <Esc>
 inoremap <expr> <CR> pumvisible() ? "<C-Y><CR>" : "<CR>"
 " Ctrl Key: {{{
 inoremap <C-@> <C-^>
 inoremap <C-E> <C-R>=pumvisible() ? "\<lt>C-E>" : "\<lt>Esc>"<CR>
-" Insert Mode i_^G: {{{
-" Standard Vim Mappings: j ^J k ^K u U <Up> <Down>
-" }}}
 "inoremap <C-J> <Nop>
 "inoremap <C-L> <Nop>
 "inoremap <C-M> <Nop>
 inoremap <C-Q> <Nop>
 inoremap <C-S> <Nop>
-" Insert Mode i_^X: {{{
-" Standard Vim Mappings ^: D E F I K L N O P S T U V Y ]
-" Unmappable: C
-" Available To Map: A B G H J M Q R W X Z
-" }}}
-inoremap <C-Y> <C-R>=pumvisible() ? "\<lt>C-Y>" : "\<lt>Esc>"<CR>
 inoremap <C-Z> <Nop>
 inoremap <C-{> <Esc>
 " }}}
@@ -848,6 +826,7 @@ endif
 autocmd GUIEnter * set t_vb=
 autocmd GUIEnter * set guifont=DejaVu\ Sans\ Mono\ 9,Monospace\ 9
 autocmd GUIEnter * silent call system('wmctrl -i -b add,maximized_vert,maximized_horz -r' . v:windowid)
+autocmd InsertLeave * pclose
 autocmd SessionLoadPost * exe "set viminfofile=~/.vim/viminfo/" .. fnamemodify(v:this_session, ":t") .. ".viminfo"
 autocmd SessionLoadPost * silent! rviminfo!
 "TODO: auto-save and auto-load quickfix/loclist files (up to 10 of each, loclists: for each window)
@@ -1504,6 +1483,9 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 150.70  📺&v.Set\ Dark\ Background<Tab>set\ bg=dark  :set bg=dark<CR>
     an 150.70  📺&v.Set\ Light\ Background<Tab>set\ bg=light :set bg=light<CR>
     an 150.70  📺&v.Choose\ Colorscheme<Tab>:Clap\ colors   :Clap colors<CR>
+    an 150.70  📺&v.GUI\ Highlight.Menu                     :h hl-Menu
+    an 150.70  📺&v.GUI\ Highlight.Scrollbar                :h hl-Scrollbar
+    an 150.70  📺&v.GUI\ Highlight.Tooltip                  :h hl-Tooltip
 
     " Go
     an 160.10  ↕️&g.Go <Nop>
@@ -1612,9 +1594,7 @@ function! PlanetVim_MenusBasicUpdate() abort
       an 970.10 ⚙️&\\.Select\ Fo&nt\.\.\.                   :set guifont=*<CR>
     endif
     an 970.10  ⚙️&\\.--7-- <Nop>
-    an 970.10.10  ⚙️&\\.Syntax.On                           :syn on<CR>
-    an 970.10.10  ⚙️&\\.Syntax.Manual                       :syn manual<CR>
-    an 970.10.10  ⚙️&\\.Syntax.Off                          :syn off<CR>
+    an 970.10  ⚙️&\\.Set\ Window-Local\ Syntax<Tab>:ownsyntax\ {syn} q:iownsyntax <C-x><C-v>
     an 970.10  ⚙️&\\.--8-- <Nop>
     an 970.10  ⚙️&\\.Toggle\ Verbosity<Tab>=oV              :VerbosityToggle<CR>
     an 970.10  ⚙️&\\.Open\ Verbosity\ Log<Tab>goV           :VerbosityOpenLast<CR>
@@ -1637,11 +1617,39 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 980.10  ⌨️&\|.List\ All\ LL                          :llist!<CR>
     an 980.10  ⌨️&\|.List\ QF\ Lists                        :chistory<CR>
     an 980.10  ⌨️&\|.List\ LL\ Lists                        :lhistory<CR>
+    an 980.10  ⌨️&\|.Current\ Colorscheme                   :colorscheme<CR>
+    an 980.10  ⌨️&\|.Syntax.Clear\ Buffer\ Syntax<Tab>:syn\ clear :syn clear<Tab>
+    an 980.10  ⌨️&\|.Syntax.On\ (Reset\ Highlight)<Tab>:syn\ on :syn on<CR>
+    an 980.10  ⌨️&\|.Syntax.Enable\ (Keep\ Highlight)<Tab>:syn\ enable :syn enable<CR>
+    an 980.10  ⌨️&\|.Syntax.Toggle                       :if exists("g:syntax_on") \| syntax off \| else \| syntax enable \| endif<CR>
+    an 980.10  ⌨️&\|.Syntax.Default<Tab>:syn\ default    :syn default<CR>
+    an 980.10  ⌨️&\|.Syntax.Manual<Tab>:syn\ manual      :syn manual<CR>
+    an 980.10  ⌨️&\|.Syntax.Off<Tab>:syn\ off            :syn off<CR>
+    an 980.10  ⌨️&\|.Syntax.Reset<Tab>:syn\ reset        :syn reset<CR>
+    an 980.10  ⌨️&\|.Syntax.List<Tab>:syn\ list          :syn list<CR>
+    an 980.10  ⌨️&\|.Syntax.Case<Tab>:syn\ case          :syn case<CR>
+    an 980.10  ⌨️&\|.Syntax.Foldlevel<Tab>:syn\ foldlevel :syn foldlevel<CR>
+    an 980.10  ⌨️&\|.Syntax.Spell<Tab>:syn\ spell        :syn spell<CR>
+    an 980.10  ⌨️&\|.Syntax.iskeyword<Tab>:syn\ iskeyword :syn iskeyword<CR>
+    an 980.10  ⌨️&\|.Syntax.conceal<Tab>:syn\ conceal    :syn conceal<CR>
+    an 980.10  ⌨️&\|.Syntax.Sync\ List<Tab>:syn\ sync    :syn sync<CR>
+    an 980.10  ⌨️&\|.Syntax.Sync\ FromStart<Tab>:syn\ sync\ fromstart :syn sync fromstart<CR>
+    an 980.10  ⌨️&\|.Syntax.Sync\ Ccomment<Tab>:syn\ sync\ ccomment :syn sync ccomment<CR>
+    an 980.10  ⌨️&\|.Syntax.Sync\ Minlines<Tab>:syn\ sync\ minlines=50 :syn sync minlines=50<CR>
+    an 980.10  ⌨️&\|.Syntax.Sync\ Clear<Tab>:syn\ sync\ clear :syn sync clear<CR>
+    an 980.10  ⌨️&\|.Syntax.Highlight\ List<Tab>:hi              :hi<CR>
+    an 980.10  ⌨️&\|.Syntax.Highlight\ Clear<Tab>:hi\ clear      :hi clear<CR>
     an 980.10  ⌨️&\|.Co&lor\ Test                           :sp $VIMRUNTIME/syntax/colortest.vim<Bar>so %<CR>
     an 980.10  ⌨️&\|.&Highlight\ Test                       :runtime syntax/hitest.vim<CR>
     an 980.10  ⌨️&\|.Run\ Vim\ Script                       :browse so<CR>
     an 980.10  ⌨️&\|.Ex\ Vim\ Mode\ (Dangerous!)<Tab>gX     gQ
     an 980.10  ⌨️&\|.Ex\ Mode\ (Dangerous!)<Tab>Q           Q
+    an 980.10  ⌨️&\|.Debug <Nop>
+    an disable ⌨️&\|.Debug
+    an 980.10  ⌨️&\|.Profile\ Syntax.Start\ measuring\ syntax\ times<Tab>:syntime\ on :syntime on<CR>
+    an 980.10  ⌨️&\|.Profile\ Syntax.Stop\ measuring\ syntax\ times<Tab>:syntime\ off :syntime off<CR>
+    an 980.10  ⌨️&\|.Profile\ Syntax.Restart\ measuring\ syntax\ times<Tab>:syntime\ clear :syntime clear<CR>
+    an 980.10  ⌨️&\|.Profile\ Syntax.Report\ syntax\ times<Tab>:syntime\ report :syntime report<CR>
 
     " Help
     an 990.10  ❔&?.Help <Nop>
@@ -1673,8 +1681,8 @@ function! PlanetVim_MenusBasicUpdate() abort
     silent! aunmenu 📺&v
     silent! aunmenu ↕️&g
     silent! aunmenu 🧭&n
-    silent! aunmenu ⌨️&\\
     silent! aunmenu ⚙️&\|
+    silent! aunmenu ⌨️&\\
     silent! aunmenu ❔&h
   endif
 endfunction
@@ -1773,6 +1781,8 @@ function! PlanetVim_MenusEditingUpdate() abort
     an 230.10  🖌️&c.Add\ Match\ Position                     :call matchaddpos(highlight_group, visual_position)<CR>
     an 230.10  🖌️&c.Delete\ Match                            :call matchdelete(id)<CR>
     an 230.10  🖌️&c.Clear\ All\ Matches                      :call clearmatches()<CR>
+    an 230.10  🖌️&c.TextProp <Nop>
+    an disable 🖌️&c.TextProp
 
     " Bookmarks: Upper-case marks (mA-mZ)
     an 240.10  📎&k.Bookmarks <Nop>
@@ -1873,9 +1883,10 @@ function! PlanetVim_MenusEditingUpdate() abort
     an 260.340 &QF.Add\ from\ Expr\ (&')<Tab>:caddexpr          :caddexpr! 
     an 260.350 &QF.&Close<Tab>:cclose<Tab>                      :cclose<CR>
     an 260.360 &QF.--5-- <Nop>
-    an 260.370 &QF.Previous\ LocList\ (&k)<Tab>:colder          :colder<CR>
-    an 260.380 &QF.Next\ LocList\ (&j)<Tab>:cnewer              :cnewer<CR>
-    an 260.390 &QF.List\ LocLists\ (&q)<Tab>:chistory           :chistory<CR>
+    an 260.370 &QF.Previous\ QuickFix\ (&k)<Tab>:colder         :colder<CR>
+    an 260.380 &QF.Next\ QuickFix\ (&j)<Tab>:cnewer             :cnewer<CR>
+    an 260.390 &QF.List\ QuickFixes\ (&q)<Tab>:chistory         :chistory<CR>
+    an 260.390 &QF.Delete\ All\ QuickFixes                      :call setqflist([], 'f')<CR>
 
     " loclist
     an 270.10  &LL.LocList <Nop>
@@ -1918,6 +1929,9 @@ function! PlanetVim_MenusEditingUpdate() abort
     an 270.370 &LL.Previous\ LocList\ (&k)<Tab>:lolder          :lolder<CR>
     an 270.380 &LL.Next\ LocList\ (&j)<Tab>:lnewer              :lnewer<CR>
     an 270.390 &LL.List\ LocLists\ (&q)<Tab>:lhistory           :lhistory<CR>
+    an 270.390 &LL.Delete\ All\ LocLists\ in\ Window            :call setloclist(0, [], 'f')<CR>
+    an 270.390 &LL.Delete\ All\ LocLists\ in\ Tab               :windo call setloclist(0, [], 'f')<CR>
+    an 270.390 &LL.Delete\ All\ LocLists\ in\ All\ Tabs         :tabdo windo call setloclist(0, [], 'f')<CR>
   else
     silent! aunmenu 📋&i
     silent! aunmenu 🔖&'
@@ -2019,6 +2033,10 @@ function! PlanetVim_MenusDevelopmentUpdate() abort
     am 310.10  🪧&].Toggle\ AutoPreview\ Tags                :call PlanetVim_TagsAutoPreview_Toggle()<CR>
     an 310.10  🪧&].--4-- <Nop>
     am 310.10  🪧&].Build\ tags\ File                        :!ctags -R .<CR>
+    am 310.10  🪧&].Generate\ tags\.vim\ File                 :sp tags<CR>:%s/^\([^	:]*:\)\=\([^	]*\).*/syntax keyword Tag \2/<CR>:wq! tags.vim<CR>/^<CR>
+    am 310.10  🪧&].Highlight\ tags\ from\ tags\.vim          :so tags.vim<CR>
+    am 310.10  🪧&].Generate\ types\.vim\ File                :!ctags --c-kinds=gstu -o- *.[ch] \| awk 'BEGIN{printf("syntax keyword Type\t")} {printf("%s ", $1)}END{print "")' > types.vim
+    am 310.10  🪧&].Highlight\ tags\ from\ types\.vim         :so types.vim<CR>
 
     " Build
     " Build process:
