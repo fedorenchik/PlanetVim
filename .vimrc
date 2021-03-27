@@ -2447,7 +2447,7 @@ function! PlanetVim_MenusNavigationUpdate() abort
     an 820.10  🪟&w.Windows <Nop>
     an disable 🪟&w.Windows
     an 820.10  🪟&w.&Window\ Mode                           :WindowMode<CR>
-    an 820.10  🪟&w.&ChooseWin\ Mode<Tab>\\                 :ChooseWin<CR>
+    an 820.10  🪟&w.ChooseWin\ Mode\ (&\\)<Tab>\\           :ChooseWin<CR>
     an 820.10  🪟&w.--1-- <Nop>
     an 820.10  🪟&w.C&hoose<Tab>:Clap\ windows              :Clap windows<CR>
     an 820.10  🪟&w.--2-- <Nop>
