@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/romainl/vim-qf.git
+	branch = master
+	commit = 0da85ff4270c2be10e24729dd42fb749ad1b69b7
+	parent = 19c7a81360a685542e081a1902a51e6194928533
+	method = merge
+	cmdver = 0.4.3
