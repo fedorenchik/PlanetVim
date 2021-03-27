@@ -2625,29 +2625,61 @@ fun! s:ToggleGuiOption(option)
     endif
 endfun
 
-function! PlanetVim_ModelessToggle() abort
-  set im!
-  set sm!
-  if empty(&selectmode)
-    set selectmode=mouse,key
-  else
-    set selectmode=
-  endif
-  if empty(&keymodel)
-    set keymodel=startsel,stopsel
-  else
-    set keymodel=
-  endif
-  call <SID>ToggleGuiOption('c')
-  call <SID>ToggleGuiOption('r')
-endfunction
+func! PlanetVim_SetEasyMode() abort
+  set im
+  set selectmode=mouse,key
+  set keymodel=startsel,stopsel
+  set guioptions-=c
+  set guioptions+=r
+  nun h
+  nun j
+  nun k
+  nun l
+  nun f
+  nun F
+  nun t
+  nun T
+endfunc
+
+func! PlanetVim_SetStandardMode()
+  set noim
+  set selectmode=
+  set keymodel=
+  set guioptions+=c
+  set guioptions-=r
+  nun h
+  nun j
+  nun k
+  nun l
+  nun f
+  nun F
+  nun t
+  nun T
+endfunc
+
+func! PlanetVim_SetSuperChargedMode()
+  set noim
+  set selectmode=
+  set keymodel=
+  set guioptions+=c
+  set guioptions-=r
+  nn <silent> f :call PlanetVim_f()<CR>
+  nn <silent> F :call PlanetVim_F()<CR>
+  nn <silent> h :call PlanetVim_h()<CR>
+  nn <silent> j :lbel<CR>
+  nn <silent> k :lab<CR>
+  nn <silent> l :call PlanetVim_l()<CR>
+  nn <silent> t :call PlanetVim_t()<CR>
+  nn <silent> T :call PlanetVim_T()<CR>
+endfunc
 
 an 100.10  🌐&P.PlanetVim <Nop>
 an disable 🌐&P.PlanetVim
 an 100.10  🌐&P.New\ &PlanetVim                             :silent !gvim<CR>
-an 100.20  🌐&P.--1-- <Nop>
-an 100.10  🌐&P.&Toggle\ Modeless                           :call PlanetVim_ModelessToggle()<CR>
-an 100.10  🌐&P.&Toggle\ hjklfFtT                           :call PlanetVim_HJKLToggle()<CR>
+an 100.10  🌐&P.--1-- <Nop>
+an 100.10  🌐&P.Set\ Easy\ Mode                             :call PlanetVim_SetEasyMode()<CR>
+an 100.10  🌐&P.Set\ Standard\ Mode                         :call PlanetVim_SetStandardMode()<CR>
+an 100.10  🌐&P.Set\ Super-Charged\ Mode                    :call PlanetVim_SetSuperChargedMode()<CR>
 an 100.20  🌐&P.--2-- <Nop>
 an 100.30  🌐&P.&Basic\ Menus                         :call PlanetVim_MenusBasicToggle()<CR>
 an 100.40  🌐&P.&Editing\ Menus                       :call PlanetVim_MenusEditingToggle()<CR>
