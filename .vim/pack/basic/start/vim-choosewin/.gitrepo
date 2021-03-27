@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/t9md/vim-choosewin.git
+	branch = master
+	commit = f91cdb9be92ce3bb9bccba16e8c659d5e8d7454f
+	parent = 028f7dbf471a1e63666650259151af9cbf84a1fe
+	method = merge
+	cmdver = 0.4.3
