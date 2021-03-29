@@ -2541,9 +2541,11 @@ function! PlanetVim_MenusNavigationUpdate() abort
     an 830.10  🗂️&\..--4-- <Nop>
     an 830.10  🗂️&\..Save\ Current\ Tab                     :TODO"save session without tabpages (as .vimtab file)(set sessionoptions-=tabpages,winpos)
     an 830.10  🗂️&\..Open\ Tab\.\.\.                        :TODO"open (source) .vimtab file in new tab
+    an 830.10  🗂️&\..Reopen\ Closed\ Tab                    :TODO"open (source) .vimtab file in new tab
     an 830.10  🗂️&\..--5-- <Nop>
     an 830.10  🗂️&\..E&xecute\ in\ each\ Tab<Tab>:tabdo     :tabdo 
     an 830.10  🗂️&\..--6-- <Nop>
+    "TODO: autosave tab when close, using autocmds
     an 830.10  🗂️&\..&Close<Tab>:tabclose                   :tabclose<CR>
     an 830.10  🗂️&\..Close\ all\ &other\ tabs<Tab>:tabonly  :tabonly<CR>
 
