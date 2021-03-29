@@ -125,7 +125,7 @@ function! GuiTabTooltip() abort
   let l:tooltip ..= '[' .. v:lnum .. '/' .. tabpagenr('$') .. ']'
   let l:tooltip ..= '[#:' .. tabpagewinnr(v:lnum, '$') .. ']'
   if haslocaldir(-1) == 2
-    let l:tooltip ..= ' tcd: ' .. getcwd(-1, 0)
+    let l:tooltip ..= ' tcd: ' .. fnamemodify(getcwd(-1, 0), ":~")
   endif
 
   let l:bufnrlist = tabpagebuflist(v:lnum)
@@ -161,11 +161,11 @@ function! GuiTabTooltip() abort
       let l:tooltip ..= ' [' .. l:cur_buftype .. ']'
     endif
     if haslocaldir(bufwinnr(bufnr)) == 1
-      let l:tooltip ..= ' [lcd: ' .. getcwd() .. ']'
+      let l:tooltip ..= ' [lcd: ' .. fnamemodify(getcwd(), ":~") .. ']'
     endif
   endfor
 
-  let l:tooltip ..= "\npwd: " .. getcwd(-1)
+  let l:tooltip ..= "\npwd: " .. fnamemodify(getcwd(-1), ":~")
 
   return l:tooltip
 endfunction
@@ -826,7 +826,7 @@ endif
 autocmd GUIEnter * set t_vb=
 autocmd GUIEnter * set guifont=DejaVu\ Sans\ Mono\ 9,Monospace\ 9
 autocmd GUIEnter * silent call system('wmctrl -i -b add,maximized_vert,maximized_horz -r' . v:windowid)
-autocmd InsertLeave * pclose
+autocmd InsertLeave * if empty(&buftype) | pclose | endif
 autocmd SessionLoadPost * exe "set viminfofile=~/.vim/viminfo/" .. fnamemodify(v:this_session, ":t") .. ".viminfo"
 autocmd SessionLoadPost * silent! rviminfo!
 "TODO: auto-save and auto-load quickfix/loclist files (up to 10 of each, loclists: for each window)
@@ -2111,13 +2111,11 @@ function! PlanetVim_MenusDevelopmentUpdate() abort
     "         * valgrind function profiler (qtcreator)
     "         * QML profiler (qtcreator)
     " * Package
-    "         * fpm
+    "         * fpm (deb, rpm)
     "         * pyinstaller
     "         * cpack
     "         * appimage
     "         * snap
-    "         * deb
-    "         * rpm
     "         * flatpak
     " * Deploy
     "         * winqtdeploy
@@ -2146,26 +2144,51 @@ function! PlanetVim_MenusDevelopmentUpdate() abort
     " * Choose Build Target
     " Menus:
     " Build
+    "         --Dev Env
+    "         direnv
+    "         docker
+    "         schroot here
+    "         systemd-nspawn
+    "         vagrant
+    "         --AutoTools Style
+    "         Run ./autogen[.sh]
+    "         Rut ./bootstrap[.sh]
+    "         Run ./configure[*]
+    "         Run autorefonf (if have ./configure.[ac,in])
+    "         Run make
+    "         --KBuild
+    "         make oldconfig
+    "         make menuconfig (in new terminal tab)
+    "         Edit .config[*]
+    "         make
+    "         --cmake
+    "         --ninja
+    "         --meson
+    "         --arduino
+    "         --platformio
+    "         --Yocto
+    "
     " Run
     " Debug
     " Test
     " Analyze
     an 500.10  🔨&u.Build <Nop>
     an disable 🔨&u.Build
-    an 500.10  🔨&u.Choose\ Make\ Target                      :make <C-z>"TODO
-    an 500.10  🔨&u.Rerun\ Previous\ Make                     :make prev_target
-    an 500.10  🔨&u.Make                                      :Make<CR>
-    an 500.10  🔨&u.Make!                                     :Make<CR>
-    an 500.10  🔨&u.Copen                                     :Make<CR>
-    an 500.10  🔨&u.Copen!                                    :Make<CR>
-    an 500.10  🔨&u.Dispatch!                                 :Make<CR>
-    an 500.10  🔨&u.FocusDispatch!                            :Make<CR>
-    an 500.10  🔨&u.AbortDispatch                             :Make<CR>
-    an 500.10  🔨&u.Start                                     :Make<CR>
-    an 500.10  🔨&u.Spawn                                     :Make<CR>
-    an 500.10  🔨&u.--1-- <Nop>
-    an 500.10  🔨&u.Set\ Compiler\ Globally<Tab>:compiler!\ {compiler} :compiler! 
-    an 500.10  🔨&u.Set\ Compiler\ for\ Buffer<Tab>:compiler\ {compiler} :compiler 
+    an 500.10  🔨&u.AutoTools.Run\ \./autogen.sh                :!./autogen.sh<CR>
+    " an 500.10  🔨&u.Choose\ Make\ Target                      :make <C-z>"TODO
+    " an 500.10  🔨&u.Rerun\ Previous\ Make                     :make prev_target
+    " an 500.10  🔨&u.Make                                      :Make<CR>
+    " an 500.10  🔨&u.Make!                                     :Make<CR>
+    " an 500.10  🔨&u.Copen                                     :Make<CR>
+    " an 500.10  🔨&u.Copen!                                    :Make<CR>
+    " an 500.10  🔨&u.Dispatch!                                 :Make<CR>
+    " an 500.10  🔨&u.FocusDispatch!                            :Make<CR>
+    " an 500.10  🔨&u.AbortDispatch                             :Make<CR>
+    " an 500.10  🔨&u.Start                                     :Make<CR>
+    " an 500.10  🔨&u.Spawn                                     :Make<CR>
+    " an 500.10  🔨&u.--1-- <Nop>
+    " an 500.10  🔨&u.Set\ Compiler\ Globally<Tab>:compiler!\ {compiler} :compiler! 
+    " an 500.10  🔨&u.Set\ Compiler\ for\ Buffer<Tab>:compiler\ {compiler} :compiler 
 
     " Run
     an 510.10  ▶️&r.Run <Nop>
