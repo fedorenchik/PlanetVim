@@ -2321,6 +2321,20 @@ function! s:TempState(...) abort
   return get(s:temp_files, s:cpath(fnamemodify(a:0 ? a:1 : @%, ':p')), {})
 endfunction
 
+function! fugitive#Result(...) abort
+  if !a:0 || a:1 =~# '^-\=$'
+    return get(g:, '_fugitive_last_job', {})
+  elseif type(a:1) == type(0)
+    return s:TempState(bufname(a:1))
+  elseif type(a:1) == type('')
+    return s:TempState(a:1)
+  elseif type(a:1) == type({}) && has_key(a:1, 'file')
+    return s:TempState(a:1.file)
+  else
+    return {}
+  endif
+endfunction
+
 function! s:TempReadPre(file) abort
   if has_key(s:temp_files, s:cpath(a:file))
     let dict = s:temp_files[s:cpath(a:file)]
@@ -2396,7 +2410,7 @@ function! s:RunSave(state) abort
   let s:temp_files[s:cpath(a:state.file)] = a:state
 endfunction
 
-function! s:RunFinished(state) abort
+function! s:RunFinished(state, ...) abort
   if has_key(get(g:, '_fugitive_last_job', {}), 'file') && bufnr(g:_fugitive_last_job.file) < 0
     exe s:TempDelete(remove(g:, '_fugitive_last_job').file)
   endif
@@ -2405,20 +2419,20 @@ function! s:RunFinished(state) abort
   if get(a:state, 'filetype', '') ==# 'git' && first =~# '\<\([[:upper:][:digit:]_-]\+(\d\+)\).*\1'
     let a:state.filetype = 'man'
   endif
-  call fugitive#ReloadStatus(a:state.dir, 1)
 endfunction
 
 function! s:RunEdit(state, tmp, job) abort
-  if get(a:state, 'request', '') == 'edit'
-    call remove(a:state, 'request')
-    let sentinel = a:state.file . '.edit'
-    let file = FugitiveVimPath(readfile(sentinel, 1)[0])
-    exe substitute(a:state.mods, '\<tab\>', '-tab', 'g') 'keepalt split' s:fnameescape(file)
-    set bufhidden=wipe
-    let s:edit_jobs[bufnr('')] = [a:state, a:tmp, a:job, sentinel]
-    call fugitive#ReloadStatus(a:state.dir, 1)
-    return 1
+  if get(a:state, 'request', '') !=# 'edit'
+    return 0
   endif
+  call remove(a:state, 'request')
+  let sentinel = a:state.file . '.edit'
+  let file = FugitiveVimPath(readfile(sentinel, 1)[0])
+  exe substitute(a:state.mods, '\<tab\>', '-tab', 'g') 'keepalt split' s:fnameescape(file)
+  set bufhidden=wipe
+  let s:edit_jobs[bufnr('')] = [a:state, a:tmp, a:job, sentinel]
+  call fugitive#ReloadStatus(a:state.dir, 1)
+  return 1
 endfunction
 
 function! s:RunReceive(state, tmp, type, job, data, ...) abort
@@ -2519,7 +2533,6 @@ function! s:RunWait(state, tmp, job, ...) abort
   if a:0 && filereadable(a:1)
     call delete(a:1)
   endif
-  let finished = 0
   try
     while get(a:state, 'request', '') !=# 'edit' && s:RunTick(a:job)
       call s:RunEcho(a:tmp)
@@ -2552,10 +2565,9 @@ function! s:RunWait(state, tmp, job, ...) abort
       let a:tmp.echo = substitute(a:tmp.echo, "^\r\\=\n", '', '')
       echo
     endif
-    call s:RunEdit(a:state, a:tmp, a:job)
-    let finished = 1
+    let finished = !s:RunEdit(a:state, a:tmp, a:job)
   finally
-    if !finished
+    if !exists('finished')
       try
         if a:state.pty && !get(a:state, 'closed_in')
           call s:RunSend(a:job, "\<C-C>")
@@ -2566,6 +2578,8 @@ function! s:RunWait(state, tmp, job, ...) abort
         endif
       catch /.*/
       endtry
+    elseif finished
+      call fugitive#ReloadStatus(a:state.dir, 1)
     endif
   endtry
   return ''
@@ -2576,7 +2590,9 @@ if !exists('s:resume_queue')
 endif
 function! fugitive#Resume() abort
   while len(s:resume_queue)
-    call call('s:RunWait', remove(s:resume_queue, 0))
+    try
+      call call('s:RunWait', remove(s:resume_queue, 0))
+    endtry
   endwhile
 endfunction
 
@@ -2802,8 +2818,8 @@ function! fugitive#Command(line1, line2, range, bang, mods, arg) abort
             \ }))
     endif
     let state.job = job
-    call s:RunWait(state, tmp, job)
-    return 'silent checktime' . after
+    call add(s:resume_queue, [state, tmp, job])
+    return 'call fugitive#Resume()|silent checktime' . after
   elseif pager is# 1
     let pre = s:BuildEnvPrefix(env)
     silent! execute '!' . escape(pre . s:UserCommand({'git': git, 'dir': dir}, s:disable_colors + flags + ['--no-pager'] + args), '!#%') .
@@ -2815,7 +2831,7 @@ function! fugitive#Command(line1, line2, range, bang, mods, arg) abort
     if editcmd ==# 'edit'
       call s:BlurStatus()
     endif
-    return state.mods . editcmd . ' ' . s:fnameescape(state.file) . after
+    return state.mods . editcmd . ' ' . s:fnameescape(state.file) . '|call fugitive#ReloadStatus(' . string(dir) . ', 1)' . after
   elseif has('win32')
     return 'echoerr ' . string('fugitive: Vim 8 with job support required to use :Git on Windows')
   elseif has('gui_running')
@@ -3103,7 +3119,7 @@ if !exists('s:last_times')
 endif
 
 function! s:ExpireStatus(bufnr) abort
-  if a:bufnr == -2
+  if a:bufnr is# -2
     let s:head_cache = {}
     let s:last_time = reltime()
     return ''
@@ -3168,10 +3184,11 @@ function! fugitive#ReloadStatus(...) abort
       call settabvar(tabnr, 'fugitive_reload_status', t)
     endfor
     call s:ReloadTabStatus()
-    exe s:DoAutocmdChanged(a:0 ? a:1 : -1)
   else
     call s:ReloadWinStatus()
+    return ''
   endif
+  exe s:DoAutocmdChanged(a:0 ? a:1 : -1)
   return ''
 endfunction
 
@@ -3810,8 +3827,14 @@ function! s:StageDelete(lnum1, lnum2, count) abort
       if empty(info.paths)
         continue
       endif
+      let sub = get(get(get(b:fugitive_files, info.section, {}), info.filename, {}), 'submodule')
       if info.status ==# 'D'
         let undo = 'GRemove'
+      elseif sub =~# '^S' && info.status !~# '[MD]'
+        let err .= '|echoerr ' . string('fugitive: will not delete submodule ' . string(info.relative[0]))
+        break
+      elseif sub =~# '^S'
+        let undo = 'Git checkout ' . fugitive#RevParse('HEAD', FugitiveExtractGitDir(info.paths[0]))[0:10] . ' --'
       elseif info.paths[0] =~# '/$'
         let err .= '|echoerr ' . string('fugitive: will not delete directory ' . string(info.relative[0]))
         break
@@ -3820,6 +3843,11 @@ function! s:StageDelete(lnum1, lnum2, count) abort
       endif
       if info.patch
         call s:StageApply(info, 1, info.section ==# 'Staged' ? ['--index'] : [])
+      elseif sub =~# '^S'
+        if info.section ==# 'Staged'
+          call s:TreeChomp('reset', '--', info.paths[0])
+        endif
+        call s:TreeChomp('submodule', 'update', '--', info.paths[0])
       elseif info.status ==# '?'
         call s:TreeChomp('clean', '-f', '--', info.paths[0])
       elseif a:count == 2
@@ -4727,6 +4755,14 @@ function! s:OpenParse(string, wants_cmd) abort
   endwhile
   if len(args)
     let file = join(args)
+    if file ==# '-'
+      let result = fugitive#Result()
+      if has_key(result, 'file')
+        let file = s:fnameescape(result.file)
+      else
+        throw 'fugitive: no previous command output'
+      endif
+    endif
   elseif empty(expand('%'))
     let file = ''
   elseif empty(s:DirCommitFile(@%)[1]) && s:Relative('./') !~# '^\./\.git\>'
@@ -5918,10 +5954,19 @@ function! fugitive#BrowseCommand(line1, count, range, bang, mods, arg, args) abo
     endif
     let validremote = '\.\|\.\=/.*\|[[:alnum:]_-]\+\%(://.\{-\}\)\='
     if arg ==# '-'
-      if a:count >= 0
-        return 'echoerr ' . string('fugitive: ''-'' no longer required to get persistent URL if range given')
-      else
-        return 'echoerr ' . string('fugitive: use :0GBrowse instead of :GBrowse -')
+      let remote = ''
+      let rev = ''
+      let result = fugitive#Result()
+      if filereadable(get(result, 'file', ''))
+        for line in readfile(result.file, 4096)
+          let rev = s:fnameescape(matchstr(line, '\<https\=://[^[:space:]<>]*[^[:space:]<>.,;:"''!?]'))
+          if len(rev)
+            break
+          endif
+        endfor
+        if empty(rev)
+          return 'echoerr ' . string('fugitive: no URL found in output of last :Git')
+        endif
       endif
     elseif !exists('l:remote')
       let remote = matchstr(arg, '@\zs\%('.validremote.'\)$')
