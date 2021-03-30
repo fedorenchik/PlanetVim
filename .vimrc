@@ -98,7 +98,7 @@ call setcellwidths([
       \ ])
 " }}}
 " Functions: {{{
-function! GuiTabLabel() abort
+func! GuiTabLabel() abort
   let l = '[' .. v:lnum .. ']'
   let bufnrlist = tabpagebuflist(v:lnum)
 
@@ -118,9 +118,9 @@ function! GuiTabLabel() abort
     let f = '[No Name]'
   endif
   return l .. f
-endfunction
+endfunc
 
-function! GuiTabTooltip() abort
+func! GuiTabTooltip() abort
   let l:tooltip = ''
   let l:tooltip ..= '[' .. v:lnum .. '/' .. tabpagenr('$') .. ']'
   let l:tooltip ..= '[#:' .. tabpagewinnr(v:lnum, '$') .. ']'
@@ -168,7 +168,7 @@ function! GuiTabTooltip() abort
   let l:tooltip ..= "\npwd: " .. getcwd(-1)
 
   return l:tooltip
-endfunction
+endfunc
 
 " Avoid the ":ptag" when there is no word under the cursor, and a few other
 " things. Opens the tag under cursor in Preview window.
@@ -213,14 +213,14 @@ func! ListMonths() abort
   return ''
 endfunc
 
-function! SetupCommandAlias(input, output) abort
+func! SetupCommandAlias(input, output) abort
   exec 'cabbrev <expr> '.a:input
         \ .' ((getcmdtype() is# ":" && getcmdline() is# "'.a:input.'")'
         \ .'? ("'.a:output.'") : ("'.a:input.'"))'
-endfunction
+endfunc
 
 let s:did_open_help = v:false
-function! s:HelpCurwin(subject) abort
+func! s:HelpCurwin(subject) abort
   let mods = 'silent noautocmd keepalt'
   if !s:did_open_help
     execute mods .. ' help'
@@ -231,14 +231,9 @@ function! s:HelpCurwin(subject) abort
     execute mods .. ' edit ' .. &helpfile
   endif
   return 'help ' .. a:subject
-endfunction
+endfunc
 
-func! FocusWindow(direction) abort
-  let owmw = &wmw
-  let owiw = &wiw
-  " TODO: somehow calculate reasonable wiw & wmw values
-  set wiw=20 wmw=20
-  exe 'wincmd ' .. a:direction
+func! FocusWindow(direction)
   if empty(&buftype) || &buftype == 'nowrite' || &buftype == 'acwrite'
     let win_width = 80
     if &textwidth > 0
@@ -254,12 +249,18 @@ func! FocusWindow(direction) abort
       let win_width += 2
     endif
     echo 'win_width=' .. win_width
+    let number_of_windows = tabpagewinnr(tabpagenr(), '$')
+    let other_win_widh = (&columns - win_width) / number_of_windows
+    let owmw = &wmw
+    let owiw = &wiw
+    exe "set wiw=" .. other_win_widh .. " wmw=" .. other_win_widh
+    exe 'wincmd ' .. a:direction
     if win_width > winwidth(0)
       exe win_width .. 'wincmd |'
     endif
+    let &wmw = owmw
+    let &wiw = owiw
   endif
-  let &wmw = owmw
-  let &wiw = owiw
 endfunc
 
 func! PlanetVim_QF_OldFiles()
@@ -614,7 +615,7 @@ nn <silent> k :lab<CR>
 nn <silent> l :call PlanetVim_l()<CR>
 nn Q gq
 nn s <Nop>
-nn sb <Cmd>exe "lvimgrep /^" .. expand('<cword>') .. "/gj %"<CR>
+nn sb <Cmd>exe "lvimgrep /^\\s*" .. expand('<cword>') .. "/gj %"<CR>
 nn sj :lvimgrep /^.*$/gj %<CR>
 nn sk :lvimgrep /{{{/gj %<CR>
 " fake marker for previous pattern: }}}
@@ -856,7 +857,7 @@ if filereadable(expand(g:PV_config))
   silent exe "source " .. fnameescape(g:PV_config)
 endif
 
-function! PlanetVim_AddMenuItem(priority, text, command, tooltip) abort
+func! PlanetVim_AddMenuItem(priority, text, command, tooltip) abort
     an 110.10  &File.&New                                   :confirm enew<CR>
     an a:priority a:text a:command
     tln 110.10  &File.&New                                  :confirm enew<CR>
@@ -864,9 +865,9 @@ function! PlanetVim_AddMenuItem(priority, text, command, tooltip) abort
     no a:map a:command
     ln <A-f>n :confirm enew<CR>
     tno <A-f>n :confirm enew<CR>
-endfunction
+endfunc
 
-function! PlanetVim_ConfigUpdate(conf_var) abort
+func! PlanetVim_ConfigUpdate(conf_var) abort
   if empty(v:this_session) && filewritable(expand(g:PV_config))
     silent call system('grep "let ' .. a:conf_var .. ' =" ' .. g:PV_config)
     if ! v:shell_error
@@ -877,10 +878,10 @@ function! PlanetVim_ConfigUpdate(conf_var) abort
   else
     silent call system('echo "let ' .. a:conf_var .. ' = ' .. eval(a:conf_var) .. '" > ' .. g:PV_config)
   endif
-endfunction
+endfunc
 
 "TODO: add session support
-function! PlanetVim_MenusBasicToggle() abort
+func! PlanetVim_MenusBasicToggle() abort
   if g:PlanetVim_menus_basic
     let g:PlanetVim_menus_basic = 0
   else
@@ -890,9 +891,9 @@ function! PlanetVim_MenusBasicToggle() abort
   if empty(v:this_session)
     call PlanetVim_ConfigUpdate('g:PlanetVim_menus_basic')
   endif
-endfunction
+endfunc
 
-function! PlanetVim_MenusEditingToggle() abort
+func! PlanetVim_MenusEditingToggle() abort
   if g:PlanetVim_menus_editing
     let g:PlanetVim_menus_editing = 0
   else
@@ -902,9 +903,9 @@ function! PlanetVim_MenusEditingToggle() abort
   if empty(v:this_session)
     call PlanetVim_ConfigUpdate('g:PlanetVim_menus_editing')
   endif
-endfunction
+endfunc
 
-function! PlanetVim_MenusDevelopmentToggle() abort
+func! PlanetVim_MenusDevelopmentToggle() abort
   if g:PlanetVim_menus_dev
     let g:PlanetVim_menus_dev = 0
   else
@@ -914,9 +915,9 @@ function! PlanetVim_MenusDevelopmentToggle() abort
   if empty(v:this_session)
     call PlanetVim_ConfigUpdate('g:PlanetVim_menus_dev')
   endif
-endfunction
+endfunc
 
-function! PlanetVim_MenusToolsToggle() abort
+func! PlanetVim_MenusToolsToggle() abort
   if g:PlanetVim_menus_tools
     let g:PlanetVim_menus_tools = 0
   else
@@ -926,9 +927,9 @@ function! PlanetVim_MenusToolsToggle() abort
   if empty(v:this_session)
     call PlanetVim_ConfigUpdate('g:PlanetVim_menus_tools')
   endif
-endfunction
+endfunc
 
-function! PlanetVim_MenusNavigationToggle() abort
+func! PlanetVim_MenusNavigationToggle() abort
   if g:PlanetVim_menus_nav
     let g:PlanetVim_menus_nav = 0
   else
@@ -938,9 +939,9 @@ function! PlanetVim_MenusNavigationToggle() abort
   if empty(v:this_session)
     call PlanetVim_ConfigUpdate('g:PlanetVim_menus_nav')
   endif
-endfunction
+endfunc
 
-function! s:registers_choose_to_edit() abort
+func! s:registers_choose_to_edit() abort
   echohl Question
   echo "Register: " buffest#reg_complete()
   let l:reg_to_edit = nr2char(getchar())
@@ -950,25 +951,25 @@ function! s:registers_choose_to_edit() abort
   echohl None
   execute("silent Regpedit " .. l:reg_to_edit)
   execute("silent normal \<C-w>P")
-endfunction
+endfunc
 
-function! s:SelectAll()
+func! s:SelectAll()
   exe "norm! gg" . (&slm == "" ? "VG" : "gH\<C-O>G")
-endfunction
+endfunc
 
-function! s:AutoFoldEnable()
+func! s:AutoFoldEnable()
   set foldclose=all
   set foldopen=all
   set foldlevel=0
   set foldlevelstart=0
-endfunction
+endfunc
 
-function! s:AutoFoldDisable()
+func! s:AutoFoldDisable()
   set foldclose=
   set foldopen=quickfix,tag,undo
   set foldlevel=20
   set foldlevelstart=20
-endfunction
+endfunc
 
 fun! s:SetPath()
   if !exists("g:menutrans_path_dialog")
@@ -1068,7 +1069,7 @@ func s:XxdFind()
   endif
 endfun
 
-function! PlanetVim_BufferIsNormal(name, num)
+func! PlanetVim_BufferIsNormal(name, num)
     if !bufexists(a:num)
       return 0
     endif
@@ -1080,7 +1081,7 @@ function! PlanetVim_BufferIsNormal(name, num)
       return 0
     endif
     return 1
-endfunction
+endfunc
 
 func! PlanetVim_MenuName(name)
   let menu_name = a:name
@@ -1114,14 +1115,14 @@ func! PlanetVim_MenuBuffers_RemoveBufferAu()
   endif
 endfunc
 
-function! PlanetVim_AddBuffers()
+func! PlanetVim_AddBuffers()
   let buf = 1
   while buf <= bufnr('$')
     let name = bufname(buf)
     call PlanetVim_MenuBufers_AddBuffer(name, num)
     let buf += 1
   endwhile
-endfunction
+endfunc
 
 aug PlanetVim_AugMenuBuffers
 au!
@@ -1129,7 +1130,7 @@ au BufCreate,BufFilePost * call PlanetVim_MenuBuffers_AddBufferAu()
 au BufDelete,BufFilePre * call PlanetVim_MenuBuffers_RemoveBufferAu()
 aug END
 
-function! PlanetVim_MenuSessionSetCurrent() abort
+func! PlanetVim_MenuSessionSetCurrent() abort
   if exists('g:last_session')
     exe 'aun 📚&h.Current:\ ' .. g:last_session
     unlet g:last_session
@@ -1138,13 +1139,13 @@ function! PlanetVim_MenuSessionSetCurrent() abort
     exe 'an 840.20  📚&h.Current:\ ' .. fnamemodify(v:this_session, ":t") .. ' <Nop>'
     let g:last_session = fnamemodify(v:this_session, ":t")
   endif
-endfunction
+endfunc
 
-function! PlanetVim_MenuSessionList() abort
+func! PlanetVim_MenuSessionList() abort
   for session in startify#session_list('')
     exe 'an 840.500 📚&h.' .. session .. ' :SLoad ' .. session .. '<CR>'
   endfor
-endfunction
+endfunc
 
 aug PlanetVim_AugroupSessions
 au!
@@ -1152,16 +1153,16 @@ au SessionLoadPost * call PlanetVim_MenuSessionSetCurrent()
 au VimEnter * call PlanetVim_MenuSessionList()
 aug END
 
-function! PlanetVim_LSPUpdateFolds() abort
+func! PlanetVim_LSPUpdateFolds() abort
   set foldmethod=expr foldexpr=lsp#ui#vim#folding#foldexpr() foldtext=lsp#ui#vim#folding#foldtext()
   LspDocumentFold
-endfunction
+endfunc
 
-function! PlanetVim_EmergencyExit() abort
+func! PlanetVim_EmergencyExit() abort
   set noautowrite
   set noautowriteall
   cquit!
-endfunction
+endfunc
 
 func! PlanetVim_Window_Maximize() abort
   let g:PV_win_restore_cmd = winrestcmd()
@@ -1238,7 +1239,7 @@ endfunc
 if ! exists("g:PlanetVim_menus_basic")
   let g:PlanetVim_menus_basic = 1
 endif
-function! PlanetVim_MenusBasicUpdate() abort
+func! PlanetVim_MenusBasicUpdate() abort
   if g:PlanetVim_menus_basic
     " File & vim-uenuch
     an 110.10  📁&f.File <Nop>
@@ -1273,7 +1274,7 @@ function! PlanetVim_MenusBasicUpdate() abort
     an 110.130 📁&f.--2-- <Nop>
     an 110.140 📁&f.&Save<Tab>:w                               :if expand("%") == ""<Bar>browse confirm w<Bar>else<Bar>confirm up<Bar>endif<CR>
     an 110.150 📁&f.Save\ &As\.\.\.<Tab>:saveas                :browse confirm saveas<CR>
-    an 110.160 📁&f.Save\ A&ll<Tab>:wall                       :silent confirm wall<CR>
+    an <silent> 110.160 📁&f.Save\ A&ll<Tab>:wall              :confirm wall<CR>
     an 110.170 📁&f.--3-- <Nop>
     an 110.180 📁&f.Export\ (Selected)\ as\ HTML               :TOhtml<CR>
     an 110.180 📁&f.Convert\ to\ HTML                          :runtime syntax/2html.vim<CR>
@@ -1685,13 +1686,13 @@ function! PlanetVim_MenusBasicUpdate() abort
     silent! aunmenu ⌨️&\\
     silent! aunmenu ❔&h
   endif
-endfunction
+endfunc
 call PlanetVim_MenusBasicUpdate()
 
 if ! exists("g:PlanetVim_menus_editing")
   let g:PlanetVim_menus_editing = 1
 endif
-function! PlanetVim_MenusEditingUpdate() abort
+func! PlanetVim_MenusEditingUpdate() abort
   if g:PlanetVim_menus_editing
     " Vim Registers
     an 200.10  📋&i.Registers <Nop>
@@ -1942,13 +1943,13 @@ function! PlanetVim_MenusEditingUpdate() abort
     silent! aunmenu &QF
     silent! aunmenu &LL
   endif
-endfunction
+endfunc
 call PlanetVim_MenusEditingUpdate()
 
 if ! exists("g:PlanetVim_menus_dev")
   let g:PlanetVim_menus_dev = 1
 endif
-function! PlanetVim_MenusDevelopmentUpdate() abort
+func! PlanetVim_MenusDevelopmentUpdate() abort
   if g:PlanetVim_menus_dev
     " LSP
     an 300.10  ❇️&[.LSP <Nop>
@@ -2224,7 +2225,7 @@ function! PlanetVim_MenusDevelopmentUpdate() abort
     silent! aunmenu 🔬&y
     silent! aunmenu 💻&t
   endif
-endfunction
+endfunc
 call PlanetVim_MenusDevelopmentUpdate()
 
 "TODO: menus:
@@ -2264,7 +2265,7 @@ an 720.50  ]Writing.Right\ Align<Tab>:right       :right<CR>
 if ! exists("g:PlanetVim_menus_tools")
   let g:PlanetVim_menus_tools = 1
 endif
-function! PlanetVim_MenusToolsUpdate() abort
+func! PlanetVim_MenusToolsUpdate() abort
   if g:PlanetVim_menus_tools
     " Git
     " Open Log in new window
@@ -2286,8 +2287,8 @@ function! PlanetVim_MenusToolsUpdate() abort
     an 700.10  🔀&,.Commit\ All                           :TODO
     an 700.10  🔀&,.Commit\ File                          :TODO
     an 700.10  🔀&,.Commit\ File                          :TODO
-    an 700.10  🔀&,.Clone\ Project                        :TODO
-    an 700.10  🔀&,.Init\ Project                         :TODO
+    an 700.10  🔀&,.Clone\ Repo                           :TODO
+    an 700.10  🔀&,.Init\ Repo                            :TODO
     an 700.10  🔀&,.Blame                                 :TODO
     " tpope/rhubarb.vim plugin for GitHub
     an 700.10  🔀&,.GitHub <Nop>
@@ -2363,13 +2364,13 @@ function! PlanetVim_MenusToolsUpdate() abort
     silent! aunmenu 🔤&-
     silent! aunmenu 🔧&o
   endif
-endfunction
+endfunc
 call PlanetVim_MenusToolsUpdate()
 
 if ! exists("g:PlanetVim_menus_nav")
   let g:PlanetVim_menus_nav = 1
 endif
-function! PlanetVim_MenusNavigationUpdate() abort
+func! PlanetVim_MenusNavigationUpdate() abort
   if g:PlanetVim_menus_nav
     " Buffers
     an 800.10  📖&b.Buffers <Nop>
@@ -2607,29 +2608,29 @@ function! PlanetVim_MenusNavigationUpdate() abort
     silent! aunmenu 🔰&x
     silent! aunmenu 🎛️&@
   endif
-endfunction
+endfunc
 call PlanetVim_MenusNavigationUpdate()
 
-function! PlanetFiletypeMenus() abort
+func! PlanetFiletypeMenus() abort
   "TODO: for arduino, c++, python, etc.
-endfunction
+endfunc
 
-function! PlanetSaveExit() abort
+func! PlanetSaveExit() abort
   if ! empty(v:this_session)
     exe 'SSave! ' .. fnamemodify(v:this_session, ":t")
   endif
   confirm wall
   qa!
-endfunction
+endfunc
 
-fun! s:ToggleGuiOption(option)
-    " If a:option is already set in guioptions, then we want to remove it
-    if match(&guioptions, "\\C" . a:option) > -1
-      exec "set go-=" . a:option
-    else
-      exec "set go+=" . a:option
-    endif
-endfun
+func! s:ToggleGuiOption(option)
+  " If a:option is already set in guioptions, then we want to remove it
+  if match(&guioptions, "\\C" . a:option) > -1
+    exec "set go-=" . a:option
+  else
+    exec "set go+=" . a:option
+  endif
+endfunc
 
 func! PlanetVim_SetEasyMode() abort
   set im
@@ -2808,7 +2809,7 @@ tlnoremenu 1.10 PopUp.Close                  <C-w><C-c>
 " TODO: Auto for LL, QF, Terminals, W3m
 " QF, LL: colder, cnewer, chistory popup, merge with prev, filter, filter-out,
 " min size, std size(10lines), max size
-function! PlanetVim_WinBarFilter(bang) abort
+func! PlanetVim_WinBarFilter(bang) abort
   let m = mode()
   if m == 'n'
     exe "Cfilter" .. a:bang .. " " .. expand('<cword>')
@@ -2816,8 +2817,8 @@ function! PlanetVim_WinBarFilter(bang) abort
     normal! y
     exe 'Cfilter' .. a:bang .. ' <C-r>"'
   endif
-endfunction
-function! PlanetVim_WinBarQfInit() abort
+endfunc
+func! PlanetVim_WinBarQfInit() abort
   nnoremenu 1.10 WinBar.⏪ :colder<CR>
   "TODO: turn :chistory into popup menu
   nnoremenu 1.20 WinBar.📙 :chistory<CR>
@@ -2829,10 +2830,10 @@ function! PlanetVim_WinBarQfInit() abort
   nnoremenu 1.110 WinBar.↕️ 10<C-w>_
   nnoremenu 1.120 WinBar.⬆️ <C-w>_
   nnoremenu 1.130 WinBar.❌ :cclose<CR>
-endfunction
+endfunc
 " Terminals: Previous, Next, List (popup with choose), New, Close (send Ctrl-D)
 " W3m: Back, Forward, History, AddressBar
-function! PlanetVim_WinBarTerminalInit() abort
+func! PlanetVim_WinBarTerminalInit() abort
   nnoremenu 1.10  WinBar.⏪ :echo 'TODO'<CR>
   nnoremenu 1.20  WinBar.📙 :echo 'TODO'<CR>
   nnoremenu 1.30  WinBar.⏩ :echo 'TODO'<CR>
@@ -2841,7 +2842,7 @@ function! PlanetVim_WinBarTerminalInit() abort
   nnoremenu 1.110 WinBar.↕️       10<C-w>_
   nnoremenu 1.120 WinBar.⬆️       <C-w>_
   nnoremenu 1.130 WinBar.❌       <C-w><C-c>
-endfunction
+endfunc
 aug PlanetVim_AugroupWinBar
 au!
 au BufWinEnter * if &buftype == 'quickfix' | call PlanetVim_WinBarQfInit() | endif
@@ -3080,7 +3081,7 @@ nnoremap <silent> <Space>" :Clap registers<CR>
 nmap \ <Plug>(choosewin)
 " }}}
 " Plugin: vim-crystalline {{{
-function! StatusLine_SearchCount() abort
+func! StatusLine_SearchCount() abort
   try
     const search_count = searchcount({'maxcount': 0, 'timeout': 50})
   catch /^Vim\%((\a\+)\)\=:\%(E486\)\@!/
@@ -3091,13 +3092,13 @@ function! StatusLine_SearchCount() abort
   endif
   return search_count.total ? search_count.incomplete ? printf('[%d/??]', search_count.current)
         \ : printf('[%d/%d]', search_count.current, search_count.total) : '[0/0]'
-endfunction
+endfunc
 
-function! NearestMethodOrFunction() abort
+func! NearestMethodOrFunction() abort
   return get(b:, 'vista_nearest_method_or_function', '')
-endfunction
+endfunc
 
-function! StatusLine(current, width)
+func! StatusLine(current, width)
   let l:s = ''
 
   if a:current
@@ -3137,7 +3138,7 @@ function! StatusLine(current, width)
   endif
 
   return l:s
-endfunction
+endfunc
 
 let g:crystalline_enable_sep = 1
 let g:crystalline_statusline_fn = 'StatusLine'
