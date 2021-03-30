@@ -2055,6 +2055,8 @@ func! PlanetVim_MenusDevelopmentUpdate() abort
     "         * editorconfig
     "         * arduino
     "         * platformio
+    "         * ROS
+    "         * Yocto
     " * Setup Libs
     "         * qt
     "         * pkgbuild
@@ -2063,22 +2065,7 @@ func! PlanetVim_MenusDevelopmentUpdate() abort
     " * Package manager
     "         * conan
     "         * pip
-    " * virtual envs
-    "         * pipenv
-    "         * conan virtual env
-    "         * docker
-    "         * vagrant
-    " * Choose build system
-    "         * Make
-    "         * Autotools
-    "         * CMake
-    "         * Meson
-    "         * QMake
-    "         * qbs
-    "         * scons
-    "         * KBuild
-    "         * gradle
-    " * Choose Build Generator
+    " * Choose Build Generator (CMake)
     "         * Makefile
     "         * Ninja
     " * Choose compiler
@@ -2095,15 +2082,6 @@ func! PlanetVim_MenusDevelopmentUpdate() abort
     "         * lldb
     " * Select build folder
     "   (search for ./build* and ../build* folders), choose new
-    " * Configure
-    "         * ./autotools
-    "         * cmake ..
-    "         * meson ..
-    " * Build
-    "         * cmake --build .
-    "         * meson --build
-    "         * make
-    "         * ninja
     " * Run
     " * Debug
     " * Test
@@ -2120,17 +2098,6 @@ func! PlanetVim_MenusDevelopmentUpdate() abort
     "         * valgrind memcheck gdb
     "         * valgrind function profiler (qtcreator)
     "         * QML profiler (qtcreator)
-    " * Package
-    "         * fpm (deb, rpm)
-    "         * pyinstaller
-    "         * cpack
-    "         * appimage
-    "         * snap
-    "         * flatpak
-    " * Deploy
-    "         * winqtdeploy
-    "         * macqtdeploy
-    "         * linuxdeploy
     " * l10n & i18n:
     "         * qt tools: lupdate / lrelease (+ auto-translation)
     "         * gettext
@@ -2140,8 +2107,6 @@ func! PlanetVim_MenusDevelopmentUpdate() abort
     "         * qt doc
     "         * qt help
     "         * readthedocs
-    " * Create installer
-    "         * qt-installer
     " * Tools
     "         * uic
     "         * moc
@@ -2156,24 +2121,6 @@ func! PlanetVim_MenusDevelopmentUpdate() abort
     " Build
     "         --Dev Env
     "         direnv
-    "         docker
-    "         schroot here
-    "         systemd-nspawn
-    "         vagrant
-    "         --Autotools Style
-    "         Run ./autogen[.sh]
-    "         Rut ./bootstrap[.sh]
-    "         Run ./configure[*]
-    "         Run autorefonf (if have ./configure.[ac,in])
-    "         Run make
-    "         --KBuild
-    "         make oldconfig
-    "         make menuconfig (in new terminal tab)
-    "         Edit .config[*]
-    "         make
-    "         --cmake
-    "         --ninja
-    "         --meson
     "         --arduino
     "         --platformio
     "         --Yocto
@@ -2183,8 +2130,34 @@ func! PlanetVim_MenusDevelopmentUpdate() abort
     " Test
     " Analyze
     " TODO: all targets print to new buffer in special window at bottom with WinBar
+    " TODO: buftype=terminal
+    " TODO: setlocal bufhidden=hide
+    " TODO: call term_setrestore(buf_nr, "NONE") # for non-restorable terminals
     an 500.10  🔨&u.Build <Nop>
     an disable 🔨&u.Build
+    an 500.10  🔨&u.Virtual\ Environments <Nop>
+    an disable 🔨&u.Virtual\ Environments
+    an 500.10  🔨&u.Schroot.Debootstrap             :!sudo debootstrap --variant=buildd --arch=amd64 buster /var/chroots/debian10_x64 http://ftp.debian.org/debian/<CR>
+    an 500.10  🔨&u.Schroot.Schroot\ Check\ Config  :TODO"check $HOME is not mounted!!!
+    an 500.10  🔨&u.Schroot.Schroot\ Add\ New       :TODO"create config file in /etc/schroot/chroot.d/ directory
+    an 500.10  🔨&u.Schroot.Schroot\ List           :!schroot -l<CR>
+    an 500.10  🔨&u.Schroot.Schroot\ Info           :!schroot -i<CR>
+    an 500.10  🔨&u.Schroot.Schroot\ Config         :!schroot --config<CR>
+    an 500.10  🔨&u.Schroot.Schroot\ Location       :!schroot --location<CR>
+    an 500.10  🔨&u.Schroot.Schroot\ Start          :!schroot -c debian10_x64 -u leonid<CR>
+    an 500.10  🔨&u.Schroot.Schroot\ Start\ Root    :!schroot -c debian10_x64 -u leonid<CR>
+    an 500.10  🔨&u.Schroot.Schroot\ Start\ XNest   :!schroot -c debian10_x64 -u leonid<CR>
+    an 500.10  🔨&u.Schroot.Schroot\ Run\ Command   :!schroot -c debian10_x64 -u leonid {cmd}<CR>
+    an 500.10  🔨&u.Pipenv.Test                     :TODO
+    an 500.10  🔨&u.Conan\ Virtual\ Environment.Test                     :TODO
+    an 500.10  🔨&u.systemd-nspawn.Test                     :TODO
+    an 500.10  🔨&u.PRoot.Test                     :TODO
+    an 500.10  🔨&u.Fakechroot.Test                     :TODO
+    an 500.10  🔨&u.Docker.Test                     :TODO
+    an 500.10  🔨&u.Vagrant.Test                     :TODO
+    an 500.10  🔨&u.QEMU.Test                     :TODO
+    an 500.10  🔨&u.Build\ Systems <Nop>
+    an disable 🔨&u.Build\ Systems
     an 500.10  🔨&u.Autotools.Autotools\ Status                  :call PlanetVim_PrintAutotoolsStatus()<CR>
     an 500.10  🔨&u.Autotools.Run\ autoconf                      :!autoconf -f -i<CR>
     an 500.10  🔨&u.Autotools.Run\ autoreconf                    :!autoreconf -f -i<CR>
@@ -2211,6 +2184,32 @@ func! PlanetVim_MenusDevelopmentUpdate() abort
     an 500.10  🔨&u.Make.Make\ Uninstall                         :!make<CR>
     an 500.10  🔨&u.Make.Set\ prefix                             :!make<CR>
     an 500.10  🔨&u.Make.Set\ DESTDIR                            :!make<CR>
+    an 500.10  🔨&u.KBuild.make\ oldconfig                         :!make<CR>
+    an 500.10  🔨&u.KBuild.make\ menuconfig                        :!make<CR>
+    an 500.10  🔨&u.KBuild.Edit\ \.config                          :!make<CR>
+    an 500.10  🔨&u.KBuild.Set\ DESTDIR                            :!make<CR>
+    an 500.10  🔨&u.CMake.Set\ DESTDIR                           :!make<CR>
+    an 500.10  🔨&u.QMake.Set\ DESTDIR                           :!make<CR>
+    an 500.10  🔨&u.Scons.Set\ DESTDIR                           :!make<CR>
+    an 500.10  🔨&u.Ninja.Set\ DESTDIR                           :!make<CR>
+    an 500.10  🔨&u.Meson.Set\ DESTDIR                           :!make<CR>
+    an 500.10  🔨&u.Deploy <Nop>
+    an disable 🔨&u.Deploy
+    an 500.10  🔨&u.Windeployqt.Build                                    :!make<CR>
+    an 500.10  🔨&u.Macdeployqt.Build                                    :!make<CR>
+    an 500.10  🔨&u.Linuxdeploy.Build                                    :!make<CR>
+    an 500.10  🔨&u.Package <Nop>
+    an disable 🔨&u.Package
+    an 500.10  🔨&u.fpm.Build                                    :!make<CR>
+    an 500.10  🔨&u.pyInstaller.Build                                    :!make<CR>
+    an 500.10  🔨&u.CPack.Build                                    :!make<CR>
+    an 500.10  🔨&u.AppImage.Build                                    :!make<CR>
+    an 500.10  🔨&u.Snap.Build                                    :!make<CR>
+    an 500.10  🔨&u.FlatPak.Build                                    :!make<CR>
+    an 500.10  🔨&u.pyUpdater.Build                                    :!make<CR>
+    an 500.10  🔨&u.Installer <Nop>
+    an disable 🔨&u.Installer
+    an 500.10  🔨&u.Qt\ Installer\ Framework.Build                                    :!make<CR>
     " an 500.10  🔨&u.Choose\ Make\ Target                      :make <C-z>"TODO
     " an 500.10  🔨&u.Rerun\ Previous\ Make                     :make prev_target
     " an 500.10  🔨&u.--1-- <Nop>
@@ -2264,6 +2263,7 @@ func! PlanetVim_MenusDevelopmentUpdate() abort
     an 550.10  💻&t.C&++\ Shell                            :botright terminal ++kill=kill ++rows=10 cling<CR>
     an 550.10  💻&t.Terminal\ List <Nop>
     an disable 💻&t.Terminal\ List
+    "TODO: terminal list: call term_list()
   else
     silent! aunmenu ❇️&[
     silent! aunmenu 🪧&]
