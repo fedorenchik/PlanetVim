@@ -1229,6 +1229,15 @@ func! PlanetVim_TagsAutoPreview_Toggle() abort
   endif
 endfunc
 
+func! PlanetVim_PrintAutotoolsStatus()
+  " which autoconf
+  " autoconf --version
+  " which automake
+  " automake --version
+  " which libtool
+  " libtool --version
+endfunc
+
 "TODO: Add function to follow DE night mode & theme settings (auto switch
 "TODO: guioptions+=d when dark theme, auto switch to dark colorscheme variant)
 
@@ -2150,7 +2159,7 @@ function! PlanetVim_MenusDevelopmentUpdate() abort
     "         schroot here
     "         systemd-nspawn
     "         vagrant
-    "         --AutoTools Style
+    "         --Autotools Style
     "         Run ./autogen[.sh]
     "         Rut ./bootstrap[.sh]
     "         Run ./configure[*]
@@ -2172,20 +2181,37 @@ function! PlanetVim_MenusDevelopmentUpdate() abort
     " Debug
     " Test
     " Analyze
+    " TODO: all targets print to new buffer in special window at bottom with WinBar
     an 500.10  🔨&u.Build <Nop>
     an disable 🔨&u.Build
-    an 500.10  🔨&u.AutoTools.Run\ \./autogen.sh                :!./autogen.sh<CR>
+    an 500.10  🔨&u.Autotools.Autotools\ Status                  :call PlanetVim_PrintAutotoolsStatus()<CR>
+    an 500.10  🔨&u.Autotools.Run\ autoconf                      :!autoconf -f -i<CR>
+    an 500.10  🔨&u.Autotools.Run\ autoreconf                    :!autoreconf -f -i<CR>
+    an 500.10  🔨&u.Autotools.Run\ autoheader                    :!autoheader<CR>
+    an 500.10  🔨&u.Autotools.Run\ autoscan                      :!autoscan<CR>
+    an 500.10  🔨&u.Autotools.Run\ autoupdate                    :!autoupdate<CR>
+    an 500.10  🔨&u.Autotools.Run\ ifnames                       :!ifnames<CR>
+    an 500.10  🔨&u.Autotools.Run\ libtool                       :!libtool<CR>
+    an 500.10  🔨&u.Autotools.Run\ libtoolize                    :!libtoolize<CR>
+    an 500.10  🔨&u.Autotools.Generate\ \./autogen\.sh           :TODO:"generate standard autogen.sh
+    an 500.10  🔨&u.Autotools.Run\ \./autogen\.sh                :!./autogen.sh<CR>
+    an 500.10  🔨&u.Autotools.Run\ \./bootstrap\.sh              :!./bootstrap.sh<CR>
+    an 500.10  🔨&u.Autotools.Run\ \./configure                  :!./configure<CR>
+    an 500.10  🔨&u.Autotools.Open\ config\.log                  :TODO:"open instead of terminal
+    an 500.10  🔨&u.Make.Make                                    :!make<CR>
+    an 500.10  🔨&u.Make.Make\ All                               :!make<CR>
+    an 500.10  🔨&u.Make.Make\ Clean                             :!make<CR>
+    an 500.10  🔨&u.Make.Make\ Distclean                         :!make<CR>
+    an 500.10  🔨&u.Make.Make\ Dist                              :!make<CR>
+    an 500.10  🔨&u.Make.Make\ Distcheck                         :!make<CR>
+    an 500.10  🔨&u.Make.Make\ Check                             :!make<CR>
+    an 500.10  🔨&u.Make.Make\ Test                              :!make<CR>
+    an 500.10  🔨&u.Make.Make\ Install                           :!make<CR>
+    an 500.10  🔨&u.Make.Make\ Uninstall                         :!make<CR>
+    an 500.10  🔨&u.Make.Set\ prefix                             :!make<CR>
+    an 500.10  🔨&u.Make.Set\ DESTDIR                            :!make<CR>
     " an 500.10  🔨&u.Choose\ Make\ Target                      :make <C-z>"TODO
     " an 500.10  🔨&u.Rerun\ Previous\ Make                     :make prev_target
-    " an 500.10  🔨&u.Make                                      :Make<CR>
-    " an 500.10  🔨&u.Make!                                     :Make<CR>
-    " an 500.10  🔨&u.Copen                                     :Make<CR>
-    " an 500.10  🔨&u.Copen!                                    :Make<CR>
-    " an 500.10  🔨&u.Dispatch!                                 :Make<CR>
-    " an 500.10  🔨&u.FocusDispatch!                            :Make<CR>
-    " an 500.10  🔨&u.AbortDispatch                             :Make<CR>
-    " an 500.10  🔨&u.Start                                     :Make<CR>
-    " an 500.10  🔨&u.Spawn                                     :Make<CR>
     " an 500.10  🔨&u.--1-- <Nop>
     " an 500.10  🔨&u.Set\ Compiler\ Globally<Tab>:compiler!\ {compiler} :compiler! 
     " an 500.10  🔨&u.Set\ Compiler\ for\ Buffer<Tab>:compiler\ {compiler} :compiler 
