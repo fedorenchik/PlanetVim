@@ -125,7 +125,7 @@ func! GuiTabTooltip() abort
   let l:tooltip ..= '[' .. v:lnum .. '/' .. tabpagenr('$') .. ']'
   let l:tooltip ..= '[#:' .. tabpagewinnr(v:lnum, '$') .. ']'
   if haslocaldir(-1) == 2
-    let l:tooltip ..= ' tcd: ' .. getcwd(-1, 0)
+    let l:tooltip ..= ' tcd: ' .. fnamemodify(getcwd(-1, 0), ":~")
   endif
 
   let l:bufnrlist = tabpagebuflist(v:lnum)
@@ -161,11 +161,11 @@ func! GuiTabTooltip() abort
       let l:tooltip ..= ' [' .. l:cur_buftype .. ']'
     endif
     if haslocaldir(bufwinnr(bufnr)) == 1
-      let l:tooltip ..= ' [lcd: ' .. getcwd() .. ']'
+      let l:tooltip ..= ' [lcd: ' .. fnamemodify(getcwd(), ":~") .. ']'
     endif
   endfor
 
-  let l:tooltip ..= "\npwd: " .. getcwd(-1)
+  let l:tooltip ..= "\npwd: " .. fnamemodify(getcwd(-1), ":~")
 
   return l:tooltip
 endfunc
@@ -827,7 +827,7 @@ endif
 autocmd GUIEnter * set t_vb=
 autocmd GUIEnter * set guifont=DejaVu\ Sans\ Mono\ 9,Monospace\ 9
 autocmd GUIEnter * silent call system('wmctrl -i -b add,maximized_vert,maximized_horz -r' . v:windowid)
-autocmd InsertLeave * pclose
+autocmd InsertLeave * if empty(&buftype) | pclose | endif
 autocmd SessionLoadPost * exe "set viminfofile=~/.vim/viminfo/" .. fnamemodify(v:this_session, ":t") .. ".viminfo"
 autocmd SessionLoadPost * silent! rviminfo!
 "TODO: auto-save and auto-load quickfix/loclist files (up to 10 of each, loclists: for each window)
@@ -1228,6 +1228,15 @@ func! PlanetVim_TagsAutoPreview_Toggle() abort
     aug END
     echo "Do not AutoPreview Tags"
   endif
+endfunc
+
+func! PlanetVim_PrintAutotoolsStatus()
+  " which autoconf
+  " autoconf --version
+  " which automake
+  " automake --version
+  " which libtool
+  " libtool --version
 endfunc
 
 "TODO: Add function to follow DE night mode & theme settings (auto switch
@@ -2112,13 +2121,11 @@ func! PlanetVim_MenusDevelopmentUpdate() abort
     "         * valgrind function profiler (qtcreator)
     "         * QML profiler (qtcreator)
     " * Package
-    "         * fpm
+    "         * fpm (deb, rpm)
     "         * pyinstaller
     "         * cpack
     "         * appimage
     "         * snap
-    "         * deb
-    "         * rpm
     "         * flatpak
     " * Deploy
     "         * winqtdeploy
@@ -2147,26 +2154,68 @@ func! PlanetVim_MenusDevelopmentUpdate() abort
     " * Choose Build Target
     " Menus:
     " Build
+    "         --Dev Env
+    "         direnv
+    "         docker
+    "         schroot here
+    "         systemd-nspawn
+    "         vagrant
+    "         --Autotools Style
+    "         Run ./autogen[.sh]
+    "         Rut ./bootstrap[.sh]
+    "         Run ./configure[*]
+    "         Run autorefonf (if have ./configure.[ac,in])
+    "         Run make
+    "         --KBuild
+    "         make oldconfig
+    "         make menuconfig (in new terminal tab)
+    "         Edit .config[*]
+    "         make
+    "         --cmake
+    "         --ninja
+    "         --meson
+    "         --arduino
+    "         --platformio
+    "         --Yocto
+    "
     " Run
     " Debug
     " Test
     " Analyze
+    " TODO: all targets print to new buffer in special window at bottom with WinBar
     an 500.10  🔨&u.Build <Nop>
     an disable 🔨&u.Build
-    an 500.10  🔨&u.Choose\ Make\ Target                      :make <C-z>"TODO
-    an 500.10  🔨&u.Rerun\ Previous\ Make                     :make prev_target
-    an 500.10  🔨&u.Make                                      :Make<CR>
-    an 500.10  🔨&u.Make!                                     :Make<CR>
-    an 500.10  🔨&u.Copen                                     :Make<CR>
-    an 500.10  🔨&u.Copen!                                    :Make<CR>
-    an 500.10  🔨&u.Dispatch!                                 :Make<CR>
-    an 500.10  🔨&u.FocusDispatch!                            :Make<CR>
-    an 500.10  🔨&u.AbortDispatch                             :Make<CR>
-    an 500.10  🔨&u.Start                                     :Make<CR>
-    an 500.10  🔨&u.Spawn                                     :Make<CR>
-    an 500.10  🔨&u.--1-- <Nop>
-    an 500.10  🔨&u.Set\ Compiler\ Globally<Tab>:compiler!\ {compiler} :compiler! 
-    an 500.10  🔨&u.Set\ Compiler\ for\ Buffer<Tab>:compiler\ {compiler} :compiler 
+    an 500.10  🔨&u.Autotools.Autotools\ Status                  :call PlanetVim_PrintAutotoolsStatus()<CR>
+    an 500.10  🔨&u.Autotools.Run\ autoconf                      :!autoconf -f -i<CR>
+    an 500.10  🔨&u.Autotools.Run\ autoreconf                    :!autoreconf -f -i<CR>
+    an 500.10  🔨&u.Autotools.Run\ autoheader                    :!autoheader<CR>
+    an 500.10  🔨&u.Autotools.Run\ autoscan                      :!autoscan<CR>
+    an 500.10  🔨&u.Autotools.Run\ autoupdate                    :!autoupdate<CR>
+    an 500.10  🔨&u.Autotools.Run\ ifnames                       :!ifnames<CR>
+    an 500.10  🔨&u.Autotools.Run\ libtool                       :!libtool<CR>
+    an 500.10  🔨&u.Autotools.Run\ libtoolize                    :!libtoolize<CR>
+    an 500.10  🔨&u.Autotools.Generate\ \./autogen\.sh           :TODO:"generate standard autogen.sh
+    an 500.10  🔨&u.Autotools.Run\ \./autogen\.sh                :!./autogen.sh<CR>
+    an 500.10  🔨&u.Autotools.Run\ \./bootstrap\.sh              :!./bootstrap.sh<CR>
+    an 500.10  🔨&u.Autotools.Run\ \./configure                  :!./configure<CR>
+    an 500.10  🔨&u.Autotools.Open\ config\.log                  :TODO:"open instead of terminal
+    an 500.10  🔨&u.Make.Make                                    :!make<CR>
+    an 500.10  🔨&u.Make.Make\ All                               :!make<CR>
+    an 500.10  🔨&u.Make.Make\ Clean                             :!make<CR>
+    an 500.10  🔨&u.Make.Make\ Distclean                         :!make<CR>
+    an 500.10  🔨&u.Make.Make\ Dist                              :!make<CR>
+    an 500.10  🔨&u.Make.Make\ Distcheck                         :!make<CR>
+    an 500.10  🔨&u.Make.Make\ Check                             :!make<CR>
+    an 500.10  🔨&u.Make.Make\ Test                              :!make<CR>
+    an 500.10  🔨&u.Make.Make\ Install                           :!make<CR>
+    an 500.10  🔨&u.Make.Make\ Uninstall                         :!make<CR>
+    an 500.10  🔨&u.Make.Set\ prefix                             :!make<CR>
+    an 500.10  🔨&u.Make.Set\ DESTDIR                            :!make<CR>
+    " an 500.10  🔨&u.Choose\ Make\ Target                      :make <C-z>"TODO
+    " an 500.10  🔨&u.Rerun\ Previous\ Make                     :make prev_target
+    " an 500.10  🔨&u.--1-- <Nop>
+    " an 500.10  🔨&u.Set\ Compiler\ Globally<Tab>:compiler!\ {compiler} :compiler! 
+    " an 500.10  🔨&u.Set\ Compiler\ for\ Buffer<Tab>:compiler\ {compiler} :compiler 
 
     " Run
     an 510.10  ▶️&r.Run <Nop>
