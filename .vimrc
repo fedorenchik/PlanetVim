@@ -60,9 +60,9 @@ endif
 " }}}
 " Start Vim Server: {{{
 " TODO: add menu to start server
-if empty(v:servername) && exists('*remote_startserver')
-  call remote_startserver('VIM')
-endif
+" if empty(v:servername) && exists('*remote_startserver')
+"   call remote_startserver('VIM')
+" endif
 " }}}
 " Emoji, Nerdfont: {{{
 " only last setcellwidths() call has effect
@@ -98,27 +98,6 @@ call setcellwidths([
       \ ])
 " }}}
 " Functions: {{{
-func! GuiTabLabel() abort
-  let l = '[' .. v:lnum .. ']'
-  let bufnrlist = tabpagebuflist(v:lnum)
-
-  "TODO: add '!' if has terminal window in tab page
-  let m = ' '
-  for bufnr in bufnrlist
-    if getbufvar(bufnr, "&modified")
-      let m = '+'
-      break
-    endif
-  endfor
-  let l ..= m
-  let l ..= ' '
-
-  let f = fnamemodify(bufname(bufnrlist[tabpagewinnr(v:lnum) - 1]), ':t')
-  if empty(f)
-    let f = '[No Name]'
-  endif
-  return l .. f
-endfunc
 
 func! GuiTabTooltip() abort
   let l:tooltip = ''
@@ -310,6 +289,8 @@ endfunc
 func! PlanetVim_h()
   silent! exe "keepp keepj normal ?\\V" .. g:PV_p .. "\<CR>"
 endfunc
+
+let s:cur_dir = fnamemodify(resolve(expand('<sfile>:p')), ':h')
 
 " }}}
 " Colorscheme: {{{
@@ -2078,6 +2059,7 @@ func! PlanetVim_MenusDevelopmentUpdate() abort
     "         * gcc-mingw
     "         * gcc-arm
     "         * etc...
+    " * Set env vars: environ(), getenv(), setenv()
     " * Set Canadian-Cross (build, host, target)
     " * Choose debugger
     "         * gdb
@@ -2136,6 +2118,9 @@ func! PlanetVim_MenusDevelopmentUpdate() abort
     " TODO: buftype=terminal
     " TODO: setlocal bufhidden=hide
     " TODO: call term_setrestore(buf_nr, "NONE") # for non-restorable terminals
+    an 500.10  🔨&u.Project <Nop>
+    an disable 🔨&u.Project
+
     an 500.10  🔨&u.Build <Nop>
     an disable 🔨&u.Build
     an 500.10  🔨&u.Virtual\ Environments <Nop>
@@ -2176,15 +2161,15 @@ func! PlanetVim_MenusDevelopmentUpdate() abort
     an 500.10  🔨&u.Autotools.Run\ \./configure                  :!./configure<CR>
     an 500.10  🔨&u.Autotools.Open\ config\.log                  :TODO:"open instead of terminal
     an 500.10  🔨&u.Make.Make                                    :!make<CR>
-    an 500.10  🔨&u.Make.Make\ All                               :!make<CR>
-    an 500.10  🔨&u.Make.Make\ Clean                             :!make<CR>
-    an 500.10  🔨&u.Make.Make\ Distclean                         :!make<CR>
-    an 500.10  🔨&u.Make.Make\ Dist                              :!make<CR>
-    an 500.10  🔨&u.Make.Make\ Distcheck                         :!make<CR>
-    an 500.10  🔨&u.Make.Make\ Check                             :!make<CR>
-    an 500.10  🔨&u.Make.Make\ Test                              :!make<CR>
-    an 500.10  🔨&u.Make.Make\ Install                           :!make<CR>
-    an 500.10  🔨&u.Make.Make\ Uninstall                         :!make<CR>
+    an 500.10  🔨&u.Make.Make\ All                               :!make all<CR>
+    an 500.10  🔨&u.Make.Make\ Clean                             :!make clean<CR>
+    an 500.10  🔨&u.Make.Make\ Distclean                         :!make distclean<CR>
+    an 500.10  🔨&u.Make.Make\ Dist                              :!make dist<CR>
+    an 500.10  🔨&u.Make.Make\ Distcheck                         :!make distcheck<CR>
+    an 500.10  🔨&u.Make.Make\ Check                             :!make check<CR>
+    an 500.10  🔨&u.Make.Make\ Test                              :!make test<CR>
+    an 500.10  🔨&u.Make.Make\ Install                           :!make install<CR>
+    an 500.10  🔨&u.Make.Make\ Uninstall                         :!make uninstall<CR>
     an 500.10  🔨&u.Make.Set\ prefix                             :!make<CR>
     an 500.10  🔨&u.Make.Set\ DESTDIR                            :!make<CR>
     an 500.10  🔨&u.KBuild.make\ oldconfig                         :!make<CR>
@@ -2304,15 +2289,15 @@ call PlanetVim_MenusDevelopmentUpdate()
 "unreal engine, godot
 
 " Writing
-an 720.10  ]Writing.Writing <Nop>
+an 600.10  ]Writing.Writing <Nop>
 an disable ]Writing.Writing
-an 720.20  ]Writing.Swap\ Words                   :TODO
-an 720.20  ]Writing.Swap\ Words\ After            :TODO
-an 720.40  ]Writing.Thesaurus                     :TODO
-an 720.50  ]Writing.Generate\ Sample\ Text        :TODO
-an 720.50  ]Writing.Left\ Align<Tab>:left         :left<CR>
-an 720.50  ]Writing.Center\ Align<Tab>:center     :center<CR>
-an 720.50  ]Writing.Right\ Align<Tab>:right       :right<CR>
+an 600.20  ]Writing.Swap\ Words                   :TODO
+an 600.20  ]Writing.Swap\ Words\ After            :TODO
+an 600.40  ]Writing.Thesaurus                     :TODO
+an 600.50  ]Writing.Generate\ Sample\ Text        :TODO
+an 600.50  ]Writing.Left\ Align<Tab>:left         :left<CR>
+an 600.50  ]Writing.Center\ Align<Tab>:center     :center<CR>
+an 600.50  ]Writing.Right\ Align<Tab>:right       :right<CR>
 
 if ! exists("g:PlanetVim_menus_tools")
   let g:PlanetVim_menus_tools = 1
@@ -2337,11 +2322,16 @@ func! PlanetVim_MenusToolsUpdate() abort
     an 700.10  🔀&,.Log\ in\ New\ GWindow                 :TODO
     an 700.10  🔀&,.Status                                :TODO
     an 700.10  🔀&,.Commit\ All                           :TODO
+    an 700.10  🔀&,.Commit\ All\ with\ Untracked          :TODO
     an 700.10  🔀&,.Commit\ File                          :TODO
     an 700.10  🔀&,.Commit\ File                          :TODO
     an 700.10  🔀&,.Clone\ Repo                           :TODO
     an 700.10  🔀&,.Init\ Repo                            :TODO
     an 700.10  🔀&,.Blame                                 :TODO
+    an 700.10  🔀&,.--2-- <Nop>
+    an 700.10  🔀&,.Fetch                                 :!git fetch<CR>
+    an 700.10  🔀&,.Pull                                  :!git pull<CR>
+    an 700.10  🔀&,.Push                                  :!git push<CR>
     " tpope/rhubarb.vim plugin for GitHub
     an 700.10  🔀&,.GitHub <Nop>
     an disable 🔀&,.GitHub
