@@ -99,56 +99,6 @@ call setcellwidths([
 " }}}
 " Functions: {{{
 
-func! GuiTabTooltip() abort
-  let l:tooltip = ''
-  let l:tooltip ..= '[' .. v:lnum .. '/' .. tabpagenr('$') .. ']'
-  let l:tooltip ..= '[#:' .. tabpagewinnr(v:lnum, '$') .. ']'
-  if haslocaldir(-1) == 2
-    let l:tooltip ..= ' tcd: ' .. fnamemodify(getcwd(-1, 0), ":~")
-  endif
-
-  let l:bufnrlist = tabpagebuflist(v:lnum)
-  for bufnr in l:bufnrlist
-    let l:tooltip ..= "\n"
-    " Prefix
-    if getbufvar(bufnr, "&modified")
-      let l:tooltip ..= '+ '
-    endif
-    " Buffer Name
-    let l:cur_win = v:false
-    if bufnr == bufnrlist[tabpagewinnr(v:lnum) - 1]
-      let l:cur_win = v:true
-    endif
-    if l:cur_win
-      let l:tooltip ..= '**'
-    endif
-    let l:cur_buf_name = bufname(bufnr)
-    if empty(l:cur_buf_name)
-      let l:cur_buf_name = "[No Name]"
-    endif
-    let l:tooltip ..= l:cur_buf_name
-    if l:cur_win
-      let l:tooltip ..= '**'
-    endif
-    " Suffix
-    let l:cur_filetype = getbufvar(bufnr, "&filetype")
-    if l:cur_filetype != ''
-      let l:tooltip ..= ' [' .. l:cur_filetype .. ']'
-    endif
-    let l:cur_buftype = getbufvar(bufnr, "&buftype")
-    if l:cur_buftype != ''
-      let l:tooltip ..= ' [' .. l:cur_buftype .. ']'
-    endif
-    if haslocaldir(bufwinnr(bufnr)) == 1
-      let l:tooltip ..= ' [lcd: ' .. fnamemodify(getcwd(), ":~") .. ']'
-    endif
-  endfor
-
-  let l:tooltip ..= "\npwd: " .. fnamemodify(getcwd(-1), ":~")
-
-  return l:tooltip
-endfunc
-
 " Avoid the ":ptag" when there is no word under the cursor, and a few other
 " things. Opens the tag under cursor in Preview window.
 hi previewWord term=bold ctermbg=green guibg=green
@@ -213,6 +163,8 @@ func! s:HelpCurwin(subject) abort
 endfunc
 
 func! FocusWindow(direction)
+  "BUG: Cannot jump from help, term, or other special windows
+  "BUG: Need to check buftype of new buffer, not old one
   if empty(&buftype) || &buftype == 'nowrite' || &buftype == 'acwrite'
     let win_width = 80
     if &textwidth > 0
@@ -381,8 +333,8 @@ set guiheadroom=0
 " Adding '!' to guioptions causes too much redraw & 'hit enter' prompts (vim bug)
 set guioptions=aAcdeimMgpk
 set guipty
-set guitablabel=%{GuiTabLabel()}
-set guitabtooltip=%{GuiTabTooltip()}
+set guitablabel=%{g:GuiTabLabel()}
+set guitabtooltip=%{g:GuiTabTooltip()}
 set helpheight=8
 set helplang=en
 set hidden
