@@ -851,6 +851,7 @@ command -bar -nargs=? -complete=help HelpCurwin execute s:HelpCurwin(<q-args>)
 " TODO: VS Code
 " TODO: Qt Creator
 " TODO: LibreOffice
+" TODO: Use $VIMRUNTIME/tools/demoserver.py for controlling Vim
 " Custom config file: $HOME/.vim/planetvimrc.vim
 let g:PV_config = "$HOME/.vim/planetvimrc.vim"
 if filereadable(expand(g:PV_config))
@@ -1231,6 +1232,7 @@ func! PlanetVim_TagsAutoPreview_Toggle() abort
 endfunc
 
 func! PlanetVim_PrintAutotoolsStatus()
+  " TODO
   " which autoconf
   " autoconf --version
   " which automake
@@ -2107,6 +2109,7 @@ func! PlanetVim_MenusDevelopmentUpdate() abort
     "         * qt doc
     "         * qt help
     "         * readthedocs
+    "         * gitbook (?)
     " * Tools
     "         * uic
     "         * moc
@@ -2393,6 +2396,8 @@ func! PlanetVim_MenusToolsUpdate() abort
     an 730.10  🔧&o.Tools <Nop>
     an disable 🔧&o.Tools
     an 730.10  🔧&o.Colori&ze                                 :ColorToggle<CR>
+    an 730.10  🔧&o.--1-- <Nop>
+    an 730.10  🔧&o.Start\ Python\ http\.server\ Here         :term python -m http.server<CR>
     an 730.10  🔧&o.--1-- <Nop>
     an 730.10  🔧&o.&direnv:\ Run\ \.envrc                    :DirenvExport<CR>
     an 730.10  🔧&o.dire&nv:\ Edit\ \.envrc                   :EditEnvrc<CR>
