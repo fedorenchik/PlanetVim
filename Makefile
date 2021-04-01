@@ -14,21 +14,14 @@ RSYNC_OPTIONS := -aHAX --delete-missing-args --delete-after \
 	--exclude='/viminfo/*' \
 	--exclude='/planetvimrc.vim'
 
-all: help
-
 help:
-	@echo sync      -- update now
 	@echo push      -- push changes to remote
 	@echo pull      -- pull changes from remote to local
-	@echo install   -- set up cron automatically
-	@echo uninstall -- remove cron script
+	@echo install   -- update files now
+	@echo uninstall -- TODO
 	@echo help      -- this help
 
-sync: sync-home
-
-sync-home: sync-files
-
-sync-files:
+install:
 	for file in $(FILES); do $(RSYNC) $(RSYNC_OPTIONS) $$file $(HOME)/$$file; done
 	vim -c 'helptags ALL' -c 'q'
 	#vim -c 'runtime spell/cleanadd.vim' -c 'q'
@@ -48,14 +41,10 @@ push:
 pull:
 	git pull --ff-only
 
-install:
-	{ crontab -l; echo "0 */2 * * * make -C $(PWD) cycle >/tmp/homerc.out 2>&1"; } | crontab -
-
 uninstall:
-	@echo "Run crontab -e and remove the rule manually."
+	@echo "TODO: Not implemented."
 
-cycle: commit pull push sync-home
+all: commit pull push install
 	notify-send --urgency=low --icon=terminal "homerc" "Updated"
 
-.PHONY: all help sync sync-home commit push pull install uninstall cycle
-.PHONY: sync-files
+.PHONY: all help commit push pull install uninstall

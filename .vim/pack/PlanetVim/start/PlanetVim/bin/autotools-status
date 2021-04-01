@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+function exec_command()
+{
+	echo -e "$@"
+	"$@"
+}
+
+exec_command which autoconf
+exec_command autoconf --version
+exec_command which automake
+exec_command automake --version
+exec_command which libtool
+exec_command libtool --version
