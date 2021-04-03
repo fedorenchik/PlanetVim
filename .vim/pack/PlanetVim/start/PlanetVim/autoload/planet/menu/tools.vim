@@ -12,26 +12,32 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.Pull                                  :G pull<CR>
     an 700.10  🔀&,.Push                                  :G push<CR>
     an 700.10  🔀&,.--2-- <Nop>
-    an 700.10  🔀&,.AutoCommit\ File                      :TODO
-    an 700.10  🔀&,.AutoCommit\ File\ &&\ Push            :TODO
-    an 700.10  🔀&,.AutoCommit\ All                       :TODO
-    an 700.10  🔀&,.AutoCommit\ &&\ Push                  :TODO
-    an 700.10  🔀&,.Set\ AutoCommit\ on\ File\ Write      :TODO
-    an 700.10  🔀&,.Stop\ AutoCommit\ on\ File\ Write     :TODO
+    an 700.10  🔀&,.AutoCommit\ File                      :call planet#util#git#CommitFile(v:false)<CR>
+    an 700.10  🔀&,.Save\ &&\ AutoCommit\ File            :call planet#util#git#CommitFile()<CR>
+    an 700.10  🔀&,.AutoCommit\ File\ &&\ Push            :call planet#util#git#CommitFile(v:false, v:true, v:true)<CR>
+    an 700.10  🔀&,.Save\ &&\ AutoCommit\ File\ &&\ Push  :call planet#util#git#CommitFile(v:true, v:true, v:true)<CR>
+    an 700.10  🔀&,.AutoCommit                            :call planet#util#git#Commit(v:false)<CR>
+    an 700.10  🔀&,.Save\ All\ &&\ AutoCommit             :call planet#util#git#Commit()<CR>
+    an 700.10  🔀&,.AutoCommit\ &&\ Push                  :call planet#util#git#Commit(v:false, v:true, v:true)<CR>
+    an 700.10  🔀&,.Save\ All\ &&\ AutoCommit\ &&\ Push   :call planet#util#git#Commit(v:true, v:true, v:true)<CR>
     an 700.10  🔀&,.--3-- <Nop>
+    an 700.10  🔀&,.Enable\ AutoCommit\ on\ File\ Write   :call planet#util#git#EnableAutoCommit()<CR>
+    an 700.10  🔀&,.Disable\ AutoCommit\ on\ File\ Write  :call planet#util#git#DisableAutoCommit()<CR>
+    an 700.10  🔀&,.--4-- <Nop>
+    an 700.10  🔀&,.Commit\ File                          :call planet#util#git#CommitFile(v:false, v:false)<CR>
+    an 700.10  🔀&,.Save\ &&\ Commit\ File                :call planet#util#git#CommitFile(v:true, v:false)<CR>
+    an 700.10  🔀&,.Commit\ All                           :TODO
+    an 700.10  🔀&,.Commit\ All\ with\ Untracked          :TODO
+    an 700.10  🔀&,.--5-- <Nop>
     an 700.10  🔀&,.Log\ File\ QF                         :TODO
     an 700.10  🔀&,.Log\ File\ LL                         :TODO
     an 700.10  🔀&,.Log\ QF                               :TODO
     an 700.10  🔀&,.Log\ LL                               :TODO
     an 700.10  🔀&,.Log\ in\ New\ GWindow                 :TODO
-    an 700.10  🔀&,.Commit\ All                           :TODO
-    an 700.10  🔀&,.Commit\ All\ with\ Untracked          :TODO
-    an 700.10  🔀&,.Commit\ File                          :TODO
-    an 700.10  🔀&,.Commit\ File                          :TODO
     an 700.10  🔀&,.Clone\ Repo                           :TODO
     an 700.10  🔀&,.Init\ Repo                            :TODO
     an 700.10  🔀&,.Blame                                 :TODO
-    an 700.10  🔀&,.--4-- <Nop>
+    an 700.10  🔀&,.--6-- <Nop>
     " tpope/rhubarb.vim plugin for GitHub
     an 700.10  🔀&,.GitHub <Nop>
     an disable 🔀&,.GitHub

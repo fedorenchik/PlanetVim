@@ -165,6 +165,7 @@ endfunc
 func! FocusWindow(direction)
   "BUG: Cannot jump from help, term, or other special windows
   "BUG: Need to check buftype of new buffer, not old one
+  exe 'wincmd ' .. a:direction
   if empty(&buftype) || &buftype == 'nowrite' || &buftype == 'acwrite'
     let win_width = 80
     if &textwidth > 0
@@ -185,7 +186,6 @@ func! FocusWindow(direction)
     let owmw = &wmw
     let owiw = &wiw
     exe "set wiw=" .. other_win_widh .. " wmw=" .. other_win_widh
-    exe 'wincmd ' .. a:direction
     if win_width > winwidth(0)
       exe win_width .. 'wincmd |'
     endif
