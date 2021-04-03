@@ -29,7 +29,7 @@ endfunction
 " 6. then the line is `call getbufline(|` in `s:on_complete_done_after`
 "
 function! s:on_complete_done() abort
-  " Somtimes, vim occurs `CompleteDone` unexpectedly.
+  " Sometimes, vim occurs `CompleteDone` unexpectedly.
   " We try to detect it by checking empty completed_item.
   if empty(v:completed_item) || get(v:completed_item, 'word', '') ==# '' && get(v:completed_item, 'abbr', '') ==# ''
     doautocmd <nomodeline> User lsp_complete_done
@@ -107,11 +107,7 @@ function! s:on_complete_done_after() abort
     else
       let l:overflow_before = 0
       let l:overflow_after = 0
-      let l:text = get(l:completion_item, 'insertText', '')
-      if empty(l:text)
-        " When insertText is `falsy` the label is used as the insert text
-        let l:text = get(l:completion_item, 'label', l:completed_item['word'])
-      endif
+      let l:text = s:get_completion_text(l:completion_item)
     endif
 
     " apply snipept or text_edit
@@ -171,11 +167,7 @@ function! s:is_expandable(done_line, done_position, complete_position, completio
     let l:text_edit_after = strcharpart(l:completed_line, a:completion_item['textEdit']['range']['end']['character'], strchars(l:completed_line) - a:completion_item['textEdit']['range']['end']['character'])
     return a:done_line !=# l:text_edit_before . s:trim_unmeaning_tabstop(a:completion_item['textEdit']['newText']) . l:text_edit_after
   endif
-  let l:text = get(a:completion_item, 'insertText', '')
-  if empty(l:text)
-    let l:text = get(a:completion_item, 'label', a:completed_item['word'])
-  endif
-  return l:text !=# s:trim_unmeaning_tabstop(a:completed_item['word'])
+  return s:get_completion_text(a:completed_item) !=# s:trim_unmeaning_tabstop(a:completed_item['word'])
 endfunction
 
 "
@@ -278,6 +270,18 @@ function! s:simple_expand_text(text) abort
         \   'character': l:pos['character'] + l:offset
         \ })
   call cursor(l:pos)
+endfunction
+
+"
+" Get completion text from CompletionItem. Fallback to label when insertText
+" is falsy
+"
+function! s:get_completion_text(item) abort
+  let l:text = get(a:item, 'insertText', '')
+  if empty(l:text)
+    let l:text = get(a:item, 'label', a:item['word'])
+  endif
+  return l:text
 endfunction
 
 "
