@@ -162,38 +162,6 @@ func! s:HelpCurwin(subject) abort
   return 'help ' .. a:subject
 endfunc
 
-func! FocusWindow(direction)
-  "BUG: Cannot jump from help, term, or other special windows
-  "BUG: Need to check buftype of new buffer, not old one
-  exe 'wincmd ' .. a:direction
-  if empty(&buftype) || &buftype == 'nowrite' || &buftype == 'acwrite'
-    let win_width = 80
-    if &textwidth > 0
-      let win_width = &textwidth
-    elseif str2nr(&colorcolumn) > 0
-      let win_width = str2nr(&colorcolumn)
-    endif
-    let win_width += &foldcolumn
-    if &number || &relativenumber
-      let win_width += &numberwidth
-    endif
-    if &signcolumn == 'yes' || &signcolumn == 'auto'
-      let win_width += 2
-    endif
-    echo 'win_width=' .. win_width
-    let number_of_windows = tabpagewinnr(tabpagenr(), '$')
-    let other_win_widh = (&columns - win_width) / number_of_windows
-    let owmw = &wmw
-    let owiw = &wiw
-    exe "set wiw=" .. other_win_widh .. " wmw=" .. other_win_widh
-    if win_width > winwidth(0)
-      exe win_width .. 'wincmd |'
-    endif
-    let &wmw = owmw
-    let &wiw = owiw
-  endif
-endfunc
-
 func! PlanetVim_QF_OldFiles()
   call setqflist([], ' ', {'lines' : v:oldfiles, 'efm' : '%f', 'quickfixtextfunc' : 'QfOldFiles'})
 endfunc
@@ -580,10 +548,10 @@ nn <C-b> :colder<CR>
 nn <C-d> :lnewer<CR>
 nn <C-e> :cnext<CR>
 nn <C-f> :cnewer<CR>
-nn <C-h> :call FocusWindow('h')<CR>
+nn <C-h> :call planet#util#window#Focus('h')<CR>
 nn <C-j> <C-W>j
 nn <C-k> <C-W>k
-nn <C-l> :call FocusWindow('l')<CR>
+nn <C-l> :call planet#util#window#Focus('l')<CR>
 nn <C-s> :emenu <C-Z>
 nn <C-u> :lolder<CR>
 nn <C-W>V :botright vsplit<CR>
@@ -785,6 +753,8 @@ command -bar -nargs=? -complete=help HelpCurwin execute s:HelpCurwin(<q-args>)
 " TODO: Qt Creator
 " TODO: LibreOffice
 " TODO: Use $VIMRUNTIME/tools/demoserver.py for controlling Vim
+" TODO: Add Buffer Cmdline Window: Input commands and ouput results in
+" TODO:    'prompt' buffer.
 " Custom config file: $HOME/.vim/planetvimrc.vim
 let g:PV_config = "$HOME/.vim/planetvimrc.vim"
 if filereadable(expand(g:PV_config))
@@ -1027,67 +997,6 @@ func s:XxdFind()
   endif
 endfun
 
-func! PlanetVim_BufferIsNormal(name, num)
-    if !bufexists(a:num)
-      return 0
-    endif
-    if isdirectory(a:name) || !buflisted(a:num)
-      return 0
-    endif
-    let type = getbufvar(a:num, '&buftype')
-    if type != '' && type != 'nofile' && type != 'nowrite'
-      return 0
-    endif
-    return 1
-endfunc
-
-func! PlanetVim_MenuName(name)
-  let menu_name = a:name
-  if empty(menu_name)
-    let menu_name = "[No Name]"
-  endif
-  let menu_name = escape(menu_name, "\\. \t|")
-  let menu_name = substitute(menu_name, "&", "&&", "g")
-  let menu_name = substitute(menu_name, "\n", "^@", "g")
-  return menu_name
-endfunc
-
-func! PlanetVim_MenuBufers_AddBuffer(name, num)
-  if PlanetVim_BufferIsNormal(a:name, a:num)
-    let menu_name = PlanetVim_MenuName(a:name)
-    exe 'an 800.500 📖&b.' .. menu_name .. ' :confirm b ' .. a:num .. '<CR>'
-  endif
-endfunc
-
-func! PlanetVim_MenuBuffers_AddBufferAu()
-  let name = expand("<afile>")
-  let num = expand("<abuf>") + 0
-  call PlanetVim_MenuBufers_AddBuffer(name, num)
-endfunc
-
-func! PlanetVim_MenuBuffers_RemoveBufferAu()
-  let name = expand("<afile>")
-  let menu_name = PlanetVim_MenuName(name)
-  if ! empty(menu_name)
-    exe 'silent! aun 800.500 📖&b.' .. menu_name
-  endif
-endfunc
-
-func! PlanetVim_AddBuffers()
-  let buf = 1
-  while buf <= bufnr('$')
-    let name = bufname(buf)
-    call PlanetVim_MenuBufers_AddBuffer(name, num)
-    let buf += 1
-  endwhile
-endfunc
-
-aug PlanetVim_AugMenuBuffers
-au!
-au BufCreate,BufFilePost * call PlanetVim_MenuBuffers_AddBufferAu()
-au BufDelete,BufFilePre * call PlanetVim_MenuBuffers_RemoveBufferAu()
-aug END
-
 func! PlanetVim_MenuSessionSetCurrent() abort
   if exists('g:last_session')
     exe 'aun 📚&h.Current:\ ' .. g:last_session
@@ -1122,20 +1031,6 @@ func! PlanetVim_EmergencyExit() abort
   cquit!
 endfunc
 
-func! PlanetVim_Window_Maximize() abort
-  let g:PV_win_restore_cmd = winrestcmd()
-  wincmd _
-  wincmd |
-endfunc
-
-func! PlanetVim_Window_Restore() abort
-  if exists('g:PV_win_restore_cmd')
-    exe g:PV_win_restore_cmd
-    "FIXME: Remove second exe call after vim bug #7988 is fixed
-    exe g:PV_win_restore_cmd
-  endif
-endfunc
-
 func! PlanetVim_View_ToggleAutosave() abort
   if exists('g:PV_view_autosave')
     let g:PV_view_autosave = ! g:PV_view_autosave
@@ -1155,17 +1050,6 @@ func! PlanetVim_View_ToggleAutosave() abort
     aug END
     echo "Do not AutoSave Views"
   endif
-endfunc
-
-func! PlanetVim_DeleteBuffers()
-  let buf = 1
-  while buf <= bufnr('$')
-    if !buflisted(buf) && !bufloaded(buf)
-      continue
-    endif
-    bdelete buf
-    let buf += 1
-  endwhile
 endfunc
 
 func! PlanetVim_TagsAutoPreview_Toggle() abort
@@ -1201,7 +1085,7 @@ endfunc
 "TODO: Add prompt buffer to exec viml commands
 
 "BUG: move menu functions into plugin, so no need to packadd first
-packadd! PlanetVim
+packadd! planet.vim
 
 if ! exists("g:PlanetVim_menus_basic")
   let g:PlanetVim_menus_basic = 1

@@ -41,7 +41,8 @@ func! planet#menu#nav#update() abort
     an 800.40  📖&b.Delete\ (Unload\ &&\ Unlist)            :bd<CR>
     an 800.40  📖&b.Wipeout\ (Delete\ &&\ Clear\ Everything) :bw<CR>
     an 800.40  📖&b.--5-- <Nop>
-    an 800.40  📖&b.Delete\ All\ Hidden\ Buffers            :call PlanetVim_DeleteBuffers()<CR>
+    an 800.40  📖&b.Delete\ All\ Hidden                     :call planet#util#buffer#DeleteHidden()<CR>
+    an 800.40  📖&b.Delete\ All                             :call planet#util#buffer#DeleteAll()<CR>
     an 800.40  📖&b.Execute\ in\ Each\ Buffer<Tab>:bufdo    :bufdo 
     an 800.50  📖&b.Buffers\ List <Nop>
     an disable 📖&b.Buffers\ List
@@ -87,21 +88,24 @@ func! planet#menu#nav#update() abort
     an 820.10  🪟&w.--2-- <Nop>
     an 820.10  🪟&w.&Vertical\ Split<Tab>:vsplit<Tab>+v     <C-w>v
     an 820.10  🪟&w.Horizontal\ &Split<Tab>:split<Tab>+s    <C-w>s
+    an 820.10  🪟&w.VSplit\ Bind                            :call planet#util#window#SplitBind('v')<CR>
+    an 820.10  🪟&w.HSplit\ Bind                            :call planet#util#window#SplitBind('h')<CR>
     an 820.10  🪟&w.--3-- <Nop>
-    an 820.10  🪟&w.Swap\ (&x)<Tab>+x                       <C-w>x
-    an 820.10  🪟&w.Rotate\ Up<Tab>R                        <C-w>R
-    an 820.10  🪟&w.Rotate\ Down<Tab>r                      <C-w>r
-    an 820.10  🪟&w.Move\ to\ Left<Tab>+H                   <C-w>H
-    an 820.10  🪟&w.Move\ to\ Right<Tab>+L                  <C-w>L
-    an 820.10  🪟&w.Move\ to\ Top<Tab>+K                    <C-w>K
-    an 820.10  🪟&w.Move\ to\ Bottom<Tab>+J                 <C-w>J
-    an 820.10  🪟&w.Move\ to\ New\ &Tab<Tab>+T              <C-w>T
-    an 820.10  🪟&w.Move\ to\ New\ &GUI\ Window             :TODO
-    an 820.10  🪟&w.Copy\ to\ New\ Tab<Tab>+s+T             <C-w>s<C-w>T
+    an 820.10  🪟&w.Move.Swap\ (&x)<Tab>+x                       <C-w>x
+    an 820.10  🪟&w.Move.Rotate\ Up<Tab>R                        <C-w>R
+    an 820.10  🪟&w.Move.Rotate\ Down<Tab>r                      <C-w>r
+    an 820.10  🪟&w.Move.To\ Left<Tab>+H                   <C-w>H
+    an 820.10  🪟&w.Move.To\ Right<Tab>+L                  <C-w>L
+    an 820.10  🪟&w.Move.To\ Top<Tab>+K                    <C-w>K
+    an 820.10  🪟&w.Move.To\ Bottom<Tab>+J                 <C-w>J
+    an 820.10  🪟&w.Move.To\ New\ &Tab<Tab>+T              <C-w>T
+    an 820.10  🪟&w.Move.To\ New\ &GUI\ Window             :TODO
+    an 820.10  🪟&w.Move.Copy\ To\ New\ Tab<Tab>+s+T             <C-w>s<C-w>T
+    an 820.10  🪟&w.Move.Copy\ To\ New\ &GUI\ Window             :TODO
     an 820.10  🪟&w.--4-- <Nop>
     an 820.10  🪟&w.&Equal\ Size<Tab>+=                     <C-w>=
-    an 820.10  🪟&w.&Maximize<Tab>+_+\|                     :call PlanetVim_Window_Maximize()<CR>
-    an 820.10  🪟&w.&Unmaximize<Tab>                        :call PlanetVim_Window_Restore()<CR>
+    an 820.10  🪟&w.&Maximize<Tab>+_+\|                     :call planet#util#window#Maximize()<CR>
+    an 820.10  🪟&w.&Unmaximize<Tab>                        :call planet#util#window#Restore()<CR>
     an 820.10  🪟&w.Resize.Maximize\ &Vertically<Tab>+_     <C-w>_
     an 820.10  🪟&w.Resize.Maximize\ &Horizontally<Tab>+\|  <C-w>\|
     an 820.10  🪟&w.Resize.Increase\ Height<Tab>++          <C-w>+
@@ -109,16 +113,18 @@ func! planet#menu#nav#update() abort
     an 820.10  🪟&w.Resize.Increase\ Width<Tab>+>           <C-w>>
     an 820.10  🪟&w.Resize.Decrease\ Width<Tab>+<           <C-w><
     an 820.10  🪟&w.--6-- <Nop>
-    an 820.10  🪟&w.Focus\ Alternate<Tab>+p                 <C-w>p
-    an 820.10  🪟&w.Focus\ Preview\ Window<Tab>+P           <C-w>P
-    an 820.10  🪟&w.Focus\ Previous\ Window<Tab>+W          <C-w>W
-    an 820.10  🪟&w.Focus\ Next\ Window<Tab>+w              <C-w>w
-    an 820.10  🪟&w.Focus\ Top\ Window<Tab>+t               <C-w>t
-    an 820.10  🪟&w.Focus\ Bottom\ Window<Tab>+b            <C-w>b
-    an 820.10  🪟&w.Focus\ Left<Tab>+h                      :call FocusWindow('h')<CR>
-    an 820.10  🪟&w.Focus\ Right<Tab>+l                     :call FocusWindow('l')<CR>
-    an 820.10  🪟&w.Focus\ Up<Tab>+k                        <C-w>k
-    an 820.10  🪟&w.Focus\ Down<Tab>+j                      <C-w>j
+    an 820.10  🪟&w.Focus.Alternate<Tab>+p                 <C-w>p
+    an 820.10  🪟&w.Focus.Preview\ Window<Tab>+P           <C-w>P
+    an 820.10  🪟&w.Focus.Previous\ Window<Tab>+W          <C-w>W
+    an 820.10  🪟&w.Focus.Next\ Window<Tab>+w              <C-w>w
+    an 820.10  🪟&w.Focus.Top\ Window<Tab>+t               <C-w>t
+    an 820.10  🪟&w.Focus.Bottom\ Window<Tab>+b            <C-w>b
+    an 820.10  🪟&w.Focus.Left<Tab>+h                      :call planet#util#window#Focus('h')<CR>
+    an 820.10  🪟&w.Focus.Right<Tab>+l                     :call planet#util#window#Focus('l')<CR>
+    an 820.10  🪟&w.Focus.Up<Tab>+k                        <C-w>k
+    an 820.10  🪟&w.Focus.Down<Tab>+j                      <C-w>j
+    an 820.10  🪟&w.--7-- <Nop>
+    an 820.10  🪟&w.Set\ Fixed\ Size                        :set winfixheight winfixwidth<CR>
     an 820.10  🪟&w.--8-- <Nop>
     an 820.10  🪟&w.View.Save                               :mkview<CR>
     an 820.10  🪟&w.View.Save\ 1                            :mkview 1<CR>

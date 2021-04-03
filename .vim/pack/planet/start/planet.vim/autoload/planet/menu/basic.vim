@@ -35,7 +35,7 @@ func! planet#menu#basic#update() abort
     an 110.130 📁&f.--2-- <Nop>
     an 110.140 📁&f.&Save<Tab>:w                               :if expand("%") == ""<Bar>browse confirm w<Bar>else<Bar>confirm up<Bar>endif<CR>
     an 110.150 📁&f.Save\ &As\.\.\.<Tab>:saveas                :browse confirm saveas<CR>
-    an <silent> 110.160 📁&f.Save\ A&ll<Tab>:wall              :confirm wall<CR>
+    an <silent> 110.160 📁&f.Save\ A&ll<Tab>:wall              :silent confirm wall<Bar>echohl Todo<Bar>echo "All Saved"<Bar>echohl None<CR>
     an 110.170 📁&f.--3-- <Nop>
     an 110.180 📁&f.Export\ (Selected)\ as\ HTML               :TOhtml<CR>
     an 110.180 📁&f.Convert\ to\ HTML                          :runtime syntax/2html.vim<CR>

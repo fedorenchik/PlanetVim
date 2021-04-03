@@ -6,11 +6,11 @@ func! planet#menu#tools#update() abort
     " Open Log in new window
     an 700.10  🔀&,.Git <Nop>
     an disable 🔀&,.Git
-    an 700.10  🔀&,.Status                                :G<CR>
+    an 700.10  🔀&,.Status                                :call planet#util#term#run_cmd_output('git status')<CR>
     an 700.10  🔀&,.--1-- <Nop>
-    an 700.10  🔀&,.Fetch                                 :G fetch<CR>
-    an 700.10  🔀&,.Pull                                  :G pull<CR>
-    an 700.10  🔀&,.Push                                  :G push<CR>
+    an 700.10  🔀&,.Fetch                                 :call planet#util#term#run_cmd_output('git fetch --all --tags')<CR>
+    an 700.10  🔀&,.Pull                                  :call planet#util#term#run_cmd_output('git pull')<CR>
+    an 700.10  🔀&,.Push                                  :call planet#util#term#run_cmd_output('git push')<CR>
     an 700.10  🔀&,.--2-- <Nop>
     an 700.10  🔀&,.AutoCommit\ File                      :call planet#util#git#CommitFile(v:false)<CR>
     an 700.10  🔀&,.Save\ &&\ AutoCommit\ File            :call planet#util#git#CommitFile()<CR>
