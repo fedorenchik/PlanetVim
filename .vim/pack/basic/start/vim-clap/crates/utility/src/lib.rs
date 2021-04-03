@@ -10,10 +10,12 @@ use std::process::{Command, Output};
 
 use anyhow::{anyhow, Result};
 
+mod macros;
+
 pub const CLAP_CACHE: &str = "vim.clap";
 
 /// Removes all the file and directories under `target_dir`.
-pub fn remove_dir_contents(target_dir: &PathBuf) -> Result<()> {
+pub fn remove_dir_contents(target_dir: &Path) -> Result<()> {
     let entries = read_dir(target_dir)?;
     for entry in entries {
         if let Ok(entry) = entry {
@@ -36,22 +38,23 @@ pub fn is_git_repo(dir: &Path) -> bool {
     gitdir.exists()
 }
 
-// The output is wrapped in a Result to allow matching on errors
-// Returns an Iterator to the Reader of the lines of the file.
-pub fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
+/// Returns an Iterator to the Reader of the lines of the file.
+///
+/// The output is wrapped in a Result to allow matching on errors.
+pub fn read_lines<P>(path: P) -> io::Result<io::Lines<io::BufReader<File>>>
 where
     P: AsRef<Path>,
 {
-    let file = File::open(filename)?;
+    let file = File::open(path)?;
     Ok(io::BufReader::new(file).lines())
 }
 
 /// Returns the first number lines given the file path.
 pub fn read_first_lines<P: AsRef<Path>>(
-    filename: P,
+    path: P,
     number: usize,
 ) -> io::Result<impl Iterator<Item = String>> {
-    let file = File::open(filename)?;
+    let file = File::open(path)?;
     Ok(io::BufReader::new(file)
         .lines()
         .filter_map(|i| i.ok())
@@ -77,7 +80,7 @@ pub fn clap_cache_dir() -> PathBuf {
 /// of using a path as the directory name.
 ///
 /// Formula: temp_dir + clap_cache + arg1_arg2_arg3 + hash(cmd_dir)
-pub fn get_cache_dir(args: &[&str], cmd_dir: &PathBuf) -> PathBuf {
+pub fn get_cache_dir(args: &[&str], cmd_dir: &Path) -> PathBuf {
     let mut dir = clap_cache_dir();
     dir.push(args.join("_"));
     // TODO: use a readable cache cmd_dir name?
@@ -86,7 +89,7 @@ pub fn get_cache_dir(args: &[&str], cmd_dir: &PathBuf) -> PathBuf {
 }
 
 /// Returns the cached entry given the cmd args and working dir.
-pub fn get_cached_entry(args: &[&str], cmd_dir: &PathBuf) -> Result<DirEntry> {
+pub fn get_cached_entry(args: &[&str], cmd_dir: &Path) -> Result<DirEntry> {
     let cache_dir = get_cache_dir(args, &cmd_dir);
     if cache_dir.exists() {
         let mut entries = read_dir(cache_dir)?;
@@ -105,13 +108,13 @@ pub fn get_cached_entry(args: &[&str], cmd_dir: &PathBuf) -> Result<DirEntry> {
     ))
 }
 
-/// Returns the first number lines given the file path.
+/// Returns the lines of (`target_line` - `size`, `target_line` - `size`) given the path.
 pub fn read_preview_lines<P: AsRef<Path>>(
-    filename: P,
+    path: P,
     target_line: usize,
     size: usize,
 ) -> io::Result<(impl Iterator<Item = String>, usize)> {
-    let file = File::open(filename)?;
+    let file = File::open(path)?;
     let (start, end, hl_line) = if target_line > size {
         (target_line - size, target_line + size, size)
     } else {
@@ -129,11 +132,11 @@ pub fn read_preview_lines<P: AsRef<Path>>(
 
 /// Returns an iterator of limited lines of `filename` from the line number `start_line`.
 pub fn read_lines_from<P: AsRef<Path>>(
-    filename: P,
+    path: P,
     start_line: usize,
     size: usize,
 ) -> io::Result<impl Iterator<Item = String>> {
-    let file = File::open(filename)?;
+    let file = File::open(path)?;
     Ok(io::BufReader::new(file)
         .lines()
         .skip(start_line)
@@ -168,29 +171,4 @@ where
 {
     let mut cmd = as_std_command(shell_cmd, dir);
     Ok(cmd.output()?)
-}
-
-/// Combine json and println macro.
-#[macro_export]
-macro_rules! println_json {
-  ( $( $field:expr ),+ ) => {
-    {
-      println!("{}", serde_json::json!({ $(stringify!($field): $field,)* }))
-    }
-  }
-}
-
-/// Combine json and println macro.
-///
-/// Neovim needs Content-length info when using stdio-based communication.
-#[macro_export]
-macro_rules! println_json_with_length {
-  ( $( $field:expr ),+ ) => {
-    {
-      let msg = serde_json::json!({ $(stringify!($field): $field,)* });
-      if let Ok(s) = serde_json::to_string(&msg) {
-          println!("Content-length: {}\n\n{}", s.len(), s);
-      }
-    }
-  }
 }

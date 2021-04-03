@@ -1,6 +1,7 @@
 use std::fs::{read_dir, DirEntry, File};
+use std::hash::Hash;
 use std::io::Write;
-use std::path::{self, PathBuf};
+use std::path::{self, Path, PathBuf};
 use std::time::SystemTime;
 
 use anyhow::{anyhow, Result};
@@ -8,7 +9,8 @@ use structopt::StructOpt;
 
 use icon::IconPainter;
 use utility::{
-    calculate_hash, clap_cache_dir, get_cached_entry, read_first_lines, remove_dir_contents,
+    calculate_hash, clap_cache_dir, get_cached_entry, println_json, println_json_with_length,
+    read_first_lines, remove_dir_contents,
 };
 
 /// List and remove all the cached contents.
@@ -40,7 +42,7 @@ impl Cache {
         Ok(())
     }
 
-    fn list(&self, cache_dir: &PathBuf) -> Result<()> {
+    fn list(&self, cache_dir: &Path) -> Result<()> {
         let cache_dir_str = cache_dir.display();
         println!("Current cache directory:");
         println!("\t{}\n", cache_dir_str);
@@ -53,7 +55,7 @@ impl Cache {
                             .file_name()
                             .and_then(std::ffi::OsStr::to_str)
                             .map(Into::into)
-                            .unwrap_or_else(|| panic!("Couldn't get file name"))
+                            .unwrap_or_else(|| panic!("Couldn't get file name from {:?}", e.path()))
                     })
                 })
                 .collect::<Result<Vec<String>, std::io::Error>>()?;
@@ -73,11 +75,15 @@ pub struct CacheEntry;
 impl CacheEntry {
     /// Construct the cache entry given command arguments and its working directory, the `total`
     /// info is cached in the file name.
-    pub fn try_new(cmd_args: &[&str], cmd_dir: Option<PathBuf>, total: usize) -> Result<PathBuf> {
+    pub fn try_new<T: AsRef<Path> + Hash>(
+        cmd_args: &[&str],
+        cmd_dir: Option<T>,
+        total: usize,
+    ) -> Result<PathBuf> {
         let mut dir = clap_cache_dir();
         dir.push(cmd_args.join("_"));
         if let Some(cmd_dir) = cmd_dir {
-            dir.push(format!("{}", calculate_hash(&cmd_dir)));
+            dir.push(format!("{}", calculate_hash(&cmd_dir.as_ref())));
         } else {
             dir.push("no_cmd_dir");
         }
@@ -97,7 +103,7 @@ impl CacheEntry {
     /// Write the `contents` to given cache entry.
     ///
     /// Remove all the existing old entries if there are any.
-    pub fn write<T: AsRef<[u8]>>(entry: &PathBuf, contents: T) -> Result<()> {
+    pub fn write<T: AsRef<[u8]>>(entry: &Path, contents: T) -> Result<()> {
         // Remove the other outdated cache file if there are any.
         //
         // There should be only one cache file in parent_dir at this moment.
@@ -111,9 +117,9 @@ impl CacheEntry {
     }
 
     /// Creates a new cache entry.
-    pub fn create<T: AsRef<[u8]>>(
+    pub fn create<T: AsRef<[u8]>, P: AsRef<Path> + Hash>(
         cmd_args: &[&str],
-        cmd_dir: Option<PathBuf>,
+        cmd_dir: Option<P>,
         total: usize,
         contents: T,
     ) -> Result<PathBuf> {
@@ -145,7 +151,7 @@ pub enum SendResponse {
 
 /// Reads the first lines from cache file and send back the cached info.
 pub fn send_response_from_cache(
-    tempfile: &PathBuf,
+    tempfile: &Path,
     total: usize,
     response_ty: SendResponse,
     icon_painter: Option<IconPainter>,
@@ -160,21 +166,21 @@ pub fn send_response_from_cache(
         match response_ty {
             SendResponse::Json => println_json!(total, tempfile, using_cache, lines),
             SendResponse::JsonWithContentLength => {
-                print_json_with_length!(total, tempfile, using_cache, lines)
+                println_json_with_length!(total, tempfile, using_cache, lines)
             }
         }
     } else {
         match response_ty {
             SendResponse::Json => println_json!(total, tempfile, using_cache),
             SendResponse::JsonWithContentLength => {
-                print_json_with_length!(total, tempfile, using_cache)
+                println_json_with_length!(total, tempfile, using_cache)
             }
         }
     }
 }
 
 /// Returns the cache file path and number of total cached items.
-pub fn cache_exists(args: &[&str], cmd_dir: &PathBuf) -> Result<(PathBuf, usize)> {
+pub fn cache_exists(args: &[&str], cmd_dir: &Path) -> Result<(PathBuf, usize)> {
     if let Ok(cached_entry) = get_cached_entry(args, cmd_dir) {
         if let Ok(total) = CacheEntry::get_total(&cached_entry) {
             let tempfile = cached_entry.path();

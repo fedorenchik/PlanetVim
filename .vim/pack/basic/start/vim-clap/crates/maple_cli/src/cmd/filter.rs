@@ -5,10 +5,11 @@ use structopt::StructOpt;
 
 use filter::{
     matcher::{Algo, Bonus, MatchType},
-    subprocess, RunContext, Source,
+    subprocess, FilterContext, Source,
 };
-use icon::IconPainter;
 use source_item::SourceItem;
+
+use crate::app::Params;
 
 fn parse_bonus(s: &str) -> Bonus {
     if s.to_lowercase().as_str() == "filename" {
@@ -97,9 +98,12 @@ impl Filter {
     #[inline]
     fn sync_run(
         &self,
-        number: Option<usize>,
-        winwidth: Option<usize>,
-        icon_painter: Option<IconPainter>,
+        Params {
+            number,
+            winwidth,
+            icon_painter,
+            ..
+        }: Params,
     ) -> Result<()> {
         let ranked = filter::sync_run::<std::iter::Empty<_>>(
             &self.query,
@@ -117,14 +121,17 @@ impl Filter {
     #[inline]
     fn dyn_run(
         &self,
-        number: Option<usize>,
-        winwidth: Option<usize>,
-        icon_painter: Option<IconPainter>,
+        Params {
+            number,
+            winwidth,
+            icon_painter,
+            ..
+        }: Params,
     ) -> Result<()> {
         filter::dyn_run::<std::iter::Empty<_>>(
             &self.query,
             self.generate_source(),
-            RunContext::new(
+            FilterContext::new(
                 self.algo.clone(),
                 number,
                 winwidth,
@@ -135,16 +142,11 @@ impl Filter {
         )
     }
 
-    pub fn run(
-        &self,
-        number: Option<usize>,
-        winwidth: Option<usize>,
-        icon_painter: Option<IconPainter>,
-    ) -> Result<()> {
+    pub fn run(&self, params: Params) -> Result<()> {
         if self.sync {
-            self.sync_run(number, winwidth, icon_painter)?;
+            self.sync_run(params)?;
         } else {
-            self.dyn_run(number, winwidth, icon_painter)?;
+            self.dyn_run(params)?;
         }
         Ok(())
     }

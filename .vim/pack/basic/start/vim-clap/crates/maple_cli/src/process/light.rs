@@ -1,3 +1,5 @@
+//! Wrapper of std `Command` with some optimization about the output.
+
 use std::fs::File;
 use std::io::Write;
 use std::path::PathBuf;
@@ -6,7 +8,7 @@ use std::process::{Command, Output};
 use anyhow::{anyhow, Result};
 
 use icon::IconPainter;
-use utility::{get_cached_entry, read_first_lines, remove_dir_contents};
+use utility::{get_cached_entry, println_json, read_first_lines, remove_dir_contents};
 
 use crate::cmd::cache::CacheEntry;
 
