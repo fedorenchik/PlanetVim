@@ -398,7 +398,7 @@ func! planet#menu#dev#update() abort
     " Terminal
     an 550.10  💻&t.Terminal <Nop>
     an disable 💻&t.Terminal
-    an 550.10  💻&t.N&ew                                    :botright terminal ++kill=kill ++rows=10<CR>
+    an 550.10  💻&t.N&ew                                   :botright terminal ++kill=kill ++rows=10<CR>
     an 550.10  💻&t.New\ &Here                             :terminal ++curwin ++kill=kill<CR>
     an 550.10  💻&t.New\ &VSplit                           :vertical terminal ++kill=kill<CR>
     an 550.10  💻&t.New\ &Tab                              :tab terminal ++kill=kill<CR>
@@ -407,6 +407,7 @@ func! planet#menu#dev#update() abort
     an 550.10  💻&t.P&ython\ Shell                         :botright terminal ++kill=kill ++rows=10 python<CR>
     an 550.10  💻&t.C&++\ Shell                            :botright terminal ++kill=kill ++rows=10 cling<CR>
     an 550.10  💻&t.--2-- <Nop>
+    an 550.10  💻&t.&Close\ Output                         :call planet#term#CloseOutputWindow()<CR>
     an 550.10  💻&t.Terminal\ List <Nop>
     an disable 💻&t.Terminal\ List
     an 550.10  💻&t.Output\ List <Nop>

@@ -12,22 +12,22 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.Pull                                  :call planet#term#run_cmd_output('git pull')<CR>
     an 700.10  🔀&,.Push                                  :call planet#term#run_cmd_output('git push')<CR>
     an 700.10  🔀&,.--2-- <Nop>
-    an 700.10  🔀&,.AutoCommit\ File                      :call planet#git#CommitFile(v:false)<CR>
-    an 700.10  🔀&,.Save\ &&\ AutoCommit\ File            :call planet#git#CommitFile()<CR>
-    an 700.10  🔀&,.AutoCommit\ File\ &&\ Push            :call planet#git#CommitFile(v:false, v:true, v:true)<CR>
-    an 700.10  🔀&,.Save\ &&\ AutoCommit\ File\ &&\ Push  :call planet#git#CommitFile(v:true, v:true, v:true)<CR>
-    an 700.10  🔀&,.AutoCommit                            :call planet#git#Commit(v:false)<CR>
-    an 700.10  🔀&,.Save\ All\ &&\ AutoCommit             :call planet#git#Commit()<CR>
-    an 700.10  🔀&,.AutoCommit\ &&\ Push                  :call planet#git#Commit(v:false, v:true, v:true)<CR>
-    an 700.10  🔀&,.Save\ All\ &&\ AutoCommit\ &&\ Push   :call planet#git#Commit(v:true, v:true, v:true)<CR>
-    an 700.10  🔀&,.--3-- <Nop>
-    an 700.10  🔀&,.Enable\ AutoCommit\ on\ File\ Write   :call planet#git#EnableAutoCommit()<CR>
-    an 700.10  🔀&,.Disable\ AutoCommit\ on\ File\ Write  :call planet#git#DisableAutoCommit()<CR>
-    an 700.10  🔀&,.--4-- <Nop>
-    an 700.10  🔀&,.Commit\ File                          :call planet#git#CommitFile(v:false, v:false)<CR>
-    an 700.10  🔀&,.Save\ &&\ Commit\ File                :call planet#git#CommitFile(v:true, v:false)<CR>
-    an 700.10  🔀&,.Commit\ All                           :TODO
-    an 700.10  🔀&,.Commit\ All\ with\ Untracked          :TODO
+    an 700.10  🔀&,.Commit.AutoCommit\ File                      :call planet#git#CommitFile(v:false)<CR>
+    an 700.10  🔀&,.Commit.Save\ &&\ AutoCommit\ File            :call planet#git#CommitFile()<CR>
+    an 700.10  🔀&,.Commit.AutoCommit\ File\ &&\ Push            :call planet#git#CommitFile(v:false, v:true, v:true)<CR>
+    an 700.10  🔀&,.Commit.Save\ &&\ AutoCommit\ File\ &&\ Push  :call planet#git#CommitFile(v:true, v:true, v:true)<CR>
+    an 700.10  🔀&,.Commit.AutoCommit                            :call planet#git#Commit(v:false)<CR>
+    an 700.10  🔀&,.Commit.Save\ All\ &&\ AutoCommit             :call planet#git#Commit()<CR>
+    an 700.10  🔀&,.Commit.AutoCommit\ &&\ Push                  :call planet#git#Commit(v:false, v:true, v:true)<CR>
+    an 700.10  🔀&,.Commit.Save\ All\ &&\ AutoCommit\ &&\ Push   :call planet#git#Commit(v:true, v:true, v:true)<CR>
+    an 700.10  🔀&,.Commit.--3-- <Nop>
+    an 700.10  🔀&,.Commit.Enable\ AutoCommit\ on\ File\ Write   :call planet#git#EnableAutoCommit()<CR>
+    an 700.10  🔀&,.Commit.Disable\ AutoCommit\ on\ File\ Write  :call planet#git#DisableAutoCommit()<CR>
+    an 700.10  🔀&,.Commit.--4-- <Nop>
+    an 700.10  🔀&,.Commit.Commit\ File                          :call planet#git#CommitFile(v:false, v:false)<CR>
+    an 700.10  🔀&,.Commit.Save\ &&\ Commit\ File                :call planet#git#CommitFile(v:true, v:false)<CR>
+    an 700.10  🔀&,.Commit.Commit\ All                           :TODO
+    an 700.10  🔀&,.Commit.Commit\ All\ with\ Untracked          :TODO
     an 700.10  🔀&,.--5-- <Nop>
     an 700.10  🔀&,.Log\ File\ QF                         :TODO
     an 700.10  🔀&,.Log\ File\ LL                         :TODO

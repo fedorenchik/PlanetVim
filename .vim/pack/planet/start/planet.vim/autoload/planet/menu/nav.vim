@@ -242,7 +242,7 @@ func! planet#menu#nav#update() abort
     silent! aunmenu 🪟&w
     silent! aunmenu 🗂️&\.
     silent! aunmenu 📚&h
-    silent! aunmenu 🔰&x
+    silent! aunmenu 🗄️&x
     silent! aunmenu 🎛️&@
   endif
 endfunc

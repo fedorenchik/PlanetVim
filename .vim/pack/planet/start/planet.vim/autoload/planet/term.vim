@@ -12,15 +12,6 @@ endfunc
 func! planet#term#run_cmd_output(cmd) abort
   "TODO: Print exit code after process finished
   let l:found_window = v:false
-  " for bufnr in tabpagebuflist()
-  "   if getbufvar(bufnr, '&buftype') == 'terminal' && bufname(bufnr) =~# '^\[Output - '
-  "     let l:winnr = bufwinnr(bufnr)
-  "     if l:winnr != -1
-  "       exe l:winnr .. 'wincmd w'
-  "       let l:found_window = v:true
-  "     endif
-  "   endif
-  " endfor
   for bufnr in term_list()
     if bufname(bufnr) =~# '^\[Output - '
       let l:winnr = bufwinnr(bufnr)
@@ -48,6 +39,28 @@ func! planet#term#run_cmd_output(cmd) abort
     return
   endif
   wincmd p
+endfunc
+
+" Finds terminal window in current tab.
+" @returns window number or -1
+func! planet#term#FindOutputWindow() abort
+  for bufnr in term_list()
+    if bufname(bufnr) =~# '^\[Output - '
+      let l:winnr = bufwinnr(bufnr)
+      if l:winnr != -1
+        return l:winnr
+      end
+    end
+  endfor
+  return -1
+endfunc
+
+func! planet#term#CloseOutputWindow() abort
+  let l:winnr = planet#term#FindOutputWindow()
+  if l:winnr != -1
+    exe l:winnr .. 'wincmd w'
+    wincmd c
+  end
 endfunc
 
 func! planet#term#ListOutputWindows() abort
