@@ -4,13 +4,20 @@ def! g:GuiTabLabel(): string
   var l = '[' .. v:lnum .. ']'
   var bufnrlist = tabpagebuflist(v:lnum)
 
-  var m = ' '
+  var m = ''
+  var set_term = false
+  var set_mod = false
   for bufnr in bufnrlist
-    if getbufvar(bufnr, "&buftype") == 'terminal'
-      m = ' !'
+    if getbufvar(bufnr, "&buftype") ==# 'terminal'
+      m = '!!' .. m
+      set_term = true
+    endif
+    if getbufvar(bufnr, "&buftype") !=# 'terminal' && getbufvar(bufnr, "&modified") && !set_mod
+      m ..= '+'
+      set_mod = true
+    endif
+    if set_term && set_mod
       break
-    elseif getbufvar(bufnr, "&modified")
-      m = '+'
     endif
   endfor
   l ..= m

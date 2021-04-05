@@ -152,27 +152,72 @@ func! planet#menu#dev#update() abort
     an 500.10  📐&}.Dev\ Tools <Nop>
     an disable 📐&}.Dev\ Tools
     an 500.10  📐&}.uic                                      :TODO
-    an 500.10  📐&}.moc                                      :TODO
-    an 500.10  📐&}.moc-ng                                   :TODO
     an 500.10  📐&}.rcc                                      :TODO
     an 500.10  📐&}.flex                                     :TODO
     an 500.10  📐&}.bison                                    :TODO
+    an 500.10  📐&}.Parser\ Generators                       :TODO
     an 500.10  📐&}.Qt\ Designer                             :TODO
     an 500.10  📐&}.Generate\ qt\.conf                       :TODO
-    an 500.10  📐&}.Qt\ Tools                                :TODO
-    an 500.10  📐&}.Gtk\ Tools                               :TODO
+    an 500.10  📐&}.Qt\ Tools.Install\ Qt                    :aqtinstall...
+    an 500.10  📐&}.Qt\ Tools.androiddeployqt                :TODO
+    an 500.10  📐&}.Qt\ Tools.androidtestrunner              :TODO
+    an 500.10  📐&}.Qt\ Tools.assistant                      :TODO
+    an 500.10  📐&}.Qt\ Tools.balsam                         :TODO
+    an 500.10  📐&}.Qt\ Tools.Designer                       :TODO
+    an 500.10  📐&}.Qt\ Tools.moc                            :TODO
+    an 500.10  📐&}.Qt\ Tools.moc-ng                         :TODO
+    an 500.10  📐&}.Qt\ Tools.pixeltool                      :TODO
+    an 500.10  📐&}.Qt\ Tools.qdbus                          :TODO
+    an 500.10  📐&}.Qt\ Tools.qdbusviewer                    :TODO
+    an 500.10  📐&}.Qt\ Tools.qdbuscpp2xml                   :TODO
+    an 500.10  📐&}.Qt\ Tools.qdbusxml2cpp                   :TODO
+    an 500.10  📐&}.Qt\ Tools.QLALR                          :TODO
+    an 500.10  📐&}.Qt\ Tools.qsb                            :TODO
+    an 500.10  📐&}.Qt\ Tools.qtattributionsscanner          :TODO
+    an 500.10  📐&}.Qt\ Tools.qt-cmake                       :TODO
+    an 500.10  📐&}.Qt\ Tools.qt-configure-module            :TODO
+    an 500.10  📐&}.Qt\ Tools.qtdiag                         :TODO
+    an 500.10  📐&}.Qt\ Tools.qtpaths                        :TODO
+    an 500.10  📐&}.Qt\ Tools.qtplugininfo                   :TODO
+    an 500.10  📐&}.Qt\ Tools.qtwaylandscanner               :TODO
+    an 500.10  📐&}.Qt\ Tools.qvkgen                         :TODO
+    an 500.10  📐&}.Qt\ Tools.rcc                            :TODO
+    an 500.10  📐&}.Qt\ Tools.shadergen                      :TODO
+    an 500.10  📐&}.Qt\ Tools.syncqt\.pl                     :TODO
+    an 500.10  📐&}.Qt\ Tools.tracegen                       :TODO
+    an 500.10  📐&}.Qt\ Tools.uic                            :TODO
+    an 500.10  📐&}.Qt\ Tools.Qt\ Creator                    :TODO
+    an 500.10  📐&}.Qml.qml                                  :TODO
+    an 500.10  📐&}.Qml.qmlcachegen                          :TODO
+    an 500.10  📐&}.Qml.qmleasing                            :TODO
+    an 500.10  📐&}.Qml.qmlformat                            :TODO
+    an 500.10  📐&}.Qml.qmlimportscanner                     :TODO
+    an 500.10  📐&}.Qml.qmllint                              :TODO
+    an 500.10  📐&}.Qml.qmlplugindump                        :TODO
+    an 500.10  📐&}.Qml.qmlpreview                           :TODO
+    an 500.10  📐&}.Qml.qmlprofiler                          :TODO
+    an 500.10  📐&}.Qml.qmlscene                             :TODO
+    an 500.10  📐&}.Qml.testrunner                           :TODO
+    an 500.10  📐&}.Qml.qmltime                              :TODO
+    an 500.10  📐&}.Qml.qmltyperegistrar                     :TODO
+    an 500.10  📐&}.Gtk\ Tools.Glade                         :TODO
     an 500.10  📐&}.i10n\ &&\ i18n <Nop>
     an disable 📐&}.i10n\ &&\ i18n
     an 500.10  📐&}.lupdate                                  :TODO
     an 500.10  📐&}.lrelease                                 :TODO
+    an 500.10  📐&}.lconvert                                 :TODO
+    an 500.10  📐&}.Qt\ Linguist                             :TODO
+    an 500.10  📐&}.lprodump                                 :TODO
+    an 500.10  📐&}.lrelease-pro                             :TODO
+    an 500.10  📐&}.lupdate-pro                              :TODO
     an 500.10  📐&}.auto-translation                         :TODO
     an 500.10  📐&}.gettext                                  :TODO
     an 500.10  📐&}.weblate.org                              :TODO
     an 500.10  📐&}.Documentation <Nop>
     an disable 📐&}.Documentation
     an 500.10  📐&}.doxygen                                  :TODO
-    an 500.10  📐&}.Qt\ Doc                                  :TODO
-    an 500.10  📐&}.Qt\ Help                                 :TODO
+    an 500.10  📐&}.QDoc                                     :TODO
+    an 500.10  📐&}.QHelp\ Generator                         :TODO
     an 500.10  📐&}.readthedocs                              :TODO
     an 500.10  📐&}.gitbook                                  :TODO
 
@@ -201,7 +246,7 @@ func! planet#menu#dev#update() abort
     an 500.10  🔨&u.QEMU.Test                     :TODO
     an 500.10  🔨&u.Build\ Systems <Nop>
     an disable 🔨&u.Build\ Systems
-    an 500.10  🔨&u.&Autotools.Autotools\ Status                  :call planet#util#term#run_script_output('autotools-status')<CR>
+    an 500.10  🔨&u.&Autotools.Autotools\ Status                  :call planet#term#run_script_output('autotools-status')<CR>
     an 500.10  🔨&u.&Autotools.Run\ autoconf                      :!autoconf -f -i<CR>
     an 500.10  🔨&u.&Autotools.Run\ autoreconf                    :!autoreconf -f -i<CR>
     an 500.10  🔨&u.&Autotools.Run\ autoheader                    :!autoheader<CR>
@@ -214,18 +259,19 @@ func! planet#menu#dev#update() abort
     an 500.10  🔨&u.&Autotools.Run\ \./autogen\.sh                :!./autogen.sh<CR>
     an 500.10  🔨&u.&Autotools.Run\ \./bootstrap\.sh              :!./bootstrap.sh<CR>
     an 500.10  🔨&u.&Autotools.Run\ \./&configure                  :!./configure<CR>
+    an 500.10  🔨&u.&Autotools.Set\ ./configure\ Optinos           :TODO"print ./configure --help & set options in buffer
     an 500.10  🔨&u.&Autotools.Open\ config\.log                  :TODO:"open instead of terminal
-    an 500.10  🔨&u.Mak&e.&Make                                    :call planet#util#term#run_cmd_output('make')<CR>
-    an 500.10  🔨&u.Mak&e.Make\ &All                               :call planet#util#term#run_cmd_output('make all')<CR>
-    an 500.10  🔨&u.Mak&e.Make\ &Help                              :call planet#util#term#run_cmd_output('make help')<CR>
-    an 500.10  🔨&u.Mak&e.Make\ &Clean                             :call planet#util#term#run_cmd_output('make clean')<CR>
-    an 500.10  🔨&u.Mak&e.Make\ Distclea&n                         :call planet#util#term#run_cmd_output('make distclean')<CR>
-    an 500.10  🔨&u.Mak&e.Make\ &Dist                              :call planet#util#term#run_cmd_output('make dist')<CR>
-    an 500.10  🔨&u.Mak&e.Make\ Di&stcheck                         :call planet#util#term#run_cmd_output('make distcheck')<CR>
-    an 500.10  🔨&u.Mak&e.Make\ Chec&k                             :call planet#util#term#run_cmd_output('make check')<CR>
-    an 500.10  🔨&u.Mak&e.Make\ &Test                              :call planet#util#term#run_cmd_output('make test')<CR>
-    an 500.10  🔨&u.Mak&e.Make\ &Install                           :call planet#util#term#run_cmd_output('make install')<CR>
-    an 500.10  🔨&u.Mak&e.Make\ &Uninstall                         :call planet#util#term#run_cmd_output('make uninstall')<CR>
+    an 500.10  🔨&u.Mak&e.&Make                                    :call planet#term#run_cmd_output('make')<CR>
+    an 500.10  🔨&u.Mak&e.Make\ &All                               :call planet#term#run_cmd_output('make all')<CR>
+    an 500.10  🔨&u.Mak&e.Make\ &Help                              :call planet#term#run_cmd_output('make help')<CR>
+    an 500.10  🔨&u.Mak&e.Make\ &Clean                             :call planet#term#run_cmd_output('make clean')<CR>
+    an 500.10  🔨&u.Mak&e.Make\ Distclea&n                         :call planet#term#run_cmd_output('make distclean')<CR>
+    an 500.10  🔨&u.Mak&e.Make\ &Dist                              :call planet#term#run_cmd_output('make dist')<CR>
+    an 500.10  🔨&u.Mak&e.Make\ Di&stcheck                         :call planet#term#run_cmd_output('make distcheck')<CR>
+    an 500.10  🔨&u.Mak&e.Make\ Chec&k                             :call planet#term#run_cmd_output('make check')<CR>
+    an 500.10  🔨&u.Mak&e.Make\ &Test                              :call planet#term#run_cmd_output('make test')<CR>
+    an 500.10  🔨&u.Mak&e.Make\ &Install                           :call planet#term#run_cmd_output('make install')<CR>
+    an 500.10  🔨&u.Mak&e.Make\ &Uninstall                         :call planet#term#run_cmd_output('make uninstall')<CR>
     an 500.10  🔨&u.Mak&e.Set\ &prefix                             :!make<CR>
     an 500.10  🔨&u.Mak&e.Set\ DESTDI&R                            :!make<CR>
     an 500.10  🔨&u.&KBuild.make\ oldconfig                        :!make<CR>
@@ -272,6 +318,23 @@ func! planet#menu#dev#update() abort
     an 520.10  🐞&d.Detach\ Debugger                          :Vimspector<CR>
     an 520.10  🐞&d.Stop\ &Debug                              :Vimspector<CR>
     an 520.10  🐞&d.--1-- <Nop>
+    an 520.10  🐞&d.Setup\ GDB                                :Vimspector<CR>
+    an 520.10  🐞&d.Setup\ GDB\ Dashboard                     :Vimspector<CR>
+    an 520.10  🐞&d.Setup\ GDB\ for\ Unreal                   :Vimspector<CR>
+    an 520.10  🐞&d.Setup\ GDB\ Pretty\ Printers              :Vimspector<CR>
+    an 520.10  🐞&d.Setup\ LLDB                               :Vimspector<CR>
+    an 520.10  🐞&d.Setup\ rr                                 :Vimspector<CR>
+    an 520.10  🐞&d.Setup\ LiveRecorder                       :Vimspector<CR>
+    an 520.10  🐞&d.Setup\ radare2                            :Vimspector<CR>
+    an 520.10  🐞&d.Setup\ cutter                             :Vimspector<CR>
+    an 520.10  🐞&d.--1-- <Nop>
+    an 520.10  🐞&d.Kernel\ Debug <Nop>
+    an disable 🐞&d.Kernel\ Debug
+    an 520.10  🐞&d.Setup\ GDB\ for\ Kernel                   :Vimspector<CR>
+    an 520.10  🐞&d.gdb\ kernel                               :Vimspector<CR>
+    an 520.10  🐞&d.kgdb                                      :Vimspector<CR>
+    an 520.10  🐞&d.kdb                                       :Vimspector<CR>
+    an 520.10  🐞&d.debugfs                                   :Vimspector<CR>
 
     " Test
     an 530.10  🧪&j.Test <Nop>
@@ -288,6 +351,10 @@ func! planet#menu#dev#update() abort
     an 530.10  🧪&j.Report\ Tools.Screenshot                :TestVisit<CR>
     an 530.10  🧪&j.Report\ Tools.Record\ gif               :TestVisit<CR>
     an 530.10  🧪&j.Report\ Tools.Record\ screen            :TestVisit<CR>
+    an 530.10  🧪&j.Kernel\ Test <Nop>
+    an disable 🧪&j.Kernel\ Test
+    an 530.10  🧪&j.KUnit                                   :TODO
+    an 530.10  🧪&j.kselftest                               :TODO
 
     " Analyze
     an 540.10  🔬&y.Analyze <Nop>
@@ -302,6 +369,31 @@ func! planet#menu#dev#update() abort
     an 540.10  🔬&y.Memcheck\ Gdb                             :Vimspector<CR>
     an 540.10  🔬&y.Callgrind                                 :Vimspector<CR>
     an 540.10  🔬&y.QML\ Profiler                             :Vimspector<CR>
+    an 540.10  🔬&y.ASAN                                      :Vimspector<CR>
+    an 540.10  🔬&y.ThreadSanitizer                           :Vimspector<CR>
+    an 540.10  🔬&y.LeakSanitizer                             :Vimspector<CR>
+    an 540.10  🔬&y.UBSAN                                     :Vimspector<CR>
+    an 540.10  🔬&y.Sanitizers                                :Vimspector<CR>
+    an 540.10  🔬&y.Sanitizers                                :Vimspector<CR>
+    an 540.10  🔬&y.Coverity                                  :Vimspector<CR>
+    an 540.10  🔬&y.ltrace                                    :Vimspector<CR>
+    an 540.10  🔬&y.strace                                    :Vimspector<CR>
+    an 540.10  🔬&y.ptrace                                    :Vimspector<CR>
+    an 540.10  🔬&y.pstree\ $PID                              :Vimspector<CR>
+    an 540.10  🔬&y.Open\ /proc/$PID\ Folder                  :Fern /proc/$PID...TODO
+    an 540.10  🔬&y.Kernel\ Analyze <Nop>
+    an disable 🔬&y.Kernel\ Analyze
+    an 540.10  🔬&y.Coccinelle                                :Vimspector<CR>
+    an 540.10  🔬&y.Sparse                                    :Vimspector<CR>
+    an 540.10  🔬&y.kcov                                      :Vimspector<CR>
+    an 540.10  🔬&y.gcov\ with\ kernel                        :Vimspector<CR>
+    an 540.10  🔬&y.KASAN                                     :Vimspector<CR>
+    an 540.10  🔬&y.KUBSAN                                    :Vimspector<CR>
+    an 540.10  🔬&y.Kernel\ Memory\ Leak\ Detector            :Vimspector<CR>
+    an 540.10  🔬&y.KCSAN                                     :Vimspector<CR>
+    an 540.10  🔬&y.Kernel\ Electric-Fence\ (KFENCE)          :Vimspector<CR>
+    an 540.10  🔬&y.ftrace                                    :Vimspector<CR>
+    an 540.10  🔬&y.tracefs                                   :Vimspector<CR>
 
     " Terminal
     an 550.10  💻&t.Terminal <Nop>
@@ -314,9 +406,11 @@ func! planet#menu#dev#update() abort
     an 550.10  💻&t.--1-- <Nop>
     an 550.10  💻&t.P&ython\ Shell                         :botright terminal ++kill=kill ++rows=10 python<CR>
     an 550.10  💻&t.C&++\ Shell                            :botright terminal ++kill=kill ++rows=10 cling<CR>
+    an 550.10  💻&t.--2-- <Nop>
     an 550.10  💻&t.Terminal\ List <Nop>
     an disable 💻&t.Terminal\ List
-    "TODO: terminal list: call term_list()
+    an 550.10  💻&t.Output\ List <Nop>
+    an disable 💻&t.Output\ List
   else
     silent! aunmenu ❇️&[
     silent! aunmenu 🪧&]

@@ -23,13 +23,4 @@ Release version v0.0.0 (not ready even for testing)
   - Redefine all menus
 * GUI officially supported
 
-### Some unusual technical details
-
-* Minimum window size (width & height) is zero
-
-### Maps
- * Try to not redefine standard Vim maps (except Vim anti-patterns, almost)
- * Do not redefine any vim-obsession mappings
- * Define additional (not mapped originally) mappings in g..., z..., Z...,
-     [..., ]..., <A-...>
- * Leader is ',', LocalLeader is `'_'`
+## 

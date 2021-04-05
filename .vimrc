@@ -548,10 +548,10 @@ nn <C-b> :colder<CR>
 nn <C-d> :lnewer<CR>
 nn <C-e> :cnext<CR>
 nn <C-f> :cnewer<CR>
-nn <C-h> :call planet#util#window#Focus('h')<CR>
+nn <C-h> :call planet#window#Focus('h')<CR>
 nn <C-j> <C-W>j
 nn <C-k> <C-W>k
-nn <C-l> :call planet#util#window#Focus('l')<CR>
+nn <C-l> :call planet#window#Focus('l')<CR>
 nn <C-s> :emenu <C-Z>
 nn <C-u> :lolder<CR>
 nn <C-W>V :botright vsplit<CR>

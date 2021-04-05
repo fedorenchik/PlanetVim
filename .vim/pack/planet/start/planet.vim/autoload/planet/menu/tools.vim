@@ -6,26 +6,26 @@ func! planet#menu#tools#update() abort
     " Open Log in new window
     an 700.10  🔀&,.Git <Nop>
     an disable 🔀&,.Git
-    an 700.10  🔀&,.Status                                :call planet#util#term#run_cmd_output('git status')<CR>
+    an 700.10  🔀&,.Status                                :call planet#term#run_cmd_output('git status')<CR>
     an 700.10  🔀&,.--1-- <Nop>
-    an 700.10  🔀&,.Fetch                                 :call planet#util#term#run_cmd_output('git fetch --all --tags')<CR>
-    an 700.10  🔀&,.Pull                                  :call planet#util#term#run_cmd_output('git pull')<CR>
-    an 700.10  🔀&,.Push                                  :call planet#util#term#run_cmd_output('git push')<CR>
+    an 700.10  🔀&,.Fetch                                 :call planet#term#run_cmd_output('git fetch --all --tags')<CR>
+    an 700.10  🔀&,.Pull                                  :call planet#term#run_cmd_output('git pull')<CR>
+    an 700.10  🔀&,.Push                                  :call planet#term#run_cmd_output('git push')<CR>
     an 700.10  🔀&,.--2-- <Nop>
-    an 700.10  🔀&,.AutoCommit\ File                      :call planet#util#git#CommitFile(v:false)<CR>
-    an 700.10  🔀&,.Save\ &&\ AutoCommit\ File            :call planet#util#git#CommitFile()<CR>
-    an 700.10  🔀&,.AutoCommit\ File\ &&\ Push            :call planet#util#git#CommitFile(v:false, v:true, v:true)<CR>
-    an 700.10  🔀&,.Save\ &&\ AutoCommit\ File\ &&\ Push  :call planet#util#git#CommitFile(v:true, v:true, v:true)<CR>
-    an 700.10  🔀&,.AutoCommit                            :call planet#util#git#Commit(v:false)<CR>
-    an 700.10  🔀&,.Save\ All\ &&\ AutoCommit             :call planet#util#git#Commit()<CR>
-    an 700.10  🔀&,.AutoCommit\ &&\ Push                  :call planet#util#git#Commit(v:false, v:true, v:true)<CR>
-    an 700.10  🔀&,.Save\ All\ &&\ AutoCommit\ &&\ Push   :call planet#util#git#Commit(v:true, v:true, v:true)<CR>
+    an 700.10  🔀&,.AutoCommit\ File                      :call planet#git#CommitFile(v:false)<CR>
+    an 700.10  🔀&,.Save\ &&\ AutoCommit\ File            :call planet#git#CommitFile()<CR>
+    an 700.10  🔀&,.AutoCommit\ File\ &&\ Push            :call planet#git#CommitFile(v:false, v:true, v:true)<CR>
+    an 700.10  🔀&,.Save\ &&\ AutoCommit\ File\ &&\ Push  :call planet#git#CommitFile(v:true, v:true, v:true)<CR>
+    an 700.10  🔀&,.AutoCommit                            :call planet#git#Commit(v:false)<CR>
+    an 700.10  🔀&,.Save\ All\ &&\ AutoCommit             :call planet#git#Commit()<CR>
+    an 700.10  🔀&,.AutoCommit\ &&\ Push                  :call planet#git#Commit(v:false, v:true, v:true)<CR>
+    an 700.10  🔀&,.Save\ All\ &&\ AutoCommit\ &&\ Push   :call planet#git#Commit(v:true, v:true, v:true)<CR>
     an 700.10  🔀&,.--3-- <Nop>
-    an 700.10  🔀&,.Enable\ AutoCommit\ on\ File\ Write   :call planet#util#git#EnableAutoCommit()<CR>
-    an 700.10  🔀&,.Disable\ AutoCommit\ on\ File\ Write  :call planet#util#git#DisableAutoCommit()<CR>
+    an 700.10  🔀&,.Enable\ AutoCommit\ on\ File\ Write   :call planet#git#EnableAutoCommit()<CR>
+    an 700.10  🔀&,.Disable\ AutoCommit\ on\ File\ Write  :call planet#git#DisableAutoCommit()<CR>
     an 700.10  🔀&,.--4-- <Nop>
-    an 700.10  🔀&,.Commit\ File                          :call planet#util#git#CommitFile(v:false, v:false)<CR>
-    an 700.10  🔀&,.Save\ &&\ Commit\ File                :call planet#util#git#CommitFile(v:true, v:false)<CR>
+    an 700.10  🔀&,.Commit\ File                          :call planet#git#CommitFile(v:false, v:false)<CR>
+    an 700.10  🔀&,.Save\ &&\ Commit\ File                :call planet#git#CommitFile(v:true, v:false)<CR>
     an 700.10  🔀&,.Commit\ All                           :TODO
     an 700.10  🔀&,.Commit\ All\ with\ Untracked          :TODO
     an 700.10  🔀&,.--5-- <Nop>
@@ -93,7 +93,8 @@ func! planet#menu#tools#update() abort
     an disable 🔧&o.Tools
     an 730.10  🔧&o.Colori&ze                                 :ColorToggle<CR>
     an 730.10  🔧&o.--1-- <Nop>
-    an 730.10  🔧&o.Start\ Python\ http\.server\ Here         :term python -m http.server<CR>
+    an 730.10  🔧&o.Start\ Local\ Python\ http\.server\ Here  :call planet#term#run_cmd_output('python3 -m http.server 8080')<CR>
+    an 730.10  🔧&o.Start\ Public\ ngrok\ Server              :call planet#term#run_cmd_output('ngrok http 3000')<CR>
     an 730.10  🔧&o.--2-- <Nop>
     an 730.10  🔧&o.Edit\ Command<Tab>:                       q:
     an 730.10  🔧&o.Edit\ Search<Tab>q/                       q/

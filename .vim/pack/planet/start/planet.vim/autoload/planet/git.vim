@@ -1,6 +1,6 @@
 scriptversion 4
 
-func! planet#util#git#CommitFile(save = v:true, auto = v:true, push = v:false) abort
+func! planet#git#CommitFile(save = v:true, auto = v:true, push = v:false) abort
   if a:save
     w
   endif
@@ -16,7 +16,7 @@ func! planet#util#git#CommitFile(save = v:true, auto = v:true, push = v:false) a
   endif
 endfunc
 
-func! planet#util#git#Commit(save = v:true, auto = v:true, push = v:false) abort
+func! planet#git#Commit(save = v:true, auto = v:true, push = v:false) abort
   if a:save
     confirm wa
   endif
@@ -32,14 +32,14 @@ func! planet#util#git#Commit(save = v:true, auto = v:true, push = v:false) abort
   endif
 endfunc
 
-func! planet#util#git#EnableAutoCommit() abort
+func! planet#git#EnableAutoCommit() abort
   aug AugPv_AutoCommit
     au!
-    au FileWritePost * call planet#util#git#CommitFile(v:false, v:true)
+    au FileWritePost * call planet#git#CommitFile(v:false, v:true)
   aug END
 endfunc
 
-func! planet#util#git#DisableAutoCommit() abort
+func! planet#git#DisableAutoCommit() abort
   aug AugPv_AutoCommit
     au!
   aug END

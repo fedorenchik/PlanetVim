@@ -100,6 +100,7 @@ func! planet#menu#settings#update() abort
     an 990.10  ❔&?.Help <Nop>
     an disable ❔&?.Help
     an 990.10  ❔&?.&Lookup\ Word\ under\ Cursor<Tab>K         K
+    an 990.10  ❔&?.&TLDR\ Word\ under\ Cursor                 :call planet#term#run_cmd_output('tldr ' .. expand('<cword>'))<CR>
     an 990.20  ❔&?.Inde&x                                     :h index<CR>
     an 990.30  ❔&?.&QuickRef                                  :h quickref<CR>
     an 990.40  ❔&?.&Plugins\ Documentation                    :h local-additions<CR>

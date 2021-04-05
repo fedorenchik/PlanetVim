@@ -14,10 +14,14 @@ func! planet#menu#basic#update() abort
     an 110.60  📁&f.New\ Project.Vim\ Plugin                   :TODO
     an 110.60  📁&f.New\ Project.Blender\ Addon                :TODO
     an 110.60  📁&f.New\ Project.Nextcloud\ App                :TODO
-    an 110.60  📁&f.New\ Project.Linux\ Kernel\ Module         :TODO
+    an 110.60  📁&f.New\ Project.Linux\ OOT\ Kernel\ Module    :TODO"with parameters/proc/debugfs support
+    an 110.60  📁&f.New\ Project.Linux\ OOT\ Device\ Driver    :TODO"with parameters/OF framework support
+    an 110.60  📁&f.New\ Project.Linux\ Device\ Tree           :TODO"device tree definition
     an 110.60  📁&f.New\ Project.Wordpress\ Plugin             :TODO
     an 110.60  📁&f.New\ Project.Yocto\ System                 :TODO
     an 110.60  📁&f.New\ Project.ROS\ Package                  :TODO
+    an 110.60  📁&f.New\ Project.C++\ DSL                      :TODO"example DSL in C++
+    an 110.60  📁&f.New\ Project.Pythor\ DSL                   :TODO"example DSL in Python
     an 110.70  📁&f.--1-- <Nop>
     an 110.80  📁&f.&Open\ File                                :Clap files<CR>
     an 110.80  📁&f.Open\ File\ Dialog                         :browse confirm e<CR>

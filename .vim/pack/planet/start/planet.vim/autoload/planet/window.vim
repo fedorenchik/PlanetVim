@@ -1,7 +1,7 @@
 scriptversion 4
 
 " direction can be 'v' or 'h'
-func! planet#util#window#SplitBind(direction) abort
+func! planet#window#SplitBind(direction) abort
   set noscrollbind
   if a:direction == 'v'
     vsplit
@@ -15,13 +15,13 @@ func! planet#util#window#SplitBind(direction) abort
   set scrollbind
 endfunc
 
-func! planet#util#window#Maximize() abort
+func! planet#window#Maximize() abort
   let g:PV_win_restore_cmd = winrestcmd()
   wincmd _
   wincmd |
 endfunc
 
-func! planet#util#window#Restore() abort
+func! planet#window#Restore() abort
   if exists('g:PV_win_restore_cmd')
     exe g:PV_win_restore_cmd
     "FIXME: Remove second exe call after vim bug #7988 is fixed
@@ -29,7 +29,7 @@ func! planet#util#window#Restore() abort
   endif
 endfunc
 
-func! planet#util#window#Focus(direction)
+func! planet#window#Focus(direction)
   exe 'wincmd ' .. a:direction
   if empty(&buftype) || &buftype == 'nowrite' || &buftype == 'acwrite'
     let win_width = 80

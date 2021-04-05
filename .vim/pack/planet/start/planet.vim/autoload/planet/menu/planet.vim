@@ -1,7 +1,10 @@
 scriptversion 4
 
-"TODO: add setting to run commands in terminal buffer: open window (++noclose), do not open
-"TODO: (++close), close when finish (++close), open after finish (++open)
+"TODO: add setting to run commands in terminal buffer: open window (++noclose),
+"TODO:    do not open TODO: (++close), close when finish (++close), open after
+"TODO:    finish (++open)
+"TODO: change icon based on IP (Americas: 🌎, Europe, Africa, Middle-East: 🌍,
+"TODO:    SEA, Pacific: 🌏, ISS: 🛰️, Interplanetary: 🪐) or use country flag
 function! planet#menu#planet#update() abort
   if g:PlanetVim_menus_planet
     an 100.10  🌐&P.PlanetVim <Nop>

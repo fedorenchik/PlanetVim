@@ -1,6 +1,6 @@
 scriptversion 4
 
-func! planet#util#MenuifyName(name) abort
+func! planet#menu#MenuifyName(name) abort
   let menu_name = a:name
   if empty(menu_name)
     let menu_name = "[No Name]"
