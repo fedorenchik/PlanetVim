@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+echo "Start command: " "$@"
+"$@"
+
+exit_status=$?
+echo "Exit status: $exit_status"
