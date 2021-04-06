@@ -1,6 +1,6 @@
 scriptversion 4
 
-let s:bin_dir = expand('<sfile>:p:h:h:h:h')->resolve() .. '/bin/'
+let s:bin_dir = expand('<sfile>:p:h:h:h')->resolve() .. '/bin/'
 
 func! planet#term#run_script_output(cmd) abort
   "TODO: reuse existing window
@@ -10,7 +10,6 @@ func! planet#term#run_script_output(cmd) abort
 endfunc
 
 func! planet#term#run_cmd_output(cmd) abort
-  "TODO: Print exit code after process finished
   let l:found_window = v:false
   for bufnr in term_list()
     if bufname(bufnr) =~# '^\[Output - '
@@ -24,7 +23,7 @@ func! planet#term#run_cmd_output(cmd) abort
   if ! l:found_window
     botright 10new
   endif
-  let ret = term_start(a:cmd, #{
+  let ret = term_start(s:bin_dir .. 'run-command ' .. a:cmd, #{
         \ term_name: '[Output - ' .. a:cmd .. ']',
         \ term_rows: 10,
         \ curwin: v:true,

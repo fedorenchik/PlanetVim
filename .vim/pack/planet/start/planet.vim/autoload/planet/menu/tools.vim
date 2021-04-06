@@ -6,11 +6,17 @@ func! planet#menu#tools#update() abort
     " Open Log in new window
     an 700.10  🔀&,.Git <Nop>
     an disable 🔀&,.Git
-    an 700.10  🔀&,.Status                                :call planet#term#run_cmd_output('git status')<CR>
+    an 700.10  🔀&,.&Status                                      :call planet#term#run_cmd_output('git status')<CR>
     an 700.10  🔀&,.--1-- <Nop>
-    an 700.10  🔀&,.Fetch                                 :call planet#term#run_cmd_output('git fetch --all --tags')<CR>
-    an 700.10  🔀&,.Pull                                  :call planet#term#run_cmd_output('git pull')<CR>
-    an 700.10  🔀&,.Push                                  :call planet#term#run_cmd_output('git push')<CR>
+    an 700.10  🔀&,.Fetch                                        :call planet#term#run_cmd_output('git fetch --all --tags')<CR>
+    an 700.10  🔀&,.Pull                                         :call planet#term#run_cmd_output('git pull')<CR>
+    an 700.10  🔀&,.Push                                         :call planet#term#run_cmd_output('git push')<CR>
+    an 700.10  🔀&,.--2-- <Nop>
+    an 700.10  🔀&,.Add.This\ File                               :call planet#git#run_cmd_output('git add ' .. expand('%'))<CR>
+    an 700.10  🔀&,.Add.Current\ Directory                       :call planet#git#run_cmd_output('git add .')<CR>
+    an 700.10  🔀&,.Add.All                                      :call planet#git#run_cmd_output('git add --all')<CR>
+    an 700.10  🔀&,.--2-- <Nop>
+    an 700.10  🔀&,.Fetch\ .From\ Specified\ Remote                :call planet#git#FetchCustomRemote()<CR>
     an 700.10  🔀&,.--2-- <Nop>
     an 700.10  🔀&,.Commit.AutoCommit\ File                      :call planet#git#CommitFile(v:false)<CR>
     an 700.10  🔀&,.Commit.Save\ &&\ AutoCommit\ File            :call planet#git#CommitFile()<CR>
@@ -24,21 +30,25 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.Commit.Enable\ AutoCommit\ on\ File\ Write   :call planet#git#EnableAutoCommit()<CR>
     an 700.10  🔀&,.Commit.Disable\ AutoCommit\ on\ File\ Write  :call planet#git#DisableAutoCommit()<CR>
     an 700.10  🔀&,.Commit.--4-- <Nop>
-    an 700.10  🔀&,.Commit.Commit                                :TODO
+    an 700.10  🔀&,.Commit.Commit                                :call planet#git#Commit(v:falsse, v:false, v:false)<CR>
     an 700.10  🔀&,.Commit.Commit\ File                          :call planet#git#CommitFile(v:false, v:false)<CR>
     an 700.10  🔀&,.Commit.Save\ &&\ Commit\ File                :call planet#git#CommitFile(v:true, v:false)<CR>
     an 700.10  🔀&,.Commit.Commit\ All                           :TODO
     an 700.10  🔀&,.Commit.Commit\ All\ with\ Untracked          :TODO
+    an 700.10  🔀&,.--5-- <Nop>
+    an 700.10  🔀&,.Remote.List                                  :call planet#term#run_cmd_output('git remote -a')<CR>
     an 700.10  🔀&,.--5-- <Nop>
     an 700.10  🔀&,.Log\ File\ QF                         :TODO
     an 700.10  🔀&,.Log\ File\ LL                         :TODO
     an 700.10  🔀&,.Log\ QF                               :TODO
     an 700.10  🔀&,.Log\ LL                               :TODO
     an 700.10  🔀&,.Log\ in\ New\ GWindow                 :TODO
+    an 700.10  🔀&,.--6-- <Nop>
     an 700.10  🔀&,.Clone\ Repo                           :TODO
     an 700.10  🔀&,.Init\ Repo                            :TODO
+    an 700.10  🔀&,.--7-- <Nop>
     an 700.10  🔀&,.Blame                                 :TODO
-    an 700.10  🔀&,.--6-- <Nop>
+    an 700.10  🔀&,.--8-- <Nop>
     " tpope/rhubarb.vim plugin for GitHub
     an 700.10  🔀&,.GitHub <Nop>
     an disable 🔀&,.GitHub

@@ -26,7 +26,7 @@ func! planet#git#Commit(save = v:true, auto = v:true, push = v:false) abort
   else
     let commit_msg = inputdialog('Commit Message: ')
   endif
-  exe '!git commit -m "' .. commit_msg .. '" ' .. expand('%')
+  exe '!git commit -m "' .. commit_msg .. '"'
   if a:push
     exe '!git push'
   endif
