@@ -24,6 +24,7 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.Commit.Enable\ AutoCommit\ on\ File\ Write   :call planet#git#EnableAutoCommit()<CR>
     an 700.10  🔀&,.Commit.Disable\ AutoCommit\ on\ File\ Write  :call planet#git#DisableAutoCommit()<CR>
     an 700.10  🔀&,.Commit.--4-- <Nop>
+    an 700.10  🔀&,.Commit.Commit                                :TODO
     an 700.10  🔀&,.Commit.Commit\ File                          :call planet#git#CommitFile(v:false, v:false)<CR>
     an 700.10  🔀&,.Commit.Save\ &&\ Commit\ File                :call planet#git#CommitFile(v:true, v:false)<CR>
     an 700.10  🔀&,.Commit.Commit\ All                           :TODO
