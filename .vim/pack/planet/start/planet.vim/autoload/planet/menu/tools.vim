@@ -6,48 +6,76 @@ func! planet#menu#tools#update() abort
     " Open Log in new window
     an 700.10  🔀&,.Git <Nop>
     an disable 🔀&,.Git
-    an 700.10  🔀&,.&Status                                      :call planet#term#run_cmd_output('git status')<CR>
+    an 700.10  🔀&,.&Status                                       :call planet#term#run_cmd_output('git status')<CR>
     an 700.10  🔀&,.--1-- <Nop>
-    an 700.10  🔀&,.Fetch                                        :call planet#term#run_cmd_output('git fetch --all --tags')<CR>
-    an 700.10  🔀&,.Pull                                         :call planet#term#run_cmd_output('git pull')<CR>
-    an 700.10  🔀&,.Push                                         :call planet#term#run_cmd_output('git push')<CR>
+    an 700.10  🔀&,.&Fetch                                        :call planet#term#run_cmd_output('git fetch --all --tags')<CR>
+    an 700.10  🔀&,.P&ull                                         :call planet#term#run_cmd_output('git pull --ff-only --all')<CR>
+    an 700.10  🔀&,.&Push                                         :call planet#term#run_cmd_output('git push')<CR>
+    an 700.10  🔀&,.&Add.This\ &File                              :call planet#term#run_cmd_output('git add ' .. expand('%'))<CR>
+    an 700.10  🔀&,.&Add.Current\ &Directory                      :call planet#term#run_cmd_output('git add .')<CR>
+    an 700.10  🔀&,.&Add.&All                                     :call planet#term#run_cmd_output('git add --all')<CR>
+    an 700.10  🔀&,.&Commit.Commit                                :call planet#git#Commit(v:false, v:false, v:false)<CR>
+    an 700.10  🔀&,.&Commit.Commit\ File                          :call planet#git#CommitFile(v:false, v:false)<CR>
+    an 700.10  🔀&,.&Commit.Save\ &&\ Commit\ File                :call planet#git#CommitFile(v:true, v:false)<CR>
+    an 700.10  🔀&,.&Commit.Commit\ All                           :TODO
+    an 700.10  🔀&,.&Commit.Commit\ All\ with\ Untracked          :TODO
+    an 700.10  🔀&,.&Commit.--2-- <Nop>
+    an 700.10  🔀&,.&Commit.AutoCommit\ File                      :call planet#git#CommitFile(v:false)<CR>
+    an 700.10  🔀&,.&Commit.Save\ &&\ AutoCommit\ File            :call planet#git#CommitFile()<CR>
+    an 700.10  🔀&,.&Commit.AutoCommit\ File\ &&\ Push            :call planet#git#CommitFile(v:false, v:true, v:true)<CR>
+    an 700.10  🔀&,.&Commit.Save\ &&\ AutoCommit\ File\ &&\ Push  :call planet#git#CommitFile(v:true, v:true, v:true)<CR>
+    an 700.10  🔀&,.&Commit.AutoCommit                            :call planet#git#Commit(v:false)<CR>
+    an 700.10  🔀&,.&Commit.Save\ All\ &&\ AutoCommit             :call planet#git#Commit()<CR>
+    an 700.10  🔀&,.&Commit.AutoCommit\ &&\ Push                  :call planet#git#Commit(v:false, v:true, v:true)<CR>
+    an 700.10  🔀&,.&Commit.Save\ All\ &&\ AutoCommit\ &&\ Push   :call planet#git#Commit(v:true, v:true, v:true)<CR>
+    an 700.10  🔀&,.&Commit.--3-- <Nop>
+    an 700.10  🔀&,.&Commit.Enable\ AutoCommit\ on\ File\ Write   :call planet#git#EnableAutoCommit()<CR>
+    an 700.10  🔀&,.&Commit.Disable\ AutoCommit\ on\ File\ Write  :call planet#git#DisableAutoCommit()<CR>
     an 700.10  🔀&,.--2-- <Nop>
-    an 700.10  🔀&,.Add.This\ File                               :call planet#git#run_cmd_output('git add ' .. expand('%'))<CR>
-    an 700.10  🔀&,.Add.Current\ Directory                       :call planet#git#run_cmd_output('git add .')<CR>
-    an 700.10  🔀&,.Add.All                                      :call planet#git#run_cmd_output('git add --all')<CR>
-    an 700.10  🔀&,.--2-- <Nop>
-    an 700.10  🔀&,.Fetch\ .From\ Specified\ Remote                :call planet#git#FetchCustomRemote()<CR>
-    an 700.10  🔀&,.--2-- <Nop>
-    an 700.10  🔀&,.Commit.AutoCommit\ File                      :call planet#git#CommitFile(v:false)<CR>
-    an 700.10  🔀&,.Commit.Save\ &&\ AutoCommit\ File            :call planet#git#CommitFile()<CR>
-    an 700.10  🔀&,.Commit.AutoCommit\ File\ &&\ Push            :call planet#git#CommitFile(v:false, v:true, v:true)<CR>
-    an 700.10  🔀&,.Commit.Save\ &&\ AutoCommit\ File\ &&\ Push  :call planet#git#CommitFile(v:true, v:true, v:true)<CR>
-    an 700.10  🔀&,.Commit.AutoCommit                            :call planet#git#Commit(v:false)<CR>
-    an 700.10  🔀&,.Commit.Save\ All\ &&\ AutoCommit             :call planet#git#Commit()<CR>
-    an 700.10  🔀&,.Commit.AutoCommit\ &&\ Push                  :call planet#git#Commit(v:false, v:true, v:true)<CR>
-    an 700.10  🔀&,.Commit.Save\ All\ &&\ AutoCommit\ &&\ Push   :call planet#git#Commit(v:true, v:true, v:true)<CR>
-    an 700.10  🔀&,.Commit.--3-- <Nop>
-    an 700.10  🔀&,.Commit.Enable\ AutoCommit\ on\ File\ Write   :call planet#git#EnableAutoCommit()<CR>
-    an 700.10  🔀&,.Commit.Disable\ AutoCommit\ on\ File\ Write  :call planet#git#DisableAutoCommit()<CR>
-    an 700.10  🔀&,.Commit.--4-- <Nop>
-    an 700.10  🔀&,.Commit.Commit                                :call planet#git#Commit(v:falsse, v:false, v:false)<CR>
-    an 700.10  🔀&,.Commit.Commit\ File                          :call planet#git#CommitFile(v:false, v:false)<CR>
-    an 700.10  🔀&,.Commit.Save\ &&\ Commit\ File                :call planet#git#CommitFile(v:true, v:false)<CR>
-    an 700.10  🔀&,.Commit.Commit\ All                           :TODO
-    an 700.10  🔀&,.Commit.Commit\ All\ with\ Untracked          :TODO
+    an 700.10  🔀&,.Fetch\ .From\ Specified\ Remote               :call planet#git#FetchCustomRemote()<CR>
+    an 700.10  🔀&,.Pull\ .TODO                                   :call planet#git#FetchCustomRemote()<CR>
+    an 700.10  🔀&,.Push\ .TODO                                   :call planet#git#FetchCustomRemote()<CR>
     an 700.10  🔀&,.--5-- <Nop>
-    an 700.10  🔀&,.Remote.List                                  :call planet#term#run_cmd_output('git remote -a')<CR>
-    an 700.10  🔀&,.--5-- <Nop>
-    an 700.10  🔀&,.Log\ File\ QF                         :TODO
-    an 700.10  🔀&,.Log\ File\ LL                         :TODO
-    an 700.10  🔀&,.Log\ QF                               :TODO
-    an 700.10  🔀&,.Log\ LL                               :TODO
-    an 700.10  🔀&,.Log\ in\ New\ GWindow                 :TODO
+    an 700.10  🔀&,.Log\ File\ QF                                 :TODO
+    an 700.10  🔀&,.Log\ File\ LL                                 :TODO
+    an 700.10  🔀&,.Log\ QF                                       :TODO
+    an 700.10  🔀&,.Log\ LL                                       :TODO
+    an 700.10  🔀&,.Log\ in\ New\ GWindow                         :TODO
     an 700.10  🔀&,.--6-- <Nop>
-    an 700.10  🔀&,.Clone\ Repo                           :TODO
-    an 700.10  🔀&,.Init\ Repo                            :TODO
+    an 700.10  🔀&,.Tag.TODO                                      :TODO
+    an 700.10  🔀&,.Merge.TODO                                    :TODO
+    an 700.10  🔀&,.Rebase.TODO                                   :TODO
+    an 700.10  🔀&,.Reflog.TODO                                   :TODO
+    an 700.10  🔀&,.Reset.TODO                                    :TODO
+    an 700.10  🔀&,.Stash.TODO                                    :TODO
+    an 700.10  🔀&,.Notes.TODO                                    :TODO
+    an 700.10  🔀&,.Branch.TODO                                   :TODO
+    an 700.10  🔀&,.Diff.TODO                                     :TODO
+    an 700.10  🔀&,.Worktree.TODO                                 :TODO
+    an 700.10  🔀&,.Subrepo\ (&x).Pull                            :call planet#git#SubrepoPull()<CR>
+    an 700.10  🔀&,.Subrepo\ (&x).Pull\ All                       :call planet#term#run_cmd_output('git subrepo pull --all')<CR>
+    an 700.10  🔀&,.Subrepo\ (&x).Push                            :call planet#git#SubrepoPush()<CR>
+    an 700.10  🔀&,.Subrepo\ (&x).Push\ All                       :call planet#term#run_cmd_output('git subrepo push --all')<CR>
+    an 700.10  🔀&,.Subrepo\ (&x).Fetth                           :call planet#git#SubrepoFetch()<CR>
+    an 700.10  🔀&,.Subrepo\ (&x).Fetch\ All                      :call planet#term#run_cmd_output('git subrepo fetch --all')<CR>
+    an 700.10  🔀&,.Subrepo\ (&x).Branch                          :call planet#git#SubrepoBranch()<CR>
+    an 700.10  🔀&,.Subrepo\ (&x).Branch\ All                     :call planet#term#run_cmd_output('git subrepo branch --all')<CR>
+    an 700.10  🔀&,.Subrepo\ (&x).Commit                          :call planet#git#SubrepoCommit()<CR>
+    an 700.10  🔀&,.Subrepo\ (&x).Status                          :call planet#git#SubrepoStatus()<CR>
+    an 700.10  🔀&,.Subrepo\ (&x).Status\ All                     :call planet#term#run_cmd_output('git subrepo status --all')<CR>
+    an 700.10  🔀&,.Subrepo\ (&x).Status\ All\ Recursively        :call planet#term#run_cmd_output('git subrepo status --ALL')<CR>
+    an 700.10  🔀&,.Subrepo\ (&x).Clean                           :call planet#git#SubrepoClean()<CR>
+    an 700.10  🔀&,.Subrepo\ (&x).Clean\ All                      :call planet#term#run_cmd_output('git subrepo clean --all')<CR>
+    an 700.10  🔀&,.Subrepo\ (&x).Clean\ All\ Recursively         :call planet#term#run_cmd_output('git subrepo clean --ALL')<CR>
+    an 700.10  🔀&,.Subrepo\ (&x).Config                          :call planet#git#SubrepoConfig()<CR>
+    an 700.10  🔀&,.Subrepo\ (&x).Clone                           :call planet#git#SubrepoClone()<CR>
+    an 700.10  🔀&,.Subrepo\ (&x).Init                            :call planet#git#SubrepoInit()<CR>
+    an 700.10  🔀&,.Remote.List                                   :call planet#term#run_cmd_output('git remote -a')<CR>
+    an 700.10  🔀&,.--5-- <Nop>
+    an 700.10  🔀&,.Clone\ Repo                                   :TODO
+    an 700.10  🔀&,.Init\ Repo                                    :TODO
     an 700.10  🔀&,.--7-- <Nop>
-    an 700.10  🔀&,.Blame                                 :TODO
+    an 700.10  🔀&,.Blame                                         :TODO
     an 700.10  🔀&,.--8-- <Nop>
     " tpope/rhubarb.vim plugin for GitHub
     an 700.10  🔀&,.GitHub <Nop>

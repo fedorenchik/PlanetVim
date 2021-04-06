@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-echo "Start command: " "$@"
+echo "PWD=$PWD"
+echo "Start command: $@"
 "$@"
 
 exit_status=$?
