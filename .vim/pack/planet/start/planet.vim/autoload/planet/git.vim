@@ -10,10 +10,11 @@ func! planet#git#CommitFile(save = v:true, auto = v:true, push = v:false) abort
   else
     let commit_msg = inputdialog('Commit Message: ')
   endif
-  exe '!git commit -m "' .. commit_msg .. '" ' .. expand('%')
+  let l:push_cmd = ''
   if a:push
-    exe '!git push'
+    let l:push_cmd = ' && git push'
   endif
+  call planet#term#run_cmd_output('git commit -m "' .. commit_msg .. '" ' .. expand('%') .. l:push_cmd)
 endfunc
 
 func! planet#git#Commit(save = v:true, auto = v:true, push = v:false) abort
@@ -26,10 +27,11 @@ func! planet#git#Commit(save = v:true, auto = v:true, push = v:false) abort
   else
     let commit_msg = inputdialog('Commit Message: ')
   endif
-  exe '!git commit -m "' .. commit_msg .. '"'
+  let l:push_cmd = ''
   if a:push
-    exe '!git push'
+    let l:push_cmd = ' && git push'
   endif
+  call planet#term#run_cmd_output('git commit -m "' .. commit_msg .. '"' .. l:push_cmd)
 endfunc
 
 func! planet#git#EnableAutoCommit() abort

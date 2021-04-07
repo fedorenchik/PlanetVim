@@ -31,17 +31,14 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.&Commit.--3-- <Nop>
     an 700.10  🔀&,.&Commit.Enable\ AutoCommit\ on\ File\ Write   :call planet#git#EnableAutoCommit()<CR>
     an 700.10  🔀&,.&Commit.Disable\ AutoCommit\ on\ File\ Write  :call planet#git#DisableAutoCommit()<CR>
-    an 700.10  🔀&,.--2-- <Nop>
     an 700.10  🔀&,.Fetch\ .From\ Specified\ Remote               :call planet#git#FetchCustomRemote()<CR>
     an 700.10  🔀&,.Pull\ .TODO                                   :call planet#git#FetchCustomRemote()<CR>
     an 700.10  🔀&,.Push\ .TODO                                   :call planet#git#FetchCustomRemote()<CR>
-    an 700.10  🔀&,.--5-- <Nop>
-    an 700.10  🔀&,.Log\ File\ QF                                 :TODO
-    an 700.10  🔀&,.Log\ File\ LL                                 :TODO
-    an 700.10  🔀&,.Log\ QF                                       :TODO
-    an 700.10  🔀&,.Log\ LL                                       :TODO
-    an 700.10  🔀&,.Log\ in\ New\ GWindow                         :TODO
-    an 700.10  🔀&,.--6-- <Nop>
+    an 700.10  🔀&,.Log.File\ QF                                  :TODO
+    an 700.10  🔀&,.Log.File\ LL                                  :TODO
+    an 700.10  🔀&,.Log.QF                                        :TODO
+    an 700.10  🔀&,.Log.LL                                        :TODO
+    an 700.10  🔀&,.Log.in\ New\ GWindow                          :TODO
     an 700.10  🔀&,.Tag.TODO                                      :TODO
     an 700.10  🔀&,.Merge.TODO                                    :TODO
     an 700.10  🔀&,.Rebase.TODO                                   :TODO
@@ -76,7 +73,6 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.Init\ Repo                                    :TODO
     an 700.10  🔀&,.--7-- <Nop>
     an 700.10  🔀&,.Blame                                         :TODO
-    an 700.10  🔀&,.--8-- <Nop>
     " tpope/rhubarb.vim plugin for GitHub
     an 700.10  🔀&,.GitHub <Nop>
     an disable 🔀&,.GitHub
