@@ -34,11 +34,12 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.Fetch\ .From\ Specified\ Remote               :call planet#git#FetchCustomRemote()<CR>
     an 700.10  🔀&,.Pull\ .TODO                                   :call planet#git#FetchCustomRemote()<CR>
     an 700.10  🔀&,.Push\ .TODO                                   :call planet#git#FetchCustomRemote()<CR>
-    an 700.10  🔀&,.Log.File\ QF                                  :TODO
-    an 700.10  🔀&,.Log.File\ LL                                  :TODO
-    an 700.10  🔀&,.Log.QF                                        :TODO
-    an 700.10  🔀&,.Log.LL                                        :TODO
-    an 700.10  🔀&,.Log.in\ New\ GWindow                          :TODO
+    an 700.10  🔀&,.&Log.File\ QF                                 :TODO
+    an 700.10  🔀&,.&Log.File\ LL                                 :TODO
+    an 700.10  🔀&,.&Log.QF                                       :TODO
+    an 700.10  🔀&,.&Log.LL                                       :TODO
+    an 700.10  🔀&,.&Log.in\ New\ GWindow                         :TODO
+    an 700.10  🔀&,.&Log.Git&k                                    :silent !nohup gitk >/dev/null 2>&1 &<CR>
     an 700.10  🔀&,.Tag.TODO                                      :TODO
     an 700.10  🔀&,.Merge.TODO                                    :TODO
     an 700.10  🔀&,.Rebase.TODO                                   :TODO

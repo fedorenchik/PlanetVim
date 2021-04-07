@@ -402,7 +402,6 @@ func! planet#menu#dev#update() abort
     an 550.10  💻&t.New\ &Here                             :terminal ++curwin ++kill=kill<CR>
     an 550.10  💻&t.New\ &VSplit                           :vertical terminal ++kill=kill<CR>
     an 550.10  💻&t.New\ &Tab                              :tab terminal ++kill=kill<CR>
-    an 550.10  💻&t.New\ &Below                            :rightbelow terminal ++kill=kill ++rows=10<CR>
     an 550.10  💻&t.--1-- <Nop>
     an 550.10  💻&t.P&ython\ Shell                         :botright terminal ++kill=kill ++rows=10 python<CR>
     an 550.10  💻&t.C&++\ Shell                            :botright terminal ++kill=kill ++rows=10 cling<CR>

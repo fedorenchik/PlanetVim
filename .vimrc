@@ -746,7 +746,7 @@ if !exists(":DiffOrig")
 endif
 command -bar -nargs=? -complete=help HelpCurwin execute s:HelpCurwin(<q-args>)
 " }}}
-" Menu: {{{
+" PlanetVim: {{{
 " TODO: $VIMRUNTIME folder
 " TODO: Vim help reference
 " TODO: VS Code
@@ -755,6 +755,7 @@ command -bar -nargs=? -complete=help HelpCurwin execute s:HelpCurwin(<q-args>)
 " TODO: Use $VIMRUNTIME/tools/demoserver.py for controlling Vim
 " TODO: Add Buffer Cmdline Window: Input commands and ouput results in
 " TODO:    'prompt' buffer.
+" TODO: Add sessions inside project dir support
 " Custom config file: $HOME/.vim/planetvimrc.vim
 let g:PV_config = "$HOME/.vim/planetvimrc.vim"
 if filereadable(expand(g:PV_config))
