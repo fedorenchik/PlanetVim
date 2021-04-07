@@ -225,25 +225,26 @@ func! planet#menu#dev#update() abort
     an disable 🔨&u.Build
     an 500.10  🔨&u.Virtual\ Environments <Nop>
     an disable 🔨&u.Virtual\ Environments
-    an 500.10  🔨&u.Schroot.Debootstrap             :!sudo debootstrap --variant=buildd --arch=amd64 buster /var/chroots/debian10_x64 http://ftp.debian.org/debian/<CR>
-    an 500.10  🔨&u.Schroot.Schroot\ Check\ Config  :TODO"check $HOME is not mounted!!!
-    an 500.10  🔨&u.Schroot.Schroot\ Add\ New       :TODO"create config file in /etc/schroot/chroot.d/ directory
-    an 500.10  🔨&u.Schroot.Schroot\ List           :!schroot -l<CR>
-    an 500.10  🔨&u.Schroot.Schroot\ Info           :!schroot -i<CR>
-    an 500.10  🔨&u.Schroot.Schroot\ Config         :!schroot --config<CR>
-    an 500.10  🔨&u.Schroot.Schroot\ Location       :!schroot --location<CR>
-    an 500.10  🔨&u.Schroot.Schroot\ Start          :!schroot -c debian10_x64 -u leonid<CR>
-    an 500.10  🔨&u.Schroot.Schroot\ Start\ Root    :!schroot -c debian10_x64 -u leonid<CR>
-    an 500.10  🔨&u.Schroot.Schroot\ Start\ XNest   :!schroot -c debian10_x64 -u leonid<CR>
-    an 500.10  🔨&u.Schroot.Schroot\ Run\ Command   :!schroot -c debian10_x64 -u leonid {cmd}<CR>
-    an 500.10  🔨&u.Pipenv.Test                     :TODO
-    an 500.10  🔨&u.Conan\ Virtual\ Environment.Test                     :TODO
-    an 500.10  🔨&u.systemd-nspawn.Test                     :TODO
-    an 500.10  🔨&u.PRoot.Test                     :TODO
-    an 500.10  🔨&u.Fakechroot.Test                     :TODO
-    an 500.10  🔨&u.Docker.Test                     :TODO
-    an 500.10  🔨&u.Vagrant.Test                     :TODO
-    an 500.10  🔨&u.QEMU.Test                     :TODO
+    an 500.10  🔨&u.Schroot.Debootstrap                           :!sudo debootstrap --variant=buildd --arch=amd64 buster /var/chroots/debian10_x64 http://ftp.debian.org/debian/<CR>
+    an 500.10  🔨&u.Schroot.Schroot\ Check\ Config                :TODO"check $HOME is not mounted!!!
+    an 500.10  🔨&u.Schroot.Schroot\ Add\ New                     :TODO"create config file in /etc/schroot/chroot.d/ directory
+    an 500.10  🔨&u.Schroot.Schroot\ List                         :!schroot -l<CR>
+    an 500.10  🔨&u.Schroot.Schroot\ Info                         :!schroot -i<CR>
+    an 500.10  🔨&u.Schroot.Schroot\ Config                       :!schroot --config<CR>
+    an 500.10  🔨&u.Schroot.Schroot\ Location                     :!schroot --location<CR>
+    an 500.10  🔨&u.Schroot.Schroot\ Start                        :!schroot -c debian10_x64 -u leonid<CR>
+    an 500.10  🔨&u.Schroot.Schroot\ Start\ Root                  :!schroot -c debian10_x64 -u leonid<CR>
+    an 500.10  🔨&u.Schroot.Schroot\ Start\ XNest                 :!schroot -c debian10_x64 -u leonid<CR>
+    an 500.10  🔨&u.Schroot.Schroot\ Run\ Command                 :!schroot -c debian10_x64 -u leonid {cmd}<CR>
+    an 500.10  🔨&u.Pipenv.Test                                   :TODO
+    an 500.10  🔨&u.Conan\ Virtual\ Environment.Test              :TODO
+    an 500.10  🔨&u.systemd-nspawn.Test                           :TODO
+    an 500.10  🔨&u.PRoot.Test                                    :TODO
+    an 500.10  🔨&u.Fakechroot.Test                               :TODO
+    an 500.10  🔨&u.Docker.Test                                   :TODO
+    an 500.10  🔨&u.Vagrant.Test                                  :TODO
+    an 500.10  🔨&u.QEMU.Test                                     :TODO
+    an 500.10  🔨&u.QEMU\ Schroot.qemu-debootstrap                :TODO
     an 500.10  🔨&u.Build\ Systems <Nop>
     an disable 🔨&u.Build\ Systems
     an 500.10  🔨&u.&Autotools.Autotools\ Status                  :call planet#term#run_script_output('autotools-status')<CR>

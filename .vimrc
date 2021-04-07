@@ -175,30 +175,56 @@ func QfOldFiles(info)
   return l
 endfunc
 
+"TODO: add mod <Alt> - means search regex, e.g. '\.' when press '.'
+"TODO:    (can use getcharmod())
 let g:PV_p = '\.'
 func! PlanetVim_f()
-  let c1 = nr2char(getchar())
-  let g:PV_p = c1
+  let l:c = getchar()
+  if l:c == 27
+    return
+  end
+  let l:c1 = nr2char(l:c)
+  let g:PV_p = l:c1
   silent! exe "keepp keepj normal /\\V" .. g:PV_p .. "\<CR>"
 endfunc
 
 func! PlanetVim_F()
-  let c1 = nr2char(getchar())
-  let g:PV_p = c1
+  let l:c = getchar()
+  if l:c == 27
+    return
+  end
+  let l:c1 = nr2char(l:c)
+  let g:PV_p = l:c1
   silent! exe "keepp keepj normal ?\\V" .. g:PV_p .. "\<CR>"
 endfunc
 
 func! PlanetVim_t()
-  let c1 = nr2char(getchar())
-  let c2 = nr2char(getchar())
-  let g:PV_p = c1 .. c2
+  let l:c = getchar()
+  if l:c == 27
+    return
+  end
+  let l:c1 = nr2char(l:c)
+  let l:c = getchar()
+  if l:c == 27
+    return
+  end
+  let l:c2 = nr2char(l:c)
+  let g:PV_p = l:c1 .. l:c2
   silent! exe "keepp keepj normal /\\V" .. g:PV_p .. "\<CR>"
 endfunc
 
 func! PlanetVim_T()
-  let c1 = nr2char(getchar())
-  let c2 = nr2char(getchar())
-  let g:PV_p = c1 .. c2
+  let l:c = getchar()
+  if l:c == 27
+    return
+  end
+  let l:c1 = nr2char(l:c)
+  let l:c = getchar()
+  if l:c == 27
+    return
+  end
+  let l:c2 = nr2char(l:c)
+  let g:PV_p = l:c1 .. l:c2
   silent! exe "keepp keepj normal ?\\V" .. g:PV_p .. "\<CR>"
 endfunc
 
@@ -210,8 +236,21 @@ func! PlanetVim_h()
   silent! exe "keepp keepj normal ?\\V" .. g:PV_p .. "\<CR>"
 endfunc
 
-let s:cur_dir = fnamemodify(resolve(expand('<sfile>:p')), ':h')
+func! PlanetVim_j()
+  try
+    laf
+  catch
+    silent! lne
+  endtry
+endfunc
 
+func! PlanetVim_k()
+  try
+    lbe
+  catch
+    silent! lp
+  endtry
+endfunc
 " }}}
 " Colorscheme: {{{
 " set colorscheme
@@ -511,8 +550,8 @@ nn g" :registers<CR>
 nn g= :tabnew<CR>
 nn G G$
 nn <silent> h :call PlanetVim_h()<CR>
-nn <silent> j :lbel<CR>
-nn <silent> k :lab<CR>
+nn <silent> j :call PlanetVim_j()<CR>
+nn <silent> k :call PlanetVim_k()<CR>
 nn <silent> l :call PlanetVim_l()<CR>
 nn Q gq
 nn s <Nop>
@@ -1643,6 +1682,8 @@ func! StatusLine(current, width)
   if a:current
     let l:s .= ' %{NearestMethodOrFunction()}'
     let l:s .= crystalline#left_sep('', 'Fill') . ' %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
+    let l:s .= "/%{@/}/"
+    let l:s .= "|%{g:PV_p}|"
     let l:s .= "%{StatusLine_SearchCount()}"
     let l:s .= "%{exists('*CapsLockStatusline')?CapsLockStatusline():''}"
     let l:s .= ' %{grepper#statusline()}'
