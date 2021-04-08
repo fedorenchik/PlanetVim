@@ -28,7 +28,7 @@ func! planet#menu#basic#update() abort
     an 110.90  📁&f.Open\ &File\ Manager<Tab>-                 :Fern . -reveal=%<CR>
     an 110.100 📁&f.File\ &Manager\ Side\ Bar                  :Fern . -reveal=% -drawer -toggle<CR>
     an 110.110 📁&f.Open\ &Recent                              :Clap history<CR>
-    an 110.110 📁&f.QF\ &Recent                                :call PlanetVim_QF_OldFiles()<CR>
+    an 110.110 📁&f.QF\ &Recent                                :call planet#file#OldFilesQF()<CR>
     an 110.120 📁&f.F&ind<Tab>:find                            :find 
     an 110.120 📁&f.F&ind\ in\ Tab<Tab>:tabfind                :tabfind 
     an 110.110 📁&f.Advanced.Open\ Read\ Only                  :browse view<CR>
@@ -203,7 +203,7 @@ func! planet#menu#basic#update() abort
     "FIXME: In Insert mode this only works for a SINGLE Normal mode command
     an 140.10  🖍️&s.Selection <Nop>
     an disable 🖍️&s.Selection
-    an 140.10  🖍️&s.Select\ All                             :<C-U>call <SID>SelectAll()<CR>
+    an 140.10  🖍️&s.Select\ All                             :call planet#edit#SelectAll()<CR>
     an 140.10  🖍️&s.Reselect\ Previous\ Area                gv
     an 140.10  🖍️&s.--1-- <Nop>
     an 140.10  🖍️&s.Visual\ Mode<Tab>v                      v

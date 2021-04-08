@@ -26,3 +26,7 @@ Release version v0.0.0 (not ready even for testing)
 * GUI officially supported
 
 ## 
+
+A picture is worth 1000 words, here are pictures with thounsand words:
+
+Branches: stable, develop, testing

@@ -90,39 +90,6 @@ func! planet#menu#dev#update() abort
     am 310.10  🪧&].Generate\ types\.vim\ File                :!ctags --c-kinds=gstu -o- *.[ch] \| awk 'BEGIN{printf("syntax keyword Type\t")} {printf("%s ", $1)}END{print "")' > types.vim
     am 310.10  🪧&].Highlight\ tags\ from\ types\.vim         :so types.vim<CR>
 
-    " Build
-    " Build process:
-    " * Setup Libs
-    "         * qt
-    "         * pkgbuild
-    "         * meson-wrapdb
-    "         * boost
-    " * Package manager
-    "         * conan
-    "         * pip
-    " * Choose Build Generator (CMake)
-    "         * Makefile
-    "         * Ninja
-    " * Choose compiler
-    "         * gcc
-    "         * clang
-    "         * wasm / emcc / emscripten
-    " * Set Cross-Compiler (build, host)
-    "         * gcc-mingw
-    "         * gcc-arm
-    "         * etc...
-    " * Set env vars: environ(), getenv(), setenv()
-    " * Set Canadian-Cross (build, host, target)
-    " * Choose debugger
-    "         * gdb
-    "         * lldb
-    " * Select build folder
-    "   (search for ./build* and ../build* folders), choose new
-    " * Choose Build Target
-    " TODO: all targets print to new buffer in special window at bottom with WinBar
-    " TODO: buftype=terminal
-    " TODO: setlocal bufhidden=hide
-    " TODO: call term_setrestore(buf_nr, "NONE") # for non-restorable terminals
     an 500.10  🎚️&{.Project <Nop>
     an disable 🎚️&{.Project
     an 500.10  🎚️&{.Arduino.Choose\ Board           :ArduinoChooseBoard<CR>
@@ -139,8 +106,25 @@ func! planet#menu#dev#update() abort
     an 500.10  🎚️&{.Yocto.Setup                     :TODO
     an 500.10  🎚️&{.Configuration <Nop>
     an disable 🎚️&{.Configuration
+    an 500.10  🎚️&{.Install\ Qt.TODO                :TODO
+    an 500.10  🎚️&{.Install\ Conan\ Pkg.TODO                :TODO
+    an 500.10  🎚️&{.Install\ pip\ Pkg.TODO                  :TODO
+    an 500.10  🎚️&{.Set\ Compiler.gcc                       :TODO
+    an 500.10  🎚️&{.Set\ Compiler.clang                     :TODO
+    an 500.10  🎚️&{.Set\ Compiler.emcc\ (wasm,\ emscripten) :TODO
+    an 500.10  🎚️&{.Set\ Cross-Compilation.Host             :TODO
+    an 500.10  🎚️&{.Set\ Cross-Compilation.Target           :TODO
+    an 500.10  🎚️&{.Set\ Canadian\ Cross-Compilation.Build  :TODO
+    an 500.10  🎚️&{.Set\ Canadian\ Cross-Compilation.Host   :TODO
+    an 500.10  🎚️&{.Set\ Canadian\ Cross-Compilation.Target :TODO
+    an 500.10  🎚️&{.Set\ Cross-Compiler.gcc-mingw           :TODO
+    an 500.10  🎚️&{.Set\ Cross-Compiler.gcc-arm             :TODO
+    an 500.10  🎚️&{.Set\ Cross-Compiler.gcc-aarch64         :TODO
+    an 500.10  🎚️&{.Set\ Cross-Compiler.gcc-avr             :TODO
     an 500.10  🎚️&{.Settings <Nop>
     an disable 🎚️&{.Settings
+    an 500.10  🎚️&{.&Env.Print\ Env                          :call planet#term#run_cmd_output('env')<CR>
+    an 500.10  🎚️&{.&Env.Set\ Env\ Var                       :TODO
     an 500.10  🎚️&{.&direnv.&Run\ \.envrc                    :DirenvExport<CR>
     an 500.10  🎚️&{.&direnv.E&dit\ \.envrc                   :EditEnvrc<CR>
     an 500.10  🎚️&{.&direnv.Add\ N&ew                        :TODO
@@ -280,6 +264,9 @@ func! planet#menu#dev#update() abort
     an 500.10  🔨&u.&KBuild.Edit\ \.config                         :!make<CR>
     an 500.10  🔨&u.&KBuild.Set\ DESTDIR                           :!make<CR>
     an 500.10  🔨&u.&CMake.Set\ DESTDIR                            :!make<CR>
+    an 500.10  🔨&u.&CMake.Set\ Generator                          :TODO"makefiles, ninja, etc...
+    an 500.10  🔨&u.&CMake.Set\ Target                             :TODO
+    an 500.10  🔨&u.&CMake.Set\ Build\ Dir                         :TODO"search for ./build* and ../build* folders
     an 500.10  🔨&u.&QMake.Set\ DESTDIR                            :!make<CR>
     an 500.10  🔨&u.Scons.Set\ DESTDIR                             :!make<CR>
     an 500.10  🔨&u.Nin&ja.Set\ DESTDIR                            :!make<CR>

@@ -219,6 +219,10 @@ func! planet#menu#nav#update() abort
     an 850.10  🗄️&x.--1-- <Nop>
     an 850.10  🗄️&x.Vim\ Servers <Nop>
     an disable 🗄️&x.Vim\ Servers
+    " TODO: add menu to start server
+    " if empty(v:servername) && exists('*remote_startserver')
+    "   call remote_startserver('VIM')
+    " endif
     an 850.10  🗄️&x.GUI\ Windows <Nop>
     an disable 🗄️&x.GUI\ Windows
     "TODO: List of GUI windows to focus

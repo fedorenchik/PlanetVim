@@ -6,7 +6,7 @@ func! planet#menu#edit#update() abort
     an 200.10  📋&i.Registers <Nop>
     an disable 📋&i.Registers
     an 200.10  📋&i.C&hoose\ to\ Paste\.\.\.              :Clap registers<CR>
-    an 200.10  📋&i.Select\ to\ Edit\.\.\.                :call <SID>registers_choose_to_edit()<CR>
+    an 200.10  📋&i.Select\ to\ Edit\.\.\.                :call planet#register#ChooseEdit()<CR>
     an 200.10  📋&i.Select\ for\ Operator<Tab>"<a-z>      "
     an 200.10  📋&i.Macros <Nop>
     an disable 📋&i.Macros
