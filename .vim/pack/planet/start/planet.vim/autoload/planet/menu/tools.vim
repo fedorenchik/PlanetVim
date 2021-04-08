@@ -49,6 +49,7 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.Notes.TODO                                    :TODO
     an 700.10  🔀&,.Branch.TODO                                   :TODO
     an 700.10  🔀&,.Diff.TODO                                     :TODO
+    an 700.10  🔀&,.Cherry-pick.TODO                              :TODO
     an 700.10  🔀&,.Worktree.TODO                                 :TODO
     an 700.10  🔀&,.Subrepo\ (&x).Pull                            :call planet#git#SubrepoPull()<CR>
     an 700.10  🔀&,.Subrepo\ (&x).Pull\ All                       :call planet#term#run_cmd_output('git subrepo pull --all')<CR>

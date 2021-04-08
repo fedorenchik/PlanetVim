@@ -149,7 +149,7 @@ func! planet#menu#nav#update() abort
     an 820.10  🪟&w.View.Load\ 8                            :loadview 8<CR>
     an 820.10  🪟&w.View.Load\ 9\ (AutoSave)                :loadview 9<CR>
     an 820.10  🪟&w.View.--2-- <Nop>
-    an 820.10  🪟&w.View.Toggle\ AutoSave\ Views            :call PlanetVim_View_ToggleAutosave()<CR>
+    an 820.10  🪟&w.View.Toggle\ AutoSave\ Views            :call planet#windowview#ToggleAutoSave()<CR>
     an 820.10  🪟&w.View.--2-- <Nop>
     an 820.10  🪟&w.View.Toggle\ Save\ Local\ Options       :TODO
     an 820.10  🪟&w.--7-- <Nop>
@@ -177,9 +177,8 @@ func! planet#menu#nav#update() abort
     an 830.10  🗂️&\..Move\ Next<Tab>:+tabmove               :+tabmove<CR>
     an 830.10  🗂️&\..Move\ Last<Tab>:tabmove                :tabmove<CR>
     an 830.10  🗂️&\..--4-- <Nop>
-    an 830.10  🗂️&\..Save\ Current\ Tab                     :TODO"save session without tabpages (as .vimtab file)(set sessionoptions-=tabpages,winpos)
-    an 830.10  🗂️&\..Open\ Tab\.\.\.                        :TODO"open (source) .vimtab file in new tab
-    an 830.10  🗂️&\..Reopen\ Closed\ Tab                    :TODO"open (source) .vimtab file in new tab
+    an 830.10  🗂️&\..Save\ Current\ Tab                     :call planet#tab#Save()<CR>
+    an 830.10  🗂️&\..Open\ Tab\.\.\.                        :call planet#tab#Open()<CR>
     an 830.10  🗂️&\..--5-- <Nop>
     an 830.10  🗂️&\..E&xecute\ in\ each\ Tab<Tab>:tabdo     :tabdo 
     an 830.10  🗂️&\..--6-- <Nop>

@@ -145,10 +145,10 @@ func! planet#menu#edit#update() abort
     an 250.410 📜&z.Advanced\ (&\.).Run\ Command\ on\ &Folded\ Lines  :folddoclosed 
     an 250.410 📜&z.AutoFold <Nop>
     an disable 📜&z.AutoFold
-    an 250.410 📜&z.Enable\ Au&toFold                       :call <SID>AutoFoldEnable()<CR>
+    an 250.410 📜&z.Enable\ Au&toFold                       :call planet#fold#EnableAuto()<CR>
     an 250.410 📜&z.Increase\ 'foldlevel'\ (&y)             :setlocal foldlevel+=1<CR>
     an 250.410 📜&z.Decrease\ '&foldlevel'                  :setlocal foldlevel-=1<CR>
-    an 250.410 📜&z.Disable\ A&utoFold                      :call <SID>AutoFoldDisable()<CR>
+    an 250.410 📜&z.Disable\ A&utoFold                      :call planet#fold#DisableAuto()<CR>
 
     " quickfix
     " TODO: set 'errorfile' 'makeef' 'errorformat' 'makeprg' 'grepprg'

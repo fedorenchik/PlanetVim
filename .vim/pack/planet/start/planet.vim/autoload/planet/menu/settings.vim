@@ -26,11 +26,11 @@ func! planet#menu#settings#update() abort
     am 970.10  ⚙️&\\.'scrolloff':\ 2\ (default)             :set so=2<CR>
     am 970.10  ⚙️&\\.'scrolloff':\ 1000                     :set so=1000<CR>
     an 970.10  ⚙️&\\.--4-- <Nop>
-    an 970.10  ⚙️&\\.Set\ Text\ Width                       :call <SID>SetTextWidth()<CR>
-    an <silent> 970.10  ⚙️&\\.Set\ Line\ Endings\ ('fileformat')     :call <SID>SetLineEndings()<CR>
+    an 970.10  ⚙️&\\.Set\ Text\ Width                       :call planet#settings#SetTextWidth()<CR>
+    an <silent> 970.10  ⚙️&\\.Set\ Line\ Endings\ ('fileformat')     :call planet#settings#SetLineEndings()<CR>
     an 970.10  ⚙️&\\.--5-- <Nop>
-    an 970.10  ⚙️&\\.Set\ 'path'                            :call <SID>SetPath()<CR>
-    an 970.10  ⚙️&\\.Set\ 'tags'                            :call <SID>SetTags()<CR>
+    an 970.10  ⚙️&\\.Set\ 'path'                            :call planet#settings#SetPath()<CR>
+    an 970.10  ⚙️&\\.Set\ 'tags'                            :call planet#settings#SetTags()<CR>
     "TODO: add set *prg
     "TODO: add set *path
     an 970.10  ⚙️&\\.--6-- <Nop>

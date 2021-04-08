@@ -51,18 +51,21 @@ func! planet#menu#basic#update() abort
     an 110.240 📁&f.Split\ Open\ File\ under\ Cursor<Tab>+F    <C-w>F
     an 110.250 📁&f.Tab\ Open\ File\ under\ Cursor<Tab>+gF     <C-w>gF
     an 110.260 📁&f.--6-- <Nop>
-    an 110.270 📁&f.SudoSave                                  :SudoWrite<CR>
+    an 110.270 📁&f.SudoSave                                   :SudoWrite<CR>
     an 110.280 📁&f.Rename                                     :browse confirm Rename<CR>
     an 110.290 📁&f.Change\ File\ Permissions                  :Chmod 0755
-    an 110.300 📁&f.Delete\ From\ Disk                        :Delete!<CR>
+    an 110.300 📁&f.Delete\ From\ Disk                         :Delete!<CR>
     an 110.300 📁&f.--7-- <Nop>
-    an 110.310 📁&f.Mkdir                                   :Mkdir! <C-z>
-    an 110.320 📁&f.Cd<Tab>:cd                              :cd <C-z>
-    an 110.330 📁&f.Other\ Cd.Cd\ in\ Tab<Tab>:tcd                    :tcd <C-z>
-    an 110.340 📁&f.Other\ Cd.Cd\ in\ Window<Tab>:lcd                 :lcd <C-z>
-    an 110.320 📁&f.Other\ Cd.Cd\ to\ Previous\ Directory<Tab>:cd\ -  :cd -<CR>
+    an 110.310 📁&f.Mkdir                                      :Mkdir! <C-z>
+    an 110.320 📁&f.Cd<Tab>:cd                                 :cd <C-z>
+    an 110.330 📁&f.Other\ Cd.Cd\ in\ Tab<Tab>:tcd             :tcd <C-z>
+    an 110.340 📁&f.Other\ Cd.Cd\ in\ Window<Tab>:lcd          :lcd <C-z>
+    an 110.320 📁&f.Other\ Cd.Cd\ to\ Previous\ Directory<Tab>:cd\ - :cd -<CR>
     an 110.330 📁&f.Other\ Cd.Cd\ to\ Previous\ Directory\ in\ Tab<Tab>:tcd\ - :tcd -<CR>
     an 110.340 📁&f.Other\ Cd.Cd\ to\ Previous\ Directory\ in\ Window<Tab>:lcd\ - :lcd -<CR>
+    an 110.330 📁&f.Other\ Cd.Cd\ Windows\ in\ Tab<Tab>:windo\ cd :windo cd <C-z>
+    an 110.330 📁&f.Other\ Cd.Cd\ All\ Tabs<Tab>:tabdo\ cd     :tabdo cd <C-z>
+    an 110.330 📁&f.Other\ Cd.Cd\ All\ Windows<Tab>:tabdo\ windo\ cd :tabdo windo cd <C-z>
     an 110.350 📁&f.--8-- <Nop>
     an 110.360 📁&f.&Close<Tab>:bdelete                        :bdelete<CR>
 

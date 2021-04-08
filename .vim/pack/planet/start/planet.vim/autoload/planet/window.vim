@@ -7,12 +7,18 @@ func! planet#window#SplitBind(direction) abort
     vsplit
   else
     split
-  endif
+  end
   wincmd w
   normal z+
   set scrollbind
   wincmd W
   set scrollbind
+  if a:direction == 'v'
+    wincmd l
+  else
+    wincmd j
+  end
+  wincmd =
 endfunc
 
 func! planet#window#Maximize() abort

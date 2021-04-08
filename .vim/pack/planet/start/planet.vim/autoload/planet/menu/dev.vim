@@ -329,8 +329,8 @@ func! planet#menu#dev#update() abort
     an 520.10  🐞&d.Setup\ radare2                            :Vimspector<CR>
     an 520.10  🐞&d.Setup\ cutter                             :Vimspector<CR>
     an 520.10  🐞&d.--1-- <Nop>
-    an 520.10  🐞&d.Kernel\ Debug <Nop>
-    an disable 🐞&d.Kernel\ Debug
+    an 520.10  🐞&d.Debug\ Kernel <Nop>
+    an disable 🐞&d.Debug\ Kernel
     an 520.10  🐞&d.Setup\ GDB\ for\ Kernel                   :Vimspector<CR>
     an 520.10  🐞&d.gdb\ kernel                               :Vimspector<CR>
     an 520.10  🐞&d.kgdb                                      :Vimspector<CR>
@@ -352,8 +352,8 @@ func! planet#menu#dev#update() abort
     an 530.10  🧪&j.Report\ Tools.Screenshot                :TestVisit<CR>
     an 530.10  🧪&j.Report\ Tools.Record\ gif               :TestVisit<CR>
     an 530.10  🧪&j.Report\ Tools.Record\ screen            :TestVisit<CR>
-    an 530.10  🧪&j.Kernel\ Test <Nop>
-    an disable 🧪&j.Kernel\ Test
+    an 530.10  🧪&j.Test\ Kernel <Nop>
+    an disable 🧪&j.Test\ Kernel
     an 530.10  🧪&j.KUnit                                   :TODO
     an 530.10  🧪&j.kselftest                               :TODO
 
@@ -382,8 +382,8 @@ func! planet#menu#dev#update() abort
     an 540.10  🔬&y.ptrace                                    :Vimspector<CR>
     an 540.10  🔬&y.pstree\ $PID                              :Vimspector<CR>
     an 540.10  🔬&y.Open\ /proc/$PID\ Folder                  :Fern /proc/$PID...TODO
-    an 540.10  🔬&y.Kernel\ Analyze <Nop>
-    an disable 🔬&y.Kernel\ Analyze
+    an 540.10  🔬&y.Analyze\ Kernel <Nop>
+    an disable 🔬&y.Analyze\ Kernel
     an 540.10  🔬&y.Coccinelle                                :Vimspector<CR>
     an 540.10  🔬&y.Sparse                                    :Vimspector<CR>
     an 540.10  🔬&y.kcov                                      :Vimspector<CR>
