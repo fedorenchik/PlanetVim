@@ -44,6 +44,7 @@ CONTENTS                                                      *vimtex-contents*
     Map definitions                             |vimtex-mappings|
     Insert mode mappings                        |vimtex-imaps|
     Events                                      |vimtex-events|
+    Text objects                                |vimtex-text-objects|
   Completion                                    |vimtex-completion|
     Complete citations                          |vimtex-complete-cites|
     Complete labels                             |vimtex-complete-labels|
@@ -70,16 +71,16 @@ CONTENTS                                                      *vimtex-contents*
     Syntax conceal                              |vimtex-syntax-conceal|
     Syntax group reference                      |vimtex-syntax-reference|
   Navigation                                    |vimtex-navigation|
-    Include expression (|gf| command)           |vimtex-includeexpr|
+    Include expression (gf command)             |vimtex-includeexpr|
     Table of contents                           |vimtex-toc|
       Custom mappings                           |vimtex-toc-custom-maps|
     Denite/Unite source                         |vimtex-denite| / |vimtex-unite|
     fzf.vim integration                         |vimtex-fzf|
   Compilation                                   |vimtex-compiler|
-    Latexmk                                     |vimtex-latexmk|
-    Latexrun                                    |vimtex-latexrun|
-    Tectonic                                    |vimtex-tectonic|
-    Arara                                       |vimtex-arara|
+    Latexmk                                     |vimtex-compiler-latexmk|
+    Latexrun                                    |vimtex-compiler-latexrun|
+    Tectonic                                    |vimtex-compiler-tectonic|
+    Arara                                       |vimtex-compiler-arara|
     Generic                                     |vimtex-compiler-generic|
   Syntax Checking (Linting)                     |vimtex-lint|
   Grammar Checking                              |vimtex-grammar|
@@ -232,7 +233,7 @@ Compiler backend~
   other useful capabilities, for example to start a previewer and then run
   latex whenever the source files are updated, so that the previewer gives an
   up-to-date view of the document. The script runs on both UNIX and MS-WINDOWS
-  (XP, etc)." [Copied from the latexmk page.]  (|vimtex-latexmk|)
+  (XP, etc)." [Copied from the latexmk page.]  (|vimtex-compiler-latexmk|)
 
     `latexrun`: https://github.com/aclements/latexrun
     Similar to `latexmk` in that it runs the desired LaTeX engine an
@@ -241,19 +242,19 @@ Compiler backend~
   continuous builds, nor automatic starting of the viewer. However, it does
   parse the output log in order to provide a more concise list of relevant
   warnings and error messages (this has currently not been adapted to VimTeX,
-  as of yet). (|vimtex-latexrun|)
+  as of yet). (|vimtex-compiler-latexrun|)
 
     `tectonic`: https://tectonic-typesetting.github.io/
     `tectonic` is a complete, self-contained TeX/LaTeX engine, powered by XeTeX
   and TeXLive. It doesn't support continuous build like `latexmk` but it
   presents other worth mentioning features such as automatic support file
   downloading along with reproduceable builds and full Unicode and OpenType
-  fonts support thanks to the power of XeTeX. (|vimtex-tectonic|)
+  fonts support thanks to the power of XeTeX. (|vimtex-compiler-tectonic|)
 
     `arara`: https://github.com/cereda/arara
     `arara` is a TeX automation tool similar to the above mentioned tools,
   but where the compilation behaviour is typically defined in the preamble
-  of the document. (|vimtex-arara|)
+  of the document. (|vimtex-compiler-arara|)
 
 Clientserver~
                                                           *vimtex-clientserver*
@@ -833,30 +834,17 @@ OPTIONS                                                        *vimtex-options*
 *g:vimtex_compiler_method*
   Set the compiler method. Available choices are:
 
-    latexmk~
-      See |vimtex-latexmk| for more details, and |g:vimtex_compiler_latexmk|
-      for customization.
-
-    latexrun~
-      See |vimtex-latexrun| for more details, and |g:vimtex_compiler_latexrun|
-      for customization.
-
-    tectonic~
-      See |vimtex-tectonic| for more details, and |g:vimtex_compiler_tectonic|
-      for customization.
-
-    arara~
-      See |vimtex-arara| for more details, and |g:vimtex_compiler_arara| for
-      customization.
-
-    generic~
-      See |vimtex-compiler-generic| for more details, and
-      |g:vimtex_compiler_generic| for customization.
+    Value      Documentation              Configuration~
+    `latexmk`    |vimtex-compiler-latexmk|    |g:vimtex_compiler_latexmk|
+    `latexrun`   |vimtex-compiler-latexrun|   |g:vimtex_compiler_latexrun|
+    `tectonic`   |vimtex-compiler-tectonic|   |g:vimtex_compiler_tectonic|
+    `arara`      |vimtex-compiler-arara|      |g:vimtex_compiler_arara|
+    `generic`    |vimtex-compiler-generic|    |g:vimtex_compiler_generic|
 
   Default value: 'latexmk'
 
 *g:vimtex_compiler_latexmk*
-  This is a dictionary that allows customization of the |vimtex-latexmk|
+  This dictionary allows customization of the |vimtex-compiler-latexmk|
   compiler. The values set by the user will take precedence over the default
   values.
 
@@ -941,8 +929,8 @@ OPTIONS                                                        *vimtex-options*
 
 *g:vimtex_compiler_latexmk_engines*
   Defines a map between TeX program directive (|vimtex-tex-program|) and
-  compiler engine. This is used by |vimtex-latexmk| to define the LaTeX
-  program. The `_` key defines the default engine.
+  compiler engine. This is used by |vimtex-compiler-latexmk| to define the
+  LaTeX program. The `_` key defines the default engine.
 
   Note: If the TeX program directive is not specified within the main project
         file, and if `$pdf_mode` is added to a project-specific `.latexmkrc`
@@ -964,7 +952,7 @@ OPTIONS                                                        *vimtex-options*
         \}
 
 *g:vimtex_compiler_latexrun*
-  This is a dictionary that allows customization of the |vimtex-latexrun|
+  This dictionary allows customization of the |vimtex-compiler-latexrun|
   compiler. The values set by the user will take precedense over the default
   values.
 
@@ -999,8 +987,8 @@ OPTIONS                                                        *vimtex-options*
 *g:vimtex_compiler_latexrun_engines*
   Defines a map between TeX program directive (|vimtex-tex-program|) and
   compiler engine, i.e. as should be specified to the `--latex-cmd` argument
-  to `latexrun`. This is used by |vimtex-latexrun| to define the LaTeX
-  program. The `_` key defines the default engine.
+  to `latexrun`. This is used by |vimtex-compiler-latexrun| to define the
+  LaTeX program. The `_` key defines the default engine.
 
   Default value: >
 
@@ -1012,7 +1000,7 @@ OPTIONS                                                        *vimtex-options*
         \}
 
 *g:vimtex_compiler_tectonic*
-  This is a dictionary that allows customization of the |vimtex-tectonic|
+  This dictionary allows customization of the |vimtex-compiler-tectonic|
   compiler. The values set by the user will take precedense over the default
   values.
 
@@ -1046,7 +1034,7 @@ OPTIONS                                                        *vimtex-options*
       won't delete anything (as there is nothing to delete).
 
 *g:vimtex_compiler_arara*
-  This is a dictionary that allows customization of the |vimtex-arara|
+  This dictionary allows customization of the |vimtex-compiler-arara|
   compiler. The values set by the user will take precedense over the default
   values.
 
@@ -1064,11 +1052,11 @@ OPTIONS                                                        *vimtex-options*
     should work well for most people.
 
 *g:vimtex_compiler_generic*
-  This is a dictionary that allows customization of the
-  |vimtex-compiler-generic| compiler. This compiler is, as the name hints,
-  generic. It allows to specify a custom command to run for compilation. As
-  for the other compilers, the configuration values set by the user will take
-  precedense over the default values.
+  This dictionary allows customization of the |vimtex-compiler-generic|
+  compiler. This compiler is, as the name hints, generic. It allows to specify
+  a custom command to run for compilation. As for the other compilers, the
+  configuration values set by the user will take precedense over the default
+  values.
 
   Default value: >
 
@@ -1787,7 +1775,7 @@ OPTIONS                                                        *vimtex-options*
 
   Default value: >
     let g:vimtex_indent_conditionals = {
-          \ 'open': '\v%(\\newif)@<!\\if%(field|name|numequal|thenelse)@!',
+          \ 'open': '\v%(\\newif)@<!\\if%(f>|field|name|numequal|thenelse)@!',
           \ 'else': '\\else\>',
           \ 'close': '\\fi\>',
           \}
@@ -2044,6 +2032,10 @@ OPTIONS                                                        *vimtex-options*
       Replace TeX accents into the accented character, e.g. `\aa` --> å. This
       will also replace a few ligatures.
 
+    cites~
+      Conceal LaTeX cite commands such as `\citet[...]{ref00}`. The conceal
+      style is specified by |g:vimtex_syntax_conceal_cites|.
+
     fancy~
       Some extra fancy replacements, e.g. `\item` --> ○.
 
@@ -2063,7 +2055,7 @@ OPTIONS                                                        *vimtex-options*
         `\Biggl\langle ... \Biggr\rangle` --> `〈 ... 〉`
 
     math_fracs~
-    Replace some simple fractions like `\frac 1 2` --> ½.
+      Replace some simple fractions like `\frac 1 2` --> ½.
 
     math_super_sub~
       Replace simple math super and sub operators, e.g. `x^2` --> `x²`.
@@ -2078,10 +2070,6 @@ OPTIONS                                                        *vimtex-options*
       will see something like:
 
         `\emph{text here}` --> `text here`
-
-    cites~
-      Conceal LaTeX cite commands such as `\citet[...]{ref00}`. The conceal
-      style is specified by |g:vimtex_syntax_conceal_cites|.
 
   Default value: All keys set to |g:vimtex_syntax_conceal_default|.
 
@@ -2119,6 +2107,45 @@ OPTIONS                                                        *vimtex-options*
           \ 'icon': '📖',
           \ 'verbose': v:true,
           \}
+
+*g:vimtex_syntax_custom_cmds*
+  A list of "simple" commands to highlight specifically with custom styling.
+  That is, this allows to apply bold text or italics on the command argument
+  or conceal on the macro part. Each command is expected to be of the
+  following type: >
+
+    \cmdname[optional]{argument}
+<
+  Each element in the list must be a dictionary with the following keys:
+
+    name~
+      The command to highlight (`cmdname`).
+
+    mathmode~
+      Default: |v:false|
+      If true, then the command is a math mode command.
+
+    conceal~
+      Default: |v:false|
+      If true, the `\cmdname` part and delimiters `{` and `}` are concealed.
+
+    concealopts~
+      Default: Same as `conceal` key
+      If true, the option group `[optional]` is concealed.
+
+    argstyle~
+      Default: Undefined.
+      Can be set to `bold`, `ital`, or `boldital` to apply styling to the
+      command argument.
+
+  An example may be helpful: To use bolded style on a custom vector macro such
+  as `\vct{v}`, one can do this: >
+
+    let g:vimtex_syntax_custom_cmds = [
+          \ {'name': 'vct', 'mathmode': 1, 'argstyle': 'bold'},
+          \]
+<
+  Default value: []
 
 *g:vimtex_syntax_nested*
   A dictionary for configuring nested syntaxes. The following keys are
@@ -2525,9 +2552,12 @@ OPTIONS                                                        *vimtex-options*
   in `continuous` mode and if `callback` is enabled, or if `continuous` mode
   is disabled.
 
-  `latexmk` will typically start the viewer directly.  However, with this
-  option enabled, VimTeX will start the viewer through callbacks also for
-  the |vimtex-latexrun|, |vimtex-arara| and |vimtex-tectonic| compilers.
+  `latexmk` will typically start the viewer directly. However, with this
+  option enabled, VimTeX will start the viewer through callbacks for these
+  compilers:
+  * |vimtex-compiler-latexrun|
+  * |vimtex-compiler-arara|
+  * |vimtex-compiler-tectonic|
 
   Default value: 1
 
@@ -2767,7 +2797,8 @@ OPTIONS                                                        *vimtex-options*
   ensures a unique viewer, e.g. with |vimtex_viewer_qpdfview|. Only the
   `@line` escape is expanded.
 
-  Note: This option is only relevant with |vimtex-latexmk| as the compiler.
+  Note: This option is only relevant with |vimtex-compiler-latexmk| as the
+        compiler.
 
   Default value: ''
 
@@ -2808,9 +2839,9 @@ OPTIONS                                                        *vimtex-options*
 
     1. It allows to use a custom build directory for different projects.
     2. It allows to specify an output directory for projects where one uses
-       compiler backends such as |vimtex-arara|. This makes it possible to
-       make e.g. the |vimtex-view| feature to work as expected if output
-       directories are used with arara.
+       compiler backends such as |vimtex-compiler-arara|. This makes it
+       possible to make e.g. the |vimtex-view| feature to work as expected if
+       output directories are used with arara.
 
 ------------------------------------------------------------------------------
 COMMANDS                                                      *vimtex-commands*
@@ -3098,35 +3129,20 @@ MAP DEFINITIONS                                               *vimtex-mappings*
 *<plug>(vimtex-delim-close)*
   Close the current environment or delimiter (insert mode).
 
-
-Note: The following describe text objects and motions. For the text objects,
-the usual convention is used where the "a" select "a"n object, including the
-whitespace/delimiters/etc, whereas the "i" selects the corresponding "inner"
-object, see |text-objects|.
-
-*<plug>(vimtex-ac)*
+*<plug>(vimtex-ac)*   Commands
 *<plug>(vimtex-ic)*
-  Text object for commands.
-
-*<plug>(vimtex-ad)*
+*<plug>(vimtex-ad)*   Delimiters
 *<plug>(vimtex-id)*
-  Text object for delimiters.
-
-*<plug>(vimtex-ae)*
+*<plug>(vimtex-ae)*   Environments
 *<plug>(vimtex-ie)*
-  Text object for environments.
-
-*<plug>(vimtex-a$)*
+*<plug>(vimtex-a$)*   Inline math
 *<plug>(vimtex-i$)*
-  Text object for inline math.
-
-*<plug>(vimtex-aP)*
+*<plug>(vimtex-aP)*   Sections
 *<plug>(vimtex-iP)*
-  Text object for sections.
-
-*<plug>(vimtex-am)*
+*<plug>(vimtex-am)*   Items
 *<plug>(vimtex-im)*
-  Text object for items.
+  These are all text object mappings for the indicated types of objects , see
+  |vimtex-text-objects| for more info.
 
 *<plug>(vimtex-%)*
   Find matching pair.
@@ -3432,6 +3448,60 @@ Examples: >
     au User VimtexEventTocActivated normal! zt
   augroup END
 
+------------------------------------------------------------------------------
+TEXT OBJECTS                                              *vimtex-text-objects*
+
+Text objects (and motions) are a fundamental feature in Vim. Operations can be
+combined with motions or text objects in endless ways and can be repeated with
+the dot operator (|repeat.txt|). If you are reading this and do not know about
+these things, then it is strongly adviced to read the help section about
+|text-objects| and the famous Stack Overflow post "Your problem with Vim is
+that you don't grok vi":
+http://stackoverflow.com/questions/1218390/what-is-your-most-productive-shortcut-with-vim/1220118#1220118
+
+VimTeX defines LaTeX specific text objects (and motions). These are all
+mappings, and as such, they are also described in the sections
+|vimtex-mappings| and |vimtex-default-mappings|.
+
+The usual convention for text object mappings is to prepend "a" to select "a"n
+object, including the whitespace/delimiters/etc, and to prepend "i" to select
+the corresponding "inner" object. This is the case for VimTeX text objects,
+e.g. by default, `vie` will visually select the inner part of an environment,
+whereas `vae` will select the entire environment including the boundaries.
+
+VimTeX supports the well known |targets.vim| as a "backend" for the command
+and environment text objects (`ie`/`ae` and `ic`/`ac`). This should work
+automatically, see |g:vimtex_text_obj_variant| for more info.
+
+Some examples of how to use the text objects can be useful. The following is
+a simple table that shows the original text on the left, the keys that are
+typed in the middle, and the result on the right. The bar "|" indicates the
+cursor position before the operation. >
+
+  BEFORE                       KEYS    AFTER
+  \comm|and{arg}               dic     \command{}
+  \command{a|rg}               gUac    \COMMAND{ARG}
+
+  \lef|t( asd \right)          cid     \left(| \right)
+
+  \begin{x}                    die     \begin{x}
+    hello world|                       \end{x}
+  \end{x}
+
+  $math | here$                da$
+
+  \begin{itemize}                      \begin{itemize}
+    \item hello moon|          cim       \item |
+  \end{itemize}                        \end{itemize}
+
+  \begin{itemize}                      \begin{itemize}
+    \item hello moon|          dam     \end{itemize}
+  \end{itemize}
+
+Associated settings:
+* |g:vimtex_text_obj_enabled|
+* |g:vimtex_text_obj_linewise_operators|
+* |g:vimtex_text_obj_variant|
 
 ==============================================================================
 COMPLETION                                                  *vimtex-completion*
@@ -4325,11 +4395,11 @@ COMPILER                                                      *vimtex-compiler*
 VimTeX provides an interface to the following LaTeX compilers/compiler
 backends:
 
-* |vimtex-latexmk|   http://users.phys.psu.edu/~collins/software/latexmk-jcc
-* |vimtex-latexrun|  https://github.com/aclements/latexrun
-* |vimtex-tectonic|  https://tectonic-typesetting.github.io/
-* |vimtex-arara|     https://github.com/cereda/arara
-* |vimtex-generic-compiler|
+* |vimtex-compiler-latexmk|   http://users.phys.psu.edu/~collins/software/latexmk-jcc
+* |vimtex-compiler-latexrun|  https://github.com/aclements/latexrun
+* |vimtex-compiler-tectonic|  https://tectonic-typesetting.github.io/
+* |vimtex-compiler-arara|     https://github.com/cereda/arara
+* |vimtex-compiler-generic|
 
 The interface is implemented in a general way, which makes it relatively easy
 to add new compilers.
@@ -4345,8 +4415,8 @@ either use the mapping, |<plug>(vimtex-compile-selected)|, or the command
 |:VimtexCompileSelected|.
 
 The compilers should respect the TeX program directive as described here:
-|vimtex-tex-program|, except for |vimtex-arara|, which uses its own set of
-directives and rules.
+|vimtex-tex-program|, except for |vimtex-compiler-arara|, which uses its own
+set of directives and rules.
 
 Associated commands:
 * |:VimtexCompile|
@@ -4384,7 +4454,7 @@ Associated events:
 * |VimtexEventCompileFailed|
 
 ------------------------------------------------------------------------------
-LATEXMK                                                        *vimtex-latexmk*
+LATEXMK                                               *vimtex-compiler-latexmk*
 
                       http://users.phys.psu.edu/~collins/software/latexmk-jcc
 > latexmk is a perl script for running LaTeX the correct number of times to
@@ -4439,7 +4509,7 @@ Note: If you define these options similar to the above `xdotool` trick and
 Note: More info on `xdotool` here: https://www.semicomplete.com/projects/xdotool.
 
 ------------------------------------------------------------------------------
-LATEXRUN                                                      *vimtex-latexrun*
+LATEXRUN                                             *vimtex-compiler-latexrun*
 
                                         https://github.com/aclements/latexrun
 > See LaTeX run. Run latexrun.
@@ -4457,7 +4527,7 @@ The latter is supported by VimTeX, though, through the callback.  See
 The compiler may be configured through the |g:vimtex_compiler_latexrun| option.
 
 ------------------------------------------------------------------------------
-TECTONIC                                                      *vimtex-tectonic*
+TECTONIC                                             *vimtex-compiler-tectonic*
 
                                       https://tectonic-typesetting.github.io/
 > Tectonic is a modernized, complete, self-contained TeX/LaTeX engine, powered
@@ -4466,10 +4536,11 @@ TECTONIC                                                      *vimtex-tectonic*
 `tectonic` is a compiler backend that features automatic support file
 downloading along with reproduceable builds and full Unicode and OpenType
 fonts support thanks to the power of XeTeX. It does not support continuous
-compilation, like |vimtex-latexmk| and so the only relevant commands are
-|:VimtexCompile| to start (single shot) compilation, and |:VimtexCompileOutput|
-to see the compilation output. As for |vimtex-latexrun| and |vimtex-arara|,
-the viewer can be started automatically with |g:vimtex_view_automatic|.
+compilation like |vimtex-compiler-latexmk|, so the only relevant commands are
+|:VimtexCompile| to start (single shot) compilation, and
+|:VimtexCompileOutput| to see the compilation output. As for
+|vimtex-compiler-latexrun| and |vimtex-compiler-arara|, the viewer can be
+started automatically with |g:vimtex_view_automatic|.
 
 `tectonic` cleans up intermediate files like `.aux` and log files by default.
 However, VimTeX's backend invoke it with the flags `--keep-logs` and
@@ -4480,7 +4551,7 @@ and |:VimtexClean| clean these files.
 The compiler may be configured through the |g:vimtex_compiler_tectonic| option.
 
 ------------------------------------------------------------------------------
-ARARA                                                            *vimtex-arara*
+ARARA                                                   *vimtex-compiler-arara*
 
                                         https://github.com/cereda/arara
 > arara is a TeX automation tool based on rules and directives. It gives you
@@ -4490,11 +4561,11 @@ ARARA                                                            *vimtex-arara*
 defined in the preamble of a LaTeX project. The user manual can be found here:
 https://ctan.uib.no/support/arara/doc/arara-manual.pdf
 
-`arara` does not do continuous compilation, and so the only relevant commands
-are |:VimtexCompile| to start (single shot) compilation, and
-|:VimtexCompileOutput| to see the compilation output. As for |vimtex-latexrun|
-and |vimtex-tectonic|, the viewer can be started automatically with
-|g:vimtex_view_automatic|.
+`arara` does not do continuous compilation, so the only relevant commands are
+|:VimtexCompile| to start (single shot) compilation, and
+|:VimtexCompileOutput| to see the compilation output. As for
+|vimtex-compiler-latexrun| and |vimtex-compiler-tectonic|, the viewer can be
+started automatically with |g:vimtex_view_automatic|.
 
 The compiler may be configured through the |g:vimtex_compiler_arara| option.
 
@@ -4505,12 +4576,12 @@ Note: It is not possible to directly specify an output directory from VimTeX.
       |$VIMTEX_OUTPUT_DIRECTORY|.
 
 ------------------------------------------------------------------------------
-GENERIC COMPILER                                      *vimtex-generic-compiler*
+GENERIC COMPILER                                      *vimtex-compiler-generic*
 
 There are a lot of various compiler backends for LaTeX, and it is also
 possible to simply use things like a Makefile. The generic backend allows to
 use mostly whatever you want. However, since it is a generic implementation,
-it will not be as well integrated as e.g. |vimtex-latexmk|.
+it will not be as well integrated as e.g. |vimtex-compiler-latexmk|.
 
 Some examples of build tools that can be used with the generic backend:
 
@@ -4745,7 +4816,8 @@ passing `-synctex=1` on the command line, unless the user overrides the
 option (see the `option` key for |g:vimtex_compiler_latexmk| or
 |g:vimtex_compiler_latexrun|).
 
-Alternatively, for |vimtex-latexmk|, one can put this in ones `~/.latexmkrc` file: >
+Alternatively, for |vimtex-compiler-latexmk|, one can put this in ones
+`~/.latexmkrc` file: >
 
   $pdflatex = 'pdflatex -synctex=1 %O %S';
 

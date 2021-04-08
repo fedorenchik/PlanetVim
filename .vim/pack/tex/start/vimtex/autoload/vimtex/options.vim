@@ -224,7 +224,7 @@ function! vimtex#options#init() abort " {{{1
   call s:init_option('vimtex_indent_bib_enabled', 1)
   call s:init_option('vimtex_indent_tikz_commands', 1)
   call s:init_option('vimtex_indent_conditionals', {
-        \ 'open': '\v%(\\newif)@<!\\if%(field|name|numequal|thenelse)@!',
+        \ 'open': '\v%(\\newif)@<!\\if%(f>|field|name|numequal|thenelse)@!',
         \ 'else': '\\else\>',
         \ 'close': '\\fi\>',
         \})
@@ -270,6 +270,7 @@ function! vimtex#options#init() abort " {{{1
   call s:init_option('vimtex_syntax_conceal_default', 1)
   call s:init_option('vimtex_syntax_conceal', {
         \ 'accents': g:vimtex_syntax_conceal_default,
+        \ 'cites': g:vimtex_syntax_conceal_default,
         \ 'fancy': g:vimtex_syntax_conceal_default,
         \ 'greek': g:vimtex_syntax_conceal_default,
         \ 'math_bounds': g:vimtex_syntax_conceal_default,
@@ -278,13 +279,13 @@ function! vimtex#options#init() abort " {{{1
         \ 'math_super_sub': g:vimtex_syntax_conceal_default,
         \ 'math_symbols': g:vimtex_syntax_conceal_default,
         \ 'styles': g:vimtex_syntax_conceal_default,
-        \ 'cites': g:vimtex_syntax_conceal_default,
         \})
   call s:init_option('vimtex_syntax_conceal_cites', {
         \ 'type': 'brackets',
         \ 'icon': '📖',
         \ 'verbose': v:true,
         \})
+  call s:init_option('vimtex_syntax_custom_cmds', [])
   call s:init_option('vimtex_syntax_nested', {
         \ 'aliases' : {
         \   'C' : 'c',
