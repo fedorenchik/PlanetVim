@@ -16,3 +16,11 @@ func! planet#session#MenuList() abort
     exe 'an 840.500 📚&h.' .. session .. ' :SLoad ' .. session .. '<CR>'
   endfor
 endfunc
+
+" TODO: support for sessions in project dir
+func! planet#session#SetCwdSession() abort
+  set undodir=./.planetvim/undo
+  set viminfofile=./.planetvim/viminfo
+  set viewdir=./.planetvim/view
+  "TODO: planetvim config file
+endfunc

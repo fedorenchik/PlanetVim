@@ -6,7 +6,7 @@ func! planet#git#CommitFile(save = v:true, auto = v:true, push = v:false) abort
   endif
   let commit_msg = ''
   if a:auto
-    let commit_msg = 'Automatic Commit at ' .. system('date')
+    let commit_msg = 'Update at ' .. system('date')
   else
     let commit_msg = inputdialog('Commit Message: ')
   endif
@@ -23,7 +23,7 @@ func! planet#git#Commit(save = v:true, auto = v:true, push = v:false) abort
   endif
   let commit_msg = ''
   if a:auto
-    let commit_msg = 'Automatic Commit at ' .. system('date')
+    let commit_msg = 'Update at ' .. system('date')
   else
     let commit_msg = inputdialog('Commit Message: ')
   endif

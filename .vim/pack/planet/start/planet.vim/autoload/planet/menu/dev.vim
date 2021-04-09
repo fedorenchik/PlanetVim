@@ -124,11 +124,17 @@ func! planet#menu#dev#update() abort
     an 500.10  🎚️&{.Settings <Nop>
     an disable 🎚️&{.Settings
     an 500.10  🎚️&{.&Env.Print\ Env                          :call planet#term#run_cmd_output('env')<CR>
+    an 500.10  🎚️&{.&Env.Set\ DESTDIR                        :TODO
+    an 500.10  🎚️&{.&Env.Set\ PYTHONPATH                     :TODO
+    an 500.10  🎚️&{.&Env.Set\ PATH                           :TODO
+    an 500.10  🎚️&{.&Env.Set\ ARCH                           :TODO
+    an 500.10  🎚️&{.&Env.Set\ CROSS_COMPILE                  :TODO
     an 500.10  🎚️&{.&Env.Set\ Env\ Var                       :TODO
+    an 500.10  🎚️&{.&Env.Edit\ Env\ in\ Buffer               :TODO
+    an 500.10  🎚️&{.&direnv.&Edit\ (or\ Create)\ \.envrc     :EditEnvrc<CR>
+    an 500.10  🎚️&{.&direnv.&Allow\ Here                     :call planet#term#run_cmd_output('direnv allow')<CR>
     an 500.10  🎚️&{.&direnv.&Run\ \.envrc                    :DirenvExport<CR>
-    an 500.10  🎚️&{.&direnv.E&dit\ \.envrc                   :EditEnvrc<CR>
-    an 500.10  🎚️&{.&direnv.Add\ N&ew                        :TODO
-    an 500.10  🎚️&{.&direnv.Edit\ diren&vrc                  :EditDirenvrc<CR>
+    an 500.10  🎚️&{.&direnv.E&dit\ \.direnvrc                :EditDirenvrc<CR>
     an 500.10  🎚️&{.editorconfig.Add\ New                    :TODO
     an 500.10  🎚️&{.editorconfig.Reload                      :EditorConfigReload<CR>
     an 500.10  🎚️&{.editorconfig.Disable\ for\ buffer        :let b:EditorConfig_disable=1<CR>
@@ -402,6 +408,8 @@ func! planet#menu#dev#update() abort
   else
     silent! aunmenu ❇️&[
     silent! aunmenu 🪧&]
+    silent! aunmenu 🎚️&{
+    silent! aunmenu 📐&}
     silent! aunmenu 🔨&u
     silent! aunmenu ▶️&r
     silent! aunmenu 🐞&d

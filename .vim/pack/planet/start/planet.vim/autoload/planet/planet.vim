@@ -24,14 +24,14 @@ func! planet#planet#SetEasyMode() abort
   set keymodel=startsel,stopsel
   set guioptions-=c
   set guioptions+=r
-  nun h
-  nun j
-  nun k
-  nun l
-  nun f
-  nun F
-  nun t
-  nun T
+  silent! nun h
+  silent! nun j
+  silent! nun k
+  silent! nun l
+  silent! nun f
+  silent! nun F
+  silent! nun t
+  silent! nun T
 endfunc
 
 func! planet#planet#SetStandardMode()
@@ -40,14 +40,14 @@ func! planet#planet#SetStandardMode()
   set keymodel=
   set guioptions+=c
   set guioptions-=r
-  nun h
-  nun j
-  nun k
-  nun l
-  nun f
-  nun F
-  nun t
-  nun T
+  silent! nun h
+  silent! nun j
+  silent! nun k
+  silent! nun l
+  silent! nun f
+  silent! nun F
+  silent! nun t
+  silent! nun T
 endfunc
 
 func! planet#planet#SetSuperChargedMode()

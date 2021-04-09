@@ -119,8 +119,8 @@ func! planet#menu#settings#update() abort
     an 990.110 ❔&?.--5-- <Nop>
     an 990.120 ❔&?.&About                                     :version<CR>
   else
-    silent! aunmenu ⚙️&\|
-    silent! aunmenu ⌨️&\\
+    silent! aunmenu ⚙️&\\
+    silent! aunmenu ⌨️&\|
     silent! aunmenu ❔&h
   endif
 endfunc

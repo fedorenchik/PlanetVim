@@ -218,9 +218,4 @@ func! ListMonths() abort
   return ''
 endfunc
 
-func! SetupCommandAlias(input, output) abort
-  exec 'cabbrev <expr> '.a:input
-        \ .' ((getcmdtype() is# ":" && getcmdline() is# "'.a:input.'")'
-        \ .'? ("'.a:output.'") : ("'.a:input.'"))'
-endfunc
 

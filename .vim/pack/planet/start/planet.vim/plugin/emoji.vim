@@ -1,7 +1,7 @@
 vim9script
 
-" Make necessary emojis double-width characters.
-" Only last setcellwidths() call has effect.
+# Make necessary emojis double-width characters.
+# Only last setcellwidths() call has effect.
 call setcellwidths([
       \ [0xe5fa, 0xe62b, 2],
       \ [0xe700, 0xe7c5, 2],

@@ -518,7 +518,11 @@ lnoremap <Tab> <Esc>
 " }}}
 " Abbreviations: {{{
 inoreabbrev teh the
-"cnoreabbrev f find
+func! SetupCommandAlias(input, output) abort
+  exec 'cabbrev <expr> '.a:input
+        \ .' ((getcmdtype() is# ":" && getcmdline() is# "'.a:input.'")'
+        \ .'? ("'.a:output.'") : ("'.a:input.'"))'
+endfunc
 call SetupCommandAlias("f", "find")
 " }}}
 " Autocommands: {{{
@@ -1010,8 +1014,8 @@ func! StatusLine(current, width)
   if a:current
     let l:s .= ' %{NearestMethodOrFunction()}'
     let l:s .= crystalline#left_sep('', 'Fill') . ' %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
-    let l:s .= "/%{@/}/"
     let l:s .= "|%{g:PV_p}|"
+    let l:s .= "/%{@/}/"
     let l:s .= "%{StatusLine_SearchCount()}"
     let l:s .= "%{exists('*CapsLockStatusline')?CapsLockStatusline():''}"
     let l:s .= ' %{grepper#statusline()}'
