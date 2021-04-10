@@ -143,7 +143,6 @@ if has("gui")
   set guifont=DejaVu\ Sans\ Mono\ 9,Monospace\ 9
 endif
 set guiheadroom=0
-"XXX: add '!' to guioptions when startify bug will be fixed
 " Adding '!' to guioptions causes too much redraw & 'hit enter' prompts (vim bug)
 set guioptions=aAcdeimMgpk
 set guipty
@@ -237,14 +236,14 @@ set smartcase
 set smartindent
 set smarttab
 set softtabstop=8
+"TODO: spellfile: 1 - per session, 2 - global, 3 - tmp cache
 set spellfile=$HOME/src/homerc/.vim/spell/personal.utf-8.add,/tmp/tmp.utf-8.add
 set spelllang+=cjk
 set spelloptions=camel
-set spellsuggest=fast,10
+set spellsuggest=best,10
 set nosplitbelow
 set nosplitright
 set nostartofline
-"TODO: set statusline^=%{exists('*CapsLockStatusline')?CapsLockStatusline():''}
 set suffixes-=.h
 set noswapfile
 set swapsync=
@@ -268,7 +267,7 @@ set notimeout
 set timeoutlen=400
 set title
 set titleold=$PWD
-"TODO: titlestring -> cur dir, server name
+"TODO: titlestring -> cur dir, v:this_session, server name
 set titlestring=%F\ %a%r%m\ -\ VIM
 set ttimeout
 set ttimeoutlen=10
@@ -534,13 +533,15 @@ autocmd BufReadPre *.[sS] let g:asmsyntax = "asm"
 autocmd BufReadPost */linux/*.h setfiletype c
 autocmd BufReadPost */linux/*.h setlocal colorcolumn=100
 autocmd BufReadPost *.log normal G
-autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") && &filetype !~# 'commit' | exe "normal! g`\"" | endif
+autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") && &filetype !~# 'commit' | exe "normal! g`\"" | end
 autocmd CmdWinEnter : noremap <buffer> <S-CR> <CR>q:
 autocmd CmdWinEnter : noremap! <buffer> <S-CR> <CR>q:
 autocmd CmdWinEnter : noremap <buffer> <C-c> <C-w>c
 autocmd CmdWinEnter : noremap! <buffer> <C-c> <C-\><C-n><C-w>c
 autocmd CmdWinEnter / noremap <buffer> <S-CR> <CR>q/
 autocmd CmdWinEnter ? noremap <buffer> <S-CR> <CR>q?
+au CursorHold * if win_gettype() == "" | checktime | end
+au CursorHoldI * if win_gettype() == "" | checktime | end
 autocmd FileType c,cpp setlocal foldmethod=syntax
 autocmd FileType c,cpp inoreabbrev #i #include 
 autocmd FileType c,cpp inoreabbrev ,, <<
@@ -574,18 +575,16 @@ if exists("+omnifunc")
   autocmd Filetype * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
   autocmd Filetype * if &completefunc == "" | setlocal completefunc=syntaxcomplete#Complete | endif
 endif
-"autocmd FocusLost * wa
 autocmd GUIEnter * set t_vb=
 autocmd GUIEnter * set guifont=DejaVu\ Sans\ Mono\ 9,Monospace\ 9
 autocmd GUIEnter * silent call system('wmctrl -i -b add,maximized_vert,maximized_horz -r' . v:windowid)
-autocmd InsertLeave * if empty(&buftype) | pclose | endif
-autocmd SessionLoadPost * exe "set viminfofile=~/.vim/viminfo/" .. fnamemodify(v:this_session, ":t") .. ".viminfo"
-autocmd SessionLoadPost * silent! rviminfo!
-"TODO: auto-save and auto-load quickfix/loclist files (up to 10 of each, loclists: for each window)
+autocmd InsertLeave * if empty(&buftype) | pclose | end
+autocmd SessionLoadPost * call planet#planet#SetPerSessionOptions()
 autocmd StdinReadPost * set nomodified
 au TerminalWinOpen * setlocal foldcolumn=0 signcolumn=no nonumber norelativenumber
 au BufWinEnter * if &buftype == 'terminal' | setlocal foldcolumn=0 signcolumn=no nonumber norelativenumber | endif
 autocmd VimEnter * if expand("%") != "" && getcwd() == expand("~") | cd %:h | endif
+au VimLeavePre * call planet#planet#CheckExitSaveSession()
 aug END
 endif
 " }}}
@@ -1052,6 +1051,12 @@ let g:dispatch_no_maps = 1
 augroup Flog
   au FileType floggraph vnoremap <buffer> <silent> D :<C-U>call flog#run_tmp_command("vertical belowright Git diff %(h'>) %(h'<)")<CR>
 augroup end
+" }}}
+" Plugin: vim-grammarous {{{
+let g:grammarous#use_vim_spelllang = 1
+" let g:grammarous#languagetool_cmd = 'languagetool'
+let g:grammarous#show_first_error = 1
+let g:grammarous#use_location_list = 1
 " }}}
 " Plugin: vim-grepper {{{
 let g:grepper = {}

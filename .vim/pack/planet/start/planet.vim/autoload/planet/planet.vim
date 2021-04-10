@@ -34,7 +34,7 @@ func! planet#planet#SetEasyMode() abort
   silent! nun T
 endfunc
 
-func! planet#planet#SetStandardMode()
+func! planet#planet#SetStandardMode() abort
   set noim
   set selectmode=
   set keymodel=
@@ -50,7 +50,7 @@ func! planet#planet#SetStandardMode()
   silent! nun T
 endfunc
 
-func! planet#planet#SetSuperChargedMode()
+func! planet#planet#SetSuperChargedMode() abort
   set noim
   set selectmode=
   set keymodel=
@@ -66,10 +66,13 @@ func! planet#planet#SetSuperChargedMode()
   nn <silent> T :call PlanetVim_T()<CR>
 endfunc
 
+func! planet#planet#SetPerSessionOptions()
+  "TODO: undofile, undodir, spellfile, viminfo, viewdir
+  exe "set viminfofile=~/.vim/viminfo/" .. fnamemodify(v:this_session, ":t") .. ".viminfo"
+  silent! rviminfo!
+endfunc
+
 func! planet#planet#SaveExit() abort
-  if ! empty(v:this_session)
-    exe 'SSave! ' .. fnamemodify(v:this_session, ":t")
-  endif
   confirm wall
   qa!
 endfunc
@@ -78,4 +81,12 @@ func! planet#planet#EmergencyExit() abort
   set noautowrite
   set noautowriteall
   cquit!
+endfunc
+
+func! planet#planet#CheckExitSaveSession() abort
+  if empty(v:this_session) || v:exiting != 0
+    return
+  end
+  "TODO: auto-save and auto-load quickfix/loclist files (up to 10 of each, loclists: for each window)
+  exe 'SSave! ' .. fnamemodify(v:this_session, ":t")
 endfunc

@@ -23,7 +23,7 @@ func! planet#tab#Open() abort
   let &ssop = l:old_ssop
 endfunc
 
-"TODO: Need to add TabClosePre autocmd to vim
+"TODO: Use au TabLeave to save current tab
 func! planet#tab#Reopen() abort
-  echo "TODO: Need to add TabClosePre autocmd to vim"
+  echo "TODO: Use au TabLeave to save current tab"
 endfunc

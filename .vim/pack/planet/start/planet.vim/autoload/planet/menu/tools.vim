@@ -39,10 +39,10 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.Fetch\ .From\ Specified\ Remote               :call planet#git#FetchCustomRemote()<CR>
     an 700.10  🔀&,.Pull\ .TODO                                   :call planet#git#FetchCustomRemote()<CR>
     an 700.10  🔀&,.Push\ .TODO                                   :call planet#git#FetchCustomRemote()<CR>
-    an 700.10  🔀&,.&Log.File\ QF                                 :TODO
-    an 700.10  🔀&,.&Log.File\ LL                                 :TODO
-    an 700.10  🔀&,.&Log.QF                                       :TODO
-    an 700.10  🔀&,.&Log.LL                                       :TODO
+    an 700.10  🔀&,.&Log.&Log\ (QF)                               :Gclog!<CR>
+    an 700.10  🔀&,.&Log.Log\ (LL)                                :Gllog!<CR>
+    an 700.10  🔀&,.&Log.File\ (QF)                               :0Gclog!<CR>
+    an 700.10  🔀&,.&Log.&File\ (LL)                              :0Gllog!<CR>
     an 700.10  🔀&,.&Log.in\ New\ GWindow                         :TODO
     an 700.10  🔀&,.&Log.Git&k                                    :silent !nohup gitk >/dev/null 2>&1 &<CR>
     an 700.10  🔀&,.&Tag.TODO                                     :TODO
@@ -59,7 +59,8 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.&Branch.Checkout                              :TODO
     an 700.10  🔀&,.&Branch.Rename                                :call planet#git#BranchRename()<CR>
     an 700.10  🔀&,.&Branch.Delete                                :call planet#git#BranchDelete()<CR>
-    an 700.10  🔀&,.&Diff.TODO                                    :TODO
+    an 700.10  🔀&,.&Diff.&Diff                                   :call planet#term#run_cmd_output('git diff')<CR>
+    an 700.10  🔀&,.&Diff.&Stat                                   :call planet#term#run_cmd_output('git diff --stat')<CR>
     an 700.10  🔀&,.Cherry-pick.TODO                              :TODO
     an 700.10  🔀&,.&Worktree.TODO                                :TODO
     an 700.10  🔀&,.Subrepo\ (&x).Pull                            :call planet#git#SubrepoPull()<CR>
@@ -115,28 +116,61 @@ func! planet#menu#tools#update() abort
     an 710.40  ⛏️&;.Set\ Context\ Lines               :set diffopt+=context=12<CR>
 
     " Spelling (& Dictionary & Thesaurus)
-    an 720.10  🔠&-.Spelling <Nop>
-    an disable 🔠&-.Spelling
+    an 720.10  🔠&-.Spell\ Check <Nop>
+    an disable 🔠&-.Spell\ Check
+    an 720.10  🔠&-.Previous\ Misspelled<Tab>[S         [S
+    an 720.10  🔠&-.&Previous\ Misspelled,\ Rare\ or\ Regional<Tab>[s [s
+    an 720.10  🔠&-.&Next\ Misspelled,\ Rare\ or\ Regional<Tab>]s ]s
+    an 720.10  🔠&-.Next\ Misspelled<Tab>]S             ]S
+    an 720.10  🔠&-.--1-- <Nop>
+    an 720.10  🔠&-.Suggest\ Spelling<Tab>z=            z=
+    an 720.10  🔠&-.Apply\ First\ Suggestion<Tab>1z=    1z=
+    an 720.10  🔠&-.Repeat Correction<Tab>:spellrepall  :spellrepall<CR>
+    an 720.10  🔠&-.--1-- <Nop>
+    an 720.10  🔠&-.Mark\ as\ Correct<Tab>zg            zg
+    an 720.10  🔠&-.Mark\ as\ Incorrect<Tab>zw          zw
+    an 720.10  🔠&-.Mark\ as\ Rare<Tab>:spellrare       :exe ':spellrare ' .. expand('<cWORD>')<CR>
+    an 720.10  🔠&-.--1-- <Nop>
+    an 720.10  🔠&-.Mark\ as\ Correct\ Temp<Tab>zG      zG
+    an 720.10  🔠&-.Mark\ as\ Incorrect\ Temp<Tab>zG    zW
+    an 720.10  🔠&-.Mark\ as\ Rare\ Temp<Tab>:spellrare :exe ':spellrare! ' .. expand('<cWORD>')<CR>
+    an 720.10  🔠&-.--1-- <Nop>
+    an 720.10  🔠&-.Unmark\ as\ Correct<Tab>zug         zug
+    an 720.10  🔠&-.Unmark\ as\ Incorrect\ or\ Rare<Tab>zuw zuw
+    an 720.10  🔠&-.--1-- <Nop>
+    an 720.10  🔠&-.Unmark\ as\ Correct\ Temp<Tab>zuG   zuG
+    an 720.10  🔠&-.Unmark\ as\ Incorrect\ or\ Rare\ Temp<Tab>zuW zuW
+    an 720.10  🔠&-.--1-- <Nop>
+    an 720.10  🔠&-.Set\ Language\ to\ "en"             :set spl=en spell<CR>
+    an 720.10  🔠&-.Clear\ Internal\ Wordlist           :let &enc = &enc<CR>
+    an 720.10  🔠&-.--1-- <Nop>
     an 720.10  🔠&-.Enable<Tab>:set\ spell                  :set spell<CR>
     an 720.10  🔠&-.Disable<Tab>:set\ nospell               :set nospell<CR>
     am 720.10  🔠&-.Toggle<Tab>yos                          yos
     an 720.10  🔠&-.--1-- <Nop>
-    an 720.10  🔠&-.Previous\ Misspelled<Tab>[s         [s
-    an 720.10  🔠&-.Next\ Misspelled<Tab>]s             ]s
-    an 720.10  🔠&-.--1-- <Nop>
-    an 720.10  🔠&-.Spelling\ Suggestions<Tab>z=        z=
-    an 720.10  🔠&-.Repeat Correction<Tab>:spellrepall  :spellrepall<CR>
-    an 720.10  🔠&-.--1-- <Nop>
-    an 720.10  🔠&-.Mark\ as\ Correct\ Temp<Tab>zG      zG
-    an 720.10  🔠&-.Mark\ as\ Incorrect\ Temp<Tab>zG    zW
-    an 720.10  🔠&-.Mark\ as\ Correct<Tab>zg            zg
-    an 720.10  🔠&-.Mark\ as\ Incorrect<Tab>zw          zw
-    an 720.10  🔠&-.Unmark\ as\ Correct\ Temp<Tab>zG    zuG
-    an 720.10  🔠&-.Unmark\ as\ Incorrect\ Temp<Tab>zG  zuW
-    an 720.10  🔠&-.Unmark\ as\ Correct<Tab>zg          zug
-    an 720.10  🔠&-.Unmark\ as\ Incorrect<Tab>zw        zuw
-    an 720.10  🔠&-.--1-- <Nop>
-    an 720.10  🔠&-.Set\ Language\ to\ "en"             :set spl=en spell<CR>
+    am 720.10  🔠&-.Current\ Spell\ Files<Tab>:spellinfo    :spellinfo<CR>
+    am 720.10  🔠&-.Cleanup\ Spell\ File                    :runtime spell/cleanadd.vim<CR>
+    an 720.10  🔠&-.Grammar\ Check <Nop>
+    an disable 🔠&-.Grammar\ Check
+    am 720.10  🔠&-.Grammar\ Check<Tab>:GrammarousCheck     :GrammarousCheck<CR>
+    am 720.10  🔠&-.Grammar\ Check\ Comments                :GrammarousCheck --comments-only<CR>
+    am 720.10  🔠&-.Grammar\ Check\ Reset<Tab>:GrammarousReset :GrammarousReset<CR>
+    am 720.10  🔠&-.Grammar\ Check\ Status                  :GrammarousCheck --help<CR>
+    an 720.10  🔠&-.Proofreading <Nop>
+    an disable 🔠&-.Proofreading
+    am 720.10  🔠&-.Proofread\ Weak\ (first\ draft)         :Wordy weak<CR>
+    am 720.10  🔠&-.Proofread\ Redundant                    :Wordy redundantt<CR>
+    am 720.10  🔠&-.Proofread\ Problematic                  :Wordy problematic<CR>
+    am 720.10  🔠&-.Proofread\ Puffery                      :Wordy puffery<CR>
+    am 720.10  🔠&-.Proofread\ Business\ Jargon             :Wordy business-jargon<CR>
+    am 720.10  🔠&-.Proofread\ Art\ Jargon                  :Wordy art-jargon<CR>
+    am 720.10  🔠&-.Proofread\ Manipulative\ Language       :Wordy weasel<CR>
+    am 720.10  🔠&-.Proofread\ Redundant                    :Wordy redundantt<CR>
+    am 720.10  🔠&-.Proofread\ Redundant                    :Wordy redundantt<CR>
+    am 720.10  🔠&-.Proofread\ Redundant                    :Wordy redundantt<CR>
+    am 720.10  🔠&-.Proofread\ Redundant                    :Wordy redundantt<CR>
+    am 720.10  🔠&-.Proofread\ Redundant                    :Wordy redundantt<CR>
+    am 720.10  🔠&-.Disable Proofreading\ Check             :NoWordy<CR>
 
     " Tools
     " TODO: add all '*.prg' options, eg: equalprg, keywordprg, etc.

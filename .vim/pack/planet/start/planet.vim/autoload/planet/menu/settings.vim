@@ -44,7 +44,6 @@ func! planet#menu#settings#update() abort
     an 970.10  ⚙️&\\.Open\ Verbosity\ Log<Tab>goV           :VerbosityOpenLast<CR>
     an 970.10  ⚙️&\\.--9-- <Nop>
     an 970.10  ⚙️&\\.Settings\ Buffer<Tab>:options          :options<CR>
-    an 970.10  ⚙️&\\.Open\ $VIMRUNTIME\ Folder              :tabnew<CR>:Fern $VIMRUNTIME<CR>
 
     " Show current maps (nnoremap, etc.)
     an 980.10  ⌨️&\|.Maps <Nop>
@@ -85,10 +84,12 @@ func! planet#menu#settings#update() abort
     an 980.10  ⌨️&\|.Syntax.Highlight\ Clear<Tab>:hi\ clear      :hi clear<CR>
     an 980.10  ⌨️&\|.Co&lor\ Test                           :sp $VIMRUNTIME/syntax/colortest.vim<Bar>so %<CR>
     an 980.10  ⌨️&\|.&Highlight\ Test                       :runtime syntax/hitest.vim<CR>
+    an 980.10  ⌨️&\|.&Spell\ Dump<Tab>:spelldump            :spelldump<CR>
     an 980.10  ⌨️&\|.Run\ Vim\ Script                       :browse so<CR>
     an 980.10  ⌨️&\|.Source\ Current\ Vim\ Script           :so %<CR>
     an 980.10  ⌨️&\|.Ex\ Vim\ Mode\ (Dangerous!)<Tab>gX     gQ
     an 980.10  ⌨️&\|.Ex\ Mode\ (Dangerous!)<Tab>Q           Q
+    an 980.10  ⌨️&\\.Open\ $VIMRUNTIME\ Folder              :tabnew<CR>:Fern $VIMRUNTIME<CR>
     an 980.10  ⌨️&\|.Debug <Nop>
     an disable ⌨️&\|.Debug
     an 980.10  ⌨️&\|.Profile\ Syntax.Start\ measuring\ syntax\ times<Tab>:syntime\ on :syntime on<CR>
