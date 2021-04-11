@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/inkarkat/vim-visualrepeat.git
+	branch = master
+	commit = 9488f66b80c6f9583cac25b03651725e2dcd7437
+	parent = 2ab3bdb5a7225007212dc402a49dafa7f2a94aa5
+	method = merge
+	cmdver = 0.4.3
