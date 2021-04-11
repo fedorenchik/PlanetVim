@@ -9,7 +9,7 @@ def! g:GuiTabLabel(): string
   var set_mod = false
   for bufnr in bufnrlist
     if getbufvar(bufnr, "&buftype") ==# 'terminal'
-      m = '!!' .. m
+      m = '!' .. m
       set_term = true
     endif
     if getbufvar(bufnr, "&buftype") !=# 'terminal' && getbufvar(bufnr, "&modified") && !set_mod
