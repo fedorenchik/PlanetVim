@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/yami-beta/asyncomplete-omni.vim.git
 	branch = master
-	commit = c9873fb643d5dd4c43b392efdd18a801e9f12fa0
-	parent = 00d80743073e69d051337733f7786d6923575335
+	commit = f13986b671a37d6320476af6bc066697e71463c1
+	parent = b0881d1d800957c2a9da55646d04d2644734b5a1
 	method = merge
 	cmdver = 0.4.3
