@@ -59,10 +59,10 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.&Branch.Checkout                              :TODO
     an 700.10  🔀&,.&Branch.Rename                                :call planet#git#BranchRename()<CR>
     an 700.10  🔀&,.&Branch.Delete                                :call planet#git#BranchDelete()<CR>
-    an 700.10  🔀&,.&Diff.&Diff                                   :call planet#term#run_cmd_output('git diff')<CR>
-    an 700.10  🔀&,.&Diff.&Stat                                   :call planet#term#run_cmd_output('git diff --stat')<CR>
-    an 700.10  🔀&,.&Diff.&Cached\ (Index)                        :call planet#term#run_cmd_output('git diff --staged')<CR>
-    an 700.10  🔀&,.&Diff.Stat\ Cached                            :call planet#term#run_cmd_output('git diff --staged --stat')<CR>
+    an 700.10  🔀&,.&Diff.&Diff                                   :call planet#term#run_cmd_output('git --no-pager diff')<CR>
+    an 700.10  🔀&,.&Diff.&Stat                                   :call planet#term#run_cmd_output('git --no-pager diff --stat')<CR>
+    an 700.10  🔀&,.&Diff.&Cached\ (Index)                        :call planet#term#run_cmd_output('git --no-pager diff --staged')<CR>
+    an 700.10  🔀&,.&Diff.Stat\ Cached                            :call planet#term#run_cmd_output('git --no-pager diff --staged --stat')<CR>
     an 700.10  🔀&,.Cherry-pick.TODO                              :TODO
     an 700.10  🔀&,.&Worktree.TODO                                :TODO
     an 700.10  🔀&,.Subrepo\ (&x).Pull                            :call planet#git#SubrepoPull()<CR>
