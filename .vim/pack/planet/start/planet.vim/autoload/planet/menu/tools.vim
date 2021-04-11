@@ -150,27 +150,33 @@ func! planet#menu#tools#update() abort
     an 720.10  🔠&-.--1-- <Nop>
     am 720.10  🔠&-.Current\ Spell\ Files<Tab>:spellinfo    :spellinfo<CR>
     am 720.10  🔠&-.Cleanup\ Spell\ File                    :runtime spell/cleanadd.vim<CR>
-    an 720.10  🔠&-.Grammar\ Check <Nop>
-    an disable 🔠&-.Grammar\ Check
+    an 720.10  🔠&-.Grammar <Nop>
+    an disable 🔠&-.Grammar
     am 720.10  🔠&-.Grammar\ Check<Tab>:GrammarousCheck     :GrammarousCheck<CR>
     am 720.10  🔠&-.Grammar\ Check\ Comments                :GrammarousCheck --comments-only<CR>
     am 720.10  🔠&-.Grammar\ Check\ Reset<Tab>:GrammarousReset :GrammarousReset<CR>
     am 720.10  🔠&-.Grammar\ Check\ Status                  :GrammarousCheck --help<CR>
     an 720.10  🔠&-.Proofreading <Nop>
     an disable 🔠&-.Proofreading
-    am 720.10  🔠&-.Proofread\ Weak\ (first\ draft)         :Wordy weak<CR>
-    am 720.10  🔠&-.Proofread\ Redundant                    :Wordy redundantt<CR>
-    am 720.10  🔠&-.Proofread\ Problematic                  :Wordy problematic<CR>
-    am 720.10  🔠&-.Proofread\ Puffery                      :Wordy puffery<CR>
-    am 720.10  🔠&-.Proofread\ Business\ Jargon             :Wordy business-jargon<CR>
-    am 720.10  🔠&-.Proofread\ Art\ Jargon                  :Wordy art-jargon<CR>
-    am 720.10  🔠&-.Proofread\ Manipulative\ Language       :Wordy weasel<CR>
-    am 720.10  🔠&-.Proofread\ Redundant                    :Wordy redundantt<CR>
-    am 720.10  🔠&-.Proofread\ Redundant                    :Wordy redundantt<CR>
-    am 720.10  🔠&-.Proofread\ Redundant                    :Wordy redundantt<CR>
-    am 720.10  🔠&-.Proofread\ Redundant                    :Wordy redundantt<CR>
-    am 720.10  🔠&-.Proofread\ Redundant                    :Wordy redundantt<CR>
-    am 720.10  🔠&-.Disable Proofreading\ Check             :NoWordy<CR>
+    am 720.10  🔠&-.Proofread.Weak\ (first\ draft)<Tab>:Wordy\ weak             :Wordy weak<CR>
+    am 720.10  🔠&-.Proofread.Redundant<Tab>:Wordy\ redundant                   :Wordy redundant<CR>
+    am 720.10  🔠&-.Proofread.Problematic<Tab>:Wordy\ problematic               :Wordy problematic<CR>
+    am 720.10  🔠&-.Proofread.Puffery<Tab>:Wordy\ puffery                       :Wordy puffery<CR>
+    am 720.10  🔠&-.Proofread.Business\ Jargon<Tab>:Wordy\ business-jargon      :Wordy business-jargon<CR>
+    am 720.10  🔠&-.Proofread.Art\ Jargon<Tab>:Wordy\ art-jargon                :Wordy art-jargon<CR>
+    am 720.10  🔠&-.Proofread.Manipulative\ Language<Tab>:Wordy\ weasel         :Wordy weasel<CR>
+    am 720.10  🔠&-.Proofread.Verb\ 'to\ be'<Tab>:Wordy\ being                  :Wordy being<CR>
+    am 720.10  🔠&-.Proofread.Passive\ Voice<Tab>:Wordy\ passive-voice          :Wordy passive-voice<CR>
+    am 720.10  🔠&-.Proofread.Colloquialisms<Tab>:Wordy\ colloquial             :Wordy colloquial<CR>
+    am 720.10  🔠&-.Proofread.Idioms<Tab>:Wordy\ idiomatic                      :Wordy idiomatic<CR>
+    am 720.10  🔠&-.Proofread.Similies<Tab>:Wordy\ similies                     :Wordy similies<CR>
+    am 720.10  🔠&-.Proofread.Adjectives<Tab>:Wordy\ adjectives                 :Wordy adjectives<CR>
+    am 720.10  🔠&-.Proofread.Adverbs<Tab>:Wordy\ adverbs                       :Wordy adverbs<CR>
+    am 720.10  🔠&-.Proofread.'said'<Tab>:Wordy\ said-synonyms                  :Wordy said-synonyms<CR>
+    am 720.10  🔠&-.Proofread.Editorializing<Tab>:Wordy\ opinion                :Wordy opinion<CR>
+    am 720.10  🔠&-.Proofread.Contractions<Tab>:Wordy\ contractions             :Wordy contractions<CR>
+    am 720.10  🔠&-.Proofread.Vague\ Time<Tab>:Wordy\ vague-time                :Wordy vague-time<CR>
+    am 720.10  🔠&-.Proofread.Disable<Tab>:NoWordy                              :NoWordy<CR>
 
     " Tools
     " TODO: add all '*.prg' options, eg: equalprg, keywordprg, etc.
