@@ -23,7 +23,7 @@ function! vimtex#view#skim#new() abort " {{{1
             \ call vimtex#view#skim#compiler_callback()
   augroup END
 
-  return vimtex#view#common#apply_common_template(deepcopy(s:skim))
+  return vimtex#view#_template#apply(deepcopy(s:skim))
 endfunction
 
 " }}}1
@@ -50,6 +50,7 @@ endfunction
 
 " }}}1
 
+
 let s:skim = {
       \ 'name' : 'Skim',
       \ 'startskim' : 'open -a Skim',
@@ -60,14 +61,13 @@ function! s:skim.view(file) dict abort " {{{1
     let outfile = self.out()
 
     " Only copy files if they don't exist
-    if g:vimtex_view_use_temp_files
-          \ && vimtex#view#common#not_readable(outfile)
+    if g:vimtex_view_use_temp_files && !filereadable(outfile)
       call self.copy_files()
     endif
   else
     let outfile = a:file
   endif
-  if vimtex#view#common#not_readable(outfile) | return | endif
+  if vimtex#view#not_readable(outfile) | return | endif
 
   let l:cmd = join([
         \ 'osascript',

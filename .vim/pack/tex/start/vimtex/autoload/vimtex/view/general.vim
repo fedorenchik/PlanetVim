@@ -20,13 +20,11 @@ function! vimtex#view#general#new() abort " {{{1
     return {}
   endif
 
-  " Start from standard template
-  let l:viewer = vimtex#view#common#apply_common_template(deepcopy(s:general))
-
-  return l:viewer
+  return vimtex#view#_template#apply(deepcopy(s:general))
 endfunction
 
 " }}}1
+
 
 let s:general = {
       \ 'name' : 'General'
@@ -37,8 +35,7 @@ function! s:general.view(file) dict abort " {{{1
     let outfile = self.out()
 
     " Only copy files if they don't exist
-    if g:vimtex_view_use_temp_files
-          \ && vimtex#view#common#not_readable(outfile)
+    if g:vimtex_view_use_temp_files && !filereadable(outfile)
       call self.copy_files()
     endif
   else
@@ -51,7 +48,7 @@ function! s:general.view(file) dict abort " {{{1
           \ vimtex#process#capture('cygpath -aw "' . outfile . '"'), '')
   endif
 
-  if vimtex#view#common#not_readable(outfile) | return | endif
+  if vimtex#view#not_readable(outfile) | return | endif
 
   " Parse options
   let l:cmd  = g:vimtex_view_general_viewer

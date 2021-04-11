@@ -495,9 +495,9 @@ Filetype plugin for bib files~
 
 Language server / texlab~
                                                                 *vimtex-nf-lsp*
-  In recent years, language servers (lsps) [0] has become very popular. There is
-  a language server for LaTeX and bibtex called texlab [1]. It may be
-  interesting both as an alternative to VimTeX and/or in addition. One may use
+  In recent years, language servers (lsps) [0] have become very popular. There
+  is a language server for LaTeX and bibtex called texlab [1]. It may be
+  interesting both as an alternative to VimTeX and/or an addition. One may use
   it with e.g. |vim-lsp| [2] or |coc-nvim| [3, 4] or other lsps.
 
   See also this VimTeX issue [5] for more information.
@@ -2129,20 +2129,36 @@ OPTIONS                                                        *vimtex-options*
       Default: |v:false|
       If true, the `\cmdname` part and delimiters `{` and `}` are concealed.
 
-    concealopts~
+    concealchar~
+      Default: Undefined
+      Specify a conceal character for the `\cmdname` part. With this, one can
+      easily create simple rules to display e.g. `\R` as `ℝ` (see config
+      example below).
+
+    opt~
+      Default: |v:true|
+      If true, assumes `\cmdname` can be followed by an `[optional]` group.
+
+    optconceal~
       Default: Same as `conceal` key
       If true, the option group `[optional]` is concealed.
+
+    arg~
+      Default: |v:true|
+      If true, assumes `\cmdname` can be followed by an `{argument}` group.
 
     argstyle~
       Default: Undefined.
       Can be set to `bold`, `ital`, or `boldital` to apply styling to the
       command argument.
 
-  An example may be helpful: To use bolded style on a custom vector macro such
-  as `\vct{v}`, one can do this: >
+  A couple of examples may be helpful: The first in the following list shows
+  how to use bolded style on a custom vector macro such as `\vct{v}`. The
+  second shows how to conceal `\R` with `ℝ`. >
 
     let g:vimtex_syntax_custom_cmds = [
           \ {'name': 'vct', 'mathmode': 1, 'argstyle': 'bold'},
+          \ {'name': 'R', 'mathmode': 1, 'concealchar': 'ℝ'},
           \]
 <
   Default value: []
@@ -2548,16 +2564,38 @@ OPTIONS                                                        *vimtex-options*
   Default value: 1
 
 *g:vimtex_view_automatic*
-  If enabled, the viewer will open automatically when compilation has started
-  in `continuous` mode and if `callback` is enabled, or if `continuous` mode
-  is disabled.
+  If enabled, the viewer should open automatically when compilation has
+  started in `continuous` mode and if `callback` is enabled, or if
+  `continuous` mode is disabled.
 
   `latexmk` will typically start the viewer directly. However, with this
-  option enabled, VimTeX will start the viewer through callbacks for these
-  compilers:
+  option enabled, VimTeX will start the viewer through callbacks also for
+  these compilers:
   * |vimtex-compiler-latexrun|
   * |vimtex-compiler-arara|
   * |vimtex-compiler-tectonic|
+
+  Note: If you are using |vimtex_viewer_mupdf| or |vimtex_viewer_zathura|,
+        then you should also be aware of the related option
+        |g:vimtex_view_automatic_xwin| below.
+
+  Default value: 1
+
+*g:vimtex_view_automatic_xwin*
+  This option is closely related to |g:vimtex_view_automatic|. With the
+  previous option enabled, the xwin based viewers |vimtex_viewer_mupdf| and
+  |vimtex_viewer_zathura| will use `xdotool` to check if a viewer was opened
+  by the compiler. If a viewer window is not found, VimTeX will automatically
+  start one.
+
+  However, the search for a viewer window is implemented with a loop that
+  calls `xdotool` 30 times with 50 ms interval. If a window is not found, the
+  search will therefore interrupt the editing session for 1.5 seconds; this
+  happens on every successful compile callback.
+
+  Some users can't use `xdotool`, e.g. on Wayland, but the viewers may still
+  work quite reliably. In these cases, one may want to disable this automatic
+  view feature by setting this option to 0.
 
   Default value: 1
 
@@ -2593,10 +2631,9 @@ OPTIONS                                                        *vimtex-options*
   If disabled, the first invocation of the viewer will not perform a forward
   search to the current cursor position.
 
-  Note: This option is only relevant for the following view methods (see
-        |g:vimtex_view_method|):
-        * |vimtex_viewer_mupdf|
-        * |vimtex_viewer_zathura|
+  Note: This option is only relevant when |g:vimtex_view_method| is set to
+        either `mupdf` or `zathura`. See also the specific viewer sections for
+        more info: |vimtex_viewer_mupdf|, |vimtex_viewer_zathura|.
 
   Default value: 1
 
@@ -2733,7 +2770,7 @@ OPTIONS                                                        *vimtex-options*
       for viewing any PDF file. The VimTeX implementation supports forward
       search and uses a callback to update Skim after successful compilations.
 
-      Note: One may set |g:vimtex_view_automatic| to 1 if one wants to prevent
+      Note: One may set |g:vimtex_view_automatic| to 0 if one wants to prevent
             `latexmk` (or other build tools) from starting Skim and instead
             let VimTeX start Skim through the callback feature.
 
@@ -2748,8 +2785,10 @@ OPTIONS                                                        *vimtex-options*
       on Linux with Xorg.  It should also work on macOS, but users may want to
       read |vimtex-faq-zathura-macos|.
 
-      Note: Forward search requires `xdotool` to work properly, in order to
-            not open a new Zathura instance for invocation of |:VimtexView|.
+      Note: Forward search requires `xdotool` to work properly. That is,
+            `xdotool` is used to avoid duplicate Zathura instances when the
+            |:VimtexView| command is issued. This is a more severe restriction
+            if the |g:vimtex_view_forward_search_on_start| option is disabled.
 
       Note: VimTeX attempts to pass the server name to zathura for use in
             reverse searches. neovim users should read |vimtex-faq-neovim|
@@ -4519,9 +4558,9 @@ LATEXRUN                                             *vimtex-compiler-latexrun*
 > format, and generally enables other tools to do what they do best.
 
 `latexrun` is a compiler backend that handles recompilation of LaTeX documents
-when source files have been changed.  However, it is a much simpler backend,
+when source files have been changed. However, it is a much simpler backend,
 and does not support e.g. continuous mode and automatic starting of viewers.
-The latter is supported by VimTeX, though, through the callback.  See
+The latter is supported by VimTeX, though, through the callback. See
 |g:vimtex_view_automatic|.
 
 The compiler may be configured through the |g:vimtex_compiler_latexrun| option.
@@ -4779,8 +4818,8 @@ Note: Spell checking with `LanguageTool` is only enabled if a country code is
 ==============================================================================
 VIEW                                                              *vimtex-view*
 
-VimTeX provides the command |:VimtexView| to open the desired viewer.  The
-command is mapped to '<localleader>lv' by default.  The list of supported
+VimTeX provides the command |:VimtexView| to open the desired viewer. The
+command is mapped to `<localleader>lv` by default. The list of supported
 viewers are given in the description of |g:vimtex_view_method|.
 
 For supported viewers, |:VimtexView| will also perform forward search when the
@@ -4789,14 +4828,18 @@ viewer is opened.
 Associated settings:
 * |g:vimtex_view_enabled|
 * |g:vimtex_view_automatic|
-* |g:vimtex_view_method|
+* |g:vimtex_view_automatic_xwin|
+* |g:vimtex_view_forward_search_on_start|
 * |g:vimtex_view_use_temp_files|
+* |g:vimtex_view_method|
 * |g:vimtex_view_general_options|
+* |g:vimtex_view_general_options_latexmk|
 * |g:vimtex_view_general_viewer|
 * |g:vimtex_view_mupdf_options|
 * |g:vimtex_view_mupdf_send_keys|
 * |g:vimtex_view_skim_activate|
 * |g:vimtex_view_skim_reading_bar|
+* |g:vimtex_view_zathura_check_libsynctex|
 * |g:vimtex_view_zathura_options|
 
 Associated events:
