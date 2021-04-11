@@ -1,0 +1,2 @@
+# 制御文字ケース(検知しない)
+apple\nBanana\rOrange\tPeach

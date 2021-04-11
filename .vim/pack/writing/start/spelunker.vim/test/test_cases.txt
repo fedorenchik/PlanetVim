@@ -1,0 +1,110 @@
+# 動作チェックリスト
+## キャメルケース
+### 検知しない
+appleBananaOrange
+APPLEBananaORANGE
+
+### 検知する
+applBananOran
+appleBananOran
+applBananaOran
+applBananOrange
+appleBananaOran
+applBananaOrange
+appleBananOrange
+fooHTMLF
+FFFCC
+
+## スネークケース
+### 検知しない
+apple_banana_orange
+
+### 検知する
+appl_banan_oran
+apple_banan_oran
+appl_banana_oran
+appl_banan_orange
+apple_banana_oran
+appl_banana_orange
+apple_banan_orange
+
+## 制御文字
+### 検知しない
+apple\nBanana\rOrange\tPeach
+
+### 検知する
+apple\nBanan\rOage\tPach
+
+## 文字数(デフォルト4文字以上)
+p_pu_pur_purp_purpl_purple
+
+appleBananaOranP
+appleBananaOranPe
+appleBananaOranPea
+appleBananaOranPeac #=> NG
+appleBananaOranPeach
+
+## 機能を使って修正
+### Zl: 1文字をリストから選択
+apple_banan_orange
+ShowDocumention #10 2語になるときかつ修正前が先頭大文字
+
+### ZL: リストから選択してバッファ内すべて修正
+apple_banan_orange
+banan_apple_orange
+apple_orange_banan
+
+### 2語に分かれるとき
+spellfile
+
+### Zc: cコマンドのように修正
+apple_banan_orange
+
+### ZC: cコマンドのように修正
+apple_banan_orange
+banan_apple_orange
+apple_orange_banan
+
+## spellfile追加
+### Zg ZG
+### Zug ZUG
+### Zw ZW
+### Zuw ZUW
+
+## ハイライト優先度
+`/spel`と検索して正しくどちらもハイライトされる
+goodSpel
+goodSpell
+
+## 先頭大文字しかない単語
+Wednesday
+
+## 修正候補リストにシングルクオートが入ってこないように
+Wednesday <- ZL
+
+# ISSUE/PR
+# #6 https://github.com/kamykn/spelunker.vim/pull/6
+# 過去に[A-Z\s]が事故ってたため
+thisT #=> OK
+
+# #10 https://github.com/kamykn/spelunker.vim/issues/10
+format #=> ormatが反応しないように
+doormat #=> ormatが反応しないように
+ormat
+
+# SpellCapの検知はできない(先頭大文字にするべき単語 => 文の先頭だけ...？)
+# 理由としては単語ずつlowercaseにしてチェックにかけているから
+
+# set spelllang=en_us
+# を設定するとlocalになり、g:spelunker_highlight_only_badでハイライトしないようになる
+colour
+
+# jump function
+- jumpはg:spelunker_highlight_XXXXに依存する
+- jumpはwrapscanの設定に依存する
+    - wrapscanなら一番下の次は一番上になるように周回できる
+	- nowrapscanなら一番下の次は特に動作しない
+
+# toggle highlightが効くかどうか
+- jumpはhighlightがdisableでも実行可能
+- ZLやZCはhighlightがdisableでも実行可能

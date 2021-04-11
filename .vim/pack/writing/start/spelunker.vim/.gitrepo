@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/kamykn/spelunker.vim.git
+	branch = master
+	commit = a0bc530f62798bbe053905555a4aa9ed713485eb
+	parent = a37140abd8c3ac062f3f4e19d3692a5118a9e339
+	method = merge
+	cmdver = 0.4.3
