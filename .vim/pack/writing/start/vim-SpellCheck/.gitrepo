@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/inkarkat/vim-SpellCheck.git
+	branch = master
+	commit = fe5c9488d3082c246f73bfca137052930b13424f
+	parent = 90c874a9aaef8994dad5db653e7946c4ec7d352e
+	method = merge
+	cmdver = 0.4.3
