@@ -179,8 +179,8 @@ func! planet#menu#tools#update() abort
     am 720.10  🔠&-.Proofread.Contractions<Tab>:Wordy\ contractions             :Wordy contractions<CR>
     am 720.10  🔠&-.Proofread.Vague\ Time<Tab>:Wordy\ vague-time                :Wordy vague-time<CR>
     am 720.10  🔠&-.Proofread.Disable<Tab>:NoWordy                              :NoWordy<CR>
-    an 720.10  🔠&-.Translate <Nop>
-    an disable 🔠&-.Translate
+    an 720.10  🔠&-.Translation <Nop>
+    an disable 🔠&-.Translation
     am 720.10  🔠&-.Translate.Translate<Tab>:TranslateW                         :TranslateW
     am 720.10  🔠&-.Translate.Set\ Source\ Language                             :TODO
     am 720.10  🔠&-.Translate.Set\ Target\ Language                             :TODO
