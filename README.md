@@ -8,7 +8,7 @@ Release version v0.0.0 (not ready even for testing)
 
 # What is PlanetVim
 
-A picture is worth 1000 words, here are pictures with thounsand words:
+A picture is worth 1000 words, here are pictures with thousand words:
 
 This many menus because Vim _IS_ powerful, sorry!
 
