@@ -44,13 +44,35 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.&Log.File\ (QF)                               :0Gclog!<CR>
     an 700.10  🔀&,.&Log.&File\ (LL)                              :0Gllog!<CR>
     an 700.10  🔀&,.&Log.in\ New\ GWindow                         :TODO
-    an 700.10  🔀&,.&Tag.TODO                                     :TODO
-    an 700.10  🔀&,.&Merge.TODO                                   :TODO
-    an 700.10  🔀&,.Rebase.TODO                                   :TODO
-    an 700.10  🔀&,.Reflog.TODO                                   :TODO
-    an 700.10  🔀&,.Reset.TODO                                    :TODO
-    an 700.10  🔀&,.Stash\ (&j).TODO                              :TODO
-    an 700.10  🔀&,.Notes.TODO                                    :TODO
+    an 700.10  🔀&,.&Tag.List                                     :call planet#term#run_cmd_output('git tag -l')<CR>
+    an 700.10  🔀&,.&Tag.Add                                      :TODO
+    an 700.10  🔀&,.&Tag.Delete                                   :TODO
+    an 700.10  🔀&,.&Merge.Fast-Forward\ Only                     :TODO
+    an 700.10  🔀&,.&Merge.Non\ Fast-Forward\ Only                :TODO
+    an 700.10  🔀&,.Rebase.On\ Default\ Branch                    :TODO
+    an 700.10  🔀&,.Reflog.List                                   :call planet#term#run_cmd_output('git reflog')<CR>
+    an 700.10  🔀&,.Reset.Soft                                    :call planet#term#run_cmd_output('git reset --soft HEAD~1')<CR>
+    an 700.10  🔀&,.Reset.Reset                                   :call planet#term#run_cmd_output('git reset HEAD~1')<CR>
+    an 700.10  🔀&,.Reset.Hard                                    :call planet#term#run_cmd_output('git reset --hard HEAD~1')<CR>
+    an 700.10  🔀&,.Stash\ (&j).Stash                             :call planet#term#run_cmd_output('git stash')<CR>
+    an 700.10  🔀&,.Stash\ (&j).List                              :call planet#term#run_cmd_output('git stash list')<CR>
+    an 700.10  🔀&,.Stash\ (&j).Show                              :call planet#term#run_cmd_output('git stash show')<CR>
+    an 700.10  🔀&,.Stash\ (&j).Pop                               :call planet#term#run_cmd_output('git stash pop')<CR>
+    an 700.10  🔀&,.Stash\ (&j).Apply                             :call planet#term#run_cmd_output('git stash apply')<CR>
+    an 700.10  🔀&,.Stash\ (&j).Branch                            :call planet#term#run_cmd_output('git stash branch')<CR>
+    an 700.10  🔀&,.Stash\ (&j).Drop                              :call planet#term#run_cmd_output('git stash drop')<CR>
+    an 700.10  🔀&,.Stash\ (&j).Clear                             :call planet#term#run_cmd_output('git stash clear')<CR>
+    an 700.10  🔀&,.Notes.List                                    :TODO
+    an 700.10  🔀&,.Notes.Add                                     :TODO
+    an 700.10  🔀&,.Notes.Copy                                    :TODO
+    an 700.10  🔀&,.Notes.Append                                  :TODO
+    an 700.10  🔀&,.Notes.Edit                                    :TODO
+    an 700.10  🔀&,.Notes.Show                                    :TODO
+    an 700.10  🔀&,.Notes.Merge                                   :TODO
+    an 700.10  🔀&,.Notes.Remove                                  :TODO
+    an 700.10  🔀&,.Notes.Prune                                   :TODO
+    an 700.10  🔀&,.Notes.Get-Ref                                 :TODO
+    an 700.10  🔀&,.Notes.Enable\ Push                            :TODO
     an 700.10  🔀&,.&Branch.List\ Local                           :call planet#term#run_cmd_output('git branch')<CR>
     an 700.10  🔀&,.&Branch.List\ All                             :call planet#term#run_cmd_output('git branch --all')<CR>
     an 700.10  🔀&,.&Branch.List\ Remote\ (Local)                 :call planet#term#run_cmd_output('git --no-pager branch --remote')<CR>
@@ -63,7 +85,15 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.&Diff.&Cached\ (Index)                        :call planet#term#run_cmd_output('git --no-pager diff --staged')<CR>
     an 700.10  🔀&,.&Diff.Stat\ Cached                            :call planet#term#run_cmd_output('git --no-pager diff --staged --stat')<CR>
     an 700.10  🔀&,.Cherry-pick.TODO                              :TODO
-    an 700.10  🔀&,.&Worktree.TODO                                :TODO
+    an 700.10  🔀&,.&Worktree.New                                 :call planet#term#run_cmd_output('git worktree add')<CR>
+    an 700.10  🔀&,.&Worktree.New\ Detached                       :call planet#term#run_cmd_output('git worktree add --detach')<CR>
+    an 700.10  🔀&,.&Worktree.List                                :call planet#term#run_cmd_output('git worktree list')<CR>
+    an 700.10  🔀&,.&Worktree.Lock                                :call planet#term#run_cmd_output('git worktree lock')<CR>
+    an 700.10  🔀&,.&Worktree.Unlock                              :call planet#term#run_cmd_output('git worktree unlock')<CR>
+    an 700.10  🔀&,.&Worktree.Move                                :call planet#term#run_cmd_output('git worktree move')<CR>
+    an 700.10  🔀&,.&Worktree.Remove                              :call planet#term#run_cmd_output('git worktree remove')<CR>
+    an 700.10  🔀&,.&Worktree.Prune                               :call planet#term#run_cmd_output('git worktree prune')<CR>
+    an 700.10  🔀&,.&Worktree.Repair                              :call planet#term#run_cmd_output('git worktree repair')<CR>
     an 700.10  🔀&,.Subrepo\ (&x).Pull                            :call planet#git#SubrepoPull()<CR>
     an 700.10  🔀&,.Subrepo\ (&x).Pull\ All                       :call planet#term#run_cmd_output('git subrepo pull --all')<CR>
     an 700.10  🔀&,.Subrepo\ (&x).Push                            :call planet#git#SubrepoPush()<CR>
@@ -82,11 +112,14 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.Subrepo\ (&x).Config                          :call planet#git#SubrepoConfig()<CR>
     an 700.10  🔀&,.Subrepo\ (&x).Clone                           :call planet#git#SubrepoClone()<CR>
     an 700.10  🔀&,.Subrepo\ (&x).Init                            :call planet#git#SubrepoInit()<CR>
+    an 700.10  🔀&,.Submodule.TODO                                :TODO
     an 700.10  🔀&,.Remote.List                                   :call planet#term#run_cmd_output('git remote -a')<CR>
     an 700.10  🔀&,.&Gui.Git&k                                    :silent !nohup gitk >/dev/null 2>&1 &<CR>
+    an 700.10  🔀&,.&Gui.Gui                                      :silent !nohup git citool >/dev/null 2>&1 &<CR>
     an 700.10  🔀&,.&Gui.Gitk\ &All                               :silent !nohup gitk --all >/dev/null 2>&1 &<CR>
     an 700.10  🔀&,.&Gui.Gui&tar                                  :silent !nohup guitar >/dev/null 2>&1 &<CR>
     an 700.10  🔀&,.&Gui.&Gitg                                    :silent !nohup gitg >/dev/null 2>&1 &<CR>
+    an 700.10  🔀&,.&Ui.Git&ui                                    :tab call planet#term#run_cmd_output('gitui')<CR>
     an 700.10  🔀&,.--5-- <Nop>
     an 700.10  🔀&,.Cl&one                                        :TODO
     an 700.10  🔀&,.&Init                                         :call planet#term#run_cmd_output('git init')<CR>
@@ -94,10 +127,166 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.LFS                                           :TODO
     an 700.10  🔀&,.Blame                                         :TODO
     an 700.10  🔀&,.Bisect                                        :TODO
+    an 700.10  🔀&,.Patch.Am                                      :TODO
+    an 700.10  🔀&,.Patch.Format-Patch                            :TODO
+    an 700.10  🔀&,.Advanced.Archive                              :TODO
+    an 700.10  🔀&,.Advanced.Bundle                               :TODO
+    an 700.10  🔀&,.Advanced.Clean                                :TODO
+    an 700.10  🔀&,.Maintenance.Gc                                   :TODO
+    an 700.10  🔀&,.Maintenance.Maintenance                          :TODO
+    an 700.10  🔀&,.Advanced.Grep                                 :TODO
+    an 700.10  🔀&,.Advanced.Switch                               :TODO
+    an 700.10  🔀&,.Advanced.Hooks                                :TODO
+    an 700.10  🔀&,.Advanced.Range\ Diff                          :TODO
+    an 700.10  🔀&,.Advanced.Revert                               :TODO
+    an 700.10  🔀&,.Advanced.Shortlog                             :TODO
+    an 700.10  🔀&,.Advanced.Show                                 :TODO
+    an 700.10  🔀&,.Advanced.Subtree                              :TODO
+    an 700.10  🔀&,.Advanced.Config                               :TODO
+    an 700.10  🔀&,.Advanced.Describe                             :TODO
+    an 700.10  🔀&,.Advanced.Filter-Branch                        :TODO
+    an 700.10  🔀&,.Maintenance.Pack-Refs                         :TODO
+    an 700.10  🔀&,.Maintenance.Prune                             :TODO
+    an 700.10  🔀&,.Maintenance.Repack                            :TODO
+    an 700.10  🔀&,.Advanced.Rerere                               :TODO
+    an 700.10  🔀&,.Advanced.Bugreport                            :TODO
+    an 700.10  🔀&,.Advanced.Replace                              :TODO
+    an 700.10  🔀&,.Advanced.Annotate                             :TODO
+    an 700.10  🔀&,.Advanced.Cherry                               :TODO
+    an 700.10  🔀&,.Maintenance.Count-Objects                     :TODO
+    an 700.10  🔀&,.Maintenance.Fsck                              :TODO
+    an 700.10  🔀&,.Advanced.Help                                 :TODO
+    an 700.10  🔀&,.Advanced.Instaweb                             :TODO
+    an 700.10  🔀&,.Advanced.Merge-Tree                           :TODO
+    an 700.10  🔀&,.Advanced.Rev\ Parse                           :TODO
+    an 700.10  🔀&,.Advanced.Show-Branch                          :TODO
+    an 700.10  🔀&,.Advanced.Verify-Commit                        :TODO
+    an 700.10  🔀&,.Advanced.Verify-Tag                           :TODO
+    an 700.10  🔀&,.Advanced.Whatchanged                          :TODO
+    an 700.10  🔀&,.Patch.Imap-Send                               :TODO
+    an 700.10  🔀&,.Patch.Quiltimport                             :TODO
+    an 700.10  🔀&,.Advanced.Request-Pull                         :TODO
+    an 700.10  🔀&,.Patch.Send-Email                              :TODO
+    an 700.10  🔀&,.Patch.Apply                                   :TODO
+    an 700.10  🔀&,.Advanced.Checkout-Index                       :TODO
+    an 700.10  🔀&,.Advanced.Commit-Graph                         :TODO
+    an 700.10  🔀&,.Advanced.Commit-Tree                          :TODO
+    an 700.10  🔀&,.Advanced.Hash-Object                          :TODO
+    an 700.10  🔀&,.Maintenance.Index-Pack                           :TODO
+    an 700.10  🔀&,.Advanced.Merge-File                           :TODO
+    an 700.10  🔀&,.Advanced.Mktag                                :TODO
+    an 700.10  🔀&,.Advanced.Mktree                               :TODO
+    an 700.10  🔀&,.Maintenance.Multi-Pack-Index                     :TODO
+    an 700.10  🔀&,.Maintenance.Pack-Objects                         :TODO
+    an 700.10  🔀&,.Maintenance.Prune-Packed                         :TODO
+    an 700.10  🔀&,.Advanced.Read-Tree                            :TODO
+    an 700.10  🔀&,.Advanced.Symbolic-Ref                         :TODO
+    an 700.10  🔀&,.Maintenance.Unpack-Objects                       :TODO
+    an 700.10  🔀&,.Advanced.Update-Index                         :TODO
+    an 700.10  🔀&,.Advanced.Update-Ref                           :TODO
+    an 700.10  🔀&,.Advanced.Write-Tree                           :TODO
+    an 700.10  🔀&,.Advanced.Cat-File                             :TODO
+    an 700.10  🔀&,.Advanced.Diff-Files                           :TODO
+    an 700.10  🔀&,.Advanced.Diff-Index                           :TODO
+    an 700.10  🔀&,.Advanced.Diff-Tree                            :TODO
+    an 700.10  🔀&,.Advanced.For-Each-Ref                         :TODO
+    an 700.10  🔀&,.Advanced.For-Each-Repo                        :TODO
+    an 700.10  🔀&,.Advanced.Get-Tar-Commit-Id                    :TODO
+    an 700.10  🔀&,.Advanced.Ls-Files                             :TODO
+    an 700.10  🔀&,.Advanced.Ls-Remote                            :TODO
+    an 700.10  🔀&,.Advanced.Ls-Tree                              :TODO
+    an 700.10  🔀&,.Advanced.Merge-Base                           :TODO
+    an 700.10  🔀&,.Advanced.Name-Rev                             :TODO
+    an 700.10  🔀&,.Maintenance.Pack-Redundant                    :TODO
+    an 700.10  🔀&,.Advanced.Rev-List                             :TODO
+    an 700.10  🔀&,.Advanced.Rev-Parse                            :TODO
+    an 700.10  🔀&,.Advanced.Show-Index                           :TODO
+    an 700.10  🔀&,.Advanced.Show-Ref                             :TODO
+    an 700.10  🔀&,.Maintenance.Unpack-File                       :TODO
+    an 700.10  🔀&,.Advanced.Var                                  :TODO
+    an 700.10  🔀&,.Maintenance.Verify-Pack                       :TODO
+    an 700.10  🔀&,.Contrib.Contacts                              :TODO
+    an 700.10  🔀&,.Contrib.Workdir                               :TODO
+    an 700.10  🔀&,.Contrib.Resurrect                             :TODO
+    an 700.10  🔀&,.Contrib.Rerere\ Train                         :TODO
+    an 700.10  🔀&,.Other\ VCS.Fast-Export                        :TODO
+    an 700.10  🔀&,.Other\ VCS.Fast-Import                        :TODO
+    an 700.10  🔀&,.Other\ VCS.Arch                               :TODO
+    an 700.10  🔀&,.Other\ VCS.CVS                                :TODO
+    an 700.10  🔀&,.Other\ VCS.SVN                                :TODO
+    an 700.10  🔀&,.Other\ VCS.P4                                 :TODO
+    an 700.10  🔀&,.Other\ VCS.Mercurial                          :TODO
     an 700.10  🔀&,.Experimental.Sparse-Checkout.Init             :TODO
-    " tpope/rhubarb.vim plugin for GitHub
-    an 700.10  🔀&,.GitHub <Nop>
-    an disable 🔀&,.GitHub
+    an 700.10  🔀&,.Extras.Alias                                  :TODO
+    an 700.10  🔀&,.Extras.Archive-File                           :TODO
+    an 700.10  🔀&,.Extras.Authors                                :TODO
+    an 700.10  🔀&,.Extras.Browse                                 :TODO
+    an 700.10  🔀&,.Extras.Brv                                    :TODO
+    an 700.10  🔀&,.Extras.Bulk                                   :TODO
+    an 700.10  🔀&,.Extras.Changelog                              :TODO
+    an 700.10  🔀&,.Extras.Clear                                  :TODO
+    an 700.10  🔀&,.Extras.Clear-Soft                             :TODO
+    an 700.10  🔀&,.Extras.Coauthor                               :TODO
+    an 700.10  🔀&,.Extras.Commits-Since                          :TODO
+    an 700.10  🔀&,.Extras.Contrib                                :TODO
+    an 700.10  🔀&,.Extras.Count                                  :TODO
+    an 700.10  🔀&,.Extras.Cp                                     :TODO
+    an 700.10  🔀&,.Extras.Create-Branch                          :TODO
+    an 700.10  🔀&,.Extras.Delete-Branch                          :TODO
+    an 700.10  🔀&,.Extras.Delete-Merged-Branches                 :TODO
+    an 700.10  🔀&,.Extras.Delete-Submodule                       :TODO
+    an 700.10  🔀&,.Extras.Delete-Tag                             :TODO
+    an 700.10  🔀&,.Extras.Delta                                  :TODO
+    an 700.10  🔀&,.Extras.Effort                                 :TODO
+    an 700.10  🔀&,.Extras.Extras                                 :TODO
+    an 700.10  🔀&,.Extras.Feature                                :TODO
+    an 700.10  🔀&,.Extras.Force-Clone                            :TODO
+    an 700.10  🔀&,.Extras.Fork                                   :TODO
+    an 700.10  🔀&,.Extras.Fresh-Branch                           :TODO
+    an 700.10  🔀&,.Extras.Gh-Pages                               :TODO
+    an 700.10  🔀&,.Extras.Graft                                  :TODO
+    an 700.10  🔀&,.Extras.Guilt                                  :TODO
+    an 700.10  🔀&,.Extras.Ignore                                 :TODO
+    an 700.10  🔀&,.Extras.Ignore-Io                              :TODO
+    an 700.10  🔀&,.Extras.Info                                   :TODO
+    an 700.10  🔀&,.Extras.Local-Commits                          :TODO
+    an 700.10  🔀&,.Extras.Lock                                   :TODO
+    an 700.10  🔀&,.Extras.Locked                                 :TODO
+    an 700.10  🔀&,.Extras.Merge-Into                             :TODO
+    an 700.10  🔀&,.Extras.Merge-Repo                             :TODO
+    an 700.10  🔀&,.Extras.Missing                                :TODO
+    an 700.10  🔀&,.Extras.Mr                                     :TODO
+    an 700.10  🔀&,.Extras.Obliterate                             :TODO
+    an 700.10  🔀&,.Extras.Paste                                  :TODO
+    an 700.10  🔀&,.Extras.Pr                                     :TODO
+    an 700.10  🔀&,.Extras.Psykorebase                            :TODO
+    an 700.10  🔀&,.Extras.Pull-Request                           :TODO
+    an 700.10  🔀&,.Extras.Reauthor                               :TODO
+    an 700.10  🔀&,.Extras.Rebase-Patch                           :TODO
+    an 700.10  🔀&,.Extras.Release                                :TODO
+    an 700.10  🔀&,.Extras.Rename-Branch                          :TODO
+    an 700.10  🔀&,.Extras.Rename-Tag                             :TODO
+    an 700.10  🔀&,.Extras.Repl                                   :TODO
+    an 700.10  🔀&,.Extras.Reset-File                             :TODO
+    an 700.10  🔀&,.Extras.Root                                   :TODO
+    an 700.10  🔀&,.Extras.Rscp                                   :TODO
+    an 700.10  🔀&,.Extras.Scp                                    :TODO
+    an 700.10  🔀&,.Extras.Sed                                    :TODO
+    an 700.10  🔀&,.Extras.Setup                                  :TODO
+    an 700.10  🔀&,.Extras.Show-Merged-Branches                   :TODO
+    an 700.10  🔀&,.Extras.Show-Tree                              :TODO
+    an 700.10  🔀&,.Extras.Show-Unmerged-Branches                 :TODO
+    an 700.10  🔀&,.Extras.Squash                                 :TODO
+    an 700.10  🔀&,.Extras.Stamp                                  :TODO
+    an 700.10  🔀&,.Extras.Standup                                :TODO
+    an 700.10  🔀&,.Extras.Summary                                :TODO
+    an 700.10  🔀&,.Extras.Sync                                   :TODO
+    an 700.10  🔀&,.Extras.Touch                                  :TODO
+    an 700.10  🔀&,.Extras.Undo                                   :TODO
+    an 700.10  🔀&,.Extras.Unlock                                 :TODO
+    an 700.10  🔀&,.Extras.Utimes                                 :TODO
+    an 700.10  🔀&,.Flow.TODO                                     :TODO
+    an 700.10  🔀&,.Extra\ Commands.TODO                          :TODO
 
     " Diff/Patch
     an 710.10  ⛏️&;.Diff/Patch <Nop>
