@@ -89,7 +89,7 @@ func! planet#menu#settings#update() abort
     an 980.10  ⌨️&\|.Source\ Current\ Vim\ Script           :so %<CR>
     an 980.10  ⌨️&\|.Ex\ Vim\ Mode\ (Dangerous!)<Tab>gX     gQ
     an 980.10  ⌨️&\|.Ex\ Mode\ (Dangerous!)<Tab>Q           Q
-    an 980.10  ⌨️&\\.Open\ $VIMRUNTIME\ Folder              :tabnew<CR>:Fern $VIMRUNTIME<CR>
+    an 980.10  ⌨️&\|.Open\ $VIMRUNTIME\ Folder              :tabnew<CR>:Fern $VIMRUNTIME<CR>
     an 980.10  ⌨️&\|.Debug <Nop>
     an disable ⌨️&\|.Debug
     an 980.10  ⌨️&\|.Profile\ Syntax.Start\ measuring\ syntax\ times<Tab>:syntime\ on :syntime on<CR>

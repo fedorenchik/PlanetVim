@@ -405,6 +405,7 @@ nn <C-y> :cprevious<CR>
 " Alt Key: {{{
 nn <A-Left> <C-o>
 nn <A-Right> <C-i>
+nn <A-:> 1gt
 nn <A-<> gT
 nn <A->> gt
 nn <A-1> 1gt
@@ -494,6 +495,7 @@ if has('nvim')
   tno <Esc> <C-\><C-n>
   tno <C-v><Esc> <Esc>
 endif
+tno <A-:> <C-w>1gt
 tno <A-<> <C-w>gT
 tno <A->> <C-w>gt
 tno <A-1> <C-w>:1tabn<CR>
@@ -924,6 +926,9 @@ augroup my-glyph-palette
   autocmd FileType fern call glyph_palette#apply()
   autocmd FileType startify call glyph_palette#apply()
 augroup END
+" }}}
+" Plugin: spelunker.vim {{{
+let g:enable_spelunker_vim = 0
 " }}}
 " Plugin: undotree {{{
 let g:undotree_WindowLayout=4

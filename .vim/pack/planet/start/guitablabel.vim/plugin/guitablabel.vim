@@ -1,8 +1,12 @@
 vim9script
 
 def! g:GuiTabLabel(): string
-  var l = '[' .. v:lnum .. ']'
+  var l = v:lnum .. ' |'
   var bufnrlist = tabpagebuflist(v:lnum)
+
+  if haslocaldir(-1) == 2
+    l ..= '^'
+  endif
 
   var m = ''
   var set_term = false
@@ -13,7 +17,7 @@ def! g:GuiTabLabel(): string
       set_term = true
     endif
     if getbufvar(bufnr, "&buftype") !=# 'terminal' && getbufvar(bufnr, "&modified") && !set_mod
-      m ..= '+'
+      m ..= '*'
       set_mod = true
     endif
     if set_term && set_mod

@@ -44,7 +44,6 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.&Log.File\ (QF)                               :0Gclog!<CR>
     an 700.10  🔀&,.&Log.&File\ (LL)                              :0Gllog!<CR>
     an 700.10  🔀&,.&Log.in\ New\ GWindow                         :TODO
-    an 700.10  🔀&,.&Log.Git&k                                    :silent !nohup gitk >/dev/null 2>&1 &<CR>
     an 700.10  🔀&,.&Tag.TODO                                     :TODO
     an 700.10  🔀&,.&Merge.TODO                                   :TODO
     an 700.10  🔀&,.Rebase.TODO                                   :TODO
@@ -54,8 +53,8 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.Notes.TODO                                    :TODO
     an 700.10  🔀&,.&Branch.List\ Local                           :call planet#term#run_cmd_output('git branch')<CR>
     an 700.10  🔀&,.&Branch.List\ All                             :call planet#term#run_cmd_output('git branch --all')<CR>
-    an 700.10  🔀&,.&Branch.List\ Local-Remote                    :call planet#term#run_cmd_output('git branch --remote')<CR>
-    an 700.10  🔀&,.&Branch.List\ Remote-Remote                   :call planet#term#run_cmd_output('git ls-remote')<CR>
+    an 700.10  🔀&,.&Branch.List\ Remote\ (Local)                 :call planet#term#run_cmd_output('git --no-pager branch --remote')<CR>
+    an 700.10  🔀&,.&Branch.List\ Remote\ (Remote)                :call planet#term#run_cmd_output('git --no-pager ls-remote')<CR>
     an 700.10  🔀&,.&Branch.Checkout                              :TODO
     an 700.10  🔀&,.&Branch.Rename                                :call planet#git#BranchRename()<CR>
     an 700.10  🔀&,.&Branch.Delete                                :call planet#git#BranchDelete()<CR>
@@ -84,6 +83,10 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.Subrepo\ (&x).Clone                           :call planet#git#SubrepoClone()<CR>
     an 700.10  🔀&,.Subrepo\ (&x).Init                            :call planet#git#SubrepoInit()<CR>
     an 700.10  🔀&,.Remote.List                                   :call planet#term#run_cmd_output('git remote -a')<CR>
+    an 700.10  🔀&,.&Gui.Git&k                                    :silent !nohup gitk >/dev/null 2>&1 &<CR>
+    an 700.10  🔀&,.&Gui.Gitk\ &All                               :silent !nohup gitk --all >/dev/null 2>&1 &<CR>
+    an 700.10  🔀&,.&Gui.Gui&tar                                  :silent !nohup guitar >/dev/null 2>&1 &<CR>
+    an 700.10  🔀&,.&Gui.&Gitg                                    :silent !nohup gitg >/dev/null 2>&1 &<CR>
     an 700.10  🔀&,.--5-- <Nop>
     an 700.10  🔀&,.Cl&one                                        :TODO
     an 700.10  🔀&,.&Init                                         :call planet#term#run_cmd_output('git init')<CR>
@@ -184,6 +187,7 @@ func! planet#menu#tools#update() abort
     am 720.10  🔠&-.Translate.Translate<Tab>:TranslateW                         :TranslateW
     am 720.10  🔠&-.Translate.Set\ Source\ Language                             :TODO
     am 720.10  🔠&-.Translate.Set\ Target\ Language                             :TODO
+    am 720.10  🔠&-.Abbreviations.Enable\ AutoCorrect\ Common\ Typos            :TODO
 
     " Tools
     " TODO: add all '*.prg' options, eg: equalprg, keywordprg, etc.
