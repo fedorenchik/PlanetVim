@@ -43,7 +43,8 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.&Log.Log\ (LL)                                :Gllog!<CR>
     an 700.10  🔀&,.&Log.File\ (QF)                               :0Gclog!<CR>
     an 700.10  🔀&,.&Log.&File\ (LL)                              :0Gllog!<CR>
-    an 700.10  🔀&,.&Log.in\ New\ GWindow                         :TODO
+    an 700.10  🔀&,.&Log.Log\ (GUI)                               :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +Flog +tabo<CR>
+    an 700.10  🔀&,.&Log.Log\ All\ (GUI)                          :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +'Flog -all' +tabo<CR>
     an 700.10  🔀&,.&Tag.List                                     :call planet#term#run_cmd_output('git tag -l')<CR>
     an 700.10  🔀&,.&Tag.Add                                      :TODO
     an 700.10  🔀&,.&Tag.Delete                                   :TODO

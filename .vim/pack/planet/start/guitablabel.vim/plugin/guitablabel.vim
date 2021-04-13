@@ -6,7 +6,7 @@ def! g:GuiTabLabel(): string
 
   if haslocaldir(-1) == 2
     l ..= '^'
-  endif
+  end
 
   var m = ''
   var set_term = false
@@ -15,21 +15,25 @@ def! g:GuiTabLabel(): string
     if getbufvar(bufnr, "&buftype") ==# 'terminal'
       m = '!' .. m
       set_term = true
-    endif
+    end
     if getbufvar(bufnr, "&buftype") !=# 'terminal' && getbufvar(bufnr, "&modified") && !set_mod
-      m ..= '*'
+      m ..= '+'
       set_mod = true
-    endif
+    end
     if set_term && set_mod
       break
-    endif
+    end
   endfor
   l ..= m
   l ..= ' '
 
-  var f = fnamemodify(bufname(bufnrlist[tabpagewinnr(v:lnum) - 1]), ':t')
+  var bufnr: number = bufnrlist[tabpagewinnr(v:lnum) - 1]
+  var f = fnamemodify(bufname(bufnr), ':t')
   if empty(f)
     f = '[No Name]'
-  endif
+  end
+  if getbufvar(bufnr, "&buftype") !=# 'terminal' && getbufvar(bufnr, "&modified")
+    f ..= '*'
+  end
   return l .. f
 enddef

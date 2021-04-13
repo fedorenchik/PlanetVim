@@ -369,6 +369,8 @@ nn sw <Cmd>exe "lvimgrep /" .. expand('<cword>') .. "/gj %"<CR>
 nn S <Nop>
 nn <silent> t :call PlanetVim_t()<CR>
 nn <silent> T :call PlanetVim_T()<CR>
+nn <silent> w :call PlanetVim_w()<CR>
+nn <silent> W :call PlanetVim_W()<CR>
 nn Y y$
 nn <silent> zr zr:<c-u>setlocal foldlevel?<CR>
 nn <silent> zm zm:<c-u>setlocal foldlevel?<CR>
@@ -529,63 +531,67 @@ call SetupCommandAlias("f", "find")
 " Autocommands: {{{
 if has("autocmd")
 aug vimrc
-autocmd!
-autocmd BufReadPre *.asm let g:asmsyntax = "fasm"
-autocmd BufReadPre *.[sS] let g:asmsyntax = "asm"
-autocmd BufReadPost */linux/*.h setfiletype c
-autocmd BufReadPost */linux/*.h setlocal colorcolumn=100
-autocmd BufReadPost *.log normal G
-autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") && &filetype !~# 'commit' | exe "normal! g`\"" | end
-autocmd CmdWinEnter : noremap <buffer> <S-CR> <CR>q:
-autocmd CmdWinEnter : noremap! <buffer> <S-CR> <CR>q:
-autocmd CmdWinEnter : noremap <buffer> <C-c> <C-w>c
-autocmd CmdWinEnter : noremap! <buffer> <C-c> <C-\><C-n><C-w>c
-autocmd CmdWinEnter / noremap <buffer> <S-CR> <CR>q/
-autocmd CmdWinEnter ? noremap <buffer> <S-CR> <CR>q?
+au!
+au BufReadPre *.asm let g:asmsyntax = "fasm"
+au BufReadPre *.[sS] let g:asmsyntax = "asm"
+au BufReadPost */linux/*.h setfiletype c
+au BufReadPost */linux/*.h setlocal colorcolumn=100
+au BufReadPost *.log normal G
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") && &filetype !~# 'commit' | exe "normal! g`\"" | end
+au CmdWinEnter : noremap <buffer> <S-CR> <CR>q:
+au CmdWinEnter : noremap! <buffer> <S-CR> <CR>q:
+au CmdWinEnter : noremap <buffer> <C-c> <C-w>c
+au CmdWinEnter : noremap! <buffer> <C-c> <C-\><C-n><C-w>c
+au CmdWinEnter / noremap <buffer> <S-CR> <CR>q/
+au CmdWinEnter ? noremap <buffer> <S-CR> <CR>q?
 au CursorHold * if win_gettype() == "" | checktime | end
 au CursorHoldI * if win_gettype() == "" | checktime | end
-autocmd FileType c,cpp setlocal foldmethod=syntax
-autocmd FileType c,cpp inoreabbrev #i #include 
-autocmd FileType c,cpp inoreabbrev ,, <<
-autocmd FileType c,cpp inoreabbrev ;b std::begin
-autocmd FileType c,cpp inoreabbrev ;c std::cout
-autocmd FileType c,cpp inoreabbrev ;e std::end
-autocmd FileType c,cpp inoreabbrev ;m std::map
-autocmd FileType c,cpp inoreabbrev ;s std::string
-autocmd FileType c,cpp inoreabbrev ;v std::vector
-autocmd FileType c,cpp inoremap ;; ::
-autocmd FileType c setlocal colorcolumn=80
-autocmd FileType cpp setlocal path+=/usr/include/c++/7
-autocmd FileType cpp setlocal define=^\\(#\\s*define\\|[a-z]*\\s*const\\s*[a-z]*\\)
-autocmd FileType cpp setlocal colorcolumn=120
-autocmd FileType dockerfile,python,qmake setlocal expandtab
-autocmd FileType dockerfile,python,qmake setlocal tabstop=4
-autocmd FileType dockerfile,python,qmake setlocal shiftwidth=4
-autocmd FileType help,markdown,text setlocal colorcolumn=+0
-autocmd FileType markdown setlocal foldmethod=expr
-autocmd FileType python setlocal makeprg=pylint3\ --reports=n\ --msg-template=\"{path}:{line}:\ {msg_id}\ {symbol},\ {obj}\ {msg}\"\ %:p
-autocmd FileType python setlocal errorformat=%f:%l:\ %m
-autocmd FileType sh setlocal formatoptions+=croql
-autocmd FileType sh setlocal include=^\\s*\\%(\\.\\\|source\\)\\s
-autocmd FileType sh setlocal define=\\<\\%(\\i\\+\\s*()\\)\\@=
-autocmd FileType text setlocal textwidth=72 linebreak breakindent
-autocmd FileType text setlocal complete+=k,s
-autocmd FileType text setlocal spell
-autocmd FileType text,markdown setlocal formatoptions+=t
-autocmd FileType vim setlocal foldmethod=marker foldlevelstart=0 foldlevel=0
-if exists("+omnifunc")
-  autocmd Filetype * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
-  autocmd Filetype * if &completefunc == "" | setlocal completefunc=syntaxcomplete#Complete | endif
-endif
-autocmd GUIEnter * set t_vb=
-autocmd GUIEnter * set guifont=DejaVu\ Sans\ Mono\ 9,Monospace\ 9
-autocmd GUIEnter * silent call system('wmctrl -i -b add,maximized_vert,maximized_horz -r' . v:windowid)
-autocmd InsertLeave * if empty(&buftype) | pclose | end
-autocmd SessionLoadPost * call planet#planet#SetPerSessionOptions()
-autocmd StdinReadPost * set nomodified
+au FileType cmake setlocal keywordprg=:CMakeHelpPopup
+au FileType cmake nmap <buffer> <leader>k <plug>(cmake-help-online)
+au FileType cmake nmap <buffer> <leader>K <plug>(cmake-help)
+au FileType cmake setlocal ballooneval
+au FileType cmake setlocal balloonevalterm
+au FileType cmake setlocal balloonexpr=cmakehelp#balloonexpr()
+au FileType c,cpp setlocal foldmethod=syntax
+au FileType c,cpp inoreabbrev #i #include 
+au FileType c,cpp inoreabbrev ,, <<
+au FileType c,cpp inoreabbrev ;b std::begin
+au FileType c,cpp inoreabbrev ;c std::cout
+au FileType c,cpp inoreabbrev ;e std::end
+au FileType c,cpp inoreabbrev ;m std::map
+au FileType c,cpp inoreabbrev ;s std::string
+au FileType c,cpp inoreabbrev ;v std::vector
+au FileType c,cpp inoremap ;; ::
+au FileType c setlocal colorcolumn=80
+au FileType cpp setlocal path+=/usr/include/c++/7
+au FileType cpp setlocal define=^\\(#\\s*define\\|[a-z]*\\s*const\\s*[a-z]*\\)
+au FileType cpp setlocal colorcolumn=120
+au FileType dockerfile,python,qmake setlocal expandtab
+au FileType dockerfile,python,qmake setlocal tabstop=4
+au FileType dockerfile,python,qmake setlocal shiftwidth=4
+au FileType help,markdown,text setlocal colorcolumn=+0
+au FileType markdown setlocal foldmethod=expr
+au FileType python setlocal makeprg=pylint3\ --reports=n\ --msg-template=\"{path}:{line}:\ {msg_id}\ {symbol},\ {obj}\ {msg}\"\ %:p
+au FileType python setlocal errorformat=%f:%l:\ %m
+au FileType sh setlocal formatoptions+=croql
+au FileType sh setlocal include=^\\s*\\%(\\.\\\|source\\)\\s
+au FileType sh setlocal define=\\<\\%(\\i\\+\\s*()\\)\\@=
+au FileType text setlocal textwidth=72 linebreak breakindent
+au FileType text setlocal complete+=k,s
+au FileType text setlocal spell
+au FileType text,markdown setlocal formatoptions+=t
+au FileType vim setlocal foldmethod=marker foldlevelstart=0 foldlevel=0
+au FileType * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | end
+au FileType * if &completefunc == "" | setlocal completefunc=syntaxcomplete#Complete | end
+au GUIEnter * set t_vb=
+au GUIEnter * set guifont=DejaVu\ Sans\ Mono\ 9,Monospace\ 9
+au GUIEnter * silent call system('wmctrl -i -b add,maximized_vert,maximized_horz -r' . v:windowid)
+au InsertLeave * if empty(&buftype) | pclose | end
+au SessionLoadPost * call planet#planet#SetPerSessionOptions()
+au StdinReadPost * set nomodified
 au TerminalWinOpen * setlocal foldcolumn=0 signcolumn=no nonumber norelativenumber
-au BufWinEnter * if &buftype == 'terminal' | setlocal foldcolumn=0 signcolumn=no nonumber norelativenumber | endif
-autocmd VimEnter * if expand("%") != "" && getcwd() == expand("~") | cd %:h | endif
+au BufWinEnter * if &buftype == 'terminal' | setlocal foldcolumn=0 signcolumn=no nonumber norelativenumber | end
+au VimEnter * if expand("%") != "" && getcwd() == expand("~") | cd %:h | end
 au VimLeavePre * call planet#planet#CheckExitSaveSession()
 aug END
 endif
@@ -1018,7 +1024,8 @@ func! StatusLine(current, width)
   if a:current
     let l:s .= ' %{NearestMethodOrFunction()}'
     let l:s .= crystalline#left_sep('', 'Fill') . ' %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
-    let l:s .= "|%{g:PV_p}|"
+    let l:s .= "|%{g:PV_p}"
+    let l:s .= "|%{g:PV_pp}|"
     let l:s .= "/%{@/}/"
     let l:s .= "%{StatusLine_SearchCount()}"
     let l:s .= "%{exists('*CapsLockStatusline')?CapsLockStatusline():''}"

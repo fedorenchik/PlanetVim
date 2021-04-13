@@ -32,6 +32,8 @@ func! planet#planet#SetEasyMode() abort
   silent! nun F
   silent! nun t
   silent! nun T
+  silent! nun w
+  silent! nun W
 endfunc
 
 func! planet#planet#SetStandardMode() abort
@@ -48,6 +50,8 @@ func! planet#planet#SetStandardMode() abort
   silent! nun F
   silent! nun t
   silent! nun T
+  silent! nun w
+  silent! nun W
 endfunc
 
 func! planet#planet#SetSuperChargedMode() abort
@@ -64,6 +68,8 @@ func! planet#planet#SetSuperChargedMode() abort
   nn <silent> l :call PlanetVim_l()<CR>
   nn <silent> t :call PlanetVim_t()<CR>
   nn <silent> T :call PlanetVim_T()<CR>
+  nn <silent> w :call PlanetVim_w()<CR>
+  nn <silent> W :call PlanetVim_W()<CR>
 endfunc
 
 func! planet#planet#SetPerSessionOptions()

@@ -58,6 +58,8 @@ func! planet#menu#basic#update() abort
     an 110.300 📁&f.--7-- <Nop>
     an 110.310 📁&f.Mkdir                                      :Mkdir! <C-z>
     an 110.320 📁&f.Cd<Tab>:cd                                 :cd <C-z>
+    an 110.330 📁&f.Other\ Cd.Temp\ Cd\ to\ Project\ Root\ in\ Window :TODO"lcd to project root, but back to global cwd on au WinLeave <buffer> <once>
+    an 110.330 📁&f.Other\ Cd.Temp\ Cd\ in\ Window             :TODO"lcd, but back to global cwd on au WinLeave <buffer> <once>
     an 110.330 📁&f.Other\ Cd.Cd\ in\ Tab<Tab>:tcd             :tcd <C-z>
     an 110.340 📁&f.Other\ Cd.Cd\ in\ Window<Tab>:lcd          :lcd <C-z>
     an 110.320 📁&f.Other\ Cd.Cd\ to\ Previous\ Directory<Tab>:cd\ - :cd -<CR>

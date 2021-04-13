@@ -40,6 +40,14 @@ func! planet#term#run_cmd_output(cmd) abort
   wincmd p
 endfunc
 
+" Runs (interactive) command in new Tab
+func! planet#term#RunCmdTab(cmd) abort
+endfunc
+
+" Runs command in new GUI Window
+func! planet#term#RunCmdGui(cmd) abort
+endfunc
+
 " Finds terminal window in current tab.
 " @returns window number or -1
 func! planet#term#FindOutputWindow() abort

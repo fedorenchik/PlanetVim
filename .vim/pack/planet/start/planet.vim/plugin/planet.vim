@@ -99,7 +99,8 @@ an 600.50  ]Writing.Center\ Align<Tab>:center     :center<CR>
 an 600.50  ]Writing.Right\ Align<Tab>:right       :right<CR>
 
 "TODO: add mod <Alt> - means search regex, e.g. '\.' when press '.'
-"TODO:    (can use getcharmod())
+"TODO:    (can use getcharmod()), and change pattern
+"TODO:    '\\V' (very non magic) to '\\v' (very magic)
 let g:PV_p = '\.'
 func! PlanetVim_f()
   let l:c = getchar()
@@ -121,6 +122,15 @@ func! PlanetVim_F()
   silent! exe "keepp keepj normal ?\\V" .. g:PV_p .. "\<CR>"
 endfunc
 
+func! PlanetVim_w()
+  silent! exe "keepp keepj normal /\\V" .. g:PV_p .. "\<CR>"
+endfunc
+
+func! PlanetVim_W()
+  silent! exe "keepp keepj normal ?\\V" .. g:PV_p .. "\<CR>"
+endfunc
+
+let g:PV_pp = '\.\.'
 func! PlanetVim_t()
   let l:c = getchar()
   if l:c == 27
@@ -131,9 +141,14 @@ func! PlanetVim_t()
   if l:c == 27
     return
   end
-  let l:c2 = nr2char(l:c)
-  let g:PV_p = l:c1 .. l:c2
-  silent! exe "keepp keepj normal /\\V" .. g:PV_p .. "\<CR>"
+  if l:c != 13
+    let l:c2 = nr2char(l:c)
+    let g:PV_pp = l:c1 .. l:c2
+    silent! exe "keepp keepj normal /\\V" .. g:PV_pp .. "\<CR>"
+  else
+    let g:PV_p = l:c1
+    silent! exe "keepp keepj normal /\\V" .. g:PV_p .. "\<CR>"
+  end
 endfunc
 
 func! PlanetVim_T()
@@ -146,17 +161,22 @@ func! PlanetVim_T()
   if l:c == 27
     return
   end
-  let l:c2 = nr2char(l:c)
-  let g:PV_p = l:c1 .. l:c2
-  silent! exe "keepp keepj normal ?\\V" .. g:PV_p .. "\<CR>"
+  if l:c != 13
+    let l:c2 = nr2char(l:c)
+    let g:PV_pp = l:c1 .. l:c2
+    silent! exe "keepp keepj normal ?\\V" .. g:PV_pp .. "\<CR>"
+  else
+    let g:PV_p = l:c1
+    silent! exe "keepp keepj normal ?\\V" .. g:PV_p .. "\<CR>"
+  end
 endfunc
 
 func! PlanetVim_l()
-  silent! exe "keepp keepj normal /\\V" .. g:PV_p .. "\<CR>"
+  silent! exe "keepp keepj normal /\\V" .. g:PV_pp .. "\<CR>"
 endfunc
 
 func! PlanetVim_h()
-  silent! exe "keepp keepj normal ?\\V" .. g:PV_p .. "\<CR>"
+  silent! exe "keepp keepj normal ?\\V" .. g:PV_pp .. "\<CR>"
 endfunc
 
 func! PlanetVim_j()
@@ -174,6 +194,14 @@ func! PlanetVim_k()
     silent! lp
   endtry
 endfunc
+
+"TODO: b, B, e, E, ge, gE
+"b - next buffer
+"B - prev buffer
+"e -
+"E -
+"ge - first tab
+"gE - last tab
 
 " Avoid the ":ptag" when there is no word under the cursor, and a few other
 " things. Opens the tag under cursor in Preview window.

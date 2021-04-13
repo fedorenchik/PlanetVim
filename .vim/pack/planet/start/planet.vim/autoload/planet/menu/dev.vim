@@ -92,21 +92,21 @@ func! planet#menu#dev#update() abort
 
     an 500.10  🎚️&{.Project <Nop>
     an disable 🎚️&{.Project
-    an 500.10  🎚️&{.Arduino.Choose\ Board           :ArduinoChooseBoard<CR>
-    an 500.10  🎚️&{.Arduino.Choose\ Programmer      :ArduinoChooseProgrammer<CR>
-    an 500.10  🎚️&{.Arduino.Choose\ Port            :ArduinoChoosePort<CR>
-    an 500.10  🎚️&{.Arduino.Verify                  :ArduinoVerify<CR>
-    an 500.10  🎚️&{.Arduino.Upload                  :ArduinoUpload<CR>
-    an 500.10  🎚️&{.Arduino.Serial                  :ArduinoSerial<CR>
-    an 500.10  🎚️&{.Arduino.Upload\ and\ Serial     :ArduinoUploadAndSerial<CR>
-    an 500.10  🎚️&{.Arduino.Info                    :ArduinoInfo<CR>
-    an 500.10  🎚️&{.Arduino.Set\ Baud               :ArduinoSetBaud<CR>
-    an 500.10  🎚️&{.PlatformIO.Edit\ Settings       :e platformio.ini<CR>
-    an 500.10  🎚️&{.ROS.Setup                       :TODO
-    an 500.10  🎚️&{.Yocto.Setup                     :TODO
+    an 500.10  🎚️&{.Arduino.Choose\ Board                   :ArduinoChooseBoard<CR>
+    an 500.10  🎚️&{.Arduino.Choose\ Programmer              :ArduinoChooseProgrammer<CR>
+    an 500.10  🎚️&{.Arduino.Choose\ Port                    :ArduinoChoosePort<CR>
+    an 500.10  🎚️&{.Arduino.Verify                          :ArduinoVerify<CR>
+    an 500.10  🎚️&{.Arduino.Upload                          :ArduinoUpload<CR>
+    an 500.10  🎚️&{.Arduino.Serial                          :ArduinoSerial<CR>
+    an 500.10  🎚️&{.Arduino.Upload\ and\ Serial             :ArduinoUploadAndSerial<CR>
+    an 500.10  🎚️&{.Arduino.Info                            :ArduinoInfo<CR>
+    an 500.10  🎚️&{.Arduino.Set\ Baud                       :ArduinoSetBaud<CR>
+    an 500.10  🎚️&{.PlatformIO.Edit\ Settings               :e platformio.ini<CR>
+    an 500.10  🎚️&{.ROS.Setup                               :TODO
+    an 500.10  🎚️&{.Yocto.Setup                             :TODO
     an 500.10  🎚️&{.Configuration <Nop>
     an disable 🎚️&{.Configuration
-    an 500.10  🎚️&{.Install\ Qt.TODO                :TODO
+    an 500.10  🎚️&{.Install\ Qt.TODO                        :TODO
     an 500.10  🎚️&{.Install\ Conan\ Pkg.TODO                :TODO
     an 500.10  🎚️&{.Install\ pip\ Pkg.TODO                  :TODO
     an 500.10  🎚️&{.Set\ Compiler.gcc                       :TODO
@@ -121,6 +121,8 @@ func! planet#menu#dev#update() abort
     an 500.10  🎚️&{.Set\ Cross-Compiler.gcc-arm             :TODO
     an 500.10  🎚️&{.Set\ Cross-Compiler.gcc-aarch64         :TODO
     an 500.10  🎚️&{.Set\ Cross-Compiler.gcc-avr             :TODO
+    an 500.10  🎚️&{.Set\ Python\ (PyEnv).List\ Installed    :call planet#term#run_cmd_output('pyenv versions')<CR>
+    an 500.10  🎚️&{.Set\ Python\ (PyEnv).List\ Available    :call planet#term#run_cmd_output('pyenv install --list')<CR>
     an 500.10  🎚️&{.Settings <Nop>
     an disable 🎚️&{.Settings
     an 500.10  🎚️&{.&Env.Print\ Env                          :call planet#term#run_cmd_output('env')<CR>
@@ -131,13 +133,13 @@ func! planet#menu#dev#update() abort
     an 500.10  🎚️&{.&Env.Set\ CROSS_COMPILE                  :TODO
     an 500.10  🎚️&{.&Env.Set\ Env\ Var                       :TODO
     an 500.10  🎚️&{.&Env.Edit\ Env\ in\ Buffer               :TODO
-    an 500.10  🎚️&{.&direnv.&Edit\ (or\ Create)\ \.envrc     :EditEnvrc<CR>
-    an 500.10  🎚️&{.&direnv.&Allow\ Here                     :call planet#term#run_cmd_output('direnv allow')<CR>
-    an 500.10  🎚️&{.&direnv.&Run\ \.envrc                    :DirenvExport<CR>
-    an 500.10  🎚️&{.&direnv.E&dit\ \.direnvrc                :EditDirenvrc<CR>
-    an 500.10  🎚️&{.editorconfig.Add\ New                    :TODO
-    an 500.10  🎚️&{.editorconfig.Reload                      :EditorConfigReload<CR>
-    an 500.10  🎚️&{.editorconfig.Disable\ for\ buffer        :let b:EditorConfig_disable=1<CR>
+    an 500.10  🎚️&{.&Direnv.&Edit\ (or\ Create)\ \.envrc     :EditEnvrc<CR>
+    an 500.10  🎚️&{.&Direnv.&Allow\ Here                     :call planet#term#run_cmd_output('direnv allow')<CR>
+    an 500.10  🎚️&{.&Direnv.&Run\ \.envrc                    :DirenvExport<CR>
+    an 500.10  🎚️&{.&Direnv.E&dit\ \.direnvrc                :EditDirenvrc<CR>
+    an 500.10  🎚️&{.EditorConfig.Add\ New                    :TODO
+    an 500.10  🎚️&{.EditorConfig.Reload                      :EditorConfigReload<CR>
+    an 500.10  🎚️&{.EditorConfig.Disable\ for\ buffer        :let b:EditorConfig_disable=1<CR>
 
     an 500.10  📐&}.Dev\ Tools <Nop>
     an disable 📐&}.Dev\ Tools
@@ -202,7 +204,7 @@ func! planet#menu#dev#update() abort
     an 500.10  📐&}.lupdate-pro                              :TODO
     an 500.10  📐&}.auto-translation                         :TODO
     an 500.10  📐&}.gettext                                  :TODO
-    an 500.10  📐&}.weblate.org                              :TODO
+    an 500.10  📐&}.weblate\.org                             :TODO
     an 500.10  📐&}.Documentation <Nop>
     an disable 📐&}.Documentation
     an 500.10  📐&}.doxygen                                  :TODO
@@ -215,26 +217,27 @@ func! planet#menu#dev#update() abort
     an disable 🔨&u.Build
     an 500.10  🔨&u.Virtual\ Environments <Nop>
     an disable 🔨&u.Virtual\ Environments
-    an 500.10  🔨&u.Schroot.Debootstrap                           :!sudo debootstrap --variant=buildd --arch=amd64 buster /var/chroots/debian10_x64 http://ftp.debian.org/debian/<CR>
-    an 500.10  🔨&u.Schroot.Schroot\ Check\ Config                :TODO"check $HOME is not mounted!!!
-    an 500.10  🔨&u.Schroot.Schroot\ Add\ New                     :TODO"create config file in /etc/schroot/chroot.d/ directory
-    an 500.10  🔨&u.Schroot.Schroot\ List                         :!schroot -l<CR>
-    an 500.10  🔨&u.Schroot.Schroot\ Info                         :!schroot -i<CR>
-    an 500.10  🔨&u.Schroot.Schroot\ Config                       :!schroot --config<CR>
-    an 500.10  🔨&u.Schroot.Schroot\ Location                     :!schroot --location<CR>
-    an 500.10  🔨&u.Schroot.Schroot\ Start                        :!schroot -c debian10_x64 -u leonid<CR>
-    an 500.10  🔨&u.Schroot.Schroot\ Start\ Root                  :!schroot -c debian10_x64 -u leonid<CR>
-    an 500.10  🔨&u.Schroot.Schroot\ Start\ XNest                 :!schroot -c debian10_x64 -u leonid<CR>
-    an 500.10  🔨&u.Schroot.Schroot\ Run\ Command                 :!schroot -c debian10_x64 -u leonid {cmd}<CR>
-    an 500.10  🔨&u.Pipenv.Test                                   :TODO
-    an 500.10  🔨&u.Conan\ Virtual\ Environment.Test              :TODO
-    an 500.10  🔨&u.systemd-nspawn.Test                           :TODO
-    an 500.10  🔨&u.PRoot.Test                                    :TODO
-    an 500.10  🔨&u.Fakechroot.Test                               :TODO
     an 500.10  🔨&u.Docker.Test                                   :TODO
+    an 500.10  🔨&u.Pipenv.Test                                   :TODO
     an 500.10  🔨&u.Vagrant.Test                                  :TODO
     an 500.10  🔨&u.QEMU.Test                                     :TODO
     an 500.10  🔨&u.QEMU\ Schroot.qemu-debootstrap                :TODO
+    "TODO:
+    " an 500.10  🔨&u.Schroot.Debootstrap                           :!sudo debootstrap --variant=buildd --arch=amd64 buster /var/chroots/debian10_x64 http://ftp.debian.org/debian/<CR>
+    " an 500.10  🔨&u.Schroot.Schroot\ Check\ Config                :TODO"check $HOME is not mounted!!!
+    " an 500.10  🔨&u.Schroot.Schroot\ Add\ New                     :TODO"create config file in /etc/schroot/chroot.d/ directory
+    " an 500.10  🔨&u.Schroot.Schroot\ List                         :!schroot -l<CR>
+    " an 500.10  🔨&u.Schroot.Schroot\ Info                         :!schroot -i<CR>
+    " an 500.10  🔨&u.Schroot.Schroot\ Config                       :!schroot --config<CR>
+    " an 500.10  🔨&u.Schroot.Schroot\ Location                     :!schroot --location<CR>
+    " an 500.10  🔨&u.Schroot.Schroot\ Start                        :!schroot -c debian10_x64 -u leonid<CR>
+    " an 500.10  🔨&u.Schroot.Schroot\ Start\ Root                  :!schroot -c debian10_x64 -u leonid<CR>
+    " an 500.10  🔨&u.Schroot.Schroot\ Start\ XNest                 :!schroot -c debian10_x64 -u leonid<CR>
+    " an 500.10  🔨&u.Schroot.Schroot\ Run\ Command                 :!schroot -c debian10_x64 -u leonid {cmd}<CR>
+    " an 500.10  🔨&u.Conan\ Virtual\ Environment.Test              :TODO
+    " an 500.10  🔨&u.systemd-nspawn.Test                           :TODO
+    " an 500.10  🔨&u.PRoot.Test                                    :TODO
+    " an 500.10  🔨&u.Fakechroot.Test                               :TODO
     an 500.10  🔨&u.Build\ Systems <Nop>
     an disable 🔨&u.Build\ Systems
     an 500.10  🔨&u.&Autotools.Autotools\ Status                  :call planet#term#run_script_output('autotools-status')<CR>
@@ -263,13 +266,16 @@ func! planet#menu#dev#update() abort
     an 500.10  🔨&u.Mak&e.Make\ &Test                              :call planet#term#run_cmd_output('make test')<CR>
     an 500.10  🔨&u.Mak&e.Make\ &Install                           :call planet#term#run_cmd_output('make install')<CR>
     an 500.10  🔨&u.Mak&e.Make\ &Uninstall                         :call planet#term#run_cmd_output('make uninstall')<CR>
-    an 500.10  🔨&u.Mak&e.Set\ &prefix                             :!make<CR>
-    an 500.10  🔨&u.Mak&e.Set\ DESTDI&R                            :!make<CR>
     an 500.10  🔨&u.&KBuild.make\ oldconfig                        :!make<CR>
     an 500.10  🔨&u.&KBuild.make\ menuconfig                       :!make<CR>
+    an 500.10  🔨&u.&KBuild.make                                   :!make<CR>
     an 500.10  🔨&u.&KBuild.Edit\ \.config                         :!make<CR>
-    an 500.10  🔨&u.&KBuild.Set\ DESTDIR                           :!make<CR>
-    an 500.10  🔨&u.&CMake.Set\ DESTDIR                            :!make<CR>
+    an 500.10  🔨&u.&CMake.Create\ OOT\ Build\ Dir                 :!make<CR>
+    an 500.10  🔨&u.&CMake.Create\ In-Tree\ Build\ Dir             :!make<CR>
+    an 500.10  🔨&u.&CMake.Configure                               :!make<CR>
+    an 500.10  🔨&u.&CMake.Configure\ Tui                          :!make<CR>
+    an 500.10  🔨&u.&CMake.Configure\ Gui                          :!make<CR>
+    an 500.10  🔨&u.&CMake.Build                                   :!make<CR>
     an 500.10  🔨&u.&CMake.Set\ Generator                          :TODO"makefiles, ninja, etc...
     an 500.10  🔨&u.&CMake.Set\ Target                             :TODO
     an 500.10  🔨&u.&CMake.Set\ Build\ Dir                         :TODO"search for ./build* and ../build* folders
@@ -392,6 +398,7 @@ func! planet#menu#dev#update() abort
     " Terminal
     an 550.10  💻&t.Terminal <Nop>
     an disable 💻&t.Terminal
+    "TODO: set winfixheight winfixwidth
     an 550.10  💻&t.N&ew                                   :botright terminal ++kill=kill ++rows=10<CR>
     an 550.10  💻&t.New\ &Here                             :terminal ++curwin ++kill=kill<CR>
     an 550.10  💻&t.New\ &VSplit                           :vertical terminal ++kill=kill<CR>
