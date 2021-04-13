@@ -32,38 +32,39 @@ func! planet#window#Restore() abort
     exe g:PV_win_restore_cmd
     "FIXME: Remove second exe call after vim bug #7988 is fixed
     exe g:PV_win_restore_cmd
-  endif
+  end
 endfunc
 
 func! planet#window#Focus(direction)
   exe 'wincmd ' .. a:direction
-  if empty(&buftype) || &buftype == 'nowrite' || &buftype == 'acwrite'
+  if empty(&buftype) || &buftype == 'nowrite' || &buftype == 'acwrite' ||
+        \ &buftype == 'help'
     let win_width = 80
     if &textwidth > 0
       let win_width = &textwidth
     elseif str2nr(&colorcolumn) > 0
       let win_width = str2nr(&colorcolumn)
-    endif
+    end
     let win_width += &foldcolumn
     if &number || &relativenumber
       let win_width += &numberwidth
-    endif
+    end
     if &signcolumn == 'yes' || &signcolumn == 'auto'
       let win_width += 2
-    endif
+    end
     echo 'win_width=' .. win_width
     let number_of_windows = tabpagewinnr(tabpagenr(), '$')
     let other_win_widh = (&columns - win_width) / number_of_windows
     if other_win_widh <= 0
       let other_win_widh = 1
-    endif
+    end
     let owmw = &wmw
     let owiw = &wiw
     exe "set wiw=" .. other_win_widh .. " wmw=" .. other_win_widh
     if win_width > winwidth(0)
       exe win_width .. 'wincmd |'
-    endif
+    end
     let &wmw = owmw
     let &wiw = owiw
-  endif
+  end
 endfunc

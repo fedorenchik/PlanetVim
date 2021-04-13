@@ -272,13 +272,18 @@ func! planet#menu#dev#update() abort
     an 500.10  🔨&u.&KBuild.Edit\ \.config                         :!make<CR>
     an 500.10  🔨&u.&CMake.Create\ OOT\ Build\ Dir                 :!make<CR>
     an 500.10  🔨&u.&CMake.Create\ In-Tree\ Build\ Dir             :!make<CR>
-    an 500.10  🔨&u.&CMake.Configure                               :!make<CR>
-    an 500.10  🔨&u.&CMake.Configure\ Tui                          :!make<CR>
-    an 500.10  🔨&u.&CMake.Configure\ Gui                          :!make<CR>
-    an 500.10  🔨&u.&CMake.Build                                   :!make<CR>
+    "FIXME: cmake may have multiple build directories
+    an 500.10  🔨&u.&CMake.Cd\ to\ Build\ Directory                :call planet#term#run_cmd_output('cmake ..')<CR>
+    an 500.10  🔨&u.&CMake.Cd\ to\ Source\ Directory               :call planet#term#run_cmd_output('cmake ..')<CR>
+    an 500.10  🔨&u.&CMake.Configure                               :call planet#term#run_cmd_output('cmake ..')<CR>
+    an 500.10  🔨&u.&CMake.Configure\ Tui                          :call planet#term#RunCmdTab('ccmake ..')<CR>
+    an 500.10  🔨&u.&CMake.Configure\ Gui                          :call planet#term#RunCmdGui('cmake-gui ..')<CR>
+    an 500.10  🔨&u.&CMake.Build                                   :call planet#term#run_cmd_output('cmake --build .')<CR>
+    an 500.10  🔨&u.&CMake.Clean                                   :call planet#term#run_cmd_output('cmake --build .')<CR>
     an 500.10  🔨&u.&CMake.Set\ Generator                          :TODO"makefiles, ninja, etc...
     an 500.10  🔨&u.&CMake.Set\ Target                             :TODO
     an 500.10  🔨&u.&CMake.Set\ Build\ Dir                         :TODO"search for ./build* and ../build* folders
+    an 500.10  🔨&u.&CMake.Set\ Build\ Type                        :TODO"search for ./build* and ../build* folders
     an 500.10  🔨&u.&QMake.Set\ DESTDIR                            :!make<CR>
     an 500.10  🔨&u.Scons.Set\ DESTDIR                             :!make<CR>
     an 500.10  🔨&u.Nin&ja.Set\ DESTDIR                            :!make<CR>
@@ -348,6 +353,8 @@ func! planet#menu#dev#update() abort
     an 530.10  🧪&j.Google\ Test                            :TestVisit<CR>
     an 530.10  🧪&j.Boost\ Test                             :TestVisit<CR>
     an 530.10  🧪&j.Catch2\ Test                            :TestVisit<CR>
+    an 530.10  🧪&j.CTest                                   :TestVisit<CR>
+    an 530.10  🧪&j.CDash                                   :TestVisit<CR>
     an 530.10  🧪&j.Report\ Tools.Screenshot                :TestVisit<CR>
     an 530.10  🧪&j.Report\ Tools.Record\ gif               :TestVisit<CR>
     an 530.10  🧪&j.Report\ Tools.Record\ screen            :TestVisit<CR>
