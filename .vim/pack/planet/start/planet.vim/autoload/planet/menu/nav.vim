@@ -150,8 +150,29 @@ func! planet#menu#nav#update() abort
     an 820.10  🪟&w.View.Load\ 9\ (AutoSave)                :loadview 9<CR>
     an 820.10  🪟&w.View.--2-- <Nop>
     an 820.10  🪟&w.View.Toggle\ AutoSave\ Views            :call planet#windowview#ToggleAutoSave()<CR>
-    an 820.10  🪟&w.View.--2-- <Nop>
+    an 820.10  🪟&w.View.--3-- <Nop>
     an 820.10  🪟&w.View.Toggle\ Save\ Local\ Options       :TODO
+    an 820.10  🪟&w.Layout.Save                             :let g:PV_layout = winrestcmd()<CR>
+    an 820.10  🪟&w.Layout.Save\ 1                          :let g:PV_layout_1 = winrestcmd()<CR>
+    an 820.10  🪟&w.Layout.Save\ 2                          :let g:PV_layout_2 = winrestcmd()<CR>
+    an 820.10  🪟&w.Layout.Save\ 3                          :let g:PV_layout_3 = winrestcmd()<CR>
+    an 820.10  🪟&w.Layout.Save\ 4                          :let g:PV_layout_4 = winrestcmd()<CR>
+    an 820.10  🪟&w.Layout.Save\ 5                          :let g:PV_layout_5 = winrestcmd()<CR>
+    an 820.10  🪟&w.Layout.Save\ 6                          :let g:PV_layout_6 = winrestcmd()<CR>
+    an 820.10  🪟&w.Layout.Save\ 7                          :let g:PV_layout_7 = winrestcmd()<CR>
+    an 820.10  🪟&w.Layout.Save\ 8                          :let g:PV_layout_8 = winrestcmd()<CR>
+    an 820.10  🪟&w.Layout.Save\ 9                          :let g:PV_layout_9 = winrestcmd()<CR>
+    an 820.10  🪟&w.Layout.Load                             :exe g:PV_layout<CR>
+    an 820.10  🪟&w.Layout.Load\ 1                          :exe g:PV_layout_1<CR>
+    an 820.10  🪟&w.Layout.Load\ 2                          :exe g:PV_layout_2<CR>
+    an 820.10  🪟&w.Layout.Load\ 3                          :exe g:PV_layout_3<CR>
+    an 820.10  🪟&w.Layout.Load\ 4                          :exe g:PV_layout_4<CR>
+    an 820.10  🪟&w.Layout.Load\ 5                          :exe g:PV_layout_5<CR>
+    an 820.10  🪟&w.Layout.Load\ 6                          :exe g:PV_layout_6<CR>
+    an 820.10  🪟&w.Layout.Load\ 7                          :exe g:PV_layout_7<CR>
+    an 820.10  🪟&w.Layout.Load\ 8                          :exe g:PV_layout_8<CR>
+    an 820.10  🪟&w.Layout.Load\ 9                          :exe g:PV_layout_9<CR>
+    an 820.10  🪟&w.Layout.--1-- <Nop>
     an 820.10  🪟&w.--7-- <Nop>
     an 820.10  🪟&w.Execute\ in\ Window\ in\ This\ Tab      :windo 
     an 820.10  🪟&w.Execute\ in\ each\ Window               :tabdo windo 

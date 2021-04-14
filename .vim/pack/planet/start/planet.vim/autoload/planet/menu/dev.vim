@@ -133,6 +133,8 @@ func! planet#menu#dev#update() abort
     an 500.10  🎚️&{.&Env.Set\ CROSS_COMPILE                  :TODO
     an 500.10  🎚️&{.&Env.Set\ Env\ Var                       :TODO
     an 500.10  🎚️&{.&Env.Edit\ Env\ in\ Buffer               :TODO
+    an 500.10  🎚️&{.&Env.Edit\ \.env                         :e .env<CR>
+    an 500.10  🎚️&{.&Env.Source\ \.env                       :TODO
     an 500.10  🎚️&{.&Direnv.&Edit\ (or\ Create)\ \.envrc     :EditEnvrc<CR>
     an 500.10  🎚️&{.&Direnv.&Allow\ Here                     :call planet#term#run_cmd_output('direnv allow')<CR>
     an 500.10  🎚️&{.&Direnv.&Run\ \.envrc                    :DirenvExport<CR>
@@ -217,8 +219,45 @@ func! planet#menu#dev#update() abort
     an disable 🔨&u.Build
     an 500.10  🔨&u.Virtual\ Environments <Nop>
     an disable 🔨&u.Virtual\ Environments
-    an 500.10  🔨&u.Docker.Test                                   :TODO
-    an 500.10  🔨&u.Pipenv.Test                                   :TODO
+    an 500.10  🔨&u.&Docker.Test                                   :TODO
+    an 500.10  🔨&u.&Pipenv.Start\ Shell                           :call planet#term#run_cmd_output('pipenv shell')<CR>
+    an 500.10  🔨&u.&Pipenv.Run\ python\ main\.py                  :call planet#term#run_cmd_output('pipenv run python ./main.py')<CR>
+    an 500.10  🔨&u.&Pipenv.Run\ python\ app\.py                   :call planet#term#run_cmd_output('pipenv run python ./app.py')<CR>
+    an 500.10  🔨&u.&Pipenv.Run\ Command                           :call planet#term#run_cmd_output('pipenv run ...TODO')<CR>
+    an 500.10  🔨&u.&Pipenv.Update\ Pipfile\.lock                  :call planet#term#run_cmd_output('pipenv lock')<CR>
+    an 500.10  🔨&u.&Pipenv.--1-- <Nop>
+    an 500.10  🔨&u.&Pipenv.New\ Project                           :call planet#term#run_cmd_output('pipenv --three')<CR>
+    an 500.10  🔨&u.&Pipenv.New\ Project\ with\ Python             :call planet#term#run_cmd_output('pipenv --python ...TODO')<CR>
+    an 500.10  🔨&u.&Pipenv.Install\ Run\ &&\ Dev\ Deps            :call planet#term#run_cmd_output('pipenv install --dev')<CR>
+    an 500.10  🔨&u.&Pipenv.Install\ Run\ Deps                     :call planet#term#run_cmd_output('pipenv install')<CR>
+    an 500.10  🔨&u.&Pipenv.Install\ Package                       :call planet#term#run_cmd_output('pipenv install ...TODO')<CR>
+    an 500.10  🔨&u.&Pipenv.Install\ Dev\ Package                  :call planet#term#run_cmd_output('pipenv install --dev ...TODO')<CR>
+    an 500.10  🔨&u.&Pipenv.Update\ (Lock\ &&\ Sync)               :call planet#term#run_cmd_output('pipenv update')<CR>
+    an 500.10  🔨&u.&Pipenv.Sync\ with\ Pipfile\.lock              :call planet#term#run_cmd_output('pipenv sync')<CR>
+    an 500.10  🔨&u.&Pipenv.--1-- <Nop>
+    an 500.10  🔨&u.&Pipenv.Uninstall\ Leftover\ Packages          :call planet#term#run_cmd_output('pipenv clean')<CR>
+    an 500.10  🔨&u.&Pipenv.Uninstall\ Package                     :call planet#term#run_cmd_output('pipenv uninstall ...TODO')<CR>
+    an 500.10  🔨&u.&Pipenv.Uninstall\ Dev                         :call planet#term#run_cmd_output('pipenv uninstall --all-dev')<CR>
+    an 500.10  🔨&u.&Pipenv.Uninstall\ All                         :call planet#term#run_cmd_output('pipenv uninstall --all')<CR>
+    an 500.10  🔨&u.&Pipenv.Remove\ Project's\ VEnv                :call planet#term#run_cmd_output('pipenv --rm')<CR>
+    an 500.10  🔨&u.&Pipenv.requirements\.t&xt.Install             :call planet#term#run_cmd_output('pipenv install -r requirements.txt')<CR>
+    an 500.10  🔨&u.&Pipenv.requirements\.t&xt.Install\ Dev        :call planet#term#run_cmd_output('pipenv install -r dev-requirements.txt --dev')<CR>
+    an 500.10  🔨&u.&Pipenv.requirements\.t&xt.Export              :call planet#term#run_cmd_output('pipenv lock -r > requirements.txt')<CR>
+    an 500.10  🔨&u.&Pipenv.requirements\.t&xt.Export\ Dev         :call planet#term#run_cmd_output('pipenv lock -r -d > dev-requirements.txt')<CR>
+    an 500.10  🔨&u.&Pipenv.--1-- <Nop>
+    an 500.10  🔨&u.&Pipenv.Open\ Specified\ Module                :call planet#term#run_cmd_output('pipenv open ...TODO')<CR>
+    an 500.10  🔨&u.&Pipenv.Security\ Check                        :call planet#term#run_cmd_output('pipenv check')<CR>
+    an 500.10  🔨&u.&Pipenv.Dependency\ Graph                      :call planet#term#run_cmd_output('pipenv graph')<CR>
+    an 500.10  🔨&u.&Pipenv.Reverse\ Dependency\ Graph             :call planet#term#run_cmd_output('pipenv graph --reverse')<CR>
+    an 500.10  🔨&u.&Pipenv.Enable\ Site\ Packages                 :call planet#term#run_cmd_output('pipenv --site-packages')<CR>
+    an 500.10  🔨&u.&Pipenv.Disable\ Site\ Packages                :call planet#term#run_cmd_output('pipenv --no-site-packages')<CR>
+    an 500.10  🔨&u.&Pipenv.Print\ Project\ Root                   :call planet#term#run_cmd_output('pipenv --where')<CR>
+    an 500.10  🔨&u.&Pipenv.Print\ VEnv\ Dir                       :call planet#term#run_cmd_output('pipenv --venv')<CR>
+    an 500.10  🔨&u.&Pipenv.Print\ Env\ Vars                       :call planet#term#run_cmd_output('pipenv --envs')<CR>
+    an 500.10  🔨&u.&Pipenv.Edit\ \.env                            :e .env<CR>
+    an 500.10  🔨&u.&Pipenv.Print\ Version                         :call planet#term#run_cmd_output('pipenv --version')<CR>
+    an 500.10  🔨&u.&Pipenv.Clear\ Caches                          :call planet#term#run_cmd_output('pipenv --clear')<CR>
+    an 500.10  🔨&u.&Pipenv.Install\ Pipenv                        :call planet#term#run_cmd_output('pip install --user pipenv')<CR>
     an 500.10  🔨&u.Vagrant.Test                                  :TODO
     an 500.10  🔨&u.QEMU.Test                                     :TODO
     an 500.10  🔨&u.QEMU\ Schroot.qemu-debootstrap                :TODO

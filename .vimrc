@@ -594,7 +594,7 @@ au BufWinEnter * if &buftype == 'terminal' | setlocal foldcolumn=0 signcolumn=no
 au VimEnter * if expand("%") != "" && getcwd() == expand("~") | cd %:h | end
 au VimLeavePre * call planet#planet#CheckExitSaveSession()
 aug END
-endif
+end
 " }}}
 " Commands: {{{
 if !exists(":DiffOrig")

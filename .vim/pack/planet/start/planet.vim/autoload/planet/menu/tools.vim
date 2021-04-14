@@ -120,7 +120,7 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.&Gui.Gitk\ &All                               :silent !nohup gitk --all >/dev/null 2>&1 &<CR>
     an 700.10  🔀&,.&Gui.Gui&tar                                  :silent !nohup guitar >/dev/null 2>&1 &<CR>
     an 700.10  🔀&,.&Gui.&Gitg                                    :silent !nohup gitg >/dev/null 2>&1 &<CR>
-    an 700.10  🔀&,.&Ui.Git&ui                                    :tab call planet#term#run_cmd_output('gitui')<CR>
+    an 700.10  🔀&,.Ui.Git&ui                                     :tab call planet#term#run_cmd_output('gitui')<CR>
     an 700.10  🔀&,.--5-- <Nop>
     an 700.10  🔀&,.Cl&one                                        :TODO
     an 700.10  🔀&,.&Init                                         :call planet#term#run_cmd_output('git init')<CR>
