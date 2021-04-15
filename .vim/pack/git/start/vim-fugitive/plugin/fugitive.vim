@@ -8,6 +8,8 @@ if exists('g:loaded_fugitive')
 endif
 let g:loaded_fugitive = 1
 
+let s:bad_git_dir = '/$\|^fugitive:'
+
 function! FugitiveGitDir(...) abort
   if !a:0 || type(a:1) == type(0) && a:1 < 0
     if exists('g:fugitive_event')
@@ -16,10 +18,17 @@ function! FugitiveGitDir(...) abort
     let dir = get(b:, 'git_dir', '')
     if empty(dir) && (empty(bufname('')) || &buftype =~# '^\%(nofile\|acwrite\|quickfix\|prompt\)$')
       return FugitiveExtractGitDir(getcwd())
+    elseif (!exists('b:git_dir') || b:git_dir =~# s:bad_git_dir) && empty(&buftype)
+      let b:git_dir = FugitiveExtractGitDir(expand('%:p'))
+      return b:git_dir
     endif
-    return dir
+    return dir =~# s:bad_git_dir ? '' : dir
   elseif type(a:1) == type(0)
-    return getbufvar(a:1, 'git_dir')
+    if a:1 == bufnr('') && (!exists('b:git_dir') || b:git_dir =~# s:bad_git_dir) && empty(&buftype)
+      let b:git_dir = FugitiveExtractGitDir(expand('%:p'))
+    endif
+    let dir = getbufvar(a:1, 'git_dir')
+    return dir =~# s:bad_git_dir ? '' : dir
   elseif type(a:1) == type('')
     return substitute(s:Slash(a:1), '/$', '', '')
   elseif type(a:1) == type({})
@@ -137,7 +146,7 @@ function! FugitiveHead(...) abort
 endfunction
 
 function! FugitiveStatusline(...) abort
-  if !exists('b:git_dir')
+  if empty(get(b:, 'git_dir', ''))
     return ''
   endif
   return fugitive#Statusline()
@@ -273,16 +282,13 @@ function! FugitiveExtractGitDir(path) abort
 endfunction
 
 function! FugitiveDetect(path) abort
-  if exists('b:git_dir') && b:git_dir =~# '^$\|/$\|^fugitive:'
+  if exists('b:git_dir') && b:git_dir =~# '^$\|' . s:bad_git_dir
     unlet b:git_dir
   endif
   if !exists('b:git_dir')
-    let dir = FugitiveExtractGitDir(a:path)
-    if dir !=# ''
-      let b:git_dir = dir
-    endif
+    let b:git_dir = FugitiveExtractGitDir(a:path)
   endif
-  if !exists('b:git_dir') || !exists('#User#Fugitive')
+  if empty(b:git_dir) || !exists('#User#Fugitive')
     return ''
   endif
   if v:version >= 704 || (v:version == 703 && has('patch442'))
@@ -423,8 +429,9 @@ if exists(':G') != 2
 endif
 command! -bang -nargs=? -range=-1 -complete=customlist,fugitive#Complete Git exe fugitive#Command(<line1>, <count>, +"<range>", <bang>0, "<mods>", <q-args>)
 
-if exists(':Gstatus') !=# 2
+if exists(':Gstatus') != 2 && get(g:, 'fugitive_legacy_commands', 1)
   exe 'command! -bang -bar     -range=-1' s:addr_other 'Gstatus exe fugitive#Command(<line1>, <count>, +"<range>", <bang>0, "<mods>", <q-args>)'
+        \ '|echohl WarningMSG|echo ":Gstatus is deprecated in favor of :Git (with no arguments)"|echohl NONE'
 endif
 
 for s:cmd in ['Commit', 'Revert', 'Merge', 'Rebase', 'Pull', 'Push', 'Fetch', 'Blame']
@@ -443,7 +450,10 @@ exe 'command! -bang -nargs=? -range=-1' s:addr_wins '-complete=customlist,fugiti
 exe 'command! -bang -nargs=? -range=-1' s:addr_wins '-complete=customlist,fugitive#GrepComplete Gcgrep exe fugitive#GrepCommand(<line1>, <count>, +"<range>", <bang>0, "<mods>", <q-args>)'
 exe 'command! -bang -nargs=? -range=-1' s:addr_wins '-complete=customlist,fugitive#GrepComplete Glgrep exe fugitive#GrepCommand(0, <count> > 0 ? <count> : 0, +"<range>", <bang>0, "<mods>", <q-args>)'
 
-exe 'command! -bang -nargs=? -range=-1 -complete=customlist,fugitive#LogComplete Glog  :exe fugitive#LogCommand(<line1>,<count>,+"<range>",<bang>0,"<mods>",<q-args>, "")'
+if exists(':Glog') != 2 && get(g:, 'fugitive_legacy_commands', 1)
+  exe 'command! -bang -nargs=? -range=-1 -complete=customlist,fugitive#LogComplete Glog  :exe fugitive#LogCommand(<line1>,<count>,+"<range>",<bang>0,"<mods>",<q-args>, "")'
+        \ '|echohl WarningMSG|echo ":Glog is deprecated in favor of :Gclog"|echohl NONE'
+endif
 exe 'command! -bang -nargs=? -range=-1 -complete=customlist,fugitive#LogComplete Gclog :exe fugitive#LogCommand(<line1>,<count>,+"<range>",<bang>0,"<mods>",<q-args>, "c")'
 exe 'command! -bang -nargs=? -range=-1 -complete=customlist,fugitive#LogComplete GcLog :exe fugitive#LogCommand(<line1>,<count>,+"<range>",<bang>0,"<mods>",<q-args>, "c")'
 exe 'command! -bang -nargs=? -range=-1 -complete=customlist,fugitive#LogComplete Gllog :exe fugitive#LogCommand(<line1>,<count>,+"<range>",<bang>0,"<mods>",<q-args>, "l")'
