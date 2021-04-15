@@ -258,6 +258,13 @@ func! planet#menu#dev#update() abort
     an 500.10  🔨&u.&Pipenv.Print\ Version                         :call planet#term#run_cmd_output('pipenv --version')<CR>
     an 500.10  🔨&u.&Pipenv.Clear\ Caches                          :call planet#term#run_cmd_output('pipenv --clear')<CR>
     an 500.10  🔨&u.&Pipenv.Install\ Pipenv                        :call planet#term#run_cmd_output('pip install --user pipenv')<CR>
+    an 500.10  🔨&u.&Conda.Activate                                :call planet#term#run_cmd_output('conda activate <venv-name>TODO')
+    an 500.10  🔨&u.&Conda.Install\ from\ requirements\.txt        :call planet#term#run_cmd_output('conda install --file requirements.txt')<CR>
+    an 500.10  🔨&u.&Conda.Create\ from\ environment\.yml          :call planet#term#run_cmd_output('conda env create -f environment.yml')<CR>
+    an 500.10  🔨&u.&Conda.Deactivate                              :call planet#term#run_cmd_output('conda deactivate')<CR>
+    an 500.10  🔨&u.&Conda.Create\ venv                            :call planet#term#run_cmd_output('conda create -n <venv-name>')
+    an 500.10  🔨&u.&Conda.Activate\ Anaconda                      :call planet#term#run_cmd_output('source /opt/anaconda/bin/activate')<CR>
+    an 500.10  🔨&u.&Conda.Deactivate\ Anaconda                    :call planet#term#run_cmd_output('source /opt/anaconda/bin/deactivate')<CR>
     an 500.10  🔨&u.Vagrant.Test                                  :TODO
     an 500.10  🔨&u.QEMU.Test                                     :TODO
     an 500.10  🔨&u.QEMU\ Schroot.qemu-debootstrap                :TODO
