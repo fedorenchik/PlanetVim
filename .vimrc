@@ -941,6 +941,9 @@ let g:undotree_WindowLayout=4
 nnoremap SU :UndotreeShow<CR>
 nnoremap ZU :UndotreeHide<CR>
 " }}}
+" Plugin: vim-arduino {{{
+let g:arduino_dir = '/usr/share/arduino'
+" }}}
 " Plugin: vim-clap {{{
 let g:clap_disable_bottom_top = 1
 let g:clap_provider_yanks_history = "~/.vim/clap_yanks.history"

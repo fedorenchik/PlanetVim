@@ -14,7 +14,7 @@ func! planet#git#CommitFile(save = v:true, auto = v:true, push = v:false) abort
   if a:push
     let l:push_cmd = ' && git push'
   endif
-  call planet#term#run_cmd_output('git commit -m "' .. commit_msg .. '" -- ' .. expand('%') .. l:push_cmd)
+  call planet#term#RunCmd('git commit -m "' .. commit_msg .. '" -- ' .. expand('%') .. l:push_cmd)
 endfunc
 
 func! planet#git#Commit(save = v:true, auto = v:true, push = v:false) abort
@@ -31,7 +31,7 @@ func! planet#git#Commit(save = v:true, auto = v:true, push = v:false) abort
   if a:push
     let l:push_cmd = ' && git push'
   endif
-  call planet#term#run_cmd_output('git commit -m "' .. commit_msg .. '"' .. l:push_cmd)
+  call planet#term#RunCmd('git commit -m "' .. commit_msg .. '"' .. l:push_cmd)
 endfunc
 
 func! planet#git#EnableAutoCommit() abort
