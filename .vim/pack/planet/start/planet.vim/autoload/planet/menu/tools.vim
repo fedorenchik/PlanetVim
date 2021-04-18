@@ -22,6 +22,7 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.&Commit.Save\ &&\ Commit\ File                :call planet#git#CommitFile(v:true, v:false)<CR>
     an 700.10  🔀&,.&Commit.Commit\ &All                          :TODO
     an 700.10  🔀&,.&Commit.Commit\ All\ with\ Untracked          :TODO
+    "TODO: commit with default editor
     an 700.10  🔀&,.&Commit.--2-- <Nop>
     an 700.10  🔀&,.&Commit.AutoCommit\ File                      :call planet#git#CommitFile(v:false)<CR>
     an 700.10  🔀&,.&Commit.Save\ &&\ AutoCommit\ File            :call planet#git#CommitFile()<CR>
@@ -43,8 +44,10 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.&Log.Log\ (LL)                                :Gllog!<CR>
     an 700.10  🔀&,.&Log.File\ (QF)                               :0Gclog!<CR>
     an 700.10  🔀&,.&Log.&File\ (LL)                              :0Gllog!<CR>
-    an 700.10  🔀&,.&Log.Log\ (GUI)                               :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +Flog +tabo<CR>
-    an 700.10  🔀&,.&Log.Log\ All\ (GUI)                          :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +'Flog -all' +tabo<CR>
+    an 700.10  🔀&,.&Log.Log\ (GUI)                               :call planet#term#RunCmdGui('Flog -max-count=1000')<CR>
+    an 700.10  🔀&,.&Log.Log\ All\ (GUI)                          :call planet#term#RunCmdGui('Flog -max-count=1000 -all')<CR>
+    " an 700.10  🔀&,.&Log.Log\ (GUI)                               :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +'Flog -max-count=1000' +tabo<CR>
+    " an 700.10  🔀&,.&Log.Log\ All\ (GUI)                          :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +'Flog -max-count=1000 -all' +tabo<CR>
     an 700.10  🔀&,.&Tag.List                                     :call planet#term#RunCmd('git tag -l')<CR>
     an 700.10  🔀&,.&Tag.Add                                      :TODO
     an 700.10  🔀&,.&Tag.Delete                                   :TODO
@@ -133,8 +136,8 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.Advanced.Archive                              :TODO
     an 700.10  🔀&,.Advanced.Bundle                               :TODO
     an 700.10  🔀&,.Advanced.Clean                                :TODO
-    an 700.10  🔀&,.Maintenance.Gc                                   :TODO
-    an 700.10  🔀&,.Maintenance.Maintenance                          :TODO
+    an 700.10  🔀&,.Maintenance.Gc                                :TODO
+    an 700.10  🔀&,.Maintenance.Maintenance                       :TODO
     an 700.10  🔀&,.Advanced.Grep                                 :TODO
     an 700.10  🔀&,.Advanced.Switch                               :TODO
     an 700.10  🔀&,.Advanced.Hooks                                :TODO

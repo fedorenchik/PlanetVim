@@ -9,7 +9,7 @@ func! planet#term#RunScript(cmd) abort
   wincmd p
 endfunc
 
-" Run command in existing (if exists) or new [Output] window.
+" Run shell command in existing (if exists) or new [Output] window.
 " @cmd[in] command to run
 " @this_window[in] if true, run in current window unconditionally
 func! planet#term#RunCmd(cmd, this_window = v:false) abort
@@ -40,17 +40,20 @@ func! planet#term#RunCmd(cmd, this_window = v:false) abort
   end
 endfunc
 
-" Runs (interactive) command in new Tab
+" Runs (interactive) shell command in new Tab
 func! planet#term#RunCmdTab(cmd) abort
   tabnew
   call planet#term#RunCmd(cmd, v:true)
 endfunc
 
-" Runs command in new GVIM Window
+" Runs vim command in new GVIM Window
 func! planet#term#RunCmdGui(cmd) abort
+  exe "silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +'" .. a:cmd .. "' +tabo"
 endfunc
 
+" Run gui command
 func! planet#term#RunGuiApp(app) abort
+  silent !nohup a:app >/dev/null 2>&1 &
 endfunc
 
 " Finds terminal window in current tab.

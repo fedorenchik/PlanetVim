@@ -84,7 +84,7 @@ func! planet#menu#dev#update() abort
     an 310.10  🪧&].--4-- <Nop>
     am 310.10  🪧&].Toggle\ AutoPreview\ Tags                :call PlanetVim_TagsAutoPreview_Toggle()<CR>
     an 310.10  🪧&].--4-- <Nop>
-    am 310.10  🪧&].Build\ tags\ File                        :!ctags -R .<CR>
+    am 310.10  🪧&].Build\ tags\ File                         :call planet#term#RunCmd('ctags -R .')<CR>
     am 310.10  🪧&].Generate\ tags\.vim\ File                 :sp tags<CR>:%s/^\([^	:]*:\)\=\([^	]*\).*/syntax keyword Tag \2/<CR>:wq! tags.vim<CR>/^<CR>
     am 310.10  🪧&].Highlight\ tags\ from\ tags\.vim          :so tags.vim<CR>
     am 310.10  🪧&].Generate\ types\.vim\ File                :!ctags --c-kinds=gstu -o- *.[ch] \| awk 'BEGIN{printf("syntax keyword Type\t")} {printf("%s ", $1)}END{print "")' > types.vim
@@ -290,21 +290,29 @@ func! planet#menu#dev#update() abort
     " an 500.10  🔨&u.Fakechroot.Test                               :TODO
     an 500.10  🔨&u.Build\ Systems <Nop>
     an disable 🔨&u.Build\ Systems
-    an 500.10  🔨&u.&Autotools.Autotools\ Status                  :call planet#term#RunScript('autotools-status')<CR>
-    an 500.10  🔨&u.&Autotools.Run\ autoconf                      :!autoconf -f -i<CR>
-    an 500.10  🔨&u.&Autotools.Run\ autoreconf                    :!autoreconf -f -i<CR>
-    an 500.10  🔨&u.&Autotools.Run\ autoheader                    :!autoheader<CR>
-    an 500.10  🔨&u.&Autotools.Run\ autoscan                      :!autoscan<CR>
-    an 500.10  🔨&u.&Autotools.Run\ autoupdate                    :!autoupdate<CR>
-    an 500.10  🔨&u.&Autotools.Run\ ifnames                       :!ifnames<CR>
-    an 500.10  🔨&u.&Autotools.Run\ libtool                       :!libtool<CR>
-    an 500.10  🔨&u.&Autotools.Run\ libtoolize                    :!libtoolize<CR>
-    an 500.10  🔨&u.&Autotools.Generate\ \./autogen\.sh           :TODO:"generate standard autogen.sh
-    an 500.10  🔨&u.&Autotools.Run\ \./autogen\.sh                :!./autogen.sh<CR>
-    an 500.10  🔨&u.&Autotools.Run\ \./bootstrap\.sh              :!./bootstrap.sh<CR>
-    an 500.10  🔨&u.&Autotools.Run\ \./&configure                  :!./configure<CR>
-    an 500.10  🔨&u.&Autotools.Set\ ./configure\ Optinos           :TODO"print ./configure --help & set options in buffer
-    an 500.10  🔨&u.&Autotools.Open\ config\.log                  :TODO:"open instead of terminal
+    an 500.10  🔨&u.&Autotools.Autotools\ Status                   :call planet#term#RunScript('autotools-status')<CR>
+    an 500.10  🔨&u.&Autotools.Run\ autoconf                       :call planet#term#RunCmd('autoconf -f -i')<CR>
+    an 500.10  🔨&u.&Autotools.Run\ autoreconf                     :call planet#term#RunCmd('autoreconf -f -i')<CR>
+    an 500.10  🔨&u.&Autotools.Run\ autoheader                     :call planet#term#RunCmd('autoheader')<CR>
+    an 500.10  🔨&u.&Autotools.Run\ autoscan                       :call planet#term#RunCmd('autoscan')<CR>
+    an 500.10  🔨&u.&Autotools.Run\ autoupdate                     :call planet#term#RunCmd('autoupdate')<CR>
+    an 500.10  🔨&u.&Autotools.Run\ ifnames                        :call planet#term#RunCmd('ifnames')<CR>
+    an 500.10  🔨&u.&Autotools.Run\ libtool                        :call planet#term#RunCmd('libtool')<CR>
+    an 500.10  🔨&u.&Autotools.Run\ libtoolize                     :call planet#term#RunCmd('libtoolize')<CR>
+    an 500.10  🔨&u.&Autotools.Generate\ \./autogen\.sh            :TODO:"generate standard autogen.sh
+    an 500.10  🔨&u.&Autotools.Generate\ \./configure\.ac          :call planet#project#CopyFile('autotools/configure.ac')<CR>
+    an 500.10  🔨&u.&Autotools.Run\ \./autogen\.sh                 :call planet#term#RunCmd('./autogen.sh')<CR>
+    an 500.10  🔨&u.&Autotools.Run\ \./bootstrap\.sh               :call planet#term#RunCmd('./bootstrap.sh')<CR>
+    an 500.10  🔨&u.&Autotools.Run\ \./&configure                  :call planet#term#RunCmd('./configure')<CR>
+    an 500.10  🔨&u.&Autotools.Set\ ./configure\ Options           :TODO"print ./configure --help & set options in buffer
+    an 500.10  🔨&u.&Autotools.Open\ config\.log                   :e ./config.log<CR>
+    an 500.10  🔨&u.&Autotools.Set\ $CC                            :let $CC=...TODO
+    an 500.10  🔨&u.&Autotools.Set\ $CFLAGS                        :let $CFLAGS=...TODO
+    an 500.10  🔨&u.&Autotools.Set\ $CXX                           :let $CXX...TODO
+    an 500.10  🔨&u.&Autotools.Set\ $CXXFLAGS                      :let $CXXFLAGSDO
+    an 500.10  🔨&u.&Autotools.Set\ $LDFLAGS                       :let $LDFLAGSODO
+    an 500.10  🔨&u.&Autotools.Set\ $CPPFLAGS                      :let $CPPFLAGSDO
+    an 500.10  🔨&u.&Autotools.Set\ $DESTDIR                       :let $DESTDIR DO
     an 500.10  🔨&u.Mak&e.&Make                                    :call planet#term#RunCmd('make')<CR>
     an 500.10  🔨&u.Mak&e.Make\ &All                               :call planet#term#RunCmd('make all')<CR>
     an 500.10  🔨&u.Mak&e.Make\ &Help                              :call planet#term#RunCmd('make help')<CR>
@@ -316,12 +324,12 @@ func! planet#menu#dev#update() abort
     an 500.10  🔨&u.Mak&e.Make\ &Test                              :call planet#term#RunCmd('make test')<CR>
     an 500.10  🔨&u.Mak&e.Make\ &Install                           :call planet#term#RunCmd('make install')<CR>
     an 500.10  🔨&u.Mak&e.Make\ &Uninstall                         :call planet#term#RunCmd('make uninstall')<CR>
-    an 500.10  🔨&u.&KBuild.make\ oldconfig                        :!make<CR>
-    an 500.10  🔨&u.&KBuild.make\ menuconfig                       :!make<CR>
-    an 500.10  🔨&u.&KBuild.make                                   :!make<CR>
-    an 500.10  🔨&u.&KBuild.Edit\ \.config                         :!make<CR>
-    an 500.10  🔨&u.&CMake.Create\ OOT\ Build\ Dir                 :!make<CR>
-    an 500.10  🔨&u.&CMake.Create\ In-Tree\ Build\ Dir             :!make<CR>
+    an 500.10  🔨&u.&KBuild.make\ oldconfig                        :call planet#term#RunCmd('make oldconfig')<CR>
+    an 500.10  🔨&u.&KBuild.make\ menuconfig                       :call planet#term#RunCmdTab('make menuconfig')<CR>
+    an 500.10  🔨&u.&KBuild.make                                   :call planet#term#RunCmd('make')<CR>
+    an 500.10  🔨&u.&KBuild.Edit\ \.config                         :e .config<CR>
+    an 500.10  🔨&u.&CMake.Create\ OOT\ Build\ Dir                 :silent !mkdir -p ../g:PV_cmake_build_dir<CR>
+    an 500.10  🔨&u.&CMake.Create\ In-Tree\ Build\ Dir             :silent !mkdir -p g:PV_cmake_build_dir<CR>
     "FIXME: cmake may have multiple build directories
     an 500.10  🔨&u.&CMake.Cd\ to\ Build\ Directory                :call planet#term#RunCmd('cmake ..')<CR>
     an 500.10  🔨&u.&CMake.Cd\ to\ Source\ Directory               :call planet#term#RunCmd('cmake ..')<CR>
@@ -329,32 +337,32 @@ func! planet#menu#dev#update() abort
     an 500.10  🔨&u.&CMake.Configure\ Tui                          :call planet#term#RunCmdTab('ccmake ..')<CR>
     an 500.10  🔨&u.&CMake.Configure\ Gui                          :call planet#term#RunCmdGui('cmake-gui ..')<CR>
     an 500.10  🔨&u.&CMake.Build                                   :call planet#term#RunCmd('cmake --build .')<CR>
-    an 500.10  🔨&u.&CMake.Clean                                   :call planet#term#RunCmd('cmake --build .')<CR>
+    an 500.10  🔨&u.&CMake.Clean                                   :call planet#term#RunCmd('cmake --build . --target clean')<CR>
     an 500.10  🔨&u.&CMake.Set\ Generator                          :TODO"makefiles, ninja, etc...
     an 500.10  🔨&u.&CMake.Set\ Target                             :TODO
     an 500.10  🔨&u.&CMake.Set\ Build\ Dir                         :TODO"search for ./build* and ../build* folders
-    an 500.10  🔨&u.&CMake.Set\ Build\ Type                        :TODO"search for ./build* and ../build* folders
+    an 500.10  🔨&u.&CMake.Set\ Build\ Type                        :TODO"debug, release, minsizerel, relwithdebuginfo
     an 500.10  🔨&u.&QMake.Set\ DESTDIR                            :!make<CR>
     an 500.10  🔨&u.Scons.Set\ DESTDIR                             :!make<CR>
     an 500.10  🔨&u.Nin&ja.Set\ DESTDIR                            :!make<CR>
     an 500.10  🔨&u.&Meson.Set\ DESTDIR                            :!make<CR>
     an 500.10  🔨&u.Deploy <Nop>
     an disable 🔨&u.Deploy
-    an 500.10  🔨&u.Windeployqt.Build                                    :!make<CR>
-    an 500.10  🔨&u.Macdeployqt.Build                                    :!make<CR>
-    an 500.10  🔨&u.Linuxdeploy.Build                                    :!make<CR>
+    an 500.10  🔨&u.Windeployqt.Build                              :!make<CR>
+    an 500.10  🔨&u.Macdeployqt.Build                              :!make<CR>
+    an 500.10  🔨&u.Linuxdeploy.Build                              :!make<CR>
     an 500.10  🔨&u.Package <Nop>
     an disable 🔨&u.Package
-    an 500.10  🔨&u.fpm.Build                                    :!make<CR>
-    an 500.10  🔨&u.pyInstaller.Build                                    :!make<CR>
+    an 500.10  🔨&u.fpm.Build                                      :!make<CR>
+    an 500.10  🔨&u.pyInstaller.Build                              :!make<CR>
     an 500.10  🔨&u.CPack.Build                                    :!make<CR>
-    an 500.10  🔨&u.AppImage.Build                                    :!make<CR>
-    an 500.10  🔨&u.Snap.Build                                    :!make<CR>
-    an 500.10  🔨&u.FlatPak.Build                                    :!make<CR>
-    an 500.10  🔨&u.pyUpdater.Build                                    :!make<CR>
+    an 500.10  🔨&u.AppImage.Build                                 :!make<CR>
+    an 500.10  🔨&u.Snap.Build                                     :!make<CR>
+    an 500.10  🔨&u.FlatPak.Build                                  :!make<CR>
+    an 500.10  🔨&u.pyUpdater.Build                                :!make<CR>
     an 500.10  🔨&u.Installer <Nop>
     an disable 🔨&u.Installer
-    an 500.10  🔨&u.Qt\ Installer\ Framework.Build                                    :!make<CR>
+    an 500.10  🔨&u.Qt\ Installer\ Framework.Build                 :!make<CR>
     " an 500.10  🔨&u.Choose\ Make\ Target                      :make <C-z>"TODO
     " an 500.10  🔨&u.Rerun\ Previous\ Make                     :make prev_target
     " an 500.10  🔨&u.--1-- <Nop>

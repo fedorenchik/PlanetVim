@@ -1,6 +1,7 @@
 vim9script
 
 com -bar -nargs=? -range=1 -addr=windows Resize exe Resize(<q-mods>, <q-count>, <q-args>)
+
 def Resize(mods = '', count = '', args = ''): string
     var new_args: string = args
     if args =~ '\d\+%'
