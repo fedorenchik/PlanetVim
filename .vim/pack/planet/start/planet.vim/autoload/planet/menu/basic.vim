@@ -21,7 +21,25 @@ func! planet#menu#basic#update() abort
     an 110.60  📁&f.New\ Project.Yocto\ System                 :TODO
     an 110.60  📁&f.New\ Project.ROS\ Package                  :TODO
     an 110.60  📁&f.New\ Project.C++\ DSL                      :TODO"example DSL in C++
-    an 110.60  📁&f.New\ Project.Pythor\ DSL                   :TODO"example DSL in Python
+    an 110.60  📁&f.New\ Project.Python\ DSL                   :TODO"example DSL in Python
+    an 110.60  📁&f.New\ Project.LaTex\ Book                   :TODO
+    an 110.60  📁&f.New\ Project.Git\ Clone\.\.\.              :TODO
+    an 110.60  📁&f.New\ Project.Git\ Init\.\.\.               :TODO
+    an 110.60  📁&f.New\ File.C++\ Class                       :TODO"copy from template
+    an 110.60  📁&f.New\ File.Python\ App                      :TODO"copy from template
+    an 110.60  📁&f.New\ File.Python\ Class                    :TODO"copy from template
+    an 110.60  📁&f.New\ File.Qt\ Designer\ Form\ Class        :TODO"copy from template
+    an 110.60  📁&f.New\ File.SCXML                            :TODO"copy from template
+    an 110.60  📁&f.New\ File.qmodel                           :TODO"copy from template
+    an 110.60  📁&f.New\ File.Qt\ Item\ Model                  :TODO"copy from template
+    an 110.60  📁&f.New\ File.Qt\ Designer\ Form               :TODO"copy from template
+    an 110.60  📁&f.New\ File.Qt\ Resource\ File               :TODO"copy from template
+    an 110.60  📁&f.New\ File.QML                              :TODO"copy from template
+    an 110.60  📁&f.New\ File.QtQuick\ UI\ (\.ui\.qml)         :TODO"copy from template
+    an 110.60  📁&f.New\ File.JS                               :TODO"copy from template
+    an 110.60  📁&f.New\ File.LaTex\ Article                   :TODO"copy from template
+    an 110.60  📁&f.New\ File.LaTex\ Chapter                   :TODO"copy from template
+    an 110.70  📁&f.--1-- <Nop>
     an 110.70  📁&f.--1-- <Nop>
     an 110.80  📁&f.&Open\ File                                :Clap files<CR>
     an 110.80  📁&f.Open\ File\ Dialog                         :browse confirm e<CR>

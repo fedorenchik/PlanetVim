@@ -110,17 +110,28 @@ func! planet#menu#dev#update() abort
     an 500.10  🎚️&{.Yocto.Setup                             :TODO
     an 500.10  🎚️&{.Configuration <Nop>
     an disable 🎚️&{.Configuration
-    an 500.10  🎚️&{.Install\ Qt.TODO                        :TODO
+    an 500.10  🎚️&{.Install\ Qt.Set\ QTDIR                  :TODO
+    an 500.10  🎚️&{.Install\ Qt.Choose\ Version             :aqtinstall ...
     an 500.10  🎚️&{.Install\ Conan\ Pkg.TODO                :TODO
     an 500.10  🎚️&{.Install\ pip\ Pkg.TODO                  :TODO
     an 500.10  🎚️&{.Set\ Compiler.gcc                       :TODO
     an 500.10  🎚️&{.Set\ Compiler.clang                     :TODO
     an 500.10  🎚️&{.Set\ Compiler.emcc\ (wasm,\ emscripten) :TODO
+    an 500.10  🎚️&{.Set\ Cross-Compilation.Raspberry\ Pi    :TODO
+    an 500.10  🎚️&{.Set\ Cross-Compilation.ESP32            :TODO
+    an 500.10  🎚️&{.Set\ Cross-Compilation.Arduino          :TODO
+    an 500.10  🎚️&{.Set\ Cross-Compilation.Jetson\ Nano     :TODO
+    an 500.10  🎚️&{.Set\ Cross-Compilation.BeagleBone\ Black :TODO
+    an 500.10  🎚️&{.Set\ Cross-Compilation.Coral            :TODO
+    an 500.10  🎚️&{.Set\ Cross-Compilation.HiKey970         :TODO
+    an 500.10  🎚️&{.Set\ Cross-Compilation.--1-- <Nop>
     an 500.10  🎚️&{.Set\ Cross-Compilation.Host             :TODO
     an 500.10  🎚️&{.Set\ Cross-Compilation.Target           :TODO
+    an 500.10  🎚️&{.Set\ Cross-Compilation.Sysroot          :TODO
     an 500.10  🎚️&{.Set\ Canadian\ Cross-Compilation.Build  :TODO
     an 500.10  🎚️&{.Set\ Canadian\ Cross-Compilation.Host   :TODO
     an 500.10  🎚️&{.Set\ Canadian\ Cross-Compilation.Target :TODO
+    an 500.10  🎚️&{.Set\ Canadian\ Cross-Compilation.Sysroot :TODO
     an 500.10  🎚️&{.Set\ Cross-Compiler.gcc-mingw           :TODO
     an 500.10  🎚️&{.Set\ Cross-Compiler.gcc-arm             :TODO
     an 500.10  🎚️&{.Set\ Cross-Compiler.gcc-aarch64         :TODO
@@ -149,15 +160,9 @@ func! planet#menu#dev#update() abort
 
     an 500.10  📐&}.Dev\ Tools <Nop>
     an disable 📐&}.Dev\ Tools
-    an 500.10  📐&}.uic                                      :TODO
-    an 500.10  📐&}.rcc                                      :TODO
-    an 500.10  📐&}.flex                                     :TODO
-    an 500.10  📐&}.bison                                    :TODO
-    an 500.10  📐&}.Parser\ Generators                       :TODO
-    an 500.10  📐&}.Qt\ Designer                             :TODO
-    an 500.10  📐&}.Generate\ qt\.conf                       :TODO
-    an 500.10  📐&}.Qt\ Tools.Install\ Qt                    :aqtinstall...
-    an 500.10  📐&}.Qt\ Tools.androiddeployqt                :TODO
+    an 500.10  📐&}.Parser\ Generators.flex                  :TODO
+    an 500.10  📐&}.Parser\ Generators.bison                 :TODO
+    an 500.10  📐&}.Qt\ Tools.Generate\ qt\.conf             :TODO
     an 500.10  📐&}.Qt\ Tools.androidtestrunner              :TODO
     an 500.10  📐&}.Qt\ Tools.assistant                      :TODO
     an 500.10  📐&}.Qt\ Tools.balsam                         :TODO
@@ -185,6 +190,7 @@ func! planet#menu#dev#update() abort
     an 500.10  📐&}.Qt\ Tools.tracegen                       :TODO
     an 500.10  📐&}.Qt\ Tools.uic                            :TODO
     an 500.10  📐&}.Qt\ Tools.Qt\ Creator                    :TODO
+    an 500.10  📐&}.Qt\ Tools.SCXML                          :TODO
     an 500.10  📐&}.Qml.qml                                  :TODO
     an 500.10  📐&}.Qml.qmlcachegen                          :TODO
     an 500.10  📐&}.Qml.qmleasing                            :TODO
@@ -199,6 +205,27 @@ func! planet#menu#dev#update() abort
     an 500.10  📐&}.Qml.qmltime                              :TODO
     an 500.10  📐&}.Qml.qmltyperegistrar                     :TODO
     an 500.10  📐&}.Gtk\ Tools.Glade                         :TODO
+    an 500.10  📐&}.Virtual\ Display\ (Xvfb).Run\ Command\ in\ New\ Instance :call planet#term#RunCmdBg('xvfb-run ...')
+    an 500.10  📐&}.Virtual\ Display\ (Xvfb).--1-- <Nop>
+    an 500.10  📐&}.Virtual\ Display\ (Xvfb).Run\ Command    :call planet#term#RunCmdBg('DISPLAY=$1 cmd...')
+    an 500.10  📐&}.Virtual\ Display\ (Xvfb).View            :call planet#term#RunGuiApp('x11vnc -display $1 -bg -nopw -listen -localhost -xkb && vncviewer -encodings "copyrect tight zrle hextile" localhost:59$1')
+    an 500.10  📐&}.Virtual\ Display\ (Xvfb).Take\ Screenshot :call planet#term#RunCmd('import -display $1 -window -root screenshot.png')
+    an 500.10  📐&}.Virtual\ Display\ (Xvfb).--2-- <Nop>
+    "TODO: use Xming on windows
+    an 500.10  📐&}.Virtual\ Display\ (Xvfb).Start           :call planet#term#RunCmdBg('Xvfb $1 &')
+    an 500.10  📐&}.Virtual\ Display\ (Xvfb).Stop            :TODO
+    an 500.10  📐&}.Virtual\ Display\ (Xvfb).--3-- <Nop>
+    an 500.10  📐&}.Virtual\ Display\ (Xvfb).Set\ Current\ to\ 0<Tab>$DISPLAY=:80 :TODO
+    an 500.10  📐&}.Virtual\ Display\ (Xvfb).Set\ Current\ to\ 1<Tab>$DISPLAY=:81 :TODO
+    an 500.10  📐&}.Virtual\ Display\ (Xvfb).Set\ Current\ to\ 2<Tab>$DISPLAY=:82 :TODO
+    an 500.10  📐&}.Virtual\ Display\ (Xvfb).Set\ Current\ to\ 3<Tab>$DISPLAY=:83 :TODO
+    an 500.10  📐&}.Virtual\ Display\ (Xvfb).Set\ Current\ to\ 4<Tab>$DISPLAY=:84 :TODO
+    an 500.10  📐&}.Virtual\ Display\ (Xvfb).Set\ Current\ to\ 5<Tab>$DISPLAY=:85 :TODO
+    an 500.10  📐&}.Virtual\ Display\ (Xvfb).Set\ Current\ to\ 6<Tab>$DISPLAY=:86 :TODO
+    an 500.10  📐&}.Virtual\ Display\ (Xvfb).Set\ Current\ to\ 7<Tab>$DISPLAY=:87 :TODO
+    an 500.10  📐&}.Virtual\ Display\ (Xvfb).Set\ Current\ to\ 8<Tab>$DISPLAY=:88 :TODO
+    an 500.10  📐&}.Virtual\ Display\ (Xvfb).Set\ Current\ to\ 9<Tab>$DISPLAY=:89 :TODO
+    an 500.10  📐&}.Virtual\ Display\ (Xvfb).Specify\ Custom\ $DISPLAY :TODO
     an 500.10  📐&}.i10n\ &&\ i18n <Nop>
     an disable 📐&}.i10n\ &&\ i18n
     an 500.10  📐&}.lupdate                                  :TODO
@@ -348,9 +375,10 @@ func! planet#menu#dev#update() abort
     an 500.10  🔨&u.&Meson.Set\ DESTDIR                            :!make<CR>
     an 500.10  🔨&u.Deploy <Nop>
     an disable 🔨&u.Deploy
-    an 500.10  🔨&u.Windeployqt.Build                              :!make<CR>
-    an 500.10  🔨&u.Macdeployqt.Build                              :!make<CR>
-    an 500.10  🔨&u.Linuxdeploy.Build                              :!make<CR>
+    an 500.10  🔨&u.Windeployqt.Deploy                             :!make<CR>
+    an 500.10  🔨&u.Macdeployqt.Deploy                             :!make<CR>
+    an 500.10  🔨&u.Linuxdeploy.Deploy                             :!make<CR>
+    an 500.10  🔨&u.Androiddeployqt.Deploy                         :!make<CR>
     an 500.10  🔨&u.Package <Nop>
     an disable 🔨&u.Package
     an 500.10  🔨&u.fpm.Build                                      :!make<CR>

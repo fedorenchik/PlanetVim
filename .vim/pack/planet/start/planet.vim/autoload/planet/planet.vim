@@ -24,12 +24,18 @@ func! planet#planet#SetEasyMode() abort
   set keymodel=startsel,stopsel
   set guioptions-=c
   set guioptions+=r
+  silent! nun b
+  silent! nun B
+  silent! nun e
+  silent! nun E
+  silent! nun f
+  silent! nun F
+  silent! nun ge
+  silent! nun gE
   silent! nun h
   silent! nun j
   silent! nun k
   silent! nun l
-  silent! nun f
-  silent! nun F
   silent! nun t
   silent! nun T
   silent! nun w
@@ -42,12 +48,18 @@ func! planet#planet#SetStandardMode() abort
   set keymodel=
   set guioptions+=c
   set guioptions-=r
+  silent! nun b
+  silent! nun B
+  silent! nun e
+  silent! nun E
+  silent! nun f
+  silent! nun F
+  silent! nun ge
+  silent! nun gE
   silent! nun h
   silent! nun j
   silent! nun k
   silent! nun l
-  silent! nun f
-  silent! nun F
   silent! nun t
   silent! nun T
   silent! nun w
@@ -60,8 +72,14 @@ func! planet#planet#SetSuperChargedMode() abort
   set keymodel=
   set guioptions+=c
   set guioptions-=r
+  nn <silent> b :bn<CR>
+  nn <silent> B :bp<CR>
+  nn <silent> e g;
+  nn <silent> E g,
   nn <silent> f :call PlanetVim_f()<CR>
   nn <silent> F :call PlanetVim_F()<CR>
+  nn <silent> ge 1gt
+  nn <silent> gE :tabl<CR>
   nn <silent> h :call PlanetVim_h()<CR>
   nn <silent> j :lbel<CR>
   nn <silent> k :lab<CR>

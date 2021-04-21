@@ -15,6 +15,9 @@ This many menus because Vim _IS_ powerful, sorry!
 ## Mainline
 
 * Make Vim Discoverable
+* Client Oriented
+* Easy to Use
+* Solve Real-World Problems
 
 ## Which version to use
 
