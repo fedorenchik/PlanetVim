@@ -72,7 +72,7 @@ func! planet#planet#SetSuperChargedMode() abort
   set keymodel=
   set guioptions+=c
   set guioptions-=r
-  nn <silent> b :bn<CR>
+  nn <silent> b :call PlanetVim_W()<CR>
   nn <silent> B :bp<CR>
   nn <silent> e g;
   nn <silent> E g,
@@ -87,7 +87,7 @@ func! planet#planet#SetSuperChargedMode() abort
   nn <silent> t :call PlanetVim_t()<CR>
   nn <silent> T :call PlanetVim_T()<CR>
   nn <silent> w :call PlanetVim_w()<CR>
-  nn <silent> W :call PlanetVim_W()<CR>
+  nn <silent> W :bn<CR>
 endfunc
 
 func! planet#planet#SetPerSessionOptions()

@@ -10,7 +10,6 @@ func! planet#menu#basic#update() abort
     an 110.40  📁&f.New\ &VSplit<Tab>:vnew                     :vnew<CR>
     an 110.50  📁&f.New\ &Tab                                  :confirm tabnew<CR>
     an 110.60  📁&f.New\ GUI\ &Window                          :silent !gvim<CR>
-    an 110.70  📁&f.--1-- <Nop>
     an 110.60  📁&f.New\ Project.Vim\ Plugin                   :TODO
     an 110.60  📁&f.New\ Project.Blender\ Addon                :TODO
     an 110.60  📁&f.New\ Project.Nextcloud\ App                :TODO
@@ -39,7 +38,6 @@ func! planet#menu#basic#update() abort
     an 110.60  📁&f.New\ File.JS                               :TODO"copy from template
     an 110.60  📁&f.New\ File.LaTex\ Article                   :TODO"copy from template
     an 110.60  📁&f.New\ File.LaTex\ Chapter                   :TODO"copy from template
-    an 110.70  📁&f.--1-- <Nop>
     an 110.70  📁&f.--1-- <Nop>
     an 110.80  📁&f.&Open\ File                                :Clap files<CR>
     an 110.80  📁&f.Open\ File\ Dialog                         :browse confirm e<CR>

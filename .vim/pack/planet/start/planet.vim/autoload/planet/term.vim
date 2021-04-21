@@ -12,8 +12,10 @@ endfunc
 " Run shell command in existing (if exists) or new [Output] window.
 " @cmd[in] command to run
 " @this_window[in] if true, run in current window unconditionally
-func! planet#term#RunCmd(cmd, this_window = v:false) abort
-  if ! a:this_window
+" @close_on_exit[in] if true, close current window after cmd terminated
+" @start_hidden[in] if true, do not open new window
+func! planet#term#RunCmd(cmd, this_window = v:false, close_on_exit = v:false, start_hidden = v:false) abort
+  if ! a:this_window && ! a:start_hidden
     let l:winnr = planet#term#FindOutputWindow()
     if l:winnr == -1
       botright 10new
@@ -22,28 +24,38 @@ func! planet#term#RunCmd(cmd, this_window = v:false) abort
       exe l:winnr .. 'wincmd w'
     end
   end
-  let ret = term_start(s:bin_dir .. 'run-command ' .. a:cmd, #{
-        \ term_name: '[Output - ' .. a:cmd .. ']',
-        \ term_rows: 10,
-        \ curwin: v:true,
-        \ norestore: v:true,
-        \ term_kill: "kill",
-        \ })
+  let l:term_opts = #{}
+  let l:term_opts.term_name = '[Output - ' .. a:cmd .. ']'
+  if a:this_window == v:true
+    let l:term_opts.term_rows = 10
+  end
+  let l:term_opts.curwin = v:true
+  if a:start_hidden
+    let l:term_opts.hidden = v:true
+  end
+  let l:term_opts.norestore = v:true
+  let l:term_opts.term_kill = "kill"
+  if a:close_on_exit == v:true
+    let l:term_opts.term_finish = "close"
+  end
+  let ret = term_start(s:bin_dir .. 'run-command ' .. a:cmd, l:term_opts)
   if ret == 0
     echohl Error
     echo "Failed to start commad: " .. a:cmd
     echohl None
     return
   end
-  if ! a:this_window
+  if ! a:this_window && ! a:start_hidden
     wincmd p
   end
 endfunc
 
 " Runs (interactive) shell command in new Tab
+" When command finishes, tab is automatically closed, unless other window was
+" opened in the meantime.
 func! planet#term#RunCmdTab(cmd) abort
   tabnew
-  call planet#term#RunCmd(cmd, v:true)
+  call planet#term#RunCmd(cmd, v:true, v:true)
 endfunc
 
 " Runs vim command in new GVIM Window
@@ -54,6 +66,10 @@ endfunc
 " Run gui command
 func! planet#term#RunGuiApp(app) abort
   silent !nohup a:app >/dev/null 2>&1 &
+endfunc
+
+func! planet#term#RunCmdBg(cmd) abort
+  call planet#term#RunCmd(cmd, v:false, v:false, v:true)
 endfunc
 
 " Finds terminal window in current tab.

@@ -13,11 +13,15 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.&Push                                         :call planet#term#RunCmd('git push')<CR>
     an 700.10  🔀&,.&Add.This\ &File                              :call planet#term#RunCmd('git add ' .. expand('%'))<CR>
     an 700.10  🔀&,.&Add.Current\ &Directory                      :call planet#term#RunCmd('git add .')<CR>
-    an 700.10  🔀&,.&Add.&All                                     :call planet#term#RunCmd('git add --all')<CR>
+    an 700.10  🔀&,.&Add.&All                                     :call planet#term#RunCmd('git add --update')<CR>
+    an 700.10  🔀&,.&Add.All\ with\ &Untracked                    :call planet#term#RunCmd('git add --all')<CR>
+    an 700.10  🔀&,.&Add.&Interactive                             :call planet#term#RunCmd('git add --interactive')<CR>
+    an 700.10  🔀&,.&Add.&Patch                                   :call planet#term#RunCmd('git add --patch')<CR>
     an 700.10  🔀&,.&Add.&Move                                    :TODO
     an 700.10  🔀&,.&Add.&Remove                                  :TODO
     an 700.10  🔀&,.&Add.&Restore                                 :TODO
     an 700.10  🔀&,.&Commit.&Commit                               :call planet#git#Commit(v:false, v:false, v:false)<CR>
+    an 700.10  🔀&,.&Commit.Commit\ &Tool                         :call planet#term#RunCmdBg('git commit')<CR>
     an 700.10  🔀&,.&Commit.Commit\ &File                         :call planet#git#CommitFile(v:false, v:false)<CR>
     an 700.10  🔀&,.&Commit.Save\ &&\ Commit\ File                :call planet#git#CommitFile(v:true, v:false)<CR>
     an 700.10  🔀&,.&Commit.Commit\ &All                          :TODO
