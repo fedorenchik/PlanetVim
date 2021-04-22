@@ -29,9 +29,10 @@ func! planet#term#RunCmd(cmd, this_window = v:false, close_on_exit = v:false, st
   if a:this_window == v:true
     let l:term_opts.term_rows = 10
   end
-  let l:term_opts.curwin = v:true
   if a:start_hidden
     let l:term_opts.hidden = v:true
+  else
+    let l:term_opts.curwin = v:true
   end
   let l:term_opts.norestore = v:true
   let l:term_opts.term_kill = "kill"
@@ -55,7 +56,7 @@ endfunc
 " opened in the meantime.
 func! planet#term#RunCmdTab(cmd) abort
   tabnew
-  call planet#term#RunCmd(cmd, v:true, v:true)
+  call planet#term#RunCmd(a:cmd, v:true, v:true)
 endfunc
 
 " Runs vim command in new GVIM Window
@@ -69,7 +70,7 @@ func! planet#term#RunGuiApp(app) abort
 endfunc
 
 func! planet#term#RunCmdBg(cmd) abort
-  call planet#term#RunCmd(cmd, v:false, v:false, v:true)
+  call planet#term#RunCmd(a:cmd, v:false, v:false, v:true)
 endfunc
 
 " Finds terminal window in current tab.
