@@ -118,6 +118,7 @@ func! planet#menu#basic#update() abort
     an 120.270 📝&e.Indent<Tab>>                               >
     an 120.280 📝&e.Auto\ Indent<Tab>=                         =
     an 120.290 📝&e.Auto\ Indent\ File<Tab>gg=G                gg=G
+    an 120.290 📝&e.Retab\ File<Tab>:retab!                    <Cmd>retab!<CR>
     an 120.300 📝&e.Auto\ Format\ File                         :!clang-format<CR>
     an 120.310 📝&e.--8-- <Nop>
     an 120.320 📝&e.Insert<Tab>i                               i
@@ -207,14 +208,18 @@ func! planet#menu#basic#update() abort
     an 130.260 🔎&/.Current\ \<word\><Tab>g*                 g*
     an 130.270 🔎&/.Current\ \<word\>\ Backwards<Tab>g#      g#
     an 130.280 🔎&/.--7-- <Nop>
-    an 130.290 🔎&/.Previous\ &\ Select<Tab>gN               <Tab>gN
-    an 130.300 🔎&/.Next\ &\ Select<Tab>gn                   <Tab>gn
-    an 130.310 🔎&/.--8-- <Nop>
     an 130.300 🔎&/.Search\ Dialog<Tab>:promptfind           :promptfind<CR>
     an 130.320 🔎&/.Substitute <Nop>
     an disable 🔎&/.Substitute
+    an 130.330 🔎&/.Substitute\ Selection                    :TODO...
+    an 130.280 🔎&/.--8-- <Nop>
     an 130.330 🔎&/.Repeat\ on\ Line<Tab>&                   &
+    an 130.330 🔎&/.Repeat\ on\ Line\ keep\ Flags<Tab>:&&    <Cmd>&&<CR>
     an 130.340 🔎&/.Repeat\ on\ File<Tab>g&                  g&
+    an 130.280 🔎&/.--9-- <Nop>
+    an 130.340 🔎&/.Repeat\ with\ Search\ Pattern<Tab>:~     <Cmd>~<CR>
+    an 130.340 🔎&/.Repeat\ with\ Search\ Pattern\ keep\ Flags<Tab>:~& <Cmd>~&<CR>
+    an 130.280 🔎&/.--10-- <Nop>
     an 130.340 🔎&/.Substitute\ Dialog<Tab>:promptrepl       :promptrepl<CR>
 
     " Selection

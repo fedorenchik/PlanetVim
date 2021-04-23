@@ -353,24 +353,14 @@ nn gZ :tabs<CR>
 nn g: :history<CR>
 nn g. :marks<CR>
 nn g" :registers<CR>
-nn g= :tabnew<CR>
 nn G G$
-nn <silent> h :call PlanetVim_h()<CR>
-nn <silent> j :call PlanetVim_j()<CR>
-nn <silent> k :call PlanetVim_k()<CR>
-nn <silent> l :call PlanetVim_l()<CR>
 nn Q gq
 nn s <Nop>
-nn sb <Cmd>exe "lvimgrep /^\\s*" .. expand('<cword>') .. "/gj %"<CR>
-nn sj :lvimgrep /^.*$/gj %<CR>
-nn sk :lvimgrep /{{{/gj %<CR>
-" fake marker for previous pattern: }}}
-nn sw <Cmd>exe "lvimgrep /" .. expand('<cword>') .. "/gj %"<CR>
+nn sb <Cmd>exe "lvimgrep /^\\s*" .. expand('<cword>') .. "/gj %"<CR><Cmd>lcl<CR>
+nn sj :lvimgrep /^.*$/gj %<CR><Cmd>lcl<CR>
+nn sk :lvimgrep /\v\{\{\{/gj %<CR><Cmd>lcl<CR>
+nn sw <Cmd>exe "lvimgrep /" .. expand('<cword>') .. "/gj %"<CR><Cmd>lcl<CR>
 nn S <Nop>
-nn <silent> t :call PlanetVim_t()<CR>
-nn <silent> T :call PlanetVim_T()<CR>
-nn <silent> w :call PlanetVim_w()<CR>
-nn <silent> W :call PlanetVim_W()<CR>
 nn Y y$
 nn <silent> zr zr:<c-u>setlocal foldlevel?<CR>
 nn <silent> zm zm:<c-u>setlocal foldlevel?<CR>
@@ -1027,8 +1017,10 @@ func! StatusLine(current, width)
   if a:current
     let l:s .= ' %{NearestMethodOrFunction()}'
     let l:s .= crystalline#left_sep('', 'Fill') . ' %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
-    let l:s .= "|%{g:PV_p}"
-    let l:s .= "|%{g:PV_pp}|"
+    if g:PV_mode == 'p'
+      let l:s .= "|%{g:PV_p}"
+      let l:s .= "|%{g:PV_pp}|"
+    end
     let l:s .= "/%{@/}/"
     let l:s .= "%{StatusLine_SearchCount()}"
     let l:s .= "%{exists('*CapsLockStatusline')?CapsLockStatusline():''}"

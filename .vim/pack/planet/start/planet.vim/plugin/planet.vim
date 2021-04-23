@@ -18,27 +18,27 @@ scriptversion 4
 "TODO: Customize tabline-menu when vim bug #7991 is fixed
 "TODO: Add prompt buffer to exec viml commands
 "TODO: menus:
-"C++
-"Python
-"Arduino
-"PlatformIO
-"CMake
-"Meson
-"Conan
-"Qt (uic, moc, rcc, lupdate, lrelease, shiboken)
-"SWIG, 
-"Latex
-"Writing
-"Docker
-"Yocto
-"ROS
-"gdb/lldb
-"cppcheck/clazy/clang-tidy
-"indent/astyle/clang-format
-"LKD: linux kernel development: patches, checkpatch.pl, get-maintainers.sh, send-email
-"kvm,virsh,qemu cli
-"chroot,schroot,conan_venv
-"unreal engine, godot
+"TODO:    C++
+"TODO:    Python
+"TODO:    Arduino
+"TODO:    PlatformIO
+"TODO:    CMake
+"TODO:    Meson
+"TODO:    Conan
+"TODO:    Qt (uic, moc, rcc, lupdate, lrelease, shiboken)
+"TODO:    SWIG, 
+"TODO:    Latex
+"TODO:    Writing
+"TODO:    Docker
+"TODO:    Yocto
+"TODO:    ROS
+"TODO:    gdb/lldb
+"TODO:    cppcheck/clazy/clang-tidy
+"TODO:    indent/astyle/clang-format
+"TODO:    LKD: linux kernel development: patches, checkpatch.pl, get-maintainers.sh, send-email
+"TODO:    kvm,virsh,qemu cli
+"TODO:    chroot,schroot,conan_venv
+"TODO:    unreal engine, godot
 
 aug AugPv_MenuBuffers
 au!
@@ -87,6 +87,17 @@ if ! exists("g:PlanetVim_menus_settings")
 endif
 call planet#menu#settings#update()
 
+if ! exists("g:PV_mode")
+  let g:PV_mode = 's'
+end
+if g:PV_mode == 'e'
+  call planet#planet#SetEasyMode()
+elseif g:PV_mode == 's'
+  call planet#planet#SetStandardMode()
+elseif g:PV_mode == 'p'
+  call planet#planet#SetSuperChargedMode()
+end
+
 " Writing
 an 600.10  ]Writing.Writing <Nop>
 an disable ]Writing.Writing
@@ -97,111 +108,6 @@ an 600.50  ]Writing.Generate\ Sample\ Text        :TODO
 an 600.50  ]Writing.Left\ Align<Tab>:left         :left<CR>
 an 600.50  ]Writing.Center\ Align<Tab>:center     :center<CR>
 an 600.50  ]Writing.Right\ Align<Tab>:right       :right<CR>
-
-"TODO: add mod <Alt> - means search regex, e.g. '\.' when press '.'
-"TODO:    (can use getcharmod()), and change pattern
-"TODO:    '\\V' (very non magic) to '\\v' (very magic)
-let g:PV_p = '\.'
-func! PlanetVim_f()
-  let l:c = getchar()
-  if l:c == 27
-    return
-  end
-  let l:c1 = nr2char(l:c)
-  let g:PV_p = l:c1
-  silent! exe "keepp keepj normal /\\V" .. g:PV_p .. "\<CR>"
-endfunc
-
-func! PlanetVim_F()
-  let l:c = getchar()
-  if l:c == 27
-    return
-  end
-  let l:c1 = nr2char(l:c)
-  let g:PV_p = l:c1
-  silent! exe "keepp keepj normal ?\\V" .. g:PV_p .. "\<CR>"
-endfunc
-
-func! PlanetVim_w()
-  silent! exe "keepp keepj normal /\\V" .. g:PV_p .. "\<CR>"
-endfunc
-
-func! PlanetVim_W()
-  silent! exe "keepp keepj normal ?\\V" .. g:PV_p .. "\<CR>"
-endfunc
-
-let g:PV_pp = '\.\.'
-func! PlanetVim_t()
-  let l:c = getchar()
-  if l:c == 27
-    return
-  end
-  let l:c1 = nr2char(l:c)
-  let l:c = getchar()
-  if l:c == 27
-    return
-  end
-  if l:c != 13
-    let l:c2 = nr2char(l:c)
-    let g:PV_pp = l:c1 .. l:c2
-    silent! exe "keepp keepj normal /\\V" .. g:PV_pp .. "\<CR>"
-  else
-    let g:PV_p = l:c1
-    silent! exe "keepp keepj normal /\\V" .. g:PV_p .. "\<CR>"
-  end
-endfunc
-
-func! PlanetVim_T()
-  let l:c = getchar()
-  if l:c == 27
-    return
-  end
-  let l:c1 = nr2char(l:c)
-  let l:c = getchar()
-  if l:c == 27
-    return
-  end
-  if l:c != 13
-    let l:c2 = nr2char(l:c)
-    let g:PV_pp = l:c1 .. l:c2
-    silent! exe "keepp keepj normal ?\\V" .. g:PV_pp .. "\<CR>"
-  else
-    let g:PV_p = l:c1
-    silent! exe "keepp keepj normal ?\\V" .. g:PV_p .. "\<CR>"
-  end
-endfunc
-
-func! PlanetVim_l()
-  silent! exe "keepp keepj normal /\\V" .. g:PV_pp .. "\<CR>"
-endfunc
-
-func! PlanetVim_h()
-  silent! exe "keepp keepj normal ?\\V" .. g:PV_pp .. "\<CR>"
-endfunc
-
-func! PlanetVim_j()
-  try
-    laf
-  catch
-    silent! lne
-  endtry
-endfunc
-
-func! PlanetVim_k()
-  try
-    lbe
-  catch
-    silent! lp
-  endtry
-endfunc
-
-"TODO: b, B, e, E, ge, gE
-"b - next buffer
-"B - prev buffer
-"e -
-"E -
-"ge - first tab
-"gE - last tab
 
 " Avoid the ":ptag" when there is no word under the cursor, and a few other
 " things. Opens the tag under cursor in Preview window.

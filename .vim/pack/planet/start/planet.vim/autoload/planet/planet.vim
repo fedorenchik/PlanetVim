@@ -6,16 +6,117 @@ if filereadable(expand(g:PV_config))
 endif
 
 func! planet#planet#ConfigUpdate(conf_var) abort
+  let l:value = eval(a:conf_var)
+  if type(l:value) == v:t_string
+    let l:value = "'" .. l:value .. "'"
+  end
   if empty(v:this_session) && filewritable(expand(g:PV_config))
     silent call system('grep "let ' .. a:conf_var .. ' =" ' .. g:PV_config)
     if ! v:shell_error
-      silent call system('sed -i -e "s/^let ' .. a:conf_var .. ' = .*$/let ' .. a:conf_var .. ' = ' .. eval(a:conf_var) .. '/" ' .. g:PV_config)
+      silent call system('sed -i -e "s/^let ' .. a:conf_var .. ' = .*$/let ' .. a:conf_var .. ' = ' .. l:value .. '/" ' .. g:PV_config)
     else
-      silent call system('echo "let ' .. a:conf_var .. ' = ' .. eval(a:conf_var) .. '" >> ' .. g:PV_config)
+      silent call system('echo "let ' .. a:conf_var .. ' = ' .. l:value .. '" >> ' .. g:PV_config)
     endif
   else
-    silent call system('echo "let ' .. a:conf_var .. ' = ' .. eval(a:conf_var) .. '" > ' .. g:PV_config)
+    silent call system('echo "let ' .. a:conf_var .. ' = ' .. l:value .. '" > ' .. g:PV_config)
   endif
+endfunc
+
+"TODO: add mod <Alt> - means search regex, e.g. '\.' when press '.'
+"TODO:    (can use getcharmod()), and change pattern
+"TODO:    '\\V' (very non magic) to '\\v' (very magic)
+let g:PV_p = '\.'
+func! planet#planet#f()
+  let l:c = getchar()
+  if l:c == 27
+    return
+  end
+  let l:c1 = nr2char(l:c)
+  let g:PV_p = l:c1
+  silent! exe "keepp keepj normal /\\V" .. g:PV_p .. "\<CR>"
+endfunc
+
+func! planet#planet#F()
+  let l:c = getchar()
+  if l:c == 27
+    return
+  end
+  let l:c1 = nr2char(l:c)
+  let g:PV_p = l:c1
+  silent! exe "keepp keepj normal ?\\V" .. g:PV_p .. "\<CR>"
+endfunc
+
+func! planet#planet#semicolon()
+  silent! exe "keepp keepj normal /\\V" .. g:PV_p .. "\<CR>"
+endfunc
+
+func! planet#planet#comma()
+  silent! exe "keepp keepj normal ?\\V" .. g:PV_p .. "\<CR>"
+endfunc
+
+let g:PV_pp = '\.\.'
+func! planet#planet#t()
+  let l:c = getchar()
+  if l:c == 27
+    return
+  end
+  let l:c1 = nr2char(l:c)
+  let l:c = getchar()
+  if l:c == 27
+    return
+  end
+  if l:c != 13
+    let l:c2 = nr2char(l:c)
+    let g:PV_pp = l:c1 .. l:c2
+    silent! exe "keepp keepj normal /\\V" .. g:PV_pp .. "\<CR>"
+  else
+    let g:PV_p = l:c1
+    silent! exe "keepp keepj normal /\\V" .. g:PV_p .. "\<CR>"
+  end
+endfunc
+
+func! planet#planet#T()
+  let l:c = getchar()
+  if l:c == 27
+    return
+  end
+  let l:c1 = nr2char(l:c)
+  let l:c = getchar()
+  if l:c == 27
+    return
+  end
+  if l:c != 13
+    let l:c2 = nr2char(l:c)
+    let g:PV_pp = l:c1 .. l:c2
+    silent! exe "keepp keepj normal ?\\V" .. g:PV_pp .. "\<CR>"
+  else
+    let g:PV_p = l:c1
+    silent! exe "keepp keepj normal ?\\V" .. g:PV_p .. "\<CR>"
+  end
+endfunc
+
+func! planet#planet#h()
+  silent! exe "keepp keepj normal ?\\V" .. g:PV_pp .. "\<CR>"
+endfunc
+
+func! planet#planet#l()
+  silent! exe "keepp keepj normal /\\V" .. g:PV_pp .. "\<CR>"
+endfunc
+
+func! planet#planet#j()
+  try
+    laf
+  catch
+    silent! lne
+  endtry
+endfunc
+
+func! planet#planet#k()
+  try
+    lbe
+  catch
+    silent! lp
+  endtry
 endfunc
 
 func! planet#planet#SetEasyMode() abort
@@ -40,6 +141,10 @@ func! planet#planet#SetEasyMode() abort
   silent! nun T
   silent! nun w
   silent! nun W
+  let g:PV_mode = 'e'
+  if empty(v:this_session)
+    call planet#planet#ConfigUpdate('g:PV_mode')
+  endif
 endfunc
 
 func! planet#planet#SetStandardMode() abort
@@ -64,6 +169,10 @@ func! planet#planet#SetStandardMode() abort
   silent! nun T
   silent! nun w
   silent! nun W
+  let g:PV_mode = 's'
+  if empty(v:this_session)
+    call planet#planet#ConfigUpdate('g:PV_mode')
+  endif
 endfunc
 
 func! planet#planet#SetSuperChargedMode() abort
@@ -72,22 +181,26 @@ func! planet#planet#SetSuperChargedMode() abort
   set keymodel=
   set guioptions+=c
   set guioptions-=r
-  nn <silent> b :call PlanetVim_W()<CR>
+  nn <silent> b :call planet#planet#comma()<CR>
   nn <silent> B :bp<CR>
   nn <silent> e g;
   nn <silent> E g,
-  nn <silent> f :call PlanetVim_f()<CR>
-  nn <silent> F :call PlanetVim_F()<CR>
+  nn <silent> f :call planet#planet#f()<CR>
+  nn <silent> F :call planet#planet#F()<CR>
   nn <silent> ge 1gt
   nn <silent> gE :tabl<CR>
-  nn <silent> h :call PlanetVim_h()<CR>
+  nn <silent> h :call planet#planet#h()<CR>
   nn <silent> j :lbel<CR>
   nn <silent> k :lab<CR>
-  nn <silent> l :call PlanetVim_l()<CR>
-  nn <silent> t :call PlanetVim_t()<CR>
-  nn <silent> T :call PlanetVim_T()<CR>
-  nn <silent> w :call PlanetVim_w()<CR>
+  nn <silent> l :call planet#planet#l()<CR>
+  nn <silent> t :call planet#planet#t()<CR>
+  nn <silent> T :call planet#planet#T()<CR>
+  nn <silent> w :call planet#planet#semicolon()<CR>
   nn <silent> W :bn<CR>
+  let g:PV_mode = 'p'
+  if empty(v:this_session)
+    call planet#planet#ConfigUpdate('g:PV_mode')
+  endif
 endfunc
 
 func! planet#planet#SetPerSessionOptions()
