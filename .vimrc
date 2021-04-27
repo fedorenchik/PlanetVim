@@ -78,7 +78,7 @@ set autoindent
 set autoread
 set autowrite
 set autowriteall
-set backspace=start
+set bs=start
 set nobackup
 set backupdir=/tmp
 "TODO: set & show baloons
@@ -356,10 +356,10 @@ nn g" :registers<CR>
 nn G G$
 nn Q gq
 nn s <Nop>
-nn sb <Cmd>exe "lvimgrep /^\\s*" .. expand('<cword>') .. "/gj %"<CR><Cmd>lcl<CR>
-nn sj :lvimgrep /^.*$/gj %<CR><Cmd>lcl<CR>
-nn sk :lvimgrep /\v\{\{\{/gj %<CR><Cmd>lcl<CR>
-nn sw <Cmd>exe "lvimgrep /" .. expand('<cword>') .. "/gj %"<CR><Cmd>lcl<CR>
+nn sb <Cmd>exe "lvimgrep /^\\s*" .. expand('<cword>') .. "/gj %"<CR><Cmd>wincmd p<CR><Cmd>lcl<CR>
+nn sj <Cmd>lvimgrep /^.*$/gj %<CR><Cmd>wincmd p<CR><Cmd>lcl<CR>
+nn sk <Cmd>lvimgrep /\v\{\{\{/gj %<CR><Cmd>wincmd p<CR><Cmd>lcl<CR>
+nn sw <Cmd>exe "lvimgrep /" .. expand('<cword>') .. "/gj %"<CR><Cmd>wincmd p<CR><Cmd>lcl<CR>
 nn S <Nop>
 nn Y y$
 nn <silent> zr zr:<c-u>setlocal foldlevel?<CR>

@@ -1,10 +1,5 @@
 scriptversion 4
 
-let g:PV_config = "$HOME/.vim/planetvimrc.vim"
-if filereadable(expand(g:PV_config))
-  silent exe "source " .. fnameescape(g:PV_config)
-endif
-
 func! planet#planet#ConfigUpdate(conf_var) abort
   let l:value = eval(a:conf_var)
   if type(l:value) == v:t_string
@@ -125,6 +120,8 @@ func! planet#planet#SetEasyMode() abort
   set keymodel=startsel,stopsel
   set guioptions-=c
   set guioptions+=r
+  set bs=indent,eol,nostop
+  set sel=exclusive
   silent! nun b
   silent! nun B
   silent! nun e
@@ -153,6 +150,8 @@ func! planet#planet#SetStandardMode() abort
   set keymodel=
   set guioptions+=c
   set guioptions-=r
+  set bs=start
+  set sel=inclusive
   silent! nun b
   silent! nun B
   silent! nun e
@@ -181,6 +180,8 @@ func! planet#planet#SetSuperChargedMode() abort
   set keymodel=
   set guioptions+=c
   set guioptions-=r
+  set bs=start
+  set sel=inclusive
   nn <silent> b :call planet#planet#comma()<CR>
   nn <silent> B :bp<CR>
   nn <silent> e g;
@@ -190,8 +191,8 @@ func! planet#planet#SetSuperChargedMode() abort
   nn <silent> ge 1gt
   nn <silent> gE :tabl<CR>
   nn <silent> h :call planet#planet#h()<CR>
-  nn <silent> j :lbel<CR>
-  nn <silent> k :lab<CR>
+  nn <silent> j :call planet#planet#j<CR>
+  nn <silent> k :call planet#planet#k<CR>
   nn <silent> l :call planet#planet#l()<CR>
   nn <silent> t :call planet#planet#t()<CR>
   nn <silent> T :call planet#planet#T()<CR>

@@ -1,5 +1,10 @@
 scriptversion 4
 
+let g:PV_config = "$HOME/.vim/planetvimrc.vim"
+if filereadable(expand(g:PV_config))
+  silent exe "source " .. fnameescape(g:PV_config)
+endif
+
 " TODO: $VIMRUNTIME folder
 " TODO: Vim help reference
 " TODO: VS Code
@@ -39,6 +44,8 @@ scriptversion 4
 "TODO:    kvm,virsh,qemu cli
 "TODO:    chroot,schroot,conan_venv
 "TODO:    unreal engine, godot
+"TODO: detect 'rtp' based on v:progname ('pvim') (v:progname for PlanetVim
+"TODO:    package is 'pvim'
 
 aug AugPv_MenuBuffers
 au!

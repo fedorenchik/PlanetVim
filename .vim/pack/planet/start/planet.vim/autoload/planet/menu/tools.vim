@@ -122,7 +122,7 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.Subrepo\ (&x).Init                            :call planet#git#SubrepoInit()<CR>
     an 700.10  🔀&,.Submodule.TODO                                :TODO
     an 700.10  🔀&,.Remote.List                                   :call planet#term#RunCmd('git remote -a')<CR>
-    an 700.10  🔀&,.&Gui.Git&k\ &All                              :silent !nohup gitk --all >/dev/null 2>&1 &<CR>
+    an 700.10  🔀&,.&Gui.Git&k\ All                               :silent !nohup gitk --all >/dev/null 2>&1 &<CR>
     an 700.10  🔀&,.&Gui.Gitk\ &HEAD                              :silent !nohup gitk >/dev/null 2>&1 &<CR>
     an 700.10  🔀&,.&Gui.Gui                                      :silent !nohup git citool >/dev/null 2>&1 &<CR>
     an 700.10  🔀&,.&Gui.Gui&tar                                  :silent !nohup guitar >/dev/null 2>&1 &<CR>
