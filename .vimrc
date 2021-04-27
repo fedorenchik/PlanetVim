@@ -356,10 +356,10 @@ nn g" :registers<CR>
 nn G G$
 nn Q gq
 nn s <Nop>
-nn sb <Cmd>exe "lvimgrep /^\\s*" .. expand('<cword>') .. "/gj %"<CR><Cmd>wincmd p<CR><Cmd>lcl<CR>
-nn sj <Cmd>lvimgrep /^.*$/gj %<CR><Cmd>wincmd p<CR><Cmd>lcl<CR>
-nn sk <Cmd>lvimgrep /\v\{\{\{/gj %<CR><Cmd>wincmd p<CR><Cmd>lcl<CR>
-nn sw <Cmd>exe "lvimgrep /" .. expand('<cword>') .. "/gj %"<CR><Cmd>wincmd p<CR><Cmd>lcl<CR>
+nn sb <Cmd>exe "lvimgrep /^\\s*" .. expand('<cword>') .. "/gj %"<CR>
+nn sj <Cmd>lvimgrep /^/gj %<CR>
+nn sk <Cmd>lvimgrep /\v\{\{\{/gj %<CR>
+nn sw <Cmd>exe "lvimgrep /" .. expand('<cword>') .. "/gj %"<CR>
 nn S <Nop>
 nn Y y$
 nn <silent> zr zr:<c-u>setlocal foldlevel?<CR>
@@ -1277,6 +1277,15 @@ nmap <Leader>N <Plug>MarkConfirmAllClear
 " }}}
 " Plugin: vim-markdown-preview {{{
 let vim_markdown_preview_hotkey='<A-`>'
+" }}}
+" Plugin: vim-qf {{{
+let g:qf_mapping_ack_style = 1
+let g:qf_loclist_window_bottom = 0
+let g:qf_auto_open_quickfix = 0
+let g:qf_auto_open_loclist = 0
+let g:qf_auto_resize = 0
+let g:qf_save_win_view = 0
+let g:qf_shorten_path = 0
 " }}}
 " Plugin: vim-signature {{{
 let g:SignatureWrapJumps = 0

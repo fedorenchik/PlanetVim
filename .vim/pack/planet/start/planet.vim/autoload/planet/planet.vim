@@ -191,8 +191,8 @@ func! planet#planet#SetSuperChargedMode() abort
   nn <silent> ge 1gt
   nn <silent> gE :tabl<CR>
   nn <silent> h :call planet#planet#h()<CR>
-  nn <silent> j :call planet#planet#j<CR>
-  nn <silent> k :call planet#planet#k<CR>
+  nn <silent> j :call planet#planet#j()<CR>
+  nn <silent> k :call planet#planet#k()<CR>
   nn <silent> l :call planet#planet#l()<CR>
   nn <silent> t :call planet#planet#t()<CR>
   nn <silent> T :call planet#planet#T()<CR>
