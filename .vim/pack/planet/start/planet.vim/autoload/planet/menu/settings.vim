@@ -114,7 +114,7 @@ func! planet#menu#settings#update() abort
     an 990.100 ❔&?.Add\ Feature\ Request                      :silent !xdg-open 'https://github.com/fedorenchik/PlanetVim/issues/new?assignees=&labels=enhancement&template=feature_request.md&title='<CR>
     an 990.100 ❔&?.Report\ PlanetVim\ &Issue                  :silent !xdg-open 'https://github.com/fedorenchik/PlanetVim/issues/new?assignees=&labels=&template=bug_report.md&title'=<CR>
     an 990.110 ❔&?.--3-- <Nop>
-    an 990.110 ❔&?.Others.Emergency\ Exit                     :call PlanetVim_EmergencyExit()<CR>
+    an 990.110 ❔&?.Others.Emergency\ Exit                     :call planet#planet#EmergencyExit()<CR>
     an 990.110 ❔&?.--4-- <Nop>
     an 990.110 ❔&?.&Close\ Help\ Window                       :helpclose<CR>
     an 990.110 ❔&?.--5-- <Nop>

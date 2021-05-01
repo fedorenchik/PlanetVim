@@ -9,20 +9,22 @@ def! g:GuiTabLabel(): string
   end
 
   var m = ''
-  var set_term = false
   var set_mod = false
+  var set_lcd = false
+  var winnr = 1
   for bufnr in bufnrlist
     if getbufvar(bufnr, "&buftype") ==# 'terminal'
       m = '!' .. m
-      set_term = true
     end
-    if getbufvar(bufnr, "&buftype") !=# 'terminal' && getbufvar(bufnr, "&modified") && !set_mod
+    if getbufvar(bufnr, "&buftype") !=# 'terminal' && getbufvar(bufnr, "&modified") && ! set_mod
       m ..= '+'
       set_mod = true
     end
-    if set_term && set_mod
-      break
+    if haslocaldir(winnr) == 1 && ! set_lcd
+      m ..= '-'
+      set_lcd = true
     end
+    winnr += 1
   endfor
   l ..= m
   l ..= ' '

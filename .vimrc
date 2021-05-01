@@ -595,6 +595,8 @@ command -bar -nargs=? -complete=help HelpCurwin execute planet#help#Curwin(<q-ar
 " }}}
 " PopUp Menus: {{{
 
+"TODO: <RightMouse>, <C-RightMouse>, <S-RightMouse>, <A-RightMouse> menus
+"TODO: <C-MiddleMouse>, <S-MiddleMouse>, <A-MiddleMouse> menus
 if has("spell")
   " Spell suggestions in the popup menu.  Note that this will slow down the
   " appearance of the menu!
