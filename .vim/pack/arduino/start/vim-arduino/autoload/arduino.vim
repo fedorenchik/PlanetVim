@@ -2,6 +2,7 @@ if (exists('g:loaded_arduino_autoload') && g:loaded_arduino_autoload)
     finish
 endif
 let g:loaded_arduino_autoload = 1
+let s:has_cli = executable('arduino-cli') == 1
 if has('win64') || has('win32') || has('win16')
   echoerr "vim-arduino does not support windows :("
   finish
@@ -19,6 +20,7 @@ else
   let s:TERM = '!'
 endif
 let s:hardware_dirs = {}
+python3 import json
 
 " Initialization {{{1
 " Set up all user configuration variables
@@ -39,6 +41,9 @@ function! arduino#InitializeConfig() abort
   endif
   if !exists('g:arduino_args')
     let g:arduino_args = '--verbose-upload'
+  endif
+  if !exists('g:arduino_cli_args')
+    let g:arduino_cli_args = '-v'
   endif
   if !exists('g:arduino_serial_cmd')
     let g:arduino_serial_cmd = 'screen {port} {baud}'
@@ -61,7 +66,7 @@ function! arduino#InitializeConfig() abort
   endif
 
   if !exists('g:arduino_run_headless')
-    let g:arduino_run_headless = executable('Xvfb') ? 1 : 0
+    let g:arduino_run_headless = executable('Xvfb') == 1
   endif
 
   if !exists('g:arduino_serial_port_globs')
@@ -71,11 +76,20 @@ function! arduino#InitializeConfig() abort
                                       \'/dev/tty.usbserial*',
                                       \'/dev/tty.wchusbserial*']
   endif
+  if !exists('g:arduino_use_cli')
+    let g:arduino_use_cli = s:has_cli
+  elseif g:arduino_use_cli && !s:has_cli
+    echoerr 'arduino-cli: command not found'
+  endif
   call arduino#ReloadBoards()
 endfunction
 
 " Boards and programmer definitions {{{1
 function! arduino#ReloadBoards() abort
+  " TODO in the future if we're using arduino-cli we shouldn't have to do this,
+  " but at the moment I'm having issues where `arduino-cli board details
+  " adafruit:avr:gemma --list-programmers` is empty
+
   " First let's search the arduino system install for boards
   " The path looks like /hardware/<package>/<arch>/boards.txt
   let arduino_dir = arduino#GetArduinoDir()
@@ -171,6 +185,24 @@ function! arduino#GetBuildPath() abort
   return l:path
 endfunction
 
+function! arduino#GetCLICompileCommand(...) abort
+  let cmd = 'arduino-cli compile -b ' . g:arduino_board
+  let port = arduino#GetPort()
+  if !empty(port)
+    let cmd = cmd . ' -p ' . port
+  endif
+  if !empty(g:arduino_programmer)
+    let cmd = cmd . ' -P ' . g:arduino_programmer
+  endif
+  let l:build_path = arduino#GetBuildPath()
+  if !empty(l:build_path)
+    let cmd = cmd . ' --build-path "' . l:build_path . '"'
+  endif
+  if a:0
+    let cmd = cmd . " " . a:1
+  endif
+  return cmd . " " . g:arduino_cli_args . ' "' . expand('%:p') . '"'
+endfunction
 
 function! arduino#GetArduinoCommand(cmd) abort
   let arduino = arduino#GetArduinoExecutable()
@@ -197,33 +229,69 @@ endfunction
 
 function! arduino#GetBoards() abort
   let boards = []
-  for [dir,meta] in items(s:hardware_dirs)
-    if !isdirectory(dir)
-      continue
-    endif
-    let filename = dir . '/boards.txt'
-    if !filereadable(filename)
-      continue
-    endif
-    let lines = readfile(filename)
-    for line in lines
-      if line =~? '^[^.]*\.name=.*$'
-        let linesplit = split(line, '\.')
-        let board = linesplit[0]
-        let linesplit = split(line, '=')
-        let name = linesplit[1]
-        let board = meta.package . ':' . meta.arch . ':' . board
-        if index(boards, board) == -1
-          call add(boards, board)
-        endif
-      endif
+  if g:arduino_use_cli
+    let boards_data = s:get_json_output('arduino-cli board listall --format json')
+    for board in boards_data['boards']
+      call add(boards, {
+            \ 'label': board['name'],
+            \ 'value': board['fqbn']
+            \ })
     endfor
-    unlet dir meta
-  endfor
+  else
+    let seen = {}
+    for [dir,meta] in items(s:hardware_dirs)
+      if !isdirectory(dir)
+        continue
+      endif
+      let filename = dir . '/boards.txt'
+      if !filereadable(filename)
+        continue
+      endif
+      let lines = readfile(filename)
+      for line in lines
+        if line =~? '^[^.]*\.name=.*$'
+          let linesplit = split(line, '\.')
+          let board = linesplit[0]
+          let linesplit = split(line, '=')
+          let name = linesplit[1]
+          let board = meta.package . ':' . meta.arch . ':' . board
+          if index(boards, board) == -1 && !has_key(seen, board)
+            let seen[board] = 1
+            call add(boards, {
+                  \ 'label': name,
+                  \ 'value': board
+                  \ })
+          endif
+        endif
+      endfor
+      unlet dir meta
+    endfor
+  endif
+  call sort(boards, 's:ChooserItemOrder')
   return boards
 endfunction
 
 function! arduino#GetBoardOptions(board) abort
+  if g:arduino_use_cli
+    let ret = {}
+    let data = s:get_json_output('arduino-cli board details ' . a:board . ' --format json')
+    if !has_key(data, 'config_options')
+      return ret
+    endif
+    let opts = data['config_options']
+    for opt in opts
+      let values = []
+      for entry in opt['values']
+        call add(values, {
+          \ 'label': entry['value_label'],
+          \ 'value': entry['value']
+          \ })
+      endfor
+      let ret[opt['option']] = values
+    endfor
+    return ret
+  endif
+
   " Board will be in the format package:arch:board
   let [package, arch, boardname] = split(a:board, ':')
 
@@ -267,6 +335,19 @@ endfunction
 
 function! arduino#GetProgrammers() abort
   let programmers = []
+  if g:arduino_use_cli
+    let data = s:get_json_output('arduino-cli board details ' . g:arduino_board . ' --list-programmers --format json')
+    for entry in data['programmers']
+      call add(programmers, {
+            \ 'label': entry['name'],
+            \ 'value': entry['id'],
+            \ })
+    endfor
+    " I'm running into some issues with 3rd party boards (e.g. adafruit:avr:gemma) where the programmer list is empty. If so, fall back to the hardware directory method
+    if !empty(programmers)
+      return sort(programmers, 's:ChooserItemOrder')
+    endif
+  endif
   for [dir,meta] in items(s:hardware_dirs)
     if !isdirectory(dir)
       continue
@@ -291,13 +372,17 @@ function! arduino#GetProgrammers() abort
 endfunction
 
 function! arduino#RebuildMakePrg() abort
-  let &l:makeprg = arduino#GetArduinoCommand("--verify")
+  if g:arduino_use_cli
+    let &l:makeprg = arduino#GetCLICompileCommand()
+  else
+    let &l:makeprg = arduino#GetArduinoCommand("--verify")
+  endif
 endfunction
 
-function! s:BoardOrder(b1, b2) abort
-  let c1 = split(a:b1, ':')[2]
-  let c2 = split(a:b2, ':')[2]
-  return c1 == c2 ? 0 : c1 > c2 ? 1 : -1
+function! s:ChooserItemOrder(i1, i2) abort
+  let l1 = has_key(a:i1, 'label') ? a:i1['label'] : a:i1['value']
+  let l2 = has_key(a:i2, 'label') ? a:i2['label'] : a:i2['value']
+  return l1 == l2 ? 0 : l1 > l2 ? 1 : -1
 endfunction
 
 " Port selection {{{2
@@ -330,7 +415,6 @@ function! arduino#ChooseBoard(...) abort
     return
   endif
   let boards = arduino#GetBoards()
-  call sort(boards, 's:BoardOrder')
   call arduino#Choose('Arduino Board', boards, 'arduino#SelectBoard')
 endfunction
 
@@ -405,7 +489,11 @@ function! arduino#SetBoard(board, ...) abort
 endfunction
 
 function! arduino#Verify() abort
-  let cmd = arduino#GetArduinoCommand("--verify")
+  if g:arduino_use_cli
+    let cmd = arduino#GetCLICompileCommand()
+  else
+    let cmd = arduino#GetArduinoCommand("--verify")
+  endif
   if g:arduino_use_slime
     call slime#send(cmd."\r")
   else
@@ -415,12 +503,16 @@ function! arduino#Verify() abort
 endfunction
 
 function! arduino#Upload() abort
-  if g:arduino_upload_using_programmer
-    let cmd_options = "--upload --useprogrammer"
+  if g:arduino_use_cli
+    let cmd = arduino#GetCLICompileCommand('-u')
   else
-    let cmd_options = "--upload"
+    if g:arduino_upload_using_programmer
+      let cmd_options = "--upload --useprogrammer"
+    else
+      let cmd_options = "--upload"
+    endif
+    let cmd = arduino#GetArduinoCommand(cmd_options)
   endif
-  let cmd = arduino#GetArduinoCommand(cmd_options)
   if g:arduino_use_slime
     call slime#send(cmd."\r")
   else
@@ -506,46 +598,91 @@ endfunction
 "}}}2
 
 " Utility functions {{{1
-"
+
+function! s:get_json_output(cmd) abort
+  let output_str = system(a:cmd)
+  return py3eval('json.loads(vim.eval("output_str"))')
+endfunction
+
 let s:fzf_counter = 0
 function! s:fzf_leave(callback, item)
   call function(a:callback)(a:item)
   let s:fzf_counter -= 1
 endfunction
 function! s:mk_fzf_callback(callback)
-  return { item -> s:fzf_leave(a:callback, item) }
+  return { item -> s:fzf_leave(a:callback, s:ChooserValueFromLabel(item)) }
 endfunction
 
-function! arduino#Choose(title, items, callback) abort
+function! s:ConvertItemsToLabels(items) abort
+  let longest = 1
+  for item in a:items
+    if has_key(item, 'label')
+      let longest = max([longest, strchars(item['label'])])
+    endif
+  endfor
+  return map(copy(a:items), 's:ChooserItemLabel(v:val, ' . longest . ')')
+endfunction
+
+function! s:ChooserItemLabel(item, ...) abort
+  let pad_amount = a:0 ? a:1 : 0
+  if has_key(a:item, 'label')
+    let label = a:item['label']
+    let spacing = 1 + max([pad_amount - strchars(label), 0])
+    return label . repeat(' ', spacing) . '[' . a:item['value'] . ']'
+  endif
+  return a:item['value']
+endfunction
+
+function! s:ChooserValueFromLabel(label) abort
+  " The label may be in the format 'label [value]'.
+  " If so, we need to parse out the value
+  let groups = matchlist(a:label, '\[\(.*\)\]$')
+  if empty(groups)
+    return a:label
+  else
+    return groups[1]
+  endif
+endfunction
+
+" items should be a list of dictionary items with the following keys:
+"   label   (optional) The string to display
+"   value   The corresponding value passed to the callback
+" items may also be a raw list of strings. They will be treated as values
+function! arduino#Choose(title, raw_items, callback) abort
+  let items = []
+  let dict_type = type({})
+  for item in a:raw_items
+    if type(item) == dict_type
+      call add(items, item)
+    else
+      call add(items, {'value': item})
+    endif
+  endfor
+
   if g:arduino_ctrlp_enabled
     let ext_data = get(g:ctrlp_ext_vars, s:ctrlp_idx)
     let ext_data.lname = a:title
-    let s:ctrlp_list = a:items
+    let s:ctrlp_list = items
     let s:ctrlp_callback = a:callback
     call ctrlp#init(s:ctrlp_id)
   elseif g:arduino_fzf_enabled
     let s:fzf_counter += 1
-    call fzf#run({'source':a:items, 'sink':s:mk_fzf_callback(a:callback), 'options':'--prompt="'.a:title.': "'})
-    " neovim got a problem with startinsert for the second fzf call, therefore feedkeys("i")
-    " see https://github.com/junegunn/fzf/issues/426
-    " see https://github.com/junegunn/fzf.vim/issues/21
-    if has("nvim") && mode() != "i" && s:fzf_counter > 1
-      call feedkeys('i')
-    endif
+    call fzf#run({
+          \ 'source': s:ConvertItemsToLabels(items),
+          \ 'sink': s:mk_fzf_callback(a:callback),
+          \ 'options': '--prompt="'.a:title.': "'
+          \ })
   else
-    let labels = ["   " . a:title]
-    let idx = 1
-    for item in a:items
-      if idx<10
-        call add(labels, " " . idx . ") " . item)
-      else
-        call add(labels, idx . ") " . item)
-      endif
-      let idx += 1
-    endfor
+    let labels = s:ConvertItemsToLabels(items)
+    call map(labels, {i, l ->
+          \ i < 9
+          \   ? ' '.(i+1).') '.l
+          \   : (i+1).') '.l
+          \ })
+    let labels = ["   " . a:title] + labels
     let choice = inputlist(labels)
     if choice > 0
-      call call(a:callback, [a:items[choice-1]])
+      call call(a:callback, [items[choice-1]['value']])
     endif
   endif
 endfunction
@@ -604,11 +741,14 @@ function! arduino#GetInfo() abort
   echo "Baud rate     : " . g:arduino_serial_baud
   echo "Hardware dirs : " . dirs
   echo "Verify command: " . arduino#GetArduinoCommand("--verify")
+  echo "CLI command   : " . arduino#GetCLICompileCommand()
 endfunction
 
 " Ctrlp extension {{{1
 if exists('g:ctrlp_ext_vars')
-  let g:arduino_ctrlp_enabled = 1
+  if !exists('g:arduino_ctrlp_enabled')
+    let g:arduino_ctrlp_enabled = 1
+  endif
   let s:ctrlp_idx = len(g:ctrlp_ext_vars)
   call add(g:ctrlp_ext_vars, {
     \ 'init': 'arduino#ctrlp_GetData()',
@@ -624,16 +764,17 @@ else
 endif
 
 function! arduino#ctrlp_GetData() abort
-  return s:ctrlp_list
+  return s:ConvertItemsToLabels(s:ctrlp_list)
 endfunction
 
 function! arduino#ctrlp_Callback(mode, str) abort
   call ctrlp#exit()
-  call call(s:ctrlp_callback, [a:str])
+  let value = s:ChooserValueFromLabel(a:str)
+  call call(s:ctrlp_callback, [value])
 endfunction
 
 " fzf extension {{{1
-if exists("*fzf#run")
+if exists("*fzf#run") && !exists('g:arduino_fzf_enabled')
   let g:arduino_fzf_enabled = 1
 else
   let g:arduino_fzf_enabled = 0
