@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/tpope/vim-dotenv.git
+	branch = master
+	commit = ad873f79500bb8bd057425814e8c2f83eac5022c
+	parent = 7eb5b7db8a1631728fc22a57bb170df898417555
+	method = merge
+	cmdver = 0.4.3
