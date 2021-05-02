@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/prabirshrestha/asyncomplete-tags.vim.git
 	branch = master
-	commit = fb48ae7faeb77a1d741616c8fc89b26cb712c6e3
-	parent = 086f2a3e0a8b2a615d91afe93dec2a5e6b9cbfa6
+	commit = 041af0565f2c16634277cd29d2429c573af1dac4
+	parent = 36f3ed688f9da2599de8d1bb0faa9bd8cdaba106
 	method = merge
 	cmdver = 0.4.3
