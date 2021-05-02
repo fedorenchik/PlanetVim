@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/t9md/vim-choosewin.git
 	branch = master
-	commit = 1ca7da94aa1b8761f4212194e3c55e4a080d6525
-	parent = 45692c49fc446c52a7ba3763a6eaa3088588b06b
+	commit = 839da609d9b811370216bdd9d4512ec2d0ac8644
+	parent = 09d6b268fc21a9ae92a6a27139325b766bd713ec
 	method = merge
 	cmdver = 0.4.3
