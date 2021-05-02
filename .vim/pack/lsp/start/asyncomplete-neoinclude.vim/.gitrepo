@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/kyouryuukunn/asyncomplete-neoinclude.vim.git
 	branch = master
-	commit = de8e478694862874a66d8e047f34f8c4083c3989
-	parent = 18b913c88d726890a0a6a477e52fb1b2add04fb1
+	commit = 26c676711087e3bd80e398a49f9cb6692b2799e8
+	parent = 9ebf1e87e116513ccacf0bc13d595f66b40498a8
 	method = merge
 	cmdver = 0.4.3
