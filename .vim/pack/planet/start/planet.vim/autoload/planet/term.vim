@@ -26,7 +26,7 @@ func! planet#term#RunCmd(cmd, this_window = v:false, close_on_exit = v:false, st
   end
   let l:term_opts = #{}
   let l:term_opts.term_name = '[Output - ' .. a:cmd .. ']'
-  if a:this_window == v:true
+  if ! a:this_window
     let l:term_opts.term_rows = 10
   end
   if a:start_hidden
@@ -69,6 +69,7 @@ func! planet#term#RunGuiApp(app) abort
   silent !nohup a:app >/dev/null 2>&1 &
 endfunc
 
+" Run command in background (do not open any windows)
 func! planet#term#RunCmdBg(cmd) abort
   call planet#term#RunCmd(a:cmd, v:false, v:false, v:true)
 endfunc
