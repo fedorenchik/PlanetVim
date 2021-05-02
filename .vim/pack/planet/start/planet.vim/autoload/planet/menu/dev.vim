@@ -149,7 +149,7 @@ func! planet#menu#dev#update() abort
     an 500.10  🎚️&{.&Env.Set\ Env\ Var                      <Cmd>TODO
     an 500.10  🎚️&{.&Env.Edit\ Env\ in\ Buffer              <Cmd>call planet#env#BufferFromCmd('env')<CR>
     an 500.10  🎚️&{.&Env.Edit\ \.env                        <Cmd>e .env<CR>
-    an 500.10  🎚️&{.&Env.Source\ \.env                      <Cmd>TODO
+    an 500.10  🎚️&{.&Env.Source\ \.env                      <Cmd>Dotenv .env<CR>
     an 500.10  🎚️&{.&Direnv.&Edit\ (or\ Create)\ \.envrc    <Cmd>EditEnvrc<CR>
     an 500.10  🎚️&{.&Direnv.&Allow\ Here                    <Cmd>call planet#term#RunCmd('direnv allow')<CR>
     an 500.10  🎚️&{.&Direnv.&Run\ \.envrc                   <Cmd>DirenvExport<CR>

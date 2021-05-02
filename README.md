@@ -33,5 +33,5 @@ robust)
 Branches: stable, develop, testing
 
 PlanetVim does not hide tools that it uses, just makes them easy to use and
-discoverable, e.g. generally it will show which commands it runs and print
-commands' output.
+discoverable, e.g. generally it will show which command it runs and print
+command's output, CWD and exit status.
