@@ -2,13 +2,6 @@ scriptversion 4
 
 let s:bin_dir = expand('<sfile>:p:h:h:h')->resolve() .. '/bin/'
 
-func! planet#term#RunScript(cmd) abort
-  "TODO: reuse existing window
-  exe 'botright term ++norestore ++kill=kill ++rows=10 ' .. s:bin_dir .. a:cmd
-  set winfixheight winfixwidth
-  wincmd p
-endfunc
-
 " Run shell command in existing (if exists) or new [Output] window.
 " @cmd[in] command to run
 " @this_window[in] if true, run in current window unconditionally
@@ -49,6 +42,10 @@ func! planet#term#RunCmd(cmd, this_window = v:false, close_on_exit = v:false, st
   if ! a:this_window && ! a:start_hidden
     wincmd p
   end
+endfunc
+
+func! planet#term#RunScript(cmd) abort
+  call planet#term#RunCmd(s:bin_dir .. a:cmd)
 endfunc
 
 " Runs (interactive) shell command in new Tab

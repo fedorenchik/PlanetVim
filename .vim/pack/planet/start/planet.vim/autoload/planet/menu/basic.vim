@@ -39,39 +39,39 @@ func! planet#menu#basic#update() abort
     an 110.60  📁&f.New\ File.LaTex\ Article                   :TODO"copy from template
     an 110.60  📁&f.New\ File.LaTex\ Chapter                   :TODO"copy from template
     an 110.70  📁&f.--1-- <Nop>
-    an 110.80  📁&f.&Open\ File                                :Clap files<CR>
+    an 110.80  📁&f.Choose\ File                               :Clap files<CR>
     an 110.80  📁&f.Open\ File\ Dialog                         :browse confirm e<CR>
     an 110.90  📁&f.Open\ &File\ Manager<Tab>-                 :Fern . -reveal=%<CR>
     an 110.100 📁&f.File\ &Manager\ Side\ Bar                  :Fern . -reveal=% -drawer -toggle<CR>
-    an 110.110 📁&f.Open\ &Recent                              :Clap history<CR>
+    an 110.110 📁&f.Choose\ &Recent                            :Clap history<CR>
     an 110.110 📁&f.QF\ &Recent                                :call planet#file#OldFilesQF()<CR>
     an 110.120 📁&f.F&ind<Tab>:find                            :find 
-    an 110.120 📁&f.F&ind\ in\ Tab<Tab>:tabfind                :tabfind 
+    an 110.230 📁&f.Advanced.Open\ File\ under\ Cursor<Tab>gF           gF
+    an 110.240 📁&f.Advanced.Split\ Open\ File\ under\ Cursor<Tab>+F    <C-w>F
+    an 110.250 📁&f.Advanced.Tab\ Open\ File\ under\ Cursor<Tab>+gF     <C-w>gF
     an 110.110 📁&f.Advanced.Open\ Read\ Only                  :browse view<CR>
     an 110.110 📁&f.Advanced.Split\ Read\ Only                 :browse sview<CR>
     an 110.110 📁&f.Advanced.VSplit\ Read\ Only                :browse view<CR>
     an 110.110 📁&f.Advanced.Tab\ Read\ Only                   :browse view<CR>
-    an 110.110 📁&f.Advanced.Split\ Find                       :sfind<CR>
+    an 110.110 📁&f.Advanced.Split\ Find                       :sfind 
+    an 110.120 📁&f.Advanced.F&ind\ in\ Tab<Tab>:tabfind       :tabfind 
     an 110.130 📁&f.--2-- <Nop>
     an 110.140 📁&f.&Save<Tab>:w                               :if expand("%") == ""<Bar>browse confirm w<Bar>else<Bar>confirm up<Bar>endif<CR>
     an 110.150 📁&f.Save\ &As\.\.\.<Tab>:saveas                :browse confirm saveas<CR>
     an <silent> 110.160 📁&f.Save\ A&ll<Tab>:wall              :silent confirm wall<Bar>echohl Todo<Bar>echo "All Saved"<Bar>echohl None<CR>
     an 110.170 📁&f.--3-- <Nop>
+    an 110.170 📁&f.Toggle\ AutoSave                           :TODO
+    an 110.170 📁&f.--4-- <Nop>
     an 110.180 📁&f.Export\ (Selected)\ as\ HTML               :TOhtml<CR>
     an 110.180 📁&f.Convert\ to\ HTML                          :runtime syntax/2html.vim<CR>
-    an 110.190 📁&f.--4-- <Nop>
+    an 110.190 📁&f.--5-- <Nop>
     am 110.200 📁&f.&Previous\ in\ Folder<Tab>[f               [f
     am 110.210 📁&f.&Next\ in\ Folder<Tab>]f                   ]f
-    an 110.220 📁&f.--5-- <Nop>
-    an 110.230 📁&f.Open\ File\ under\ Cursor<Tab>gF           gF
-    an 110.240 📁&f.Split\ Open\ File\ under\ Cursor<Tab>+F    <C-w>F
-    an 110.250 📁&f.Tab\ Open\ File\ under\ Cursor<Tab>+gF     <C-w>gF
-    an 110.260 📁&f.--6-- <Nop>
+    an 110.220 📁&f.--6-- <Nop>
     an 110.270 📁&f.SudoSave                                   :SudoWrite<CR>
     an 110.280 📁&f.Rename                                     :browse confirm Rename<CR>
     an 110.290 📁&f.Change\ File\ Permissions                  :Chmod 0755
     an 110.300 📁&f.Delete\ From\ Disk                         :Delete!<CR>
-    an 110.300 📁&f.--7-- <Nop>
     an 110.310 📁&f.Mkdir                                      :Mkdir! <C-z>
     an 110.320 📁&f.Cd<Tab>:cd                                 :cd <C-z>
     an 110.330 📁&f.Other\ Cd.Temp\ Cd\ to\ Project\ Root\ in\ Window :TODO"lcd to project root, but back to global cwd on au WinLeave <buffer> <once>
@@ -87,7 +87,6 @@ func! planet#menu#basic#update() abort
     an 110.330 📁&f.Other\ Cd.Clear\ Local\ cd                 :cd .<CR>
     an 110.330 📁&f.Other\ Cd.Clear\ Local\ cd\ in\ Tab        :windo cd .<CR>
     an 110.330 📁&f.Other\ Cd.Clear\ Local\ cd\ Globally       :tabdo windo cd .<CR>
-    an 110.350 📁&f.--8-- <Nop>
     an 110.360 📁&f.&Close<Tab>:bdelete                        :bdelete<CR>
 
     " Edit

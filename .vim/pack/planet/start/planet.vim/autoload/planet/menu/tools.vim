@@ -7,7 +7,6 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.Git <Nop>
     an disable 🔀&,.Git
     an 700.10  🔀&,.&Status                                       :call planet#term#RunCmd('git status --short --branch --show-stash --untracked-files=all')<CR>
-    an 700.10  🔀&,.--1-- <Nop>
     an 700.10  🔀&,.&Fetch                                        :call planet#term#RunCmd('git fetch --all --tags')<CR>
     an 700.10  🔀&,.P&ull                                         :call planet#term#RunCmd('git pull --ff-only --all')<CR>
     an 700.10  🔀&,.&Push                                         :call planet#term#RunCmd('git push')<CR>
@@ -26,7 +25,6 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.&Commit.Save\ &&\ Commit\ File                :call planet#git#CommitFile(v:true, v:false)<CR>
     an 700.10  🔀&,.&Commit.Commit\ &All                          :TODO
     an 700.10  🔀&,.&Commit.Commit\ All\ with\ Untracked          :TODO
-    "TODO: commit with default editor
     an 700.10  🔀&,.&Commit.--2-- <Nop>
     an 700.10  🔀&,.&Commit.AutoCommit\ File                      :call planet#git#CommitFile(v:false)<CR>
     an 700.10  🔀&,.&Commit.Save\ &&\ AutoCommit\ File            :call planet#git#CommitFile()<CR>
@@ -58,10 +56,6 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.&Merge.Fast-Forward\ Only                     :TODO
     an 700.10  🔀&,.&Merge.Non\ Fast-Forward\ Only                :TODO
     an 700.10  🔀&,.Rebase.On\ Default\ Branch                    :TODO
-    an 700.10  🔀&,.Reflog.List                                   :call planet#term#RunCmd('git reflog')<CR>
-    an 700.10  🔀&,.Reset.Soft                                    :call planet#term#RunCmd('git reset --soft HEAD~1')<CR>
-    an 700.10  🔀&,.Reset.Reset                                   :call planet#term#RunCmd('git reset HEAD~1')<CR>
-    an 700.10  🔀&,.Reset.Hard                                    :call planet#term#RunCmd('git reset --hard HEAD~1')<CR>
     an 700.10  🔀&,.Stash\ (&j).Stash                             :call planet#term#RunCmd('git stash')<CR>
     an 700.10  🔀&,.Stash\ (&j).List                              :call planet#term#RunCmd('git stash list')<CR>
     an 700.10  🔀&,.Stash\ (&j).Show                              :call planet#term#RunCmd('git stash show')<CR>
@@ -92,7 +86,6 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.&Diff.&Stat                                   :call planet#term#RunCmd('git --no-pager diff --stat')<CR>
     an 700.10  🔀&,.&Diff.&Cached\ (Index)                        :call planet#term#RunCmd('git --no-pager diff --staged')<CR>
     an 700.10  🔀&,.&Diff.Stat\ Cached                            :call planet#term#RunCmd('git --no-pager diff --staged --stat')<CR>
-    an 700.10  🔀&,.Cherry-pick.TODO                              :TODO
     an 700.10  🔀&,.&Worktree.New                                 :call planet#term#RunCmd('git worktree add')<CR>
     an 700.10  🔀&,.&Worktree.New\ Detached                       :call planet#term#RunCmd('git worktree add --detach')<CR>
     an 700.10  🔀&,.&Worktree.List                                :call planet#term#RunCmd('git worktree list')<CR>
@@ -120,28 +113,34 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.Subrepo\ (&x).Config                          :call planet#git#SubrepoConfig()<CR>
     an 700.10  🔀&,.Subrepo\ (&x).Clone                           :call planet#git#SubrepoClone()<CR>
     an 700.10  🔀&,.Subrepo\ (&x).Init                            :call planet#git#SubrepoInit()<CR>
-    an 700.10  🔀&,.Submodule.TODO                                :TODO
-    an 700.10  🔀&,.Remote.List                                   :call planet#term#RunCmd('git remote -a')<CR>
     an 700.10  🔀&,.&Gui.Git&k\ All                               :silent !nohup gitk --all >/dev/null 2>&1 &<CR>
     an 700.10  🔀&,.&Gui.Gitk\ &HEAD                              :silent !nohup gitk >/dev/null 2>&1 &<CR>
     an 700.10  🔀&,.&Gui.Gui                                      :silent !nohup git citool >/dev/null 2>&1 &<CR>
     an 700.10  🔀&,.&Gui.Gui&tar                                  :silent !nohup guitar >/dev/null 2>&1 &<CR>
     an 700.10  🔀&,.&Gui.&Gitg                                    :silent !nohup gitg >/dev/null 2>&1 &<CR>
-    an 700.10  🔀&,.Ui.Git&ui                                     :tab call planet#term#RunCmd('gitui')<CR>
-    an 700.10  🔀&,.--5-- <Nop>
-    an 700.10  🔀&,.Cl&one                                        :TODO
-    an 700.10  🔀&,.&Init                                         :call planet#term#RunCmd('git init')<CR>
-    an 700.10  🔀&,.--7-- <Nop>
+    an 700.10  🔀&,.Ui.Git&ui                                     :call planet#term#RunCmdTab('gitui')<CR>
     an 700.10  🔀&,.LFS                                           :TODO
-    an 700.10  🔀&,.Blame                                         :TODO
-    an 700.10  🔀&,.Bisect                                        :TODO
+    an 700.10  🔀&,.New.Cl&one                                    :TODO
+    an 700.10  🔀&,.New.&Init                                     :call planet#term#RunCmd('git init')<CR>
     an 700.10  🔀&,.Patch.Am                                      :TODO
     an 700.10  🔀&,.Patch.Format-Patch                            :TODO
+    an 700.10  🔀&,.Patch.Imap-Send                               :TODO
+    an 700.10  🔀&,.Patch.Quiltimport                             :TODO
+    an 700.10  🔀&,.Patch.Send-Email                              :TODO
+    an 700.10  🔀&,.Patch.Apply                                   :TODO
+    an 700.10  🔀&,.Advanced.Request-Pull                         :TODO
+    an 700.10  🔀&,.Advanced.Remote.List                          :call planet#term#RunCmd('git remote -a')<CR>
+    an 700.10  🔀&,.Advanced.Blame                                :TODO
+    an 700.10  🔀&,.Advanced.Bisect                               :TODO
+    an 700.10  🔀&,.Advanced.Submodule.TODO                       :TODO
+    an 700.10  🔀&,.Advanced.Reflog.List                          :call planet#term#RunCmd('git reflog')<CR>
+    an 700.10  🔀&,.Advanced.Reset.Soft                           :call planet#term#RunCmd('git reset --soft HEAD~1')<CR>
+    an 700.10  🔀&,.Advanced.Reset.Reset                          :call planet#term#RunCmd('git reset HEAD~1')<CR>
+    an 700.10  🔀&,.Advanced.Reset.Hard                           :call planet#term#RunCmd('git reset --hard HEAD~1')<CR>
+    an 700.10  🔀&,.Advanced.Cherry-pick.TODO                     :TODO
     an 700.10  🔀&,.Advanced.Archive                              :TODO
     an 700.10  🔀&,.Advanced.Bundle                               :TODO
     an 700.10  🔀&,.Advanced.Clean                                :TODO
-    an 700.10  🔀&,.Maintenance.Gc                                :TODO
-    an 700.10  🔀&,.Maintenance.Maintenance                       :TODO
     an 700.10  🔀&,.Advanced.Grep                                 :TODO
     an 700.10  🔀&,.Advanced.Switch                               :TODO
     an 700.10  🔀&,.Advanced.Hooks                                :TODO
@@ -153,16 +152,11 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.Advanced.Config                               :TODO
     an 700.10  🔀&,.Advanced.Describe                             :TODO
     an 700.10  🔀&,.Advanced.Filter-Branch                        :TODO
-    an 700.10  🔀&,.Maintenance.Pack-Refs                         :TODO
-    an 700.10  🔀&,.Maintenance.Prune                             :TODO
-    an 700.10  🔀&,.Maintenance.Repack                            :TODO
     an 700.10  🔀&,.Advanced.Rerere                               :TODO
     an 700.10  🔀&,.Advanced.Bugreport                            :TODO
     an 700.10  🔀&,.Advanced.Replace                              :TODO
     an 700.10  🔀&,.Advanced.Annotate                             :TODO
     an 700.10  🔀&,.Advanced.Cherry                               :TODO
-    an 700.10  🔀&,.Maintenance.Count-Objects                     :TODO
-    an 700.10  🔀&,.Maintenance.Fsck                              :TODO
     an 700.10  🔀&,.Advanced.Help                                 :TODO
     an 700.10  🔀&,.Advanced.Instaweb                             :TODO
     an 700.10  🔀&,.Advanced.Merge-Tree                           :TODO
@@ -171,48 +165,50 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&,.Advanced.Verify-Commit                        :TODO
     an 700.10  🔀&,.Advanced.Verify-Tag                           :TODO
     an 700.10  🔀&,.Advanced.Whatchanged                          :TODO
-    an 700.10  🔀&,.Patch.Imap-Send                               :TODO
-    an 700.10  🔀&,.Patch.Quiltimport                             :TODO
-    an 700.10  🔀&,.Advanced.Request-Pull                         :TODO
-    an 700.10  🔀&,.Patch.Send-Email                              :TODO
-    an 700.10  🔀&,.Patch.Apply                                   :TODO
-    an 700.10  🔀&,.Advanced.Checkout-Index                       :TODO
-    an 700.10  🔀&,.Advanced.Commit-Graph                         :TODO
-    an 700.10  🔀&,.Advanced.Commit-Tree                          :TODO
-    an 700.10  🔀&,.Advanced.Hash-Object                          :TODO
-    an 700.10  🔀&,.Maintenance.Index-Pack                           :TODO
-    an 700.10  🔀&,.Advanced.Merge-File                           :TODO
-    an 700.10  🔀&,.Advanced.Mktag                                :TODO
-    an 700.10  🔀&,.Advanced.Mktree                               :TODO
-    an 700.10  🔀&,.Maintenance.Multi-Pack-Index                     :TODO
-    an 700.10  🔀&,.Maintenance.Pack-Objects                         :TODO
-    an 700.10  🔀&,.Maintenance.Prune-Packed                         :TODO
-    an 700.10  🔀&,.Advanced.Read-Tree                            :TODO
-    an 700.10  🔀&,.Advanced.Symbolic-Ref                         :TODO
-    an 700.10  🔀&,.Maintenance.Unpack-Objects                       :TODO
-    an 700.10  🔀&,.Advanced.Update-Index                         :TODO
-    an 700.10  🔀&,.Advanced.Update-Ref                           :TODO
-    an 700.10  🔀&,.Advanced.Write-Tree                           :TODO
-    an 700.10  🔀&,.Advanced.Cat-File                             :TODO
-    an 700.10  🔀&,.Advanced.Diff-Files                           :TODO
-    an 700.10  🔀&,.Advanced.Diff-Index                           :TODO
-    an 700.10  🔀&,.Advanced.Diff-Tree                            :TODO
-    an 700.10  🔀&,.Advanced.For-Each-Ref                         :TODO
-    an 700.10  🔀&,.Advanced.For-Each-Repo                        :TODO
-    an 700.10  🔀&,.Advanced.Get-Tar-Commit-Id                    :TODO
-    an 700.10  🔀&,.Advanced.Ls-Files                             :TODO
-    an 700.10  🔀&,.Advanced.Ls-Remote                            :TODO
-    an 700.10  🔀&,.Advanced.Ls-Tree                              :TODO
-    an 700.10  🔀&,.Advanced.Merge-Base                           :TODO
-    an 700.10  🔀&,.Advanced.Name-Rev                             :TODO
+    an 700.10  🔀&,.Low\ Level.Checkout-Index                       :TODO
+    an 700.10  🔀&,.Low\ Level.Commit-Graph                         :TODO
+    an 700.10  🔀&,.Low\ Level.Commit-Tree                          :TODO
+    an 700.10  🔀&,.Low\ Level.Hash-Object                          :TODO
+    an 700.10  🔀&,.Low\ Level.Merge-File                           :TODO
+    an 700.10  🔀&,.Low\ Level.Mktag                                :TODO
+    an 700.10  🔀&,.Low\ Level.Mktree                               :TODO
+    an 700.10  🔀&,.Low\ Level.Read-Tree                            :TODO
+    an 700.10  🔀&,.Low\ Level.Symbolic-Ref                         :TODO
+    an 700.10  🔀&,.Low\ Level.Update-Index                         :TODO
+    an 700.10  🔀&,.Low\ Level.Update-Ref                           :TODO
+    an 700.10  🔀&,.Low\ Level.Write-Tree                           :TODO
+    an 700.10  🔀&,.Low\ Level.Cat-File                             :TODO
+    an 700.10  🔀&,.Low\ Level.Diff-Files                           :TODO
+    an 700.10  🔀&,.Low\ Level.Diff-Index                           :TODO
+    an 700.10  🔀&,.Low\ Level.Diff-Tree                            :TODO
+    an 700.10  🔀&,.Low\ Level.For-Each-Ref                         :TODO
+    an 700.10  🔀&,.Low\ Level.For-Each-Repo                        :TODO
+    an 700.10  🔀&,.Low\ Level.Get-Tar-Commit-Id                    :TODO
+    an 700.10  🔀&,.Low\ Level.Ls-Files                             :TODO
+    an 700.10  🔀&,.Low\ Level.Ls-Remote                            :TODO
+    an 700.10  🔀&,.Low\ Level.Ls-Tree                              :TODO
+    an 700.10  🔀&,.Low\ Level.Merge-Base                           :TODO
+    an 700.10  🔀&,.Low\ Level.Name-Rev                             :TODO
+    an 700.10  🔀&,.Low\ Level.Rev-List                             :TODO
+    an 700.10  🔀&,.Low\ Level.Rev-Parse                            :TODO
+    an 700.10  🔀&,.Low\ Level.Show-Index                           :TODO
+    an 700.10  🔀&,.Low\ Level.Show-Ref                             :TODO
+    an 700.10  🔀&,.Low\ Level.Var                                  :TODO
+    an 700.10  🔀&,.Maintenance.Gc                                :TODO
+    an 700.10  🔀&,.Maintenance.Maintenance                       :TODO
+    an 700.10  🔀&,.Maintenance.Count-Objects                     :TODO
+    an 700.10  🔀&,.Maintenance.Fsck                              :TODO
     an 700.10  🔀&,.Maintenance.Pack-Redundant                    :TODO
-    an 700.10  🔀&,.Advanced.Rev-List                             :TODO
-    an 700.10  🔀&,.Advanced.Rev-Parse                            :TODO
-    an 700.10  🔀&,.Advanced.Show-Index                           :TODO
-    an 700.10  🔀&,.Advanced.Show-Ref                             :TODO
     an 700.10  🔀&,.Maintenance.Unpack-File                       :TODO
-    an 700.10  🔀&,.Advanced.Var                                  :TODO
     an 700.10  🔀&,.Maintenance.Verify-Pack                       :TODO
+    an 700.10  🔀&,.Maintenance.Unpack-Objects                    :TODO
+    an 700.10  🔀&,.Maintenance.Multi-Pack-Index                  :TODO
+    an 700.10  🔀&,.Maintenance.Pack-Objects                      :TODO
+    an 700.10  🔀&,.Maintenance.Prune-Packed                      :TODO
+    an 700.10  🔀&,.Maintenance.Index-Pack                        :TODO
+    an 700.10  🔀&,.Maintenance.Pack-Refs                         :TODO
+    an 700.10  🔀&,.Maintenance.Prune                             :TODO
+    an 700.10  🔀&,.Maintenance.Repack                            :TODO
     an 700.10  🔀&,.Contrib.Contacts                              :TODO
     an 700.10  🔀&,.Contrib.Workdir                               :TODO
     an 700.10  🔀&,.Contrib.Resurrect                             :TODO
@@ -314,7 +310,10 @@ func! planet#menu#tools#update() abort
     an 710.40  ⛏️&;.--4-- <Nop>
     an 710.40  ⛏️&;.Diff\ All\ in\ Tab                :windo diffthis<CR>
     an 710.40  ⛏️&;.Diff\ with\ Alternate\ Winodw     :diffthis<CR>:wincmd p<CR>:diffthis<CR>
-    an 710.40  ⛏️&;.--4-- <Nop>
+    an 710.40  ⛏️&;.--5-- <Nop>
+    an 710.40  ⛏️&;.Htop                              :call planet#term#RunCmdTab('htop')<CR>
+    an 710.40  ⛏️&;.Nmap.List\ Up\ Hosts              :call planet#term#RunCmdTab('nmap ...')
+    an 710.40  ⛏️&;.--6-- <Nop>
     an 710.40  ⛏️&;.Set\ Context\ Lines               :set diffopt+=context=12<CR>
 
     " Spelling (& Dictionary & Thesaurus)

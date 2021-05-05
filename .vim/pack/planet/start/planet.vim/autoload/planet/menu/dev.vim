@@ -110,7 +110,7 @@ func! planet#menu#dev#update() abort
     an 500.10  🎚️&{.Yocto.Setup                             :TODO
     an 500.10  🎚️&{.Configuration <Nop>
     an disable 🎚️&{.Configuration
-    an 500.10  🎚️&{.Install\ Qt.Set\ QTDIR                  :TODO
+    an 500.10  🎚️&{.Install\ Qt.Set\ $QTDIR                 <Cmd>call planet#env#SetEnvVar('QTDIR')<CR>
     an 500.10  🎚️&{.Install\ Qt.Choose\ Version             :aqtinstall ...
     an 500.10  🎚️&{.Install\ Conan\ Pkg.TODO                :TODO
     an 500.10  🎚️&{.Install\ pip\ Pkg.TODO                  :TODO
@@ -141,12 +141,12 @@ func! planet#menu#dev#update() abort
     an 500.10  🎚️&{.Settings <Nop>
     an disable 🎚️&{.Settings
     an 500.10  🎚️&{.&Env.Print\ Env                         <Cmd>call planet#env#PrintEnv()<CR>
-    an 500.10  🎚️&{.&Env.Set\ DESTDIR                       <Cmd>call planet#env#SetEnvVar('DESTDIR')<CR>
-    an 500.10  🎚️&{.&Env.Set\ PYTHONPATH                    <Cmd>call planet#env#SetEnvVar('PYTHONPATH')<CR>
-    an 500.10  🎚️&{.&Env.Set\ PATH                          <Cmd>call planet#env#SetEnvVar('PATH')<CR>
-    an 500.10  🎚️&{.&Env.Set\ ARCH                          <Cmd>call planet#env#SetEnvVar('ARCH')<CR>
-    an 500.10  🎚️&{.&Env.Set\ CROSS_COMPILE                 <Cmd>call planet#env#SetEnvVar('CROSS_COMPILE')<CR>
-    an 500.10  🎚️&{.&Env.Set\ Env\ Var                      <Cmd>TODO
+    an 500.10  🎚️&{.&Env.Set\ $DESTDIR                      <Cmd>call planet#env#SetEnvVar('DESTDIR')<CR>
+    an 500.10  🎚️&{.&Env.Set\ $PYTHONPATH                   <Cmd>call planet#env#SetEnvVar('PYTHONPATH')<CR>
+    an 500.10  🎚️&{.&Env.Set\ $PATH                         <Cmd>call planet#env#SetEnvVar('PATH')<CR>
+    an 500.10  🎚️&{.&Env.Set\ $ARCH                         <Cmd>call planet#env#SetEnvVar('ARCH')<CR>
+    an 500.10  🎚️&{.&Env.Set\ $CROSS_COMPILE                <Cmd>call planet#env#SetEnvVar('CROSS_COMPILE')<CR>
+    an 500.10  🎚️&{.&Env.Set\ Env\ Var                      <Cmd>call planet#env#NewEnvVar()<CR>
     an 500.10  🎚️&{.&Env.Edit\ Env\ in\ Buffer              <Cmd>call planet#env#BufferFromCmd('env')<CR>
     an 500.10  🎚️&{.&Env.Edit\ \.env                        <Cmd>e .env<CR>
     an 500.10  🎚️&{.&Env.Source\ \.env                      <Cmd>Dotenv .env<CR>
@@ -154,7 +154,7 @@ func! planet#menu#dev#update() abort
     an 500.10  🎚️&{.&Direnv.&Allow\ Here                    <Cmd>call planet#term#RunCmd('direnv allow')<CR>
     an 500.10  🎚️&{.&Direnv.&Run\ \.envrc                   <Cmd>DirenvExport<CR>
     an 500.10  🎚️&{.&Direnv.E&dit\ \.direnvrc               <Cmd>EditDirenvrc<CR>
-    an 500.10  🎚️&{.EditorConfig.Add\ New                   <Cmd>TODO
+    an 500.10  🎚️&{.EditorConfig.Add\ New                   <Cmd>e .editorconfig<CR>
     an 500.10  🎚️&{.EditorConfig.Reload                     <Cmd>EditorConfigReload<CR>
     an 500.10  🎚️&{.EditorConfig.Disable\ for\ buffer       <Cmd>let b:EditorConfig_disable=1<CR>
 

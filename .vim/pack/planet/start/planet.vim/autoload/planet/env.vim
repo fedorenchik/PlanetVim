@@ -44,9 +44,18 @@ func! planet#env#SetBufEnv(bufnr_str) abort
   let l:bufnr = str2nr(a:bufnr_str)
   let l:l = getbufline(l:bufnr, 1, "$")
   for line in l:l
-    let l:eq = stridx(line, "=")
-    let l:var = strpart(line, 0, l:eq)
-    let l:value = strpart(line, l:eq + 1)
-    call setenv(l:var, l:value)
+    call planet#env#SetEnvVarValue(line)
   endfor
+endfunc
+
+func! planet#env#SetEnvVarValue(var_value) abort
+  let l:eq = stridx(a:var_value, "=")
+  let l:var = strpart(a:var_value, 0, l:eq)
+  let l:value = strpart(a:var_value, l:eq + 1)
+  call setenv(l:var, l:value)
+endfunc
+
+func! planet#env#NewEnvVar() abort
+  let l:var_value = inputdialog("Please input variable & value with following format: VAR=value")
+  call planet#env#SetEnvVarValue(l:var_value)
 endfunc
