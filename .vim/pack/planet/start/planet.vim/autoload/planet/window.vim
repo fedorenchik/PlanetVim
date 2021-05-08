@@ -64,6 +64,7 @@ func! planet#window#Focus(direction)
     if win_width > winwidth(0)
       exe win_width .. 'wincmd |'
     end
+    normal zH
     let &wmw = owmw
     let &wiw = owiw
   end

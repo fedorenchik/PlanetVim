@@ -500,7 +500,8 @@ tno <A-7> <C-w>:7tabn<CR>
 tno <A-8> <C-w>:8tabn<CR>
 tno <A-9> <C-w>:9tabn<CR>
 tno <A-0> <C-w>:10tabn<CR>
-tno <ScrollWheelUp> <C-w>N
+tno <ScrollWheelUp> <C-w>N<ScrollWheelUp>
+tno <ScrollWheelDown> <scrollWheelDown>
 " }}}
 " Operator-pending Mode: {{{
 onoremap <Tab> <Esc>
