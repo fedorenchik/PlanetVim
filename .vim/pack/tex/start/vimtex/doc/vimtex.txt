@@ -1126,12 +1126,15 @@ OPTIONS                                                        *vimtex-options*
 
 *g:vimtex_complete_bib*
   This option is a dictionary for controlling the citation completion. The
-  keys each control a different thing:
+  keys each control a different thing as explained below.
 
   simple~
     Default value: 0
-    If nonzero, then cite completion only searches on the bib keys. This may
-    work better e.g. if one uses an autocomplete plugin.
+    If zero, then the cite completion is "smart", i.e. not simple. This
+    behaviour is described in more detail in |vimtex-complete-cites|.
+
+    Note: It is usually better to use the "simple" mode, that is, set this to
+          1, if you use an autocomplete plugin (|vimtex-complete-auto|).
 
                                                *g:vimtex_complete_bib.menu_fmt*
   menu_fmt~
@@ -2253,6 +2256,7 @@ OPTIONS                                                        *vimtex-options*
     luacode~
     markdown~
     mathtools~
+    mhequ~
     minted~
     moreverb~
     natbib~
@@ -4173,9 +4177,9 @@ primitive groups are linked to conventional syntax groups as listed in
 |group-name|. In the examples, capital letters are used to indicate which
 parts are matched by the current group. For even more details, please refer to
 the code itself:
-* Core elements: The `s:init_highlights()` function in the file
-  `autoload/vimtex/syntax/core.vim` specifies the highlighting of the core
-  groups.
+* Core elements: The `vimtex#syntax#core#init_highlights()` function in the
+  file `autoload/vimtex/syntax/core.vim` specifies the default highlighting of
+  the core groups.
 * Package specific groups and elements are defined in the package specific
   scripts: `autoload/vimtex/syntax/p/*.vim`.
 
@@ -4243,6 +4247,12 @@ Table 2: A list of the most common normal LaTeX groups.~
   texRefArg            Special      \cite{REFERENCE}; \label{REF}
   texE3Func            texCmdType   \STR_NEW:N
   texE3Var             texCmd       \G_MYFILE_NAME_STR
+  texCmdParbox         texCmd       \PARBOX[p][h][i]{w}{c}
+  texBoxOptPosVal      texSymbol    \parbox[P][h][i]{w}{c}
+                                    \begin{minipage}[P][h][i]{w}
+  texBoxOptIPosVal     texBoxOptPosVal
+                                    \parbox[p][h][I]{w}{c}
+                                    \begin{minipage}[p][h][I]{w}
 
 Table 3: A list of math mode groups.~
 >
