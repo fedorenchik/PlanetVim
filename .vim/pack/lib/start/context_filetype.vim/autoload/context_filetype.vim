@@ -4,8 +4,6 @@
 " License: MIT license
 "=============================================================================
 
-scriptencoding utf-8
-
 let g:context_filetype#filetypes = get(g:,
       \ 'context_filetype#filetypes', {})
 
@@ -14,6 +12,9 @@ let g:context_filetype#ignore_composite_filetypes = get(g:,
 
 let g:context_filetype#same_filetypes = get(g:,
       \ 'context_filetype#same_filetypes', {})
+
+let g:context_filetype#ignore_patterns = get(g:,
+      \ 'context_filetype#ignore_patterns', {})
 
 let g:context_filetype#search_offset = get(g:,
       \ 'context_filetype#search_offset', 200)
@@ -43,7 +44,7 @@ function! context_filetype#get_filetypes(...) abort
   let filetype = call('context_filetype#get_filetype', a:000)
 
   let filetypes = [filetype]
-  if filetype =~ '\.'
+  if filetype =~# '\.'
     if has_key(g:context_filetype#ignore_composite_filetypes, filetype)
       let filetypes =
             \ [g:context_filetype#ignore_composite_filetypes[filetype]]
@@ -85,394 +86,31 @@ function! context_filetype#get_range(...) abort
   return context_filetype#get(base_filetype).range
 endfunction
 
-
 function! context_filetype#default_filetypes() abort
-  return deepcopy(s:default_filetypes)
+  return deepcopy(g:context_filetype#default#_filetypes)
 endfunction
 
 function! context_filetype#filetypes() abort
   if exists('b:context_filetype_filetypes')
     return deepcopy(b:context_filetype_filetypes)
   endif
-  return extend(deepcopy(s:default_filetypes), deepcopy(g:context_filetype#filetypes))
+  return extend(deepcopy(g:context_filetype#defaults#_filetypes),
+        \ deepcopy(g:context_filetype#filetypes))
 endfunction
 
-
-" s:default_filetypes
-let s:default_filetypes = {
-      \ 'c': [
-      \   {
-      \    'start': '_*asm_*\s\+\h\w*',
-      \    'end': '$', 'filetype': 'masm',
-      \   },
-      \   {
-      \    'start': '_*asm_*\s*\%(\n\s*\)\?{',
-      \    'end': '}', 'filetype': 'masm',
-      \   },
-      \   {
-      \    'start': '_*asm_*\s*\%(_*volatile_*\s*\)\?(',
-      \    'end': ');', 'filetype': 'gas',
-      \   },
-      \ ],
-      \ 'cpp': [
-      \   {
-      \    'start': '_*asm_*\s\+\h\w*',
-      \    'end': '$', 'filetype': 'masm',
-      \   },
-      \   {
-      \    'start': '_*asm_*\s*\%(\n\s*\)\?{',
-      \    'end': '}', 'filetype': 'masm',
-      \   },
-      \   {
-      \    'start': '_*asm_*\s*\%(_*volatile_*\s*\)\?(',
-      \    'end': ');', 'filetype': 'gas',
-      \   },
-      \ ],
-      \ 'd': [
-      \   {
-      \    'start': 'asm\s*\%(\n\s*\)\?{',
-      \    'end': '}', 'filetype': 'masm',
-      \   },
-      \ ],
-      \ 'eruby': [
-      \   {
-      \    'start': '<%[=#]\?',
-      \    'end': '%>', 'filetype': 'ruby',
-      \   },
-      \ ],
-      \ 'help': [
-      \   {
-      \    'start': '^>\|\s>$',
-      \    'end': '^<\|^\S\|^$', 'filetype': 'vim',
-      \   },
-      \ ],
-      \ 'html': [
-      \   {
-      \    'start':
-      \     '<script\%( [^>]*\)\? type="text/javascript"\%( [^>]*\)\?>',
-      \    'end': '</script>', 'filetype': 'javascript',
-      \   },
-      \   {
-      \    'start':
-      \     '<script\%( [^>]*\)\? type="text/coffeescript"\%( [^>]*\)\?>',
-      \    'end': '</script>', 'filetype': 'coffee',
-      \   },
-      \   {
-      \    'start':
-      \     '<script\%( [^>]*\)\?>',
-      \    'end': '</script>', 'filetype': 'javascript',
-      \   },
-      \   {
-      \    'start':
-      \     '<style\%( [^>]*\)\?>',
-      \    'end': '</style>', 'filetype': 'css',
-      \   },
-      \   {
-      \    'start':
-      \     '<[^>]\+ style=\([''"]\)',
-      \    'end': '\1', 'filetype': 'css',
-      \   },
-      \ ],
-      \ 'vue': [
-      \   {
-      \    'start':
-      \     '<template\%( [^>]*\)\? \%(lang="\%(\(\h\w*\)\)"\)\%( [^>]*\)\?>',
-      \    'end': '</template>', 'filetype': '\1',
-      \   },
-      \   {
-      \    'start':
-      \     '<template\%( [^>]*\)\?>',
-      \    'end': '</template>', 'filetype': 'html',
-      \   },
-      \   {
-      \    'start':
-      \     '<script\%( [^>]*\)\? \%(ts\|lang="\%(ts\|typescript\)"\)\%( [^>]*\)\?>',
-      \    'end': '</script>', 'filetype': 'typescript',
-      \   },
-      \   {
-      \    'start':
-      \     '<script\%( [^>]*\)\? \%(lang="\%(\(\h\w*\)\)"\)\%( [^>]*\)\?>',
-      \    'end': '</script>', 'filetype': '\1',
-      \   },
-      \   {
-      \    'start':
-      \     '<script\%( [^>]*\)\?>',
-      \    'end': '</script>', 'filetype': 'javascript',
-      \   },
-      \   {
-      \    'start':
-      \     '<style\%( [^>]*\)\? \%(lang="\%(\(\h\w*\)\)"\)\%( [^>]*\)\?>',
-      \    'end': '</style>', 'filetype': '\1',
-      \   },
-      \   {
-      \    'start':
-      \     '<style\%( [^>]*\)\?>',
-      \    'end': '</style>', 'filetype': 'css',
-      \   },
-      \   {
-      \    'start':
-      \     '<\(\h\w*\)>',
-      \    'end': '</\1>', 'filetype': 'vue-\1',
-      \   },
-      \   {
-      \    'start':
-      \     '<\(\h\w*\) \%(lang="\%(\(\h\w*\)\)"\)\%( [^>]*\)\?>',
-      \    'end': '</\1>', 'filetype': '\2',
-      \   },
-      \ ],
-      \ 'int-nyaos': [
-      \   {
-      \    'start': '\<lua_e\s\+\(["'']\)',
-      \    'end': '\1\@<!\1\1\@!', 'filetype': 'lua',
-      \   },
-      \ ],
-      \ 'lua': [
-      \   {
-      \    'start': 'vim.command\s*(\([''"]\)',
-      \    'end': '\\\@<!\1', 'filetype': 'vim',
-      \   },
-      \   {
-      \    'start': 'vim.eval\s*(\([''"]\)',
-      \    'end': '\\\@<!\1', 'filetype': 'vim',
-      \   },
-      \ ],
-      \ 'nyaos': [
-      \   {
-      \    'start': '\<lua_e\s\+\(["'']\)',
-      \    'end': '\1\@<!\1\1\@!', 'filetype': 'lua',
-      \   },
-      \ ],
-      \ 'perl6': [
-      \   {
-      \    'start': 'Q:PIR\s*{',
-      \    'end': '}', 'filetype': 'pir',
-      \   },
-      \ ],
-      \ 'python': [
-      \   {
-      \    'start': 'vim.command\s*(\([''"]\)',
-      \    'end': '\\\@<!\1', 'filetype': 'vim',
-      \   },
-      \   {
-      \    'start': 'vim.eval\s*(\([''"]\)',
-      \    'end': '\\\@<!\1', 'filetype': 'vim',
-      \   },
-      \   {
-      \    'start': 'vim.call\s*(\([''"]\)',
-      \    'end': '\\\@<!\1', 'filetype': 'vim',
-      \   },
-      \ ],
-      \ 'vim': [
-      \   {
-      \    'start': '^\s*pe\%[rl\] <<\s*\(\h\w*\)',
-      \    'end': '^\1', 'filetype': 'perl',
-      \   },
-      \   {
-      \    'start': '^\s*py\%[thon\]3\? <<\s*\(\h\w*\)',
-      \    'end': '^\1', 'filetype': 'python',
-      \   },
-      \   {
-      \    'start': '^\s*rub\%[y\] <<\s*\(\h\w*\)',
-      \    'end': '^\1', 'filetype': 'ruby',
-      \   },
-      \   {
-      \    'start': '^\s*lua <<\s*\(\h\w*\)',
-      \    'end': '^\1', 'filetype': 'lua',
-      \   },
-      \   {
-      \    'start': '^\s*lua ',
-      \    'end': '\n\|\s\+|', 'filetype': 'lua',
-      \   },
-      \ ],
-      \ 'vimperator': [
-      \   {
-      \    'start': '^\s*\%(javascript\|js\)\s\+<<\s*\(\h\w*\)',
-      \    'end': '^\1', 'filetype': 'javascript',
-      \   }
-      \ ],
-      \ 'vimshell': [
-      \   {
-      \    'start': 'vexe \([''"]\)',
-      \    'end': '\\\@<!\1', 'filetype': 'vim',
-      \   },
-      \   {
-      \    'start': ' :\w*',
-      \    'end': '\n', 'filetype': 'vim',
-      \   },
-      \   {
-      \    'start': ' vexe\s\+',
-      \    'end': '\n', 'filetype': 'vim',
-      \   },
-      \ ],
-      \ 'xhtml': [
-      \   {
-      \    'start':
-      \     '<script\%( [^>]*\)\? type="text/javascript"\%( [^>]*\)\?>',
-      \    'end': '</script>', 'filetype': 'javascript',
-      \   },
-      \   {
-      \    'start':
-      \     '<script\%( [^>]*\)\? type="text/coffeescript"\%( [^>]*\)\?>',
-      \    'end': '</script>', 'filetype': 'coffee',
-      \   },
-      \   {
-      \    'start': '<style\%( [^>]*\)\? type="text/css"\%( [^>]*\)\?>',
-      \    'end': '</style>', 'filetype': 'css',
-      \   },
-      \ ],
-      \ 'markdown': [
-      \   {
-      \    'start' : '^\s*```\s*\(\h\w*\)',
-      \    'end' : '^\s*```$', 'filetype' : '\1',
-      \   },
-      \   {
-      \    'start' : '\%^-\{3,}.*$',
-      \    'end' : '\_^-\{3,}.*$', 'filetype' : 'yaml'
-      \   },
-      \ ],
-      \ 'haml': [
-      \   {
-      \    'start' : '^\s*-',
-      \    'end' : '$', 'filetype' : 'ruby',
-      \   },
-      \   {
-      \    'start' : '^\s*\w*=',
-      \    'end' : '$', 'filetype' : 'ruby',
-      \   },
-      \   {
-      \    'start' : '^:javascript$',
-      \    'end' : '^\S', 'filetype' : 'javascript',
-      \   },
-      \   {
-      \    'start' : '^:css$',
-      \    'end' : '^\S', 'filetype' : 'css',
-      \   },
-      \ ],
-      \ 'jade': [
-      \   {
-      \    'start' : '^\(\s*\)script\.\s*$',
-      \    'end' : '^\%(\1\s\|\s*$\)\@!',
-      \    'filetype' : 'javascript',
-      \   },
-      \   {
-      \    'start' : '^\(\s*\):coffeescript\s*$',
-      \    'end' : '^\%(\1\s\|\s*$\)\@!',
-      \    'filetype' : 'coffee',
-      \   },
-      \   {
-      \    'start' : '^\(\s*\):\(\h\w*\)\s*$',
-      \    'end' : '^\%(\1\s\|\s*$\)\@!',
-      \    'filetype' : '\2',
-      \   },
-      \ ],
-      \ 'toml': [
-      \   {
-      \    'start': '\<\%(hook_\%('.
-      \             'add\|source\|post_source\|post_update'.
-      \             '\)\|[_a-z]\+'.
-      \             '\)\s*=\s*\('."'''".'\|"""\)',
-      \    'end': '\1', 'filetype': 'vim',
-      \   },
-      \ ],
-      \ 'go': [
-      \   {
-      \    'start': '^\s*\%(//\s*\)\?#\s*include\s\+',
-      \    'end': '$', 'filetype': 'c',
-      \   },
-      \ ],
-      \ 'asciidoc': [
-      \   {
-      \    'start' : '^\[source\%(%[^,]*\)\?,\(\h\w*\)\(,.*\)\?\]\s*\n----\s*\n',
-      \    'end' : '^----\s*$', 'filetype' : '\1',
-      \   },
-      \   {
-      \    'start' : '^\[source\%(%[^,]*\)\?,\(\h\w*\)\(,.*\)\?\]\s*\n',
-      \    'end' : '^$', 'filetype' : '\1',
-      \   },
-      \ ],
-      \ 'review': [
-      \   {
-      \    'start': '^//list\[[^]]\+\]\[[^]]\+\]\[\([^]]\+\)\]{',
-      \    'end': '^//}', 'filetype' : '\1',
-      \   },
-      \ ],
-      \ 'javascript': [
-      \   {
-      \    'synname_pattern': '^jsx',
-      \    'filetype' : 'jsx',
-      \   },
-      \   {
-      \    'start': '^\s*{/\*',
-      \    'end': '\*/}', 'filetype' : 'jsx',
-      \   },
-      \ ],
-      \ 'typescript': [
-      \   {
-      \    'synname_pattern': '^jsx',
-      \    'filetype' : 'tsx',
-      \   },
-      \   {
-      \    'start': '^\s*{/\*',
-      \    'end': '\*/}', 'filetype' : 'tsx',
-      \   },
-      \ ],
-\}
-
-
-" s:default_same_filetypes {{{
-let s:default_same_filetypes = {
-      \ 'cpp': 'c',
-      \ 'erb': 'ruby,html,xhtml',
-      \ 'html': 'xhtml',
-      \ 'xml': 'xhtml',
-      \ 'xhtml': 'html,xml',
-      \ 'htmldjango': 'html',
-      \ 'css': 'scss',
-      \ 'scss': 'css',
-      \ 'stylus': 'css',
-      \ 'less': 'css',
-      \ 'tex': 'bib,plaintex',
-      \ 'plaintex': 'bib,tex',
-      \ 'lingr-say': 'lingr-messages,lingr-members',
-      \ 'J6uil_say': 'J6uil',
-      \ 'vimconsole': 'vim',
-      \
-      \ 'int-irb': 'ruby',
-      \ 'int-ghci': 'haskell',
-      \ 'int-hugs': 'haskell',
-      \ 'int-python': 'python',
-      \ 'int-python3': 'python',
-      \ 'int-ipython': 'python',
-      \ 'int-ipython3': 'python',
-      \ 'int-gosh': 'scheme',
-      \ 'int-clisp': 'lisp',
-      \ 'int-erl': 'erlang',
-      \ 'int-zsh': 'zsh',
-      \ 'int-bash': 'bash',
-      \ 'int-sh': 'sh',
-      \ 'int-cmdproxy': 'dosbatch',
-      \ 'int-powershell': 'powershell',
-      \ 'int-perlsh': 'perl',
-      \ 'int-perl6': 'perl6',
-      \ 'int-ocaml': 'ocaml',
-      \ 'int-clj': 'clojure',
-      \ 'int-lein': 'clojure',
-      \ 'int-sml': 'sml',
-      \ 'int-smlsharp': 'sml',
-      \ 'int-js': 'javascript',
-      \ 'int-kjs': 'javascript',
-      \ 'int-rhino': 'javascript',
-      \ 'int-coffee': 'coffee',
-      \ 'int-gdb': 'gdb',
-      \ 'int-scala': 'scala',
-      \ 'int-nyaos': 'nyaos',
-      \ 'int-php': 'php',
-\}
-
+function! context_filetype#ignore_patterns() abort
+  if exists('b:context_filetype_ignore_patterns')
+    return deepcopy(b:context_filetype_ignore_patterns)
+  endif
+  return extend(deepcopy(g:context_filetype#defaults#_ignore_patterns),
+        \ deepcopy(g:context_filetype#ignore_patterns))
+endfunction
 
 function! s:get_same_filetypes(filetype) abort
-  let same_filetypes = extend(copy(s:default_same_filetypes),
-        \ g:context_filetype#same_filetypes)
+  let same_filetypes = extend(
+        \ copy(g:context_filetype#defaults#_same_filetypes),
+        \ g:context_filetype#same_filetypes
+        \ )
   return split(get(same_filetypes, a:filetype,
           \ get(same_filetypes, '_', '')), ',')
 endfunction
@@ -544,7 +182,7 @@ let s:null_pos = [0, 0]
 let s:null_range = [[0, 0], [0, 0]]
 
 
-function! s:search_range(start_pattern, end_pattern) abort
+function! s:search_range(start_pattern, end_pattern, ignore_pattern) abort
   let stopline_forward = s:stopline_forward()
   let stopline_back    = s:stopline_back()
 
@@ -554,11 +192,12 @@ function! s:search_range(start_pattern, end_pattern) abort
         \      matchstr(getline('.'),
         \         '^.*\%' . (mode() ==# 'i' ? col('.') : col('.') - 1)
         \         . 'c' . (mode() ==# 'i' ? '' : '.'))
-  let curline_pattern = a:start_pattern . '\ze.\{-}$'
+  let start_pattern = a:ignore_pattern . a:start_pattern
+  let curline_pattern = start_pattern . '\ze.\{-}$'
   if cur_text =~# curline_pattern
     let start = [line('.'), matchend(cur_text, curline_pattern)]
   else
-    let start = searchpos(a:start_pattern, 'bnceW', stopline_back)
+    let start = searchpos(start_pattern, 'bnceW', stopline_back)
   endif
   if start == s:null_pos
     return s:null_range
@@ -568,7 +207,7 @@ function! s:search_range(start_pattern, end_pattern) abort
   let end_pattern = a:end_pattern
   if end_pattern =~# '\\\@>\d'
     let lines = getline(start[0], line('.'))
-    let match_list = matchlist(join(lines, "\n"), a:start_pattern)
+    let match_list = matchlist(join(lines, "\n"), start_pattern)
     let end_pattern = s:replace_submatch_pattern(end_pattern, match_list)
   endif
 
@@ -614,18 +253,28 @@ function! s:get_context(filetype, context_filetypes, search_range) abort
 
   let pos = [line('.'), col('.')]
 
+  let ignore_patterns = get(context_filetype#ignore_patterns(),
+        \ base_filetype, [])
+
+  let ignore_pattern = empty(ignore_patterns) ? '' :
+        \ '\%(' . join(ignore_patterns, '|') . '\)\@<!'
+
   for context in context_filetypes
+    " Todo: neovim treesitter support
     if has_key(context, 'synname_pattern')
       for id in synstack(line('.'), col('.'))
         let synname = synIDattr(id, 'name')
         if synname =~# context.synname_pattern
-          return {'filetype' : context.filetype, 'range': s:null_range, 'synname': synname}
+          return {
+                \ 'filetype' : context.filetype,
+                \ 'range': s:null_range, 'synname': synname
+                \ }
         endif
       endfor
       continue
     endif
 
-    let range = s:search_range(context.start, context.end)
+    let range = s:search_range(context.start, context.end, ignore_pattern)
 
     " Set cursor position
     let start = range[0]
@@ -638,15 +287,15 @@ function! s:get_context(filetype, context_filetypes, search_range) abort
           \  && s:is_in(start, end, pos)
           \  && s:is_in(a:search_range[0], a:search_range[1], range[0])
           \  && s:is_in(a:search_range[0], a:search_range[1], range[1])
-      let context_filetype = context.filetype
-      if context.filetype =~# '\\\@>\d'
+      let context_filetype = get(context, 'filetype', a:filetype)
+      if context_filetype =~# '\\\@>\d'
         let stopline_back = s:stopline_back()
         let lines = getline(
               \ searchpos(context.start, 'nbW', stopline_back)[0],
               \ line('.')
               \ )
         let match_list = matchlist(join(lines, "\n"), context.start)
-        let context_filetype = s:replace_submatch(context.filetype, match_list)
+        let context_filetype = s:replace_submatch(context_filetype, match_list)
       endif
       return {'filetype' : context_filetype, 'range' : range}
     endif
@@ -668,14 +317,15 @@ endfunction
 
 
 function! s:get_nest(filetype, context_filetypes) abort
-  let context = s:get_context(a:filetype, a:context_filetypes, s:file_range())
+  let context = s:get_context(
+        \ a:filetype, a:context_filetypes, s:file_range())
   return s:get_nest_impl(context.filetype, a:context_filetypes, context)
 endfunction
 
 function! s:uniq(list) abort
   let dict = {}
   for item in a:list
-    if item != '' && !has_key(dict, item)
+    if item !=# '' && !has_key(dict, item)
       let dict[item] = item
     endif
   endfor
