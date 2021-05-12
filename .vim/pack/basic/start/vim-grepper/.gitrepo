@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/mhinz/vim-grepper.git
 	branch = master
-	commit = e9004ce564891412cfe433cfbb97295cccd06b39
-	parent = 5ff9433e7875c3f5db08eb84f84266b6dcbba361
+	commit = b80004c050501122d58f82712b21d0b7c8dfc019
+	parent = f3db827d9237a7a290fc3c5b3d92edb44cd6f8bc
 	method = merge
 	cmdver = 0.4.3
