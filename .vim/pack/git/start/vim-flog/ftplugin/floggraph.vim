@@ -127,6 +127,11 @@ if !hasmapto('<Plug>(FlogToggleReflog)')
 endif
 nnoremap <buffer> <silent> <Plug>(FlogToggleReflog) :call flog#toggle_reflog_option()<CR>
 
+if !hasmapto('<Plug>(FlogToggleReverse)')
+  nmap <buffer> gsr <Plug>(FlogToggleReverse)
+endif
+nnoremap <buffer> <silent> <Plug>(FlogToggleReverse) :call flog#toggle_reverse_option()<CR>
+
 if !hasmapto('<Plug>(FlogToggleNoGraph)')
   nmap <buffer> gx <Plug>(FlogToggleNoGraph)
 endif
@@ -151,6 +156,26 @@ if !hasmapto('<Plug>(FlogPatchSearch)')
   nmap <buffer> g\ <Plug>(FlogPatchSearch)
 endif
 nnoremap <buffer> <Plug>(FlogPatchSearch) :<C-U>Flogsetargs -patch-search=
+
+if !hasmapto('<Plug>(FlogCycleSort)')
+  nmap <buffer> gss <Plug>(FlogCycleSort)
+endif
+nnoremap <buffer> <silent> <Plug>(FlogCycleSort) :call flog#cycle_sort_option()<CR>
+
+if !hasmapto('<Plug>(FlogSortDate)')
+  nmap <buffer> gsd <Plug>(FlogSortDate)
+endif
+nnoremap <buffer> <silent> <Plug>(FlogSortDate) :call flog#set_sort_option('date')<CR>
+
+if !hasmapto('<Plug>(FlogSortAuthor)')
+  nmap <buffer> gsa <Plug>(FlogSortAuthor)
+endif
+nnoremap <buffer> <silent> <Plug>(FlogSortAuthor) :call flog#set_sort_option('author')<CR>
+
+if !hasmapto('<Plug>(FlogSortTopo)')
+  nmap <buffer> gst <Plug>(FlogSortTopo)
+endif
+nnoremap <buffer> <silent> <Plug>(FlogSortTopo) :call flog#set_sort_option('topo')<CR>
 
 " }}}
 

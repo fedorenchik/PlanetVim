@@ -29,6 +29,7 @@ COMMANDS                                                       *flog-commands*
   -bisect               Enable the "--bisect" argument by default.
   -no-merges            Enable the "--no-merges" argument by default.
   -reflog               Enable the "--reflog" argument by default.
+  -reverse              Enable the "--reverse" argument by default.
   -no-graph             Disable the "--graph" argument by default.
   -no-patch             Enable the "--no-patch" argument by default.
   -skip=<number>        Passed to "--skip", skipping that number of commits by
@@ -56,6 +57,10 @@ COMMANDS                                                       *flog-commands*
                         Instead of manually specifying this argument, you can
                         also use a range or visually select some lines and
                         type ":Flog<CR>".
+  -sort=<sort>          Sort by one of <type>, where type is in "date",
+                        "author", or "topo". These correspond to the options
+                        "--date-order", "--author-order", and "--topo-order"
+                        respectfully.
   -rev=<rev>            The git revision to pass to the log command. Can be
                         specified more than once. When "-limit=" is specified,
                         only the first revision is used.
@@ -244,6 +249,33 @@ gp                                                                   *flog-gp*
 
   Toggle the "--no-patch" argument. Useful while the "-limit" option is
   specified.
+
+gss                                                    *<Plug>(FlogCycleSort)*
+                                                                    *flog-gss*
+
+  Cycle through the different sort options; "--date-order",
+  "--author-date-order", and "--topo-order".
+
+gsd                                                     *<Plug>(FlogSortDate)*
+                                                                    *flog-gsd*
+
+  Set the "--date-order" option. Conflicts with other sort options.
+
+gsa                                                   *<Plug>(FlogSortAuthor)*
+                                                                    *flog-gsa*
+
+  Set the "--author-date-order" option. Conflicts with other sort options.
+
+gst                                                     *<plug>(FlogSortTopo)*
+                                                                    *flog-gst*
+
+  Set the "--topo-order" option. Conflicts with other sort options.
+
+gsr                                                *<Plug>(FlogToggleReverse)*
+                                                                    *flog-gsr*
+
+  Toggle the "--reverse" argument. Does not conflict with other sort options.
+  Mnemonic: "sort reverse".
 
                                                           *<Plug>(FlogUpdate)*
 u                                                                     *flog-u*
