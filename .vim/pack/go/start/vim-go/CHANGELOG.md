@@ -7,13 +7,18 @@ IMPROVEMENTS:
   [[GH-3209]](https://github.com/fatih/vim-go/pull/3209)
 * Add `tr` snippet for `"testing.T".Run`.
   [[GH-3210]](https://github.com/fatih/vim-go/pull/3210)
+  [[GH-3220]](https://github.com/fatih/vim-go/pull/3220)
 * Use `go env GOBIN` to determine `GOBIN`'s value.
   [[GH-3207]](https://github.com/fatih/vim-go/pull/3207)
+* List register in the debugger.
+  [[GH-3221]](https://github.com/fatih/vim-go/pull/3221)
+* Install the latest release of tools that seem to be using tags to do releases
+  instead of installing from their master/main branch.
+  [[GH-3227]](https://github.com/fatih/vim-go/pull/3227)
 
 BUG FIXES:
 * Handle terminating parenthesis on hexadecimal values.
   [[GH-3216]](https://github.com/fatih/vim-go/pull/3216)
-
 
 ## v1.25 - (April 18, 2021)
 
