@@ -27,7 +27,7 @@ function! vimtex#syntax#core#init() abort " {{{1
         \@NoSpell
 
   syntax cluster texClusterMath contains=
-        \texCmdEnv,
+        \texCmdEnvM,
         \texCmdFootnote,
         \texCmdGreek,
         \texCmdMinipage,
@@ -309,7 +309,7 @@ function! vimtex#syntax#core#init() abort " {{{1
   syntax match texCmdEnv "\v\\%(begin|end)>" nextgroup=texEnvArgName
   call vimtex#syntax#core#new_arg('texEnvArgName', {
         \ 'contains': 'texComment,@NoSpell',
-        \ 'next': 'texEnvOpt'
+        \ 'next': 'texEnvOpt',
         \})
   call vimtex#syntax#core#new_opt('texEnvOpt')
 
@@ -502,6 +502,16 @@ function! vimtex#syntax#core#init() abort " {{{1
   " Bold and italic commands
   call s:match_bold_italic_math()
 
+  " Environments inside math zones
+  " * This is used to restrict the whitespace between environment name and
+  "   the option group (see https://github.com/lervag/vimtex/issues/2043).
+  syntax match texCmdEnvM "\v\\%(begin|end)>" contained nextgroup=texEnvMArgName
+  call vimtex#syntax#core#new_arg('texEnvMArgName', {
+        \ 'contains': 'texComment,@NoSpell',
+        \ 'next': 'texEnvOpt',
+        \ 'skipwhite': v:false
+        \})
+
   " Support for array environment
   syntax match texMathCmdEnv contained contains=texCmdMathEnv "\\begin{array}" nextgroup=texMathArrayArg skipwhite skipnl
   syntax match texMathCmdEnv contained contains=texCmdMathEnv "\\end{array}"
@@ -602,6 +612,7 @@ function! vimtex#syntax#core#init_highlights() abort " {{{1
   highlight def link texCmdConditional     texCmd
   highlight def link texCmdDef             texCmdNew
   highlight def link texCmdEnv             texCmd
+  highlight def link texCmdEnvM            texCmdEnv
   highlight def link texCmdE3              texCmd
   highlight def link texCmdFootnote        texCmd
   highlight def link texCmdGreek           texMathCmd
@@ -642,6 +653,7 @@ function! vimtex#syntax#core#init_highlights() abort " {{{1
   highlight def link texE3Parm             texParm
   highlight def link texE3Var              texCmd
   highlight def link texEnvOpt             texOpt
+  highlight def link texEnvMArgName        texEnvArgName
   highlight def link texFileArg            texArg
   highlight def link texFileOpt            texOpt
   highlight def link texFilesArg           texFileArg
@@ -708,6 +720,7 @@ function! vimtex#syntax#core#new_arg(grp, ...) abort " {{{1
         \ 'next': '',
         \ 'matchgroup': 'matchgroup=texDelim',
         \ 'opts': 'contained',
+        \ 'skipwhite': v:true,
         \}, a:0 > 0 ? a:1 : {})
 
   execute 'syntax region' a:grp
@@ -715,7 +728,9 @@ function! vimtex#syntax#core#new_arg(grp, ...) abort " {{{1
         \ l:cfg.matcher
         \ l:cfg.opts
         \ (empty(l:cfg.contains) ? '' : 'contains=' . l:cfg.contains)
-        \ (empty(l:cfg.next) ? '' : 'nextgroup=' . l:cfg.next . ' skipwhite skipnl')
+        \ (empty(l:cfg.next) ? ''
+        \   : 'nextgroup=' . l:cfg.next
+        \     . (l:cfg.skipwhite ? ' skipwhite skipnl' : ''))
 endfunction
 
 " }}}1
@@ -788,7 +803,7 @@ function! vimtex#syntax#core#new_cmd(cfg) abort " {{{1
   if l:cfg.arg
     let l:nextgroups += [l:group_arg]
 
-    let l:arg_cfg = {'opts': 'contained keepend'}
+    let l:arg_cfg = {'opts': 'contained'}
     if l:cfg.conceal && empty(l:cfg.concealchar)
       let l:arg_cfg.opts .= ' concealends'
     endif
