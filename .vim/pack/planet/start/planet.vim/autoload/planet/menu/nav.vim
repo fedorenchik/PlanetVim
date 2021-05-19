@@ -182,54 +182,51 @@ func! planet#menu#nav#update() abort
     an 820.10  🪟&w.Close\ &Other\ Windows<Tab>:only<Tab>+o <C-w>o
 
     " Tabs
-    an 830.10  🗂️&\..Tabs <Tabs>
-    an disable 🗂️&\..Tabs
-    an 830.10  🗂️&\..N&ew<Tab>:tabnew                       :tabnew<CR>
-    an 830.10  🗂️&\..--1-- <Nop>
-    an 830.10  🗂️&\..&Alternate<Tab>g\<Tab\>                g<Tab>
-    an 830.10  🗂️&\..--2-- <Nop>
-    an 830.10  🗂️&\..&First<Tab>:tabfirst                   :tabfirst<CR>
-    an 830.10  🗂️&\..&Previous<Tab><C-PgUp><Tab>gT          gT
-    an 830.10  🗂️&\..&Next<Tab><C-PgDown><Tab>gt            gt
-    an 830.10  🗂️&\..&Last<Tab>:tablast                     :tablast<CR>
-    an 830.10  🗂️&\..--3-- <Nop>
-    an 830.10  🗂️&\..Move\ First<Tab>:0tabmove              :0tabmove<CR>
-    an 830.10  🗂️&\..Move\ Previous<Tab>:-tabmove           :-tabmove<CR>
-    an 830.10  🗂️&\..Move\ Next<Tab>:+tabmove               :+tabmove<CR>
-    an 830.10  🗂️&\..Move\ Last<Tab>:tabmove                :tabmove<CR>
-    an 830.10  🗂️&\..--4-- <Nop>
-    an 830.10  🗂️&\..Save\ Current\ Tab                     :call planet#tab#Save()<CR>
-    an 830.10  🗂️&\..Open\ Tab\.\.\.                        :call planet#tab#Open()<CR>
-    an 830.10  🗂️&\..--5-- <Nop>
-    an 830.10  🗂️&\..E&xecute\ in\ each\ Tab<Tab>:tabdo     :tabdo 
-    an 830.10  🗂️&\..--6-- <Nop>
+    an 830.10  🗂️&c.Tabs <Tabs>
+    an disable 🗂️&c.Tabs
+    an 830.10  🗂️&c.N&ew<Tab>:tabnew                       :tabnew<CR>
+    an 830.10  🗂️&c.--1-- <Nop>
+    an 830.10  🗂️&c.&Alternate<Tab>g\<Tab\>                g<Tab>
+    an 830.10  🗂️&c.--2-- <Nop>
+    an 830.10  🗂️&c.&First<Tab>:tabfirst                   :tabfirst<CR>
+    an 830.10  🗂️&c.&Previous<Tab><C-PgUp><Tab>gT          gT
+    an 830.10  🗂️&c.&Next<Tab><C-PgDown><Tab>gt            gt
+    an 830.10  🗂️&c.&Last<Tab>:tablast                     :tablast<CR>
+    an 830.10  🗂️&c.--3-- <Nop>
+    an 830.10  🗂️&c.Move\ First<Tab>:0tabmove              :0tabmove<CR>
+    an 830.10  🗂️&c.Move\ Previous<Tab>:-tabmove           :-tabmove<CR>
+    an 830.10  🗂️&c.Move\ Next<Tab>:+tabmove               :+tabmove<CR>
+    an 830.10  🗂️&c.Move\ Last<Tab>:tabmove                :tabmove<CR>
+    an 830.10  🗂️&c.--4-- <Nop>
+    an 830.10  🗂️&c.Save\ Current\ Tab                     :call planet#tab#Save()<CR>
+    an 830.10  🗂️&c.Open\ Tab\.\.\.                        :call planet#tab#Open()<CR>
+    an 830.10  🗂️&c.--5-- <Nop>
+    an 830.10  🗂️&c.E&xecute\ in\ each\ Tab<Tab>:tabdo     :tabdo 
+    an 830.10  🗂️&c.--6-- <Nop>
     "TODO: autosave tab when close, using autocmds
-    an 830.10  🗂️&\..&Close<Tab>:tabclose                   :tabclose<CR>
-    an 830.10  🗂️&\..Close\ all\ &other\ tabs<Tab>:tabonly  :tabonly<CR>
+    an 830.10  🗂️&c.&Close<Tab>:tabclose                   :tabclose<CR>
+    an 830.10  🗂️&c.Close\ all\ &other\ tabs<Tab>:tabonly  :tabonly<CR>
 
     " Sessions
-    an 840.10  📚&h.Sessions <Nop>
-    an disable 📚&h.Sessions
-    "TODO: add autocmd SessionLoadPost to update current session
-    "an 840.10  📚&h.Current:\ v:this_session               <Nop>
-    an 840.40  📚&h.--1-- <Nop>
-    an 840.50  📚&h.&Save                                  :exe 'SSave! ' .. fnamemodify(v:this_session, ":t")<CR>
-    an 840.60  📚&h.Save\ &As\.\.\.                        :SSave<CR>
-    an 840.70  📚&h.--2-- <Nop>
-    an 840.50  📚&h.Advanced\ Save.Save\ with\ Relative\ Paths :TODO"set sessionoptions-=sesdir,+=curdir,v:this_session=dirname
-    an 840.50  📚&h.Advanced\ Save.Save\ with\ Local\ Options :TODO"set sessionoptions+=localoptions
-    an 840.50  📚&h.Advanced\ Save.Save\ with\ All\ Options :TODO"set sessionoptions+=localoptions,options
-    an 840.50  📚&h.Advanced\ Save.Save\ without\ Global\ Vars :TODO"set sessionoptions-=globals
-    an 840.70  📚&h.--2-- <Nop>
-    an 840.80  📚&h.&Open                                  :SLoad<CR>
-    an 840.90  📚&h.Open\ &Last\ Session                   :SLoad!<CR>
-    an 840.100 📚&h.&Reopen                                :exe 'SLoad ' .. fnamemodify(v:this_session, ":t")<CR>
-    an 840.110 📚&h.--3-- <Nop>
-    an 840.120 📚&h.&Close                                 :SClose<CR>
-    an 840.130 📚&h.--4-- <Nop>
-    an 840.140 📚&h.&Delete                                :SDelete<CR>
-    an 840.500 📚&h.Session\ List <Nop>
-    an disable 📚&h.Session\ List
+    an 840.10  📚&s.Sessions <Nop>
+    an disable 📚&s.Sessions
+    an 840.40  📚&s.--1-- <Nop>
+    an 840.50  📚&s.&Save                                  :exe 'SSave! ' .. fnamemodify(v:this_session, ":t")<CR>
+    an 840.60  📚&s.Save\ &As\.\.\.                        :SSave<CR>
+    an 840.70  📚&s.--2-- <Nop>
+    an 840.50  📚&s.Advanced\ Save.Save\ with\ Relative\ Paths :TODO"set sessionoptions-=sesdir,+=curdir,v:this_session=dirname
+    an 840.50  📚&s.Advanced\ Save.Save\ with\ Local\ Options :TODO"set sessionoptions+=localoptions
+    an 840.50  📚&s.Advanced\ Save.Save\ with\ All\ Options :TODO"set sessionoptions+=localoptions,options
+    an 840.50  📚&s.Advanced\ Save.Save\ without\ Global\ Vars :TODO"set sessionoptions-=globals
+    an 840.70  📚&s.--2-- <Nop>
+    an 840.80  📚&s.&Open                                  :SLoad<CR>
+    an 840.90  📚&s.Open\ &Last\ Session                   :SLoad!<CR>
+    an 840.100 📚&s.&Reopen                                :exe 'SLoad ' .. fnamemodify(v:this_session, ":t")<CR>
+    an 840.110 📚&s.--3-- <Nop>
+    an 840.120 📚&s.&Close                                 :SClose<CR>
+    an 840.130 📚&s.--4-- <Nop>
+    an 840.140 📚&s.&Delete                                :SDelete<CR>
+    an 840.150 📚&s.--5-- <Nop>
 
     " Control GUI window with wmctrl & vim servers
     an 850.10  🗄️&x.GUI <Nop>

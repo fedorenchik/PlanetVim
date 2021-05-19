@@ -2,18 +2,18 @@ scriptversion 4
 
 func! planet#session#SetCurrent() abort
   if exists('g:last_session')
-    exe 'aun 📚&h.Current:\ ' .. g:last_session
+    exe 'aun 📚&s.Current:\ ' .. g:last_session
     unlet g:last_session
   endif
   if ! empty(v:this_session)
-    exe 'an 840.20  📚&h.Current:\ ' .. fnamemodify(v:this_session, ":t") .. ' <Nop>'
+    exe 'an 840.20  📚&s.Current:\ ' .. fnamemodify(v:this_session, ":t") .. ' <Nop>'
     let g:last_session = fnamemodify(v:this_session, ":t")
   endif
 endfunc
 
 func! planet#session#MenuList() abort
   for session in startify#session_list('')
-    exe 'an 840.500 📚&h.' .. session .. ' :SLoad ' .. session .. '<CR>'
+    exe 'an 840.500 📚&s.Session\ List.' .. session .. ' :SLoad ' .. session .. '<CR>'
   endfor
 endfunc
 

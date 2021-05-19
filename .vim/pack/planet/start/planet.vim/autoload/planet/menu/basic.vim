@@ -226,18 +226,18 @@ func! planet#menu#basic#update() abort
 
     " Selection
     "FIXME: In Insert mode this only works for a SINGLE Normal mode command
-    an 140.10  🖍️&s.Selection <Nop>
-    an disable 🖍️&s.Selection
-    an 140.10  🖍️&s.Select\ All                             :call planet#edit#SelectAll()<CR>
-    an 140.10  🖍️&s.Reselect\ Previous\ Area                gv
-    an 140.10  🖍️&s.--1-- <Nop>
-    an 140.10  🖍️&s.Visual\ Mode<Tab>v                      v
-    an 130.10  🖍️&s.Visual\ Line\ Mode<Tab>V                V
-    an 140.10  🖍️&s.Visual\ Block\ Mode<Tab><C-v>           <C-v>
-    an 140.10  🖍️&s.--2-- <Nop>
-    an 140.10  🖍️&s.Select\ Mode<Tab>gh                     gh
-    an 140.10  🖍️&s.Select\ Line\ Mode<Tab>gH               gH
-    an 140.10  🖍️&s.Select\ Block\ Mode<Tab>g<C-h>          g<C-H>
+    an 140.10  🖍️&i.Selection <Nop>
+    an disable 🖍️&i.Selection
+    an 140.10  🖍️&i.Select\ All                             :call planet#edit#SelectAll()<CR>
+    an 140.10  🖍️&i.Reselect\ Previous\ Area                gv
+    an 140.10  🖍️&i.--1-- <Nop>
+    an 140.10  🖍️&i.Visual\ Mode<Tab>v                      v
+    an 130.10  🖍️&i.Visual\ Line\ Mode<Tab>V                V
+    an 140.10  🖍️&i.Visual\ Block\ Mode<Tab><C-v>           <C-v>
+    an 140.10  🖍️&i.--2-- <Nop>
+    an 140.10  🖍️&i.Select\ Mode<Tab>gh                     gh
+    an 140.10  🖍️&i.Select\ Line\ Mode<Tab>gH               gH
+    an 140.10  🖍️&i.Select\ Block\ Mode<Tab>g<C-h>          g<C-H>
 
     " View
     "TODO: add 'scrollbind' file in split
@@ -282,51 +282,51 @@ func! planet#menu#basic#update() abort
     an 150.70  📺&v.GUI\ Highlight.Tooltip                  :h hl-Tooltip
 
     " Go
-    an 160.10  ↕️&g.Go <Nop>
-    an disable ↕️&g.Go
-    an 160.10  ↕️&g.C&hoose\ Jump<Tab>:Clap\ jumps               :Clap jumps<CR>
-    an 160.10  ↕️&g.--1-- <Nop>
-    an 160.10  ↕️&g.Back<Tab><C-o>                               <C-o>
-    an 160.10  ↕️&g.Forward<Tab><C-i>                            <C-i>
-    an 160.10  ↕️&g.--2-- <Nop>
-    an 160.10  ↕️&g.Previous\ section<Tab>[[                     [[
-    an 160.10  ↕️&g.Next\ section<Tab>][                         ][
-    an 160.10  ↕️&g.Previous\ SECTION<Tab>[]                     []
-    an 160.10  ↕️&g.Next\ SECTION<Tab>]]                         ]]
-    an 160.10  ↕️&g.--2-- <Nop>
-    an 160.10  ↕️&g.Previous\ Change\ Position<Tab>g;            g;
-    an 160.10  ↕️&g.Next\ Change\ Position<Tab>g,                g,
-    an 160.10  ↕️&g.--3-- <Nop>
-    an 160.10  ↕️&g.Start\ of\ File<Tab>gg                       gg
-    an 160.10  ↕️&g.Percentage\ in\ File<Tab>{count}%            :TODO:N%
-    an 160.10  ↕️&g.End\ of\ File<Tab>G                          G
-    an 160.10  ↕️&g.--4-- <Nop>
-    an 160.10  ↕️&g.Middle\ of\ Text\ Line<Tab>gm                gM
-    an 160.10  ↕️&g.Middle\ of\ Screen\ Line<Tab>gM              gm
-    an 160.10  ↕️&g.--4-- <Nop>
-    an 160.10  ↕️&g.Sentence\ Backward<Tab>(                     (
-    an 160.10  ↕️&g.Sentence\ Forward<Tab>)                      )
-    an 160.10  ↕️&g.ftFT\ Backward<Tab>,                         ,
-    an 160.10  ↕️&g.ftFT\ Forward<Tab>;                          ;
-    an 160.10  ↕️&g.Start\ of\ Selected\ Area<Tab>'<             `<
-    an 160.10  ↕️&g.End\ of\ Selected\ Area<Tab>'>               `>
-    an 160.10  ↕️&g.Start\ of\ Changed\ Text<Tab>'[              `[
-    an 160.10  ↕️&g.End\ of\ Changed\ Text<Tab>']                `]
-    an 160.10  ↕️&g.Previous\ Empty\ Line<Tab>{                  {
-    an 160.10  ↕️&g.Next\ Empty\ Line<Tab>}                      }
-    an 160.10  ↕️&g.Previous\ Enclosing\ {<Tab>[{                [{
-    an 160.10  ↕️&g.Next\ Enclosing\ }<Tab>]}                    ]}
-    an 160.10  ↕️&g.Next\ MatchIt<Tab>%                          %
-    an 160.10  ↕️&g.--4-- <Nop>
-    an 160.10  ↕️&g.Previous\ Enclosing\ (<Tab>[(                [(
-    an 160.10  ↕️&g.Next\ Enclosing\ (<Tab>])                    ])
-    an 160.10  ↕️&g.--4-- <Nop>
-    an 160.10  ↕️&g.Scroll\ Left<Tab>zH                          zH
-    an 160.10  ↕️&g.Scroll\ Right<Tab>zL                         zL
-    an 160.10  ↕️&g.Scroll\ Left<Tab>zh                          zh
-    an 160.10  ↕️&g.Scroll\ Right<Tab>zl                         zl
-    an 160.10  ↕️&g.Scroll\ Right\ to\ Cursor<Tab>zs             zs
-    an 160.10  ↕️&g.Scroll\ Left\ to\ Cursor<Tab>ze              ze
+    an 160.10  ↕️&,.Go <Nop>
+    an disable ↕️&,.Go
+    an 160.10  ↕️&,.C&hoose\ Jump<Tab>:Clap\ jumps               :Clap jumps<CR>
+    an 160.10  ↕️&,.--1-- <Nop>
+    an 160.10  ↕️&,.Back<Tab><C-o>                               <C-o>
+    an 160.10  ↕️&,.Forward<Tab><C-i>                            <C-i>
+    an 160.10  ↕️&,.--2-- <Nop>
+    an 160.10  ↕️&,.Previous\ section<Tab>[[                     [[
+    an 160.10  ↕️&,.Next\ section<Tab>][                         ][
+    an 160.10  ↕️&,.Previous\ SECTION<Tab>[]                     []
+    an 160.10  ↕️&,.Next\ SECTION<Tab>]]                         ]]
+    an 160.10  ↕️&,.--2-- <Nop>
+    an 160.10  ↕️&,.Previous\ Change\ Position<Tab>g;            g;
+    an 160.10  ↕️&,.Next\ Change\ Position<Tab>g,                g,
+    an 160.10  ↕️&,.--3-- <Nop>
+    an 160.10  ↕️&,.Start\ of\ File<Tab>gg                       gg
+    an 160.10  ↕️&,.Percentage\ in\ File<Tab>{count}%            :TODO:N%
+    an 160.10  ↕️&,.End\ of\ File<Tab>G                          G
+    an 160.10  ↕️&,.--4-- <Nop>
+    an 160.10  ↕️&,.Middle\ of\ Text\ Line<Tab>gm                gM
+    an 160.10  ↕️&,.Middle\ of\ Screen\ Line<Tab>gM              gm
+    an 160.10  ↕️&,.--4-- <Nop>
+    an 160.10  ↕️&,.Sentence\ Backward<Tab>(                     (
+    an 160.10  ↕️&,.Sentence\ Forward<Tab>)                      )
+    an 160.10  ↕️&,.ftFT\ Backward<Tab>,                         ,
+    an 160.10  ↕️&,.ftFT\ Forward<Tab>;                          ;
+    an 160.10  ↕️&,.Start\ of\ Selected\ Area<Tab>'<             `<
+    an 160.10  ↕️&,.End\ of\ Selected\ Area<Tab>'>               `>
+    an 160.10  ↕️&,.Start\ of\ Changed\ Text<Tab>'[              `[
+    an 160.10  ↕️&,.End\ of\ Changed\ Text<Tab>']                `]
+    an 160.10  ↕️&,.Previous\ Empty\ Line<Tab>{                  {
+    an 160.10  ↕️&,.Next\ Empty\ Line<Tab>}                      }
+    an 160.10  ↕️&,.Previous\ Enclosing\ {<Tab>[{                [{
+    an 160.10  ↕️&,.Next\ Enclosing\ }<Tab>]}                    ]}
+    an 160.10  ↕️&,.Next\ MatchIt<Tab>%                          %
+    an 160.10  ↕️&,.--4-- <Nop>
+    an 160.10  ↕️&,.Previous\ Enclosing\ (<Tab>[(                [(
+    an 160.10  ↕️&,.Next\ Enclosing\ (<Tab>])                    ])
+    an 160.10  ↕️&,.--4-- <Nop>
+    an 160.10  ↕️&,.Scroll\ Left<Tab>zH                          zH
+    an 160.10  ↕️&,.Scroll\ Right<Tab>zL                         zL
+    an 160.10  ↕️&,.Scroll\ Left<Tab>zh                          zh
+    an 160.10  ↕️&,.Scroll\ Right<Tab>zl                         zl
+    an 160.10  ↕️&,.Scroll\ Right\ to\ Cursor<Tab>zs             zs
+    an 160.10  ↕️&,.Scroll\ Left\ to\ Cursor<Tab>ze              ze
 
     " Navigation
     an 165.10  🧭&n.Navigation <Nop>

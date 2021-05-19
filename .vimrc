@@ -1291,6 +1291,7 @@ let g:qf_save_win_view = 0
 let g:qf_shorten_path = 0
 " }}}
 " Plugin: vim-signature {{{
+let g:SignatureIncludeMarkers = '=!@#$%^&*-'
 let g:SignatureWrapJumps = 0
 let g:SignatureMarkTextHLDynamic = 1
 let g:SignatureMarkerTextHLDynamic = 1

@@ -27,7 +27,7 @@ func! planet#buffer#DeleteHidden() abort
       let l:buf += 1
       continue
     endif
-    if bufwinid(l:buf) == -1
+    if win_findbuf(l:buf)->empty()
       exe "bdel " .. l:buf
     endif
     let l:buf += 1

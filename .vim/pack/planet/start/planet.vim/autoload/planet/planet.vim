@@ -29,6 +29,7 @@ func! planet#planet#f()
   let l:c1 = nr2char(l:c)
   let g:PV_p = l:c1
   silent! exe "keepp keepj normal /\\V" .. g:PV_p .. "\<CR>"
+  normal m9
 endfunc
 
 func! planet#planet#F()
@@ -39,14 +40,17 @@ func! planet#planet#F()
   let l:c1 = nr2char(l:c)
   let g:PV_p = l:c1
   silent! exe "keepp keepj normal ?\\V" .. g:PV_p .. "\<CR>"
+  normal m9
 endfunc
 
 func! planet#planet#semicolon()
   silent! exe "keepp keepj normal /\\V" .. g:PV_p .. "\<CR>"
+  normal m9
 endfunc
 
 func! planet#planet#comma()
   silent! exe "keepp keepj normal ?\\V" .. g:PV_p .. "\<CR>"
+  normal m9
 endfunc
 
 let g:PV_pp = '\.\.'
@@ -64,9 +68,11 @@ func! planet#planet#t()
     let l:c2 = nr2char(l:c)
     let g:PV_pp = l:c1 .. l:c2
     silent! exe "keepp keepj normal /\\V" .. g:PV_pp .. "\<CR>"
+    normal m0
   else
     let g:PV_p = l:c1
     silent! exe "keepp keepj normal /\\V" .. g:PV_p .. "\<CR>"
+    normal m9
   end
 endfunc
 
@@ -84,18 +90,22 @@ func! planet#planet#T()
     let l:c2 = nr2char(l:c)
     let g:PV_pp = l:c1 .. l:c2
     silent! exe "keepp keepj normal ?\\V" .. g:PV_pp .. "\<CR>"
+    normal m0
   else
     let g:PV_p = l:c1
     silent! exe "keepp keepj normal ?\\V" .. g:PV_p .. "\<CR>"
+    normal m9
   end
 endfunc
 
 func! planet#planet#h()
   silent! exe "keepp keepj normal ?\\V" .. g:PV_pp .. "\<CR>"
+  normal m0
 endfunc
 
 func! planet#planet#l()
   silent! exe "keepp keepj normal /\\V" .. g:PV_pp .. "\<CR>"
+  normal m0
 endfunc
 
 func! planet#planet#j()

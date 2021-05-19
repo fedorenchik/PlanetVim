@@ -3,16 +3,16 @@ scriptversion 4
 func! planet#menu#edit#update() abort
   if g:PlanetVim_menus_editing
     " Vim Registers
-    an 200.10  📋&i.Registers <Nop>
-    an disable 📋&i.Registers
-    an 200.10  📋&i.C&hoose\ to\ Paste\.\.\.              :Clap registers<CR>
-    an 200.10  📋&i.Select\ to\ Edit\.\.\.                :call planet#register#ChooseEdit()<CR>
-    an 200.10  📋&i.Select\ for\ Operator<Tab>"<a-z>      "
-    an 200.10  📋&i.Macros <Nop>
-    an disable 📋&i.Macros
-    an 200.10  📋&i.Start/Stop\ Record<Tab>q{0-9a-z"}     q
-    an 200.10  📋&i.Execute<Tab>@{a-z}                    @
-    an 200.10  📋&i.Repeat\ Execute<Tab>@@                @@
+    an 200.10  📋&".Registers <Nop>
+    an disable 📋&".Registers
+    an 200.10  📋&".C&hoose\ to\ Paste\.\.\.              :Clap registers<CR>
+    an 200.10  📋&".Select\ to\ Edit\.\.\.                :call planet#register#ChooseEdit()<CR>
+    an 200.10  📋&".Select\ for\ Operator<Tab>"<a-z>      "
+    an 200.10  📋&".Macros <Nop>
+    an disable 📋&".Macros
+    an 200.10  📋&".Start/Stop\ Record<Tab>q{0-9a-z"}     q
+    an 200.10  📋&".Execute<Tab>@{a-z}                    @
+    an 200.10  📋&".Repeat\ Execute<Tab>@@                @@
     "TODO: Add all non-empty registers to this menu
 
     " signature.vim (marks)
@@ -39,59 +39,100 @@ func! planet#menu#edit#update() abort
 
     " markers
     "TODO: maybe change to subsubmenus for groups: add, delete, next, prev
-    am 220.10  🏷️&".Markers <Nop>
-    am disable 🏷️&".Markers
-    am 220.10  🏷️&".Add\ &1                              m1
-    am 220.20  🏷️&".Add\ &2                              m2
-    am 220.30  🏷️&".Add\ &3                              m3
-    am 220.40  🏷️&".Add\ &4                              m4
-    am 220.50  🏷️&".Add\ &5                              m5
-    am 220.60  🏷️&".Add\ &6                              m6
-    am 220.70  🏷️&".Add\ &7                              m7
-    am 220.80  🏷️&".Add\ &8                              m8
-    am 220.90  🏷️&".Add\ &9                              m9
-    am 220.100 🏷️&".Add\ &0                              m0
-    am 220.110 🏷️&".--1-- <Nop>
-    am 220.120 🏷️&".Remove\ 1\ (&!)                      m!
-    am 220.130 🏷️&".Remove\ 2\ (&@)                      m@
-    am 220.140 🏷️&".Remove\ 3\ (&#)                      m#
-    am 220.150 🏷️&".Remove\ 4\ (&$)                      m$
-    am 220.160 🏷️&".Remove\ 5\ (&%)                      m%
-    am 220.170 🏷️&".Remove\ 6\ (&^)                      m^
-    am 220.180 🏷️&".Remove\ 7\ (&&)                      m&
-    am 220.190 🏷️&".Remove\ 8\ (&*)                      m*
-    am 220.200 🏷️&".Remove\ 9\ (&()                      m(
-    am 220.210 🏷️&".Remove\ 0\ (&))                      m)
-    am 220.220 🏷️&".--2-- <Nop>
-    am 220.230 🏷️&".To\ &Next\ of\ Same\ Group<Tab>]-    ]-
-    am 220.240 🏷️&".To\ &Previous\ of\ Same\ Group<Tab>[- [-
-    am 220.250 🏷️&".To\ N&ext\ of\ Any\ Group<Tab>]=     ]=
-    am 220.260 🏷️&".To\ Previous\ of\ Any\ Group<Tab>[=  [=
-    am 220.270 🏷️&".--3-- <Nop>
-    am 220.280 🏷️&".Open\ &LocList<Tab>m?                m?
-    am 220.290 🏷️&".--4-- <Nop>
-    am 220.290 🏷️&".Toggle\ All                          :SignatureToggleSigns<CR>
-    am 220.290 🏷️&".--4-- <Nop>
-    am 220.300 🏷️&".&Remove\ All<Tab>m<BS>               m<BS>
+    am 220.10  🏷️&=.Markers <Nop>
+    am disable 🏷️&=.Markers
+    am 220.10  🏷️&=.Previous.Group\ &1\ (!)<Tab>[1         <Cmd>call signature#marker#Goto('prev', 1, v:count)<CR>
+    am 220.20  🏷️&=.Previous.Group\ &2\ (@)<Tab>[2         <Cmd>call signature#marker#Goto('prev', 2, v:count)<CR>
+    am 220.30  🏷️&=.Previous.Group\ &3\ (#)<Tab>[3         <Cmd>call signature#marker#Goto('prev', 3, v:count)<CR>
+    am 220.40  🏷️&=.Previous.Group\ &4\ ($)<Tab>[4         <Cmd>call signature#marker#Goto('prev', 4, v:count)<CR>
+    am 220.50  🏷️&=.Previous.Group\ &5\ (%)<Tab>[5         <Cmd>call signature#marker#Goto('prev', 5, v:count)<CR>
+    am 220.60  🏷️&=.Previous.Group\ &6\ (^)<Tab>[6         <Cmd>call signature#marker#Goto('prev', 6, v:count)<CR>
+    am 220.70  🏷️&=.Previous.Group\ &7\ (&)<Tab>[7         <Cmd>call signature#marker#Goto('prev', 7, v:count)<CR>
+    am 220.80  🏷️&=.Previous.Group\ &8\ (*)<Tab>[8         <Cmd>call signature#marker#Goto('prev', 8, v:count)<CR>
+    am 220.90  🏷️&=.Previous.Group\ &9\ (()<Tab>[9         <Cmd>call signature#marker#Goto('prev', 9, v:count)<CR>
+    am 220.100 🏷️&=.Previous.Group\ &0\ ())<Tab>[0         <Cmd>call signature#marker#Goto('prev', 0, v:count)<CR>
+    am 220.110 🏷️&=.Next.Group\ &1\ (!)<Tab>]1             <Cmd>call signature#marker#Goto('next', 1, v:count)<CR>
+    am 220.120 🏷️&=.Next.Group\ &2\ (@)<Tab>]2             <Cmd>call signature#marker#Goto('next', 2, v:count)<CR>
+    am 220.130 🏷️&=.Next.Group\ &3\ (#)<Tab>]3             <Cmd>call signature#marker#Goto('next', 3, v:count)<CR>
+    am 220.140 🏷️&=.Next.Group\ &4\ ($)<Tab>]4             <Cmd>call signature#marker#Goto('next', 4, v:count)<CR>
+    am 220.150 🏷️&=.Next.Group\ &5\ (%)<Tab>]5             <Cmd>call signature#marker#Goto('next', 5, v:count)<CR>
+    am 220.160 🏷️&=.Next.Group\ &6\ (^)<Tab>]6             <Cmd>call signature#marker#Goto('next', 6, v:count)<CR>
+    am 220.170 🏷️&=.Next.Group\ &7\ (&)<Tab>]7             <Cmd>call signature#marker#Goto('next', 7, v:count)<CR>
+    am 220.180 🏷️&=.Next.Group\ &8\ (*)<Tab>]8             <Cmd>call signature#marker#Goto('next', 8, v:count)<CR>
+    am 220.190 🏷️&=.Next.Group\ &9\ (()<Tab>]9             <Cmd>call signature#marker#Goto('next', 9, v:count)<CR>
+    am 220.200 🏷️&=.Next.Group\ &0\ ())<Tab>]0             <Cmd>call signature#marker#Goto('next', 0, v:count)<CR>
+    am 220.210 🏷️&=.&List\ (LL).Group\ &1\ (!)              <Cmd>SignatureListMarkers 1<CR>
+    am 220.220 🏷️&=.&List\ (LL).Group\ &2\ (@)              <Cmd>SignatureListMarkers 2<CR>
+    am 220.230 🏷️&=.&List\ (LL).Group\ &3\ (#)              <Cmd>SignatureListMarkers 3<CR>
+    am 220.240 🏷️&=.&List\ (LL).Group\ &4\ ($)              <Cmd>SignatureListMarkers 4<CR>
+    am 220.250 🏷️&=.&List\ (LL).Group\ &5\ (%)              <Cmd>SignatureListMarkers 5<CR>
+    am 220.260 🏷️&=.&List\ (LL).Group\ &6\ (^)              <Cmd>SignatureListMarkers 6<CR>
+    am 220.270 🏷️&=.&List\ (LL).Group\ &7\ (&)              <Cmd>SignatureListMarkers 7<CR>
+    am 220.280 🏷️&=.&List\ (LL).Group\ &8\ (*)              <Cmd>SignatureListMarkers 8<CR>
+    am 220.290 🏷️&=.&List\ (LL).Group\ &9\ (()              <Cmd>SignatureListMarkers 9<CR>
+    am 220.300 🏷️&=.&List\ (LL).Group\ &0\ ())              <Cmd>SignatureListMarkers 0<CR>
+    am 220.310 🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &1\ (!) <Cmd>SignatureListMarkers 1, 2<CR>
+    am 220.320 🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &2\ (@) <Cmd>SignatureListMarkers 2, 2<CR>
+    am 220.330 🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &3\ (#) <Cmd>SignatureListMarkers 3, 2<CR>
+    am 220.340 🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &4\ ($) <Cmd>SignatureListMarkers 4, 2<CR>
+    am 220.350 🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &5\ (%) <Cmd>SignatureListMarkers 5, 2<CR>
+    am 220.360 🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &6\ (^) <Cmd>SignatureListMarkers 6, 2<CR>
+    am 220.370 🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &7\ (&) <Cmd>SignatureListMarkers 7, 2<CR>
+    am 220.380 🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &8\ (*) <Cmd>SignatureListMarkers 8, 2<CR>
+    am 220.390 🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &9\ (() <Cmd>SignatureListMarkers 9, 2<CR>
+    am 220.400 🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &0\ ()) <Cmd>SignatureListMarkers 0, 2<CR>
+    am 220.410 🏷️&=.&Add.Group\ &1\ (!)                     m1
+    am 220.420 🏷️&=.&Add.Group\ &2\ (@)                     m2
+    am 220.430 🏷️&=.&Add.Group\ &3\ (#)                     m3
+    am 220.440 🏷️&=.&Add.Group\ &4\ ($)                     m4
+    am 220.450 🏷️&=.&Add.Group\ &5\ (%)                     m5
+    am 220.460 🏷️&=.&Add.Group\ &6\ (^)                     m6
+    am 220.470 🏷️&=.&Add.Group\ &7\ (&)                     m7
+    am 220.480 🏷️&=.&Add.Group\ &8\ (*)                     m8
+    am 220.490 🏷️&=.&Add.Group\ &9\ (()                     m9
+    am 220.500 🏷️&=.&Add.Group\ &0\ ())                     m0
+    am 220.510 🏷️&=.Clea&r.Group\ &1\ (!)                   m!
+    am 220.520 🏷️&=.Clea&r.Group\ &2\ (@)                   m@
+    am 220.530 🏷️&=.Clea&r.Group\ &3\ (#)                   m#
+    am 220.540 🏷️&=.Clea&r.Group\ &4\ ($)                   m$
+    am 220.550 🏷️&=.Clea&r.Group\ &5\ (%)                   m%
+    am 220.560 🏷️&=.Clea&r.Group\ &6\ (^)                   m^
+    am 220.570 🏷️&=.Clea&r.Group\ &7\ (&)                   m&
+    am 220.580 🏷️&=.Clea&r.Group\ &8\ (*)                   m*
+    am 220.590 🏷️&=.Clea&r.Group\ &9\ (()                   m(
+    am 220.600 🏷️&=.Clea&r.Group\ &0\ ())                   m)
+    am 220.610 🏷️&=.--2-- <Nop>
+    am 220.620 🏷️&=.Previou&s\ of\ Any\ Group<Tab>[=        [=
+    am 220.630 🏷️&=.&Previous\ of\ Same\ Group<Tab>[-       [-
+    am 220.640 🏷️&=.&Next\ of\ Same\ Group<Tab>]-           ]-
+    am 220.650 🏷️&=.N&ext\ of\ Any\ Group<Tab>]=            ]=
+    am 220.660 🏷️&=.--3-- <Nop>
+    am 220.670 🏷️&=.List\ from\ Buffer<Tab>m?               m?
+    am 220.680 🏷️&=.List\ All                               <Cmd>SignatureListMarkers<CR>
+    am 220.690 🏷️&=.List\ All\ with\ 2\ Context\ Lines      <Cmd>SignatureListMarkers '', 2<CR>
+    am 220.700 🏷️&=.--4-- <Nop>
+    am 220.710 🏷️&=.Toggle\ All                             <Cmd>SignatureToggleSigns<CR>
+    am 220.720 🏷️&=.--4-- <Nop>
+    am 220.730 🏷️&=.Clea&r\ All<Tab>m<BS>                   m<BS>
 
     " Cololr highlight words with mark.vim plugin
-    an 230.10  🖌️&c.CMarks <Nop>
-    an disable 🖌️&c.CMarks
-    an 230.10  🖌️&c.CMark\ &Current<Tab>,m                   <Leader>m
-    an 230.10  🖌️&c.CMark\ &Regex<Tab>,r                     <Leader>r
-    an 230.10  🖌️&c.List\ All                                :Marks<CR>
-    an 230.10  🖌️&c.Toggle\ All<Tab>,M                       <Leader>M
-    an 230.10  🖌️&c.Delete\ All<Tab>,N                       :MarkClear<CR>
-    an 230.10  🖌️&c.--1-- <Nop>
-    an 230.10  🖌️&c.Matches <Nop>
-    an disable 🖌️&c.Matches
-    an 230.10  🖌️&c.Add\ Match\ Regex                        :call matchadd(highlight_group, pattern)<CR>
+    an 230.10  🖌️&h.CMarks <Nop>
+    an disable 🖌️&h.CMarks
+    an 230.10  🖌️&h.CMark\ &Current<Tab>,m                   <Leader>m
+    an 230.10  🖌️&h.CMark\ &Regex<Tab>,r                     <Leader>r
+    an 230.10  🖌️&h.List\ All                                :Marks<CR>
+    an 230.10  🖌️&h.Toggle\ All<Tab>,M                       <Leader>M
+    an 230.10  🖌️&h.Delete\ All<Tab>,N                       :MarkClear<CR>
+    an 230.10  🖌️&h.--1-- <Nop>
+    an 230.10  🖌️&h.Matches <Nop>
+    an disable 🖌️&h.Matches
+    an 230.10  🖌️&h.Add\ Match\ Regex                        :call matchadd(highlight_group, pattern)<CR>
     " Add Match Position is useful when editing binary/hex files
-    an 230.10  🖌️&c.Add\ Match\ Position                     :call matchaddpos(highlight_group, visual_position)<CR>
-    an 230.10  🖌️&c.Delete\ Match                            :call matchdelete(id)<CR>
-    an 230.10  🖌️&c.Clear\ All\ Matches                      :call clearmatches()<CR>
-    an 230.10  🖌️&c.TextProp <Nop>
-    an disable 🖌️&c.TextProp
+    an 230.10  🖌️&h.Add\ Match\ Position                     :call matchaddpos(highlight_group, visual_position)<CR>
+    an 230.10  🖌️&h.Delete\ Match                            :call matchdelete(id)<CR>
+    an 230.10  🖌️&h.Clear\ All\ Matches                      :call clearmatches()<CR>
+    an 230.10  🖌️&h.TextProp <Nop>
+    an disable 🖌️&h.TextProp
 
     " Bookmarks: Upper-case marks (mA-mZ)
     an 240.10  📎&k.Bookmarks <Nop>
