@@ -49,8 +49,8 @@ func! planet#menu#edit#update() abort
     am 220.60  🏷️&=.Previous.Group\ &6\ (^)<Tab>[6         <Cmd>call signature#marker#Goto('prev', 6, v:count)<CR>
     am 220.70  🏷️&=.Previous.Group\ &7\ (&)<Tab>[7         <Cmd>call signature#marker#Goto('prev', 7, v:count)<CR>
     am 220.80  🏷️&=.Previous.Group\ &8\ (*)<Tab>[8         <Cmd>call signature#marker#Goto('prev', 8, v:count)<CR>
-    am 220.90  🏷️&=.Previous.Group\ &9\ (()<Tab>[9         <Cmd>call signature#marker#Goto('prev', 9, v:count)<CR>
-    am 220.100 🏷️&=.Previous.Group\ &0\ ())<Tab>[0         <Cmd>call signature#marker#Goto('prev', 0, v:count)<CR>
+    am 220.90  🏷️&=.Previous.Group\ &9\ (-)<Tab>[9         <Cmd>call signature#marker#Goto('prev', 9, v:count)<CR>
+    am 220.100 🏷️&=.Previous.Group\ &0\ (=)<Tab>[0         <Cmd>call signature#marker#Goto('prev', 0, v:count)<CR>
     am 220.110 🏷️&=.Next.Group\ &1\ (!)<Tab>]1             <Cmd>call signature#marker#Goto('next', 1, v:count)<CR>
     am 220.120 🏷️&=.Next.Group\ &2\ (@)<Tab>]2             <Cmd>call signature#marker#Goto('next', 2, v:count)<CR>
     am 220.130 🏷️&=.Next.Group\ &3\ (#)<Tab>]3             <Cmd>call signature#marker#Goto('next', 3, v:count)<CR>
@@ -59,8 +59,8 @@ func! planet#menu#edit#update() abort
     am 220.160 🏷️&=.Next.Group\ &6\ (^)<Tab>]6             <Cmd>call signature#marker#Goto('next', 6, v:count)<CR>
     am 220.170 🏷️&=.Next.Group\ &7\ (&)<Tab>]7             <Cmd>call signature#marker#Goto('next', 7, v:count)<CR>
     am 220.180 🏷️&=.Next.Group\ &8\ (*)<Tab>]8             <Cmd>call signature#marker#Goto('next', 8, v:count)<CR>
-    am 220.190 🏷️&=.Next.Group\ &9\ (()<Tab>]9             <Cmd>call signature#marker#Goto('next', 9, v:count)<CR>
-    am 220.200 🏷️&=.Next.Group\ &0\ ())<Tab>]0             <Cmd>call signature#marker#Goto('next', 0, v:count)<CR>
+    am 220.190 🏷️&=.Next.Group\ &9\ (-)<Tab>]9             <Cmd>call signature#marker#Goto('next', 9, v:count)<CR>
+    am 220.200 🏷️&=.Next.Group\ &0\ (=)<Tab>]0             <Cmd>call signature#marker#Goto('next', 0, v:count)<CR>
     am 220.210 🏷️&=.&List\ (LL).Group\ &1\ (!)              <Cmd>SignatureListMarkers 1<CR>
     am 220.220 🏷️&=.&List\ (LL).Group\ &2\ (@)              <Cmd>SignatureListMarkers 2<CR>
     am 220.230 🏷️&=.&List\ (LL).Group\ &3\ (#)              <Cmd>SignatureListMarkers 3<CR>
@@ -69,8 +69,8 @@ func! planet#menu#edit#update() abort
     am 220.260 🏷️&=.&List\ (LL).Group\ &6\ (^)              <Cmd>SignatureListMarkers 6<CR>
     am 220.270 🏷️&=.&List\ (LL).Group\ &7\ (&)              <Cmd>SignatureListMarkers 7<CR>
     am 220.280 🏷️&=.&List\ (LL).Group\ &8\ (*)              <Cmd>SignatureListMarkers 8<CR>
-    am 220.290 🏷️&=.&List\ (LL).Group\ &9\ (()              <Cmd>SignatureListMarkers 9<CR>
-    am 220.300 🏷️&=.&List\ (LL).Group\ &0\ ())              <Cmd>SignatureListMarkers 0<CR>
+    am 220.290 🏷️&=.&List\ (LL).Group\ &9\ (-)              <Cmd>SignatureListMarkers 9<CR>
+    am 220.300 🏷️&=.&List\ (LL).Group\ &0\ (=)              <Cmd>SignatureListMarkers 0<CR>
     am 220.310 🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &1\ (!) <Cmd>SignatureListMarkers 1, 2<CR>
     am 220.320 🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &2\ (@) <Cmd>SignatureListMarkers 2, 2<CR>
     am 220.330 🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &3\ (#) <Cmd>SignatureListMarkers 3, 2<CR>
@@ -79,8 +79,8 @@ func! planet#menu#edit#update() abort
     am 220.360 🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &6\ (^) <Cmd>SignatureListMarkers 6, 2<CR>
     am 220.370 🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &7\ (&) <Cmd>SignatureListMarkers 7, 2<CR>
     am 220.380 🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &8\ (*) <Cmd>SignatureListMarkers 8, 2<CR>
-    am 220.390 🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &9\ (() <Cmd>SignatureListMarkers 9, 2<CR>
-    am 220.400 🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &0\ ()) <Cmd>SignatureListMarkers 0, 2<CR>
+    am 220.390 🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &9\ (-) <Cmd>SignatureListMarkers 9, 2<CR>
+    am 220.400 🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &0\ (=) <Cmd>SignatureListMarkers 0, 2<CR>
     am 220.410 🏷️&=.&Add.Group\ &1\ (!)                     m1
     am 220.420 🏷️&=.&Add.Group\ &2\ (@)                     m2
     am 220.430 🏷️&=.&Add.Group\ &3\ (#)                     m3
@@ -89,8 +89,8 @@ func! planet#menu#edit#update() abort
     am 220.460 🏷️&=.&Add.Group\ &6\ (^)                     m6
     am 220.470 🏷️&=.&Add.Group\ &7\ (&)                     m7
     am 220.480 🏷️&=.&Add.Group\ &8\ (*)                     m8
-    am 220.490 🏷️&=.&Add.Group\ &9\ (()                     m9
-    am 220.500 🏷️&=.&Add.Group\ &0\ ())                     m0
+    am 220.490 🏷️&=.&Add.Group\ &9\ (-)                     m9
+    am 220.500 🏷️&=.&Add.Group\ &0\ (=)                     m0
     am 220.510 🏷️&=.Clea&r.Group\ &1\ (!)                   m!
     am 220.520 🏷️&=.Clea&r.Group\ &2\ (@)                   m@
     am 220.530 🏷️&=.Clea&r.Group\ &3\ (#)                   m#
@@ -99,8 +99,8 @@ func! planet#menu#edit#update() abort
     am 220.560 🏷️&=.Clea&r.Group\ &6\ (^)                   m^
     am 220.570 🏷️&=.Clea&r.Group\ &7\ (&)                   m&
     am 220.580 🏷️&=.Clea&r.Group\ &8\ (*)                   m*
-    am 220.590 🏷️&=.Clea&r.Group\ &9\ (()                   m(
-    am 220.600 🏷️&=.Clea&r.Group\ &0\ ())                   m)
+    am 220.590 🏷️&=.Clea&r.Group\ &9\ (-)                   m(
+    am 220.600 🏷️&=.Clea&r.Group\ &0\ (=)                   m)
     am 220.610 🏷️&=.--2-- <Nop>
     am 220.620 🏷️&=.Previou&s\ of\ Any\ Group<Tab>[=        [=
     am 220.630 🏷️&=.&Previous\ of\ Same\ Group<Tab>[-       [-

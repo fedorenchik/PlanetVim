@@ -20,11 +20,12 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&g.&Add.&Remove                                  :TODO
     an 700.10  🔀&g.&Add.&Restore                                 :TODO
     an 700.10  🔀&g.&Commit.&Commit                               :call planet#git#Commit(v:false, v:false, v:false)<CR>
-    an 700.10  🔀&g.&Commit.Commit\ &Tool                         :call planet#term#RunCmdBg('git commit')<CR>
     an 700.10  🔀&g.&Commit.Commit\ &File                         :call planet#git#CommitFile(v:false, v:false)<CR>
+    an 700.10  🔀&g.&Commit.Commit\ &Tool                         :call planet#term#RunCmdBg('git commit')<CR>
     an 700.10  🔀&g.&Commit.Save\ &&\ Commit\ File                :call planet#git#CommitFile(v:true, v:false)<CR>
     an 700.10  🔀&g.&Commit.Commit\ &All                          :TODO
     an 700.10  🔀&g.&Commit.Commit\ All\ with\ Untracked          :TODO
+    an 700.10  🔀&g.&Commit.Amend\ Last\ Commit                   :call planet#term#RunCmdBg('git commit --amend')<CR>
     an 700.10  🔀&g.&Commit.--2-- <Nop>
     an 700.10  🔀&g.&Commit.AutoCommit\ File                      :call planet#git#CommitFile(v:false)<CR>
     an 700.10  🔀&g.&Commit.Save\ &&\ AutoCommit\ File            :call planet#git#CommitFile()<CR>
