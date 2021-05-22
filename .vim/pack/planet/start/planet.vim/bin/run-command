@@ -1,8 +1,15 @@
 #!/usr/bin/env bash
 
+if [ "$1" == "cd" ]; then
+	shift
+	cd "$1"
+	shift
+	shift
+fi
+
 echo "PWD=$PWD"
 echo "Start command: $@"
-"$@"
+eval "$@"
 
 exit_status=$?
 echo "Exit status: $exit_status"

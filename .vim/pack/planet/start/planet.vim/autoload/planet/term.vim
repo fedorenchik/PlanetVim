@@ -7,7 +7,8 @@ let s:bin_dir = expand('<sfile>:p:h:h:h')->resolve() .. '/bin/'
 " @this_window[in] if true, run in current window unconditionally
 " @close_on_exit[in] if true, close current window after cmd terminated
 " @start_hidden[in] if true, do not open new window
-func! planet#term#RunCmd(cmd, this_window = v:false, close_on_exit = v:false, start_hidden = v:false) abort
+" @cd if not empty, change command's CWD to this dir
+func! planet#term#RunCmd(cmd, this_window = v:false, close_on_exit = v:false, start_hidden = v:false, cd = '') abort
   if ! a:this_window && ! a:start_hidden
     let l:winnr = planet#term#FindOutputWindow()
     if l:winnr == -1
@@ -32,7 +33,11 @@ func! planet#term#RunCmd(cmd, this_window = v:false, close_on_exit = v:false, st
   if a:close_on_exit == v:true
     let l:term_opts.term_finish = "close"
   end
-  let ret = term_start(s:bin_dir .. 'run-command ' .. a:cmd, l:term_opts)
+  let l:cmd_cd = ''
+  if ! empty(a:cd)
+    let l:cmd_cd = 'cd ''' .. a:cd .. ''' ; '
+  end
+  let ret = term_start(s:bin_dir .. 'run-command ' .. l:cmd_cd .. a:cmd, l:term_opts)
   if ret == 0
     echohl Error
     echo "Failed to start commad: " .. a:cmd

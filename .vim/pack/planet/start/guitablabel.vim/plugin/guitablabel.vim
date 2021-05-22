@@ -2,6 +2,9 @@ vim9script
 
 def! g:GuiTabLabel(): string
   var l = v:lnum .. ' |'
+  if tabpagenr() == tabpagenr('#')
+    l = '#' .. l
+  end
   var bufnrlist = tabpagebuflist(v:lnum)
 
   if haslocaldir(-1) == 2

@@ -375,22 +375,14 @@ func! planet#menu#dev#update() abort
     an 500.10  🔨&u.&KBuild.make\ &xconfig                  :call planet#term#RunCmd('make help')<CR>
     an 500.10  🔨&u.&KBuild.make\ &gconfig                  :call planet#term#RunCmd('make help')<CR>
     an 500.10  🔨&u.&KBuild.make\ &tags                     :call planet#term#RunCmd('make tags')<CR>
-    an <silent> 500.10  🔨&u.&CMake.Select\ Build\ Dir      <Cmd>call planet#build#SelectBuildDir()<CR>
-    an 500.10  🔨&u.&CMake.Create\ OOT\ Build\ Dir          :silent !mkdir -p ../g:PV_cmake_build_dir<CR>
-    an 500.10  🔨&u.&CMake.Create\ In-Tree\ Build\ Dir      :silent !mkdir -p g:PV_cmake_build_dir<CR>
-    "FIXME: cmake may have multiple build directories
-    an 500.10  🔨&u.&CMake.Cd\ to\ Build\ Directory         :call planet#term#RunCmd('cmake ..')<CR>
-    an 500.10  🔨&u.&CMake.Cd\ to\ Source\ Directory        :call planet#term#RunCmd('cmake ..')<CR>
-    an 500.10  🔨&u.&CMake.Configure                        :call planet#term#RunCmd('cmake ..')<CR>
-    an 500.10  🔨&u.&CMake.Configure\ Tui                   :call planet#term#RunCmdTab('ccmake ..')<CR>
-    an 500.10  🔨&u.&CMake.Configure\ Gui                   :call planet#term#RunCmdGui('cmake-gui ..')<CR>
-    an 500.10  🔨&u.&CMake.Build                            :call planet#term#RunCmd('cmake --build .')<CR>
-    an 500.10  🔨&u.&CMake.Clean                            :call planet#term#RunCmd('cmake --build . --target clean')<CR>
-    an 500.10  🔨&u.&CMake.Generate\ compile_commands.json  :TODO"set CMAKE_... + run cmake...
-    an 500.10  🔨&u.&CMake.Set\ Generator                   :TODO"makefiles, ninja, etc...
-    an 500.10  🔨&u.&CMake.Set\ Target                      :TODO
-    an 500.10  🔨&u.&CMake.Set\ Build\ Dir                  :TODO"search for ./build* and ../build* folders
-    an 500.10  🔨&u.&CMake.Set\ Build\ Type                 :TODO"debug, release, minsizerel, relwithdebuginfo
+    an 500.10  🔨&u.&CMake.Select\ Build\ Dir               <Cmd>call planet#build#SelectBuildDir()<CR>
+    an 500.10  🔨&u.&CMake.Browse\ Build\ Directory         <Cmd>exe 'Fern ' .. g:PV_build_dir<CR>
+    an 500.10  🔨&u.&CMake.Configure                        <Cmd>call planet#term#RunCmd('cmake ..', v:false, v:false, v:false, g:PV_build_dir)<CR>
+    an 500.10  🔨&u.&CMake.Configure\ Tui                   <Cmd>call planet#term#RunCmdTab('ccmake ..', v:false, v:false, v:false, g:PV_build_dir)<CR>
+    an 500.10  🔨&u.&CMake.Configure\ Gui                   <Cmd>call planet#term#RunCmdGui('cmake-gui ..', v:false, v:false, v:false, g:PV_build_dir)<CR>
+    an 500.10  🔨&u.&CMake.Build                            <Cmd>call planet#term#RunCmd('cmake --build .', v:false, v:false, v:false, g:PV_build_dir)<CR>
+    an 500.10  🔨&u.&CMake.Clean                            <Cmd>call planet#term#RunCmd('cmake --build . --target clean', v:false, v:false, v:false, g:PV_build_dir)<CR>
+    an 500.10  🔨&u.&CMake.Generate\ compile_commands\.json <Cmd>call planet#env#SenEnvVarValue('CMAKE_EXPORT_COMPILE_COMMANDS=ON')<CR><Cmd>call planet#term#RunCmd('cmake --build .', v:false, v:false, v:false, g:PV_build_dir)<CR>
     an 500.10  🔨&u.&QMake.Set\ DESTDIR                     :!make<CR>
     an 500.10  🔨&u.Scons.Set\ DESTDIR                      :!make<CR>
     an 500.10  🔨&u.Nin&ja.Set\ DESTDIR                     :!make<CR>

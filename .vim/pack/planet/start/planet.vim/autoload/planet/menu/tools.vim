@@ -135,9 +135,9 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&g.Advanced.Bisect                               :TODO
     an 700.10  🔀&g.Advanced.Submodule.TODO                       :TODO
     an 700.10  🔀&g.Advanced.Reflog.List                          :call planet#term#RunCmd('git reflog')<CR>
-    an 700.10  🔀&g.Advanced.Reset.Soft                           :call planet#term#RunCmd('git reset --soft HEAD~1')<CR>
-    an 700.10  🔀&g.Advanced.Reset.Reset                          :call planet#term#RunCmd('git reset HEAD~1')<CR>
-    an 700.10  🔀&g.Advanced.Reset.Hard                           :call planet#term#RunCmd('git reset --hard HEAD~1')<CR>
+    an 700.10  🔀&g.Advanced.Reset.Soft\ HEAD~1                   :call planet#term#RunCmd('git reset --soft HEAD~1')<CR>
+    an 700.10  🔀&g.Advanced.Reset.Reset\ HEAD~1                  :call planet#term#RunCmd('git reset HEAD~1')<CR>
+    an 700.10  🔀&g.Advanced.Reset.Hard\ HEAD~1                   :call planet#term#RunCmd('git reset --hard HEAD~1')<CR>
     an 700.10  🔀&g.Advanced.Cherry-pick.TODO                     :TODO
     an 700.10  🔀&g.Advanced.Archive                              :TODO
     an 700.10  🔀&g.Advanced.Bundle                               :TODO
