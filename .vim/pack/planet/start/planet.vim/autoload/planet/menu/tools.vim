@@ -402,6 +402,7 @@ func! planet#menu#tools#update() abort
     an 730.10  🔧&o.Convert\ to\ HEX<Tab>:%!xxd             :call <SID>XxdToHex()<CR>
     an 730.10  🔧&o.Convert\ from\ HEX<Tab>:%!xxd\ -r       :call <SID>XxdFromHex()<CR>
     an 730.10  🔧&o.--4-- <Nop>
+    an 730.10  🔧&o.Nmap.Find\ Hosts\ in\ Local\ Network    <Cmd>TODO<CR>
     an 730.10  🔧&o.Serial\ Monitor\ (picocom)              :call planet#term#run_command_output('picocom -b 115200 /dev/ttyUSB0')<CR>
     an 730.10  🔧&o.Multipurpose\ Relay\ (socat)            :call planet#term#run_command_output('socat ...TODO')<CR>
     an 730.10  🔧&o.--5-- <Nop>

@@ -331,50 +331,50 @@ func! planet#menu#dev#update() abort
     an 500.10  🔨&u.&Autotools.Run\ \./autogen\.sh          :call planet#term#RunCmd('./autogen.sh')<CR>
     an 500.10  🔨&u.&Autotools.Run\ \./bootstrap\.sh        :call planet#term#RunCmd('./bootstrap.sh')<CR>
     an 500.10  🔨&u.&Autotools.Run\ \./&configure           :call planet#term#RunCmd('./configure')<CR>
+    an 500.10  🔨&u.&Autotools.Rerun\ \./&configure         :call planet#term#RunCmdFind('config.status', '--recheck')<CR>
     an 500.10  🔨&u.&Autotools.Set\ \./configure\ Options   :TODO"print ./configure --help & set options in buffer
-    an 500.10  🔨&u.&Autotools.Open\ config\.log            :e ./config.log<CR>
-    an 500.10  🔨&u.&Autotools.Set\ $CC                     :let $CC=...TODO
-    an 500.10  🔨&u.&Autotools.Set\ $CFLAGS                 :let $CFLAGS=...TODO
-    an 500.10  🔨&u.&Autotools.Set\ $CXX                    :let $CXX...TODO
-    an 500.10  🔨&u.&Autotools.Set\ $CXXFLAGS               :let $CXXFLAGSDO
-    an 500.10  🔨&u.&Autotools.Set\ $LDFLAGS                :let $LDFLAGSODO
-    an 500.10  🔨&u.&Autotools.Set\ $CPPFLAGS               :let $CPPFLAGSDO
-    an 500.10  🔨&u.&Autotools.Set\ $DESTDIR                :let $DESTDIR DO
-    an 500.10  🔨&u.Mak&e.&Make                             :call planet#term#RunCmd('make')<CR>
-    an 500.10  🔨&u.Mak&e.Make\ &All                        :call planet#term#RunCmd('make all')<CR>
-    an 500.10  🔨&u.Mak&e.Make\ &Help                       :call planet#term#RunCmd('make help')<CR>
-    an 500.10  🔨&u.Mak&e.Make\ &Clean                      :call planet#term#RunCmd('make clean')<CR>
-    an 500.10  🔨&u.Mak&e.Make\ Distclea&n                  :call planet#term#RunCmd('make distclean')<CR>
-    an 500.10  🔨&u.Mak&e.Make\ &Dist                       :call planet#term#RunCmd('make dist')<CR>
-    an 500.10  🔨&u.Mak&e.Make\ Di&stcheck                  :call planet#term#RunCmd('make distcheck')<CR>
-    an 500.10  🔨&u.Mak&e.Make\ Chec&k                      :call planet#term#RunCmd('make check')<CR>
-    an 500.10  🔨&u.Mak&e.Make\ &Test                       :call planet#term#RunCmd('make test')<CR>
-    an 500.10  🔨&u.Mak&e.Make\ &Install                    :call planet#term#RunCmd('make install')<CR>
-    an 500.10  🔨&u.Mak&e.Make\ &Uninstall                  :call planet#term#RunCmd('make uninstall')<CR>
-    an 500.10  🔨&u.&KBuild.make\ &oldconfig                :call planet#term#RunCmd("yes '' \| make oldconfig")<CR>
-    an 500.10  🔨&u.&KBuild.make\ &menuconfig               :call planet#term#RunCmdTab('make menuconfig')<CR>
-    an 500.10  🔨&u.&KBuild.ma&ke                           :call planet#term#RunCmd('make')<CR>
-    an 500.10  🔨&u.&KBuild.&Edit\ \.config                 :e .config<CR>
-    an 500.10  🔨&u.&KBuild.&Edit\ $MAKEFLAGS               :call planet#env#SetEnvVar('MAKEFLAGS')<CR>
-    an 500.10  🔨&u.&KBuild.make\ c&lean                    :call planet#term#RunCmd('make help')<CR>
-    an 500.10  🔨&u.&KBuild.make\ mr&proper                 :call planet#term#RunCmd('make help')<CR>
-    an 500.10  🔨&u.&KBuild.make\ dis&tclean                :call planet#term#RunCmd('make help')<CR>
-    an 500.10  🔨&u.&KBuild.make\ &help                     :call planet#term#RunCmd('make help')<CR>
-    an 500.10  🔨&u.&KBuild.make\ &config                   :call planet#term#RunCmd('make help')<CR>
-    an 500.10  🔨&u.&KBuild.make\ allyesconfig              :call planet#term#RunCmd('make allyesconfig')<CR>
-    an 500.10  🔨&u.&KBuild.make\ allnoconfig               :call planet#term#RunCmd('make allnoconfig')<CR>
-    an 500.10  🔨&u.&KBuild.make\ defconfig                 :call planet#term#RunCmd('make defconfig')<CR>
-    an 500.10  🔨&u.&KBuild.make\ install                   :call planet#term#RunCmd('make install')<CR>
-    an 500.10  🔨&u.&KBuild.make\ uninstall                 :call planet#term#RunCmd('make uninstall')<CR>
-    an 500.10  🔨&u.&KBuild.make\ randconfig                :call planet#term#RunCmd('make randconfig')<CR>
-    an 500.10  🔨&u.&KBuild.make\ allmodconfig              :call planet#term#RunCmd('make allmodconfig')<CR>
-    an 500.10  🔨&u.&KBuild.make\ &config                   :call planet#term#RunCmd('make help')<CR>
-    an 500.10  🔨&u.&KBuild.make\ &config                   :call planet#term#RunCmd('make help')<CR>
-    an 500.10  🔨&u.&KBuild.make\ &config                   :call planet#term#RunCmd('make help')<CR>
-    an 500.10  🔨&u.&KBuild.make\ &nconfig                  :call planet#term#RunCmd('make help')<CR>
-    an 500.10  🔨&u.&KBuild.make\ &xconfig                  :call planet#term#RunCmd('make help')<CR>
-    an 500.10  🔨&u.&KBuild.make\ &gconfig                  :call planet#term#RunCmd('make help')<CR>
-    an 500.10  🔨&u.&KBuild.make\ &tags                     :call planet#term#RunCmd('make tags')<CR>
+    an 500.10  🔨&u.&Autotools.Open\ config\.log            <Cmd>find config.log<CR>
+    an 500.10  🔨&u.&Autotools.Set\ $CC                     <Cmd>call planet#env#SenEnvVar("CC")<CR>
+    an 500.10  🔨&u.&Autotools.Set\ $CFLAGS                 <Cmd>call planet#env#SenEnvVar("CFLAGS")<CR>
+    an 500.10  🔨&u.&Autotools.Set\ $CXX                    <Cmd>call planet#env#SenEnvVar("CXX")<CR>
+    an 500.10  🔨&u.&Autotools.Set\ $CXXFLAGS               <Cmd>call planet#env#SenEnvVar("CXXFLAGS")<CR>
+    an 500.10  🔨&u.&Autotools.Set\ $LDFLAGS                <Cmd>call planet#env#SenEnvVar("LDFLAGS")<CR>
+    an 500.10  🔨&u.&Autotools.Set\ $CPPFLAGS               <Cmd>call planet#env#SenEnvVar("CPPFLAGS")<CR>
+    an 500.10  🔨&u.&Autotools.Set\ $DESTDIR                <Cmd>call planet#env#SenEnvVar("DESTDIR")<CR>
+    an 500.10  🔨&u.Mak&e.&Make                             <Cmd>call planet#term#RunCmd('make')<CR>
+    an 500.10  🔨&u.Mak&e.Make\ &All                        <Cmd>call planet#term#RunCmd('make all')<CR>
+    an 500.10  🔨&u.Mak&e.Make\ &Help                       <Cmd>call planet#term#RunCmd('make help')<CR>
+    an 500.10  🔨&u.Mak&e.Make\ &Clean                      <Cmd>call planet#term#RunCmd('make clean')<CR>
+    an 500.10  🔨&u.Mak&e.Make\ Distclea&n                  <Cmd>call planet#term#RunCmd('make distclean')<CR>
+    an 500.10  🔨&u.Mak&e.Make\ &Dist                       <Cmd>call planet#term#RunCmd('make dist')<CR>
+    an 500.10  🔨&u.Mak&e.Make\ Di&stcheck                  <Cmd>call planet#term#RunCmd('make distcheck')<CR>
+    an 500.10  🔨&u.Mak&e.Make\ Chec&k                      <Cmd>call planet#term#RunCmd('make check')<CR>
+    an 500.10  🔨&u.Mak&e.Make\ &Test                       <Cmd>call planet#term#RunCmd('make test')<CR>
+    an 500.10  🔨&u.Mak&e.Make\ &Install                    <Cmd>call planet#term#RunCmd('make install')<CR>
+    an 500.10  🔨&u.Mak&e.Make\ &Uninstall                  <Cmd>call planet#term#RunCmd('make uninstall')<CR>
+    an 500.10  🔨&u.Mak&e.Set\ $MAKEFLAGS                   <Cmd>call planet#env#SetEnvVar('MAKEFLAGS')<CR>
+    an 500.10  🔨&u.&KBuild.make\ &oldconfig                <Cmd>call planet#term#RunCmd("yes '' \| make oldconfig")<CR>
+    an 500.10  🔨&u.&KBuild.make\ &menuconfig               <Cmd>call planet#term#RunCmdTab('make menuconfig')<CR>
+    an 500.10  🔨&u.&KBuild.ma&ke                           <Cmd>call planet#term#RunCmd('make')<CR>
+    an 500.10  🔨&u.&KBuild.ma&ke\ Custom\ Target           <Cmd>call planet#term#RunCmdAskArgs('make', 'Target: ')<CR>
+    an 500.10  🔨&u.&KBuild.&Edit\ \.config                 <Cmd>e .config<CR>
+    an 500.10  🔨&u.&KBuild.&Edit\ $MAKEFLAGS               <Cmd>call planet#env#SetEnvVar('MAKEFLAGS')<CR>
+    an 500.10  🔨&u.&KBuild.make\ c&lean                    <Cmd>call planet#term#RunCmd('make clean')<CR>
+    an 500.10  🔨&u.&KBuild.make\ mr&proper                 <Cmd>call planet#term#RunCmd('make mrproper')<CR>
+    an 500.10  🔨&u.&KBuild.make\ dis&tclean                <Cmd>call planet#term#RunCmd('make distclean')<CR>
+    an 500.10  🔨&u.&KBuild.make\ &help                     <Cmd>call planet#term#RunCmd('make help')<CR>
+    an 500.10  🔨&u.&KBuild.make\ &config                   <Cmd>call planet#term#RunCmd('make config')<CR>
+    an 500.10  🔨&u.&KBuild.make\ allyesconfig              <Cmd>call planet#term#RunCmd('make allyesconfig')<CR>
+    an 500.10  🔨&u.&KBuild.make\ allnoconfig               <Cmd>call planet#term#RunCmd('make allnoconfig')<CR>
+    an 500.10  🔨&u.&KBuild.make\ defconfig                 <Cmd>call planet#term#RunCmd('make defconfig')<CR>
+    an 500.10  🔨&u.&KBuild.make\ install                   <Cmd>call planet#term#RunCmd('make install')<CR>
+    an 500.10  🔨&u.&KBuild.make\ uninstall                 <Cmd>call planet#term#RunCmd('make uninstall')<CR>
+    an 500.10  🔨&u.&KBuild.make\ randconfig                <Cmd>call planet#term#RunCmd('make randconfig')<CR>
+    an 500.10  🔨&u.&KBuild.make\ allmodconfig              <Cmd>call planet#term#RunCmd('make allmodconfig')<CR>
+    an 500.10  🔨&u.&KBuild.make\ &nconfig                  <Cmd>call planet#term#RunCmd('make nconfig')<CR>
+    an 500.10  🔨&u.&KBuild.make\ &xconfig                  <Cmd>call planet#term#RunCmd('make xconfig')<CR>
+    an 500.10  🔨&u.&KBuild.make\ &gconfig                  <Cmd>call planet#term#RunCmd('make gconfig')<CR>
+    an 500.10  🔨&u.&KBuild.make\ &tags                     <Cmd>call planet#term#RunCmd('make tags')<CR>
     an 500.10  🔨&u.&CMake.Select\ Build\ Dir               <Cmd>call planet#build#SelectBuildDir()<CR>
     an 500.10  🔨&u.&CMake.Browse\ Build\ Directory         <Cmd>exe 'Fern ' .. g:PV_build_dir<CR>
     an 500.10  🔨&u.&CMake.Configure                        <Cmd>call planet#term#RunCmd('cmake ' .. getcwd(), v:false, v:false, v:false, g:PV_build_dir)<CR>
@@ -384,7 +384,7 @@ func! planet#menu#dev#update() abort
     an 500.10  🔨&u.&CMake.Clean                            <Cmd>call planet#term#RunCmd('cmake --build . --target clean', v:false, v:false, v:false, g:PV_build_dir)<CR>
     an 500.10  🔨&u.&CMake.Generate\ compile_commands\.json <Cmd>call planet#env#SenEnvVarValue('CMAKE_EXPORT_COMPILE_COMMANDS=ON')<CR><Cmd>call planet#term#RunCmd('cmake --build .', v:false, v:false, v:false, g:PV_build_dir)<CR>
     an 500.10  🔨&u.&QMake.Set\ DESTDIR                     :!make<CR>
-    an 500.10  🔨&u.Scons.Set\ DESTDIR                      :!make<CR>
+    an 500.10  🔨&u.Scons.Run\ Custom\ Target               <Cmd>call planet#term#RunCmdAskArgs('scons', 'scons: ', ' -j8 .')<CR>
     an 500.10  🔨&u.Nin&ja.Set\ DESTDIR                     :!make<CR>
     an 500.10  🔨&u.&Meson.Set\ DESTDIR                     :!make<CR>
     an 500.10  🔨&u.Deploy <Nop>

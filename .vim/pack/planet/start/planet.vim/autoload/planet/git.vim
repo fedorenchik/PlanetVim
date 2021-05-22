@@ -46,3 +46,10 @@ func! planet#git#DisableAutoCommit() abort
     au!
   aug END
 endfunc
+
+func! planet#git#CheckoutBranch() abort
+  let l:branch = input("Branch: ")
+  if ! empty(l:branch)
+    call planet#term#RunCmd('git checkout ' .. l:branch)
+  end
+endfunc

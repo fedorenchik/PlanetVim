@@ -251,6 +251,7 @@ func! planet#menu#nav#update() abort
     an 860.10  🎛️&@.Calendar            :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +Calendar<CR>
     an 860.10  🎛️&@.Web\ Browser        :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'W3m https://google.com/'<CR>
     an 860.10  🎛️&@.Calculator          :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +Calculator<CR>
+    an 860.10  🎛️&@.Htop                <Cmd>call planet#term#RunCmdTab('htop')<CR>
     an 860.10  🎛️&@.Terminal            :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'terminal ++curwin ++kill=kill'<CR>
     an 860.10  🎛️&@.File\ Manager       :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'Fern .'<CR>
     an 860.10  🎛️&@.Python\ Notebook    :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'Codi python'<CR>

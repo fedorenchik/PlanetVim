@@ -117,3 +117,26 @@ func! planet#term#ListTermWindows() abort
   endfor
   return l:out_list
 endfunc
+
+func! planet#term#RunCmdFind(cmd, cmd_args) abort
+  let l:cmd_path = findfile(a:cmd)
+  if ! empty(l:cmd_path)
+    let l:cmd_path = fnamemodify(l:cmd_path, ":p")
+    call planet#term#RunCmd(l:cmd_path .. ' ' .. a:cmd_args)
+  end
+endfunc
+
+func! planet#term#RunCmdAskArgs(cmd, prompt, default_input = '') abort
+  let l:cmd_args = input(a:prompt, a:default_input)
+  if ! empty(l:cmd_args)
+    call planet#term#RunCmd(a:cmd .. ' ' .. l:cmd_args)
+  end
+endfunc
+
+" Ask user @prompt, and run input command with arguments.
+func! planet#term#RunCmdAsk(prompt, default_input = '') abort
+  let l:cmd_with_args = input(a:prompt, a:default_input)
+  if ! empty(l:cmd_with_args)
+    call planet#term#RunCmd(l:cmd_with_args)
+  end
+endfunc
