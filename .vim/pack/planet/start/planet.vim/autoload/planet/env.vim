@@ -56,6 +56,6 @@ func! planet#env#SetEnvVarValue(var_value) abort
 endfunc
 
 func! planet#env#NewEnvVar() abort
-  let l:var_value = inputdialog("Please input variable & value with following format: VAR=value")
+  let l:var_value = inputdialog("Please input variable & value with following format: VAR=value\nEnv Var: ")
   call planet#env#SetEnvVarValue(l:var_value)
 endfunc

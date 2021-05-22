@@ -35,7 +35,7 @@ func! planet#term#RunCmd(cmd, this_window = v:false, close_on_exit = v:false, st
   end
   let l:cmd_cd = ''
   if ! empty(a:cd)
-    let l:cmd_cd = 'cd ''' .. a:cd .. ''' ; '
+    let l:cmd_cd = 'cd ' .. a:cd .. ' ; '
   end
   let ret = term_start(s:bin_dir .. 'run-command ' .. l:cmd_cd .. a:cmd, l:term_opts)
   if ret == 0
