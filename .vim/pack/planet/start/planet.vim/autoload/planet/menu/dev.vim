@@ -375,11 +375,13 @@ func! planet#menu#dev#update() abort
     an 500.10  🔨&u.&KBuild.make\ &xconfig                  <Cmd>call planet#term#RunCmd('make xconfig')<CR>
     an 500.10  🔨&u.&KBuild.make\ &gconfig                  <Cmd>call planet#term#RunCmd('make gconfig')<CR>
     an 500.10  🔨&u.&KBuild.make\ &tags                     <Cmd>call planet#term#RunCmd('make tags')<CR>
+    an 500.10  🔨&u.&CMake.Create\ In-Tree\ Build\ Dir      <Cmd>call planet#build#NewInTreeBuildDir()<CR>
+    an 500.10  🔨&u.&CMake.Create\ OOT\ Build\ Dir          <Cmd>call planet#build#NewOOTBuildDir()<CR>
     an 500.10  🔨&u.&CMake.Select\ Build\ Dir               <Cmd>call planet#build#SelectBuildDir()<CR>
     an 500.10  🔨&u.&CMake.Browse\ Build\ Directory         <Cmd>exe 'Fern ' .. g:PV_build_dir<CR>
     an 500.10  🔨&u.&CMake.Configure                        <Cmd>call planet#term#RunCmd('cmake ' .. getcwd(), v:false, v:false, v:false, g:PV_build_dir)<CR>
-    an 500.10  🔨&u.&CMake.Configure\ Tui                   <Cmd>call planet#term#RunCmdTab('ccmake ..', v:false, v:false, v:false, g:PV_build_dir)<CR>
-    an 500.10  🔨&u.&CMake.Configure\ Gui                   <Cmd>call planet#term#RunCmdGui('cmake-gui ..', v:false, v:false, v:false, g:PV_build_dir)<CR>
+    an 500.10  🔨&u.&CMake.Configure\ Tui                   <Cmd>call planet#term#RunCmdTab('ccmake ..', g:PV_build_dir)<CR>
+    an 500.10  🔨&u.&CMake.Configure\ Gui                   <Cmd>call planet#term#RunGuiApp('cmake-gui ..', g:PV_build_dir)<CR>
     an 500.10  🔨&u.&CMake.Build                            <Cmd>call planet#term#RunCmd('cmake --build .', v:false, v:false, v:false, g:PV_build_dir)<CR>
     an 500.10  🔨&u.&CMake.Clean                            <Cmd>call planet#term#RunCmd('cmake --build . --target clean', v:false, v:false, v:false, g:PV_build_dir)<CR>
     an 500.10  🔨&u.&CMake.Generate\ compile_commands\.json <Cmd>call planet#env#SenEnvVarValue('CMAKE_EXPORT_COMPILE_COMMANDS=ON')<CR><Cmd>call planet#term#RunCmd('cmake --build .', v:false, v:false, v:false, g:PV_build_dir)<CR>

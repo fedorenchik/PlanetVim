@@ -56,9 +56,9 @@ endfunc
 " Runs (interactive) shell command in new Tab
 " When command finishes, tab is automatically closed, unless other window was
 " opened in the meantime.
-func! planet#term#RunCmdTab(cmd) abort
+func! planet#term#RunCmdTab(cmd, cd = '') abort
   tabnew
-  call planet#term#RunCmd(a:cmd, v:true, v:true)
+  call planet#term#RunCmd(a:cmd, v:true, v:true, v:false, a:cd)
 endfunc
 
 " Runs vim command in new GVIM Window
@@ -67,8 +67,12 @@ func! planet#term#RunCmdGui(cmd) abort
 endfunc
 
 " Run gui command
-func! planet#term#RunGuiApp(app) abort
-  silent !nohup a:app >/dev/null 2>&1 &
+func! planet#term#RunGuiApp(app, cd = '') abort
+  let l:cd_cmd = ''
+  if ! empty(a:cd)
+    let l:cd_cmd = 'cd ' .. a:cd .. ' && '
+  end
+  exe "silent !" .. l:cd_cmd .. "nohup " .. a:app .. " >/dev/null 2>&1 &"
 endfunc
 
 " Run command in background (do not open any windows)

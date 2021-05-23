@@ -53,3 +53,10 @@ func! planet#git#CheckoutBranch() abort
     call planet#term#RunCmd('git checkout ' .. l:branch)
   end
 endfunc
+
+func! planet#git#Clone() abort
+  let l:git_clone_args = input("git clone: ")
+  if ! empty(l:git_clone_args)
+    call planet#term#RunCmd('git clone ' .. l:git_clone_args)
+  end
+endfunc

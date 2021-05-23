@@ -121,7 +121,7 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&g.&Gui.&Gitg                                    :silent !nohup gitg >/dev/null 2>&1 &<CR>
     an 700.10  🔀&g.Ui.Git&ui                                     :call planet#term#RunCmdTab('gitui')<CR>
     an 700.10  🔀&g.LFS                                           :TODO
-    an 700.10  🔀&g.New.Cl&one                                    :TODO
+    an 700.10  🔀&g.New.Cl&one                                    :call planet#git#Clone()<CR>
     an 700.10  🔀&g.New.&Init                                     :call planet#term#RunCmd('git init')<CR>
     an 700.10  🔀&g.Patch.Am                                      :TODO
     an 700.10  🔀&g.Patch.Format-Patch                            :TODO
