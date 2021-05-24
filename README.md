@@ -23,7 +23,9 @@ At least it can build CMake projects, Vim, Linux Kernel, Godot Engine now:
 1. Clone source code:
 
    🔀g- > New -> Clone, and then type URL (and other parameters) for git clone
+
 2. `:cd` into cloned project
+
 3. Create build directory:
 
    🔨u -> CMake -> Create In-Tree Build Dir or
@@ -35,6 +37,7 @@ At least it can build CMake projects, Vim, Linux Kernel, Godot Engine now:
 4. Configure CMake:
 
    🔨u -> CMake -> Configure
+
 5. Build Project:
 
    🔨u -> CMake -> Build
@@ -43,7 +46,7 @@ At least it can build CMake projects, Vim, Linux Kernel, Godot Engine now:
 
 1. Clone source code:
 
-   Git -> New -> Clone
+   🔀g -> New -> Clone
 
    Type: https://gitlab.com/kicad/code/kicad.git
 
@@ -51,26 +54,29 @@ At least it can build CMake projects, Vim, Linux Kernel, Godot Engine now:
 
 2. Create build directory:
 
-   Build -> CMake -> Create In-Tree Build Dir
+   🔨u -> CMake -> Create In-Tree Build Dir
+
 3. Configure:
 
-   Build -> CMake -> Configure
+   🔨u -> CMake -> Configure
+
 4. Make sure all build dependencies are installed.
 
    If there's any issue, you can set custom settings in PlanetVim:
 
-   Build -> CMake -> Configure Tui
+   🔨u -> CMake -> Configure Tui
 
    Or run cmake-gui:
 
-   Build -> CMake -> Configure Gui
+   🔨u -> CMake -> Configure Gui
 
 4. Build:
 
-   Build -> CMake -> Build
+   🔨u -> CMake -> Build
+
 5. Run built KiCad:
 
-   Terminal -> New
+   💻t -> New
 
    In the terminal:
 
@@ -80,7 +86,8 @@ At least it can build CMake projects, Vim, Linux Kernel, Godot Engine now:
    ```
 
 6. Generate compile_commands.json for development:
-   Build -> CMake -> Generate compile_commands.json
+
+   🔨u -> CMake -> Generate compile_commands.json
 
 ## How to build Vim:
 
