@@ -20,31 +20,65 @@ At least it can build CMake projects, Vim, Linux Kernel, Godot Engine now:
 
 ## How to build CMake projects:
 
-1. <A-G> -> New -> Clone -> Input URL (and other parameters) for git clone
-2. <A-U>
+1. Clone source code:
+
+   🔀g- > New -> Clone, and then type URL (and other parameters) for git clone
+2. `:cd` into cloned project
+3. Create build directory:
+
+   🔨u -> CMake -> Create In-Tree Build Dir or
+
+   🔨u -> CMake -> Create OOT Build Dir (OOT stands for Out Of Tree) or
+
+   🔨u -> CMake -> Select Build Dir and then choose which build dir to use
+
+4. Configure CMake:
+
+   🔨u -> CMake -> Configure
+5. Build Project:
+
+   🔨u -> CMake -> Build
 
 ### How to build KiCad (based on CMake):
 
 1. Clone source code:
+
    Git -> New -> Clone
+
    Type: https://gitlab.com/kicad/code/kicad.git
-   :cd kicad
+
+   `:cd kicad`
+
 2. Create build directory:
+
    Build -> CMake -> Create In-Tree Build Dir
 3. Configure:
+
    Build -> CMake -> Configure
 4. Make sure all build dependencies are installed.
+
    If there's any issue, you can set custom settings in PlanetVim:
+
    Build -> CMake -> Configure Tui
+
    Or run cmake-gui:
+
    Build -> CMake -> Configure Gui
+
 4. Build:
+
    Build -> CMake -> Build
 5. Run built KiCad:
+
    Terminal -> New
+
    In the terminal:
+
+   ```
    cd build
    ./kicad/kicad
+   ```
+
 6. Generate compile_commands.json for development:
    Build -> CMake -> Generate compile_commands.json
 
