@@ -1,0 +1,221 @@
+set autoindent
+set autoread
+set autowrite
+set autowriteall
+set bs=start
+set nobackup
+set backupdir=/tmp
+"TODO: set & show baloons
+set ballooneval
+set balloonevalterm
+set belloff=all,backspace,cursor,complete,copy,ctrlg,error,esc,ex,insertmode,lang,mess,showmatch,operator,register,shell,spell,wildmode
+set nobomb
+set nobreakindent
+set browsedir=buffer
+set cindent
+set cinoptions=:0,l1,g0,N-s,E-s,t0,U1,j1,J1
+set cinwords-=switch
+set clipboard=autoselect,autoselectml,exclude:cons\|linux
+set cmdheight=2
+set cmdwinheight=1
+if has("gui_running")
+  set columns=128
+endif
+set complete-=i
+set completeopt=menuone,preview,popup,popuphidden,noinsert,noselect
+set confirm
+set copyindent
+set cscopequickfix=s-,g-,d-,c-,t-,e-,f-,i-,a-
+set cscoperelative
+set nocscopetag
+set cscopetagorder=0
+set cscopeverbose
+set debug=beep
+set nodelcombine
+set dictionary+=/usr/share/dict/words
+set dictionary+=/usr/share/dict/web2
+set diffopt=filler,context:12,iwhite,vertical,foldcolumn:2,internal,indent-heuristic,algorithm:histogram,closeoff,hiddenoff
+set directory=~/.vim/swap//,~/tmp//,.//,~//,/var/tmp//,/tmp//
+set display=lastline,uhex
+set noedcompatible
+set emoji
+set encoding=utf-8
+set noequalalways
+set noerrorbells
+set esckeys
+set noexpandtab
+set exrc
+set fileformats=unix,dos,mac
+set nofileignorecase
+set fillchars=stl:\ ,stlnc:\ ,vert:\ ,fold:\ ,diff:\ 
+set nofixendofline
+set foldcolumn=1
+set foldlevel=20
+set foldlevelstart=20
+set foldmethod=syntax
+set foldminlines=0
+set foldnestmax=5
+set foldopen=quickfix,tag,undo
+set formatoptions-=t
+set formatoptions+=1jMmn
+set nofsync
+set nogdefault
+set grepprg=grep\ -nH\ $*
+"TODO: Colorize cursor in different modes.
+"set guicursor+=a:blinkon0
+if has("gui")
+  set guifont=DejaVu\ Sans\ Mono\ 9,Monospace\ 9
+endif
+set guiheadroom=0
+" Adding '!' to guioptions causes too much redraw & 'hit enter' prompts (vim bug)
+set guioptions=aAcdeimMgpk
+set guipty
+set guitablabel=%{g:GuiTabLabel()}
+set guitabtooltip=%{g:GuiTabTooltip()}
+set helpheight=8
+set helplang=en
+set hidden
+set nohlsearch
+set history=10000
+set icon
+set iconstring=
+set noignorecase
+set iminsert=0
+set imsearch=-1
+if has('reltime')
+  set incsearch
+endif
+set infercase
+set isfname+=@-@
+set joinspaces
+set keymodel=
+set keywordprg=:Man
+set langmenu=none
+if has('langmap') && exists('+langremap')
+  set nolangremap
+endif
+set laststatus=2
+set lazyredraw
+set nolinebreak
+if has("gui_running")
+  set lines=64
+endif
+set list
+set listchars=tab:»\ ,trail:·,extends:>,precedes:<,nbsp:+
+set magic
+set makeencoding=char
+set matchpairs+=<:>
+set menuitems=40
+set mkspellmem=900000,3000,800
+set modeline
+set modelines=5
+set more
+if has('mouse')
+  set mouse=ar
+endif
+set nomousefocus
+set mousehide
+set mousemodel=popup_setpos
+set mouseshape+=o:question,c:pencil,e:hand2
+set nrformats+=alpha
+set nonumber
+set numberwidth=3
+set patchmode=".orig"
+set path+=.,,./include,../include,../*/include,*/include,*,../*,/usr/include,**
+set nopreserveindent
+set previewheight=12
+set printencoding=utf-8
+set printfont=&guifont
+set printmbcharset=ISO10646
+set printmbfont=r:WenQuanYi\ Zen\ Hei,a:yes
+set prompt
+set pumheight=10
+set pyxversion=3
+set redrawtime=10000
+set norelativenumber
+set ruler
+set noscrollbind
+set scrollfocus
+set scrolljump=2
+set scrolloff=2
+set scrollopt=ver,hor,jump
+set secure
+set sessionoptions=blank,buffers,curdir,folds,globals,help,resize,slash,tabpages,terminal,unix,winpos,winsize
+if &shell =~# 'fish$' && (v:version < 704 || v:version == 704 && !has('patch276'))
+  set shell=/bin/bash
+endif
+set shiftround
+set shiftwidth=8
+set shortmess="I"
+set showbreak=>>>>>>>>
+set showcmd
+set showfulltag
+set noshowmatch
+set showmode
+set showtabline=2
+set sidescroll=30
+set sidescrolloff=1
+set signcolumn=yes
+set smartcase
+set smartindent
+set smarttab
+set softtabstop=8
+"TODO: spellfile: 1 - per session, 2 - global, 3 - tmp cache
+set spellfile=$HOME/src/homerc/.vim/spell/personal.utf-8.add,/tmp/tmp.utf-8.add
+set spelllang+=cjk
+set spelloptions=camel
+set spellsuggest=best,10
+set nosplitbelow
+set nosplitright
+set nostartofline
+set suffixes-=.h
+set noswapfile
+set swapsync=
+set switchbuf=uselast
+set synmaxcol=1000
+if &t_Co == 8 && $TERM !~# '^linux\|^Eterm'
+  set t_Co=16
+endif
+set t_vb=
+set tabpagemax=20
+set tabstop=8
+set tagbsearch
+set tagcase=followscs
+set tagrelative
+set tags=tags;
+set tagstack
+set termguicolors
+set thesaurus+=$HOME/.vim/thes/mobythes.txt
+set notildeop
+set notimeout
+set timeoutlen=400
+set title
+set titleold=$PWD
+set titlestring=%{g:TitleString()}
+set ttimeout
+set ttimeoutlen=10
+set ttyfast
+if has('persistent_undo')
+  set undodir=$HOME/.vim/undo,.
+  set undofile
+endif
+set undolevels=1000
+set updatetime=1000
+set viewoptions=cursor,folds,slash,unix,curdir
+set viminfo=!,%50,'100,<50,c,f1,h,r/run,r/tmp,r/var,r/mnt,r/media,s10
+set virtualedit=block
+set visualbell
+set warn
+set whichwrap=
+set wildcharm=<C-Z>
+set nowildignorecase
+set wildmenu
+set wildmode=longest:full,list:full
+set wildoptions=tagfile
+set winaltkeys=menu
+set winminheight=0
+set winminwidth=0
+set winwidth=1
+set nowrap
+set nowrapscan
+set nowritebackup
