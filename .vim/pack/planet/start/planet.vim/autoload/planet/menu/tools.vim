@@ -6,65 +6,67 @@ func! planet#menu#tools#update() abort
     " Open Log in new window
     an 700.10  🔀&g.Git <Nop>
     an disable 🔀&g.Git
-    an 700.10  🔀&g.&Status                                       :call planet#term#RunCmd('git status --short --branch --show-stash --untracked-files=all')<CR>
-    an 700.10  🔀&g.&Fetch                                        :call planet#term#RunCmd('git fetch --all --tags')<CR>
-    an 700.10  🔀&g.P&ull                                         :call planet#term#RunCmd('git pull --ff-only --all')<CR>
-    an 700.10  🔀&g.&Push                                         :call planet#term#RunCmd('git push')<CR>
-    an 700.10  🔀&g.&Add.This\ &File                              :call planet#term#RunCmd('git add ' .. expand('%'))<CR>
-    an 700.10  🔀&g.&Add.Current\ &Directory                      :call planet#term#RunCmd('git add .')<CR>
-    an 700.10  🔀&g.&Add.&All                                     :call planet#term#RunCmd('git add --update')<CR>
-    an 700.10  🔀&g.&Add.All\ with\ &Untracked                    :call planet#term#RunCmd('git add --all')<CR>
-    an 700.10  🔀&g.&Add.&Interactive                             :call planet#term#RunCmdTab('git add --interactive')<CR>
-    an 700.10  🔀&g.&Add.&Patch                                   :call planet#term#RunCmdTab('git add --patch')<CR>
+    an 700.10  🔀&g.&Status                                       <Cmd>call planet#term#RunCmd('git status --short --branch --show-stash --untracked-files=all')<CR>
+    an 700.10  🔀&g.&Fetch                                        <Cmd>call planet#term#RunCmd('git fetch --all --tags')<CR>
+    an 700.10  🔀&g.P&ull                                         <Cmd>call planet#term#RunCmd('git pull --ff-only --all')<CR>
+    an 700.10  🔀&g.&Push                                         <Cmd>call planet#term#RunCmd('git push')<CR>
+    an 700.10  🔀&g.Summar&y                                      <Cmd>tab Gstatus<CR>
+    an 700.10  🔀&g.&Add.This\ &File                              <Cmd>call planet#term#RunCmd('git add ' .. expand('%'))<CR>
+    an 700.10  🔀&g.&Add.Current\ &Directory                      <Cmd>call planet#term#RunCmd('git add .')<CR>
+    an 700.10  🔀&g.&Add.&All                                     <Cmd>call planet#term#RunCmd('git add --update')<CR>
+    an 700.10  🔀&g.&Add.All\ with\ &Untracked                    <Cmd>call planet#term#RunCmd('git add --all')<CR>
+    an 700.10  🔀&g.&Add.&Interactively                           <Cmd>tab Gstatus<CR>
+    an 700.10  🔀&g.&Add.&Interactive                             <Cmd>call planet#term#RunCmdTab('git add --interactive')<CR>
+    an 700.10  🔀&g.&Add.&Patch                                   <Cmd>call planet#term#RunCmdTab('git add --patch')<CR>
     an 700.10  🔀&g.&Add.&Move                                    :TODO
     an 700.10  🔀&g.&Add.&Remove                                  :TODO
     an 700.10  🔀&g.&Add.&Restore                                 :TODO
-    an 700.10  🔀&g.&Commit.&Commit                               :call planet#git#Commit(v:false, v:false, v:false)<CR>
-    an 700.10  🔀&g.&Commit.Commit\ &File                         :call planet#git#CommitFile(v:false, v:false)<CR>
-    an 700.10  🔀&g.&Commit.Commit\ &Tool                         :call planet#term#RunCmdBg('git commit')<CR>
-    an 700.10  🔀&g.&Commit.Save\ &&\ Commit\ File                :call planet#git#CommitFile(v:true, v:false)<CR>
+    an 700.10  🔀&g.&Commit.&Commit                               <Cmd>call planet#git#Commit(v:false, v:false, v:false)<CR>
+    an 700.10  🔀&g.&Commit.Commit\ &File                         <Cmd>call planet#git#CommitFile(v:false, v:false)<CR>
+    an 700.10  🔀&g.&Commit.Commit\ &Tool                         <Cmd>call planet#term#RunCmdBg('git commit')<CR>
+    an 700.10  🔀&g.&Commit.Save\ &&\ Commit\ File                <Cmd>call planet#git#CommitFile(v:true, v:false)<CR>
     an 700.10  🔀&g.&Commit.Commit\ &All                          :TODO
     an 700.10  🔀&g.&Commit.Commit\ All\ with\ Untracked          :TODO
-    an 700.10  🔀&g.&Commit.Amend\ Last\ Commit                   :call planet#term#RunCmdBg('git commit --amend')<CR>
+    an 700.10  🔀&g.&Commit.Amend\ Last\ Commit                   <Cmd>call planet#term#RunCmdBg('git commit --amend')<CR>
     an 700.10  🔀&g.&Commit.--2-- <Nop>
-    an 700.10  🔀&g.&Commit.AutoCommit\ File                      :call planet#git#CommitFile(v:false)<CR>
-    an 700.10  🔀&g.&Commit.Save\ &&\ AutoCommit\ File            :call planet#git#CommitFile()<CR>
-    an 700.10  🔀&g.&Commit.AutoCommit\ File\ &&\ Push            :call planet#git#CommitFile(v:false, v:true, v:true)<CR>
-    an 700.10  🔀&g.&Commit.Save\ &&\ AutoCommit\ File\ &&\ Push  :call planet#git#CommitFile(v:true, v:true, v:true)<CR>
-    an 700.10  🔀&g.&Commit.AutoCommit                            :call planet#git#Commit(v:false)<CR>
-    an 700.10  🔀&g.&Commit.Save\ All\ &&\ AutoCommit             :call planet#git#Commit()<CR>
-    an 700.10  🔀&g.&Commit.AutoCommit\ &&\ Push                  :call planet#git#Commit(v:false, v:true, v:true)<CR>
-    an 700.10  🔀&g.&Commit.Save\ All\ &&\ AutoCommit\ &&\ Push   :call planet#git#Commit(v:true, v:true, v:true)<CR>
+    an 700.10  🔀&g.&Commit.AutoCommit\ File                      <Cmd>call planet#git#CommitFile(v:false)<CR>
+    an 700.10  🔀&g.&Commit.Save\ &&\ AutoCommit\ File            <Cmd>call planet#git#CommitFile()<CR>
+    an 700.10  🔀&g.&Commit.AutoCommit\ File\ &&\ Push            <Cmd>call planet#git#CommitFile(v:false, v:true, v:true)<CR>
+    an 700.10  🔀&g.&Commit.Save\ &&\ AutoCommit\ File\ &&\ Push  <Cmd>call planet#git#CommitFile(v:true, v:true, v:true)<CR>
+    an 700.10  🔀&g.&Commit.AutoCommit                            <Cmd>call planet#git#Commit(v:false)<CR>
+    an 700.10  🔀&g.&Commit.Save\ All\ &&\ AutoCommit             <Cmd>call planet#git#Commit()<CR>
+    an 700.10  🔀&g.&Commit.AutoCommit\ &&\ Push                  <Cmd>call planet#git#Commit(v:false, v:true, v:true)<CR>
+    an 700.10  🔀&g.&Commit.Save\ All\ &&\ AutoCommit\ &&\ Push   <Cmd>call planet#git#Commit(v:true, v:true, v:true)<CR>
     an 700.10  🔀&g.&Commit.--3-- <Nop>
-    an 700.10  🔀&g.&Commit.Enable\ AutoCommit\ on\ File\ Write   :call planet#git#EnableAutoCommit()<CR>
-    an 700.10  🔀&g.&Commit.Disable\ AutoCommit\ on\ File\ Write  :call planet#git#DisableAutoCommit()<CR>
-    an 700.10  🔀&g.Ch&eckout.Branch                              :call planet#git#CheckoutBranch()<CR>
-    an 700.10  🔀&g.Ch&eckout.File                                :call planet#git#CheckoutFile()<CR>
-    an 700.10  🔀&g.Fetch\ .From\ Specified\ Remote               :call planet#git#FetchCustomRemote()<CR>
-    an 700.10  🔀&g.Pull\ .TODO                                   :call planet#git#FetchCustomRemote()<CR>
-    an 700.10  🔀&g.Push\ .TODO                                   :call planet#git#FetchCustomRemote()<CR>
+    an 700.10  🔀&g.&Commit.Enable\ AutoCommit\ on\ File\ Write   <Cmd>call planet#git#EnableAutoCommit()<CR>
+    an 700.10  🔀&g.&Commit.Disable\ AutoCommit\ on\ File\ Write  <Cmd>call planet#git#DisableAutoCommit()<CR>
+    an 700.10  🔀&g.Ch&eckout.Branch                              <Cmd>call planet#git#CheckoutBranch()<CR>
+    an 700.10  🔀&g.Ch&eckout.File                                <Cmd>call planet#git#CheckoutFile()<CR>
+    an 700.10  🔀&g.Fetch\ .From\ Specified\ Remote               <Cmd>call planet#git#FetchCustomRemote()<CR>
+    an 700.10  🔀&g.Pull\ .TODO                                   <Cmd>call planet#git#FetchCustomRemote()<CR>
+    an 700.10  🔀&g.Push\ .TODO                                   <Cmd>call planet#git#FetchCustomRemote()<CR>
     an 700.10  🔀&g.&Log.&Log\ (QF)                               :Gclog!<CR>
     an 700.10  🔀&g.&Log.Log\ (LL)                                :Gllog!<CR>
     an 700.10  🔀&g.&Log.File\ (QF)                               :0Gclog!<CR>
     an 700.10  🔀&g.&Log.&File\ (LL)                              :0Gllog!<CR>
-    an 700.10  🔀&g.&Log.Log\ (GUI)                               :call planet#term#RunCmdGui('Flog -max-count=1000')<CR>
-    an 700.10  🔀&g.&Log.Log\ All\ (GUI)                          :call planet#term#RunCmdGui('Flog -max-count=1000 -all')<CR>
+    an 700.10  🔀&g.&Log.Log\ (GUI)                               <Cmd>call planet#term#RunCmdGui('Flog -max-count=1000')<CR>
+    an 700.10  🔀&g.&Log.Log\ All\ (GUI)                          <Cmd>call planet#term#RunCmdGui('Flog -max-count=1000 -all')<CR>
     " an 700.10  🔀&g.&Log.Log\ (GUI)                               :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +'Flog -max-count=1000' +tabo<CR>
     " an 700.10  🔀&g.&Log.Log\ All\ (GUI)                          :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +'Flog -max-count=1000 -all' +tabo<CR>
-    an 700.10  🔀&g.&Tag.List                                     :call planet#term#RunCmd('git tag -l')<CR>
+    an 700.10  🔀&g.&Tag.List                                     <Cmd>call planet#term#RunCmd('git tag -l')<CR>
     an 700.10  🔀&g.&Tag.Add                                      :TODO
     an 700.10  🔀&g.&Tag.Delete                                   :TODO
     an 700.10  🔀&g.&Merge.Fast-Forward\ Only                     :TODO
     an 700.10  🔀&g.&Merge.Non\ Fast-Forward\ Only                :TODO
     an 700.10  🔀&g.Rebase.On\ Default\ Branch                    :TODO
-    an 700.10  🔀&g.Stash\ (&j).Stash                             :call planet#term#RunCmd('git stash')<CR>
-    an 700.10  🔀&g.Stash\ (&j).List                              :call planet#term#RunCmd('git stash list')<CR>
-    an 700.10  🔀&g.Stash\ (&j).Show                              :call planet#term#RunCmd('git stash show')<CR>
-    an 700.10  🔀&g.Stash\ (&j).Pop                               :call planet#term#RunCmd('git stash pop')<CR>
-    an 700.10  🔀&g.Stash\ (&j).Apply                             :call planet#term#RunCmd('git stash apply')<CR>
-    an 700.10  🔀&g.Stash\ (&j).Branch                            :call planet#term#RunCmd('git stash branch')<CR>
-    an 700.10  🔀&g.Stash\ (&j).Drop                              :call planet#term#RunCmd('git stash drop')<CR>
-    an 700.10  🔀&g.Stash\ (&j).Clear                             :call planet#term#RunCmd('git stash clear')<CR>
+    an 700.10  🔀&g.Stash\ (&j).Stash                             <Cmd>call planet#term#RunCmd('git stash')<CR>
+    an 700.10  🔀&g.Stash\ (&j).List                              <Cmd>call planet#term#RunCmd('git stash list')<CR>
+    an 700.10  🔀&g.Stash\ (&j).Show                              <Cmd>call planet#term#RunCmd('git stash show')<CR>
+    an 700.10  🔀&g.Stash\ (&j).Pop                               <Cmd>call planet#term#RunCmd('git stash pop')<CR>
+    an 700.10  🔀&g.Stash\ (&j).Apply                             <Cmd>call planet#term#RunCmd('git stash apply')<CR>
+    an 700.10  🔀&g.Stash\ (&j).Branch                            <Cmd>call planet#term#RunCmd('git stash branch')<CR>
+    an 700.10  🔀&g.Stash\ (&j).Drop                              <Cmd>call planet#term#RunCmd('git stash drop')<CR>
+    an 700.10  🔀&g.Stash\ (&j).Clear                             <Cmd>call planet#term#RunCmd('git stash clear')<CR>
     an 700.10  🔀&g.Notes.List                                    :TODO
     an 700.10  🔀&g.Notes.Add                                     :TODO
     an 700.10  🔀&g.Notes.Copy                                    :TODO
@@ -76,53 +78,53 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&g.Notes.Prune                                   :TODO
     an 700.10  🔀&g.Notes.Get-Ref                                 :TODO
     an 700.10  🔀&g.Notes.Enable\ Push                            :TODO
-    an 700.10  🔀&g.&Branch.List\ Local                           :call planet#term#RunCmd('git --no-pager branch')<CR>
-    an 700.10  🔀&g.&Branch.List\ All                             :call planet#term#RunCmd('git --no-pager branch --all')<CR>
-    an 700.10  🔀&g.&Branch.List\ Remote\ (Local)                 :call planet#term#RunCmd('git --no-pager branch --remote')<CR>
-    an 700.10  🔀&g.&Branch.List\ Remote\ (Remote)                :call planet#term#RunCmd('git --no-pager ls-remote')<CR>
+    an 700.10  🔀&g.&Branch.List\ Local                           <Cmd>call planet#term#RunCmd('git --no-pager branch')<CR>
+    an 700.10  🔀&g.&Branch.List\ All                             <Cmd>call planet#term#RunCmd('git --no-pager branch --all')<CR>
+    an 700.10  🔀&g.&Branch.List\ Remote\ (Local)                 <Cmd>call planet#term#RunCmd('git --no-pager branch --remote')<CR>
+    an 700.10  🔀&g.&Branch.List\ Remote\ (Remote)                <Cmd>call planet#term#RunCmd('git --no-pager ls-remote')<CR>
     an 700.10  🔀&g.&Branch.Checkout                              :TODO
-    an 700.10  🔀&g.&Branch.Rename                                :call planet#git#BranchRename()<CR>
-    an 700.10  🔀&g.&Branch.Delete                                :call planet#git#BranchDelete()<CR>
-    an 700.10  🔀&g.&Diff.&Diff                                   :call planet#term#RunCmd('git --no-pager diff')<CR>
-    an 700.10  🔀&g.&Diff.&Stat                                   :call planet#term#RunCmd('git --no-pager diff --stat')<CR>
-    an 700.10  🔀&g.&Diff.&Cached\ (Index)                        :call planet#term#RunCmd('git --no-pager diff --staged')<CR>
-    an 700.10  🔀&g.&Diff.Stat\ Cached                            :call planet#term#RunCmd('git --no-pager diff --staged --stat')<CR>
-    an 700.10  🔀&g.&Worktree.New                                 :call planet#term#RunCmd('git worktree add')<CR>
-    an 700.10  🔀&g.&Worktree.New\ Detached                       :call planet#term#RunCmd('git worktree add --detach')<CR>
-    an 700.10  🔀&g.&Worktree.List                                :call planet#term#RunCmd('git worktree list')<CR>
-    an 700.10  🔀&g.&Worktree.Lock                                :call planet#term#RunCmd('git worktree lock')<CR>
-    an 700.10  🔀&g.&Worktree.Unlock                              :call planet#term#RunCmd('git worktree unlock')<CR>
-    an 700.10  🔀&g.&Worktree.Move                                :call planet#term#RunCmd('git worktree move')<CR>
-    an 700.10  🔀&g.&Worktree.Remove                              :call planet#term#RunCmd('git worktree remove')<CR>
-    an 700.10  🔀&g.&Worktree.Prune                               :call planet#term#RunCmd('git worktree prune')<CR>
-    an 700.10  🔀&g.&Worktree.Repair                              :call planet#term#RunCmd('git worktree repair')<CR>
-    an 700.10  🔀&g.Subrepo\ (&x).Pull                            :call planet#git#SubrepoPull()<CR>
-    an 700.10  🔀&g.Subrepo\ (&x).Pull\ All                       :call planet#term#RunCmd('git subrepo pull --all')<CR>
-    an 700.10  🔀&g.Subrepo\ (&x).Push                            :call planet#git#SubrepoPush()<CR>
-    an 700.10  🔀&g.Subrepo\ (&x).Push\ All                       :call planet#term#RunCmd('git subrepo push --all')<CR>
-    an 700.10  🔀&g.Subrepo\ (&x).Fetth                           :call planet#git#SubrepoFetch()<CR>
-    an 700.10  🔀&g.Subrepo\ (&x).Fetch\ All                      :call planet#term#RunCmd('git subrepo fetch --all')<CR>
-    an 700.10  🔀&g.Subrepo\ (&x).Branch                          :call planet#git#SubrepoBranch()<CR>
-    an 700.10  🔀&g.Subrepo\ (&x).Branch\ All                     :call planet#term#RunCmd('git subrepo branch --all')<CR>
-    an 700.10  🔀&g.Subrepo\ (&x).Commit                          :call planet#git#SubrepoCommit()<CR>
-    an 700.10  🔀&g.Subrepo\ (&x).Status                          :call planet#git#SubrepoStatus()<CR>
-    an 700.10  🔀&g.Subrepo\ (&x).Status\ All                     :call planet#term#RunCmd('git subrepo status --all')<CR>
-    an 700.10  🔀&g.Subrepo\ (&x).Status\ All\ Recursively        :call planet#term#RunCmd('git subrepo status --ALL')<CR>
-    an 700.10  🔀&g.Subrepo\ (&x).Clean                           :call planet#git#SubrepoClean()<CR>
-    an 700.10  🔀&g.Subrepo\ (&x).Clean\ All                      :call planet#term#RunCmd('git subrepo clean --all')<CR>
-    an 700.10  🔀&g.Subrepo\ (&x).Clean\ All\ Recursively         :call planet#term#RunCmd('git subrepo clean --ALL')<CR>
-    an 700.10  🔀&g.Subrepo\ (&x).Config                          :call planet#git#SubrepoConfig()<CR>
-    an 700.10  🔀&g.Subrepo\ (&x).Clone                           :call planet#git#SubrepoClone()<CR>
-    an 700.10  🔀&g.Subrepo\ (&x).Init                            :call planet#git#SubrepoInit()<CR>
+    an 700.10  🔀&g.&Branch.Rename                                <Cmd>call planet#git#BranchRename()<CR>
+    an 700.10  🔀&g.&Branch.Delete                                <Cmd>call planet#git#BranchDelete()<CR>
+    an 700.10  🔀&g.&Diff.&Diff                                   <Cmd>call planet#term#RunCmd('git --no-pager diff')<CR>
+    an 700.10  🔀&g.&Diff.&Stat                                   <Cmd>call planet#term#RunCmd('git --no-pager diff --stat')<CR>
+    an 700.10  🔀&g.&Diff.&Cached\ (Index)                        <Cmd>call planet#term#RunCmd('git --no-pager diff --staged')<CR>
+    an 700.10  🔀&g.&Diff.Stat\ Cached                            <Cmd>call planet#term#RunCmd('git --no-pager diff --staged --stat')<CR>
+    an 700.10  🔀&g.&Worktree.New                                 <Cmd>call planet#term#RunCmd('git worktree add')<CR>
+    an 700.10  🔀&g.&Worktree.New\ Detached                       <Cmd>call planet#term#RunCmd('git worktree add --detach')<CR>
+    an 700.10  🔀&g.&Worktree.List                                <Cmd>call planet#term#RunCmd('git worktree list')<CR>
+    an 700.10  🔀&g.&Worktree.Lock                                <Cmd>call planet#term#RunCmd('git worktree lock')<CR>
+    an 700.10  🔀&g.&Worktree.Unlock                              <Cmd>call planet#term#RunCmd('git worktree unlock')<CR>
+    an 700.10  🔀&g.&Worktree.Move                                <Cmd>call planet#term#RunCmd('git worktree move')<CR>
+    an 700.10  🔀&g.&Worktree.Remove                              <Cmd>call planet#term#RunCmd('git worktree remove')<CR>
+    an 700.10  🔀&g.&Worktree.Prune                               <Cmd>call planet#term#RunCmd('git worktree prune')<CR>
+    an 700.10  🔀&g.&Worktree.Repair                              <Cmd>call planet#term#RunCmd('git worktree repair')<CR>
+    an 700.10  🔀&g.Subrepo\ (&x).Pull                            <Cmd>call planet#git#SubrepoPull()<CR>
+    an 700.10  🔀&g.Subrepo\ (&x).Pull\ All                       <Cmd>call planet#term#RunCmd('git subrepo pull --all')<CR>
+    an 700.10  🔀&g.Subrepo\ (&x).Push                            <Cmd>call planet#git#SubrepoPush()<CR>
+    an 700.10  🔀&g.Subrepo\ (&x).Push\ All                       <Cmd>call planet#term#RunCmd('git subrepo push --all')<CR>
+    an 700.10  🔀&g.Subrepo\ (&x).Fetth                           <Cmd>call planet#git#SubrepoFetch()<CR>
+    an 700.10  🔀&g.Subrepo\ (&x).Fetch\ All                      <Cmd>call planet#term#RunCmd('git subrepo fetch --all')<CR>
+    an 700.10  🔀&g.Subrepo\ (&x).Branch                          <Cmd>call planet#git#SubrepoBranch()<CR>
+    an 700.10  🔀&g.Subrepo\ (&x).Branch\ All                     <Cmd>call planet#term#RunCmd('git subrepo branch --all')<CR>
+    an 700.10  🔀&g.Subrepo\ (&x).Commit                          <Cmd>call planet#git#SubrepoCommit()<CR>
+    an 700.10  🔀&g.Subrepo\ (&x).Status                          <Cmd>call planet#git#SubrepoStatus()<CR>
+    an 700.10  🔀&g.Subrepo\ (&x).Status\ All                     <Cmd>call planet#term#RunCmd('git subrepo status --all')<CR>
+    an 700.10  🔀&g.Subrepo\ (&x).Status\ All\ Recursively        <Cmd>call planet#term#RunCmd('git subrepo status --ALL')<CR>
+    an 700.10  🔀&g.Subrepo\ (&x).Clean                           <Cmd>call planet#git#SubrepoClean()<CR>
+    an 700.10  🔀&g.Subrepo\ (&x).Clean\ All                      <Cmd>call planet#term#RunCmd('git subrepo clean --all')<CR>
+    an 700.10  🔀&g.Subrepo\ (&x).Clean\ All\ Recursively         <Cmd>call planet#term#RunCmd('git subrepo clean --ALL')<CR>
+    an 700.10  🔀&g.Subrepo\ (&x).Config                          <Cmd>call planet#git#SubrepoConfig()<CR>
+    an 700.10  🔀&g.Subrepo\ (&x).Clone                           <Cmd>call planet#git#SubrepoClone()<CR>
+    an 700.10  🔀&g.Subrepo\ (&x).Init                            <Cmd>call planet#git#SubrepoInit()<CR>
     an 700.10  🔀&g.&Gui.Git&k\ All                               :silent !nohup gitk --all >/dev/null 2>&1 &<CR>
     an 700.10  🔀&g.&Gui.Gitk\ &HEAD                              :silent !nohup gitk >/dev/null 2>&1 &<CR>
     an 700.10  🔀&g.&Gui.Gui                                      :silent !nohup git citool >/dev/null 2>&1 &<CR>
     an 700.10  🔀&g.&Gui.Gui&tar                                  :silent !nohup guitar >/dev/null 2>&1 &<CR>
     an 700.10  🔀&g.&Gui.&Gitg                                    :silent !nohup gitg >/dev/null 2>&1 &<CR>
-    an 700.10  🔀&g.Ui.Git&ui                                     :call planet#term#RunCmdTab('gitui')<CR>
+    an 700.10  🔀&g.Ui.Git&ui                                     <Cmd>call planet#term#RunCmdTab('gitui')<CR>
     an 700.10  🔀&g.LFS                                           :TODO
-    an 700.10  🔀&g.New.Cl&one                                    :call planet#git#Clone()<CR>
-    an 700.10  🔀&g.New.&Init                                     :call planet#term#RunCmd('git init')<CR>
+    an 700.10  🔀&g.New.Cl&one                                    <Cmd>call planet#git#Clone()<CR>
+    an 700.10  🔀&g.New.&Init                                     <Cmd>call planet#term#RunCmd('git init')<CR>
     an 700.10  🔀&g.Patch.Am                                      :TODO
     an 700.10  🔀&g.Patch.Format-Patch                            :TODO
     an 700.10  🔀&g.Patch.Imap-Send                               :TODO
@@ -130,14 +132,14 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&g.Patch.Send-Email                              :TODO
     an 700.10  🔀&g.Patch.Apply                                   :TODO
     an 700.10  🔀&g.Advanced.Request-Pull                         :TODO
-    an 700.10  🔀&g.Advanced.Remote.List                          :call planet#term#RunCmd('git remote -a')<CR>
+    an 700.10  🔀&g.Advanced.Remote.List                          <Cmd>call planet#term#RunCmd('git remote -a')<CR>
     an 700.10  🔀&g.Advanced.Blame                                :TODO
     an 700.10  🔀&g.Advanced.Bisect                               :TODO
     an 700.10  🔀&g.Advanced.Submodule.TODO                       :TODO
-    an 700.10  🔀&g.Advanced.Reflog.List                          :call planet#term#RunCmd('git reflog')<CR>
-    an 700.10  🔀&g.Advanced.Reset.Soft\ HEAD~1                   :call planet#term#RunCmd('git reset --soft HEAD~1')<CR>
-    an 700.10  🔀&g.Advanced.Reset.Reset\ HEAD~1                  :call planet#term#RunCmd('git reset HEAD~1')<CR>
-    an 700.10  🔀&g.Advanced.Reset.Hard\ HEAD~1                   :call planet#term#RunCmd('git reset --hard HEAD~1')<CR>
+    an 700.10  🔀&g.Advanced.Reflog.List                          <Cmd>call planet#term#RunCmd('git reflog')<CR>
+    an 700.10  🔀&g.Advanced.Reset.Soft\ HEAD~1                   <Cmd>call planet#term#RunCmd('git reset --soft HEAD~1')<CR>
+    an 700.10  🔀&g.Advanced.Reset.Reset\ HEAD~1                  <Cmd>call planet#term#RunCmd('git reset HEAD~1')<CR>
+    an 700.10  🔀&g.Advanced.Reset.Hard\ HEAD~1                   <Cmd>call planet#term#RunCmd('git reset --hard HEAD~1')<CR>
     an 700.10  🔀&g.Advanced.Cherry-pick.TODO                     :TODO
     an 700.10  🔀&g.Advanced.Archive                              :TODO
     an 700.10  🔀&g.Advanced.Bundle                               :TODO
@@ -312,7 +314,7 @@ func! planet#menu#tools#update() abort
     an 710.40  ⛏️&;.Diff\ All\ in\ Tab                :windo diffthis<CR>
     an 710.40  ⛏️&;.Diff\ with\ Alternate\ Winodw     :diffthis<CR>:wincmd p<CR>:diffthis<CR>
     an 710.40  ⛏️&;.--5-- <Nop>
-    an 710.40  ⛏️&;.Htop                              :call planet#term#RunCmdTab('htop')<CR>
+    an 710.40  ⛏️&;.Htop                              <Cmd>call planet#term#RunCmdTab('htop')<CR>
     an 710.40  ⛏️&;.Nmap.List\ Up\ Hosts              :call planet#term#RunCmdTab('nmap ...')
     an 710.40  ⛏️&;.--6-- <Nop>
     an 710.40  ⛏️&;.Set\ Context\ Lines               :set diffopt+=context=12<CR>
@@ -392,18 +394,18 @@ func! planet#menu#tools#update() abort
     an disable 🔧&o.Tools
     an 730.10  🔧&o.Colori&ze                                 :ColorToggle<CR>
     an 730.10  🔧&o.--1-- <Nop>
-    an 730.10  🔧&o.Start\ Local\ Python\ http\.server\ Here  :call planet#term#RunCmd('python3 -m http.server 8080')<CR>
-    an 730.10  🔧&o.Start\ Public\ ngrok\ Server              :call planet#term#RunCmd('ngrok http 3000')<CR>
+    an 730.10  🔧&o.Start\ Local\ Python\ http\.server\ Here  <Cmd>call planet#term#RunCmd('python3 -m http.server 8080')<CR>
+    an 730.10  🔧&o.Start\ Public\ ngrok\ Server              <Cmd>call planet#term#RunCmd('ngrok http 3000')<CR>
     an 730.10  🔧&o.--2-- <Nop>
     an 730.10  🔧&o.Edit\ Command<Tab>:                       q:
     an 730.10  🔧&o.Edit\ Search<Tab>q/                       q/
     an 730.10  🔧&o.Edit\ Search\ Backwards<Tab>q?            q?
     an 730.10  🔧&o.--3-- <Nop>
-    an 730.10  🔧&o.Convert\ to\ HEX<Tab>:%!xxd             :call <SID>XxdToHex()<CR>
-    an 730.10  🔧&o.Convert\ from\ HEX<Tab>:%!xxd\ -r       :call <SID>XxdFromHex()<CR>
+    an 730.10  🔧&o.Convert\ to\ HEX<Tab>:%!xxd             <Cmd>call <SID>XxdToHex()<CR>
+    an 730.10  🔧&o.Convert\ from\ HEX<Tab>:%!xxd\ -r       <Cmd>call <SID>XxdFromHex()<CR>
     an 730.10  🔧&o.--4-- <Nop>
     an 730.10  🔧&o.Nmap.Find\ Hosts\ in\ Local\ Network    <Cmd>TODO<CR>
-    an 730.10  🔧&o.Serial\ Monitor\ (picocom)              :call planet#term#run_command_output('picocom -b 115200 /dev/ttyUSB0')<CR>
+    an 730.10  🔧&o.Serial\ Monitor\ (picocom)              <Cmd>call planet#term#run_command_output('picocom -b 115200 /dev/ttyUSB0')<CR>
     an 730.10  🔧&o.Multipurpose\ Relay\ (socat)            :call planet#term#run_command_output('socat ...TODO')<CR>
     an 730.10  🔧&o.--5-- <Nop>
     an 730.10  🔧&o.Make\ dd\ print\ progress               :call planet#term#RunScript('TODO...print progress of all dd')
