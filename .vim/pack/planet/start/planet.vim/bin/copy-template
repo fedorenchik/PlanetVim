@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+tpl_name="$1"
+shift
+prj_name="$1"
+shift
+
+script_dir="$(readlink -f $(dirname $0))"
+tpl_dir="$(readlink -f $script_dir/../templates)"
+mkdir "$prj_name"
+if which rsync >&/dev/null; then
+	rsync -aHAX "$tpl_dir/$tpl_name"/* "$prj_name/"
+else
+	cp -r "$tpl_dir/$tpl_name"/* "$prj_name/"
+fi

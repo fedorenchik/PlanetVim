@@ -12,3 +12,10 @@ func! QfOldFiles(info) abort
   endfor
   return l
 endfunc
+
+func! planet#file#NewProject(project_type) abort
+  let l:project_name = input("Project Name: ", 'test-' .. a:project_type, "dir")
+  if ! empty(l:project_name)
+    call planet#term#RunScript('copy-template ' .. a:project_type .. ' ' .. l:project_name)
+  end
+endfunc

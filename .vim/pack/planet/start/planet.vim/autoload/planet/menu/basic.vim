@@ -10,7 +10,7 @@ func! planet#menu#basic#update() abort
     an 110.40  📁&f.New\ &VSplit<Tab>:vnew                     :vnew<CR>
     an 110.50  📁&f.New\ &Tab                                  :confirm tabnew<CR>
     an 110.60  📁&f.New\ GUI\ &Window                          :silent !gvim<CR>
-    an 110.60  📁&f.New\ Project.Vim\ Plugin                   :TODO
+    an 110.60  📁&f.New\ Project.Vim\ Plugin                   <Cmd>call planet#file#NewProject('vim-plugin')<CR>
     an 110.60  📁&f.New\ Project.Blender\ Addon                :TODO
     an 110.60  📁&f.New\ Project.Nextcloud\ App                :TODO
     an 110.60  📁&f.New\ Project.Linux\ OOT\ Kernel\ Module    :TODO"with parameters/proc/debugfs support
