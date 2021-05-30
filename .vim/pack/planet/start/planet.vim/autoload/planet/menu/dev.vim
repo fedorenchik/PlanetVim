@@ -90,24 +90,73 @@ func! planet#menu#dev#update() abort
     am 310.10  🪧&].Generate\ types\.vim\ File              :!ctags --c-kinds=gstu -o- *.[ch] \| awk 'BEGIN{printf("syntax keyword Type\t")} {printf("%s ", $1)}END{print "")' > types.vim
     am 310.10  🪧&].Highlight\ tags\ from\ types\.vim       :so types.vim<CR>
 
-    an 500.10  🎚️&{.Project <Nop>
-    an disable 🎚️&{.Project
-    an 500.10  🎚️&{.Arduino.Verify                          :ArduinoVerify<CR>
-    an 500.10  🎚️&{.Arduino.Upload                          :ArduinoUpload<CR>
-    an 500.10  🎚️&{.Arduino.Upload\ and\ Serial             :ArduinoUploadAndSerial<CR>
-    an 500.10  🎚️&{.Arduino.Serial                          :ArduinoSerial<CR>
-    an 500.10  🎚️&{.Arduino.Set\ Baud                       :ArduinoSetBaud<CR>
-    an 500.10  🎚️&{.Arduino.--2-- <Nop>
-    an 500.10  🎚️&{.Arduino.Choose\ Board                   :ArduinoChooseBoard<CR>
-    an 500.10  🎚️&{.Arduino.Choose\ Programmer              :ArduinoChooseProgrammer<CR>
-    an 500.10  🎚️&{.Arduino.Choose\ Port                    :ArduinoChoosePort<CR>
-    an 500.10  🎚️&{.Arduino.--1-- <Nop>
-    an 500.10  🎚️&{.Arduino.Info                            :ArduinoInfo<CR>
-    an 500.10  🎚️&{.Arduino.Set\ Arduino\ Dir               :let g:arduino_dir = 'TODO'
-    an 500.10  🎚️&{.Arduino.Set\ Build\ Dir                 :let g:arduino_build_path = 'TODO'
-    an 500.10  🎚️&{.PlatformIO.Edit\ Settings               :e platformio.ini<CR>
-    an 500.10  🎚️&{.ROS.Setup                               :TODO
-    an 500.10  🎚️&{.Yocto.Setup                             :TODO
+    an 500.10  🎚️&{.Virtual\ Environments <Nop>
+    an disable 🎚️&{.Virtual\ Environments
+    an 500.10  🎚️&{.&Docker.Test                            :TODO
+    an 500.10  🎚️&{.&Pipenv.Start\ Shell                    :call planet#term#RunCmd('pipenv shell')<CR>
+    an 500.10  🎚️&{.&Pipenv.Run\ python\ main\.py           :call planet#term#RunCmd('pipenv run python ./main.py')<CR>
+    an 500.10  🎚️&{.&Pipenv.Run\ python\ app\.py            :call planet#term#RunCmd('pipenv run python ./app.py')<CR>
+    an 500.10  🎚️&{.&Pipenv.Run\ Command                    :call planet#term#RunCmd('pipenv run ...TODO')<CR>
+    an 500.10  🎚️&{.&Pipenv.Update\ Pipfile\.lock           :call planet#term#RunCmd('pipenv lock')<CR>
+    an 500.10  🎚️&{.&Pipenv.--1-- <Nop>
+    an 500.10  🎚️&{.&Pipenv.New\ Project                    :call planet#term#RunCmd('pipenv --three')<CR>
+    an 500.10  🎚️&{.&Pipenv.New\ Project\ with\ Python      :call planet#term#RunCmd('pipenv --python ...TODO')<CR>
+    an 500.10  🎚️&{.&Pipenv.Install\ Run\ &&\ Dev\ Deps     :call planet#term#RunCmd('pipenv install --dev')<CR>
+    an 500.10  🎚️&{.&Pipenv.Install\ Run\ Deps              :call planet#term#RunCmd('pipenv install')<CR>
+    an 500.10  🎚️&{.&Pipenv.Install\ Package                :call planet#term#RunCmd('pipenv install ...TODO')<CR>
+    an 500.10  🎚️&{.&Pipenv.Install\ Dev\ Package           :call planet#term#RunCmd('pipenv install --dev ...TODO')<CR>
+    an 500.10  🎚️&{.&Pipenv.Update\ (Lock\ &&\ Sync)        :call planet#term#RunCmd('pipenv update')<CR>
+    an 500.10  🎚️&{.&Pipenv.Sync\ with\ Pipfile\.lock       :call planet#term#RunCmd('pipenv sync')<CR>
+    an 500.10  🎚️&{.&Pipenv.--1-- <Nop>
+    an 500.10  🎚️&{.&Pipenv.Uninstall\ Leftover\ Packages   :call planet#term#RunCmd('pipenv clean')<CR>
+    an 500.10  🎚️&{.&Pipenv.Uninstall\ Package              :call planet#term#RunCmd('pipenv uninstall ...TODO')<CR>
+    an 500.10  🎚️&{.&Pipenv.Uninstall\ Dev                  :call planet#term#RunCmd('pipenv uninstall --all-dev')<CR>
+    an 500.10  🎚️&{.&Pipenv.Uninstall\ All                  :call planet#term#RunCmd('pipenv uninstall --all')<CR>
+    an 500.10  🎚️&{.&Pipenv.Remove\ Project's\ VEnv         :call planet#term#RunCmd('pipenv --rm')<CR>
+    an 500.10  🎚️&{.&Pipenv.requirements\.t&xt.Install      :call planet#term#RunCmd('pipenv install -r requirements.txt')<CR>
+    an 500.10  🎚️&{.&Pipenv.requirements\.t&xt.Install\ Dev :call planet#term#RunCmd('pipenv install -r dev-requirements.txt --dev')<CR>
+    an 500.10  🎚️&{.&Pipenv.requirements\.t&xt.Export       :call planet#term#RunCmd('pipenv lock -r > requirements.txt')<CR>
+    an 500.10  🎚️&{.&Pipenv.requirements\.t&xt.Export\ Dev  :call planet#term#RunCmd('pipenv lock -r -d > dev-requirements.txt')<CR>
+    an 500.10  🎚️&{.&Pipenv.--1-- <Nop>
+    an 500.10  🎚️&{.&Pipenv.Open\ Specified\ Module         :call planet#term#RunCmd('pipenv open ...TODO')<CR>
+    an 500.10  🎚️&{.&Pipenv.Security\ Check                 :call planet#term#RunCmd('pipenv check')<CR>
+    an 500.10  🎚️&{.&Pipenv.Dependency\ Graph               :call planet#term#RunCmd('pipenv graph')<CR>
+    an 500.10  🎚️&{.&Pipenv.Reverse\ Dependency\ Graph      :call planet#term#RunCmd('pipenv graph --reverse')<CR>
+    an 500.10  🎚️&{.&Pipenv.Enable\ Site\ Packages          :call planet#term#RunCmd('pipenv --site-packages')<CR>
+    an 500.10  🎚️&{.&Pipenv.Disable\ Site\ Packages         :call planet#term#RunCmd('pipenv --no-site-packages')<CR>
+    an 500.10  🎚️&{.&Pipenv.Print\ Project\ Root            :call planet#term#RunCmd('pipenv --where')<CR>
+    an 500.10  🎚️&{.&Pipenv.Print\ VEnv\ Dir                :call planet#term#RunCmd('pipenv --venv')<CR>
+    an 500.10  🎚️&{.&Pipenv.Print\ Env\ Vars                :call planet#term#RunCmd('pipenv --envs')<CR>
+    an 500.10  🎚️&{.&Pipenv.Edit\ \.env                     :e .env<CR>
+    an 500.10  🎚️&{.&Pipenv.Print\ Version                  :call planet#term#RunCmd('pipenv --version')<CR>
+    an 500.10  🎚️&{.&Pipenv.Clear\ Caches                   :call planet#term#RunCmd('pipenv --clear')<CR>
+    an 500.10  🎚️&{.&Pipenv.Install\ Pipenv                 :call planet#term#RunCmd('pip install --user pipenv')<CR>
+    an 500.10  🎚️&{.C&onda.Activate                         :call planet#term#RunCmd('conda activate <venv-name>TODO')
+    an 500.10  🎚️&{.C&onda.Install\ from\ requirements\.txt :call planet#term#RunCmd('conda install --file requirements.txt')<CR>
+    an 500.10  🎚️&{.C&onda.Create\ from\ environment\.yml   :call planet#term#RunCmd('conda env create -f environment.yml')<CR>
+    an 500.10  🎚️&{.C&onda.Deactivate                       :call planet#term#RunCmd('conda deactivate')<CR>
+    an 500.10  🎚️&{.C&onda.Create\ venv                     :call planet#term#RunCmd('conda create -n <venv-name>')
+    an 500.10  🎚️&{.C&onda.Activate\ Anaconda               :call planet#term#RunCmd('source /opt/anaconda/bin/activate')<CR>
+    an 500.10  🎚️&{.C&onda.Deactivate\ Anaconda             :call planet#term#RunCmd('source /opt/anaconda/bin/deactivate')<CR>
+    an 500.10  🎚️&{.Vagrant.Test                            :TODO
+    an 500.10  🎚️&{.QEMU.Test                               :TODO
+    an 500.10  🎚️&{.QEMU\ Schroot.qemu-debootstrap          :TODO
+    "TODO:
+    " an 500.10  🎚️&{.Schroot.Debootstrap                    :!sudo debootstrap --variant=buildd --arch=amd64 buster /var/chroots/debian10_x64 http://ftp.debian.org/debian/<CR>
+    " an 500.10  🎚️&{.Schroot.Schroot\ Check\ Config         :TODO"check $HOME is not mounted!!!
+    " an 500.10  🎚️&{.Schroot.Schroot\ Add\ New              :TODO"create config file in /etc/schroot/chroot.d/ directory
+    " an 500.10  🎚️&{.Schroot.Schroot\ List                  :!schroot -l<CR>
+    " an 500.10  🎚️&{.Schroot.Schroot\ Info                  :!schroot -i<CR>
+    " an 500.10  🎚️&{.Schroot.Schroot\ Config                :!schroot --config<CR>
+    " an 500.10  🎚️&{.Schroot.Schroot\ Location              :!schroot --location<CR>
+    " an 500.10  🎚️&{.Schroot.Schroot\ Start                 :!schroot -c debian10_x64 -u leonid<CR>
+    " an 500.10  🎚️&{.Schroot.Schroot\ Start\ Root           :!schroot -c debian10_x64 -u leonid<CR>
+    " an 500.10  🎚️&{.Schroot.Schroot\ Start\ XNest          :!schroot -c debian10_x64 -u leonid<CR>
+    " an 500.10  🎚️&{.Schroot.Schroot\ Run\ Command          :!schroot -c debian10_x64 -u leonid {cmd}<CR>
+    " an 500.10  🎚️&{.Conan\ Virtual\ Environment.Test       :TODO
+    " an 500.10  🎚️&{.systemd-nspawn.Test                    :TODO
+    " an 500.10  🎚️&{.PRoot.Test                             :TODO
+    " an 500.10  🎚️&{.Fakechroot.Test                        :TODO
     an 500.10  🎚️&{.Configuration <Nop>
     an disable 🎚️&{.Configuration
     an 500.10  🎚️&{.Install\ Qt.Set\ $QTDIR                 <Cmd>call planet#env#SetEnvVar('QTDIR')<CR>
@@ -162,35 +211,35 @@ func! planet#menu#dev#update() abort
     an disable 📐&}.Dev\ Tools
     an 500.10  📐&}.Parser\ Generators.flex                 :TODO
     an 500.10  📐&}.Parser\ Generators.bison                :TODO
-    an 500.10  📐&}.Qt\ Tools.Generate\ qt\.conf            :TODO
-    an 500.10  📐&}.Qt\ Tools.androidtestrunner             :TODO
-    an 500.10  📐&}.Qt\ Tools.assistant                     :TODO
-    an 500.10  📐&}.Qt\ Tools.balsam                        :TODO
-    an 500.10  📐&}.Qt\ Tools.Designer                      :TODO
-    an 500.10  📐&}.Qt\ Tools.moc                           :TODO
-    an 500.10  📐&}.Qt\ Tools.moc-ng                        :TODO
-    an 500.10  📐&}.Qt\ Tools.pixeltool                     :TODO
-    an 500.10  📐&}.Qt\ Tools.qdbus                         :TODO
-    an 500.10  📐&}.Qt\ Tools.qdbusviewer                   :TODO
-    an 500.10  📐&}.Qt\ Tools.qdbuscpp2xml                  :TODO
-    an 500.10  📐&}.Qt\ Tools.qdbusxml2cpp                  :TODO
-    an 500.10  📐&}.Qt\ Tools.QLALR                         :TODO
-    an 500.10  📐&}.Qt\ Tools.qsb                           :TODO
-    an 500.10  📐&}.Qt\ Tools.qtattributionsscanner         :TODO
-    an 500.10  📐&}.Qt\ Tools.qt-cmake                      :TODO
-    an 500.10  📐&}.Qt\ Tools.qt-configure-module           :TODO
-    an 500.10  📐&}.Qt\ Tools.qtdiag                        :TODO
-    an 500.10  📐&}.Qt\ Tools.qtpaths                       :TODO
-    an 500.10  📐&}.Qt\ Tools.qtplugininfo                  :TODO
-    an 500.10  📐&}.Qt\ Tools.qtwaylandscanner              :TODO
-    an 500.10  📐&}.Qt\ Tools.qvkgen                        :TODO
-    an 500.10  📐&}.Qt\ Tools.rcc                           :TODO
-    an 500.10  📐&}.Qt\ Tools.shadergen                     :TODO
-    an 500.10  📐&}.Qt\ Tools.syncqt\.pl                    :TODO
-    an 500.10  📐&}.Qt\ Tools.tracegen                      :TODO
-    an 500.10  📐&}.Qt\ Tools.uic                           :TODO
-    an 500.10  📐&}.Qt\ Tools.Qt\ Creator                   :TODO
-    an 500.10  📐&}.Qt\ Tools.SCXML                         :TODO
+    an 500.10  📐&}.&Qt\ Tools.Qt\ Creator                  <Cmd>call planet#term#RunGuiApp('qtcreator ' .. expand('%'))<CR>
+    an 500.10  📐&}.&Qt\ Tools.Designer                     <Cmd>call planet#term#RunGuiApp('designer ' .. expand('%'))<CR>
+    an 500.10  📐&}.&Qt\ Tools.Assistant                    <Cmd>call planet#term#RunGuiApp('assistant')<CR>
+    an 500.10  📐&}.&Qt\ Tools.PixelTool                    <Cmd>call planet#term#RunGuiApp('pixeltool')<CR>
+    an 500.10  📐&}.&Qt\ Tools.QDbusViewer                  <Cmd>call planet#term#RunGuiApp('qdbusviewer')<CR>
+    an 500.10  📐&}.&Qt\ Tools.Generate\ qt\.conf           :TODO
+    an 500.10  📐&}.&Qt\ Tools.androidtestrunner            :TODO
+    an 500.10  📐&}.&Qt\ Tools.balsam                       :TODO
+    an 500.10  📐&}.&Qt\ Tools.moc                          :TODO
+    an 500.10  📐&}.&Qt\ Tools.moc-ng                       :TODO
+    an 500.10  📐&}.&Qt\ Tools.qdbus                        :TODO
+    an 500.10  📐&}.&Qt\ Tools.qdbuscpp2xml                 :TODO
+    an 500.10  📐&}.&Qt\ Tools.qdbusxml2cpp                 :TODO
+    an 500.10  📐&}.&Qt\ Tools.QLALR                        :TODO
+    an 500.10  📐&}.&Qt\ Tools.qsb                          :TODO
+    an 500.10  📐&}.&Qt\ Tools.qtattributionsscanner        :TODO
+    an 500.10  📐&}.&Qt\ Tools.qt-cmake                     :TODO
+    an 500.10  📐&}.&Qt\ Tools.qt-configure-module          :TODO
+    an 500.10  📐&}.&Qt\ Tools.qtdiag                       :TODO
+    an 500.10  📐&}.&Qt\ Tools.qtpaths                      :TODO
+    an 500.10  📐&}.&Qt\ Tools.qtplugininfo                 :TODO
+    an 500.10  📐&}.&Qt\ Tools.qtwaylandscanner             :TODO
+    an 500.10  📐&}.&Qt\ Tools.qvkgen                       :TODO
+    an 500.10  📐&}.&Qt\ Tools.rcc                          :TODO
+    an 500.10  📐&}.&Qt\ Tools.shadergen                    :TODO
+    an 500.10  📐&}.&Qt\ Tools.syncqt\.pl                   :TODO
+    an 500.10  📐&}.&Qt\ Tools.tracegen                     :TODO
+    an 500.10  📐&}.&Qt\ Tools.uic                          :TODO
+    an 500.10  📐&}.&Qt\ Tools.SCXML                        :TODO
     an 500.10  📐&}.Qml.qml                                 :TODO
     an 500.10  📐&}.Qml.qmlcachegen                         :TODO
     an 500.10  📐&}.Qml.qmleasing                           :TODO
@@ -248,75 +297,6 @@ func! planet#menu#dev#update() abort
 
     an 500.10  🔨&u.Build <Nop>
     an disable 🔨&u.Build
-    an 500.10  🔨&u.Virtual\ Environments <Nop>
-    an disable 🔨&u.Virtual\ Environments
-    an 500.10  🔨&u.&Docker.Test                            :TODO
-    an 500.10  🔨&u.&Pipenv.Start\ Shell                    :call planet#term#RunCmd('pipenv shell')<CR>
-    an 500.10  🔨&u.&Pipenv.Run\ python\ main\.py           :call planet#term#RunCmd('pipenv run python ./main.py')<CR>
-    an 500.10  🔨&u.&Pipenv.Run\ python\ app\.py            :call planet#term#RunCmd('pipenv run python ./app.py')<CR>
-    an 500.10  🔨&u.&Pipenv.Run\ Command                    :call planet#term#RunCmd('pipenv run ...TODO')<CR>
-    an 500.10  🔨&u.&Pipenv.Update\ Pipfile\.lock           :call planet#term#RunCmd('pipenv lock')<CR>
-    an 500.10  🔨&u.&Pipenv.--1-- <Nop>
-    an 500.10  🔨&u.&Pipenv.New\ Project                    :call planet#term#RunCmd('pipenv --three')<CR>
-    an 500.10  🔨&u.&Pipenv.New\ Project\ with\ Python      :call planet#term#RunCmd('pipenv --python ...TODO')<CR>
-    an 500.10  🔨&u.&Pipenv.Install\ Run\ &&\ Dev\ Deps     :call planet#term#RunCmd('pipenv install --dev')<CR>
-    an 500.10  🔨&u.&Pipenv.Install\ Run\ Deps              :call planet#term#RunCmd('pipenv install')<CR>
-    an 500.10  🔨&u.&Pipenv.Install\ Package                :call planet#term#RunCmd('pipenv install ...TODO')<CR>
-    an 500.10  🔨&u.&Pipenv.Install\ Dev\ Package           :call planet#term#RunCmd('pipenv install --dev ...TODO')<CR>
-    an 500.10  🔨&u.&Pipenv.Update\ (Lock\ &&\ Sync)        :call planet#term#RunCmd('pipenv update')<CR>
-    an 500.10  🔨&u.&Pipenv.Sync\ with\ Pipfile\.lock       :call planet#term#RunCmd('pipenv sync')<CR>
-    an 500.10  🔨&u.&Pipenv.--1-- <Nop>
-    an 500.10  🔨&u.&Pipenv.Uninstall\ Leftover\ Packages   :call planet#term#RunCmd('pipenv clean')<CR>
-    an 500.10  🔨&u.&Pipenv.Uninstall\ Package              :call planet#term#RunCmd('pipenv uninstall ...TODO')<CR>
-    an 500.10  🔨&u.&Pipenv.Uninstall\ Dev                  :call planet#term#RunCmd('pipenv uninstall --all-dev')<CR>
-    an 500.10  🔨&u.&Pipenv.Uninstall\ All                  :call planet#term#RunCmd('pipenv uninstall --all')<CR>
-    an 500.10  🔨&u.&Pipenv.Remove\ Project's\ VEnv         :call planet#term#RunCmd('pipenv --rm')<CR>
-    an 500.10  🔨&u.&Pipenv.requirements\.t&xt.Install      :call planet#term#RunCmd('pipenv install -r requirements.txt')<CR>
-    an 500.10  🔨&u.&Pipenv.requirements\.t&xt.Install\ Dev :call planet#term#RunCmd('pipenv install -r dev-requirements.txt --dev')<CR>
-    an 500.10  🔨&u.&Pipenv.requirements\.t&xt.Export       :call planet#term#RunCmd('pipenv lock -r > requirements.txt')<CR>
-    an 500.10  🔨&u.&Pipenv.requirements\.t&xt.Export\ Dev  :call planet#term#RunCmd('pipenv lock -r -d > dev-requirements.txt')<CR>
-    an 500.10  🔨&u.&Pipenv.--1-- <Nop>
-    an 500.10  🔨&u.&Pipenv.Open\ Specified\ Module         :call planet#term#RunCmd('pipenv open ...TODO')<CR>
-    an 500.10  🔨&u.&Pipenv.Security\ Check                 :call planet#term#RunCmd('pipenv check')<CR>
-    an 500.10  🔨&u.&Pipenv.Dependency\ Graph               :call planet#term#RunCmd('pipenv graph')<CR>
-    an 500.10  🔨&u.&Pipenv.Reverse\ Dependency\ Graph      :call planet#term#RunCmd('pipenv graph --reverse')<CR>
-    an 500.10  🔨&u.&Pipenv.Enable\ Site\ Packages          :call planet#term#RunCmd('pipenv --site-packages')<CR>
-    an 500.10  🔨&u.&Pipenv.Disable\ Site\ Packages         :call planet#term#RunCmd('pipenv --no-site-packages')<CR>
-    an 500.10  🔨&u.&Pipenv.Print\ Project\ Root            :call planet#term#RunCmd('pipenv --where')<CR>
-    an 500.10  🔨&u.&Pipenv.Print\ VEnv\ Dir                :call planet#term#RunCmd('pipenv --venv')<CR>
-    an 500.10  🔨&u.&Pipenv.Print\ Env\ Vars                :call planet#term#RunCmd('pipenv --envs')<CR>
-    an 500.10  🔨&u.&Pipenv.Edit\ \.env                     :e .env<CR>
-    an 500.10  🔨&u.&Pipenv.Print\ Version                  :call planet#term#RunCmd('pipenv --version')<CR>
-    an 500.10  🔨&u.&Pipenv.Clear\ Caches                   :call planet#term#RunCmd('pipenv --clear')<CR>
-    an 500.10  🔨&u.&Pipenv.Install\ Pipenv                 :call planet#term#RunCmd('pip install --user pipenv')<CR>
-    an 500.10  🔨&u.&Conda.Activate                         :call planet#term#RunCmd('conda activate <venv-name>TODO')
-    an 500.10  🔨&u.&Conda.Install\ from\ requirements\.txt :call planet#term#RunCmd('conda install --file requirements.txt')<CR>
-    an 500.10  🔨&u.&Conda.Create\ from\ environment\.yml   :call planet#term#RunCmd('conda env create -f environment.yml')<CR>
-    an 500.10  🔨&u.&Conda.Deactivate                       :call planet#term#RunCmd('conda deactivate')<CR>
-    an 500.10  🔨&u.&Conda.Create\ venv                     :call planet#term#RunCmd('conda create -n <venv-name>')
-    an 500.10  🔨&u.&Conda.Activate\ Anaconda               :call planet#term#RunCmd('source /opt/anaconda/bin/activate')<CR>
-    an 500.10  🔨&u.&Conda.Deactivate\ Anaconda             :call planet#term#RunCmd('source /opt/anaconda/bin/deactivate')<CR>
-    an 500.10  🔨&u.Vagrant.Test                            :TODO
-    an 500.10  🔨&u.QEMU.Test                               :TODO
-    an 500.10  🔨&u.QEMU\ Schroot.qemu-debootstrap          :TODO
-    "TODO:
-    " an 500.10  🔨&u.Schroot.Debootstrap                    :!sudo debootstrap --variant=buildd --arch=amd64 buster /var/chroots/debian10_x64 http://ftp.debian.org/debian/<CR>
-    " an 500.10  🔨&u.Schroot.Schroot\ Check\ Config         :TODO"check $HOME is not mounted!!!
-    " an 500.10  🔨&u.Schroot.Schroot\ Add\ New              :TODO"create config file in /etc/schroot/chroot.d/ directory
-    " an 500.10  🔨&u.Schroot.Schroot\ List                  :!schroot -l<CR>
-    " an 500.10  🔨&u.Schroot.Schroot\ Info                  :!schroot -i<CR>
-    " an 500.10  🔨&u.Schroot.Schroot\ Config                :!schroot --config<CR>
-    " an 500.10  🔨&u.Schroot.Schroot\ Location              :!schroot --location<CR>
-    " an 500.10  🔨&u.Schroot.Schroot\ Start                 :!schroot -c debian10_x64 -u leonid<CR>
-    " an 500.10  🔨&u.Schroot.Schroot\ Start\ Root           :!schroot -c debian10_x64 -u leonid<CR>
-    " an 500.10  🔨&u.Schroot.Schroot\ Start\ XNest          :!schroot -c debian10_x64 -u leonid<CR>
-    " an 500.10  🔨&u.Schroot.Schroot\ Run\ Command          :!schroot -c debian10_x64 -u leonid {cmd}<CR>
-    " an 500.10  🔨&u.Conan\ Virtual\ Environment.Test       :TODO
-    " an 500.10  🔨&u.systemd-nspawn.Test                    :TODO
-    " an 500.10  🔨&u.PRoot.Test                             :TODO
-    " an 500.10  🔨&u.Fakechroot.Test                        :TODO
-    an 500.10  🔨&u.Build\ Systems <Nop>
-    an disable 🔨&u.Build\ Systems
     an 500.10  🔨&u.&Autotools.Autotools\ Status            :call planet#term#RunScript('autotools-status')<CR>
     an 500.10  🔨&u.&Autotools.Run\ autoconf                :call planet#term#RunCmd('autoconf -f -i')<CR>
     an 500.10  🔨&u.&Autotools.Run\ autoreconf              :call planet#term#RunCmd('autoreconf -f -i')<CR>
@@ -375,20 +355,42 @@ func! planet#menu#dev#update() abort
     an 500.10  🔨&u.&KBuild.make\ &xconfig                  <Cmd>call planet#term#RunCmd('make xconfig')<CR>
     an 500.10  🔨&u.&KBuild.make\ &gconfig                  <Cmd>call planet#term#RunCmd('make gconfig')<CR>
     an 500.10  🔨&u.&KBuild.make\ &tags                     <Cmd>call planet#term#RunCmd('make tags')<CR>
-    an 500.10  🔨&u.&CMake.Create\ In-Tree\ Build\ Dir      <Cmd>call planet#build#NewInTreeBuildDir()<CR>
-    an 500.10  🔨&u.&CMake.Create\ OOT\ Build\ Dir          <Cmd>call planet#build#NewOOTBuildDir()<CR>
+    an 500.10  🔨&u.&CMake.&Build                           <Cmd>call planet#term#RunCmd('cmake --build .', v:false, v:false, v:false, g:PV_build_dir)<CR>
+    an 500.10  🔨&u.&CMake.Generate\ compile_commands\.json <Cmd>call planet#env#SenEnvVarValue('CMAKE_EXPORT_COMPILE_COMMANDS=ON')<CR><Cmd>call planet#term#RunCmd('cmake ..', v:false, v:false, v:false, g:PV_build_dir)<CR>
+    an 500.10  🔨&u.&CMake.&Configure                       <Cmd>call planet#term#RunCmd('cmake ' .. getcwd(), v:false, v:false, v:false, g:PV_build_dir)<CR>
+    an 500.10  🔨&u.&CMake.Configure\ &Tui                  <Cmd>call planet#term#RunCmdTab('ccmake ..', g:PV_build_dir)<CR>
+    an 500.10  🔨&u.&CMake.Configure\ &Gui                  <Cmd>call planet#term#RunGuiApp('cmake-gui ..', g:PV_build_dir)<CR>
+    an 500.10  🔨&u.&CMake.&Rebuild                         <Cmd>call planet#term#RunCmd('cmake --build . --target clean && cmake --build .', v:false, v:false, v:false, g:PV_build_dir)<CR>
+    an 500.10  🔨&u.&CMake.Clean                            <Cmd>call planet#term#RunCmd('cmake --build . --target clean', v:false, v:false, v:false, g:PV_build_dir)<CR>
+    an 500.10  🔨&u.&CMake.Create\ &In-Tree\ Build\ Dir     <Cmd>call planet#build#NewInTreeBuildDir()<CR>
+    an 500.10  🔨&u.&CMake.Create\ &OOT\ Build\ Dir         <Cmd>call planet#build#NewOOTBuildDir()<CR>
     an 500.10  🔨&u.&CMake.Select\ Build\ Dir               <Cmd>call planet#build#SelectBuildDir()<CR>
     an 500.10  🔨&u.&CMake.Browse\ Build\ Directory         <Cmd>exe 'Fern ' .. g:PV_build_dir<CR>
-    an 500.10  🔨&u.&CMake.Configure                        <Cmd>call planet#term#RunCmd('cmake ' .. getcwd(), v:false, v:false, v:false, g:PV_build_dir)<CR>
-    an 500.10  🔨&u.&CMake.Configure\ Tui                   <Cmd>call planet#term#RunCmdTab('ccmake ..', g:PV_build_dir)<CR>
-    an 500.10  🔨&u.&CMake.Configure\ Gui                   <Cmd>call planet#term#RunGuiApp('cmake-gui ..', g:PV_build_dir)<CR>
-    an 500.10  🔨&u.&CMake.Build                            <Cmd>call planet#term#RunCmd('cmake --build .', v:false, v:false, v:false, g:PV_build_dir)<CR>
-    an 500.10  🔨&u.&CMake.Clean                            <Cmd>call planet#term#RunCmd('cmake --build . --target clean', v:false, v:false, v:false, g:PV_build_dir)<CR>
-    an 500.10  🔨&u.&CMake.Generate\ compile_commands\.json <Cmd>call planet#env#SenEnvVarValue('CMAKE_EXPORT_COMPILE_COMMANDS=ON')<CR><Cmd>call planet#term#RunCmd('cmake --build .', v:false, v:false, v:false, g:PV_build_dir)<CR>
     an 500.10  🔨&u.&QMake.Set\ DESTDIR                     :!make<CR>
     an 500.10  🔨&u.Scons.Run\ Custom\ Target               <Cmd>call planet#term#RunCmdAskArgs('scons', 'scons: ', ' -j8 .')<CR>
     an 500.10  🔨&u.Nin&ja.Set\ DESTDIR                     :!make<CR>
     an 500.10  🔨&u.&Meson.Set\ DESTDIR                     :!make<CR>
+    an 500.10  🔨&u.Arduino.Verify                          :ArduinoVerify<CR>
+    an 500.10  🔨&u.Arduino.Upload                          :ArduinoUpload<CR>
+    an 500.10  🔨&u.Arduino.Upload\ and\ Serial             :ArduinoUploadAndSerial<CR>
+    an 500.10  🔨&u.Arduino.Serial                          :ArduinoSerial<CR>
+    an 500.10  🔨&u.Arduino.Set\ Baud                       :ArduinoSetBaud<CR>
+    an 500.10  🔨&u.Arduino.--2-- <Nop>
+    an 500.10  🔨&u.Arduino.Choose\ Board                   :ArduinoChooseBoard<CR>
+    an 500.10  🔨&u.Arduino.Choose\ Programmer              :ArduinoChooseProgrammer<CR>
+    an 500.10  🔨&u.Arduino.Choose\ Port                    :ArduinoChoosePort<CR>
+    an 500.10  🔨&u.Arduino.--1-- <Nop>
+    an 500.10  🔨&u.Arduino.Info                            :ArduinoInfo<CR>
+    an 500.10  🔨&u.Arduino.Set\ Arduino\ Dir               :let g:arduino_dir = 'TODO'
+    an 500.10  🔨&u.Arduino.Set\ Build\ Dir                 :let g:arduino_build_path = 'TODO'
+    an 500.10  🔨&u.PlatformIO.Edit\ Settings               :e platformio.ini<CR>
+    an 500.10  🔨&u.ROS.Setup                               :TODO
+    an 500.10  🔨&u.Yocto.Setup                             :TODO
+    an 500.10  🔨&u.Flutter.Doctor                          <Cmd>call planet#term#RunCmd('flutter doctor')<CR>
+    an 500.10  🔨&u.Flutter.Set\ Android\ Sdk\ Location     <Cmd>call planet#term#RunCmd('flutter config --android-sdk')<CR>
+    an 500.10  🔨&u.Flutter.Accept\ Android\ Licenses       <Cmd>call planet#term#RunCmd('flutter doctor --android-licenses')<CR>
+    an 500.10  🔨&u.Flutter.Create\ Project                 <Cmd>call planet#term#RunCmd('flutter create new_project')<CR>
+    an 500.10  🔨&u.Flutter.Run                             <Cmd>call planet#term#RunCmd('flutter run')<CR>
     an 500.10  🔨&u.Deploy <Nop>
     an disable 🔨&u.Deploy
     an 500.10  🔨&u.Windeployqt.Deploy                      :!make<CR>
@@ -416,7 +418,8 @@ func! planet#menu#dev#update() abort
     " Run
     an 510.10  ▶️&r.Run <Nop>
     an disable ▶️&r.Run
-    an 510.10  ▶️&r.Configurations                          :
+    an 510.500 ▶️&r.--1-- <Nop>
+    an 510.500 ▶️&r.Add\ Run\ Config                        <Cmd>call planet#run#AddConfig()<CR>
 
     " Debug
     an 520.10  🐞&d.Debug <Nop>

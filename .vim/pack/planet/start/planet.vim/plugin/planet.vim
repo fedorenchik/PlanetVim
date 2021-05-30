@@ -57,6 +57,7 @@ aug AugPv_Session
 au!
 au SessionLoadPost * call planet#session#SetCurrent()
 au VimEnter * call planet#session#MenuList()
+au VimEnter * call planet#run#InitRunConfigurations()
 aug END
 
 if ! exists("g:PlanetVim_menus_planet")
