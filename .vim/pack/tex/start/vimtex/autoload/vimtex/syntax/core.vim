@@ -72,37 +72,6 @@ function! vimtex#syntax#core#init() abort " {{{1
   syntax match texSpecialChar "\\[,;:!]"
 
   " }}}2
-  " {{{2 Comments
-
-  " * In documented TeX Format, actual comments are defined by leading "^^A".
-  "   Almost all other lines start with one or more "%", which may be matched
-  "   as comment characters. The remaining part of the line can be interpreted
-  "   as TeX syntax.
-  " * For more info on dtx files, see e.g.
-  "   https://ctan.uib.no/info/dtxtut/dtxtut.pdf
-  if expand('%:e') ==# 'dtx'
-    syntax match texComment "\^\^A.*$"
-    syntax match texComment "^%\+"
-  elseif g:vimtex_syntax_nospell_comments
-    syntax match texComment "%.*$" contains=@NoSpell
-  else
-    syntax match texComment "%.*$" contains=@Spell
-  endif
-
-  " Do not check URLs and acronyms in comments
-  " Source: https://github.com/lervag/vimtex/issues/562
-  syntax match texCommentURL "\w\+:\/\/[^[:space:]]\+"
-        \ containedin=texComment contained contains=@NoSpell
-  syntax match texCommentAcronym '\v<(\u|\d){3,}s?>'
-        \ containedin=texComment contained contains=@NoSpell
-
-  " Todo and similar within comments
-  syntax case ignore
-  syntax keyword texCommentTodo combak fixme todo xxx
-        \ containedin=texComment contained
-  syntax case match
-
-  " }}}2
   " {{{2 Commands: general
 
   " Unspecified TeX groups
@@ -392,6 +361,45 @@ function! vimtex#syntax#core#init() abort " {{{1
   call vimtex#syntax#core#new_arg('texParboxArgContent')
 
   " }}}2
+  " {{{2 Comments
+
+  " * In documented TeX Format, actual comments are defined by leading "^^A".
+  "   Almost all other lines start with one or more "%", which may be matched
+  "   as comment characters. The remaining part of the line can be interpreted
+  "   as TeX syntax.
+  " * For more info on dtx files, see e.g.
+  "   https://ctan.uib.no/info/dtxtut/dtxtut.pdf
+  if expand('%:e') ==# 'dtx'
+    syntax match texComment "\^\^A.*$"
+    syntax match texComment "^%\+"
+  elseif g:vimtex_syntax_nospell_comments
+    syntax match texComment "%.*$" contains=@NoSpell
+  else
+    syntax match texComment "%.*$" contains=@Spell
+  endif
+
+  " Do not check URLs and acronyms in comments
+  " Source: https://github.com/lervag/vimtex/issues/562
+  syntax match texCommentURL "\w\+:\/\/[^[:space:]]\+"
+        \ containedin=texComment contained contains=@NoSpell
+  syntax match texCommentAcronym '\v<(\u|\d){3,}s?>'
+        \ containedin=texComment contained contains=@NoSpell
+
+  " Todo and similar within comments
+  syntax case ignore
+  syntax keyword texCommentTodo combak fixme todo xxx
+        \ containedin=texComment contained
+  syntax case match
+
+  " Highlight \iffalse ... \fi blocks as comments
+  syntax region texComment matchgroup=texCmd
+        \ start="^\s*\\iffalse\>" end="\\fi\>"
+        \ contains=texCommentConditionals
+  syntax region texCommentConditionals matchgroup=texComment
+        \ start="\\if\w\+" end="\\fi\>"
+        \ contained transparent
+
+  " }}}2
   " {{{2 Zone: Verbatim
 
   " Verbatim environment
@@ -596,9 +604,11 @@ function! vimtex#syntax#core#init_highlights() abort " {{{1
   highlight def link texSpecialChar      SpecialChar
   highlight def link texSymbol           SpecialChar
   highlight def link texTitleArg         Underlined
-  highlight def texStyleBold gui=bold        cterm=bold
-  highlight def texStyleBoth gui=bold,italic cterm=bold,italic
-  highlight def texStyleItal gui=italic      cterm=italic
+  highlight def texStyleBold     gui=bold        cterm=bold
+  highlight def texStyleBoth     gui=bold,italic cterm=bold,italic
+  highlight def texStyleItal     gui=italic      cterm=italic
+  highlight def texMathStyleBold gui=bold        cterm=bold
+  highlight def texMathStyleItal gui=italic      cterm=italic
 
   " Inherited groups
   highlight def link texArgNew             texCmd
@@ -952,19 +962,22 @@ function! s:match_bold_italic_math() abort " {{{1
         \ (g:vimtex_syntax_conceal.styles ? ['conceal', 'concealends'] : ['', ''])
 
   let l:map = {
-        \ 'texMathCmdStyleBold': 'texStyleBold',
-        \ 'texMathCmdStyleItal': 'texStyleItal',
+        \ 'texMathCmdStyleBold': 'texMathStyleBold',
+        \ 'texMathCmdStyleItal': 'texMathStyleItal',
         \}
 
   for [l:group, l:pattern] in [
+        \ ['texMathCmdStyleBold', 'bm'],
         \ ['texMathCmdStyleBold', 'mathbf'],
         \ ['texMathCmdStyleItal', 'mathit'],
-        \ ['texMathCmdStyleBold', 'bm'],
         \]
     execute 'syntax match' l:group '"\\' . l:pattern . '\>"'
           \ 'contained skipwhite nextgroup=' . l:map[l:group]
           \ l:conceal
   endfor
+
+  execute 'syntax region texMathStyleBold matchgroup=texDelim start="{" end="}" contained contains=@texClusterMath' l:concealends
+  execute 'syntax region texMathStyleItal matchgroup=texDelim start="{" end="}" contained contains=@texClusterMath' l:concealends
 
   if g:vimtex_syntax_conceal.styles
     syntax match texMathCmdStyle "\v\\math%(rm|tt|normal|sf)>"

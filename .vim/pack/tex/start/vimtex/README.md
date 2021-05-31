@@ -16,6 +16,7 @@ filetype and syntax plugin for LaTeX files.
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
+- [Screenshots](#screenshots)
 - [Features](#features)
 - [Other relevant plugins](#other-relevant-plugins)
   - [Linting and syntax checking](#linting-and-syntax-checking)
@@ -68,18 +69,36 @@ If you use the new package feature in Vim, please note the following:
 
 ## Quick Start
 
-The following is a simple guide for how to use VimTeX. It only displays the
-most basic features. Users are _strongly_ encouraged to read or at least skim
-through the documentation to learn about the different features and
-possibilities provided by VimTeX (see [`:h vimtex`](doc/vimtex.txt)).
+The following is a video guide for how to use VimTeX (credits:
+[@DustyTopology](https://github.com/DustyTopology) from
+[#1946](https://github.com/lervag/vimtex/issues/1946#issuecomment-846345095)).
+It displays some of the main features. The example LaTeX file used in the video
+is available under
+[`test/example-quick-start/main.tex`](test/example-quick-start/main.tex) and it
+may be instructive to copy the file and play with it to learn some of these
+basic functions.
 
-![Quick start gif](media/quick_start.gif?raw=true)
+https://user-images.githubusercontent.com/66584581/119213849-1b7d4080-ba77-11eb-8a31-7ff7b9a4a020.mp4
 
+Users are of course _strongly_
+encouraged to read the documentation, at least the introduction, to learn about
+the different features and possibilities provided by VimTeX (see [`:h
+vimtex`](doc/vimtex.txt)).
 Advanced users and potential developers may also be interested in reading the
 supplementary documents:
 
 * [CONTRIBUTING.md](CONTRIBUTING.md)
 * [DOCUMENTATION.md](DOCUMENTATION.md)
+
+## Screenshots
+
+Here is an example of the syntax highlighting provided by VimTeX. The example
+is made by @DustyTopology with the
+[vim-colors-xcode](https://github.com/arzg/vim-colors-xcode) colorscheme with
+some minor adjustments [described
+here](https://github.com/lervag/vimtex/issues/1946#issuecomment-843674951).
+
+![Syntax example](https://github.com/lervag/vimtex-media/blob/main/img/syntax.png)
 
 ## Features
 
