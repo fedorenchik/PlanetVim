@@ -228,36 +228,32 @@ func! planet#menu#nav#update() abort
     an 840.140 📚&s.&Delete                                :SDelete<CR>
     an 840.150 📚&s.--5-- <Nop>
 
-    " Control GUI window with wmctrl & vim servers
-    an 850.10  🗄️&x.GUI <Nop>
-    an disable 🗄️&x.GUI
-    an 850.10  🗄️&x.&Maximize            :silent call system('wmctrl -i -b toggle,maximized_vert,maximized_horz -r' . v:windowid)<CR>
-    an 850.10  🗄️&x.&Full\ Screen        :silent call system('wmctrl -i -b toggle,fullscreen -r' . v:windowid)<CR>
-    an 850.10  🗄️&x.Minimi&ze<Tab>:suspend<Tab><C-z>         <C-z>
-    an 850.10  🗄️&x.--1-- <Nop>
-    an 850.10  🗄️&x.Vim\ Servers <Nop>
-    an disable 🗄️&x.Vim\ Servers
-    " TODO: add menu to start server
-    " if empty(v:servername) && exists('*remote_startserver')
-    "   call remote_startserver('VIM')
-    " endif
-    an 850.10  🗄️&x.GUI\ Windows <Nop>
-    an disable 🗄️&x.GUI\ Windows
-    "TODO: List of GUI windows to focus
-
     " Vim Apps: Open in new GUI window
-    an 860.10  🎛️&@.Apps <Nop>
-    an disable 🎛️&@.Apps
-    an 860.10  🎛️&@.Calendar            :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +Calendar<CR>
-    an 860.10  🎛️&@.Web\ Browser        :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'W3m https://google.com/'<CR>
-    an 860.10  🎛️&@.Calculator          :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +Calculator<CR>
-    an 860.10  🎛️&@.Htop                <Cmd>call planet#term#RunCmdTab('htop')<CR>
-    an 860.10  🎛️&@.Terminal            :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'terminal ++curwin ++kill=kill'<CR>
-    an 860.10  🎛️&@.File\ Manager       :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'Fern .'<CR>
-    an 860.10  🎛️&@.Python\ Notebook    :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'Codi python'<CR>
-    an 860.10  🎛️&@.C++\ Notebook       :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'Codi cpp'<CR>
+    an 850.10  🗄️&x.Apps <Nop>
+    an disable 🗄️&x.Apps
+    an 850.10  🗄️&x.Calendar            :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +Calendar<CR>
+    an 850.10  🗄️&x.Web\ Browser        :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'W3m https://google.com/'<CR>
+    an 850.10  🗄️&x.Calculator          :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +Calculator<CR>
+    an 850.10  🗄️&x.Htop                <Cmd>call planet#term#RunCmdTab('htop')<CR>
+    an 850.10  🗄️&x.Terminal            :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'terminal ++curwin ++kill=kill'<CR>
+    an 850.10  🗄️&x.File\ Manager       :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'Fern .'<CR>
+    an 850.10  🗄️&x.Python\ Notebook    :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'Codi python'<CR>
+    an 850.10  🗄️&x.C++\ Notebook       :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'Codi cpp'<CR>
     "TODO: Email
     "TODO: difdiff
+
+    " Control GUI window with wmctrl & vim servers
+    an 860.10  🎛️&@.GUI <Nop>
+    an disable 🎛️&@.GUI
+    an 860.10  🎛️&@.&Maximize            :silent call system('wmctrl -i -b toggle,maximized_vert,maximized_horz -r' . v:windowid)<CR>
+    an 860.10  🎛️&@.&Full\ Screen        :silent call system('wmctrl -i -b toggle,fullscreen -r' . v:windowid)<CR>
+    an 860.10  🎛️&@.Minimi&ze<Tab>:suspend<Tab><C-z>        <C-z>
+    an 860.10  🎛️&@.--1-- <Nop>
+    an 860.10  🎛️&@.&Start\ Vim\ Server                     <Cmd>call planet#gui#VimServerStart<CR>
+    an 860.100 🎛️&@.--2-- <Nop>
+    an 860.600 🎛️&@.Workspaces <Nop>
+    an disable 🎛️&@.Workspaces
+
   else
     silent! aunmenu 📖&b
     silent! aunmenu 🗃️&a

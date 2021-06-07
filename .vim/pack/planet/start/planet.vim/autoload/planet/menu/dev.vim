@@ -189,16 +189,16 @@ func! planet#menu#dev#update() abort
     an 500.10  🎚️&{.Set\ Python\ (PyEnv).List\ Available    :call planet#term#RunCmd('pyenv install --list')<CR>
     an 500.10  🎚️&{.Settings <Nop>
     an disable 🎚️&{.Settings
-    an 500.10  🎚️&{.&Env.Print\ Env                         <Cmd>call planet#env#PrintEnv()<CR>
+    an 500.10  🎚️&{.&Env.Source\ \.env                      <Cmd>Dotenv .env<CR>
+    an 500.10  🎚️&{.&Env.Set\ Env\ Var                      <Cmd>call planet#env#NewEnvVar()<CR>
+    an 500.10  🎚️&{.&Env.Edit\ \.env                        <Cmd>e .env<CR>
+    an 500.10  🎚️&{.&Env.Edit\ Env\ in\ Buffer              <Cmd>call planet#env#BufferFromCmd('env')<CR>
     an 500.10  🎚️&{.&Env.Set\ $DESTDIR                      <Cmd>call planet#env#SetEnvVar('DESTDIR')<CR>
     an 500.10  🎚️&{.&Env.Set\ $PYTHONPATH                   <Cmd>call planet#env#SetEnvVar('PYTHONPATH')<CR>
     an 500.10  🎚️&{.&Env.Set\ $PATH                         <Cmd>call planet#env#SetEnvVar('PATH')<CR>
     an 500.10  🎚️&{.&Env.Set\ $ARCH                         <Cmd>call planet#env#SetEnvVar('ARCH')<CR>
     an 500.10  🎚️&{.&Env.Set\ $CROSS_COMPILE                <Cmd>call planet#env#SetEnvVar('CROSS_COMPILE')<CR>
-    an 500.10  🎚️&{.&Env.Set\ Env\ Var                      <Cmd>call planet#env#NewEnvVar()<CR>
-    an 500.10  🎚️&{.&Env.Edit\ Env\ in\ Buffer              <Cmd>call planet#env#BufferFromCmd('env')<CR>
-    an 500.10  🎚️&{.&Env.Edit\ \.env                        <Cmd>e .env<CR>
-    an 500.10  🎚️&{.&Env.Source\ \.env                      <Cmd>Dotenv .env<CR>
+    an 500.10  🎚️&{.&Env.Print\ Env                         <Cmd>call planet#env#PrintEnv()<CR>
     an 500.10  🎚️&{.&Direnv.&Edit\ (or\ Create)\ \.envrc    <Cmd>EditEnvrc<CR>
     an 500.10  🎚️&{.&Direnv.&Allow\ Here                    <Cmd>call planet#term#RunCmd('direnv allow')<CR>
     an 500.10  🎚️&{.&Direnv.&Run\ \.envrc                   <Cmd>DirenvExport<CR>
@@ -390,7 +390,18 @@ func! planet#menu#dev#update() abort
     an 500.10  🔨&u.Flutter.Set\ Android\ Sdk\ Location     <Cmd>call planet#term#RunCmd('flutter config --android-sdk')<CR>
     an 500.10  🔨&u.Flutter.Accept\ Android\ Licenses       <Cmd>call planet#term#RunCmd('flutter doctor --android-licenses')<CR>
     an 500.10  🔨&u.Flutter.Create\ Project                 <Cmd>call planet#term#RunCmd('flutter create new_project')<CR>
-    an 500.10  🔨&u.Flutter.Run                             <Cmd>call planet#term#RunCmd('flutter run')<CR>
+    an 500.10  🔨&u.Flutter.Run                             <Cmd>FlutterRun<CR>
+    an 500.10  🔨&u.Flutter.Hot\ Reload                     <Cmd>FlutterHotReload<CR>
+    an 500.10  🔨&u.Flutter.Hot\ Restart                    <Cmd>FlutterHotRestart<CR>
+    an 500.10  🔨&u.Flutter.Stop\ App                       <Cmd>FlutterQuit<CR>
+    an 500.10  🔨&u.Flutter.Devices                         <Cmd>FlutterDevices<CR>
+    an 500.10  🔨&u.Flutter.Output                          <Cmd>FlutterSplit<CR>
+    an 500.10  🔨&u.Flutter.Emulators                       <Cmd>FlutterEmulators<CR>
+    an 500.10  🔨&u.Flutter.Launch\ Emulators               <Cmd>FlutterEmulatorsLaunch<CR>
+    an 500.10  🔨&u.Flutter.Toggle\ Visual\ Debug           <Cmd>FlutterVisualDebug<CR>
+    an 500.10  🔨&u.Flutter.Add\ Desktop\ Linux\ Build      <Cmd>call planet#term#RunCmd('flutter config --enable-linux-desktop')<CR>
+    an 500.10  🔨&u.Flutter.Add\ Desktop\ Macos\ Build      <Cmd>call planet#term#RunCmd('flutter config --enable-macos-desktop')<CR>
+    an 500.10  🔨&u.Flutter.Add\ Desktop\ Windows\ Build    <Cmd>call planet#term#RunCmd('flutter config --enable-windows-desktop')<CR>
     an 500.10  🔨&u.Deploy <Nop>
     an disable 🔨&u.Deploy
     an 500.10  🔨&u.Windeployqt.Deploy                      :!make<CR>
@@ -419,7 +430,8 @@ func! planet#menu#dev#update() abort
     an 510.10  ▶️&r.Run <Nop>
     an disable ▶️&r.Run
     an 510.500 ▶️&r.--1-- <Nop>
-    an 510.500 ▶️&r.Add\ Run\ Config                        <Cmd>call planet#run#AddConfig()<CR>
+    an 510.500 ▶️&r.Add\ Run\ Configuration                 <Cmd>call planet#run#AddConfig()<CR>
+    an 510.500 ▶️&r.Edit\ Run\ Configurations               <Cmd>call planet#run#EditConfig()<CR>
 
     " Debug
     an 520.10  🐞&d.Debug <Nop>

@@ -679,7 +679,8 @@ xnoremap iz :<c-u>FastFoldUpdate<cr><esc>:<c-u>normal! ]zv[z<cr>
 xnoremap az :<c-u>FastFoldUpdate<cr><esc>:<c-u>normal! ]zV[z<cr>
 " }}}
 " Plugin: fern.vim {{{
-let g:fern#hide_cursor = 1
+" change g:fern#hide_cursor = 1 when bug in fern fixed
+let g:fern#hide_cursor = 0
 let g:fern#keepalt_on_edit = 1
 let g:fern#keepjumps_on_edit = 1
 let g:fern#drawer_width = 40
