@@ -1,5 +1,14 @@
 scriptversion 4
 
+
+func! planet#session#Save() abort
+  if ! empty(v:this_session)
+    exe 'SSave! ' .. fnamemodify(v:this_session, ":t")
+  else
+    exe 'SSave ' .. fnamemodify(getcwd(-1), ":t")
+  end
+endfunc
+
 func! planet#session#SetCurrent() abort
   if exists('g:last_session')
     exe 'aun 📚&s.Current:\ ' .. g:last_session

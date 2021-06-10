@@ -210,23 +210,23 @@ func! planet#menu#nav#update() abort
     " Sessions
     an 840.10  📚&s.Sessions <Nop>
     an disable 📚&s.Sessions
-    an 840.40  📚&s.--1-- <Nop>
-    an 840.50  📚&s.&Save                                  :exe 'SSave! ' .. fnamemodify(v:this_session, ":t")<CR>
-    an 840.60  📚&s.Save\ &As\.\.\.                        :SSave<CR>
-    an 840.70  📚&s.--2-- <Nop>
-    an 840.50  📚&s.Advanced\ Save.Save\ with\ Relative\ Paths :TODO"set sessionoptions-=sesdir,+=curdir,v:this_session=dirname
-    an 840.50  📚&s.Advanced\ Save.Save\ with\ Local\ Options :TODO"set sessionoptions+=localoptions
-    an 840.50  📚&s.Advanced\ Save.Save\ with\ All\ Options :TODO"set sessionoptions+=localoptions,options
-    an 840.50  📚&s.Advanced\ Save.Save\ without\ Global\ Vars :TODO"set sessionoptions-=globals
-    an 840.70  📚&s.--2-- <Nop>
-    an 840.80  📚&s.&Open                                  :SLoad<CR>
-    an 840.90  📚&s.Open\ &Last\ Session                   :SLoad!<CR>
-    an 840.100 📚&s.&Reopen                                :exe 'SLoad ' .. fnamemodify(v:this_session, ":t")<CR>
-    an 840.110 📚&s.--3-- <Nop>
-    an 840.120 📚&s.&Close                                 :SClose<CR>
-    an 840.130 📚&s.--4-- <Nop>
-    an 840.140 📚&s.&Delete                                :SDelete<CR>
-    an 840.150 📚&s.--5-- <Nop>
+    an 840.20  📚&s.--1-- <Nop>
+    an 840.30  📚&s.&Save                                  <Cmd>call planet#session#Save()<CR>
+    an 840.40  📚&s.Save\ &As\.\.\.                        :SSave<CR>
+    an 840.50  📚&s.--2-- <Nop>
+    an 840.60  📚&s.Advanced\ Save.Save\ with\ Relative\ Paths :TODO"set sessionoptions-=sesdir,+=curdir,v:this_session=dirname
+    an 840.70  📚&s.Advanced\ Save.Save\ with\ Local\ Options :TODO"set sessionoptions+=localoptions
+    an 840.80  📚&s.Advanced\ Save.Save\ with\ All\ Options :TODO"set sessionoptions+=localoptions,options
+    an 840.90  📚&s.Advanced\ Save.Save\ without\ Global\ Vars :TODO"set sessionoptions-=globals
+    an 840.100 📚&s.--2-- <Nop>
+    an 840.110 📚&s.&Open                                  :SLoad<CR>
+    an 840.120 📚&s.Open\ &Last\ Session                   :SLoad!<CR>
+    an 840.130 📚&s.&Reopen                                :exe 'SLoad ' .. fnamemodify(v:this_session, ":t")<CR>
+    an 840.140 📚&s.--3-- <Nop>
+    an 840.150 📚&s.&Close                                 :SClose<CR>
+    an 840.160 📚&s.--4-- <Nop>
+    an 840.170 📚&s.&Delete                                :SDelete<CR>
+    an 840.180 📚&s.--5-- <Nop>
 
     " Vim Apps: Open in new GUI window
     an 850.10  🗄️&x.Apps <Nop>

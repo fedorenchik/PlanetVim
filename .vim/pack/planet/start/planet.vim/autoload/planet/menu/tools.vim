@@ -42,6 +42,8 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&g.&Commit.Disable\ AutoCommit\ on\ File\ Write  <Cmd>call planet#git#DisableAutoCommit()<CR>
     an 700.10  🔀&g.Ch&eckout.Branch                              <Cmd>call planet#git#CheckoutBranch()<CR>
     an 700.10  🔀&g.Ch&eckout.File                                <Cmd>call planet#git#CheckoutFile()<CR>
+    an 700.10  🔀&g.Fetch\ .Prune                                 <Cmd>call planet#term#RunCmd('git fetch --prune')<CR>
+    an 700.10  🔀&g.Fetch\ .From\ Default\ Remote                 <Cmd>call planet#term#RunCmd('git fetch')<CR>
     an 700.10  🔀&g.Fetch\ .From\ Specified\ Remote               <Cmd>call planet#git#FetchCustomRemote()<CR>
     an 700.10  🔀&g.Pull\ .TODO                                   <Cmd>call planet#git#FetchCustomRemote()<CR>
     an 700.10  🔀&g.Push\ .TODO                                   <Cmd>call planet#git#FetchCustomRemote()<CR>

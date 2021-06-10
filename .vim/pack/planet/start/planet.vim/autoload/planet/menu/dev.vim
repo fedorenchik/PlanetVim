@@ -356,52 +356,52 @@ func! planet#menu#dev#update() abort
     an 500.10  🔨&u.&KBuild.make\ &gconfig                  <Cmd>call planet#term#RunCmd('make gconfig')<CR>
     an 500.10  🔨&u.&KBuild.make\ &tags                     <Cmd>call planet#term#RunCmd('make tags')<CR>
     an 500.10  🔨&u.&CMake.&Build                           <Cmd>call planet#term#RunCmd('cmake --build .', v:false, v:false, v:false, g:PV_build_dir)<CR>
-    an 500.10  🔨&u.&CMake.Generate\ compile_commands\.json <Cmd>call planet#env#SenEnvVarValue('CMAKE_EXPORT_COMPILE_COMMANDS=ON')<CR><Cmd>call planet#term#RunCmd('cmake ..', v:false, v:false, v:false, g:PV_build_dir)<CR>
+    an 500.10  🔨&u.&CMake.Generate\ compile_commands\.json <Cmd>call planet#env#SenEnvVarValue('CMAKE_EXPORT_COMPILE_COMMANDS=ON')<CR><Cmd>call planet#term#RunCmd('cmake ' .. getcwd(), v:false, v:false, v:false, g:PV_build_dir)<CR>
     an 500.10  🔨&u.&CMake.&Configure                       <Cmd>call planet#term#RunCmd('cmake ' .. getcwd(), v:false, v:false, v:false, g:PV_build_dir)<CR>
-    an 500.10  🔨&u.&CMake.Configure\ &Tui                  <Cmd>call planet#term#RunCmdTab('ccmake ..', g:PV_build_dir)<CR>
-    an 500.10  🔨&u.&CMake.Configure\ &Gui                  <Cmd>call planet#term#RunGuiApp('cmake-gui ..', g:PV_build_dir)<CR>
+    an 500.10  🔨&u.&CMake.Configure\ &Tui                  <Cmd>call planet#term#RunCmdTab('ccmake ' .. getcwd(), g:PV_build_dir)<CR>
+    an 500.10  🔨&u.&CMake.Configure\ &Gui                  <Cmd>call planet#term#RunGuiApp('cmake-gui ' .. getcwd(), g:PV_build_dir)<CR>
     an 500.10  🔨&u.&CMake.&Rebuild                         <Cmd>call planet#term#RunCmd('cmake --build . --target clean && cmake --build .', v:false, v:false, v:false, g:PV_build_dir)<CR>
     an 500.10  🔨&u.&CMake.Clean                            <Cmd>call planet#term#RunCmd('cmake --build . --target clean', v:false, v:false, v:false, g:PV_build_dir)<CR>
     an 500.10  🔨&u.&CMake.Create\ &In-Tree\ Build\ Dir     <Cmd>call planet#build#NewInTreeBuildDir()<CR>
     an 500.10  🔨&u.&CMake.Create\ &OOT\ Build\ Dir         <Cmd>call planet#build#NewOOTBuildDir()<CR>
     an 500.10  🔨&u.&CMake.Select\ Build\ Dir               <Cmd>call planet#build#SelectBuildDir()<CR>
     an 500.10  🔨&u.&CMake.Browse\ Build\ Directory         <Cmd>exe 'Fern ' .. g:PV_build_dir<CR>
-    an 500.10  🔨&u.&QMake.Set\ DESTDIR                     :!make<CR>
-    an 500.10  🔨&u.Scons.Run\ Custom\ Target               <Cmd>call planet#term#RunCmdAskArgs('scons', 'scons: ', ' -j8 .')<CR>
-    an 500.10  🔨&u.Nin&ja.Set\ DESTDIR                     :!make<CR>
     an 500.10  🔨&u.&Meson.Set\ DESTDIR                     :!make<CR>
-    an 500.10  🔨&u.Arduino.Verify                          :ArduinoVerify<CR>
-    an 500.10  🔨&u.Arduino.Upload                          :ArduinoUpload<CR>
-    an 500.10  🔨&u.Arduino.Upload\ and\ Serial             :ArduinoUploadAndSerial<CR>
-    an 500.10  🔨&u.Arduino.Serial                          :ArduinoSerial<CR>
-    an 500.10  🔨&u.Arduino.Set\ Baud                       :ArduinoSetBaud<CR>
-    an 500.10  🔨&u.Arduino.--2-- <Nop>
-    an 500.10  🔨&u.Arduino.Choose\ Board                   :ArduinoChooseBoard<CR>
-    an 500.10  🔨&u.Arduino.Choose\ Programmer              :ArduinoChooseProgrammer<CR>
-    an 500.10  🔨&u.Arduino.Choose\ Port                    :ArduinoChoosePort<CR>
-    an 500.10  🔨&u.Arduino.--1-- <Nop>
-    an 500.10  🔨&u.Arduino.Info                            :ArduinoInfo<CR>
-    an 500.10  🔨&u.Arduino.Set\ Arduino\ Dir               :let g:arduino_dir = 'TODO'
-    an 500.10  🔨&u.Arduino.Set\ Build\ Dir                 :let g:arduino_build_path = 'TODO'
-    an 500.10  🔨&u.PlatformIO.Edit\ Settings               :e platformio.ini<CR>
-    an 500.10  🔨&u.ROS.Setup                               :TODO
-    an 500.10  🔨&u.Yocto.Setup                             :TODO
-    an 500.10  🔨&u.Flutter.Doctor                          <Cmd>call planet#term#RunCmd('flutter doctor')<CR>
-    an 500.10  🔨&u.Flutter.Set\ Android\ Sdk\ Location     <Cmd>call planet#term#RunCmd('flutter config --android-sdk')<CR>
-    an 500.10  🔨&u.Flutter.Accept\ Android\ Licenses       <Cmd>call planet#term#RunCmd('flutter doctor --android-licenses')<CR>
-    an 500.10  🔨&u.Flutter.Create\ Project                 <Cmd>call planet#term#RunCmd('flutter create new_project')<CR>
-    an 500.10  🔨&u.Flutter.Run                             <Cmd>FlutterRun<CR>
-    an 500.10  🔨&u.Flutter.Hot\ Reload                     <Cmd>FlutterHotReload<CR>
-    an 500.10  🔨&u.Flutter.Hot\ Restart                    <Cmd>FlutterHotRestart<CR>
-    an 500.10  🔨&u.Flutter.Stop\ App                       <Cmd>FlutterQuit<CR>
-    an 500.10  🔨&u.Flutter.Devices                         <Cmd>FlutterDevices<CR>
-    an 500.10  🔨&u.Flutter.Output                          <Cmd>FlutterSplit<CR>
-    an 500.10  🔨&u.Flutter.Emulators                       <Cmd>FlutterEmulators<CR>
-    an 500.10  🔨&u.Flutter.Launch\ Emulators               <Cmd>FlutterEmulatorsLaunch<CR>
-    an 500.10  🔨&u.Flutter.Toggle\ Visual\ Debug           <Cmd>FlutterVisualDebug<CR>
-    an 500.10  🔨&u.Flutter.Add\ Desktop\ Linux\ Build      <Cmd>call planet#term#RunCmd('flutter config --enable-linux-desktop')<CR>
-    an 500.10  🔨&u.Flutter.Add\ Desktop\ Macos\ Build      <Cmd>call planet#term#RunCmd('flutter config --enable-macos-desktop')<CR>
-    an 500.10  🔨&u.Flutter.Add\ Desktop\ Windows\ Build    <Cmd>call planet#term#RunCmd('flutter config --enable-windows-desktop')<CR>
+    an 500.10  🔨&u.Ar&duino.Verify                          :ArduinoVerify<CR>
+    an 500.10  🔨&u.Ar&duino.Upload                          :ArduinoUpload<CR>
+    an 500.10  🔨&u.Ar&duino.Upload\ and\ Serial             :ArduinoUploadAndSerial<CR>
+    an 500.10  🔨&u.Ar&duino.Serial                          :ArduinoSerial<CR>
+    an 500.10  🔨&u.Ar&duino.Set\ Baud                       :ArduinoSetBaud<CR>
+    an 500.10  🔨&u.Ar&duino.--2-- <Nop>
+    an 500.10  🔨&u.Ar&duino.Choose\ Board                   :ArduinoChooseBoard<CR>
+    an 500.10  🔨&u.Ar&duino.Choose\ Programmer              :ArduinoChooseProgrammer<CR>
+    an 500.10  🔨&u.Ar&duino.Choose\ Port                    :ArduinoChoosePort<CR>
+    an 500.10  🔨&u.Ar&duino.--1-- <Nop>
+    an 500.10  🔨&u.Ar&duino.Info                            :ArduinoInfo<CR>
+    an 500.10  🔨&u.Ar&duino.Set\ Arduino\ Dir               :let g:arduino_dir = 'TODO'
+    an 500.10  🔨&u.Ar&duino.Set\ Build\ Dir                 :let g:arduino_build_path = 'TODO'
+    an 500.10  🔨&u.&PlatformIO.Edit\ Settings               :e platformio.ini<CR>
+    an 500.10  🔨&u.&ROS.Setup                               :TODO
+    an 500.10  🔨&u.&Yocto.Setup                             :TODO
+    an 500.10  🔨&u.&Flutter.Doctor                          <Cmd>call planet#term#RunCmd('flutter doctor')<CR>
+    an 500.10  🔨&u.&Flutter.Set\ Android\ Sdk\ Location     <Cmd>call planet#term#RunCmd('flutter config --android-sdk')<CR>
+    an 500.10  🔨&u.&Flutter.Accept\ Android\ Licenses       <Cmd>call planet#term#RunCmd('flutter doctor --android-licenses')<CR>
+    an 500.10  🔨&u.&Flutter.Create\ Project                 <Cmd>call planet#term#RunCmd('flutter create new_project')<CR>
+    an 500.10  🔨&u.&Flutter.Run                             <Cmd>FlutterRun<CR>
+    an 500.10  🔨&u.&Flutter.Hot\ Reload                     <Cmd>FlutterHotReload<CR>
+    an 500.10  🔨&u.&Flutter.Hot\ Restart                    <Cmd>FlutterHotRestart<CR>
+    an 500.10  🔨&u.&Flutter.Stop\ App                       <Cmd>FlutterQuit<CR>
+    an 500.10  🔨&u.&Flutter.Devices                         <Cmd>FlutterDevices<CR>
+    an 500.10  🔨&u.&Flutter.Output                          <Cmd>FlutterSplit<CR>
+    an 500.10  🔨&u.&Flutter.Emulators                       <Cmd>FlutterEmulators<CR>
+    an 500.10  🔨&u.&Flutter.Launch\ Emulators               <Cmd>FlutterEmulatorsLaunch<CR>
+    an 500.10  🔨&u.&Flutter.Toggle\ Visual\ Debug           <Cmd>FlutterVisualDebug<CR>
+    an 500.10  🔨&u.&Flutter.Add\ Desktop\ Linux\ Build      <Cmd>call planet#term#RunCmd('flutter config --enable-linux-desktop')<CR>
+    an 500.10  🔨&u.&Flutter.Add\ Desktop\ Macos\ Build      <Cmd>call planet#term#RunCmd('flutter config --enable-macos-desktop')<CR>
+    an 500.10  🔨&u.&Flutter.Add\ Desktop\ Windows\ Build    <Cmd>call planet#term#RunCmd('flutter config --enable-windows-desktop')<CR>
+    an 500.10  🔨&u.&Other.&Ninja.Set\ DESTDIR                     :!ninja<CR>
+    an 500.10  🔨&u.&Other.&QMake.Set\ DESTDIR                     :!qmake<CR>
+    an 500.10  🔨&u.&Other.&Scons.Run\ Custom\ Target               <Cmd>call planet#term#RunCmdAskArgs('scons', 'scons: ', ' -j8 .')<CR>
     an 500.10  🔨&u.Deploy <Nop>
     an disable 🔨&u.Deploy
     an 500.10  🔨&u.Windeployqt.Deploy                      :!make<CR>
