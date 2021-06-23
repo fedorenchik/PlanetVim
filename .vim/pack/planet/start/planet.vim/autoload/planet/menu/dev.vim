@@ -254,6 +254,14 @@ func! planet#menu#dev#update() abort
     an 500.10  📐&}.Qml.qmltime                             :TODO
     an 500.10  📐&}.Qml.qmltyperegistrar                    :TODO
     an 500.10  📐&}.Gtk\ Tools.Glade                        :TODO
+    an 500.10  📐&}.Kernel.Check\ &Patch                    <Cmd>call planet#term#RunCmd('./scripts/checkpatch.pl')<CR>
+    an 500.10  📐&}.Kernel.Get\ Maintainers                 <Cmd>call planet#term#RunCmd('./scripts/get_maintainer.pl')<CR>
+    an 500.10  📐&}.Kernel.Device\ Tree\ Compiler           <Cmd>call planet#term#RunCmd('./scripts/dtc/dtc')<CR>
+    an 500.10  📐&}.Kernel.--1-- <Nop>
+    an 500.10  📐&}.Kernel.&Generate\ compile_commands\.json <Cmd>call planet#term#RunCmd('./scripts/clang-tools/get_compile_commands.py')<CR>
+    an 500.10  📐&}.Kernel.&Generate\ tags                  <Cmd>call planet#term#RunCmd('make tags')<CR>
+    an 500.10  📐&}.Kernel.&Generate\ GTAGS                 <Cmd>call planet#term#RunCmd('make gtags')<CR>
+    an 500.10  📐&}.Kernel.&Generate\ cscope\.out           <Cmd>call planet#term#RunCmd('make cscope')<CR>
     an 500.10  📐&}.Virtual\ Display\ (Xvfb).Run\ Command\ in\ New\ Instance :call planet#term#RunCmdBg('xvfb-run ...')
     an 500.10  📐&}.Virtual\ Display\ (Xvfb).--1-- <Nop>
     an 500.10  📐&}.Virtual\ Display\ (Xvfb).Run\ Command   :call planet#term#RunCmdBg('DISPLAY=$1 cmd...')
@@ -297,21 +305,21 @@ func! planet#menu#dev#update() abort
 
     an 500.10  🔨&u.Build <Nop>
     an disable 🔨&u.Build
-    an 500.10  🔨&u.&Autotools.Autotools\ Status            :call planet#term#RunScript('autotools-status')<CR>
-    an 500.10  🔨&u.&Autotools.Run\ autoconf                :call planet#term#RunCmd('autoconf -f -i')<CR>
-    an 500.10  🔨&u.&Autotools.Run\ autoreconf              :call planet#term#RunCmd('autoreconf -f -i')<CR>
-    an 500.10  🔨&u.&Autotools.Run\ autoheader              :call planet#term#RunCmd('autoheader')<CR>
-    an 500.10  🔨&u.&Autotools.Run\ autoscan                :call planet#term#RunCmd('autoscan')<CR>
-    an 500.10  🔨&u.&Autotools.Run\ autoupdate              :call planet#term#RunCmd('autoupdate')<CR>
-    an 500.10  🔨&u.&Autotools.Run\ ifnames                 :call planet#term#RunCmd('ifnames')<CR>
-    an 500.10  🔨&u.&Autotools.Run\ libtool                 :call planet#term#RunCmd('libtool')<CR>
-    an 500.10  🔨&u.&Autotools.Run\ libtoolize              :call planet#term#RunCmd('libtoolize')<CR>
+    an 500.10  🔨&u.&Autotools.Autotools\ Status            <Cmd>call planet#term#RunScript('autotools-status')<CR>
+    an 500.10  🔨&u.&Autotools.Run\ autoconf                <Cmd>call planet#term#RunCmd('autoconf -f -i')<CR>
+    an 500.10  🔨&u.&Autotools.Run\ autoreconf              <Cmd>call planet#term#RunCmd('autoreconf -f -i')<CR>
+    an 500.10  🔨&u.&Autotools.Run\ autoheader              <Cmd>call planet#term#RunCmd('autoheader')<CR>
+    an 500.10  🔨&u.&Autotools.Run\ autoscan                <Cmd>call planet#term#RunCmd('autoscan')<CR>
+    an 500.10  🔨&u.&Autotools.Run\ autoupdate              <Cmd>call planet#term#RunCmd('autoupdate')<CR>
+    an 500.10  🔨&u.&Autotools.Run\ ifnames                 <Cmd>call planet#term#RunCmd('ifnames')<CR>
+    an 500.10  🔨&u.&Autotools.Run\ libtool                 <Cmd>call planet#term#RunCmd('libtool')<CR>
+    an 500.10  🔨&u.&Autotools.Run\ libtoolize              <Cmd>call planet#term#RunCmd('libtoolize')<CR>
     an 500.10  🔨&u.&Autotools.Generate\ \./autogen\.sh     :TODO:"generate standard autogen.sh
-    an 500.10  🔨&u.&Autotools.Generate\ \./configure\.ac   :call planet#project#CopyFile('autotools/configure.ac')<CR>
-    an 500.10  🔨&u.&Autotools.Run\ \./autogen\.sh          :call planet#term#RunCmd('./autogen.sh')<CR>
-    an 500.10  🔨&u.&Autotools.Run\ \./bootstrap\.sh        :call planet#term#RunCmd('./bootstrap.sh')<CR>
-    an 500.10  🔨&u.&Autotools.Run\ \./&configure           :call planet#term#RunCmd('./configure')<CR>
-    an 500.10  🔨&u.&Autotools.Rerun\ \./&configure         :call planet#term#RunCmdFind('config.status', '--recheck')<CR>
+    an 500.10  🔨&u.&Autotools.Generate\ \./configure\.ac   <Cmd>call planet#project#CopyFile('autotools/configure.ac')<CR>
+    an 500.10  🔨&u.&Autotools.Run\ \./autogen\.sh          <Cmd>call planet#term#RunCmd('./autogen.sh')<CR>
+    an 500.10  🔨&u.&Autotools.Run\ \./bootstrap\.sh        <Cmd>call planet#term#RunCmd('./bootstrap.sh')<CR>
+    an 500.10  🔨&u.&Autotools.Run\ \./&configure           <Cmd>call planet#term#RunCmd('./configure')<CR>
+    an 500.10  🔨&u.&Autotools.Rerun\ \./&configure         <Cmd>call planet#term#RunCmdFind('config.status', '--recheck')<CR>
     an 500.10  🔨&u.&Autotools.Set\ \./configure\ Options   :TODO"print ./configure --help & set options in buffer
     an 500.10  🔨&u.&Autotools.Open\ config\.log            <Cmd>find config.log<CR>
     an 500.10  🔨&u.&Autotools.Set\ $CC                     <Cmd>call planet#env#SenEnvVar("CC")<CR>

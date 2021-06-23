@@ -7,8 +7,8 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&g.Git <Nop>
     an disable 🔀&g.Git
     an 700.10  🔀&g.&Status                                       <Cmd>call planet#term#RunCmd('git status --short --branch --show-stash --untracked-files=all')<CR>
-    an 700.10  🔀&g.&Fetch                                        <Cmd>call planet#term#RunCmd('git fetch --all --tags')<CR>
-    an 700.10  🔀&g.P&ull                                         <Cmd>call planet#term#RunCmd('git pull --ff-only --all')<CR>
+    an 700.10  🔀&g.&Fetch                                        <Cmd>call planet#term#RunCmd('git fetch')<CR>
+    an 700.10  🔀&g.P&ull                                         <Cmd>call planet#term#RunCmd('git pull --ff-only')<CR>
     an 700.10  🔀&g.&Push                                         <Cmd>call planet#term#RunCmd('git push')<CR>
     an 700.10  🔀&g.Summar&y                                      <Cmd>tab Gstatus<CR>
     an 700.10  🔀&g.&Add.This\ &File                              <Cmd>call planet#term#RunCmd('git add ' .. expand('%'))<CR>
@@ -25,8 +25,8 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&g.&Commit.Commit\ &File                         <Cmd>call planet#git#CommitFile(v:false, v:false)<CR>
     an 700.10  🔀&g.&Commit.Commit\ &Tool                         <Cmd>call planet#term#RunCmdBg('git commit')<CR>
     an 700.10  🔀&g.&Commit.Save\ &&\ Commit\ File                <Cmd>call planet#git#CommitFile(v:true, v:false)<CR>
-    an 700.10  🔀&g.&Commit.Commit\ &All                          :TODO
-    an 700.10  🔀&g.&Commit.Commit\ All\ with\ Untracked          :TODO
+    an 700.10  🔀&g.&Commit.Commit\ &All                          <Cmd>call planet#term#RunCmdAskArgs('git commit -a -m ', 'Commit message:', '')<CR>
+    an 700.10  🔀&g.&Commit.Commit\ All\ with\ Untracked          <Cmd>call planet#term#RunCmdAskArgs('git add --all && git commit -m ', 'Commit message:', '')<CR>
     an 700.10  🔀&g.&Commit.Amend\ Last\ Commit                   <Cmd>call planet#term#RunCmdBg('git commit --amend')<CR>
     an 700.10  🔀&g.&Commit.--2-- <Nop>
     an 700.10  🔀&g.&Commit.AutoCommit\ File                      <Cmd>call planet#git#CommitFile(v:false)<CR>
@@ -42,6 +42,8 @@ func! planet#menu#tools#update() abort
     an 700.10  🔀&g.&Commit.Disable\ AutoCommit\ on\ File\ Write  <Cmd>call planet#git#DisableAutoCommit()<CR>
     an 700.10  🔀&g.Ch&eckout.Branch                              <Cmd>call planet#git#CheckoutBranch()<CR>
     an 700.10  🔀&g.Ch&eckout.File                                <Cmd>call planet#git#CheckoutFile()<CR>
+    an 700.10  🔀&g.Fetch\ .Tags                                  <Cmd>call planet#term#RunCmd('git fetch --tags')<CR>
+    an 700.10  🔀&g.Fetch\ .All                                   <Cmd>call planet#term#RunCmd('git fetch --all')<CR>
     an 700.10  🔀&g.Fetch\ .Prune                                 <Cmd>call planet#term#RunCmd('git fetch --prune')<CR>
     an 700.10  🔀&g.Fetch\ .From\ Default\ Remote                 <Cmd>call planet#term#RunCmd('git fetch')<CR>
     an 700.10  🔀&g.Fetch\ .From\ Specified\ Remote               <Cmd>call planet#git#FetchCustomRemote()<CR>

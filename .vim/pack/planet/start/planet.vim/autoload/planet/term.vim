@@ -122,6 +122,9 @@ func! planet#term#ListTermWindows() abort
   return l:out_list
 endfunc
 
+" Find @cmd in 'path' and run with @cmd_args arguments
+" Example
+" call planet#term#RunCmdFind('config.status', '--recheck')<CR>
 func! planet#term#RunCmdFind(cmd, cmd_args) abort
   let l:cmd_path = findfile(a:cmd)
   if ! empty(l:cmd_path)
@@ -130,6 +133,7 @@ func! planet#term#RunCmdFind(cmd, cmd_args) abort
   end
 endfunc
 
+" Run @cmd with additional arguments asked from user.
 func! planet#term#RunCmdAskArgs(cmd, prompt, default_input = '') abort
   let l:cmd_args = input(a:prompt, a:default_input)
   if ! empty(l:cmd_args)

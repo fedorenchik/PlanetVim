@@ -74,19 +74,19 @@ func! planet#menu#basic#update() abort
     an 110.300 📁&f.Delete\ From\ Disk                         :Delete!<CR>
     an 110.310 📁&f.Mkdir                                      :Mkdir! <C-z>
     an 110.320 📁&f.Cd<Tab>:cd                                 :cd <C-z>
-    an 110.330 📁&f.Other\ Cd.Temp\ Cd\ to\ Project\ Root\ in\ Window :TODO"lcd to project root, but back to global cwd on au WinLeave <buffer> <once>
-    an 110.330 📁&f.Other\ Cd.Temp\ Cd\ in\ Window             :TODO"lcd, but back to global cwd on au WinLeave <buffer> <once>
-    an 110.330 📁&f.Other\ Cd.Cd\ in\ Tab<Tab>:tcd             :tcd <C-z>
-    an 110.340 📁&f.Other\ Cd.Cd\ in\ Window<Tab>:lcd          :lcd <C-z>
-    an 110.320 📁&f.Other\ Cd.Cd\ to\ Previous\ Directory<Tab>:cd\ - :cd -<CR>
-    an 110.330 📁&f.Other\ Cd.Cd\ to\ Previous\ Directory\ in\ Tab<Tab>:tcd\ - :tcd -<CR>
-    an 110.340 📁&f.Other\ Cd.Cd\ to\ Previous\ Directory\ in\ Window<Tab>:lcd\ - :lcd -<CR>
-    an 110.330 📁&f.Other\ Cd.Cd\ Windows\ in\ Tab<Tab>:windo\ cd :windo cd <C-z>
-    an 110.330 📁&f.Other\ Cd.Cd\ All\ Tabs<Tab>:tabdo\ cd     :tabdo cd <C-z>
-    an 110.330 📁&f.Other\ Cd.Cd\ All\ Windows<Tab>:tabdo\ windo\ cd :tabdo windo cd <C-z>
-    an 110.330 📁&f.Other\ Cd.Clear\ Local\ cd                 :cd .<CR>
-    an 110.330 📁&f.Other\ Cd.Clear\ Local\ cd\ in\ Tab        :windo cd .<CR>
-    an 110.330 📁&f.Other\ Cd.Clear\ Local\ cd\ Globally       :tabdo windo cd .<CR>
+    an 110.330 📁&f.Advanced\ Cd.Temp\ Cd\ to\ Project\ Root\ in\ Window :TODO"lcd to project root, but back to global cwd on au WinLeave <buffer> <once>
+    an 110.330 📁&f.Advanced\ Cd.Temp\ Cd\ in\ Window             :TODO"lcd, but back to global cwd on au WinLeave <buffer> <once>
+    an 110.330 📁&f.Advanced\ Cd.Cd\ in\ Tab<Tab>:tcd             :tcd <C-z>
+    an 110.340 📁&f.Advanced\ Cd.Cd\ in\ Window<Tab>:lcd          :lcd <C-z>
+    an 110.320 📁&f.Advanced\ Cd.Cd\ to\ Previous\ Directory<Tab>:cd\ - :cd -<CR>
+    an 110.330 📁&f.Advanced\ Cd.Cd\ to\ Previous\ Directory\ in\ Tab<Tab>:tcd\ - :tcd -<CR>
+    an 110.340 📁&f.Advanced\ Cd.Cd\ to\ Previous\ Directory\ in\ Window<Tab>:lcd\ - :lcd -<CR>
+    an 110.330 📁&f.Advanced\ Cd.Cd\ Windows\ in\ Tab<Tab>:windo\ cd :windo cd <C-z>
+    an 110.330 📁&f.Advanced\ Cd.Cd\ All\ Tabs<Tab>:tabdo\ cd     :tabdo cd <C-z>
+    an 110.330 📁&f.Advanced\ Cd.Cd\ All\ Windows<Tab>:tabdo\ windo\ cd :tabdo windo cd <C-z>
+    an 110.330 📁&f.Advanced\ Cd.Clear\ Local\ cd                 :cd .<CR>
+    an 110.330 📁&f.Advanced\ Cd.Clear\ Local\ cd\ in\ Tab        :windo cd .<CR>
+    an 110.330 📁&f.Advanced\ Cd.Clear\ Local\ cd\ Globally       :tabdo windo cd .<CR>
     an 110.360 📁&f.&Close<Tab>:bdelete                        :bdelete<CR>
 
     " Edit
