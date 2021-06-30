@@ -14,6 +14,7 @@ autoload/ingo/buffer/scratch/converted.vim
 autoload/ingo/buffer/temp.vim
 autoload/ingo/buffer/temprange.vim
 autoload/ingo/buffer/visible.vim
+autoload/ingo/buffers.vim
 autoload/ingo/change.vim
 autoload/ingo/change/processed.vim
 autoload/ingo/change/virtcols.vim
@@ -102,8 +103,10 @@ autoload/ingo/list/find.vim
 autoload/ingo/list/lcs.vim
 autoload/ingo/list/merge.vim
 autoload/ingo/list/pattern.vim
+autoload/ingo/list/reduce.vim
 autoload/ingo/list/sequence.vim
 autoload/ingo/list/split.vim
+autoload/ingo/list/transform.vim
 autoload/ingo/lists.vim
 autoload/ingo/lists/find.vim
 autoload/ingo/lnum.vim
@@ -205,6 +208,7 @@ autoload/ingo/window.vim
 autoload/ingo/window/adjacent.vim
 autoload/ingo/window/cmdwin.vim
 autoload/ingo/window/dimensions.vim
+autoload/ingo/window/iterate.vim
 autoload/ingo/window/locate.vim
 autoload/ingo/window/preview.vim
 autoload/ingo/window/quickfix.vim
