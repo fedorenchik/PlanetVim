@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/will133/vim-dirdiff.git
 	branch = master
-	commit = 0191693f0d3dfc624c61ac95ec951183a50b3b32
-	parent = 4d13f2d2eae9fc98529bca19f3626f24caf3e3ad
+	commit = 84bc8999fde4b3c2d8b228b560278ab30c7ea4c9
+	parent = c288aaed9ad9eb21440edde2b47fbd9506bcaf18
 	method = merge
 	cmdver = 0.4.3
