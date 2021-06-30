@@ -36,7 +36,7 @@ function! arduino#InitializeConfig() abort
     if exists('g:_cache_arduino_programmer')
       let g:arduino_programmer = g:_cache_arduino_programmer
     else
-      let g:arduino_programmer = 'arduino:usbtinyisp'
+      let g:arduino_programmer = ''
     endif
   endif
   if !exists('g:arduino_args')
@@ -60,9 +60,6 @@ function! arduino#InitializeConfig() abort
   endif
   if !exists('g:arduino_use_slime')
     let g:arduino_use_slime = 0
-  endif
-  if !exists('g:arduino_upload_using_programmer')
-    let g:arduino_upload_using_programmer = 0
   endif
 
   if !exists('g:arduino_run_headless')
@@ -346,7 +343,10 @@ function! arduino#GetBoardOptions(board) abort
 endfunction
 
 function! arduino#GetProgrammers() abort
-  let programmers = []
+  let programmers = [{
+        \ 'label': '-None-',
+        \ 'value': '',
+        \}]
   if g:arduino_use_cli
     let data = s:get_json_output('arduino-cli board details ' . g:arduino_board . ' --list-programmers --format json')
     if has_key(data, 'programmers')
@@ -529,10 +529,10 @@ function! arduino#Upload() abort
   if g:arduino_use_cli
     let cmd = arduino#GetCLICompileCommand('-u')
   else
-    if g:arduino_upload_using_programmer
-      let cmd_options = "--upload --useprogrammer"
-    else
+    if empty(g:arduino_programmer)
       let cmd_options = "--upload"
+    else
+      let cmd_options = "--upload --useprogrammer"
     endif
     let cmd = arduino#GetArduinoCommand(cmd_options)
   endif
@@ -565,7 +565,7 @@ endfunction
 
 function! arduino#GetSerialCmd() abort
   let port = arduino#GetPort()
-  if empty(port)
+  if !port
     echoerr "Error! No serial port found"
     return ''
   endif
