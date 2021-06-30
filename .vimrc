@@ -102,7 +102,7 @@ endwhile
 " Normal Keys: {{{
 nn ` '
 nn ' `
-nn <unique> ; q:i
+nn <unique> ; :
 nm + <C-W>
 nn <silent> f :call PlanetVim_f()<CR>
 nn <silent> F :call PlanetVim_F()<CR>
