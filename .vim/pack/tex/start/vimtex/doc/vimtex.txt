@@ -63,6 +63,7 @@ CONTENTS                                                      *vimtex-contents*
       nvim-completion-manager                   |vimtex-complete-ncm|
       YouCompleteMe                             |vimtex-complete-youcompleteme|
       VimCompletesMe                            |vimtex-complete-vcm|
+      nvim-compe                                |vimtex-complete-nvim-compe|
   Folding                                       |vimtex-folding|
   Indentation                                   |vimtex-indent|
   Syntax highlighting                           |vimtex-syntax|
@@ -1633,7 +1634,7 @@ OPTIONS                                                        *vimtex-options*
 
 *g:vimtex_grammar_textidote*
   This option is used to configure the `textidote` grammar and document checker,
-  see |vimtex-grammar-textidote|. It is a dictionary with the following keys 
+  see |vimtex-grammar-textidote|. It is a dictionary with the following keys
 
     jar~
       The path to `textidote.jar`. This key must be defined if you want to use
@@ -2229,6 +2230,7 @@ OPTIONS                                                        *vimtex-options*
 
     amsmath~
       `load`  is 2 by default
+    amssymb~
     array~
     asymptote~
     babel~
@@ -3694,11 +3696,11 @@ Note: If you want to change the default value of `TEXMFHOME` in your shell
 AUTOCOMPLETE                                             *vimtex-complete-auto*
 
 Vim does not provide automatic completion by itself, but there exist at least
-several good plugins that provide this: |coc-nvim|, |deoplete|, |neocomplete|, |ncm2|,
-|nvim-completion-manager| and |youcompleteme|.  Moreover, there is |VimCompletesMe|
-that overrides <tab> to trigger different built-in completions, such as the
-omni-completion by VimTeX, depending on the context. See below for
-descriptions on how to setup these with VimTeX.
+several good plugins that provide this: |coc-nvim|, |deoplete|, |neocomplete|,
+|ncm2|, |nvim-completion-manager|, |youcompleteme|, and |nvim-compe|.
+Moreover, there is |VimCompletesMe| that overrides <tab> to trigger different
+built-in completions, such as the omni-completion by VimTeX, depending on the
+context. See below for descriptions on how to setup these with VimTeX.
 
 coc.nvim~
                                                      *vimtex-complete-coc.nvim*
@@ -3928,7 +3930,7 @@ To enable automatic completion with |youcompleteme|, use the following options: 
 VimCompletesMe~
                                                           *vimtex-complete-vcm*
 A plugin that maps <tab> to trigger the built-in completion that is most
-suitable to the current contex.  The plugin is available here:
+suitable to the current context.  The plugin is available here:
 https://github.com/ajh17/VimCompletesMe.
 
 The following options may be used to enable completion with the <tab> trigger
@@ -3939,6 +3941,34 @@ for LaTeX documents with |VimCompletesMe| and VimTeX's omni completion function:
     autocmd FileType tex
         \ let b:vcm_omni_pattern = g:vimtex#re#neocomplete
   augroup END
+
+nvim-compe~
+                                                   *vimtex-complete-nvim-compe*
+|nvim-compe| is an automatic completion plugin for Neovim. It has support for
+many different completion sources, including omni-completion, making it is
+easy to use with VimTeX. The plugin is available here:
+https://github.com/hrsh7th/nvim-compe.
+
+The omni-completion source can be enabled for TeX/LaTeX files by adding `omni`
+to the completion sources and specifying the `tex` filetype. For example, in
+Lua, it should look something like this: >
+
+  require("compe").setup({
+      source = {
+          omni = {
+              filetypes = {'tex'},
+          },
+      },
+      -- the rest of your compe config...
+  })
+
+And in Vimscript, it should look something like this: >
+
+  let g:compe.source = {
+        \ 'omni': {
+        \  'filetypes': ['tex'],
+        \ }
+        \}
 
 ==============================================================================
 FOLDING                                                        *vimtex-folding*
