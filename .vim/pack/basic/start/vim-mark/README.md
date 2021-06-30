@@ -326,7 +326,7 @@ To uninstall, use the :RmVimball command.
 ### DEPENDENCIES
 
 - Requires Vim 7.1 with matchadd(), or Vim 7.2 or higher.
-- Requires the ingo-library.vim plugin ([vimscript #4433](http://www.vim.org/scripts/script.php?script_id=4433)), version 1.042 or
+- Requires the ingo-library.vim plugin ([vimscript #4433](http://www.vim.org/scripts/script.php?script_id=4433)), version 1.043 or
   higher.
 
 CONFIGURATION
@@ -547,11 +547,12 @@ behavior:
 INTEGRATION
 ------------------------------------------------------------------------------
 
-The following functions offer (read-only) access to the number of available
-groups, number of defined marks and individual patterns:
-- mark#GetGroupNum()
-- mark#GetCount()
-- mark#GetPattern([{index}])
+The following functions offer (read-only) access to the script's internals:
+- mark#GetGroupNum(): number of available groups
+- mark#GetCount(): number of defined marks
+- mark#GetPattern([{index}]): search regular expression for an individual mark
+- mark#GetMarkNumber({pattern}, {isLiteral}, {isConsiderAlternatives}): mark
+  number of a pattern / literal text
 
 LIMITATIONS
 ------------------------------------------------------------------------------
@@ -569,6 +570,14 @@ https://github.com/inkarkat/vim-mark/issues or email (address below).
 
 HISTORY
 ------------------------------------------------------------------------------
+
+##### 3.2.0   RELEASEME
+- Add mark#GetMarkNumber(), based on feedback by Snorch in #36.
+- Mark updates across windows now use win\_execute() (since Vim 8.1.1418)
+  instead of :windo. This hopefully addresses the changes in window sizes that
+  have been reported (e.g. in #34).
+
+__You need to update to ingo-library ([vimscript #4433](http://www.vim.org/scripts/script.php?script_id=4433)) version 1.043!__
 
 ##### 3.1.1   03-Aug-2020
 - Compatibility: After Vim 8.1.1241, a :range outside the number of buffers
@@ -898,7 +907,7 @@ __PLEASE UPDATE THE
 - Initial version published by Yuheng Xie on vim.org.
 
 ------------------------------------------------------------------------------
-Copyright: (C) 2008-2020 Ingo Karkat -
+Copyright: (C) 2008-2021 Ingo Karkat -
            (C) 2005-2008 Yuheng Xie -
 The [VIM LICENSE](http://vimdoc.sourceforge.net/htmldoc/uganda.html#license) applies to this plugin.
 

@@ -1,7 +1,7 @@
 " Script Name: mark.vim
 " Description: Highlight several words in different colors simultaneously.
 "
-" Copyright:   (C) 2008-2020 Ingo Karkat
+" Copyright:   (C) 2008-2021 Ingo Karkat
 "              (C) 2005-2008 Yuheng Xie
 "   The VIM LICENSE applies to this script; see ':help copyright'.
 "
@@ -220,16 +220,7 @@ function! mark#UpdateMark( ... )
 endfunction
 " Update matches in all windows.
 function! mark#UpdateScope( ... )
-	" By entering a window, its height is potentially increased from 0 to 1 (the
-	" minimum for the current window). To avoid any modification, save the window
-	" sizes and restore them after visiting all windows.
-	let l:originalWindowLayout = winrestcmd()
-		let l:originalWinNr = winnr()
-		let l:previousWinNr = winnr('#') ? winnr('#') : 1
-			noautocmd keepjumps windo call call('mark#UpdateMark', a:000)
-		noautocmd execute l:previousWinNr . 'wincmd w'
-		noautocmd execute l:originalWinNr . 'wincmd w'
-	silent! execute l:originalWindowLayout
+	call call('ingo#window#iterate#All', [function('mark#UpdateMark')] + a:000)
 endfunction
 
 function! s:MarkEnable( enable, ...)
@@ -821,6 +812,25 @@ function! mark#ToList()
 	endwhile
 
 	return (l:highestNonEmptyIndex < 0 ? [] : map(range(0, l:highestNonEmptyIndex), 's:SerializeMark(v:val)'))
+endfunction
+
+" Return the mark number that represents a:pattern (regexp / literal text (as
+" set from <Leader>m or :Mark {pattern}) with a:isLiteral = 1), or 0 if not
+" found. With a:isConsiderAlternatives = 1, will also look for individual
+" alternatives (set from {N}<Leader>m or :{N}Mark).
+function! mark#GetMarkNumber( pattern, isLiteral, isConsiderAlternatives ) abort
+	let l:searchPattern = ingo#regexp#magic#Normalize(a:isLiteral ? ingo#regexp#FromLiteralText(a:pattern, 1, '') : a:pattern)
+	if empty(l:searchPattern) | return 0 | endif
+
+	let l:i = 0
+	while l:i < s:markNum
+		if l:searchPattern ==# s:pattern[l:i] || (a:isConsiderAlternatives && index(s:SplitIntoAlternatives(s:pattern[l:i]), l:searchPattern) != -1)
+			return l:i + 1
+		endif
+		let l:i += 1
+	endwhile
+
+	return 0
 endfunction
 
 " Common functions for :MarkLoad and :MarkSave
