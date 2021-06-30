@@ -11,6 +11,8 @@ let g:clap#floating_win#display = {}
 let g:clap#floating_win#spinner = {}
 let g:clap#floating_win#preview = {}
 
+let s:has_nvim_0_5 = has('nvim-0.5')
+
 let s:shadow_bufnr = nvim_create_buf(v:false, v:true)
 
 let s:spinner_bufnr = nvim_create_buf(v:false, v:true)
@@ -144,6 +146,9 @@ function! s:get_config_spinner() abort
   let opts.width = clap#spinner#width()
   let opts.height = 1
   let opts.focusable = v:false
+  if s:has_nvim_0_5
+    let opts.zindex = 1000
+  endif
   return opts
 endfunction
 
@@ -174,7 +179,7 @@ function! g:clap#floating_win#spinner.shrink() abort
 
       let opts = nvim_win_get_config(s:spinner_winid)
       let opts.col += opts.width
-      let opts.width = s:display_opts.width - opts.width - s:symbol_width * 2 - g:__clap_indicator_winwidth
+      let opts.width = s:display_opts.width - opts.width - s:symbol_width * 2 - s:indicator_width
       if opts.width < 0
         let opts.width = 1
       endif
@@ -187,13 +192,16 @@ endfunction
 function! s:get_config_input() abort
   let opts = nvim_win_get_config(s:spinner_winid)
   let opts.col += opts.width
-  let opts.width = s:display_opts.width - opts.width - s:symbol_width * 2 - g:__clap_indicator_winwidth
+  let opts.width = s:display_opts.width - opts.width - s:symbol_width * 2 - s:indicator_width
   " E5555: API call: 'width' key must be a positive Integer
   " Avoid E5555 here and it seems to be fine later.
   if opts.width < 0
     let opts.width = 1
   endif
   let opts.focusable = v:true
+  if s:has_nvim_0_5
+    let opts.zindex = 1000
+  endif
   return opts
 endfunction
 
@@ -257,9 +265,12 @@ endfunction
 function! s:get_config_indicator() abort
   let opts = nvim_win_get_config(s:input_winid)
   let opts.col += opts.width
-  let opts.width = g:__clap_indicator_winwidth
+  let opts.width = s:indicator_width
   let opts.focusable = v:false
   let opts.style = 'minimal'
+  if s:has_nvim_0_5
+    let opts.zindex = 1000
+  endif
   return opts
 endfunction
 
@@ -324,6 +335,15 @@ function! s:get_config_preview(height) abort
     let opts.height = a:height
   endif
   let opts.style = 'minimal'
+
+  if s:has_nvim_0_5 && g:clap_popup_border !=? 'nil'
+    let opts.border = g:clap_popup_border
+    if g:clap_preview_direction ==# 'UD'
+      let opts.width -= 2
+    else
+      let opts.height -= 2
+    endif
+  endif
   return opts
 endfunction
 
@@ -424,6 +444,8 @@ function! clap#floating_win#open() abort
   let s:save_winheight = &winheight
   let &winheight = 1
 
+  let s:indicator_width = clap#layout#indicator_width()
+
   " The order matters.
   call g:clap#floating_win#display.open()
   call s:open_win_border_left()
@@ -440,6 +462,8 @@ function! clap#floating_win#open() abort
   else
     let open_shadow_first = v:false
   endif
+  " This tricky issue has been resolved with the newly added zindex in neovim.
+  "
   " Indicator win must be opened before shadow win in some cases.
   " ref https://github.com/liuchengxu/vim-clap/issues/567#issuecomment-717554261
   call s:open_shadow_before_indicator_win(open_shadow_first)

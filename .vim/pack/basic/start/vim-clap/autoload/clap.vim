@@ -51,8 +51,6 @@ let g:clap_disable_optional_async = get(g:, 'clap_disable_optional_async', v:fal
 let g:clap_no_matches_msg = get(g:, 'clap_no_matches_msg', 'NO MATCHES FOUND')
 let g:__clap_no_matches_pattern = '^'.g:clap_no_matches_msg.'$'
 
-let g:__clap_indicator_winwidth = 18
-
 let s:default_symbols = {
       \ 'arrow' : ["\ue0b2", "\ue0b0"],
       \ 'curve' : ["\ue0b6", "\ue0b4"],
@@ -85,7 +83,7 @@ let g:clap_providers_relaunch_code = get(g:, 'clap_providers_relaunch_code', '@@
 let g:clap_disable_matches_indicator = get(g:, 'clap_disable_matches_indicator', v:false)
 let g:clap_multi_selection_warning_silent = get(g:, 'clap_multi_selection_warning_silent', 0)
 
-let g:clap_popup_border = get(g:, 'clap_popup_border', 'rounded')
+let g:clap_popup_border = get(g:, 'clap_popup_border', has('nvim') ? 'single' : 'rounded')
 
 function! clap#builtin_providers() abort
   if !exists('s:builtin_providers')
@@ -103,7 +101,7 @@ function! s:inject_default_impl_is_ok(provider_info) abort
   " If sync provider
   if has_key(provider_info, 'source')
     if !has_key(provider_info, 'on_typed')
-      let provider_info.on_typed = function('clap#impl#on_typed')
+      let provider_info.on_typed = function('clap#impl#on_typed#')
     endif
     if !has_key(provider_info, 'filter')
       let provider_info.filter = function('clap#filter#sync')
@@ -160,7 +158,6 @@ function! clap#_exit() abort
   noautocmd call g:clap.close_win()
   call g:clap.preview.clear()
 
-  let g:clap.is_busy = 0
   let g:clap.display.cache = []
   let g:clap.display.initial_size = -1
   " Reset this for vim issue. Ref #223
