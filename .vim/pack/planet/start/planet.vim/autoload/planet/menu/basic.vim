@@ -84,9 +84,9 @@ func! planet#menu#basic#update() abort
     an 110.330 📁&f.Advanced\ Cd.Cd\ Windows\ in\ Tab<Tab>:windo\ cd :windo cd <C-z>
     an 110.330 📁&f.Advanced\ Cd.Cd\ All\ Tabs<Tab>:tabdo\ cd     :tabdo cd <C-z>
     an 110.330 📁&f.Advanced\ Cd.Cd\ All\ Windows<Tab>:tabdo\ windo\ cd :tabdo windo cd <C-z>
-    an 110.330 📁&f.Advanced\ Cd.Clear\ Local\ cd                 :cd .<CR>
-    an 110.330 📁&f.Advanced\ Cd.Clear\ Local\ cd\ in\ Tab        :windo cd .<CR>
-    an 110.330 📁&f.Advanced\ Cd.Clear\ Local\ cd\ Globally       :tabdo windo cd .<CR>
+    an 110.330 📁&f.Advanced\ Cd.Clear\ Local\ cd                 <Cmd>call planet#file#ClearLocalCwd('')<CR>
+    an 110.330 📁&f.Advanced\ Cd.Clear\ Local\ cd\ in\ Tab        <Cmd>call planet#file#ClearLocalCwd('windo')<CR>
+    an 110.330 📁&f.Advanced\ Cd.Clear\ Local\ cd\ Globally       <Cmd>call planet#file#ClearLocalCwd('tabdo windo')<CR>
     an 110.360 📁&f.&Close<Tab>:bdelete                        :bdelete<CR>
 
     " Edit

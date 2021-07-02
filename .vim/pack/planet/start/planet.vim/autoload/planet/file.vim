@@ -19,3 +19,11 @@ func! planet#file#NewProject(project_type) abort
     call planet#term#RunScript('copy-template ' .. a:project_type .. ' ' .. l:project_name)
   end
 endfunc
+
+" mod can be: '', 'windo', 'tabdo windo'
+func! planet#file#ClearLocalCwd(mod) abort
+  let l:win_id = win_getid()
+  let l:global_cwd = getcwd(-1)
+  exe "noautocmd " .. a:mod .. " cd " .. l:global_cwd
+  call win_gotoid(l:win_id)
+endfunc
