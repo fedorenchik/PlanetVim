@@ -134,16 +134,23 @@ func! planet#term#RunCmdFind(cmd, cmd_args) abort
 endfunc
 
 " Run @cmd with additional arguments asked from user.
+" @cmd           - command to run
+" @prompt        - prompt shown to user
+" @default_input - prepopulated arguments
 func! planet#term#RunCmdAskArgs(cmd, prompt, default_input = '') abort
-  let l:cmd_args = input(a:prompt, a:default_input)
+  let l:cmd_args = inputdialog(a:prompt, a:default_input)
   if ! empty(l:cmd_args)
     call planet#term#RunCmd(a:cmd .. ' ' .. l:cmd_args)
   end
 endfunc
 
-" Ask user @prompt, and run input command with arguments.
+" Ask user whole command (with arguments) to run.
+" @prompt        - prompt shown for user (to give an idea what command to
+"                  input
+" @default_input - prepopulated input (to help user to type expected command
+"                  and arguments
 func! planet#term#RunCmdAsk(prompt, default_input = '') abort
-  let l:cmd_with_args = input(a:prompt, a:default_input)
+  let l:cmd_with_args = inputdialog(a:prompt, a:default_input)
   if ! empty(l:cmd_with_args)
     call planet#term#RunCmd(l:cmd_with_args)
   end

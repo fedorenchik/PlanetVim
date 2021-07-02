@@ -1,10 +1,5 @@
 scriptversion 4
 
-let g:PV_config = "$HOME/.vim/planetvimrc.vim"
-if filereadable(expand(g:PV_config))
-  silent exe "source " .. fnameescape(g:PV_config)
-endif
-
 " TODO: $VIMRUNTIME folder
 " TODO: Vim help reference
 " TODO: VS Code
@@ -47,60 +42,20 @@ endif
 "TODO: detect 'rtp' based on v:progname ('pvim') (v:progname for PlanetVim
 "TODO:    package is 'pvim'
 
-aug AugPv_MenuBuffers
-au!
-au BufCreate,BufFilePost * call planet#buffer#AddBufferAu()
-au BufDelete,BufFilePre * call planet#buffer#RemoveBufferAu()
-aug END
+runtime! START globals.vim
 
-aug AugPv_Session
-au!
-au SessionLoadPost * call planet#session#SetCurrent()
-au VimEnter * call planet#session#MenuList()
-au VimEnter * call planet#gui#WorkspaceListMenu()
-au VimEnter * call planet#gui#MenuListVimServers()
-au VimEnter * call planet#gui#MenuListGuiWindows()
-au SessionLoadPost * call planet#run#InitRunConfigurations()
-aug END
-
-if ! exists("g:PlanetVim_menus_planet")
-  let g:PlanetVim_menus_planet = 1
+if filereadable(expand(g:PV_config))
+  silent exe "source " .. fnameescape(g:PV_config)
 endif
-call planet#menu#planet#update()
 
-if ! exists("g:PlanetVim_menus_basic")
-  let g:PlanetVim_menus_basic = 1
-endif
-call planet#menu#basic#update()
+call planet#menu#planet#Update()
+call planet#menu#basic#Update()
+call planet#menu#edit#Update()
+call planet#menu#dev#Update()
+call planet#menu#tools#Update()
+call planet#menu#nav#Update()
+call planet#menu#settings#Update()
 
-if ! exists("g:PlanetVim_menus_editing")
-  let g:PlanetVim_menus_editing = 1
-endif
-call planet#menu#edit#update()
-
-if ! exists("g:PlanetVim_menus_dev")
-  let g:PlanetVim_menus_dev = 1
-endif
-call planet#menu#dev#update()
-
-if ! exists("g:PlanetVim_menus_tools")
-  let g:PlanetVim_menus_tools = 1
-endif
-call planet#menu#tools#update()
-
-if ! exists("g:PlanetVim_menus_nav")
-  let g:PlanetVim_menus_nav = 1
-endif
-call planet#menu#nav#update()
-
-if ! exists("g:PlanetVim_menus_settings")
-  let g:PlanetVim_menus_settings = 1
-endif
-call planet#menu#settings#update()
-
-if ! exists("g:PV_mode")
-  let g:PV_mode = 's'
-end
 if g:PV_mode == 'e'
   call planet#planet#SetEasyMode()
 elseif g:PV_mode == 's'
@@ -108,6 +63,7 @@ elseif g:PV_mode == 's'
 elseif g:PV_mode == 'p'
   call planet#planet#SetSuperChargedMode()
 end
+
 
 " Writing
 an 600.10  ]Writing.Writing <Nop>
@@ -162,5 +118,3 @@ func! ListMonths() abort
   call complete(l:last_word_start_idx + 1, l:months)
   return ''
 endfunc
-
-

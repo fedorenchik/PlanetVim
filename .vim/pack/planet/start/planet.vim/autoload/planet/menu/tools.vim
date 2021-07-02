@@ -1,6 +1,6 @@
 scriptversion 4
 
-func! planet#menu#tools#update() abort
+func! planet#menu#tools#Update() abort
   if g:PlanetVim_menus_tools
     " Git
     " Open Log in new window
@@ -398,8 +398,10 @@ func! planet#menu#tools#update() abort
     an disable 🔧&o.Tools
     an 730.10  🔧&o.Colori&ze                                 :ColorToggle<CR>
     an 730.10  🔧&o.--1-- <Nop>
-    an 730.10  🔧&o.Start\ Local\ Python\ http\.server\ Here  <Cmd>call planet#term#RunCmd('python3 -m http.server 8080')<CR>
-    an 730.10  🔧&o.Start\ Public\ ngrok\ Server              <Cmd>call planet#term#RunCmd('ngrok http 3000')<CR>
+    an 730.10  🔧&o.Set\ Server\ Port                         <Cmd>call planet#planet#EditVimVar('g:PV_server_port')<CR>
+    an 730.10  🔧&o.Start\ Local\ Python\ http\.server\ Here  <Cmd>call planet#term#RunCmd('python3 -m http.server ' .. g:PV_server_port)<CR>
+    an 730.10  🔧&o.Start\ Public\ ngrok\ Server              <Cmd>call planet#term#RunCmd('ngrok http ' .. g:PV_server_port)<CR>
+    an 730.10  🔧&o.Set\ ngrok\ authtoken                     <Cmd>call planet#term#RunCmdAskArgs('ngrok authtoken', 'Please input your authtoken: ')<CR>
     an 730.10  🔧&o.--2-- <Nop>
     an 730.10  🔧&o.Edit\ Command<Tab>:                       q:
     an 730.10  🔧&o.Edit\ Search<Tab>q/                       q/
@@ -413,6 +415,8 @@ func! planet#menu#tools#update() abort
     an 730.10  🔧&o.Multipurpose\ Relay\ (socat)            :call planet#term#run_command_output('socat ...TODO')<CR>
     an 730.10  🔧&o.--5-- <Nop>
     an 730.10  🔧&o.Make\ dd\ print\ progress               :call planet#term#RunScript('TODO...print progress of all dd')
+    an 730.10  🔧&o.--6-- <Nop>
+    an 730.10  🔧&o.Run\ System\ Command                    <Cmd>call planet#term#RunCmdAsk('Command: ')<CR>
     "TODO: add websocat
     "TODO: add nmap
   else

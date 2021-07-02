@@ -214,6 +214,98 @@ func! planet#planet#SetSuperChargedMode() abort
   endif
 endfunc
 
+func! planet#planet#SetGuiDialogs() abort
+  set guioptions-=c
+endfunc
+
+func! planet#planet#SetTextDialogs() abort
+  set guioptions+=c
+endfunc
+
+func! planet#planet#PlanetToggle() abort
+  if g:PlanetVim_menus_planet
+    let g:PlanetVim_menus_planet = 0
+  else
+    let g:PlanetVim_menus_planet = 1
+  endif
+  call planet#menu#planet#Update()
+  if empty(v:this_session)
+    call planet#planet#ConfigUpdate('g:PlanetVim_menus_planet')
+  endif
+endfunc
+
+func! planet#planet#BasicToggle() abort
+  if g:PlanetVim_menus_basic
+    let g:PlanetVim_menus_basic = 0
+  else
+    let g:PlanetVim_menus_basic = 1
+  endif
+  call planet#menu#basic#Update()
+  if empty(v:this_session)
+    call planet#planet#ConfigUpdate('g:PlanetVim_menus_basic')
+  endif
+endfunc
+
+func! planet#planet#EditingToggle() abort
+  if g:PlanetVim_menus_editing
+    let g:PlanetVim_menus_editing = 0
+  else
+    let g:PlanetVim_menus_editing = 1
+  endif
+  call planet#menu#edit#Update()
+  if empty(v:this_session)
+    call planet#planet#ConfigUpdate('g:PlanetVim_menus_editing')
+  endif
+endfunc
+
+func! planet#planet#DevelopmentToggle() abort
+  if g:PlanetVim_menus_dev
+    let g:PlanetVim_menus_dev = 0
+  else
+    let g:PlanetVim_menus_dev = 1
+  endif
+  call planet#menu#dev#Update()
+  if empty(v:this_session)
+    call planet#planet#ConfigUpdate('g:PlanetVim_menus_dev')
+  endif
+endfunc
+
+func! planet#planet#ToolsToggle() abort
+  if g:PlanetVim_menus_tools
+    let g:PlanetVim_menus_tools = 0
+  else
+    let g:PlanetVim_menus_tools = 1
+  endif
+  call planet#menu#tools#Update()
+  if empty(v:this_session)
+    call planet#planet#ConfigUpdate('g:PlanetVim_menus_tools')
+  endif
+endfunc
+
+func! planet#planet#NavigationToggle() abort
+  if g:PlanetVim_menus_nav
+    let g:PlanetVim_menus_nav = 0
+  else
+    let g:PlanetVim_menus_nav = 1
+  endif
+  call planet#menu#nav#Update()
+  if empty(v:this_session)
+    call planet#planet#ConfigUpdate('g:PlanetVim_menus_nav')
+  endif
+endfunc
+
+func! planet#planet#SettingsToggle() abort
+  if g:PlanetVim_menus_settings
+    let g:PlanetVim_menus_settings = 0
+  else
+    let g:PlanetVim_menus_settings = 1
+  endif
+  call planet#menu#settings#Update()
+  if empty(v:this_session)
+    call planet#planet#ConfigUpdate('g:PlanetVim_menus_settings')
+  endif
+endfunc
+
 func! planet#planet#SetPerSessionOptions()
   "TODO: undofile, undodir, spellfile, viminfo, viewdir
   exe "set viminfofile=~/.vim/viminfo/" .. fnamemodify(v:this_session, ":t") .. ".viminfo"
@@ -237,4 +329,12 @@ func! planet#planet#CheckExitSaveSession() abort
   end
   "TODO: auto-save and auto-load quickfix/loclist files (up to 10 of each, loclists: for each window)
   exe 'SSave! ' .. fnamemodify(v:this_session, ":t")
+endfunc
+
+func! planet#planet#EditVimVar(var_name) abort
+  let l:var_value = inputdialog(a:var_name .. '=', eval(a:var_name), 'CANCELLED')
+  if l:var_value == 'CANCELLED'
+    return
+  end
+  execute('let ' .. a:var_name .. '=' .. l:var_value)
 endfunc

@@ -1,6 +1,6 @@
 scriptversion 4
 
-func! planet#menu#nav#update() abort
+func! planet#menu#nav#Update() abort
   if g:PlanetVim_menus_nav
     " Buffers
     an 800.10  📖&b.Buffers <Nop>

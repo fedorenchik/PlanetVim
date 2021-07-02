@@ -1,6 +1,6 @@
 scriptversion 4
 
-func! planet#menu#dev#update() abort
+func! planet#menu#dev#Update() abort
   if g:PlanetVim_menus_dev
     " LSP
     an 300.10  ❇️&[.LSP <Nop>
@@ -25,7 +25,7 @@ func! planet#menu#dev#update() abort
     an 300.10  ❇️&[.Preview\ Implementation                 :LspPeekImplementation<CR>
     an 300.10  ❇️&[.Preview\ Type\ Definition               :LspPeekTypeDefinition<CR>
     an 300.10  ❇️&[.--1-- <Nop>
-    an 300.10  ❇️&[.Rename                                  :LspRename<CR>
+    an 300.10  ❇️&[.Rena&me                                 :LspRename<CR>
     an 300.10  ❇️&[.Code\ Action\ (LSP\ Quick\ &Fix)        :LspCodeAction<CR>
     an 300.10  ❇️&[.Code\ &Lens                             :LspCodeLens<CR>
     an 300.10  ❇️&[.Format\ Document                        :LspDocumentFormat<CR>

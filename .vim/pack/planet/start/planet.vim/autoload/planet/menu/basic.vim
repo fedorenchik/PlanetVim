@@ -1,6 +1,6 @@
 scriptversion 4
 
-func! planet#menu#basic#update() abort
+func! planet#menu#basic#Update() abort
   if g:PlanetVim_menus_basic
     " File
     an 110.10  📁&f.File <Nop>
