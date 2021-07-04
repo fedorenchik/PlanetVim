@@ -138,6 +138,7 @@ func! planet#menu#dev#Update() abort
     an 500.10  🎚️&{.C&onda.Create\ venv                     :call planet#term#RunCmd('conda create -n <venv-name>')
     an 500.10  🎚️&{.C&onda.Activate\ Anaconda               :call planet#term#RunCmd('source /opt/anaconda/bin/activate')<CR>
     an 500.10  🎚️&{.C&onda.Deactivate\ Anaconda             :call planet#term#RunCmd('source /opt/anaconda/bin/deactivate')<CR>
+    an 500.10  🎚️&{.Blender.Set\ PYTHONPATH                 :call planet#term#RunCmd('blender --background --python-expr ''print("PYTHONPATH="+":".join(__import__("sys").path))'' 2>/dev/null | grep -F "PYTHONPATH="')<CR>
     an 500.10  🎚️&{.Vagrant.Test                            :TODO
     an 500.10  🎚️&{.QEMU.Test                               :TODO
     an 500.10  🎚️&{.QEMU\ Schroot.qemu-debootstrap          :TODO
