@@ -46,6 +46,7 @@ func! planet#menu#basic#Update() abort
     an 110.110 📁&f.Choose\ &Recent                            :Clap history<CR>
     an 110.110 📁&f.QF\ &Recent                                :call planet#file#OldFilesQF()<CR>
     an 110.120 📁&f.F&ind<Tab>:find                            :find 
+    an 110.230 📁&f.Advanced.New\ Temp\ File                   <Cmd>exe "e " .. tempname()<CR>
     an 110.230 📁&f.Advanced.Open\ File\ under\ Cursor<Tab>gF           gF
     an 110.240 📁&f.Advanced.Split\ Open\ File\ under\ Cursor<Tab>+F    <C-w>F
     an 110.250 📁&f.Advanced.Tab\ Open\ File\ under\ Cursor<Tab>+gF     <C-w>gF

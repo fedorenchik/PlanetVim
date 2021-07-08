@@ -80,49 +80,7 @@ func! planet#term#RunCmdBg(cmd) abort
   call planet#term#RunCmd(a:cmd, v:false, v:false, v:true)
 endfunc
 
-" Finds terminal window in current tab.
-" @returns window number or -1
-func! planet#term#FindOutputWindow() abort
-  for bufnr in term_list()
-    if bufname(bufnr) =~# '^\[Output - '
-      let l:winnr = bufwinnr(bufnr)
-      if l:winnr != -1
-        return l:winnr
-      end
-    end
-  endfor
-  return -1
-endfunc
-
-func! planet#term#CloseOutputWindow() abort
-  let l:winnr = planet#term#FindOutputWindow()
-  if l:winnr != -1
-    exe l:winnr .. 'wincmd w'
-    wincmd c
-  end
-endfunc
-
-func! planet#term#ListOutputWindows() abort
-  let l:out_list = []
-  for bufnr in term_list()
-    if bufname(bufnr) =~# '^\[Output - '
-      call add(l:out_list, bufnr)
-    endif
-  endfor
-  return l:out_list
-endfunc
-
-func! planet#term#ListTermWindows() abort
-  let l:out_list = []
-  for bufnr in term_list()
-    if bufname(bufnr) !~# '^\[Output - '
-      call add(l:out_list, bufnr)
-    endif
-  endfor
-  return l:out_list
-endfunc
-
-" Find @cmd in 'path' and run with @cmd_args arguments
+" Find @cmd in 'path' setting and run with @cmd_args arguments
 " Example
 " call planet#term#RunCmdFind('config.status', '--recheck')<CR>
 func! planet#term#RunCmdFind(cmd, cmd_args) abort
@@ -154,4 +112,66 @@ func! planet#term#RunCmdAsk(prompt, default_input = '') abort
   if ! empty(l:cmd_with_args)
     call planet#term#RunCmd(l:cmd_with_args)
   end
+endfunc
+
+func! planet#term#ListTermWindows() abort
+  let l:out_list = []
+  for bufnr in term_list()
+    let l:buf_name = bufname(bufnr)
+    if l:buf_name !~# '^\[Output - '
+      l:out_list->add({bufnr: l:buf_name})
+    end
+  endfor
+  return l:out_list
+endfunc
+
+" Finds terminal window in current tab.
+" @returns window number or -1
+func! planet#term#FindOutputWindow() abort
+  for bufnr in term_list()
+    if bufname(bufnr) =~# '^\[Output - '
+      let l:winnr = bufwinnr(bufnr)
+      if l:winnr != -1
+        return l:winnr
+      end
+    end
+  endfor
+  return -1
+endfunc
+
+func! planet#term#CloseOutputWindow() abort
+  let l:winnr = planet#term#FindOutputWindow()
+  if l:winnr != -1
+    exe l:winnr .. 'wincmd w'
+    wincmd c
+  end
+endfunc
+
+func! planet#term#ListOutputWindows() abort
+  let l:out_dict = {}
+  for bufnr in term_list()
+    let l:buf_name = bufname(bufnr)
+    if l:buf_name =~# '^\[Output - '
+      let l:out_dict[bufnr] = l:buf_name
+    end
+  endfor
+  return l:out_dict
+endfunc
+
+func! planet#term#DefineOutputWindowsMenu() abort
+  silent! aunmenu ]Outputs
+  let l:found_windows = v:false
+  for [nr, name] in items(planet#term#ListOutputWindows())
+    exe 'an 2.10 ]Outputs.' .. planet#menu#MenuifyName(name) .. ' <Cmd>b '.. nr .. '<CR>'
+    let l:found_windows = v:true
+  endfor
+  if ! l:found_windows
+    an 2.10 ]Outputs.No\ Windows <Nop>
+    an disable ]Outputs.No\ Windows
+  end
+endfunc
+
+func! planet#term#PopupOutputsMenu() abort
+  call planet#term#DefineOutputWindowsMenu()
+  popup ]Outputs
 endfunc

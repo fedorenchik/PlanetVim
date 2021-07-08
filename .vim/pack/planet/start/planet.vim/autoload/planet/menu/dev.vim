@@ -545,9 +545,11 @@ func! planet#menu#dev#Update() abort
     an 550.10  💻&t.New\ &VSplit                            :vertical terminal ++kill=kill<CR>
     an 550.10  💻&t.New\ &Tab                               :tab terminal ++kill=kill<CR>
     an 550.10  💻&t.--1-- <Nop>
+    an 550.10  💻&t.Run\ Custom\ Command                    <Cmd>call planet#term#RunCmdAsk('Command: ')<CR>
+    an 550.10  💻&t.--2-- <Nop>
     an 550.10  💻&t.P&ython\ Shell                          :botright terminal ++kill=kill ++rows=10 python<CR>
     an 550.10  💻&t.C&++\ Shell                             :botright terminal ++kill=kill ++rows=10 cling<CR>
-    an 550.10  💻&t.--2-- <Nop>
+    an 550.10  💻&t.--3-- <Nop>
     an 550.10  💻&t.&Close\ Output                          :call planet#term#CloseOutputWindow()<CR>
     an 550.10  💻&t.Terminal\ List <Nop>
     an disable 💻&t.Terminal\ List

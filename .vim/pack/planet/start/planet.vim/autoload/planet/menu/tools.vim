@@ -47,8 +47,8 @@ func! planet#menu#tools#Update() abort
     an 700.10  🔀&g.Fetch\ .Prune                                 <Cmd>call planet#term#RunCmd('git fetch --prune')<CR>
     an 700.10  🔀&g.Fetch\ .From\ Default\ Remote                 <Cmd>call planet#term#RunCmd('git fetch')<CR>
     an 700.10  🔀&g.Fetch\ .From\ Specified\ Remote               <Cmd>call planet#git#FetchCustomRemote()<CR>
-    an 700.10  🔀&g.Pull\ .TODO                                   <Cmd>call planet#git#FetchCustomRemote()<CR>
-    an 700.10  🔀&g.Push\ .TODO                                   <Cmd>call planet#git#FetchCustomRemote()<CR>
+    an 700.10  🔀&g.Pull\ .Custom\ Ref/Repo                       <Cmd>call planet#term#RunCmdAskArgs('git pull', 'git pull: ')<CR>
+    an 700.10  🔀&g.Push\ .To\ Custom \Remote/Branch              <Cmd>call planet#term#RunCmdAskArgs('git push', 'git push: ')<CR>
     an 700.10  🔀&g.&Log.&Log\ (QF)                               :Gclog!<CR>
     an 700.10  🔀&g.&Log.Log\ (LL)                                :Gllog!<CR>
     an 700.10  🔀&g.&Log.File\ (QF)                               :0Gclog!<CR>
