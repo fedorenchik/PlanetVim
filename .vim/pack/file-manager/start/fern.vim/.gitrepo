@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/lambdalisue/fern.vim.git
 	branch = master
-	commit = 5fe781e4a12101871bc778b977ce6b76685c1ab0
-	parent = 39694beb94d54a2e3be03d6d9eec850452cdd00f
+	commit = 1b234d8ec0ffadf7fe3f4ddba13480dd4adeb7c7
+	parent = 5a056fc5bbb823de6abd86d360a666b6e89e269c
 	method = merge
 	cmdver = 0.4.3
