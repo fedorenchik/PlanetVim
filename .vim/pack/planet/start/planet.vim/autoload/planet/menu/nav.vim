@@ -211,46 +211,48 @@ func! planet#menu#nav#Update() abort
     an 840.10  📚&s.Sessions <Nop>
     an disable 📚&s.Sessions
     an 840.20  📚&s.--1-- <Nop>
-    an 840.30  📚&s.&Save                                  <Cmd>call planet#session#Save()<CR>
-    an 840.40  📚&s.Save\ &As\.\.\.                        :SSave<CR>
+    an 840.30  📚&s.&Save                                   <Cmd>call planet#session#Save()<CR>
+    an 840.40  📚&s.Save\ &As\.\.\.                         <Cmd>SSave<CR>
     an 840.50  📚&s.--2-- <Nop>
     an 840.60  📚&s.Advanced\ Save.Save\ with\ Relative\ Paths :TODO"set sessionoptions-=sesdir,+=curdir,v:this_session=dirname
     an 840.70  📚&s.Advanced\ Save.Save\ with\ Local\ Options :TODO"set sessionoptions+=localoptions
     an 840.80  📚&s.Advanced\ Save.Save\ with\ All\ Options :TODO"set sessionoptions+=localoptions,options
     an 840.90  📚&s.Advanced\ Save.Save\ without\ Global\ Vars :TODO"set sessionoptions-=globals
     an 840.100 📚&s.--2-- <Nop>
-    an 840.110 📚&s.&Open                                  :SLoad<CR>
-    an 840.120 📚&s.Open\ &Last\ Session                   :SLoad!<CR>
-    an 840.130 📚&s.&Reopen                                :exe 'SLoad ' .. fnamemodify(v:this_session, ":t")<CR>
+    an 840.110 📚&s.&Open                                   <Cmd>SLoad<CR>
+    an 840.120 📚&s.Open\ &Last\ Session                    <Cmd>SLoad!<CR>
+    an 840.130 📚&s.&Reopen                                 <Cmd>exe 'SLoad ' .. fnamemodify(v:this_session, ":t")<CR>
     an 840.140 📚&s.--3-- <Nop>
-    an 840.150 📚&s.&Close                                 :SClose<CR>
+    an 840.150 📚&s.&Close                                  <Cmd>SClose<CR>
     an 840.160 📚&s.--4-- <Nop>
-    an 840.170 📚&s.&Delete                                :SDelete<CR>
+    an 840.170 📚&s.&Delete                                 <Cmd>SDelete<CR>
     an 840.180 📚&s.--5-- <Nop>
 
     " Vim Apps: Open in new GUI window
-    an 850.10  🗄️&x.Apps <Nop>
-    an disable 🗄️&x.Apps
-    an 850.10  🗄️&x.Calendar            :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +Calendar<CR>
-    an 850.10  🗄️&x.Web\ Browser        :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'W3m https://google.com/'<CR>
-    an 850.10  🗄️&x.Calculator          :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +Calculator<CR>
-    an 850.10  🗄️&x.Htop                <Cmd>call planet#term#RunCmdTab('htop')<CR>
-    an 850.10  🗄️&x.Terminal            :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'terminal ++curwin ++kill=kill'<CR>
-    an 850.10  🗄️&x.File\ Manager       :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'Fern .'<CR>
-    an 850.10  🗄️&x.Python\ Notebook    :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'Codi python'<CR>
-    an 850.10  🗄️&x.C++\ Notebook       :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'Codi cpp'<CR>
-    "TODO: Email
-    "TODO: difdiff
+    an 850.10  🗄️&x.GUI <Nop>
+    an disable 🗄️&x.GUI
+    an 850.10  🗄️&x.&Maximize                               <Cmd>silent call system('wmctrl -i -b toggle,maximized_vert,maximized_horz -r' . v:windowid)<CR>
+    an 850.10  🗄️&x.&Full\ Screen                           <Cmd>silent call system('wmctrl -i -b toggle,fullscreen -r' . v:windowid)<CR>
+    an 850.10  🗄️&x.Minimi&ze<Tab>:suspend<Tab><C-z>        <C-z>
+    an 850.10  🗄️&x.--1-- <Nop>
+    an 850.10  🗄️&x.&Start\ Vim\ Server                     <Cmd>call planet#gui#VimServerStart<CR>
+    an 850.100 🗄️&x.--2-- <Nop>
 
     " Control GUI window with wmctrl & vim servers
-    an 860.10  🎛️&@.GUI <Nop>
-    an disable 🎛️&@.GUI
-    an 860.10  🎛️&@.&Maximize            :silent call system('wmctrl -i -b toggle,maximized_vert,maximized_horz -r' . v:windowid)<CR>
-    an 860.10  🎛️&@.&Full\ Screen        :silent call system('wmctrl -i -b toggle,fullscreen -r' . v:windowid)<CR>
-    an 860.10  🎛️&@.Minimi&ze<Tab>:suspend<Tab><C-z>        <C-z>
-    an 860.10  🎛️&@.--1-- <Nop>
-    an 860.10  🎛️&@.&Start\ Vim\ Server                     <Cmd>call planet#gui#VimServerStart<CR>
-    an 860.100 🎛️&@.--2-- <Nop>
+    "TODO: Email
+    "TODO: difdiff
+    an 860.10  🎛️&@.Apps <Nop>
+    an disable 🎛️&@.Apps
+    an 860.10  🎛️&@.Calendar            <Cmd>silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +Calendar<CR>
+    an 860.10  🎛️&@.&Web\ Browser       <Cmd>silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'W3m https://google.com/'<CR>
+    an 860.10  🎛️&@.Calculator          <Cmd>silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +Calculator<CR>
+    an 860.10  🎛️&@.&Htop               <Cmd>call planet#term#RunCmdTab('htop')<CR>
+    an 860.10  🎛️&@.&Terminal           <Cmd>silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'terminal ++curwin ++kill=kill'<CR>
+    an 860.10  🎛️&@.&File\ Manager      <Cmd>silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'Fern .'<CR>
+    an 860.10  🎛️&@.&Python\ Notebook   <Cmd>silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'Codi python'<CR>
+    an 860.10  🎛️&@.C&++\ Notebook      <Cmd>silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'Codi cpp'<CR>
+    an 860.300 🎛️&@.--1-- <Nop>
+    an 850.500 🗄️&x.--2-- <Nop>
     an 860.600 🎛️&@.Workspaces <Nop>
     an disable 🎛️&@.Workspaces
 

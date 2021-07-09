@@ -40,8 +40,8 @@ func! planet#menu#tools#Update() abort
     an 700.10  🔀&g.&Commit.--3-- <Nop>
     an 700.10  🔀&g.&Commit.Enable\ AutoCommit\ on\ File\ Write   <Cmd>call planet#git#EnableAutoCommit()<CR>
     an 700.10  🔀&g.&Commit.Disable\ AutoCommit\ on\ File\ Write  <Cmd>call planet#git#DisableAutoCommit()<CR>
-    an 700.10  🔀&g.Ch&eckout.Branch                              <Cmd>call planet#git#CheckoutBranch()<CR>
-    an 700.10  🔀&g.Ch&eckout.File                                <Cmd>call planet#git#CheckoutFile()<CR>
+    an 700.10  🔀&g.Ch&eckout.&Branch                             <Cmd>call planet#git#CheckoutBranch()<CR>
+    an 700.10  🔀&g.Ch&eckout.&File                               <Cmd>call planet#git#CheckoutFile()<CR>
     an 700.10  🔀&g.Fetch\ .Tags                                  <Cmd>call planet#term#RunCmd('git fetch --tags')<CR>
     an 700.10  🔀&g.Fetch\ .All                                   <Cmd>call planet#term#RunCmd('git fetch --all')<CR>
     an 700.10  🔀&g.Fetch\ .Prune                                 <Cmd>call planet#term#RunCmd('git fetch --prune')<CR>
@@ -420,7 +420,7 @@ func! planet#menu#tools#Update() abort
     "TODO: add websocat
     "TODO: add nmap
   else
-    silent! aunmenu 🔀&,
+    silent! aunmenu 🔀&g
     silent! aunmenu ⛏️&;
     silent! aunmenu 🔤&-
     silent! aunmenu 🔧&o

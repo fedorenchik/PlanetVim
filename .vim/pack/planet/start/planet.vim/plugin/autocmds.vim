@@ -10,8 +10,8 @@ aug AugPv_Session
 au!
 au SessionLoadPost * call planet#session#SetCurrent()
 au VimEnter * call planet#session#MenuList()
-au VimEnter * call planet#gui#WorkspaceListMenu()
 au VimEnter * call planet#gui#MenuListVimServers()
-au VimEnter * call planet#gui#MenuListGuiWindows()
+au VimEnter * call planet#apps#WorkspaceListMenu()
+au VimEnter * call planet#apps#MenuListGuiWindows()
 au SessionLoadPost * call planet#run#InitRunConfigurations()
 aug END
