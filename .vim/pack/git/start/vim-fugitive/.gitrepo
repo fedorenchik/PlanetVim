@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/tpope/vim-fugitive.git
 	branch = master
-	commit = 79e2bd381ad6e7f3d70ce4a8ec9f3f107b40f053
-	parent = fc0fc5dd7fa89789f0d4bd783d522a61ac8dd17a
+	commit = 5551853f34ec31542038d61e4fb7afe621a85457
+	parent = 84466cce343ecac3b1edc7683cf421660fa246f2
 	method = merge
 	cmdver = 0.4.3
