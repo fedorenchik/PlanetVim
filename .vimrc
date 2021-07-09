@@ -679,15 +679,29 @@ xnoremap iz :<c-u>FastFoldUpdate<cr><esc>:<c-u>normal! ]zv[z<cr>
 xnoremap az :<c-u>FastFoldUpdate<cr><esc>:<c-u>normal! ]zV[z<cr>
 " }}}
 " Plugin: fern.vim {{{
+let g:fern#renderer#default#leading = "  "
 " change g:fern#hide_cursor = 1 when bug in fern fixed
 let g:fern#hide_cursor = 0
 let g:fern#keepalt_on_edit = 1
 let g:fern#keepjumps_on_edit = 1
+let g:fern#disable_default_mappings = 1
+let g:fern#default_hidden = 1
+let g:fern#default_exclude = '.git'
 let g:fern#drawer_width = 40
 nnoremap <silent> - :Fern -reveal=% .<CR>
 augroup my-fern
   autocmd!
   autocmd FileType fern setlocal nonumber norelativenumber signcolumn=yes foldcolumn=0
+  " for drawer or not
+  " autocmd FileType fern nmap <buffer> <CR> <Plug>(fern-open-or-expand-or-collapse)
+  " autocmd FileType fern nmap <buffer> <2-LeftMouse> <Plug>(fern-open-or-expand-or-collapse)
+  " autocmd FileType fern nmap <buffer> <C-LeftMouse> <Plug>(fern-open-or-enter)
+  " autocmd FileType fern nmap <buffer> <C-RightMouse> <Plug>(fern-enter-parent-dir)
+  " autocmd FileType fern nmap <buffer> <BS> <Plug>(fern-open-or-expand-or-collapse)
+  " autocmd FileType fern nmap <buffer> o <Plug>(fern-open-keep-focus-or-expand-or-collapse)
+  " autocmd FileType fern nmap <buffer> O <Plug>(fern-open-keep-focus-or-expand-or-collapse-recursively)
+  " autocmd FileType fern nmap <buffer> p <Plug>(fern-preview-popup-window)
+  " autocmd FileType fern nmap <buffer> P <Plug>(fern-preview-preview-window)
 augroup END
 " }}}
 " Plugin: fern-bookmark.vim {{{
