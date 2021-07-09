@@ -28,6 +28,7 @@ jobs:
         sudo apt install neovim \
           texlive texlive-latex-extra texlive-extra-utils \
           texlive-bibtex-extra libtext-bibtex-perl \
+          texlive-publishers \
           latexmk \
           gcc moreutils \
           libmodule-build-perl \

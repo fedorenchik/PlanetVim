@@ -474,10 +474,10 @@ Formatting~
 
 Filetype plugin for bib files~
                                                        *vimtex-nf-ftplugin-bib*
-  VimTeX is not a filetype plugin for bibliography (`.bib`) files. However,
-  it does include a couple of minor things, such as setting the 'comments' and
-  'commentstring' options and a simple indentation expression, see
-  |g:vimtex_indent_bib_enabled|.
+  VimTeX is not a full filetype plugin for bibliography (`.bib`) files. However,
+  it does alter the 'comments' and 'commentstring' options and provide basic
+  indentation and folding; see |g:vimtex_indent_bib_enabled| and
+  |g:vimtex_fold_bib_enabled|, respectively.
 
   Here are a couple of other related Vim plugins and external tools that might
   be of interest:
@@ -1151,10 +1151,17 @@ OPTIONS                                                        *vimtex-options*
       @type          Type of entry
 
     If the key is set to an empty string, then the `menu` entry is not added
-    to the completion canidates.
+    to the completion canidates. Since the author list can be large, the
+    @author_all is truncated to 20 characters. This can be modified with the
+    `auth_len` key (see below).
 
     Note: If you change this option, you should also clear the related cache
     files (i.e. `~/.cache/vimtex/bibcomplete*.json` on Linux systems).
+
+  auth_len~
+    Default value: 20
+    Truncation length for author list with the @author_all format key in the
+    `menu_fmt` string.
 
   abbr_fmt~
     Default value: `''`
@@ -1623,6 +1630,29 @@ OPTIONS                                                        *vimtex-options*
           \   ],
           \ },
           \}
+
+*g:vimtex_fold_bib_enabled*
+  Use this option to enable/disable folding in .bib files.
+
+  Note: The default value is the same as |g:vimtex_fold_enabled|. Thus, it
+        suffices to enabled folds for tex files to also enable for bib files.
+        But if you want to enable in tex files but keep bib folding disabled,
+        then you must set this option to 0 or |v:false|.
+
+  Default value: |g:vimtex_fold_enabled|
+
+*g:vimtex_fold_bib_max_key_width*
+  This option is used to specify a length to truncate identifiers (e.g.
+  `@article{Key}`) to, in the foldtext for bib files. The default of 0
+  indicates no truncation, i.e. VimTeX will parse the bib file to determine
+  the longest such identifier and align all foldtext titles such that they
+  come after the identifiers.
+
+  If you have a handful of cite keys that are exceptionally long, setting this
+  manually may be useful as it makes sure that there is some space for the
+  titles in the foldtext.
+
+  Default value: 0
 
 *g:vimtex_format_enabled*
   If enabled, VimTeX uses a custom |formatexpr| that should handle inline
@@ -3972,11 +4002,12 @@ And in Vimscript, it should look something like this: >
 
 ==============================================================================
 FOLDING                                                        *vimtex-folding*
+                                                           *vimtex-bib-folding*
 
 VimTeX can fold documents according to the LaTeX structure (part, chapter,
-section and subsection).  Folding is turned off by default, but it can be
-enabled if desired, either through the option |g:vimtex_fold_enabled|, or
-manually with >
+section and subsection).  Folding in tex files is turned off by default, but
+can be enabled if desired, either through the option |g:vimtex_fold_enabled|,
+or manually with >
 
   set foldmethod=expr
   set foldexpr=vimtex#fold#level(v:lnum)
@@ -3998,12 +4029,19 @@ In order to get slightly cleaner fold text, I recommend setting the global
 
 Note: Remember to include the whitespace after backslash!
 
+In addition, VimTeX also provides basic folding in bibtex files. This is
+disabled by default, but will be enabled if |g:vimtex_fold_enabled| is set to
+1 or |v:true|. It can also be individually configured with
+|g:vimtex_fold_bib_enabled|.
+
 Associated settings:
 * |g:vimtex_fold_enabled|
 * |g:vimtex_fold_manual|
 * |g:vimtex_fold_levelmarker|
 * |g:vimtex_fold_types|
 * |g:vimtex_fold_types_defaults|
+* |g:vimtex_fold_bib_enabled|
+* |g:vimtex_fold_bib_max_key_width|
 
 ==============================================================================
 INDENTATION                                                     *vimtex-indent*
@@ -5162,8 +5200,8 @@ A: First, see and follow the guidelines in |vimtex_viewer_sumatrapdf|. Forward
    SumatraPDF that depends on which version of Vim you are using. The
    following advice is for `neovim`; things should be simpler for Vim.
 
-   1. First, ensure that `neovim-remote` is installed (e.g. `pip install
-      neovim-remote`).
+   1. First, ensure that `neovim-remote` is installed (e.g.
+      `pip install neovim-remote`).
 
    2. Add some configuration to your vimrc file to detect the servername: >
 
@@ -5793,4 +5831,4 @@ named vim-latex, which conflicted with Vim LaTeX-Suite which is also known as
 vim-latex.
 
 ==============================================================================
- vim:tw=78:ts=8:ft=help:norl:
+ vim:tw=78:ts=8:ft=help:norl:fdm=marker:
