@@ -89,90 +89,91 @@ func! planet#menu#nav#Update() abort
     an 820.10  🪟&w.--2-- <Nop>
     an 820.10  🪟&w.&Vertical\ Split<Tab>:vsplit<Tab>+v     <C-w>v
     an 820.10  🪟&w.Horizontal\ &Split<Tab>:split<Tab>+s    <C-w>s
-    an 820.10  🪟&w.VSplit\ Bind                            :call planet#window#SplitBind('v')<CR>
-    an 820.10  🪟&w.HSplit\ Bind                            :call planet#window#SplitBind('h')<CR>
+    an 820.10  🪟&w.VSplit\ &Bind                           <Cmd>call planet#window#SplitBind('v')<CR>
+    an 820.10  🪟&w.&HSplit\ Bind                           <Cmd>call planet#window#SplitBind('h')<CR>
     an 820.10  🪟&w.--3-- <Nop>
-    an 820.10  🪟&w.Move.Swap\ (&x)<Tab>+x                       <C-w>x
-    an 820.10  🪟&w.Move.Rotate\ Up<Tab>R                        <C-w>R
-    an 820.10  🪟&w.Move.Rotate\ Down<Tab>r                      <C-w>r
-    an 820.10  🪟&w.Move.To\ Left<Tab>+H                   <C-w>H
-    an 820.10  🪟&w.Move.To\ Right<Tab>+L                  <C-w>L
-    an 820.10  🪟&w.Move.To\ Top<Tab>+K                    <C-w>K
-    an 820.10  🪟&w.Move.To\ Bottom<Tab>+J                 <C-w>J
-    an 820.10  🪟&w.Move.To\ New\ &Tab<Tab>+T              <C-w>T
-    an 820.10  🪟&w.Move.To\ New\ &GUI\ Window             :TODO
-    an 820.10  🪟&w.Move.Copy\ To\ New\ Tab<Tab>+s+T             <C-w>s<C-w>T
-    an 820.10  🪟&w.Move.Copy\ To\ New\ &GUI\ Window             :TODO
+    an 820.10  🪟&w.&Move.&Swap<Tab>+x                      <C-w>x
+    an 820.10  🪟&w.&Move.Rotate\ &Up<Tab>R                 <C-w>R
+    an 820.10  🪟&w.&Move.Rotate\ &Down<Tab>r               <C-w>r
+    an 820.10  🪟&w.&Move.To\ &Left<Tab>+H                  <C-w>H
+    an 820.10  🪟&w.&Move.To\ &Right<Tab>+L                 <C-w>L
+    an 820.10  🪟&w.&Move.To\ T&op<Tab>+K                   <C-w>K
+    an 820.10  🪟&w.&Move.To\ &Bottom<Tab>+J                <C-w>J
+    an 820.10  🪟&w.&Move.To\ New\ &Tab<Tab>+T              <C-w>T
+    an 820.10  🪟&w.&Move.To\ New\ &GUI\ Window             :TODO
+    an 820.10  🪟&w.&Move.&Copy\ To\ New\ Tab<Tab>+s+T      <C-w>s<C-w>T
+    an 820.10  🪟&w.&Move.Copy\ To\ New\ &GUI\ Window       :TODO
     an 820.10  🪟&w.--4-- <Nop>
     an 820.10  🪟&w.&Equal\ Size<Tab>+=                     <C-w>=
-    an 820.10  🪟&w.&Maximize<Tab>+_+\|                     :call planet#window#Maximize()<CR>
-    an 820.10  🪟&w.&Unmaximize<Tab>                        :call planet#window#Restore()<CR>
-    an 820.10  🪟&w.Resize.Maximize\ &Vertically<Tab>+_     <C-w>_
-    an 820.10  🪟&w.Resize.Maximize\ &Horizontally<Tab>+\|  <C-w>\|
-    an 820.10  🪟&w.Resize.Increase\ Height<Tab>++          <C-w>+
-    an 820.10  🪟&w.Resize.Decrease\ Height<Tab>+-          <C-w>-
-    an 820.10  🪟&w.Resize.Increase\ Width<Tab>+>           <C-w>>
-    an 820.10  🪟&w.Resize.Decrease\ Width<Tab>+<           <C-w><
+    an 820.10  🪟&w.Ma&ximize<Tab>+_+\|                     <Cmd>call planet#window#Maximize()<CR>
+    an 820.10  🪟&w.&Unmaximize<Tab>                        <Cmd>call planet#window#Restore()<CR>
+    an 820.10  🪟&w.&Resize.Maximize\ &Vertically<Tab>+_    <C-w>_
+    an 820.10  🪟&w.&Resize.Maximize\ &Horizontally<Tab>+\| <C-w>\|
+    an 820.10  🪟&w.&Resize.Increase\ Height<Tab>++         <C-w>+
+    an 820.10  🪟&w.&Resize.Decrease\ Height<Tab>+-         <C-w>-
+    an 820.10  🪟&w.&Resize.Increase\ Width<Tab>+>          <C-w>>
+    an 820.10  🪟&w.&Resize.Decrease\ Width<Tab>+<          <C-w><
     an 820.10  🪟&w.--6-- <Nop>
-    an 820.10  🪟&w.Focus.Alternate<Tab>+p                 <C-w>p
-    an 820.10  🪟&w.Focus.Preview\ Window<Tab>+P           <C-w>P
-    an 820.10  🪟&w.Focus.Previous\ Window<Tab>+W          <C-w>W
-    an 820.10  🪟&w.Focus.Next\ Window<Tab>+w              <C-w>w
-    an 820.10  🪟&w.Focus.Top\ Window<Tab>+t               <C-w>t
-    an 820.10  🪟&w.Focus.Bottom\ Window<Tab>+b            <C-w>b
-    an 820.10  🪟&w.Focus.Left<Tab>+h                      :call planet#window#Focus('h')<CR>
-    an 820.10  🪟&w.Focus.Right<Tab>+l                     :call planet#window#Focus('l')<CR>
-    an 820.10  🪟&w.Focus.Up<Tab>+k                        <C-w>k
-    an 820.10  🪟&w.Focus.Down<Tab>+j                      <C-w>j
+    an 820.10  🪟&w.&Focus.Alternate<Tab>+p                 <C-w>p
+    an 820.10  🪟&w.&Focus.Preview\ Window<Tab>+P           <C-w>P
+    an 820.10  🪟&w.&Focus.Previous\ Window<Tab>+W          <C-w>W
+    an 820.10  🪟&w.&Focus.Next\ Window<Tab>+w              <C-w>w
+    an 820.10  🪟&w.&Focus.Top\ Window<Tab>+t               <C-w>t
+    an 820.10  🪟&w.&Focus.Bottom\ Window<Tab>+b            <C-w>b
+    an 820.10  🪟&w.&Focus.Left<Tab>+h                      <Cmd>call planet#window#Focus('h')<CR>
+    an 820.10  🪟&w.&Focus.Right<Tab>+l                     <Cmd>call planet#window#Focus('l')<CR>
+    an 820.10  🪟&w.&Focus.Up<Tab>+k                        <C-w>k
+    an 820.10  🪟&w.&Focus.Down<Tab>+j                      <C-w>j
     an 820.10  🪟&w.--7-- <Nop>
-    an 820.10  🪟&w.Set\ Fixed\ Size                        :set winfixheight winfixwidth<CR>
+    an 820.10  🪟&w.Set\ Fixed\ Size                        <Cmd>set winfixheight winfixwidth<CR>
     an 820.10  🪟&w.--8-- <Nop>
-    an 820.10  🪟&w.View.Save                               :mkview<CR>
-    an 820.10  🪟&w.View.Save\ 1                            :mkview 1<CR>
-    an 820.10  🪟&w.View.Save\ 2                            :mkview 2<CR>
-    an 820.10  🪟&w.View.Save\ 3                            :mkview 3<CR>
-    an 820.10  🪟&w.View.Save\ 4                            :mkview 4<CR>
-    an 820.10  🪟&w.View.Save\ 5                            :mkview 5<CR>
-    an 820.10  🪟&w.View.Save\ 6                            :mkview 6<CR>
-    an 820.10  🪟&w.View.Save\ 7                            :mkview 7<CR>
-    an 820.10  🪟&w.View.Save\ 8                            :mkview 8<CR>
-    an 820.10  🪟&w.View.Save\ 9\ (AutoSave)                :mkview 9<CR>
-    an 820.10  🪟&w.View.--1-- <Nop>
-    an 820.10  🪟&w.View.Load                               :loadview<CR>
-    an 820.10  🪟&w.View.Load\ 1                            :loadview 1<CR>
-    an 820.10  🪟&w.View.Load\ 2                            :loadview 2<CR>
-    an 820.10  🪟&w.View.Load\ 3                            :loadview 3<CR>
-    an 820.10  🪟&w.View.Load\ 4                            :loadview 4<CR>
-    an 820.10  🪟&w.View.Load\ 5                            :loadview 5<CR>
-    an 820.10  🪟&w.View.Load\ 6                            :loadview 6<CR>
-    an 820.10  🪟&w.View.Load\ 7                            :loadview 7<CR>
-    an 820.10  🪟&w.View.Load\ 8                            :loadview 8<CR>
-    an 820.10  🪟&w.View.Load\ 9\ (AutoSave)                :loadview 9<CR>
-    an 820.10  🪟&w.View.--2-- <Nop>
-    an 820.10  🪟&w.View.Toggle\ AutoSave\ Views            :call planet#windowview#ToggleAutoSave()<CR>
-    an 820.10  🪟&w.View.--3-- <Nop>
-    an 820.10  🪟&w.View.Toggle\ Save\ Local\ Options       :TODO
-    an 820.10  🪟&w.Layout.Save                             :let g:PV_layout = winrestcmd()<CR>
-    an 820.10  🪟&w.Layout.Save\ 1                          :let g:PV_layout_1 = winrestcmd()<CR>
-    an 820.10  🪟&w.Layout.Save\ 2                          :let g:PV_layout_2 = winrestcmd()<CR>
-    an 820.10  🪟&w.Layout.Save\ 3                          :let g:PV_layout_3 = winrestcmd()<CR>
-    an 820.10  🪟&w.Layout.Save\ 4                          :let g:PV_layout_4 = winrestcmd()<CR>
-    an 820.10  🪟&w.Layout.Save\ 5                          :let g:PV_layout_5 = winrestcmd()<CR>
-    an 820.10  🪟&w.Layout.Save\ 6                          :let g:PV_layout_6 = winrestcmd()<CR>
-    an 820.10  🪟&w.Layout.Save\ 7                          :let g:PV_layout_7 = winrestcmd()<CR>
-    an 820.10  🪟&w.Layout.Save\ 8                          :let g:PV_layout_8 = winrestcmd()<CR>
-    an 820.10  🪟&w.Layout.Save\ 9                          :let g:PV_layout_9 = winrestcmd()<CR>
-    an 820.10  🪟&w.Layout.Load                             :exe g:PV_layout<CR>
-    an 820.10  🪟&w.Layout.Load\ 1                          :exe g:PV_layout_1<CR>
-    an 820.10  🪟&w.Layout.Load\ 2                          :exe g:PV_layout_2<CR>
-    an 820.10  🪟&w.Layout.Load\ 3                          :exe g:PV_layout_3<CR>
-    an 820.10  🪟&w.Layout.Load\ 4                          :exe g:PV_layout_4<CR>
-    an 820.10  🪟&w.Layout.Load\ 5                          :exe g:PV_layout_5<CR>
-    an 820.10  🪟&w.Layout.Load\ 6                          :exe g:PV_layout_6<CR>
-    an 820.10  🪟&w.Layout.Load\ 7                          :exe g:PV_layout_7<CR>
-    an 820.10  🪟&w.Layout.Load\ 8                          :exe g:PV_layout_8<CR>
-    an 820.10  🪟&w.Layout.Load\ 9                          :exe g:PV_layout_9<CR>
-    an 820.10  🪟&w.Layout.--1-- <Nop>
+    an 820.10  🪟&w.V&iew.Save                              <Cmd>mkview<CR>
+    an 820.10  🪟&w.V&iew.Save\ 1                           <Cmd>mkview 1<CR>
+    an 820.10  🪟&w.V&iew.Save\ 2                           <Cmd>mkview 2<CR>
+    an 820.10  🪟&w.V&iew.Save\ 3                           <Cmd>mkview 3<CR>
+    an 820.10  🪟&w.V&iew.Save\ 4                           <Cmd>mkview 4<CR>
+    an 820.10  🪟&w.V&iew.Save\ 5                           <Cmd>mkview 5<CR>
+    an 820.10  🪟&w.V&iew.Save\ 6                           <Cmd>mkview 6<CR>
+    an 820.10  🪟&w.V&iew.Save\ 7                           <Cmd>mkview 7<CR>
+    an 820.10  🪟&w.V&iew.Save\ 8                           <Cmd>mkview 8<CR>
+    an 820.10  🪟&w.V&iew.Save\ 9\ (AutoSave)               <Cmd>mkview 9<CR>
+    an 820.10  🪟&w.V&iew.--1-- <Nop>
+    an 820.10  🪟&w.V&iew.Load                              <Cmd>loadview<CR>
+    an 820.10  🪟&w.V&iew.Load\ 1                           <Cmd>loadview 1<CR>
+    an 820.10  🪟&w.V&iew.Load\ 2                           <Cmd>loadview 2<CR>
+    an 820.10  🪟&w.V&iew.Load\ 3                           <Cmd>loadview 3<CR>
+    an 820.10  🪟&w.V&iew.Load\ 4                           <Cmd>loadview 4<CR>
+    an 820.10  🪟&w.V&iew.Load\ 5                           <Cmd>loadview 5<CR>
+    an 820.10  🪟&w.V&iew.Load\ 6                           <Cmd>loadview 6<CR>
+    an 820.10  🪟&w.V&iew.Load\ 7                           <Cmd>loadview 7<CR>
+    an 820.10  🪟&w.V&iew.Load\ 8                           <Cmd>loadview 8<CR>
+    an 820.10  🪟&w.V&iew.Load\ 9\ (AutoSave)               <Cmd>loadview 9<CR>
+    an 820.10  🪟&w.V&iew.--2-- <Nop>
+    an 820.10  🪟&w.V&iew.Toggle\ AutoSave\ Views           <Cmd>call planet#windowview#ToggleAutoSave()<CR>
+    an 820.10  🪟&w.V&iew.--3-- <Nop>
+    an 820.10  🪟&w.V&iew.Toggle\ Save\ Local\ Options      :TODO
+    an 820.10  🪟&w.&Layout.Save                            <Cmd>let g:PV_layout = winrestcmd()<CR>
+    an 820.10  🪟&w.&Layout.Save\ 1                         <Cmd>let g:PV_layout_1 = winrestcmd()<CR>
+    an 820.10  🪟&w.&Layout.Save\ 2                         <Cmd>let g:PV_layout_2 = winrestcmd()<CR>
+    an 820.10  🪟&w.&Layout.Save\ 3                         <Cmd>let g:PV_layout_3 = winrestcmd()<CR>
+    an 820.10  🪟&w.&Layout.Save\ 4                         <Cmd>let g:PV_layout_4 = winrestcmd()<CR>
+    an 820.10  🪟&w.&Layout.Save\ 5                         <Cmd>let g:PV_layout_5 = winrestcmd()<CR>
+    an 820.10  🪟&w.&Layout.Save\ 6                         <Cmd>let g:PV_layout_6 = winrestcmd()<CR>
+    an 820.10  🪟&w.&Layout.Save\ 7                         <Cmd>let g:PV_layout_7 = winrestcmd()<CR>
+    an 820.10  🪟&w.&Layout.Save\ 8                         <Cmd>let g:PV_layout_8 = winrestcmd()<CR>
+    an 820.10  🪟&w.&Layout.Save\ 9                         <Cmd>let g:PV_layout_9 = winrestcmd()<CR>
+    an 820.10  🪟&w.&Layout.--1-- <Nop>
+    an 820.10  🪟&w.&Layout.Load                            <Cmd>exe g:PV_layout<CR>
+    an 820.10  🪟&w.&Layout.Load\ 1                         <Cmd>exe g:PV_layout_1<CR>
+    an 820.10  🪟&w.&Layout.Load\ 2                         <Cmd>exe g:PV_layout_2<CR>
+    an 820.10  🪟&w.&Layout.Load\ 3                         <Cmd>exe g:PV_layout_3<CR>
+    an 820.10  🪟&w.&Layout.Load\ 4                         <Cmd>exe g:PV_layout_4<CR>
+    an 820.10  🪟&w.&Layout.Load\ 5                         <Cmd>exe g:PV_layout_5<CR>
+    an 820.10  🪟&w.&Layout.Load\ 6                         <Cmd>exe g:PV_layout_6<CR>
+    an 820.10  🪟&w.&Layout.Load\ 7                         <Cmd>exe g:PV_layout_7<CR>
+    an 820.10  🪟&w.&Layout.Load\ 8                         <Cmd>exe g:PV_layout_8<CR>
+    an 820.10  🪟&w.&Layout.Load\ 9                         <Cmd>exe g:PV_layout_9<CR>
+    an 820.10  🪟&w.&Layout.--1-- <Nop>
     an 820.10  🪟&w.--7-- <Nop>
     an 820.10  🪟&w.Execute\ in\ Window\ in\ This\ Tab      :windo 
     an 820.10  🪟&w.Execute\ in\ each\ Window               :tabdo windo 
@@ -184,28 +185,28 @@ func! planet#menu#nav#Update() abort
     " Tabs
     an 830.10  🗂️&\..Tabs <Tabs>
     an disable 🗂️&\..Tabs
-    an 830.10  🗂️&\..N&ew<Tab>:tabnew                       :tabnew<CR>
+    an 830.10  🗂️&\..N&ew<Tab>:tabnew                       <Cmd>tabnew<CR>
     an 830.10  🗂️&\..--1-- <Nop>
     an 830.10  🗂️&\..&Alternate<Tab>g\<Tab\>                g<Tab>
     an 830.10  🗂️&\..--2-- <Nop>
-    an 830.10  🗂️&\..&First<Tab>:tabfirst                   :tabfirst<CR>
+    an 830.10  🗂️&\..&First<Tab>:tabfirst                   <Cmd>tabfirst<CR>
     an 830.10  🗂️&\..&Previous<Tab><C-PgUp><Tab>gT          gT
     an 830.10  🗂️&\..&Next<Tab><C-PgDown><Tab>gt            gt
-    an 830.10  🗂️&\..&Last<Tab>:tablast                     :tablast<CR>
+    an 830.10  🗂️&\..&Last<Tab>:tablast                     <Cmd>tablast<CR>
     an 830.10  🗂️&\..--3-- <Nop>
-    an 830.10  🗂️&\..Move\ First<Tab>:0tabmove              :0tabmove<CR>
-    an 830.10  🗂️&\..Move\ Previous<Tab>:-tabmove           :-tabmove<CR>
-    an 830.10  🗂️&\..Move\ Next<Tab>:+tabmove               :+tabmove<CR>
-    an 830.10  🗂️&\..Move\ Last<Tab>:tabmove                :tabmove<CR>
+    an 830.10  🗂️&\..Mov&e\ First<Tab>:0tabmove             <Cmd>0tabmove<CR>
+    an 830.10  🗂️&\..Move\ P&revious<Tab>:-tabmove          <Cmd>-tabmove<CR>
+    an 830.10  🗂️&\..&Move\ Next<Tab>:+tabmove              <Cmd>+tabmove<CR>
+    an 830.10  🗂️&\..Mo&ve\ Last<Tab>:tabmove               <Cmd>tabmove<CR>
     an 830.10  🗂️&\..--4-- <Nop>
-    an 830.10  🗂️&\..Save\ Current\ Tab                     :call planet#tab#Save()<CR>
-    an 830.10  🗂️&\..Open\ Tab\.\.\.                        :call planet#tab#Open()<CR>
+    an 830.10  🗂️&\..&Save\ Current\ Tab                    <Cmd>call planet#tab#Save()<CR>
+    an 830.10  🗂️&\..Open\ &Tab\.\.\.                       <Cmd>call planet#tab#Open()<CR>
     an 830.10  🗂️&\..--5-- <Nop>
     an 830.10  🗂️&\..E&xecute\ in\ each\ Tab<Tab>:tabdo     :tabdo 
     an 830.10  🗂️&\..--6-- <Nop>
     "TODO: autosave tab when close, using autocmds
-    an 830.10  🗂️&\..&Close<Tab>:tabclose                   :tabclose<CR>
-    an 830.10  🗂️&\..Close\ all\ &other\ tabs<Tab>:tabonly  :tabonly<CR>
+    an 830.10  🗂️&\..&Close<Tab>:tabclose                   <Cmd>tabclose<CR>
+    an 830.10  🗂️&\..Close\ &Other\ Tabs<Tab>:tabonly       <Cmd>tabonly<CR>
 
     " Sessions
     an 840.10  📚&s.Sessions <Nop>
