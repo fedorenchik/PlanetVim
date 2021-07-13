@@ -200,37 +200,6 @@ inoremap <expr> <CR> pumvisible() ? "<C-Y><CR>" : "<CR>"
 " Ctrl Key: {{{
 inoremap <C-@> <C-^>
 inoremap <C-E> <C-R>=pumvisible() ? "\<lt>C-E>" : "\<lt>Esc>"<CR>
-"inoremap <C-J> <Nop>
-"inoremap <C-L> <Nop>
-"inoremap <C-M> <Nop>
-inoremap <C-Q> <Nop>
-inoremap <C-S> <Nop>
-inoremap <C-Z> <Nop>
-inoremap <C-{> <Esc>
-" }}}
-" Alt Key: {{{
-inoremap <A-*> <C-L>
-inoremap <A-+> <PageDown>
-inoremap <A-^> <PageUp>
-inoremap <A-]> <C-X><C-]>
-inoremap <A-{> <Up>
-inoremap <A-}> <Down>
-inoremap <A-c> <C-X><C-N>
-inoremap <A-C> <C-X><C-P>
-inoremap <A-d> <C-X><C-D>
-inoremap <expr> <A-e> pumvisible() ? "<C-E>" : "<Esc>u"
-inoremap <A-f> <C-X><C-F>
-inoremap <A-i> <C-X><C-I>
-inoremap <A-k> <C-X><C-K>
-inoremap <A-l> <C-X><C-L>
-inoremap <A-m> <C-R>=ListMonths()<CR>
-inoremap <A-o> <C-X><C-O>
-inoremap <A-s> <C-X><C-S>
-inoremap <A-t> <C-X><C-T>
-inoremap <A-u> <C-X><C-U>
-inoremap <A-v> <C-X><C-V>
-inoremap <A-x> <C-X>
-inoremap <expr> <A-y> pumvisible() ? "<C-Y>" : "<Esc>"
 " }}}
 " }}}
 " Visual Mode: {{{
@@ -663,6 +632,9 @@ let g:xml_syntax_folding = 1
 " Plugin: asyncomplete.vim {{{
 let g:asyncomplete_log_file = ''
 let g:asyncomplete_auto_completeopt = 0
+" }}}
+" Plugin: editorconfig-vim {{{
+let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
 " }}}
 " Plugin: emmet-vim {{{
 let g:user_emmet_mode='iv'

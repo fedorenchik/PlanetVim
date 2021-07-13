@@ -212,6 +212,9 @@ func! planet#menu#dev#Update() abort
     an 500.10  🎚️&{.EditorConfig.Add\ New                   <Cmd>e .editorconfig<CR>
     an 500.10  🎚️&{.EditorConfig.Reload                     <Cmd>EditorConfigReload<CR>
     an 500.10  🎚️&{.EditorConfig.Disable\ for\ buffer       <Cmd>let b:EditorConfig_disable=1<CR>
+    an 500.10  🎚️&{.EditorConfig.--1-- <Nop>
+    an 500.10  🎚️&{.EditorConfig.Enable                     <Cmd>EditorConfigEnable<CR>
+    an 500.10  🎚️&{.EditorConfig.Disable                    <Cmd>EditorConfigDisable<CR>
 
     an 500.10  📐&}.Dev\ Tools <Nop>
     an disable 📐&}.Dev\ Tools
