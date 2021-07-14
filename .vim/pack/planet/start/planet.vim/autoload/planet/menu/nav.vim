@@ -194,7 +194,7 @@ func! planet#menu#nav#Update() abort
     an 830.10  🗂️&\..&Next<Tab><C-PgDown><Tab>gt            gt
     an 830.10  🗂️&\..&Last<Tab>:tablast                     <Cmd>tablast<CR>
     an 830.10  🗂️&\..--3-- <Nop>
-    an 830.10  🗂️&\..Mov&e\ First<Tab>:0tabmove             <Cmd>0tabmove<CR>
+    an 830.10  🗂️&\..Move\ F&irst<Tab>:0tabmove             <Cmd>0tabmove<CR>
     an 830.10  🗂️&\..Move\ P&revious<Tab>:-tabmove          <Cmd>-tabmove<CR>
     an 830.10  🗂️&\..&Move\ Next<Tab>:+tabmove              <Cmd>+tabmove<CR>
     an 830.10  🗂️&\..Mo&ve\ Last<Tab>:tabmove               <Cmd>tabmove<CR>
