@@ -64,7 +64,7 @@ func! planet#menu#dev#Update() abort
     an 310.10  🪧&].Jump\ Split\ to\ Tag<Tab>+]             <C-w>]
     an 310.10  🪧&].Jump\ or\ Select\ Split\ to\ Tag<Tab>+g<C-]> <C-w>g<C-]>
     an 310.10  🪧&].Select\ Split\ Tag<Tab>+g]              <C-w>g]
-    an 310.10  🪧&].Go\ to\ Tag\ VSplit<Tab>:vert stag      :vert stag <cword><CR>
+    an 310.10  🪧&].Go\ to\ Tag\ VSplit<Tab>:vert\ stag     :vert stag <cword><CR>
     an 310.10  🪧&].--1-- <Nop>
     an 310.10  🪧&].Preview\ Tag<Tab>+}                     <C-w>}
     an 310.10  🪧&].Select\ Preview\ Tag<Tab>+g}            <C-w>g}
@@ -195,26 +195,26 @@ func! planet#menu#dev#Update() abort
     an 500.10  🎚️&{.Set\ Python\ (PyEnv).List\ Available    :call planet#term#RunCmd('pyenv install --list')<CR>
     an 500.10  🎚️&{.Settings <Nop>
     an disable 🎚️&{.Settings
-    an 500.10  🎚️&{.&Env.Source\ \.env                      <Cmd>Dotenv .env<CR>
-    an 500.10  🎚️&{.&Env.Set\ Env\ Var                      <Cmd>call planet#env#NewEnvVar()<CR>
-    an 500.10  🎚️&{.&Env.Edit\ \.env                        <Cmd>e .env<CR>
-    an 500.10  🎚️&{.&Env.Edit\ Env\ in\ Buffer              <Cmd>call planet#env#BufferFromCmd('env')<CR>
-    an 500.10  🎚️&{.&Env.Set\ $DESTDIR                      <Cmd>call planet#env#SetEnvVar('DESTDIR')<CR>
-    an 500.10  🎚️&{.&Env.Set\ $PYTHONPATH                   <Cmd>call planet#env#SetEnvVar('PYTHONPATH')<CR>
-    an 500.10  🎚️&{.&Env.Set\ $PATH                         <Cmd>call planet#env#SetEnvVar('PATH')<CR>
-    an 500.10  🎚️&{.&Env.Set\ $ARCH                         <Cmd>call planet#env#SetEnvVar('ARCH')<CR>
-    an 500.10  🎚️&{.&Env.Set\ $CROSS_COMPILE                <Cmd>call planet#env#SetEnvVar('CROSS_COMPILE')<CR>
-    an 500.10  🎚️&{.&Env.Print\ Env                         <Cmd>call planet#env#PrintEnv()<CR>
-    an 500.10  🎚️&{.&Direnv.&Edit\ (or\ Create)\ \.envrc    <Cmd>EditEnvrc<CR>
-    an 500.10  🎚️&{.&Direnv.&Allow\ Here                    <Cmd>call planet#term#RunCmd('direnv allow')<CR>
-    an 500.10  🎚️&{.&Direnv.&Run\ \.envrc                   <Cmd>DirenvExport<CR>
-    an 500.10  🎚️&{.&Direnv.E&dit\ \.direnvrc               <Cmd>EditDirenvrc<CR>
-    an 500.10  🎚️&{.EditorConfig.Add\ New                   <Cmd>e .editorconfig<CR>
-    an 500.10  🎚️&{.EditorConfig.Reload                     <Cmd>EditorConfigReload<CR>
-    an 500.10  🎚️&{.EditorConfig.Disable\ for\ buffer       <Cmd>let b:EditorConfig_disable=1<CR>
-    an 500.10  🎚️&{.EditorConfig.--1-- <Nop>
-    an 500.10  🎚️&{.EditorConfig.Enable                     <Cmd>EditorConfigEnable<CR>
-    an 500.10  🎚️&{.EditorConfig.Disable                    <Cmd>EditorConfigDisable<CR>
+    an 500.10  🎚️&{.&Env.&Source\ \.env                     <Cmd>Dotenv .env<CR>
+    an 500.10  🎚️&{.&Env.Set\ Env\ &Var                     <Cmd>call planet#env#NewEnvVar()<CR>
+    an 500.10  🎚️&{.&Env.Edit\ &\.env                       <Cmd>e .env<CR>
+    an 500.10  🎚️&{.&Env.Edit\ E&nv\ in\ Buffer             <Cmd>call planet#env#BufferFromCmd('env')<CR>
+    an 500.10  🎚️&{.&Env.Set\ $&DESTDIR                     <Cmd>call planet#env#SetEnvVar('DESTDIR')<CR>
+    an 500.10  🎚️&{.&Env.Set\ $P&YTHONPATH                  <Cmd>call planet#env#SetEnvVar('PYTHONPATH')<CR>
+    an 500.10  🎚️&{.&Env.Set\ $&PATH                        <Cmd>call planet#env#SetEnvVar('PATH')<CR>
+    an 500.10  🎚️&{.&Env.Set\ $&ARCH                        <Cmd>call planet#env#SetEnvVar('ARCH')<CR>
+    an 500.10  🎚️&{.&Env.Set\ $&CROSS_COMPILE               <Cmd>call planet#env#SetEnvVar('CROSS_COMPILE')<CR>
+    an 500.10  🎚️&{.&Env.P&rint\ Env                        <Cmd>call planet#env#PrintEnv()<CR>
+    an 500.10  🎚️&{.D&irenv.&Edit\ (or\ Create)\ \.envrc    <Cmd>EditEnvrc<CR>
+    an 500.10  🎚️&{.D&irenv.&Allow\ Here                    <Cmd>call planet#term#RunCmd('direnv allow')<CR>
+    an 500.10  🎚️&{.D&irenv.&Run\ \.envrc                   <Cmd>DirenvExport<CR>
+    an 500.10  🎚️&{.D&irenv.E&dit\ \.direnvrc               <Cmd>EditDirenvrc<CR>
+    an 500.10  🎚️&{.Editor&Config.&Add\ New                 <Cmd>e .editorconfig<CR>
+    an 500.10  🎚️&{.Editor&Config.&Reload                   <Cmd>EditorConfigReload<CR>
+    an 500.10  🎚️&{.Editor&Config.Disable\ for\ &buffer     <Cmd>let b:EditorConfig_disable=1<CR>
+    an 500.10  🎚️&{.Editor&Config.--1-- <Nop>
+    an 500.10  🎚️&{.Editor&Config.&Enable                   <Cmd>EditorConfigEnable<CR>
+    an 500.10  🎚️&{.Editor&Config.&Disable                  <Cmd>EditorConfigDisable<CR>
 
     an 500.10  📐&}.Dev\ Tools <Nop>
     an disable 📐&}.Dev\ Tools
@@ -375,17 +375,20 @@ func! planet#menu#dev#Update() abort
     an 500.10  🔨&u.&KBuild.make\ &xconfig                  <Cmd>call planet#term#RunCmd('make xconfig')<CR>
     an 500.10  🔨&u.&KBuild.make\ &gconfig                  <Cmd>call planet#term#RunCmd('make gconfig')<CR>
     an 500.10  🔨&u.&KBuild.make\ &tags                     <Cmd>call planet#term#RunCmd('make tags')<CR>
-    an 500.10  🔨&u.&CMake.&Build                           <Cmd>call planet#term#RunCmd('cmake --build .', v:false, v:false, v:false, g:PV_build_dir)<CR>
-    an 500.10  🔨&u.&CMake.Generate\ compile_commands\.json <Cmd>call planet#env#SenEnvVarValue('CMAKE_EXPORT_COMPILE_COMMANDS=ON')<CR><Cmd>call planet#term#RunCmd('cmake ' .. getcwd(), v:false, v:false, v:false, g:PV_build_dir)<CR>
+    an 500.10  🔨&u.&CMake.Select\ Build\ Dir               <Cmd>call planet#build#SelectBuildDir()<CR>
+    an 500.10  🔨&u.&CMake.Create\ &In-Tree\ Build\ Dir     <Cmd>call planet#build#NewInTreeBuildDir()<CR>
+    an 500.10  🔨&u.&CMake.Create\ &OOT\ Build\ Dir         <Cmd>call planet#build#NewOOTBuildDir()<CR>
+    an 500.10  🔨&u.&CMake.Browse\ Build\ Directory         <Cmd>exe 'Fern ' .. g:PV_build_dir<CR>
+    an 500.10  🔨&u.&CMake.--1-- <Nop>
     an 500.10  🔨&u.&CMake.&Configure                       <Cmd>call planet#term#RunCmd('cmake ' .. getcwd(), v:false, v:false, v:false, g:PV_build_dir)<CR>
     an 500.10  🔨&u.&CMake.Configure\ &Tui                  <Cmd>call planet#term#RunCmdTab('ccmake ' .. getcwd(), g:PV_build_dir)<CR>
     an 500.10  🔨&u.&CMake.Configure\ &Gui                  <Cmd>call planet#term#RunGuiApp('cmake-gui ' .. getcwd(), g:PV_build_dir)<CR>
+    an 500.10  🔨&u.&CMake.--2-- <Nop>
+    an 500.10  🔨&u.&CMake.&Build                           <Cmd>call planet#term#RunCmd('cmake --build .', v:false, v:false, v:false, g:PV_build_dir)<CR>
     an 500.10  🔨&u.&CMake.&Rebuild                         <Cmd>call planet#term#RunCmd('cmake --build . --target clean && cmake --build .', v:false, v:false, v:false, g:PV_build_dir)<CR>
     an 500.10  🔨&u.&CMake.Clean                            <Cmd>call planet#term#RunCmd('cmake --build . --target clean', v:false, v:false, v:false, g:PV_build_dir)<CR>
-    an 500.10  🔨&u.&CMake.Create\ &In-Tree\ Build\ Dir     <Cmd>call planet#build#NewInTreeBuildDir()<CR>
-    an 500.10  🔨&u.&CMake.Create\ &OOT\ Build\ Dir         <Cmd>call planet#build#NewOOTBuildDir()<CR>
-    an 500.10  🔨&u.&CMake.Select\ Build\ Dir               <Cmd>call planet#build#SelectBuildDir()<CR>
-    an 500.10  🔨&u.&CMake.Browse\ Build\ Directory         <Cmd>exe 'Fern ' .. g:PV_build_dir<CR>
+    an 500.10  🔨&u.&CMake.--3-- <Nop>
+    an 500.10  🔨&u.&CMake.Generate\ compile_commands\.json <Cmd>call planet#env#SenEnvVarValue('CMAKE_EXPORT_COMPILE_COMMANDS=ON')<CR><Cmd>call planet#term#RunCmd('cmake ' .. getcwd(), v:false, v:false, v:false, g:PV_build_dir)<CR>
     an 500.10  🔨&u.&Meson.Set\ DESTDIR                     :!make<CR>
     an 500.10  🔨&u.Ar&duino.Verify                          :ArduinoVerify<CR>
     an 500.10  🔨&u.Ar&duino.Upload                          :ArduinoUpload<CR>
@@ -548,7 +551,7 @@ func! planet#menu#dev#Update() abort
     an 550.10  💻&t.New\ &VSplit                            :vertical terminal ++kill=kill<CR>
     an 550.10  💻&t.New\ &Tab                               :tab terminal ++kill=kill<CR>
     an 550.10  💻&t.--1-- <Nop>
-    an 550.10  💻&t.Run\ Custom\ Command                    <Cmd>call planet#term#RunCmdAsk('Command: ')<CR>
+    an 550.10  💻&t.&Run\ Custom\ Command                    <Cmd>call planet#term#RunCmdAsk('Command: ')<CR>
     an 550.10  💻&t.--2-- <Nop>
     an 550.10  💻&t.P&ython\ Shell                          :botright terminal ++kill=kill ++rows=10 python<CR>
     an 550.10  💻&t.C&++\ Shell                             :botright terminal ++kill=kill ++rows=10 cling<CR>

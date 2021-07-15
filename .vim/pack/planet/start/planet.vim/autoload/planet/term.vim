@@ -162,7 +162,7 @@ func! planet#term#DefineOutputWindowsMenu() abort
   silent! aunmenu ]Outputs
   let l:found_windows = v:false
   for [nr, name] in items(planet#term#ListOutputWindows())
-    exe 'an 2.10 ]Outputs.' .. planet#menu#MenuifyName(name) .. ' <Cmd>b '.. nr .. '<CR>'
+    exe 'an 2.10 ]Outputs.' .. planet#menu#MenuifyName( name) .. ' <Cmd>e '.. nr .. '<CR>'
     let l:found_windows = v:true
   endfor
   if ! l:found_windows

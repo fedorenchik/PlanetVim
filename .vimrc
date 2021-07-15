@@ -682,6 +682,7 @@ func! s:InitFern() abort
 
   nmap <buffer><nowait> <LeftMouse> <Plug>(fern-my-nop-expand-or-collapse)
   nmap <buffer><nowait> <CR> <Plug>(fern-my-open-expand-or-collapse)
+  nmap <buffer><nowait> o <Plug>(fern-my-open-expand-or-collapse)
   nmap <buffer><nowait> <2-LeftMouse> <Plug>(fern-my-open-expand-or-collapse)
   nmap <buffer> q :<C-u>quit<CR>
   nmap <buffer> I <Plug>(fern-action-hidden:toggle)

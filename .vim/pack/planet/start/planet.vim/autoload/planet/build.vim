@@ -7,14 +7,18 @@ func! planet#build#BuildDirs() abort
 endfunc
 
 func! planet#build#SelectBuildDir() abort
-  let l:dirs = [ 'Select Build Directory:', 'Create New Build Directory' ]
+  let l:dirs = [ 'Select Build Directory:' ]
   let l:dirs = extend(l:dirs, planet#build#BuildDirs())
   let l:dirs = map(l:dirs, {key, val -> (key ? "[" .. key .. "] " : "") .. val})
+  let l:dirs->add( '[' .. len(l:dirs) ..'] Create New Build Directory')
   let l:dir_num = inputlist(l:dirs)
-  if l:dir_num > 1
-    let l:build_dir = split(l:dirs[l:dir_num])[1]
-  elseif l:dir_num == 1
+  if l:dir_num == (len(l:dirs) - 1)
     let l:build_dir = input("New Build Directory Name: ", "build", "dir")
+  elseif l:dir_num > 0
+    let l:build_dir = split(l:dirs[l:dir_num])[1]
+  else
+    echo 'Cancelled'
+    return
   end
   call planet#build#NewBuildDir(l:build_dir)
 endfunc
