@@ -89,10 +89,10 @@ func! planet#menu#tools#Update() abort
     an 700.10  🔀&g.&Branch.Checkout                              :TODO
     an 700.10  🔀&g.&Branch.Rename                                <Cmd>call planet#git#BranchRename()<CR>
     an 700.10  🔀&g.&Branch.Delete                                <Cmd>call planet#git#BranchDelete()<CR>
-    an 700.10  🔀&g.&Diff.&Diff                                   <Cmd>call planet#term#RunCmdTab('git --no-pager diff')<CR>
-    an 700.10  🔀&g.&Diff.&Stat                                   <Cmd>call planet#term#RunCmd('git --no-pager diff --stat')<CR>
-    an 700.10  🔀&g.&Diff.&Cached\ (Index)                        <Cmd>call planet#term#RunCmd('git --no-pager diff --staged')<CR>
-    an 700.10  🔀&g.&Diff.Stat\ Cached                            <Cmd>call planet#term#RunCmd('git --no-pager diff --staged --stat')<CR>
+    an 700.10  🔀&g.&Diff.&Diff                                   <Cmd>call planet#term#RunCmdTab('git -c color.diff=always diff | less -RX')<CR>
+    an 700.10  🔀&g.&Diff.&Stat                                   <Cmd>call planet#term#RunCmdTab('git -c color.diff diff --stat | less -RX')<CR>
+    an 700.10  🔀&g.&Diff.&Cached\ (Index)                        <Cmd>call planet#term#RunCmdTab('git -c color.diff diff --staged | less -RX')<CR>
+    an 700.10  🔀&g.&Diff.Stat\ Cached                            <Cmd>call planet#term#RunCmdTab('git -c color.diff diff --staged --stat | less -RX')<CR>
     an 700.10  🔀&g.&Worktree.New                                 <Cmd>call planet#term#RunCmd('git worktree add')<CR>
     an 700.10  🔀&g.&Worktree.New\ Detached                       <Cmd>call planet#term#RunCmd('git worktree add --detach')<CR>
     an 700.10  🔀&g.&Worktree.List                                <Cmd>call planet#term#RunCmd('git worktree list')<CR>
