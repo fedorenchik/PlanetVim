@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/lambdalisue/glyph-palette.vim.git
 	branch = master
-	commit = 9da4d62ec2d9057b923581e906a4231de3150df9
-	parent = b18fe26347fc5cbb40745346633203d2da56724b
+	commit = a8ecb59733d8b4a2f45fdbcabf5174fdee18c4ec
+	parent = f46d123d1c52e6299e541629dc637f2532afe69e
 	method = merge
 	cmdver = 0.4.3
