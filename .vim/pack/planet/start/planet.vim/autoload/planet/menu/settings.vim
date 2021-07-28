@@ -96,6 +96,10 @@ func! planet#menu#settings#Update() abort
     an 980.10  ⌨️&\|.Profile\ Syntax.Stop\ measuring\ syntax\ times<Tab>:syntime\ off :syntime off<CR>
     an 980.10  ⌨️&\|.Profile\ Syntax.Restart\ measuring\ syntax\ times<Tab>:syntime\ clear :syntime clear<CR>
     an 980.10  ⌨️&\|.Profile\ Syntax.Report\ syntax\ times<Tab>:syntime\ report :syntime report<CR>
+    an 980.10  ⌨️&\|.WinBar.Set\ for QF/LL                  <Cmd>call planet#winbar()<CR>
+    an 980.10  ⌨️&\|.WinBar.Set\ for Terminal               <Cmd>call planet#winbar()<CR>
+    an 980.10  ⌨️&\|.WinBar.Set\ for Output                 <Cmd>call planet#winbar()<CR>
+    an 980.10  ⌨️&\|.WinBar.Clear                           <Cmd>unmenu WinBar<CR>
 
     " Help
     an 990.10  ❔&?.Help <Nop>

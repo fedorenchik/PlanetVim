@@ -244,40 +244,40 @@ func! planet#menu#basic#Update() abort
     "TODO: add 'scrollbind' file in split
     an 150.10  📺&v.View <Nop>
     an disable 📺&v.View
-    an 150.10  📺&v.&Command\ Palette                          :Clap<CR>
-    an 150.20  📺&v.&Files\ Side\ Bar                          :Fern . -drawer -reveal=% -toggle<CR>
-    an 150.30  📺&v.&LSP\ Side\ Bar<Tab>:Vista\ vim_lsp        :Vista vim_lsp<CR>
-    an 150.40  📺&v.&Tags\ Side\ Bar<Tab>:Vista\ ctags         :Vista ctags<CR>
-    an 150.40  📺&v.QuickFix                                   :botright copen<CR>
-    an 150.40  📺&v.LocList                                    :lopen<CR>
+    an 150.10  📺&v.&Command\ Palette                          <Cmd>Clap<CR>
+    an 150.20  📺&v.&Files\ Side\ Bar                          <Cmd>Fern . -drawer -reveal=% -toggle<CR>
+    an 150.30  📺&v.&LSP\ Side\ Bar<Tab>:Vista\ vim_lsp        <Cmd>Vista vim_lsp<CR>
+    an 150.40  📺&v.&Tags\ Side\ Bar<Tab>:Vista\ ctags         <Cmd>Vista ctags<CR>
+    an 150.40  📺&v.QuickFix                                   <Cmd>botright copen<CR>
+    an 150.40  📺&v.LocList                                    <Cmd>lopen<CR>
     an 150.50  📺&v.--1-- <Nop>
     an 150.60  📺&v.WinBar <Nop>
     an disable 📺&v.WinBar
-    an 150.70  📺&v.Add\ Current                               :call PV_WinBar_AddCurrent()<CR>
-    an 150.70  📺&v.Remove\ Current                            :call PV_WinBar_RemoveCurrent()<CR>
-    an 150.70  📺&v.Remove\ Others                             :call PV_WinBar_RemoveOthers()<CR>
+    an 150.70  📺&v.Add\ Current                               <Cmd>call PV_WinBar_AddCurrent()<CR>
+    an 150.70  📺&v.Remove\ Current                            <Cmd>call PV_WinBar_RemoveCurrent()<CR>
+    an 150.70  📺&v.Remove\ Others                             <Cmd>call PV_WinBar_RemoveOthers()<CR>
     an 150.70  📺&v.--1-- <Nop>
-    an 150.70  📺&v.Clear                                      :unmenu WinBar<CR>
+    an 150.70  📺&v.Clear                                      <Cmd>unmenu WinBar<CR>
     an 150.70  📺&v.--1-- <Nop>
     an 150.70  📺&v.Colorscheme <Nop>
     an disable 📺&v.Colorscheme
     an 150.70.10  📺&v.Set\ Colorscheme.Dark <Nop>
     an disable    📺&v.Set\ Colorscheme.Dark
-    an 150.70.10  📺&v.Set\ Colorscheme.Dracula             :set bg=dark<CR>:colorscheme dracula<CR>
-    an 150.70.10  📺&v.Set\ Colorscheme.Gruvbox\ Dark       :set bg=dark<CR>:colorscheme gruvbox<CR>
-    an 150.70.10  📺&v.Set\ Colorscheme.Molokai             :set bg=dark<CR>:colorscheme molokai<CR>
-    an 150.70.10  📺&v.Set\ Colorscheme.One\ Dark           :set bg=dark<CR>:colorscheme one<CR>
-    an 150.70.10  📺&v.Set\ Colorscheme.PaperColor\ Dark    :set bg=dark<CR>:colorscheme PaperColor<CR>
-    an 150.70.10  📺&v.Set\ Colorscheme.Solarized\ Dark     :set bg=dark<CR>:colorscheme solarized<CR>
+    an 150.70.10  📺&v.Set\ Colorscheme.Dracula             <Cmd>set bg=dark<CR><Cmd>colorscheme dracula<CR>
+    an 150.70.10  📺&v.Set\ Colorscheme.Gruvbox\ Dark       <Cmd>set bg=dark<CR><Cmd>colorscheme gruvbox<CR>
+    an 150.70.10  📺&v.Set\ Colorscheme.Molokai             <Cmd>set bg=dark<CR><Cmd>colorscheme molokai<CR>
+    an 150.70.10  📺&v.Set\ Colorscheme.One\ Dark           <Cmd>set bg=dark<CR><Cmd>colorscheme one<CR>
+    an 150.70.10  📺&v.Set\ Colorscheme.PaperColor\ Dark    <Cmd>set bg=dark<CR><Cmd>colorscheme PaperColor<CR>
+    an 150.70.10  📺&v.Set\ Colorscheme.Solarized\ Dark     <Cmd>set bg=dark<CR><Cmd>colorscheme solarized<CR>
     an 150.70.500 📺&v.Set\ Colorscheme.Light <Nop>
     an disable    📺&v.Set\ Colorscheme.Light
-    an 150.70.500 📺&v.Set\ Colorscheme.Gruvbox\ Light      :set bg=light<CR>:colorscheme gruvbox<CR>
-    an 150.70.500 📺&v.Set\ Colorscheme.One\ Light          :set bg=light<CR>:colorscheme one<CR>
-    an 150.70.500 📺&v.Set\ Colorscheme.PaperColor\ Light   :set bg=light<CR>:colorscheme PaperColor<CR>
-    an 150.70.500 📺&v.Set\ Colorscheme.Solarized\ Light    :set bg=light<CR>:colorscheme solarized<CR>
-    an 150.70  📺&v.Set\ Dark\ Background<Tab>set\ bg=dark  :set bg=dark<CR>
-    an 150.70  📺&v.Set\ Light\ Background<Tab>set\ bg=light :set bg=light<CR>
-    an 150.70  📺&v.Choose\ Colorscheme<Tab>:Clap\ colors   :Clap colors<CR>
+    an 150.70.500 📺&v.Set\ Colorscheme.Gruvbox\ Light      <Cmd>set bg=light<CR><Cmd>colorscheme gruvbox<CR>
+    an 150.70.500 📺&v.Set\ Colorscheme.One\ Light          <Cmd>set bg=light<CR><Cmd>colorscheme one<CR>
+    an 150.70.500 📺&v.Set\ Colorscheme.PaperColor\ Light   <Cmd>set bg=light<CR><Cmd>colorscheme PaperColor<CR>
+    an 150.70.500 📺&v.Set\ Colorscheme.Solarized\ Light    <Cmd>set bg=light<CR><Cmd>colorscheme solarized<CR>
+    an 150.70  📺&v.Set\ Dark\ Background<Tab>set\ bg=dark  <Cmd>set bg=dark<CR>
+    an 150.70  📺&v.Set\ Light\ Background<Tab>set\ bg=light <Cmd>set bg=light<CR>
+    an 150.70  📺&v.Choose\ Colorscheme<Tab>:Clap\ colors   <Cmd>Clap colors<CR>
     an 150.70  📺&v.GUI\ Highlight.Menu                     :h hl-Menu
     an 150.70  📺&v.GUI\ Highlight.Scrollbar                :h hl-Scrollbar
     an 150.70  📺&v.GUI\ Highlight.Tooltip                  :h hl-Tooltip
