@@ -8,13 +8,13 @@ use std::ops::Deref;
 use crossbeam_channel::{Receiver, Sender};
 use log::{debug, error};
 use once_cell::sync::OnceCell;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use serde_json::json;
 
 use self::session::{
     dumb_jump,
     filer::{self, FilerSession},
-    message_handlers, quickfix, GeneralSession, Manager, SessionEvent,
+    message_handlers, quickfix, recent_files, GeneralSession, SessionEvent, SessionManager,
 };
 use self::types::{GlobalEnv, Message};
 
@@ -32,24 +32,22 @@ pub fn global() -> impl Deref<Target = GlobalEnv> {
 }
 
 fn initialize_global(msg: Message) {
-    let is_nvim = msg
-        .params
-        .get("is_nvim")
-        .and_then(|x| x.as_bool())
-        .unwrap_or(false);
+    #[derive(Deserialize)]
+    struct Params {
+        is_nvim: Option<bool>,
+        enable_icon: Option<bool>,
+        clap_preview_size: serde_json::Value,
+    }
+    let Params {
+        is_nvim,
+        enable_icon,
+        clap_preview_size,
+    } = msg.deserialize_params_unsafe();
 
-    let enable_icon = msg
-        .params
-        .get("enable_icon")
-        .and_then(|x| x.as_bool())
-        .unwrap_or(false);
+    let is_nvim = is_nvim.unwrap_or(false);
+    let enable_icon = enable_icon.unwrap_or(false);
 
-    let preview_size = msg
-        .params
-        .get("clap_preview_size")
-        .unwrap_or_else(|| panic!("Missing clap_preview_size on initialize_global_env"));
-
-    let global_env = GlobalEnv::new(is_nvim, enable_icon, preview_size.clone());
+    let global_env = GlobalEnv::new(is_nvim, enable_icon, clap_preview_size.into());
 
     if let Err(e) = GLOBAL_ENV.set(global_env) {
         debug!("failed to initialized GLOBAL_ENV, error: {:?}", e);
@@ -85,25 +83,38 @@ fn loop_read_rpc_message(reader: impl BufRead, sink: &Sender<String>) {
 }
 
 fn loop_handle_rpc_message(rx: &Receiver<String>) {
+    use dumb_jump::DumbJumpSession;
+    use recent_files::RecentFilesSession;
     use SessionEvent::*;
 
-    let mut session_manager = Manager::default();
+    let mut manager = SessionManager::default();
     for msg in rx.iter() {
         if let Ok(msg) = serde_json::from_str::<Message>(&msg.trim()) {
-            debug!("==> message(in): {:?}", msg);
+            debug!("==> stdio message(in): {:?}", msg);
             match &msg.method[..] {
                 "initialize_global_env" => initialize_global(msg), // should be called only once.
                 "init_ext_map" => message_handlers::parse_filetypedetect(msg),
                 "preview/file" => message_handlers::preview_file(msg),
-                "filer" => filer::handle_filer_message(msg),
                 "quickfix" => quickfix::preview_quickfix_entry(msg),
-                "dumb_jump" => dumb_jump::handle_dumb_jump_message(msg),
-                "filer/on_init" => session_manager.new_session(msg.session_id, msg, FilerSession),
-                "filer/on_move" => session_manager.send(msg.session_id, OnMove(msg)),
-                "on_init" => session_manager.new_session(msg.session_id, msg, GeneralSession),
-                "on_typed" => session_manager.send(msg.session_id, OnTyped(msg)),
-                "on_move" => session_manager.send(msg.session_id, OnMove(msg)),
-                "exit" => session_manager.terminate(msg.session_id),
+                "note_recent_files" => message_handlers::note_recent_file(msg),
+
+                "dumb_jump/on_init" => manager.new_session::<DumbJumpSession>(msg),
+                "dumb_jump/on_typed" => manager.send(msg.session_id, OnTyped(msg)),
+                "dumb_jump/on_move" => manager.send(msg.session_id, OnMove(msg)),
+
+                "recent_files/on_init" => manager.new_session::<RecentFilesSession>(msg),
+                "recent_files/on_typed" => manager.send(msg.session_id, OnTyped(msg)),
+                "recent_files/on_move" => manager.send(msg.session_id, OnMove(msg)),
+
+                "filer" => filer::handle_filer_message(msg),
+                "filer/on_init" => manager.new_session::<FilerSession>(msg),
+                "filer/on_move" => manager.send(msg.session_id, OnMove(msg)),
+
+                "on_init" => manager.new_session::<GeneralSession>(msg),
+                "on_typed" => manager.send(msg.session_id, OnTyped(msg)),
+                "on_move" => manager.send(msg.session_id, OnMove(msg)),
+                "exit" => manager.terminate(msg.session_id),
+
                 _ => write_response(
                     json!({ "error": format!("unknown method: {}", &msg.method[..]), "id": msg.id }),
                 ),

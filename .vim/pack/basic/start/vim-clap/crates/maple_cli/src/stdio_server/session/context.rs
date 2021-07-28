@@ -29,13 +29,21 @@ impl SessionContext {
         let out = utility::execute_at(cmd, Some(&self.cwd))?;
         Ok(out.stdout)
     }
+
+    /// Size for fulfilling the preview window.
+    pub fn sensible_preview_size(&self) -> usize {
+        std::cmp::max(
+            self.provider_id.get_preview_size(),
+            (self.preview_winheight / 2) as usize,
+        )
+    }
 }
 
 impl From<Message> for SessionContext {
     fn from(msg: Message) -> Self {
-        log::debug!("recv msg for SessionContext: {:?}", msg);
+        log::debug!("Creating a new SessionContext from: {:?}", msg);
 
-        #[derive(Debug, Clone, Deserialize)]
+        #[derive(Deserialize)]
         struct Params {
             provider_id: ProviderId,
             cwd: PathBuf,
@@ -54,9 +62,7 @@ impl From<Message> for SessionContext {
             preview_winheight,
             source_cmd,
             runtimepath,
-        } = msg
-            .deserialize_params()
-            .unwrap_or_else(|e| panic!("Failed to deserialize as session Params: {:?}", e));
+        } = msg.deserialize_params_unsafe();
 
         Self {
             provider_id,

@@ -1,4 +1,4 @@
-use std::path::{self, Path, PathBuf};
+use std::path::{self, Path};
 use std::{fs, io};
 
 use anyhow::Result;
@@ -17,41 +17,45 @@ use crate::stdio_server::{
 };
 
 /// Display the inner path in a nicer way.
-struct DisplayPath {
-    inner: PathBuf,
+struct DisplayPath<P> {
+    inner: P,
     enable_icon: bool,
 }
 
-impl DisplayPath {
-    pub fn new(path: PathBuf, enable_icon: bool) -> Self {
-        Self {
-            inner: path,
-            enable_icon,
-        }
+impl<P: AsRef<Path>> DisplayPath<P> {
+    pub fn new(inner: P, enable_icon: bool) -> Self {
+        Self { inner, enable_icon }
     }
 
     #[inline]
-    fn to_file_name_str(&self) -> Option<&str> {
-        self.inner.file_name().and_then(std::ffi::OsStr::to_str)
+    fn to_str_file_name(&self) -> Option<&str> {
+        self.inner
+            .as_ref()
+            .file_name()
+            .and_then(std::ffi::OsStr::to_str)
     }
 }
 
-impl std::fmt::Display for DisplayPath {
+impl<P: AsRef<Path>> std::fmt::Display for DisplayPath<P> {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        let path_str = if self.inner.is_dir() {
-            format!(
-                "{}{}",
-                self.to_file_name_str().unwrap(),
-                path::MAIN_SEPARATOR
-            )
-        } else {
-            self.to_file_name_str().map(Into::into).unwrap()
+        let mut write_with_icon = |path: &str| {
+            if self.enable_icon {
+                write!(f, "{}", prepend_filer_icon(self.inner.as_ref(), path))
+            } else {
+                write!(f, "{}", path)
+            }
         };
 
-        if self.enable_icon {
-            write!(f, "{}", prepend_filer_icon(&self.inner, &path_str))
+        if self.inner.as_ref().is_dir() {
+            let path = format!(
+                "{}{}",
+                self.to_str_file_name().unwrap(),
+                path::MAIN_SEPARATOR
+            );
+
+            write_with_icon(&path)
         } else {
-            write!(f, "{}", path_str)
+            write_with_icon(self.to_str_file_name().unwrap())
         }
     }
 }
@@ -80,49 +84,43 @@ pub fn read_dir_entries<P: AsRef<Path>>(
 #[derive(Clone)]
 pub struct FilerMessageHandler;
 
+#[async_trait::async_trait]
 impl EventHandler for FilerMessageHandler {
-    fn handle(&self, event: Event, context: &SessionContext) {
+    async fn handle(&mut self, event: Event, context: SessionContext) -> Result<()> {
         match event {
             Event::OnMove(msg) => {
-                let provider_id = context.provider_id.clone();
-                let curline = msg
-                    .get_curline(&provider_id)
-                    .unwrap_or_else(|e| panic!("{}", e));
-                let path = build_abs_path(&msg.get_cwd(), curline);
+                #[derive(serde::Deserialize)]
+                struct Params {
+                    curline: String,
+                    cwd: String,
+                }
+                let msg_id = msg.id;
+                let Params { curline, cwd } = msg.deserialize_params_unsafe();
+                let path = build_abs_path(&cwd, curline);
                 let on_move_handler = OnMoveHandler {
-                    msg_id: msg.id,
-                    size: std::cmp::max(
-                        provider_id.get_preview_size(),
-                        (context.preview_winheight / 2) as usize,
-                    ),
-                    provider_id,
-                    context,
+                    msg_id,
+                    size: context.sensible_preview_size(),
+                    context: &context,
                     inner: OnMove::Filer(path.clone()),
                 };
                 if let Err(err) = on_move_handler.handle() {
                     let error = json!({"message": err.to_string(), "dir": path});
-                    let res = json!({ "id": msg.id, "provider_id": "filer", "error": error });
+                    let res = json!({ "id": msg_id, "provider_id": "filer", "error": error });
                     write_response(res);
                 }
             }
             // TODO: handle on_typed
             Event::OnTyped(msg) => handle_filer_message(msg),
         }
+        Ok(())
     }
 }
 
 pub struct FilerSession;
 
 impl NewSession for FilerSession {
-    fn spawn(&self, msg: Message) -> Result<Sender<SessionEvent>> {
-        let (session_sender, session_receiver) = crossbeam_channel::unbounded();
-
-        let session = Session {
-            session_id: msg.session_id,
-            context: msg.clone().into(),
-            event_handler: FilerMessageHandler,
-            event_recv: session_receiver,
-        };
+    fn spawn(msg: Message) -> Result<Sender<SessionEvent>> {
+        let (session, session_sender) = Session::new(msg.clone(), FilerMessageHandler);
 
         // Handle the on_init message.
         handle_filer_message(msg);
@@ -135,7 +133,7 @@ impl NewSession for FilerSession {
 
 pub fn handle_filer_message(msg: Message) {
     let cwd = msg.get_cwd();
-    debug!("Recv filer params: cwd:{}", cwd,);
+    debug!("Recv filer params: cwd:{}", cwd);
 
     let result = match read_dir_entries(&cwd, crate::stdio_server::global().enable_icon, None) {
         Ok(entries) => {

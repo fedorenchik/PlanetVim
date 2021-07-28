@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::io::Write;
 use std::path::PathBuf;
 
 use anyhow::Result;
@@ -55,8 +56,11 @@ impl Helptags {
                     }
                     let mut tag_lines = seen.values().collect::<Vec<_>>();
                     tag_lines.sort();
+
+                    let stdout = std::io::stdout();
+                    let mut lock = stdout.lock();
                     for line in tag_lines {
-                        println!("{}", line);
+                        writeln!(lock, "{}", line)?;
                     }
                 }
             }

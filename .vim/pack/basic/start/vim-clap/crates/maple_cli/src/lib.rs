@@ -1,11 +1,15 @@
 mod app;
+mod cache;
+mod datastore;
 mod dumb_analyzer;
 mod logger;
 mod process;
+mod recent_files;
 mod stdio_server;
 mod tools;
+mod utils;
 
-pub mod commands;
+pub mod command;
 /// Re-exports.
 pub use {
     anyhow::{Context, Result},

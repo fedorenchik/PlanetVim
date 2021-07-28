@@ -1,16 +1,18 @@
 //! Wrapper of std `Command` with some optimization about the output.
 
-use std::fs::File;
-use std::io::Write;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::{Command, Output};
 
 use anyhow::{anyhow, Result};
 
 use icon::IconPainter;
-use utility::{get_cached_entry, println_json, read_first_lines, remove_dir_contents};
+use utility::{println_json, read_first_lines};
 
-use crate::commands::cache::CacheEntry;
+use crate::cache::Digest;
+use crate::process::BaseCommand;
+
+/// Threshold for making a cache for the results.
+const OUTPUT_THRESHOLD: usize = 50_000;
 
 /// Remove the last element if it's empty string.
 #[inline]
@@ -23,13 +25,13 @@ fn trim_trailing(lines: &mut Vec<String>) {
     }
 }
 
-pub fn set_current_dir(cmd: &mut Command, cmd_dir: Option<PathBuf>) {
+pub fn set_current_dir<P: AsRef<Path>>(cmd: &mut Command, cmd_dir: Option<P>) {
     if let Some(cmd_dir) = cmd_dir {
         // If cmd_dir is not a directory, use its parent as current dir.
-        if cmd_dir.is_dir() {
+        if cmd_dir.as_ref().is_dir() {
             cmd.current_dir(cmd_dir);
         } else {
-            let mut cmd_dir = cmd_dir;
+            let mut cmd_dir: PathBuf = cmd_dir.as_ref().into();
             cmd_dir.pop();
             cmd.current_dir(cmd_dir);
         }
@@ -77,13 +79,12 @@ impl ExecutedInfo {
     }
 }
 
-/// Environment for running LightCommand.
+/// Environment for running [`LightCommand`].
 #[derive(Debug, Clone)]
 pub struct CommandEnv {
     pub dir: Option<PathBuf>,
     pub total: usize,
     pub number: Option<usize>,
-    pub output: Option<String>,
     pub icon_painter: Option<IconPainter>,
     pub output_threshold: usize,
 }
@@ -94,9 +95,8 @@ impl Default for CommandEnv {
             dir: None,
             total: 0usize,
             number: None,
-            output: None,
             icon_painter: None,
-            output_threshold: 100_000usize,
+            output_threshold: OUTPUT_THRESHOLD,
         }
     }
 }
@@ -105,16 +105,14 @@ impl CommandEnv {
     pub fn new(
         dir: Option<PathBuf>,
         number: Option<usize>,
-        output: Option<String>,
         icon_painter: Option<IconPainter>,
         output_threshold: Option<usize>,
     ) -> Self {
         Self {
             dir,
             number,
-            output,
             icon_painter,
-            output_threshold: output_threshold.unwrap_or(100_000usize),
+            output_threshold: output_threshold.unwrap_or(OUTPUT_THRESHOLD),
             ..Default::default()
         }
     }
@@ -122,7 +120,7 @@ impl CommandEnv {
     #[inline]
     pub fn try_paint_icon<'b>(
         &self,
-        top_n: impl std::iter::Iterator<Item = &'b str>,
+        top_n: impl Iterator<Item = std::borrow::Cow<'b, str>>,
     ) -> Vec<String> {
         if let Some(ref painter) = self.icon_painter {
             top_n.map(|x| painter.paint(x)).collect()
@@ -131,43 +129,19 @@ impl CommandEnv {
         }
     }
 
+    /// Returns true if the number of total results is larger than the output threshold.
     // TODO: add a cache upper bound?
     #[inline]
-    pub fn should_do_cache(&self) -> bool {
+    pub fn should_create_cache(&self) -> bool {
         self.total > self.output_threshold
-    }
-
-    #[inline]
-    pub fn new_cache_entry(&self, args: &[&str]) -> Result<PathBuf> {
-        if let Some(ref output) = self.output {
-            Ok(output.into())
-        } else {
-            CacheEntry::try_new(args, self.dir.clone(), self.total)
-        }
-    }
-
-    /// Writes the whole stdout of LightCommand to a tempfile.
-    pub fn do_cache(&self, cmd_stdout: &[u8], args: &[&str]) -> Result<PathBuf> {
-        let tempfile = self.new_cache_entry(args)?;
-
-        // Remove the other outdated cache file if there are any.
-        //
-        // There should be only one cache file in parent_dir at this moment.
-        if let Some(parent_dir) = tempfile.parent() {
-            remove_dir_contents(&parent_dir.to_path_buf())?;
-        }
-
-        File::create(&tempfile)?.write_all(cmd_stdout)?;
-
-        // FIXME find the nth newline index of stdout.
-        // let _end = std::cmp::min(cmd_stdout.len(), 500);
-
-        Ok(tempfile)
     }
 }
 
-/// A wrapper of std::process::Command for building cache, adding icon and minimalize the
-/// throughput.
+/// A wrapper of std::process::Command with more more functions, including:
+///
+/// - Build cache for the larger results.
+/// - Add an icon to the display line.
+/// - Minimalize the throughput.
 #[derive(Debug)]
 pub struct LightCommand<'a> {
     cmd: &'a mut Command,
@@ -179,13 +153,12 @@ impl<'a> LightCommand<'a> {
     pub fn new(
         cmd: &'a mut Command,
         number: Option<usize>,
-        output: Option<String>,
         icon_painter: Option<IconPainter>,
         output_threshold: usize,
     ) -> Self {
         Self {
             cmd,
-            env: CommandEnv::new(None, number, output, icon_painter, Some(output_threshold)),
+            env: CommandEnv::new(None, number, icon_painter, Some(output_threshold)),
         }
     }
 
@@ -199,7 +172,7 @@ impl<'a> LightCommand<'a> {
     ) -> Self {
         Self {
             cmd,
-            env: CommandEnv::new(dir, number, None, icon_painter, output_threshold),
+            env: CommandEnv::new(dir, number, icon_painter, output_threshold),
         }
     }
 
@@ -221,10 +194,12 @@ impl<'a> LightCommand<'a> {
     /// forerunner job.
     fn minimalize_job_overhead(&self, stdout: &[u8]) -> Result<ExecutedInfo> {
         if let Some(number) = self.env.number {
-            // TODO: do not have to into String for whole stdout, find the nth index of newline.
-            // &cmd_output.stdout[..nth_newline_index]
-            let stdout_str = String::from_utf8_lossy(&stdout);
-            let lines = self.try_prepend_icon(stdout_str.split('\n').take(number));
+            let lines = self.try_prepend_icon(
+                stdout
+                    .split(|x| x == &b'\n')
+                    .map(|s| String::from_utf8_lossy(s))
+                    .take(number),
+            );
             let total = self.env.total;
             return Ok(ExecutedInfo {
                 total,
@@ -238,58 +213,55 @@ impl<'a> LightCommand<'a> {
         ))
     }
 
-    fn try_prepend_icon<'b>(&self, top_n: impl std::iter::Iterator<Item = &'b str>) -> Vec<String> {
+    fn try_prepend_icon<'b>(
+        &self,
+        top_n: impl std::iter::Iterator<Item = std::borrow::Cow<'b, str>>,
+    ) -> Vec<String> {
         let mut lines = self.env.try_paint_icon(top_n);
         trim_trailing(&mut lines);
         lines
     }
 
-    /// Cache the stdout into a tempfile if the output threshold exceeds.
-    fn try_cache(&self, cmd_stdout: &[u8], args: &[&str]) -> Result<(String, Option<PathBuf>)> {
-        if self.env.should_do_cache() {
-            let cache_file = self.env.do_cache(cmd_stdout, args)?;
-            Ok((
-                // lines used for displaying directly.
-                // &cmd_output.stdout[..nth_newline_index]
-                String::from_utf8_lossy(cmd_stdout).into(),
-                Some(cache_file),
-            ))
+    fn handle_cache_digest(&self, digest: &Digest) -> Result<ExecutedInfo> {
+        let Digest {
+            total, cached_path, ..
+        } = digest;
+
+        let lines = if let Ok(iter) = read_first_lines(&cached_path, 100) {
+            if let Some(ref painter) = self.env.icon_painter {
+                iter.map(|x| painter.paint(&x)).collect()
+            } else {
+                iter.collect()
+            }
         } else {
-            Ok((String::from_utf8_lossy(cmd_stdout).into(), None))
-        }
+            Vec::new()
+        };
+
+        Ok(ExecutedInfo {
+            using_cache: true,
+            total: *total as usize,
+            tempfile: Some(cached_path.clone()),
+            lines,
+        })
     }
 
-    /// Firstly try the cache given the command args and working dir.
-    /// If the cache exists, returns the cache file directly.
+    /// Checks if the cache exists given `base_cmd` and `no_cache` flag.
+    /// If the cache exists, return the cached info, otherwise execute
+    /// the command.
     pub fn try_cache_or_execute(
         &mut self,
-        args: &[&str],
-        cmd_dir: PathBuf,
+        base_cmd: BaseCommand,
+        no_cache: bool,
     ) -> Result<ExecutedInfo> {
-        if let Ok(cached_entry) = get_cached_entry(args, &cmd_dir) {
-            if let Ok(total) = CacheEntry::get_total(&cached_entry) {
-                let tempfile = cached_entry.path();
-                let lines = if let Ok(lines_iter) = read_first_lines(&tempfile, 100) {
-                    if let Some(ref painter) = self.env.icon_painter {
-                        lines_iter.map(|x| painter.paint(&x)).collect()
-                    } else {
-                        lines_iter.collect()
-                    }
-                } else {
-                    vec![]
-                };
-                return Ok(ExecutedInfo {
-                    using_cache: true,
-                    total,
-                    tempfile: Some(tempfile),
-                    lines,
-                });
+        if !no_cache {
+            if let Some(digest) = base_cmd.cache_digest() {
+                self.handle_cache_digest(&digest)
+            } else {
+                self.execute(base_cmd)
             }
+        } else {
+            self.execute(base_cmd)
         }
-
-        self.env.dir = Some(cmd_dir);
-
-        self.execute(args)
     }
 
     /// Execute the command directly and capture the output.
@@ -298,7 +270,9 @@ impl<'a> LightCommand<'a> {
     /// otherwise print the total results or write them to
     /// a tempfile if they are more than `self.output_threshold`.
     /// This cached tempfile can be reused on the following runs.
-    pub fn execute(&mut self, args: &[&str]) -> Result<ExecutedInfo> {
+    pub fn execute(&mut self, base_cmd: BaseCommand) -> Result<ExecutedInfo> {
+        self.env.dir = Some(base_cmd.cwd.clone());
+
         let cmd_output = self.output()?;
         let cmd_stdout = &cmd_output.stdout;
 
@@ -308,15 +282,23 @@ impl<'a> LightCommand<'a> {
             return Ok(executed_info);
         }
 
-        // Write the output to a tempfile if the lines are too many.
-        let (stdout_str, tempfile) = self.try_cache(&cmd_stdout, args)?;
-        let lines = self.try_prepend_icon(stdout_str.split('\n'));
-        let total = self.env.total;
+        // Cache the output if there are too many lines.
+        let cached_path = if self.env.should_create_cache() {
+            let p = base_cmd.create_cache(self.env.total, &cmd_stdout)?;
+            Some(p)
+        } else {
+            None
+        };
+        let lines = self.try_prepend_icon(
+            cmd_stdout
+                .split(|n| n == &b'\n')
+                .map(|s| String::from_utf8_lossy(s)),
+        );
 
         Ok(ExecutedInfo {
-            total,
+            total: self.env.total,
             lines,
-            tempfile,
+            tempfile: cached_path,
             using_cache: false,
         })
     }

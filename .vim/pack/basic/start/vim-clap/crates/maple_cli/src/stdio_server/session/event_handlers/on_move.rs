@@ -10,7 +10,7 @@ use crate::stdio_server::{
     filer, global,
     previewer::{self, vim_help::HelpTagPreview},
     session::SessionContext,
-    types::{Message, ProviderId},
+    types::Message,
     write_response,
 };
 
@@ -55,7 +55,10 @@ pub fn build_abs_path<P: AsRef<Path>>(cwd: P, curline: String) -> PathBuf {
 impl OnMove {
     pub fn new(curline: String, context: &SessionContext) -> Result<Self> {
         let context = match context.provider_id.as_str() {
+            "filer" => unreachable!("filer has been handled ahead"),
+
             "files" | "git_files" => Self::Files(build_abs_path(&context.cwd, curline)),
+            "recent_files" => Self::Files(curline.into()),
             "history" => {
                 if curline.starts_with('~') {
                     // I know std::env::home_dir() is incorrect in some rare cases[1], but dirs crate has been archived.
@@ -69,9 +72,9 @@ impl OnMove {
                     Self::History(build_abs_path(&context.cwd, curline))
                 }
             }
-            "filer" => unreachable!("filer has been handled ahead"),
             "proj_tags" => {
-                let (lnum, p) = extract_proj_tags(&curline).context("can not extract proj tags")?;
+                let (lnum, p) =
+                    extract_proj_tags(&curline).context("Couldn't extract proj tags")?;
                 let mut path: PathBuf = context.cwd.clone();
                 path.push(&p);
                 Self::ProjTags { path, lnum }
@@ -97,13 +100,13 @@ impl OnMove {
                 Self::Grep { path, lnum }
             }
             "blines" => {
-                let lnum = extract_blines_lnum(&curline).context("can not extract buffer lnum")?;
+                let lnum = extract_blines_lnum(&curline).context("Couldn't extract buffer lnum")?;
                 let path = context.start_buffer_path.clone();
                 Self::BLines { path, lnum }
             }
             "tags" => {
                 let lnum =
-                    extract_buf_tags_lnum(&curline).context("can not extract buffer tags")?;
+                    extract_buf_tags_lnum(&curline).context("Couldn't extract buffer tags")?;
                 let path = context.start_buffer_path.clone();
                 Self::BufferTags { path, lnum }
             }
@@ -125,13 +128,13 @@ impl OnMove {
                 }
             }
             "commits" | "bcommits" => {
-                let rev = parse_rev(&curline).context("can not extract rev")?;
+                let rev = parse_rev(&curline).context("Couldn't extract rev")?;
                 Self::Commit(rev.into())
             }
             _ => {
                 return Err(anyhow!(
-                    "Couldn't constructs a OnMove instance, context: {:?}",
-                    context
+                    "Couldn't construct an `OnMove` instance, you probably forget to add an implementation for this provider: {:?}",
+                    context.provider_id
                 ))
             }
         };
@@ -142,35 +145,34 @@ impl OnMove {
 
 pub struct OnMoveHandler<'a> {
     pub msg_id: u64,
-    pub provider_id: ProviderId,
     pub size: usize,
     pub inner: OnMove,
     pub context: &'a SessionContext,
 }
 
 impl<'a> OnMoveHandler<'a> {
-    pub fn try_new(msg: &Message, context: &'a SessionContext) -> anyhow::Result<Self> {
+    pub fn try_new(
+        msg: &Message,
+        context: &'a SessionContext,
+        curline: Option<String>,
+    ) -> anyhow::Result<Self> {
         let msg_id = msg.id;
-        let provider_id = context.provider_id.clone();
-        let curline = msg.get_curline(&provider_id)?;
-        if provider_id.as_str() == "filer" {
+        let curline = match curline {
+            Some(line) => line,
+            None => msg.get_curline(&context.provider_id)?,
+        };
+        if context.provider_id.as_str() == "filer" {
             let path = build_abs_path(&msg.get_cwd(), curline);
             return Ok(Self {
                 msg_id,
-                size: provider_id.get_preview_size(),
-                provider_id,
+                size: context.sensible_preview_size(),
                 context,
                 inner: OnMove::Filer(path),
             });
         }
-        let size = std::cmp::max(
-            provider_id.get_preview_size(),
-            (context.preview_winheight / 2) as usize,
-        );
         Ok(Self {
             msg_id,
-            size,
-            provider_id,
+            size: context.sensible_preview_size(),
             context,
             inner: OnMove::new(curline, context)?,
         })
@@ -205,7 +207,7 @@ impl<'a> OnMoveHandler<'a> {
     }
 
     fn send_response(&self, result: serde_json::value::Value) {
-        let provider_id: ProviderId = self.provider_id.clone();
+        let provider_id = &self.context.provider_id;
         write_response(json!({
                 "id": self.msg_id,
                 "provider_id": provider_id,
@@ -247,7 +249,7 @@ impl<'a> OnMoveHandler<'a> {
 
     fn preview_file_at<P: AsRef<Path>>(&self, path: P, lnum: usize) {
         debug!(
-            "try to preview the file, path: {}, lnum: {}",
+            "Try to preview file: {}, lnum: {}",
             path.as_ref().display(),
             lnum
         );
@@ -259,8 +261,8 @@ impl<'a> OnMoveHandler<'a> {
                     .chain(self.truncate_preview_lines(lines_iter.into_iter()))
                     .collect::<Vec<_>>();
                 debug!(
-                    "<== message(out) sending event: on_move, msg_id:{}, provider_id:{}, lines: {:?}",
-                    self.msg_id, self.provider_id, lines
+                    "<== message(out) sending event: on_move, msg_id:{}, provider_id:{}, lines len: {:?}",
+                    self.msg_id, self.context.provider_id, lines.len()
                 );
                 self.send_response(json!({
                   "event": "on_move",
@@ -272,7 +274,7 @@ impl<'a> OnMoveHandler<'a> {
             Err(err) => {
                 error!(
                     "[{}]Couldn't read first lines of {}, error: {:?}",
-                    self.provider_id,
+                    self.context.provider_id,
                     path.as_ref().display(),
                     err
                 );

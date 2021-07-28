@@ -2,10 +2,25 @@
 
 ## [unreleased]
 
+## Improved
+
+- Rewrite the cache system to be more efficient and convenient. See #726 for details.
+- Less allocations. #728
+
+## [0.27] 2021-07-22
+
+### Added
+
+- Add a new provider `recent_files` for recent files history, which is persistent and can keep up to 10,000 entries ordered by [Frecency](https://en.wikipedia.org/wiki/Frecency). #724
+
 ### Fixed
 
 - Fix rg 13.0.0 does not work for neovim. #711
 - Fix grep2 does not work on Windows. #533
+
+### Improved
+
+- Support passing the cursor position instead of full cursor line from Vim to Rust since the performance of Vim is pretty bad when the cursor line is extremely long. #719
 
 ## [0.26] 2021-06-15
 
