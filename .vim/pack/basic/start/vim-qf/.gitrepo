@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/romainl/vim-qf.git
 	branch = master
-	commit = 4fe7e33a514874692d6897edd1acaaa46d9fb646
-	parent = 6440a828db3ea7087b89268b4ce85f00efb1ce85
+	commit = 65f115c350934517382ae45198a74232a9069c2a
+	parent = ce71eec11c54f876b2258a61430958d756a1db23
 	method = merge
 	cmdver = 0.4.3
