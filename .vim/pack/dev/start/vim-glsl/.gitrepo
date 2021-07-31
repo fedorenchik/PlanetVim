@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/tikhomirov/vim-glsl.git
+	branch = master
+	commit = 36266238d96cd2219769793855a7e915f5e6a32c
+	parent = 8237b3b87a611d6c1d922853f9b774f67b60bce9
+	method = merge
+	cmdver = 0.4.3
