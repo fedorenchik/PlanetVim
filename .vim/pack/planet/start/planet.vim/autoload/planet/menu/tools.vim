@@ -93,6 +93,7 @@ func! planet#menu#tools#Update() abort
     an 700.10  🔀&g.&Diff.&Stat                                   <Cmd>call planet#term#RunCmdTab('git -c color.diff diff --stat \| less -RX')<CR>
     an 700.10  🔀&g.&Diff.&Cached\ (Index)                        <Cmd>call planet#term#RunCmdTab('git -c color.diff diff --staged \| less -RX')<CR>
     an 700.10  🔀&g.&Diff.Stat\ Cached                            <Cmd>call planet#term#RunCmdTab('git -c color.diff diff --staged --stat \| less -RX')<CR>
+    an 700.10  🔀&g.&Worktree.Add\ Sibling\ Worktree              <Cmd>call planet#term#RunCmd('git worktree add ...')<CR>
     an 700.10  🔀&g.&Worktree.New                                 <Cmd>call planet#term#RunCmd('git worktree add')<CR>
     an 700.10  🔀&g.&Worktree.New\ Detached                       <Cmd>call planet#term#RunCmd('git worktree add --detach')<CR>
     an 700.10  🔀&g.&Worktree.List                                <Cmd>call planet#term#RunCmd('git worktree list')<CR>
