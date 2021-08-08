@@ -13,7 +13,7 @@ def! g:TitleString(): string
       buf += 1
       continue
     endif
-    "TODO: only show running (not finished) commands/terminals
+    #TODO: only show running (not finished) commands/terminals
     if getbufvar(buf, "&buftype") ==# 'terminal'
       m = '!' .. m
     end
