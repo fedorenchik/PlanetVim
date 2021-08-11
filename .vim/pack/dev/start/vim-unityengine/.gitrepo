@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/idbrii/vim-unityengine.git
+	branch = master
+	commit = 074c80b0dc8ede7a5e98446ca8f83a17d020f3ce
+	parent = 3df343d0811f14493a17efaf6d7c5acfb658ace6
+	method = merge
+	cmdver = 0.4.3
