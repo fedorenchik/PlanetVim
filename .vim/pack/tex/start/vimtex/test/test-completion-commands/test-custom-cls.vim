@@ -6,7 +6,10 @@ set nomore
 
 nnoremap q :qall!<cr>
 
-silent edit test2.tex
+let g:vimtex_cache_root = '.'
+let g:vimtex_cache_persistent = 0
+
+silent edit test-custom-cls.tex
 
 if empty($INMAKE) | finish | endif
 
