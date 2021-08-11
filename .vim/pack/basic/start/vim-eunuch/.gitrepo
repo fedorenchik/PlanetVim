@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/tpope/vim-eunuch.git
 	branch = master
-	commit = dbbbf853fc523d312f61b4bbdf2e13297645dcde
-	parent = 96b47e278f4461fbca78572641203f8bdbd5747d
+	commit = e8b1be581b88de524fc62cd24265d602f8caac19
+	parent = cfab6f629676efb2f304dacec17998abac4add03
 	method = merge
 	cmdver = 0.4.3
