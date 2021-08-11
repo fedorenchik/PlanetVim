@@ -1,0 +1,69 @@
+*vim-unreal.txt*		UE4 development plugin
+
+vim-unreal is a plugin for working with Unreal Engine 4 projects using Vim. It
+includes |UltiSnips| snippets for C++, ue4cli command wrappers, and sets
+'errorformat' for the |quickfix| window to handle errors from Unreal Header
+Tool, Unreal Build Tool, and Microsoft Visual C++.
+
+1. Install	|ue4-install|
+2. Commands	|ue4-commands|
+3. See Also	|ue4-seealso|
+
+==============================================================================
+1. Install							*ue4-install*
+
+1. Install vim-unreal like any standard Vim |package|.
+2. Run |:Ue4Install|
+
+==============================================================================
+2. Commands							*ue4-commands*
+
+Ue4 commands require a UE4 uproject file. The location of the uproject file is
+determined by starting with the path for the current Vim buffer, and then
+searching upward through the parent directories. If the current buffer does
+not have a filename, the working directory is used instead.
+
+								*:Ue4Install*
+:Ue4Install		Install ue4cli python packages check for ctags in
+			PATH.
+
+								*:Ue4Build*
+:Ue4Build		Run "ue4 build" using |:make|.
+
+								*:Ue4Make*
+:Ue4Make {command}	Run "ue4 {command}" using |:make|.
+
+								*:Ue4Run*
+:Ue4Run			Run "ue4 run".
+
+								*:Ue4Tags*
+:Ue4Tags		Run "ue4 ctags update" and set |'tags'| to the
+			generated tags files.
+
+==============================================================================
+3. See Also							*ue4-seealso*
+
+ctags-ue4cli ~
+https://github.com/drichardson/ctags-ue4cli/
+Ctags plugin for ue4cli.
+
+pip ~
+https://pypi.org/project/pip/
+pip is the package installer for Python.
+
+ue4cli ~
+https://docs.adamrehn.com/ue4cli/overview/introduction-to-ue4cli
+Command line interface for Unreal Engine 4.
+
+UltiSnips ~
+https://github.com/SirVer/ultisnips
+Snippets for Vim.
+
+vim-cpp ~
+https://github.com/drichardson/vim-cpp
+C++ quality of life plugin that supports clang-format and quick
+switching between header and implementation files.
+
+
+
+ vim: tw=78 ts=8 noet ft=help norl

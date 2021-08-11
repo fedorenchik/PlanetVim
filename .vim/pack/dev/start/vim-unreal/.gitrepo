@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/drichardson/vim-unreal.git
+	branch = main
+	commit = 0885fa2e87aa3b3d70aa20e903acf57c2ed5802d
+	parent = b917ab32027e84dfc7605e7141d767971d357a08
+	method = merge
+	cmdver = 0.4.3
