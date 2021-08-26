@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/sodapopcan/vim-twiggy.git
 	branch = master
-	commit = cd7286702319d676c622a5f5891dc68563bf6ad5
-	parent = 3b6c1664e0f780b52daea0cdb0ce292df7f36cd4
+	commit = 3561237047481c212b55942d9507c937841d3bc8
+	parent = d8c8ec709ed66c20e825c62ab7ff1e4cc933db56
 	method = merge
 	cmdver = 0.4.3
