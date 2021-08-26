@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/Konfekt/FastFold.git
 	branch = master
-	commit = 066d2347baa8dc180c18f889d0b37a826f23973b
-	parent = 2f18c358fdc7c107bced010e0255e0b5746bc6f8
+	commit = 20126c1646f96da862af7cbec45ca0fe0a930703
+	parent = 5d480c78e4f4a793dbe6be4ce63e0ac3687ec72d
 	method = merge
 	cmdver = 0.4.3
