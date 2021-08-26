@@ -4,6 +4,8 @@ pub mod on_init;
 pub mod on_move;
 pub mod on_typed;
 
+use std::sync::Arc;
+
 use anyhow::Result;
 use serde_json::json;
 
@@ -19,12 +21,12 @@ pub struct DefaultEventHandler;
 
 #[async_trait::async_trait]
 impl EventHandler for DefaultEventHandler {
-    async fn handle(&mut self, event: Event, context: SessionContext) -> Result<()> {
+    async fn handle(&mut self, event: Event, context: Arc<SessionContext>) -> Result<()> {
         match event {
             Event::OnMove(msg) => {
                 let msg_id = msg.id;
                 if let Err(e) =
-                    on_move::OnMoveHandler::try_new(&msg, &context, None).map(|x| x.handle())
+                    on_move::OnMoveHandler::create(&msg, &context, None).map(|x| x.handle())
                 {
                     log::error!("Failed to handle OnMove event: {:?}", e);
                     write_response(json!({"error": e.to_string(), "id": msg_id }));

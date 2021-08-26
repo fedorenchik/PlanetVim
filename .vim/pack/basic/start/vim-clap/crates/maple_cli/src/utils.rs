@@ -4,7 +4,58 @@ use anyhow::{anyhow, Result};
 use chrono::prelude::*;
 
 use icon::IconPainter;
+use types::{ExactTerm, InverseTerm};
 use utility::{println_json, println_json_with_length, read_first_lines};
+
+/// Yes or no terms.
+#[derive(Debug, Clone)]
+pub struct ExactOrInverseTerms {
+    pub exact_terms: Vec<ExactTerm>,
+    pub inverse_terms: Vec<InverseTerm>,
+}
+
+impl Default for ExactOrInverseTerms {
+    fn default() -> Self {
+        Self {
+            exact_terms: Vec::new(),
+            inverse_terms: Vec::new(),
+        }
+    }
+}
+
+impl ExactOrInverseTerms {
+    /// Returns the match indices of exact terms if given `line` passes all the checks.
+    fn check_terms(&self, line: &str) -> Option<Vec<usize>> {
+        if let Some((_, indices)) = matcher::search_exact_terms(self.exact_terms.iter(), &line) {
+            let should_retain = !self
+                .inverse_terms
+                .iter()
+                .any(|term| term.match_full_line(&line));
+
+            if should_retain {
+                Some(indices)
+            } else {
+                None
+            }
+        } else {
+            None
+        }
+    }
+
+    pub fn check_jump_line(
+        &self,
+        (jump_line, mut indices): (String, Vec<usize>),
+    ) -> Option<(String, Vec<usize>)> {
+        if let Some(exact_indices) = self.check_terms(&jump_line) {
+            indices.extend_from_slice(&exact_indices);
+            indices.sort_unstable();
+            indices.dedup();
+            Some((jump_line, indices))
+        } else {
+            None
+        }
+    }
+}
 
 pub type UtcTime = DateTime<Utc>;
 
@@ -102,8 +153,8 @@ pub fn send_response_from_cache(
 }
 
 /// Build the absolute path using cwd and relative path.
-pub fn build_abs_path<P: AsRef<Path>>(cwd: P, curline: String) -> PathBuf {
+pub fn build_abs_path<P: AsRef<Path>>(cwd: P, curline: impl AsRef<Path>) -> PathBuf {
     let mut path: PathBuf = cwd.as_ref().into();
-    path.push(&curline);
+    path.push(curline);
     path
 }
