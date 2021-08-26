@@ -270,6 +270,10 @@ In all commands [args] are forwarded to the underlying test runner.
                                                 *test-:DartTest*
 :DartTest [args]  	         Uses the `dart test` command.
 
+                                                *test-:VueTestUtils*
+:VueTestUtils [args]  	         Uses the `vue-cli-service` command.
+
+
 MAVEN TEST DIFFERENCES                          *test-maven-test-differences*
 
 As there are different approaches to run tests in a maven project (unit vs integration tests) there is a way to run both. Initially the vim-test runs `mvn` `test`. If you want it to run `mvn` `verify` instead, then you can create your own command invoking vim test directly with the 'integration' parameter:
@@ -472,6 +476,20 @@ settings. If you want to switch between them then change `test#strategy`.
 
 Note: that the base `asyncrun` strategy will be affected by your global asyncrun
 settings.
+
+Harpoon ~
+
+This strategy lets you run commands in a neovim terminal using harpoon terminals
+
+Before you can use this strategy you are going to need to have the harpoon plugin installed
+
+By default the commands are sent to the terminal 1, to send the command to another terminal you con set in you vimrc g:test#harpoon_term
+
+For example to send the commands to terminal number 2 you can set in your vimrc:
+
+>
+let g:test#harpoon_term = 2
+<
 
 QUICKFIX STRATEGIES                               *test-quickfix-strategies*
 
