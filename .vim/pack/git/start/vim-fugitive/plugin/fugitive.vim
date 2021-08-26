@@ -16,9 +16,9 @@ let s:bad_git_dir = '/$\|^fugitive:'
 " Fugitive is active in the current buffer.  Do not rely on this for direct
 " filesystem access; use FugitiveFind('.git/whatever') instead.
 function! FugitiveGitDir(...) abort
-  if v:version < 704
+  if v:version < 703
     return ''
-  elseif !a:0 || type(a:1) == type(0) && a:1 < 0
+  elseif !a:0 || type(a:1) == type(0) && a:1 < 0 || a:1 is# get(v:, 'true', -1)
     if exists('g:fugitive_event')
       return g:fugitive_event
     endif
@@ -30,7 +30,7 @@ function! FugitiveGitDir(...) abort
       return b:git_dir
     endif
     return dir =~# s:bad_git_dir ? '' : dir
-  elseif type(a:1) == type(0)
+  elseif type(a:1) == type(0) && a:1 isnot# 0
     if a:1 == bufnr('') && (!exists('b:git_dir') || b:git_dir =~# s:bad_git_dir) && empty(&buftype)
       let b:git_dir = FugitiveExtractGitDir(expand('%:p'))
     endif
@@ -55,7 +55,11 @@ endfunction
 " exists, call FooReal("foo://bar").
 function! FugitiveReal(...) abort
   let file = a:0 ? a:1 : @%
-  if file =~# '^\a\a\+:' || a:0 > 1
+  if type(file) ==# type({})
+    let dir = FugitiveGitDir(file)
+    let tree = s:Tree(dir)
+    return FugitiveVimPath(empty(tree) ? dir : tree)
+  elseif file =~# '^\a\a\+:' || a:0 > 1
     return call('fugitive#Real', [file] + a:000[1:-1])
   elseif file =~# '^/\|^\a:\|^$'
     return file
@@ -72,22 +76,10 @@ endfunction
 " An optional second argument provides the Git dir, or the buffer number of a
 " buffer with a Git dir.  The default is the current buffer.
 function! FugitiveFind(...) abort
-  if a:0 && type(a:1) ==# type({})
+  if a:0 && (type(a:1) ==# type({}) || type(a:1) ==# type(0))
     return call('fugitive#Find', a:000[1:-1] + [FugitiveGitDir(a:1)])
   else
     return fugitive#Find(a:0 ? a:1 : bufnr(''), FugitiveGitDir(a:0 > 1 ? a:2 : -1))
-  endif
-endfunction
-
-function! FugitivePath(...) abort
-  if a:0 > 2 && type(a:1) ==# type({})
-    return fugitive#Path(a:2, a:3, FugitiveGitDir(a:1))
-  elseif a:0 && type(a:1) ==# type({})
-    return FugitiveReal(a:0 > 1 ? a:2 : @%)
-  elseif a:0 > 1
-    return fugitive#Path(a:1, a:2, FugitiveGitDir(a:0 > 2 ? a:3 : -1))
-  else
-    return FugitiveReal(a:0 ? a:1 : @%)
   endif
 endfunction
 
@@ -105,6 +97,14 @@ function! FugitiveParse(...) abort
   endif
   let v:errmsg = 'fugitive: invalid Fugitive URL ' . path
   throw v:errmsg
+endfunction
+
+" FugitiveGitVersion() queries the version of Git in use.  Pass up to 3
+" arguments to return a Boolean of whether a certain minimum version is
+" available (FugitiveGitVersion(2,3,4) checks for 2.3.4 or higher) or no
+" arguments to get a raw string.
+function! FugitiveGitVersion(...) abort
+  return call('fugitive#GitVersion', a:000)
 endfunction
 
 " FugitiveResult() returns an object encapsulating the result of the most
@@ -125,15 +125,43 @@ function! FugitiveResult(...) abort
   return call('fugitive#Result', a:000)
 endfunction
 
-" FugitivePrepare() constructs a Git command string which can be executed with
-" functions like system() and commands like :!.  Integer arguments will be
-" treated as buffer numbers, and the appropriate relative path inserted in
-" their place.
+" FugitiveExecute() runs Git with a list of arguments and returns a dictionary
+" with the following keys:
 "
-" If the first argument is a string that looks like a path or an empty string,
-" it will be used as the Git dir.  If it's a buffer number, the Git dir for
-" that buffer will be used.  The default is the current buffer.
+" * "exit_status": The integer exit code of the process.
+" * "stdout": The stdout produced by the process, as a list of lines.
+" * "stderr": The stdout produced by the process, as a list of lines.
+"
+" An optional second argument provides the Git dir, or the buffer number of a
+" buffer with a Git dir.  The default is the current buffer.
+"
+" An optional final argument is a callback Funcref, for asynchronous
+" execution.
+function! FugitiveExecute(args, ...) abort
+  return call('fugitive#Execute', [a:args] + a:000)
+endfunction
+
+" FugitiveShellCommand() turns an array of arugments into a Git command string
+" which can be executed with functions like system() and commands like :!.
+" Integer arguments will be treated as buffer numbers, and the appropriate
+" relative path inserted in their place.
+"
+" An optional second argument provides the Git dir, or the buffer number of a
+" buffer with a Git dir.  The default is the current buffer.
+function! FugitiveShellCommand(...) abort
+  return call('fugitive#ShellCommand', a:000)
+endfunction
+
+" FugitivePrepare() is a deprecated alias for FugitiveShellCommand().  If you
+" are using this in conjunction with system(), consider using
+" FugitiveExecute() instead.
 function! FugitivePrepare(...) abort
+  if !exists('s:did_prepare_warning')
+    let s:did_prepare_warning = 1
+    echohl WarningMsg
+    unsilent echomsg 'FugitivePrepare() has been superseded by FugitiveShellCommand()'
+    echohl NONE
+  endif
   return call('fugitive#ShellCommand', a:000)
 endfunction
 
@@ -190,7 +218,7 @@ endfunction
 " An optional second argument provides the Git dir, or the buffer number of a
 " buffer with a Git dir.  The default is the current buffer.
 function! FugitiveHead(...) abort
-  if a:0 && type(a:1) ==# type({})
+  if a:0 && (type(a:1) ==# type({}) || type(a:1) ==# type('') && a:1 !~# '^\d\+$')
     let dir = FugitiveGitDir(a:1)
     let arg = get(a:, 2, 0)
   elseif a:0 > 1
@@ -204,6 +232,18 @@ function! FugitiveHead(...) abort
     return ''
   endif
   return fugitive#Head(arg, dir)
+endfunction
+
+function! FugitivePath(...) abort
+  if a:0 > 2 && type(a:1) ==# type({})
+    return fugitive#Path(a:2, a:3, FugitiveGitDir(a:1))
+  elseif a:0 && type(a:1) ==# type({})
+    return FugitiveReal(a:0 > 1 ? a:2 : @%)
+  elseif a:0 > 1
+    return fugitive#Path(a:1, a:2, FugitiveGitDir(a:0 > 2 ? a:3 : -1))
+  else
+    return FugitiveReal(a:0 ? a:1 : @%)
+  endif
 endfunction
 
 function! FugitiveStatusline(...) abort
@@ -299,7 +339,13 @@ function! s:CeilingDirectories() abort
 endfunction
 
 function! FugitiveExtractGitDir(path) abort
-  let path = s:Slash(a:path)
+  if type(a:path) ==# type({})
+    return get(a:path, 'git_dir', '')
+  elseif type(a:path) == type(0)
+    let path = s:Slash(a:path >= 0 ? bufname(a:path) : bufname(''))
+  else
+    let path = s:Slash(a:path)
+  endif
   if path =~# '^fugitive:'
     return matchstr(path, '\C^fugitive:\%(//\)\=\zs.\{-\}\ze\%(//\|::\|$\)')
   elseif empty(path)
@@ -355,15 +401,15 @@ function! FugitiveExtractGitDir(path) abort
   return ''
 endfunction
 
-function! FugitiveDetect(path) abort
-  if v:version < 704
+function! FugitiveDetect(...) abort
+  if v:version < 703
     return ''
   endif
   if exists('b:git_dir') && b:git_dir =~# '^$\|' . s:bad_git_dir
     unlet b:git_dir
   endif
   if !exists('b:git_dir')
-    let b:git_dir = FugitiveExtractGitDir(a:path)
+    let b:git_dir = FugitiveExtractGitDir(a:0 ? a:1 : bufnr(''))
   endif
   if empty(b:git_dir) || !exists('#User#Fugitive')
     return ''
@@ -439,10 +485,13 @@ if exists(':Gstatus') != 2 && get(g:, 'fugitive_legacy_commands', 1)
 endif
 
 for s:cmd in ['Commit', 'Revert', 'Merge', 'Rebase', 'Pull', 'Push', 'Fetch', 'Blame']
-  if exists(':G' . tolower(s:cmd)) != 2 && get(g:, 'fugitive_legacy_commands', 1)
+  if exists(':G' . tolower(s:cmd)) != 2 && get(g:, 'fugitive_legacy_commands', 0)
     exe 'command! -bang -nargs=? -range=-1 -complete=customlist,fugitive#' . s:cmd . 'Complete G' . tolower(s:cmd)
           \ 'echohl WarningMSG|echomsg ":G' . tolower(s:cmd) . ' is deprecated in favor of :Git ' . tolower(s:cmd) . '"|echohl NONE|'
           \ 'exe fugitive#Command(<line1>, <count>, +"<range>", <bang>0, "<mods>", "' . tolower(s:cmd) . ' " . <q-args>)'
+  elseif exists(':G' . tolower(s:cmd)) != 2 && !exists('g:fugitive_legacy_commands')
+    exe 'command! -bang -nargs=? -range=-1 -complete=customlist,fugitive#' . s:cmd . 'Complete G' . tolower(s:cmd)
+          \ 'echoerr ":G' . tolower(s:cmd) . ' has been removed in favor of :Git ' . tolower(s:cmd) . '"'
   endif
 endfor
 unlet s:cmd
@@ -454,9 +503,12 @@ exe 'command! -bang -nargs=? -range=-1' s:addr_wins '-complete=customlist,fugiti
 exe 'command! -bang -nargs=? -range=-1' s:addr_wins '-complete=customlist,fugitive#GrepComplete Gcgrep exe fugitive#GrepCommand(<line1>, <count>, +"<range>", <bang>0, "<mods>", <q-args>)'
 exe 'command! -bang -nargs=? -range=-1' s:addr_wins '-complete=customlist,fugitive#GrepComplete Glgrep exe fugitive#GrepCommand(0, <count> > 0 ? <count> : 0, +"<range>", <bang>0, "<mods>", <q-args>)'
 
-if exists(':Glog') != 2 && get(g:, 'fugitive_legacy_commands', 1)
+if exists(':Glog') != 2 && get(g:, 'fugitive_legacy_commands', 0)
   exe 'command! -bang -nargs=? -range=-1 -complete=customlist,fugitive#LogComplete Glog  :exe fugitive#LogCommand(<line1>,<count>,+"<range>",<bang>0,"<mods>",<q-args>, "")'
         \ '|echohl WarningMSG|echomsg ":Glog is deprecated in favor of :Gclog"|echohl NONE'
+elseif exists(':Glog') != 2 && !exists('g:fugitive_legacy_commands')
+  exe 'command! -bang -nargs=? -range=-1 -complete=customlist,fugitive#LogComplete Glog'
+        \ ' echoerr ":Glog has been removed in favor of :Gclog"'
 endif
 exe 'command! -bang -nargs=? -range=-1 -complete=customlist,fugitive#LogComplete Gclog :exe fugitive#LogCommand(<line1>,<count>,+"<range>",<bang>0,"<mods>",<q-args>, "c")'
 exe 'command! -bang -nargs=? -range=-1 -complete=customlist,fugitive#LogComplete GcLog :exe fugitive#LogCommand(<line1>,<count>,+"<range>",<bang>0,"<mods>",<q-args>, "c")'
@@ -510,7 +562,7 @@ if exists(':Gbrowse') != 2 && get(g:, 'fugitive_legacy_commands', 1)
         \ '|if <bang>1|redraw!|endif|echohl WarningMSG|echomsg ":Gbrowse is deprecated in favor of :GBrowse"|echohl NONE'
 endif
 
-if v:version < 704
+if v:version < 703
   finish
 endif
 
@@ -546,7 +598,7 @@ augroup fugitive
         \    setlocal foldtext=fugitive#Foldtext() |
         \ endif
   autocmd FileType fugitive
-        \ call fugitive#MapCfile('fugitive#StatusCfile()')
+        \ call fugitive#MapCfile('fugitive#PorcelainCfile()')
   autocmd FileType gitrebase
         \ let &l:include = '^\%(pick\|squash\|edit\|reword\|fixup\|drop\|[pserfd]\)\>' |
         \ if &l:includeexpr !~# 'Fugitive' |
