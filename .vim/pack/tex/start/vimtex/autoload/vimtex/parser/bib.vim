@@ -9,19 +9,16 @@ function! vimtex#parser#bib#parse(file, opts) abort " {{{1
 
   let l:backend = get(a:opts, 'backend', g:vimtex_parser_bib_backend)
 
-  if l:backend ==# 'bibtex'
-    if !executable('bibtex') | let l:backend = 'vim' | endif
-  elseif l:backend ==# 'bibparse'
-    if !executable('bibparse') | let l:backend = 'vim' | endif
-  else
-    let l:backend = 'vim'
-  endif
-
-  return s:parse_with_{l:backend}(a:file)
+  try
+    return s:parse_with_{l:backend}(a:file)
+  catch /E117/
+    call vimtex#log#error(
+          \ printf('bib parser backend "%s" does not exist!', l:backend))
+    return []
+  endtry
 endfunction
 
 " }}}1
-
 function! vimtex#parser#bib#parse_cheap(start_line, end_line, opts) abort " {{{1
   " This function implements a quick and dirty bib parser in Vimscript. It does
   " not parse all keys, just the type, the key, and the title/entryset. It is
@@ -227,7 +224,7 @@ endfunction
 function! s:parse_with_bibparse_init() abort " {{{1
   if exists('s:bibparse_init_done') | return | endif
 
-  " Check if bibtex is executable
+  " Check if bibparse is executable
   let s:bibparse_not_executable = !executable('bibparse')
   if s:bibparse_not_executable
     call vimtex#log#warning(
@@ -235,6 +232,26 @@ function! s:parse_with_bibparse_init() abort " {{{1
   endif
 
   let s:bibparse_init_done = 1
+endfunction
+
+" }}}1
+
+function! s:parse_with_bibtexparser(file) abort " {{{1
+py3 << END
+import vim
+from bibtexparser import load
+from bibtexparser.bparser import BibTexParser
+
+parser = BibTexParser(common_strings=True)
+parser.ignore_nonstandard_types = False
+
+entries = load(open(vim.eval("a:file")), parser).entries
+for e in entries:
+    e['key'] = e['ID']
+    e['type'] = e['ENTRYTYPE']
+END
+
+  return py3eval('entries')
 endfunction
 
 " }}}1

@@ -909,9 +909,19 @@ OPTIONS                                                        *vimtex-options*
   keys are explained in more detail:
 
   build_dir~
-    This option sets the compilation build directory.  It corresponds to the
-    `-output-directory` option in `latexmk`.  If the path is a relative path,
+    This option sets the compilation build directory. It corresponds to the
+    `-output-directory` option in `latexmk`. If the path is a relative path,
     then it will be considered relative to the main project file.
+
+    Although the value of this option should be a string that represents
+    a path, it is also possible to make it a function. This makes it possible
+    to specify a dynamic `build_dir`. It may be easier to understand from an
+    example: >
+
+      let g:vimtex_compiler_latexmk = {'build_dir': {-> expand("%:t:r")}}
+<
+    With the above setting, the `build_dir` is set to the base name of the
+    current file. E.g., If you do `vim test.tex`, the value becomes `test`.
 
     Note 1: This option only works with `latexmk` version 4.27 and later.
     Note 2: If `$out_dir` is added to `.latexmkrc`, then the `.latexmkrc` setting
@@ -1116,8 +1126,7 @@ OPTIONS                                                        *vimtex-options*
     Note: This value must be specified; an empty value will return an error.
 
   build_dir~
-    Same as |g:vimtex_compiler_latexmk| / `build_dir`. This will be created if
-    needed, since tectonic won't build anything unless it exists.
+    Same as |g:vimtex_compiler_latexmk| / `build_dir`.
 
 *g:vimtex_complete_enabled*
   Use this option to disable/enable VimTeX completion.
@@ -1150,6 +1159,26 @@ OPTIONS                                                        *vimtex-options*
               cases.
 
     `bibparse`: Also fast, but might be more robust.
+
+              Note: bibparse is an executable provided by the Perl package
+                    Text-BibTeX [0]. It should not be confused with the
+                    similarly named Python project [1]. The latter is
+                    deprecated in favor of GooseBib [2]. The Python projects
+                    bibparse and GooseBib are both based on the Python library
+                    `bibtexparser`.
+
+                    [0]: https://metacpan.org/dist/Text-BibTeX
+                    [1]: https://github.com/tdegeus/bibparse
+                    [2]: https://github.com/tdegeus/GooseBib
+
+    `bibtexparser`:
+              Also fast and possibly more robust. See the project Github
+              page for more details:
+              https://github.com/sciunto-org/python-bibtexparser
+
+              Note: This requires that Python 3 is available to Vim/neovim
+                    (see |if_pyth| and |py3|) and that the `bibtexparser`
+                    Python module is installed and available.
 
     `vim`:      The slowest but perhaps most robust solution, as it does not
               require any external utilities.
@@ -2723,6 +2752,19 @@ OPTIONS                                                        *vimtex-options*
 
   Default value: 1
 
+*g:vimtex_view_reverse_search_edit_cmd*
+  When working in a multi-file project, initiating backward search
+  |vimtex-synctex-backward-search| may require opening a file that is not
+  currently open in a window. This option controls the command that is used to
+  open files as a result of a backward search.
+
+  Examples:
+    * `edit`     open buffer in current window
+    * `tabedit`  open buffer in new tab page
+    * `split`    split current window to open buffer
+
+  Default value: `edit`
+
 *g:vimtex_view_method*
   Set the viewer method.
 
@@ -3417,7 +3459,7 @@ Explanation of the keys:
   lhs~
     Mandatory argument. The left-hand side part of the map.
 
-  lhs_rhs~
+  rhs~
     Mandatory argument. The right-hand side part of the map. There is one
     utility function that can be useful:
 
@@ -4308,7 +4350,7 @@ syntax addons exist and how to configure them.
 SYNTAX GROUP REFERENCE                                *vimtex-syntax-reference*
 
 The following is a reference of the main syntax groups and its default
-highlighting, as well as one ore more examples of what it matches. Most of the
+highlighting, as well as one or more examples of what it matches. Most of the
 primitive groups are linked to conventional syntax groups as listed in
 |group-name|. In the examples, capital letters are used to indicate which
 parts are matched by the current group. For even more details, please refer to
@@ -4691,8 +4733,9 @@ after compilation. This is used by VimTeX to achieve callbacks after
 compilation has finished through |vimtex#compiler#callback| with something
 like this: >
 
-  $success_cmd = "gvim --remote-expr 'vimtex#compiler#callback(1)'";
-  $failure_cmd = "gvim --remote-expr 'vimtex#compiler#callback(0)'";
+  $compiling_cmd = "vim --remote-expr 'vimtex#compiler#callback(2)'";
+  $success_cmd = "vim --remote-expr 'vimtex#compiler#callback(1)'";
+  $failure_cmd = "vim --remote-expr 'vimtex#compiler#callback(0)'";
 
 Another neat way to use this is to use `xdotool` to change the window title of
 the viewer to indicate the compilation status: >
@@ -5204,10 +5247,14 @@ Note: This API is currently a work in progress!
 
 *vimtex#compiler#callback*
   Utility function to be used as a compiler callback function. Takes a single
-  argument which is the compiler status: 0 or |v:false| means compilation
-  failed and 1 or |v:true| means compilation was successful. The function does
-  several useful things based on the status, such as running the
-  |VimtexEventCompileFailed| and |VimtexEventCompileSuccess| events.
+  argument, which is the compiler status:
+
+    1: Compilation cycle has started
+    2: Compilation complete - Success
+    3: Compilation complete - Failed
+
+  The function does several useful things based on the status, such as running
+  the |VimtexEventCompileFailed| and |VimtexEventCompileSuccess| events.
 
 *vimtex#syntax#in_mathzone*
   Returns 1 if the position is inside a math zone. If called without

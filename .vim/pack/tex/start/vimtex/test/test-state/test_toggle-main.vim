@@ -2,9 +2,9 @@ set nocompatible
 let &rtp = '../..,' . &rtp
 filetype plugin on
 
-set nomore
-
 nnoremap q :qall!<cr>
+
+call vimtex#log#set_silent()
 
 if empty($INMAKE) | finish | endif
 
@@ -15,7 +15,7 @@ call assert_equal(len(vimtex#state#list_all()), 2)
 
 " If we toggle to the included state then wipe it, we should not cleanup the
 " main state
-silent VimtexToggleMain
+VimtexToggleMain
 bwipeout
 call assert_equal(len(vimtex#state#list_all()), 1)
 

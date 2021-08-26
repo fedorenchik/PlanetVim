@@ -2,10 +2,11 @@ set nocompatible
 let &rtp = '../..,' . &rtp
 filetype plugin on
 
-set nomore
 set hidden
 
 nnoremap q :qall!<cr>
+
+call vimtex#log#set_silent()
 
 if empty($INMAKE) | finish | endif
 

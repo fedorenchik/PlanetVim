@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/lervag/vimtex.git
 	branch = master
-	commit = ae606455d79301f9091c1b6bde0ce87c17512312
-	parent = 861f470e94c2b4209c4ed2aa0cfc643eb489ee29
+	commit = 4f085ccb52f6c77881749393df2145fe5b7730bb
+	parent = 9b4ceb5a64f99ae4ecf4ccadb2f88a99120cf165
 	method = merge
 	cmdver = 0.4.3
