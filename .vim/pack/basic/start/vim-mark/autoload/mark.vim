@@ -1098,6 +1098,11 @@ function! mark#GetPattern( ... )
 	endif
 endfunction
 
+" Are marks currently enabled?
+function! mark#IsEnabled() abort
+	return s:enabled
+endfunction
+
 
 "- initializations ------------------------------------------------------------
 

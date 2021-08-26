@@ -1,7 +1,7 @@
 " Script Name: mark.vim
 " Description: Highlight several words in different colors simultaneously.
 "
-" Copyright:   (C) 2008-2020 Ingo Karkat
+" Copyright:   (C) 2008-2021 Ingo Karkat
 "              (C) 2005-2008 Yuheng Xie
 "   The VIM LICENSE applies to this script; see ':help copyright'.
 "
@@ -221,12 +221,14 @@ nnoremap <silent> <Plug>MarkSearchAnyNext     :<C-u>if ! mark#SearchAnyMark(0)<B
 nnoremap <silent> <Plug>MarkSearchAnyPrev     :<C-u>if ! mark#SearchAnyMark(1)<Bar>echoerr ingo#err#Get()<Bar>endif<CR>
 " When typed, [*#nN] open the fold at the search result, but inside a mapping or
 " :normal this must be done explicitly via 'zv'.
-nnoremap <silent> <Plug>MarkSearchNext          :<C-u>if ! mark#SearchNext(0)<Bar>execute 'normal! *zv'<Bar>endif<CR>
-nnoremap <silent> <Plug>MarkSearchPrev          :<C-u>if ! mark#SearchNext(1)<Bar>execute 'normal! #zv'<Bar>endif<CR>
-nnoremap <silent> <Plug>MarkSearchOrCurNext     :<C-u>if ! mark#SearchNext(0,'mark#SearchCurrentMark')<Bar>execute 'normal! *zv'<Bar>endif<CR>
-nnoremap <silent> <Plug>MarkSearchOrCurPrev     :<C-u>if ! mark#SearchNext(1,'mark#SearchCurrentMark')<Bar>execute 'normal! #zv'<Bar>endif<CR>
-nnoremap <silent> <Plug>MarkSearchOrAnyNext     :<C-u>if ! mark#SearchNext(0,'mark#SearchAnyMark')<Bar>execute 'normal! *zv'<Bar>endif<CR>
-nnoremap <silent> <Plug>MarkSearchOrAnyPrev     :<C-u>if ! mark#SearchNext(1,'mark#SearchAnyMark')<Bar>execute 'normal! #zv'<Bar>endif<CR>
+nnoremap <silent> <Plug>MarkSearchNext          :<C-u>if ! mark#SearchNext(0)<Bar>execute 'normal!' v:count1 . '*zv'<Bar>endif<CR>
+nnoremap <silent> <Plug>MarkSearchPrev          :<C-u>if ! mark#SearchNext(1)<Bar>execute 'normal!' v:count1 . '#zv'<Bar>endif<CR>
+nnoremap <silent> <Plug>MarkSearchOrCurNext     :<C-u>if ! mark#SearchNext(0,'mark#SearchCurrentMark')<Bar>execute 'normal!' v:count1 . '*zv'<Bar>endif<CR>
+nnoremap <silent> <Plug>MarkSearchOrCurPrev     :<C-u>if ! mark#SearchNext(1,'mark#SearchCurrentMark')<Bar>execute 'normal!' v:count1 . '#zv'<Bar>endif<CR>
+nnoremap <silent> <Plug>MarkSearchOrAnyNext     :<C-u>if ! mark#SearchNext(0,'mark#SearchAnyMark')<Bar>execute 'normal!' v:count1 . '*zv'<Bar>endif<CR>
+nnoremap <silent> <Plug>MarkSearchOrAnyPrev     :<C-u>if ! mark#SearchNext(1,'mark#SearchAnyMark')<Bar>execute 'normal!' v:count1 . '#zv'<Bar>endif<CR>
+nnoremap <silent> <Plug>MarkSearchAnyOrDefaultNext      :<C-u>if mark#IsEnabled() && mark#GetCount() > 0<Bar>if ! mark#SearchAnyMark(0)<Bar>echoerr ingo#err#Get()<Bar>endif<Bar>else<Bar>execute 'normal!' v:count1 . 'nzv'<Bar>endif<CR>
+nnoremap <silent> <Plug>MarkSearchAnyOrDefaultPrev      :<C-u>if mark#IsEnabled() && mark#GetCount() > 0<Bar>if ! mark#SearchAnyMark(1)<Bar>echoerr ingo#err#Get()<Bar>endif<Bar>else<Bar>execute 'normal!' v:count1 . 'Nzv'<Bar>endif<CR>
 nnoremap <silent> <Plug>MarkSearchGroupNext     :<C-u>if ! mark#SearchGroupMark(v:count, 1, 0, 1)<Bar>execute "normal! \<lt>C-\>\<lt>C-n>\<lt>Esc>"<Bar>echoerr ingo#err#Get()<Bar>endif<CR>
 nnoremap <silent> <Plug>MarkSearchGroupPrev     :<C-u>if ! mark#SearchGroupMark(v:count, 1, 1, 1)<Bar>execute "normal! \<lt>C-\>\<lt>C-n>\<lt>Esc>"<Bar>echoerr ingo#err#Get()<Bar>endif<CR>
 nnoremap <silent> <Plug>MarkSearchUsedGroupNext	:<C-u>if ! mark#SearchNextGroup(v:count1, 0)<Bar>execute "normal! \<lt>C-\>\<lt>C-n>\<lt>Esc>"<Bar>echoerr ingo#err#Get()<Bar>endif<CR>
@@ -298,6 +300,8 @@ endif
 " No default mapping for <Plug>MarkSearchOrCurPrev
 " No default mapping for <Plug>MarkSearchOrAnyNext
 " No default mapping for <Plug>MarkSearchOrAnyPrev
+" No default mapping for <Plug>MarkSearchAnyOrDefaultNext
+" No default mapping for <Plug>MarkSearchAnyOrDefaultPrev
 " No default mapping for <Plug>MarkSearchGroupNext
 " No default mapping for <Plug>MarkSearchGroupPrev
 " No default mapping for <Plug>MarkSearchUsedGroupNext

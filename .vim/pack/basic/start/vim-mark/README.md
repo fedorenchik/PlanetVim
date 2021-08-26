@@ -500,6 +500,19 @@ fallback to Vim's original \* command, use:
     nmap * <Plug>MarkSearchOrCurNext
     nmap # <Plug>MarkSearchOrCurPrev
 
+Or for search for the next occurrence of any mark with fallback to \*:
+
+    nmap * <Plug>MarkSearchOrAnyNext
+    nmap # <Plug>MarkSearchOrAnyPrev
+
+Mark searches could also be combined with the built-in search. This mapping
+overloads the default n|/|N commands to search for any mark if there is any
+mark defined and marks are enabled, and fall back to the default search if
+not:
+
+    nmap n <Plug>MarkSearchAnyOrDefaultNext
+    nmap N <Plug>MarkSearchAnyOrDefaultPrev
+
 The search mappings (\*, #, etc.) interpret [count] as the number of
 occurrences to jump over. If you don't want to use the separate
 mark-keypad-searching mappings, and rather want [count] select the highlight
@@ -576,6 +589,9 @@ HISTORY
 - Mark updates across windows now use win\_execute() (since Vim 8.1.1418)
   instead of :windo. This hopefully addresses the changes in window sizes that
   have been reported (e.g. in #34).
+- Add &lt;Plug&gt;MarkSearchAnyOrDefaultNext and &lt;Plug&gt;MarkSearchAnyOrDefaultPrev
+  for an any-mark search with fallback to the built-in search pattern.
+  Suggested by Denis Kasak.
 
 __You need to update to ingo-library ([vimscript #4433](http://www.vim.org/scripts/script.php?script_id=4433)) version 1.043!__
 
