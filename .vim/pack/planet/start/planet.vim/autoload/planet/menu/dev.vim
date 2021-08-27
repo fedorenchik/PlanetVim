@@ -262,9 +262,10 @@ func! planet#menu#dev#Update() abort
     an 500.10  📐&}.Qml.testrunner                          :TODO
     an 500.10  📐&}.Qml.qmltime                             :TODO
     an 500.10  📐&}.Qml.qmltyperegistrar                    :TODO
-    an 500.10  📐&}.Gtk\ Tools.Glade                        <Cmd>call planet#term#RunGuiApp('glade')<CR>
+    an 500.10  📐&}.Gtk\ Tools.Glade                        <Cmd>call planet#term#RunGuiApp('glade ' .. expand('%'))<CR>
     an 500.10  📐&}.Gtk\ Tools.Glade\ Previewer             <Cmd>call planet#term#RunGuiApp('glade-previewer --filename ' .. expand('%'))<CR>
-    an 500.10  📐&}.Gtk\ Tools.Devhelp                      <Cmd>call planet#term#RunGuiApp('devhelp')<CR>
+    an 500.10  📐&}.Gtk\ Tools.Devhelp                      <Cmd>call planet#term#RunGuiApp('devhelp --search=' .. expand('<cword>'))<CR>
+    an 500.10  📐&}.Gtk\ Tools.Devhelp\ Assistant           <Cmd>call planet#term#RunGuiApp('devhelp --search-assistant=' .. expand('<cword>'))<CR>
     an 500.10  📐&}.Kernel.Check\ &Patch                    <Cmd>call planet#term#RunCmd('./scripts/checkpatch.pl')<CR>
     an 500.10  📐&}.Kernel.Get\ Maintainers                 <Cmd>call planet#term#RunCmd('./scripts/get_maintainer.pl')<CR>
     an 500.10  📐&}.Kernel.Device\ Tree\ Compiler           <Cmd>call planet#term#RunCmd('./scripts/dtc/dtc')<CR>
