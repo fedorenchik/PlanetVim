@@ -9,9 +9,9 @@ use serde_json::json;
 use filter::FilteredItem;
 
 use crate::datastore::RECENT_FILES_IN_MEMORY;
-use crate::stdio_server::event_handlers::OnMoveHandler;
+use crate::stdio_server::providers::builtin::OnMoveHandler;
 use crate::stdio_server::{
-    session::{Event, EventHandler, NewSession, Session, SessionContext, SessionEvent},
+    session::{EventHandler, NewSession, Session, SessionContext, SessionEvent},
     write_response, Message,
 };
 
@@ -84,7 +84,11 @@ pub async fn handle_recent_files_message(
     }
 
     // Take the first 200 entries and add an icon to each of them.
-    let (lines, indices, truncated_map) = printer::process_top_items(
+    let printer::DecoratedLines {
+        lines,
+        indices,
+        truncated_map,
+    } = printer::decorate_lines(
         ranked.iter().take(200).cloned().collect(),
         winwidth,
         if enable_icon.unwrap_or(true) {
@@ -132,42 +136,40 @@ pub struct RecentFilesMessageHandler {
 
 #[async_trait::async_trait]
 impl EventHandler for RecentFilesMessageHandler {
-    async fn handle(&mut self, event: Event, context: Arc<SessionContext>) -> Result<()> {
-        match event {
-            Event::OnMove(msg) => {
-                let msg_id = msg.id;
+    async fn handle_on_move(&mut self, msg: Message, context: Arc<SessionContext>) -> Result<()> {
+        let msg_id = msg.id;
 
-                let lnum = msg.get_u64("lnum").expect("lnum is required");
+        let lnum = msg.get_u64("lnum").expect("lnum is required");
 
-                if let Some(curline) = self
-                    .lines
-                    .lock()
-                    .get((lnum - 1) as usize)
-                    .map(|r| r.source_item.raw.as_str())
-                {
-                    if let Err(e) = OnMoveHandler::create(&msg, &context, Some(curline.into()))
-                        .map(|x| x.handle())
-                    {
-                        log::error!("Failed to handle OnMove event: {:?}", e);
-                        write_response(json!({"error": e.to_string(), "id": msg_id }));
-                    }
-                }
-            }
-            Event::OnTyped(msg) => {
-                let new_lines = tokio::spawn(handle_recent_files_message(msg, context, false))
-                    .await
-                    .unwrap_or_else(|e| {
-                        log::error!(
-                            "Failed to spawn a task for handle_dumb_jump_message: {:?}",
-                            e
-                        );
-                        Default::default()
-                    });
-
-                let mut lines = self.lines.lock();
-                *lines = new_lines;
+        if let Some(curline) = self
+            .lines
+            .lock()
+            .get((lnum - 1) as usize)
+            .map(|r| r.source_item.raw.as_str())
+        {
+            if let Err(e) =
+                OnMoveHandler::create(&msg, &context, Some(curline.into())).map(|x| x.handle())
+            {
+                log::error!("Failed to handle OnMove event: {:?}", e);
+                write_response(json!({"error": e.to_string(), "id": msg_id }));
             }
         }
+        Ok(())
+    }
+
+    async fn handle_on_typed(&mut self, msg: Message, context: Arc<SessionContext>) -> Result<()> {
+        let new_lines = tokio::spawn(handle_recent_files_message(msg, context, false))
+            .await
+            .unwrap_or_else(|e| {
+                log::error!(
+                    "Failed to spawn a task for handle_dumb_jump_message: {:?}",
+                    e
+                );
+                Default::default()
+            });
+
+        let mut lines = self.lines.lock();
+        *lines = new_lines;
 
         Ok(())
     }

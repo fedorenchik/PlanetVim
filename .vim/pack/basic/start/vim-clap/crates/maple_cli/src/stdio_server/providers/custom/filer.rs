@@ -9,9 +9,9 @@ use serde_json::json;
 
 use icon::prepend_filer_icon;
 
-use crate::stdio_server::event_handlers::{OnMove, OnMoveHandler};
+use crate::stdio_server::providers::builtin::{OnMove, OnMoveHandler};
 use crate::stdio_server::{
-    session::{Event, EventHandler, NewSession, Session, SessionContext, SessionEvent},
+    session::{EventHandler, NewSession, Session, SessionContext, SessionEvent},
     write_response, Message,
 };
 use crate::utils::build_abs_path;
@@ -28,7 +28,7 @@ impl<P: AsRef<Path>> DisplayPath<P> {
     }
 
     #[inline]
-    fn to_str_file_name(&self) -> Option<&str> {
+    fn as_file_name(&self) -> Option<&str> {
         self.inner
             .as_ref()
             .file_name()
@@ -47,15 +47,10 @@ impl<P: AsRef<Path>> std::fmt::Display for DisplayPath<P> {
         };
 
         if self.inner.as_ref().is_dir() {
-            let path = format!(
-                "{}{}",
-                self.to_str_file_name().unwrap(),
-                path::MAIN_SEPARATOR
-            );
-
+            let path = format!("{}{}", self.as_file_name().unwrap(), path::MAIN_SEPARATOR);
             write_with_icon(&path)
         } else {
-            write_with_icon(self.to_str_file_name().unwrap())
+            write_with_icon(self.as_file_name().unwrap())
         }
     }
 }
@@ -86,36 +81,35 @@ pub struct FilerMessageHandler;
 
 #[async_trait::async_trait]
 impl EventHandler for FilerMessageHandler {
-    async fn handle(&mut self, event: Event, context: Arc<SessionContext>) -> Result<()> {
-        match event {
-            Event::OnMove(msg) => {
-                #[derive(serde::Deserialize)]
-                struct Params {
-                    // curline: String,
-                    cwd: String,
-                }
-                let msg_id = msg.id;
-                // Do not use curline directly.
-                let curline = msg.get_curline(&context.provider_id)?;
-                let Params { cwd } = msg.deserialize_params_unsafe();
-                let path = build_abs_path(&cwd, curline);
-                let on_move_handler = OnMoveHandler {
-                    msg_id,
-                    size: context.sensible_preview_size(),
-                    context: &context,
-                    inner: OnMove::Filer(path.clone()),
-                    expected_line: None,
-                };
-                if let Err(err) = on_move_handler.handle() {
-                    log::error!("Failed to handle filer OnMove: {:?}", err);
-                    let error = json!({"message": err.to_string(), "dir": path});
-                    let res = json!({ "id": msg_id, "provider_id": "filer", "error": error });
-                    write_response(res);
-                }
-            }
-            // TODO: handle on_typed
-            Event::OnTyped(msg) => handle_filer_message(msg),
+    async fn handle_on_move(&mut self, msg: Message, context: Arc<SessionContext>) -> Result<()> {
+        #[derive(serde::Deserialize)]
+        struct Params {
+            // curline: String,
+            cwd: String,
         }
+        let msg_id = msg.id;
+        // Do not use curline directly.
+        let curline = msg.get_curline(&context.provider_id)?;
+        let Params { cwd } = msg.deserialize_params_unsafe();
+        let path = build_abs_path(&cwd, curline);
+        let on_move_handler = OnMoveHandler {
+            msg_id,
+            size: context.sensible_preview_size(),
+            context: &context,
+            inner: OnMove::Filer(path.clone()),
+            expected_line: None,
+        };
+        if let Err(err) = on_move_handler.handle() {
+            log::error!("Failed to handle filer OnMove: {:?}, path: {:?}", err, path);
+            let error = json!({"message": err.to_string(), "dir": path});
+            let res = json!({ "id": msg_id, "provider_id": "filer", "error": error });
+            write_response(res);
+        }
+        Ok(())
+    }
+
+    async fn handle_on_typed(&mut self, msg: Message, _context: Arc<SessionContext>) -> Result<()> {
+        handle_filer_message(msg);
         Ok(())
     }
 }
