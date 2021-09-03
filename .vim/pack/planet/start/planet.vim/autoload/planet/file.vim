@@ -20,6 +20,7 @@ func! planet#file#NewProject(project_type) abort
       call popup_notification("Error: Directory or file already exists! Please, change project name.", {})
       return
     end
+    call mkdir(l:project_name)
     call planet#term#RunScript('copy-template ' .. a:project_type .. ' ' .. l:project_name)
     tabnew
     exe "tcd " .. l:project_name
@@ -34,6 +35,7 @@ func! planet#file#NewProjectFromScript(project_type) abort
       call popup_notification("Error: Directory or file already exists! Please, change project name.", {})
       return
     end
+    call mkdir(l:project_name)
     call planet#term#RunScript('create-' .. a:project_type .. '-project ' .. l:project_name)
     tabnew
     exe "tcd " .. l:project_name

@@ -5,16 +5,15 @@ shift
 
 if which vue >&/dev/null; then
 	#vue found
-	vue create -p __default_vue_3__ --skipGetStarted "$prj_name"
+	vue create -p __default_vue_3__ --merge --skipGetStarted "$prj_name"
 	exit
 fi
 
 if which npm >&/dev/null; then
-	mkdir "$prj_name"
 	cd "$prj_name"
 	npm install @vue/cli
-	vue create -p __default_vue_3__ --merge --skipGetStarted .
 	cd -
+	./"$prj_name"/node_modules/.bin/vue create -p __default_vue_3__ --merge --skipGetStarted "$prj_name"
 	exit
 fi
 

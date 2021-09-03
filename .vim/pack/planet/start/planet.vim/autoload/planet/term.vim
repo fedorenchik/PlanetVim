@@ -37,20 +37,21 @@ func! planet#term#RunCmd(cmd, this_window = v:false, close_on_exit = v:false, st
   if ! empty(a:cd)
     let l:cmd_cd = 'cd ' .. a:cd .. ' ; '
   end
-  let ret = term_start(s:bin_dir .. 'run-command ' .. l:cmd_cd .. a:cmd, l:term_opts)
-  if ret == 0
+  let l:ret = term_start(s:bin_dir .. 'run-command ' .. l:cmd_cd .. a:cmd, l:term_opts)
+  if l:ret == 0
     echohl Error
     echo "Failed to start commad: " .. a:cmd
     echohl None
-    return
+    return 0
   end
   if ! a:this_window && ! a:start_hidden
     wincmd p
   end
+  return l:ret
 endfunc
 
 func! planet#term#RunScript(cmd) abort
-  call planet#term#RunCmd(s:bin_dir .. a:cmd, v:false, v:false, v:true)
+  return planet#term#RunCmd(s:bin_dir .. a:cmd, v:false, v:false, v:false)
 endfunc
 
 " Runs (interactive) shell command in new Tab
