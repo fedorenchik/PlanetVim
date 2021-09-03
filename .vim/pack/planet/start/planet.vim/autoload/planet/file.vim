@@ -14,9 +14,30 @@ func! QfOldFiles(info) abort
 endfunc
 
 func! planet#file#NewProject(project_type) abort
-  let l:project_name = input("Project Name: ", 'test-' .. a:project_type, "dir")
+  let l:project_name = input("Project Name: ", 'my-' .. a:project_type, "dir")
   if ! empty(l:project_name)
+    if isdirectory(l:project_name) || filereadable(l:project_name) || filewritable(l:project_name)
+      call popup_notification("Error: Directory or file already exists! Please, change project name.", {})
+      return
+    end
     call planet#term#RunScript('copy-template ' .. a:project_type .. ' ' .. l:project_name)
+    tabnew
+    exe "tcd " .. l:project_name
+    Fern . -reveal=% -drawer -toggle
+  end
+endfunc
+
+func! planet#file#NewProjectFromScript(project_type) abort
+  let l:project_name = input("Project Name: ", 'my-' .. a:project_type, "dir")
+  if ! empty(l:project_name)
+    if isdirectory(l:project_name) || filereadable(l:project_name) || filewritable(l:project_name)
+      call popup_notification("Error: Directory or file already exists! Please, change project name.", {})
+      return
+    end
+    call planet#term#RunScript('create-' .. a:project_type .. '-project ' .. l:project_name)
+    tabnew
+    exe "tcd " .. l:project_name
+    Fern . -reveal=% -drawer -toggle
   end
 endfunc
 

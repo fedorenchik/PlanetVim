@@ -50,7 +50,7 @@ func! planet#term#RunCmd(cmd, this_window = v:false, close_on_exit = v:false, st
 endfunc
 
 func! planet#term#RunScript(cmd) abort
-  call planet#term#RunCmd(s:bin_dir .. a:cmd)
+  call planet#term#RunCmd(s:bin_dir .. a:cmd, v:false, v:false, v:true)
 endfunc
 
 " Runs (interactive) shell command in new Tab

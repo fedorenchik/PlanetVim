@@ -11,6 +11,8 @@ func! planet#menu#basic#Update() abort
     an 110.50  📁&f.New\ &Tab                                  :confirm tabnew<CR>
     an 110.60  📁&f.New\ GUI\ &Window                          :silent !gvim<CR>
     an 110.60  📁&f.New\ Project.Vim\ Plugin                   <Cmd>call planet#file#NewProject('vim-plugin')<CR>
+    an 110.60  📁&f.New\ Project.Gtk\ 3\ Builder\ App          <Cmd>call planet#file#NewProject('Gtk3BuilderApp')<CR>
+    an 110.60  📁&f.New\ Project.Vue\ 3\ App                   <Cmd>call planet#file#NewProjectFromScript('vue3')<CR>
     an 110.60  📁&f.New\ Project.Blender\ Addon                :TODO
     an 110.60  📁&f.New\ Project.Nextcloud\ App                :TODO
     an 110.60  📁&f.New\ Project.Linux\ OOT\ Kernel\ Module    :TODO"with parameters/proc/debugfs support
