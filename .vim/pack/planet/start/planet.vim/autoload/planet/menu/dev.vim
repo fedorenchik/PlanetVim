@@ -167,8 +167,8 @@ func! planet#menu#dev#Update() abort
     an 500.10  🎚️&{.Npm.Start\ App                          <Cmd>call planet#term#RunCmd('npm run serve')<CR>
     an 500.10  🎚️&{.Npm.Start\ Build                        <Cmd>call planet#term#RunCmd('npm run build')<CR>
     an 500.10  🎚️&{.Npm.Install\ Project\ Packages          <Cmd>call planet#term#RunCmd('npm install')<CR>
-    an 500.10  🎚️&{.Npm.Install\ Package                    <Cmd>call planet#term#RunCmdAskArgs('npm install', 'Package name')<CR>
-    an 500.10  🎚️&{.Npm.Install\ Package\ Globally          <Cmd>call planet#term#RunCmdAskArgs('sudo npm install -g', 'Package name')<CR>
+    an 500.10  🎚️&{.Npm.Install\ Package                    <Cmd>call planet#term#RunCmdAskArgs('npm install', 'Package name: ')<CR>
+    an 500.10  🎚️&{.Npm.Install\ Package\ Globally          <Cmd>call planet#term#RunCmdAskArgs('sudo npm install -g', 'Package name: ')<CR>
     an 500.10  🎚️&{.Set\ Compiler.gcc                       :TODO
     an 500.10  🎚️&{.Set\ Compiler.clang                     :TODO
     an 500.10  🎚️&{.Set\ Compiler.emcc\ (wasm,\ emscripten) :TODO
@@ -295,9 +295,12 @@ func! planet#menu#dev#Update() abort
     an 500.10  📐&}.Virtual\ Display\ (Xvfb).Set\ Current\ to\ 8<Tab>$DISPLAY=:88 :TODO
     an 500.10  📐&}.Virtual\ Display\ (Xvfb).Set\ Current\ to\ 9<Tab>$DISPLAY=:89 :TODO
     an 500.10  📐&}.Virtual\ Display\ (Xvfb).Specify\ Custom\ $DISPLAY :TODO
-    an 500.10  📐&}.Vue\ CLI.Create                         <Cmd>call planet#term#RunCmdAskArgs('vue create', 'Name of new project', 'vue-app')<CR>
     an 500.10  📐&}.Vue\ CLI.Start                          <Cmd>call planet#term#RunCmd('npm run serve')<CR>
     an 500.10  📐&}.Vue\ CLI.Build                          <Cmd>call planet#term#RunCmd('npm run build')<CR>
+    an 500.10  📐&}.Vue\ CLI.Lint                           <Cmd>call planet#term#RunCmd('npm run lint')<CR>
+    an 500.10  📐&}.Vue\ CLI.Add\ vue-router                <Cmd>call planet#term#RunCmd('npm install vue-router')<CR>
+    an 500.10  📐&}.Vue\ CLI.Add\ vuex                      <Cmd>call planet#term#RunCmd('npm install vuex')<CR>
+    an 500.10  📐&}.Vue\ CLI.Create                         <Cmd>call planet#term#RunCmdAskArgs('vue create', 'Name of new project', 'vue-app')<CR>
     an 500.10  📐&}.i10n\ &&\ i18n <Nop>
     an disable 📐&}.i10n\ &&\ i18n
     an 500.10  📐&}.lupdate                                 :TODO
