@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/fatih/vim-go.git
 	branch = master
-	commit = c34c73a4269857e694cda38431601ab753fcbc3f
-	parent = 9839c4a8eb6f47ced03d5ea1724a0337fd82c731
+	commit = 4a429a0fc85c2a95b24544373516fdee805c3a56
+	parent = 9616034e448556494d1b81c6fb3591ed29e0eae4
 	method = merge
 	cmdver = 0.4.3
