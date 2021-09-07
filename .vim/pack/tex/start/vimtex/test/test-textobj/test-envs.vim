@@ -21,6 +21,21 @@ call vimtex#test#keys('die',
       \  '\end{complexenvironment}',
       \ ])
 
+call vimtex#test#keys('die',
+      \ [
+      \  '\begin{complexenvironment}[option1,',
+      \  '  option2]{first extra argument}',
+      \  '',
+      \  '  {second extra',
+      \  '  argument}',
+      \  '  Hello world!',
+      \  '\end{complexenvironment}',
+      \ ], [
+      \  '\begin{complexenvironment}[option1,',
+      \  '  option2]{first extra argument}',
+      \  '\end{complexenvironment}',
+      \ ])
+
 call vimtex#test#keys('dae',
       \ [
       \  '\begin{complexenvironment}[option1,',
@@ -47,24 +62,28 @@ call vimtex#test#keys('4j$d2ae',
       \   '\end{document}',
       \ ])
 
-call vimtex#test#keys('5jd2aP',
-      \ [
-      \   'Hello world.',
-      \   '',
-      \   '\section{Outer}',
-      \   'Some text here',
-      \   '',
-      \   '\subsection{Inner 1}',
-      \   'Some text here',
-      \   '',
-      \   '\subsection{Inner 2}',
-      \   'Some text here',
-      \   '',
-      \   '\subsection{Inner 3}',
-      \   'Some text here',
-      \ ], [
-      \   'Hello world.',
-      \   '',
-      \ ])
+" call vimtex#test#keys('3jdie',
+"       \ [
+"       \   '\begin{minted}',
+"       \   '  {',
+"       \   '    "contacts": [',
+"       \   '      {',
+"       \   '        "source_id": "mandatory"',
+"       \   '      }',
+"       \   '    ]',
+"       \   '  }',
+"       \   '\end{minted}',
+"       \ ],
+"       \ [
+"       \   '\begin{minted}',
+"       \   '  {',
+"       \   '    "contacts": [',
+"       \   '      {',
+"       \   '        "source_id": "mandatory"',
+"       \   '      }',
+"       \   '    ]',
+"       \   '  }',
+"       \   '\end{minted}',
+"       \ ])
 
 call vimtex#test#finished()
