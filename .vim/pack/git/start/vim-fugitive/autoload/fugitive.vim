@@ -219,7 +219,7 @@ function! s:Map(mode, lhs, rhs, ...) abort
       let head = substitute(head, '<[^<>]*>$\|.$', '', '')
     endwhile
     if !skip && (flags !~# '<unique>' || empty(mapcheck(head.tail, mode)))
-      call add(maps, mode.'map <buffer>' . s:nowait . flags . ' ' . head.tail . ' ' . a:rhs)
+      call add(maps, mode.'map <buffer>' . s:nowait . substitute(flags, '<unique>', '', '') . ' ' . head.tail . ' ' . a:rhs)
       if a:0 > 1
         let b:undo_ftplugin = get(b:, 'undo_ftplugin', 'exe') .
               \ '|sil! exe "' . mode . 'unmap <buffer> ' . head.tail . '"'
@@ -1868,7 +1868,7 @@ endfunction
 function! s:Expand(rev, ...) abort
   if a:rev =~# '^>\=:[0-3]$'
     let file = len(expand('%')) ? a:rev[-2:-1] . ':%' : '%'
-  elseif a:rev ==# '>'
+  elseif a:rev =~# '^>\%(:\=/\)\=$'
     let file = '%'
   elseif a:rev ==# '>:'
     let file = empty(s:DirCommitFile(@%)[0]) ? ':0:%' : '%'
@@ -3145,8 +3145,18 @@ function! s:RunEdit(state, tmp, job) abort
   let file = FugitiveVimPath(readfile(sentinel, '', 1)[0])
   exe substitute(a:state.mods, '\<tab\>', '-tab', 'g') 'keepalt split' s:fnameescape(file)
   set bufhidden=wipe
-  let s:edit_jobs[bufnr('')] = [a:state, a:tmp, a:job, sentinel]
+  let bufnr = bufnr('')
+  let s:edit_jobs[bufnr] = [a:state, a:tmp, a:job, sentinel]
   call fugitive#DidChange(a:state.git_dir)
+  if bufnr == bufnr('') && !exists('g:fugitive_event')
+    try
+      let g:fugitive_event = a:state.git_dir
+      let g:fugitive_result = a:state
+      exe s:DoAutocmd('User FugitiveEditor')
+    finally
+      unlet! g:fugitive_event g:fugitive_result
+    endtry
+  endif
   return 1
 endfunction
 
@@ -7725,9 +7735,15 @@ function! s:GF(mode) abort
     return 'echoerr ' . string(v:exception)
   endtry
   if len(results) > 1
-    return 'G' . a:mode .
+    let cmd = 'G' . a:mode .
           \ (empty(results[1]) ? '' : ' +' . escape(results[1], ' |')) . ' ' .
-          \ fnameescape(results[0]) . join(map(results[2:-1], '"|" . v:val'), '')
+          \ fnameescape(results[0])
+    let tail = join(map(results[2:-1], '"|" . v:val'), '')
+    if a:mode ==# 'pedit' && len(tail)
+      return cmd . '|wincmd P|exe ' . string(tail[1:-1]) . '|wincmd p'
+    else
+      return cmd . tail
+    endif
   elseif len(results) && len(results[0])
     return 'G' . a:mode . ' ' . s:fnameescape(results[0])
   else
