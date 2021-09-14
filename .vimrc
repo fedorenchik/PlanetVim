@@ -323,6 +323,7 @@ au GUIEnter * set t_vb=
 au GUIEnter * set guifont=DejaVu\ Sans\ Mono\ 9,Monospace\ 9
 au GUIEnter * silent call system('wmctrl -i -b add,maximized_vert,maximized_horz -r' . v:windowid)
 au InsertLeave * if empty(&buftype) | pclose | end
+au QuitPre * if &buftype == 'terminal' | job_stop(term_getjob('')) | endif
 au SessionLoadPost * call planet#planet#SetPerSessionOptions()
 au StdinReadPost * set nomodified
 au TerminalWinOpen * setlocal foldcolumn=0 signcolumn=no nonumber norelativenumber
