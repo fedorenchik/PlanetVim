@@ -58,6 +58,8 @@ async fn preview_file_impl(msg: Message) -> Result<()> {
         preview_direction,
     } = msg.deserialize_params()?;
 
+    let fpath = crate::utils::expand_tilde(fpath)?;
+
     let (preview_height, preview_width) = if preview_direction.to_uppercase().as_str() == "UD" {
         (preview_height.unwrap_or(display_height), display_width)
     } else {

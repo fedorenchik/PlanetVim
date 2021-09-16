@@ -1,8 +1,13 @@
+mod forerunner;
+
+pub use self::forerunner::RipGrepForerunner;
+
 use std::convert::TryFrom;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use anyhow::{Context, Result};
+use itertools::Itertools;
 use rayon::prelude::*;
 use structopt::StructOpt;
 
@@ -15,6 +20,7 @@ use icon::IconPainter;
 use utility::is_git_repo;
 
 use crate::app::Params;
+use crate::process::tokio::TokioCommand;
 use crate::process::{light::LightCommand, rstd::StdCommand, BaseCommand};
 use crate::tools::ripgrep::Match;
 use crate::utils::{send_response_from_cache, SendResponse};
@@ -65,38 +71,6 @@ pub struct Grep {
     sync: bool,
 }
 
-fn prepare_sync_grep_cmd<P: AsRef<Path>>(
-    cmd_str: &str,
-    cmd_dir: Option<P>,
-) -> (Command, Vec<&str>) {
-    let args = cmd_str
-        .split_whitespace()
-        // If cmd_str contains a quoted option, that's problematic.
-        //
-        // Ref https://github.com/liuchengxu/vim-clap/issues/595
-        .map(|s| {
-            if s.len() > 2 {
-                if s.starts_with('"') && s.chars().nth_back(0).unwrap() == '"' {
-                    &s[1..s.len() - 1]
-                } else {
-                    s
-                }
-            } else {
-                s
-            }
-        })
-        .chain(std::iter::once("--json")) // Force using json format.
-        .collect::<Vec<&str>>();
-
-    let mut std_cmd = StdCommand::new(args[0]);
-
-    if let Some(ref dir) = cmd_dir {
-        std_cmd.current_dir(dir);
-    }
-
-    (std_cmd.into_inner(), args)
-}
-
 impl Grep {
     pub fn run(&self, params: Params) -> Result<()> {
         if self.sync {
@@ -119,27 +93,32 @@ impl Grep {
             ..
         }: Params,
     ) -> Result<()> {
-        let grep_cmd = self
+        let mut grep_cmd = self
             .grep_cmd
             .clone()
             .context("--grep-cmd is required when --sync is on")?;
-        let (mut cmd, mut args) = prepare_sync_grep_cmd(&grep_cmd, self.cmd_dir.as_ref());
-
-        // We split out the grep opts and query in case of the possible escape issue of clap.
-        args.push(&self.grep_query);
 
         if let Some(ref g) = self.glob {
-            args.push("-g");
-            args.push(g);
+            grep_cmd.push_str(" -g ");
+            grep_cmd.push_str(g);
         }
+
+        // Force using json format.
+        grep_cmd.push_str(" --json ");
+        grep_cmd.push_str(&self.grep_query);
 
         // currently vim-clap only supports rg.
         // Ref https://github.com/liuchengxu/vim-clap/pull/60
-        if cfg!(windows) {
-            args.push(".");
+        grep_cmd.push_str(" .");
+
+        // Shell command avoids https://github.com/liuchengxu/vim-clap/issues/595
+        let mut std_cmd = StdCommand::new(&grep_cmd);
+
+        if let Some(ref dir) = self.cmd_dir {
+            std_cmd.current_dir(dir);
         }
 
-        cmd.args(&args[1..]);
+        let mut cmd = std_cmd.into_inner();
 
         let mut light_cmd = LightCommand::new_grep(&mut cmd, None, number, None, None);
 
@@ -190,7 +169,7 @@ impl Grep {
                 &self.grep_query,
                 source,
                 FilterContext::new(
-                    None,
+                    Default::default(),
                     number,
                     winwidth,
                     icon_painter,
@@ -218,89 +197,33 @@ impl Grep {
     }
 }
 
-#[derive(StructOpt, Debug, Clone)]
-pub struct RipGrepForerunner {
-    /// Specify the working directory of CMD
-    #[structopt(long = "cmd-dir", parse(from_os_str))]
-    cmd_dir: Option<PathBuf>,
-
-    /// Specify the threshold for writing the output of command to a tempfile.
-    #[structopt(long = "output-threshold", default_value = "30000")]
-    output_threshold: usize,
+#[derive(Debug, Clone)]
+pub struct RgBaseCommand {
+    pub inner: BaseCommand,
 }
 
-impl RipGrepForerunner {
-    /// Skip the forerunner job if `cmd_dir` is not a git repo.
-    ///
-    /// Only spawn the forerunner job for git repo for now.
-    fn should_skip(&self) -> bool {
-        if let Some(ref dir) = self.cmd_dir {
-            if !is_git_repo(dir) {
-                return true;
-            }
-        } else if let Ok(dir) = std::env::current_dir() {
-            if !is_git_repo(&dir) {
-                return true;
-            }
-        }
-        false
+impl RgBaseCommand {
+    pub fn new(dir: PathBuf) -> Self {
+        let inner = BaseCommand::new(RG_EXEC_CMD.into(), dir);
+        Self { inner }
     }
 
-    pub fn run(
-        self,
-        Params {
-            number,
-            icon_painter,
-            no_cache,
-            ..
-        }: Params,
-    ) -> Result<()> {
-        if !no_cache {
-            if let Some(ref dir) = self.cmd_dir {
-                let base_cmd = BaseCommand::new(RG_EXEC_CMD.into(), dir.clone());
-                if let Some((total, cache)) = base_cmd.cached_info() {
-                    send_response_from_cache(
-                        &cache,
-                        total as usize,
-                        SendResponse::Json,
-                        Some(IconPainter::Grep),
-                    );
-                    return Ok(());
-                }
-            }
-        }
+    pub fn cache_info(&self) -> Option<(usize, PathBuf)> {
+        self.inner.cache_info()
+    }
 
-        if self.should_skip() {
-            return Ok(());
-        }
+    pub async fn create_cache(self) -> Result<(usize, PathBuf)> {
+        let lines = TokioCommand::new(&self.inner.command)
+            .current_dir(&self.inner.cwd)
+            .lines()
+            .await?;
 
-        let mut std_cmd = StdCommand::new(RG_ARGS[0]);
-        // Do not use --vimgrep here.
-        std_cmd.args(&RG_ARGS[1..]);
+        let total = lines.len();
+        let lines = lines.into_iter().join("\n");
 
-        if let Some(ref dir) = self.cmd_dir {
-            std_cmd.current_dir(dir);
-        }
+        let cache_path = self.inner.create_cache(total, lines.as_bytes())?;
 
-        let mut cmd = std_cmd.into_inner();
-
-        let mut light_cmd = LightCommand::new_grep(
-            &mut cmd,
-            self.cmd_dir.clone(),
-            number,
-            icon_painter,
-            Some(self.output_threshold),
-        );
-
-        let cwd = match self.cmd_dir {
-            Some(d) => d,
-            None => std::env::current_dir()?,
-        };
-        let base_cmd = BaseCommand::new(RG_EXEC_CMD.into(), cwd);
-
-        light_cmd.execute(base_cmd)?.print();
-
-        Ok(())
+        Ok((total, cache_path))
     }
 }
 

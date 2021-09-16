@@ -11,7 +11,7 @@ use super::*;
 use crate::FilteredItem;
 
 /// The constant to define the length of `top_` queues.
-const ITEMS_TO_SHOW: usize = 30;
+const ITEMS_TO_SHOW: usize = 40;
 
 const MAX_IDX: usize = ITEMS_TO_SHOW - 1;
 
@@ -301,8 +301,7 @@ pub fn dyn_run<I: Iterator<Item = SourceItem>>(
     }: FilterContext,
     bonuses: Vec<Bonus>,
 ) -> Result<()> {
-    let scoring_matcher =
-        matcher::Matcher::with_bonuses(algo.unwrap_or_default(), match_type, bonuses);
+    let scoring_matcher = matcher::Matcher::with_bonuses(algo, match_type, bonuses);
     let query: Query = query.into();
     let scorer = |item: &SourceItem| scoring_matcher.match_query(item, &query);
     if let Some(number) = number {
@@ -417,13 +416,7 @@ mod tests {
                 })
                 .take(usize::max_value() >> 8),
             ),
-            FilterContext::new(
-                Some(FuzzyAlgorithm::Fzy),
-                Some(100),
-                None,
-                None,
-                MatchType::Full,
-            ),
+            FilterContext::new(FuzzyAlgorithm::Fzy, Some(100), None, None, MatchType::Full),
             vec![Bonus::None],
         )
         .unwrap()
