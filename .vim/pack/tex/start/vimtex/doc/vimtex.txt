@@ -583,7 +583,7 @@ Buffer variable~
                                                               *vimtex-tex-root*
 TeX root directive~
   It is also possible to specify the main TeX file with a comment in one of
-  the first five lines of the current file. This is often reffered to as a TeX
+  the first five lines of the current file. This is often referred to as a TeX
   directive, see |vimtex-tex-directives| for more info. The syntax is best
   described by some examples: >
 
@@ -680,9 +680,7 @@ see |vimtex-tex-root|.
                                                            *vimtex-tex-program*
 The TeX program directive works by specifying the TeX compiler program in
 a comment in one of the first lines of the main project file. It is parsed
-during initialization, but if desired one may manually reload VimTeX in order
-to reset the program during an editing session. See |:VimtexReload| and
-|<plug>(vimtex-reload)| (by default mapped to `<localleader>lx`).
+only when it is required by a compiler backend.
 
 The syntax is best explained with an example: >
 
@@ -1771,7 +1769,7 @@ OPTIONS                                                        *vimtex-options*
 
 *g:vimtex_grammar_vlty*
   This option is used to configure the `vlty` grammar checker. This checker
-  relies on the Python package `YaLafi` in ombination with the proofreading
+  relies on the Python package `YaLafi` in combination with the proofreading
   software `LanguageTool` (see |vimtex-grammar-vlty| for more details). The
   option is a dictionary with the following keys :
 
@@ -4055,15 +4053,25 @@ The above LaTeX code will look plain, but OK with VimTeX. Note: The directive
 is matched case insensitive, and the synonyms `enable` and `disable` may be
 used instead of `on` and `off`.
 
+Overleaf's magic comment [0] is also supported similarly as the `SynIgnore`
+method described above, i.e.: >
+
+  %%begin novalidate
+  \catcode`\$=11
+  $
+  \catcode`\$=3
+  %%end novalidate
+
 The VimTeX syntax plugin is loosely based on Dr Chip's syntax plugin for LaTeX
-which is shipped by default with Vim and neovim (|ft-tex-syntax|) [0]. There
+which is shipped by default with Vim and neovim (|ft-tex-syntax|) [1]. There
 are several major differences that users may want to be aware of:
 * VimTeX syntax use different names for almost all syntax groups.
 * VimTeX syntax does not support syntax based folding.
 * VimTeX syntax does not lint `@` in commands, e.g. `\@cmd` (you should know
   what you are doing).
 
-[0]: http://www.drchip.org/astronaut/vim/index.html#SYNTAX_TEX
+[0]: https://www.overleaf.com/learn/how-to/Code_Check
+[1]: http://www.drchip.org/astronaut/vim/index.html#SYNTAX_TEX
 
 Associated settings:
 * |g:vimtex_syntax_enabled|
@@ -5355,7 +5363,7 @@ A: Because it is complicated and requires some expensive searches for matching
    which is expensive. You can tune the timeout and stopline parameters for
    the searches with |g:vimtex_delim_timeout| and |g:vimtex_delim_stopline|,
    which may help. If it is still too slow, you can also try to use
-   vim-matchup [0].
+   vim-matchup [0], see also |vimtex-nf-enhanced-matchparen|.
 
    [0]: https://github.com/andymass/vim-matchup
 
