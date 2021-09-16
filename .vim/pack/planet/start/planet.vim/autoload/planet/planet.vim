@@ -330,9 +330,9 @@ func! planet#planet#CheckExitSaveSession() abort
   "TODO: auto-save and auto-load quickfix/loclist files (up to 10 of each, loclists: for each window)
   exe 'SSave! ' .. fnamemodify(v:this_session, ":t")
   "TODO: auto close all terminals / jobs
-  for job in job_info()
-    call job_stop(job)
-  endfor
+  " for job in job_info()
+  "   call job_stop(job)
+  " endfor
 endfunc
 
 func! planet#planet#EditVimVar(var_name) abort
