@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/kitagry/asyncomplete-tabnine.vim.git
 	branch = master
-	commit = 04e4b2d7bd2d06287a0a62f82a77d3460a507e25
-	parent = 1f904b1daaee5dedcd2c0f5a5436d095b12365a9
+	commit = 2655dda827910c621e66da952faae865b380b709
+	parent = 48b89a45268e43f4bfbb9288b5f5f8dd2b5ad7f7
 	method = merge
 	cmdver = 0.4.3
