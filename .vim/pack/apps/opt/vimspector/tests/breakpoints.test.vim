@@ -281,7 +281,7 @@ function! Test_Conditional_Line_Breakpoint()
   call vimspector#test#signs#AssertSignGroupEmptyAtLine( 'VimspectorBP', 16 )
 
   " Add the conditional breakpoint (note , is the mapleader)
-  call feedkeys( ",\<F9>argc==0\<CR>\<CR>", 'xt' )
+  call feedkeys( ",\<F9>argc==0\<CR>\<CR>\<CR>", 'xt' )
   call vimspector#test#signs#AssertSignGroupSingletonAtLine( 'VimspectorBP',
                                                            \ 16,
                                                            \ 'vimspectorBPCond',
@@ -360,8 +360,8 @@ function! Test_Conditional_Line_Breakpoint_Hit()
   exe 'edit' fn
   call setpos( '.', [ 0, 14, 1 ] )
 
-  " Add the conditional breakpoint (3 times) (note , is the mapleader)
-  call feedkeys( ",\<F9>\<CR>3\<CR>", 'xt' )
+  " Add the conditional breakpoint (note , is the mapleader)
+  call feedkeys( ",\<F9>\<CR>3\<CR>\<CR>", 'xt' )
   call vimspector#test#signs#AssertSignGroupSingletonAtLine(
         \ 'VimspectorBP',
         \ 14,
@@ -395,6 +395,7 @@ function! Test_Function_Breakpoint()
   " break on func
   call vimspector#test#signs#AssertCursorIsAtLineInBuffer( 'simple.cpp', 9, 1 )
   call vimspector#test#setup#Reset()
+  lcd -
   %bwipeout!
 endfunction
 
@@ -409,7 +410,148 @@ function! Test_Function_Breakpoint_Condition()
   " break on func
   call vimspector#test#signs#AssertCursorIsAtLineInBuffer( 'simple.cpp', 9, 1 )
   call vimspector#test#setup#Reset()
+  lcd -
   %bwipeout!
+endfunction
+
+function! Test_Logpoint()
+  lcd testdata/cpp/simple
+
+  edit printer.cpp
+  call vimspector#SetLineBreakpoint(
+        \ 'printer.cpp',
+        \ 14,
+        \ { 'logMessage': 'i is {i}' } )
+  call vimspector#SetLineBreakpoint( 'printer.cpp', 20 )
+
+  call vimspector#test#signs#AssertSignGroupSingletonAtLine(
+        \ 'VimspectorBP',
+        \ 14,
+        \ 'vimspectorBPLog',
+        \ 9 )
+
+  call vimspector#LaunchWithSettings( { 'configuration': 'CodeLLDB' } )
+  " CodeLLDB returns different columns on mac and linux, of course
+  call vimspector#test#signs#AssertCursorIsAtLineInBuffer(
+        \ 'printer.cpp',
+        \ 20,
+        \ v:null )
+
+  " FIXME: Display of braekpoints while debugging is kinda broken. we should
+  " really base it off the user-entered breakpoints and show that this is a
+  " logpoint not a breakpoint
+  call vimspector#test#signs#AssertSignGroupSingletonAtLine(
+        \ 'VimspectorCode',
+        \ 14,
+        \ 'vimspectorBP',
+        \ 9 )
+
+
+  VimspectorShowOutput
+  call assert_equal( bufnr( 'vimspector.Console' ),
+                   \ winbufnr( g:vimspector_session_windows.output ) )
+  call WaitForAssert( {->
+        \   AssertMatchList(
+        \     [
+          \       'i is 1',
+          \       'i is 3',
+          \       'i is 5',
+          \       'i is 7',
+        \     ],
+        \     GetBufLine( winbufnr( g:vimspector_session_windows.output ), -3 )
+        \   )
+        \ } )
+
+
+  call vimspector#test#setup#Reset()
+  lcd -
+  %bwipeout!
+endfunction
+
+function! Test_Conditional_Logpoint()
+  lcd testdata/cpp/simple
+
+  edit printer.cpp
+  call vimspector#SetLineBreakpoint(
+        \ 'printer.cpp',
+        \ 14,
+        \ { 'condition': 'i<4', 'logMessage': 'i is {i}' } )
+  call vimspector#SetLineBreakpoint( 'printer.cpp', 20 )
+
+  call vimspector#test#signs#AssertSignGroupSingletonAtLine(
+        \ 'VimspectorBP',
+        \ 14,
+        \ 'vimspectorBPLog',
+        \ 9 )
+
+  call vimspector#LaunchWithSettings( { 'configuration': 'CodeLLDB' } )
+  " CodeLLDB returns different columns on mac and linux, of course
+  call vimspector#test#signs#AssertCursorIsAtLineInBuffer(
+        \ 'printer.cpp',
+        \ 20,
+        \ v:null )
+
+  VimspectorShowOutput
+  call assert_equal( bufnr( 'vimspector.Console' ),
+                   \ winbufnr( g:vimspector_session_windows.output ) )
+  call WaitForAssert( {->
+        \   AssertMatchList(
+        \     [
+          \       'i is 1',
+          \       'i is 3',
+        \     ],
+        \     GetBufLine( winbufnr( g:vimspector_session_windows.output ), -1 )
+        \   )
+        \ } )
+
+
+  call vimspector#test#setup#Reset()
+  lcd -
+  %bwipeout!
+endfunction
+
+
+function! Test_Conditional_Logpoint()
+  lcd testdata/cpp/simple
+
+  edit printer.cpp
+  call vimspector#SetLineBreakpoint(
+        \ 'printer.cpp',
+        \ 14,
+        \ { 'condition': 'i<4', 'logMessage': 'i is {i}' } )
+  call vimspector#SetLineBreakpoint( 'printer.cpp', 20 )
+
+  call vimspector#test#signs#AssertSignGroupSingletonAtLine(
+        \ 'VimspectorBP',
+        \ 14,
+        \ 'vimspectorBPLog',
+        \ 9 )
+
+  call vimspector#LaunchWithSettings( { 'configuration': 'CodeLLDB' } )
+  " CodeLLDB returns different columns on mac and linux, of course
+  call vimspector#test#signs#AssertCursorIsAtLineInBuffer(
+        \ 'printer.cpp',
+        \ 20,
+        \ v:null )
+
+  VimspectorShowOutput
+  call assert_equal( bufnr( 'vimspector.Console' ),
+                   \ winbufnr( g:vimspector_session_windows.output ) )
+  call WaitForAssert( {->
+        \   AssertMatchList(
+        \     [
+          \       'i is 1',
+          \       'i is 3',
+        \     ],
+        \     GetBufLine( winbufnr( g:vimspector_session_windows.output ), -1 )
+        \   )
+        \ } )
+
+
+  call vimspector#test#setup#Reset()
+  lcd -
+  %bwipeout!
+
 endfunction
 
 " Can't find an adapter that supports conditional function breakpoints which are
@@ -514,7 +656,8 @@ function! Test_Custom_Breakpoint_Priority()
         \ 'vimspectorPCBP': 1,
         \ 'vimspectorBP': 2,
         \ 'vimspectorBPCond': 3,
-        \ 'vimspectorBPDisabled': 4
+        \ 'vimspectorBPDisabled': 4,
+        \ 'vimspectorBPLog': 5,
         \ }
 
   " While not debugging
@@ -545,6 +688,21 @@ function! Test_Custom_Breakpoint_Priority()
         \ 17,
         \ 'vimspectorBPCond',
         \ 3 )
+
+  call setpos( '.', [ 0, 9, 1 ] )
+  call vimspector#ToggleBreakpoint( { 'logMessage': 'testing' } )
+  call vimspector#test#signs#AssertSignGroupSingletonAtLine(
+        \ 'VimspectorBP',
+        \ 9,
+        \ 'vimspectorBPLog',
+        \ 5 )
+  " Disable, as vscode-cpptools doesn't work properly when adding logpoints before starting
+  call vimspector#ToggleBreakpoint()
+  call vimspector#test#signs#AssertSignGroupSingletonAtLine(
+        \ 'VimspectorBP',
+        \ 9,
+        \ 'vimspectorBPDisabled',
+        \ 4 )
 
   " While debugging
   call vimspector#Launch()
