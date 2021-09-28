@@ -14,6 +14,11 @@ function! s:map(...) abort
   return ''
 endfunction
 
+function! s:Map(...) abort
+  call add(s:maps, copy(a:000))
+  return ''
+endfunction
+
 function! s:maps() abort
   for [mode, head, rhs; rest] in s:maps
     let flags = get(rest, 0, '') . (rhs =~# '^<Plug>' ? '' : '<script>')
@@ -42,27 +47,36 @@ endfunction
 " Section: Next and previous
 
 function! s:MapNextFamily(map,cmd) abort
+  let prefix = '<Plug>(unimpaired-' . a:cmd
   let map = '<Plug>unimpaired'.toupper(a:map)
   let cmd = '".(v:count ? v:count : "")."'.a:cmd
   let end = '"<CR>'.(a:cmd ==# 'l' || a:cmd ==# 'c' ? 'zv' : '')
+  execute 'nnoremap <silent> '.prefix.'previous) :<C-U>exe "'.cmd.'previous'.end
+  execute 'nnoremap <silent> '.prefix.'next)     :<C-U>exe "'.cmd.'next'.end
+  execute 'nnoremap <silent> '.prefix.'first)    :<C-U>exe "'.cmd.'first'.end
+  execute 'nnoremap <silent> '.prefix.'last)     :<C-U>exe "'.cmd.'last'.end
   execute 'nnoremap <silent> '.map.'Previous :<C-U>exe "'.cmd.'previous'.end
   execute 'nnoremap <silent> '.map.'Next     :<C-U>exe "'.cmd.'next'.end
   execute 'nnoremap <silent> '.map.'First    :<C-U>exe "'.cmd.'first'.end
   execute 'nnoremap <silent> '.map.'Last     :<C-U>exe "'.cmd.'last'.end
-  call s:map('n', '['.        a:map , map.'Previous')
-  call s:map('n', ']'.        a:map , map.'Next')
-  call s:map('n', '['.toupper(a:map), map.'First')
-  call s:map('n', ']'.toupper(a:map), map.'Last')
-  if exists(':'.a:cmd.'nfile')
+  exe s:Map('n', '['.        a:map , prefix.'previous)')
+  exe s:Map('n', ']'.        a:map , prefix.'next)')
+  exe s:Map('n', '['.toupper(a:map), prefix.'first)')
+  exe s:Map('n', ']'.toupper(a:map), prefix.'last)')
+  if a:cmd ==# 'c' || a:cmd ==# 'l'
+    execute 'nnoremap <silent> '.prefix.'pfile)  :<C-U>exe "'.cmd.'pfile'.end
+    execute 'nnoremap <silent> '.prefix.'nfile)  :<C-U>exe "'.cmd.'nfile'.end
     execute 'nnoremap <silent> '.map.'PFile :<C-U>exe "'.cmd.'pfile'.end
     execute 'nnoremap <silent> '.map.'NFile :<C-U>exe "'.cmd.'nfile'.end
-    call s:map('n', '[<C-'.toupper(a:map).'>', map.'PFile')
-    call s:map('n', ']<C-'.toupper(a:map).'>', map.'NFile')
-  elseif exists(':p'.a:cmd.'next')
+    exe s:Map('n', '[<C-'.toupper(a:map).'>', prefix.'pfile)')
+    exe s:Map('n', ']<C-'.toupper(a:map).'>', prefix.'nfile)')
+  elseif a:cmd ==# 't'
+    nnoremap <silent> <Plug>(unimpaired-ptprevious) :<C-U>exe v:count1 . "ptprevious"<CR>
+    nnoremap <silent> <Plug>(unimpaired-ptnext) :<C-U>exe v:count1 . "ptnext"<CR>
     execute 'nnoremap <silent> '.map.'PPrevious :<C-U>exe "p'.cmd.'previous'.end
     execute 'nnoremap <silent> '.map.'PNext :<C-U>exe "p'.cmd.'next'.end
-    call s:map('n', '[<C-'.toupper(a:map).'>', map.'PPrevious')
-    call s:map('n', ']<C-'.toupper(a:map).'>', map.'PNext')
+    exe s:Map('n', '[<C-T>', '<Plug>(unimpaired-ptprevious)')
+    exe s:Map('n', ']<C-T>', '<Plug>(unimpaired-ptnext)')
   endif
 endfunction
 
@@ -325,9 +339,12 @@ nmap <script> <Plug>(unimpaired-enable)+  :<C-U>set cursorline cursorcolumn<CR>
 nmap <script> <Plug>(unimpaired-disable)+ :<C-U>set nocursorline nocursorcolumn<CR>
 nmap <script> <Plug>(unimpaired-toggle)+  :<C-U>set <C-R>=<SID>CursorOptions()<CR><CR>
 
-exe s:map('n', 'yo', '<Plug>(unimpaired-toggle)')
-exe s:map('n', '[o', '<Plug>(unimpaired-enable)')
-exe s:map('n', ']o', '<Plug>(unimpaired-disable)')
+exe s:Map('n', 'yo', '<Plug>(unimpaired-toggle)')
+exe s:Map('n', '[o', '<Plug>(unimpaired-enable)')
+exe s:Map('n', ']o', '<Plug>(unimpaired-disable)')
+exe s:Map('n', 'yo<Esc>', '<Nop>')
+exe s:Map('n', '[o<Esc>', '<Nop>')
+exe s:Map('n', ']o<Esc>', '<Nop>')
 
 function! s:SetupPaste() abort
   let s:paste = &paste
@@ -508,9 +525,10 @@ function! s:Transform(algorithm,type) abort
   let sel_save = &selection
   let cb_save = &clipboard
   set selection=inclusive clipboard-=unnamed clipboard-=unnamedplus
-  let reg_save = @@
+  let reg_save = exists('*getreginfo') ? getreginfo('@') : getreg('@')
   if a:type ==# 'line'
     silent exe "normal! '[V']y"
+    let @@ = substitute(@@, "\n$", '', '')
   elseif a:type ==# 'block'
     silent exe "normal! `[\<C-V>`]y"
   else
@@ -522,7 +540,7 @@ function! s:Transform(algorithm,type) abort
     let @@ = s:{a:algorithm}(@@)
   endif
   norm! gvp
-  let @@ = reg_save
+  call setreg('@', reg_save)
   let &selection = sel_save
   let &clipboard = cb_save
 endfunction
@@ -538,20 +556,27 @@ function! s:TransformSetup(algorithm) abort
 endfunction
 
 function! UnimpairedMapTransform(algorithm, key) abort
+  let name = tr(a:algorithm, '_', '-')
   exe 'nnoremap <expr> <Plug>unimpaired_'    .a:algorithm.' <SID>TransformSetup("'.a:algorithm.'")'
   exe 'xnoremap <expr> <Plug>unimpaired_'    .a:algorithm.' <SID>TransformSetup("'.a:algorithm.'")'
   exe 'nnoremap <expr> <Plug>unimpaired_line_'.a:algorithm.' <SID>TransformSetup("'.a:algorithm.'")."_"'
-  call s:map('n', a:key, '<Plug>unimpaired_'.a:algorithm)
-  call s:map('x', a:key, '<Plug>unimpaired_'.a:algorithm)
-  call s:map('n', a:key.a:key[strlen(a:key)-1], '<Plug>unimpaired_line_'.a:algorithm)
+  exe 'nnoremap <expr> <Plug>(unimpaired-' . name . ') <SID>TransformSetup("'.a:algorithm.'")'
+  exe 'xnoremap <expr> <Plug>(unimpaired-' . name . ') <SID>TransformSetup("'.a:algorithm.'")'
+  exe 'nnoremap <expr> <Plug>(unimpaired-' . name . '-line) <SID>TransformSetup("'.a:algorithm.'")."_"'
+  exe s:Map('n', a:key, '<Plug>(unimpaired-' . name . ')')
+  exe s:Map('x', a:key, '<Plug>(unimpaired-' . name . ')')
+  exe s:Map('n', a:key.a:key[strlen(a:key)-1], '<Plug>(unimpaired-' . name . '-line)')
+  return ''
 endfunction
 
-call UnimpairedMapTransform('string_encode','[y')
-call UnimpairedMapTransform('string_decode',']y')
-call UnimpairedMapTransform('url_encode','[u')
-call UnimpairedMapTransform('url_decode',']u')
-call UnimpairedMapTransform('xml_encode','[x')
-call UnimpairedMapTransform('xml_decode',']x')
+exe UnimpairedMapTransform('string_encode','[y')
+exe UnimpairedMapTransform('string_decode',']y')
+exe UnimpairedMapTransform('string_encode','[C')
+exe UnimpairedMapTransform('string_decode',']C')
+exe UnimpairedMapTransform('url_encode','[u')
+exe UnimpairedMapTransform('url_decode',']u')
+exe UnimpairedMapTransform('xml_encode','[x')
+exe UnimpairedMapTransform('xml_decode',']x')
 
 " Section: Activation
 
