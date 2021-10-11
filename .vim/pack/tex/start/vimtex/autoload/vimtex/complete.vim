@@ -18,6 +18,37 @@ function! vimtex#complete#init_buffer() abort " {{{1
   endfor
 
   setlocal omnifunc=vimtex#complete#omnifunc
+
+  if g:vimtex_indent_enabled
+    augroup vimtex_buffers
+      autocmd CompleteDone <buffer> call s:complete_autoindent()
+    augroup END
+  endif
+endfunction
+
+function! s:complete_autoindent() abort
+  " Thanks to @hrsh7th for the inspiration
+  " https://github.com/neoclide/coc.nvim/issues/3394#issuecomment-926482558
+  if col('.') < 3 | return | endif
+
+  let l:line = getline('.')[:col('.') - 2]
+  if matchstr(l:line, '\S*$') !=# '\item' | return | endif
+
+  let l:curpos = getcurpos()
+  let l:indent_pre = indent('.')
+
+  let l:startofline = &startofline
+  let l:virtualedit = &virtualedit
+  set nostartofline
+  set virtualedit=all
+  normal! ==
+  let &startofline = l:startofline
+  let &virtualedit = l:virtualedit
+
+  let l:shift = indent('.') - l:indent_pre
+  let l:curpos[2] += l:shift
+  let l:curpos[4] += l:shift
+  call cursor(l:curpos[1:])
 endfunction
 
 " }}}1

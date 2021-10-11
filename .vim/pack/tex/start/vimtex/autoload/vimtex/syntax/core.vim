@@ -614,6 +614,11 @@ function! vimtex#syntax#core#init() abort " {{{1
     if g:vimtex_syntax_conceal.cites
       call s:match_conceal_cites_{g:vimtex_syntax_conceal_cites.type}()
     endif
+
+    " Conceal section commands
+    if g:vimtex_syntax_conceal.sections
+      call s:match_conceal_sections()
+    endif
   endif
 
   " }}}2
@@ -672,11 +677,15 @@ function! vimtex#syntax#core#init_highlights() abort " {{{1
   highlight def link texSpecialChar      SpecialChar
   highlight def link texSymbol           SpecialChar
   highlight def link texTitleArg         Underlined
-  highlight def texStyleBold     gui=bold        cterm=bold
-  highlight def texStyleBoth     gui=bold,italic cterm=bold,italic
-  highlight def texStyleItal     gui=italic      cterm=italic
-  highlight def texMathStyleBold gui=bold        cterm=bold
-  highlight def texMathStyleItal gui=italic      cterm=italic
+  highlight def texStyleBold          gui=bold                  cterm=bold
+  highlight def texStyleItal          gui=italic                cterm=italic
+  highlight def texStyleUnder         gui=underline             cterm=underline
+  highlight def texStyleBoth          gui=bold,italic           cterm=bold,italic
+  highlight def texStyleBoldUnder     gui=bold,underline        cterm=bold,underline
+  highlight def texStyleItalUnder     gui=italic,underline      cterm=italic,underline
+  highlight def texStyleBoldItalUnder gui=bold,italic,underline cterm=bold,italic,underline
+  highlight def texMathStyleBold      gui=bold        cterm=bold
+  highlight def texMathStyleItal      gui=italic      cterm=italic
 
   " Inherited groups
   highlight def link texArgNew             texCmd
@@ -785,6 +794,8 @@ function! vimtex#syntax#core#init_highlights() abort " {{{1
   highlight def link texParboxOptHeight    texError
   highlight def link texParboxOptIPos      texError
   highlight def link texParboxOptPos       texError
+  highlight def link texPartConcealed      texCmdPart
+  highlight def link texPartConcArgTitle   texPartArgTitle
   highlight def link texRefOpt             texOpt
   highlight def link texRefConcealedOpt1   texRefOpt
   highlight def link texRefConcealedOpt2   texRefOpt
@@ -904,8 +915,11 @@ function! vimtex#syntax#core#new_cmd(cfg) abort " {{{1
     let l:style = get({
           \ 'bold': 'texStyleBold',
           \ 'ital': 'texStyleItal',
+          \ 'under': 'texStyleUnder',
           \ 'boldital': 'texStyleBoth',
-          \ 'italbold': 'texStyleBoth',
+          \ 'boldunder': 'texStyleBoldUnder',
+          \ 'italunder': 'texStyleItalUnder',
+          \ 'bolditalunder': 'texStyleBoldItalUnder',
           \}, l:cfg.argstyle,
           \ l:cfg.mathmode ? 'texMathArg' : '')
     if !empty(l:style)
@@ -1679,22 +1693,20 @@ function! s:match_math_delims() abort " {{{1
   syntax match texMathDelim contained "\\backslash"
   syntax match texMathDelim contained "\\downarrow"
   syntax match texMathDelim contained "\\Downarrow"
-  syntax match texMathDelim contained "\\lVert"
+  syntax match texMathDelim contained "\\[lr]vert"
+  syntax match texMathDelim contained "\\[lr]Vert"
   syntax match texMathDelim contained "\\langle"
   syntax match texMathDelim contained "\\lbrace"
   syntax match texMathDelim contained "\\lceil"
   syntax match texMathDelim contained "\\lfloor"
   syntax match texMathDelim contained "\\lgroup"
   syntax match texMathDelim contained "\\lmoustache"
-  syntax match texMathDelim contained "\\lvert"
-  syntax match texMathDelim contained "\\rVert"
   syntax match texMathDelim contained "\\rangle"
   syntax match texMathDelim contained "\\rbrace"
   syntax match texMathDelim contained "\\rceil"
   syntax match texMathDelim contained "\\rfloor"
   syntax match texMathDelim contained "\\rgroup"
   syntax match texMathDelim contained "\\rmoustache"
-  syntax match texMathDelim contained "\\rvert"
   syntax match texMathDelim contained "\\uparrow"
   syntax match texMathDelim contained "\\Uparrow"
   syntax match texMathDelim contained "\\updownarrow"
@@ -1708,6 +1720,8 @@ function! s:match_math_delims() abort " {{{1
   syntax match texMathDelim contained conceal cchar=| "\\right|"
   syntax match texMathDelim contained conceal cchar=‖ "\\left\\|"
   syntax match texMathDelim contained conceal cchar=‖ "\\right\\|"
+  syntax match texMathDelim contained conceal cchar=| "\\[lr]vert"
+  syntax match texMathDelim contained conceal cchar=‖ "\\[lr]Vert"
   syntax match texMathDelim contained conceal cchar=( "\\left("
   syntax match texMathDelim contained conceal cchar=) "\\right)"
   syntax match texMathDelim contained conceal cchar=[ "\\left\["
@@ -1925,6 +1939,18 @@ function! s:match_conceal_cites_icon() abort " {{{1
   execute 'syntax match texCmdRefConcealed'
         \ '"\\cite[tp]\?\*\?\%(\[[^]]*\]\)\{,2}{[^}]*}"'
         \ 'conceal cchar=' . g:vimtex_syntax_conceal_cites.icon
+endfunction
+
+" }}}1
+function! s:match_conceal_sections() abort " {{{1
+  syntax match texCmdPart "\v\\%(sub)*section>\*?" contains=texPartConcealed nextgroup=texPartConcArgTitle
+  syntax match texPartConcealed "\\" contained conceal cchar=#
+  syntax match texPartConcealed "sub" contained conceal cchar=#
+  syntax match texPartConcealed "section\*\?" contained conceal cchar= 
+
+  call vimtex#syntax#core#new_arg('texPartConcArgTitle', {
+        \ 'opts': 'contained keepend concealends'
+        \})
 endfunction
 
 " }}}1

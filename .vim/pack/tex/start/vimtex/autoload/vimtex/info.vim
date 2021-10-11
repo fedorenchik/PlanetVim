@@ -182,17 +182,17 @@ function! s:get_os_info() abort " {{{1
 
   if l:os ==# 'linux'
     let l:result = executable('lsb_release')
-          \ ? system('lsb_release -d')[12:-2]
-          \ : system('uname -sr')[:-2]
+        \ ? vimtex#jobs#cached('lsb_release -d')[0][12:]
+        \ : vimtex#jobs#cached('uname -sr')[0]
     return substitute(l:result, '^\s*', '', '')
   elseif l:os ==# 'mac'
-    let l:name = system('sw_vers -productName')[:-2]
-    let l:version = system('sw_vers -productVersion')[:-2]
-    let l:build = system('sw_vers -buildVersion')[:-2]
+    let l:name = vimtex#jobs#cached('sw_vers -productName')[0]
+    let l:version = vimtex#jobs#cached('sw_vers -productVersion')[0]
+    let l:build = vimtex#jobs#cached('sw_vers -buildVersion')[0]
     return l:name . ' ' . l:version . ' (' . l:build . ')'
   else
     if !exists('s:win_info')
-      let s:win_info = vimtex#process#capture('systeminfo')
+      let s:win_info = vimtex#jobs#cached('systeminfo')
     endif
 
     try

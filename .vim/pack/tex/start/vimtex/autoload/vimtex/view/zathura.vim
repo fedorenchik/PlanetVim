@@ -12,7 +12,7 @@ function! vimtex#view#zathura#new() abort " {{{1
   endif
 
   if g:vimtex_view_zathura_check_libsynctex && executable('ldd')
-    let l:shared = split(system("sh -c 'ldd $(which zathura)'"))
+    let l:shared = vimtex#jobs#cached("sh -c 'ldd $(which zathura)'")
     if v:shell_error == 0
           \ && empty(filter(l:shared, 'v:val =~# ''libsynctex'''))
       call vimtex#log#warning('Zathura is not linked to libsynctex!')
@@ -48,7 +48,7 @@ function! s:zathura.start(outfile) dict abort " {{{1
   endif
   let l:cmd .= ' ' . g:vimtex_view_zathura_options
   let l:cmd .= ' ' . vimtex#util#shellescape(a:outfile)
-  let self.process = vimtex#process#start(l:cmd)
+  let self.job = vimtex#jobs#start(l:cmd)
 
   call self.xwin_get_id()
   let self.outfile = a:outfile
@@ -62,13 +62,12 @@ function! s:zathura.forward_search(outfile) dict abort " {{{1
   let self.texfile = vimtex#paths#relative(expand('%:p'), b:vimtex.root)
   let self.outfile = vimtex#paths#relative(a:outfile, getcwd())
 
-  let l:cmd  = 'zathura --synctex-forward '
-  let l:cmd .= line('.')
-  let l:cmd .= ':' . col('.')
-  let l:cmd .= ':' . vimtex#util#shellescape(self.texfile)
-  let l:cmd .= ' ' . vimtex#util#shellescape(self.outfile)
-  call vimtex#process#run(l:cmd)
-  let self.cmd_forward_search = l:cmd
+  let self.cmd_forward_search = printf(
+        \ 'zathura --synctex-forward %d:%d:%s %s',
+        \ line('.'), col('.'),
+        \ vimtex#util#shellescape(self.texfile),
+        \ vimtex#util#shellescape(self.outfile))
+  call vimtex#jobs#run(self.cmd_forward_search)
 endfunction
 
 " }}}1
@@ -94,16 +93,15 @@ endfunction
 function! s:zathura.get_pid() dict abort " {{{1
   " First try to match full output file name
   let l:outfile = fnamemodify(get(self, 'outfile', self.out()), ':t')
-  let l:cmd = 'pgrep -nf "^zathura.*' . escape(l:outfile, '~\%.') . '"'
-  let l:pid = str2nr(system(l:cmd)[:-2])
+  let l:output = vimtex#jobs#capture(
+        \ 'pgrep -nf "^zathura.*' . escape(l:outfile, '~\%.') . '"')
+  let l:pid = str2nr(join(l:output, ''))
+  if !empty(l:pid) | return l:pid | endif
 
   " Now try to match correct servername as fallback
-  if empty(l:pid)
-    let l:cmd = 'pgrep -nf "^zathura.+--servername ' . v:servername . '"'
-    let l:pid = str2nr(system(l:cmd)[:-2])
-  endif
-
-  return l:pid
+  let l:output = vimtex#jobs#capture(
+        \ 'pgrep -nf "^zathura.+--servername ' . v:servername . '"')
+  return str2nr(join(l:output, ''))
 endfunction
 
 " }}}1

@@ -88,7 +88,7 @@ function! s:compiler.__pprint() abort dict " {{{1
     if self.continuous
       call add(l:job, ['pid', self.get_pid()])
     endif
-    call add(l:list, ['process', l:job])
+    call add(l:list, ['job', l:job])
   endif
 
   return l:list
@@ -105,7 +105,7 @@ function! s:compiler.clean(full) abort dict " {{{1
   call map(l:files, {_, x -> printf('%s/%s.%s',
         \ self.build_dir, fnamemodify(self.state.tex, ':t:r:S'), x)})
 
-  call vimtex#process#run('rm -f ' . join(l:files))
+  call vimtex#jobs#run('rm -f ' . join(l:files), {'cwd': self.state.root})
 endfunction
 
 " }}}1
@@ -153,28 +153,24 @@ function! s:compiler.stop() abort dict " {{{1
 endfunction
 
 " }}}1
-function! s:compiler.wait() abort dict " {{{1
-  for l:dummy in range(50)
-    sleep 100m
-    if !self.is_running()
-      return
-    endif
-  endfor
-
-  call self.stop()
-endfunction
-
-" }}}1
 
 function! s:compiler.create_build_dir() abort dict " {{{1
   " Create build dir if it does not exist
   " Note: This may need to create a hierarchical structure!
   if empty(self.build_dir) | return | endif
 
-  let l:dirs = split(glob(self.state.root . '/**/*.tex'), '\n')
-  call map(l:dirs, "fnamemodify(v:val, ':h')")
-  call map(l:dirs, 'strpart(v:val, strlen(self.state.root) + 1)')
+  if has_key(self.state, 'sources')
+    let l:dirs = copy(self.state.sources)
+    call filter(map(
+          \ l:dirs, "fnamemodify(v:val, ':h')"),
+          \ {_, x -> x !=# '.'})
+  else
+    let l:dirs = glob(self.state.root . '/**/*.tex', v:false, v:true)
+    call map(l:dirs, "fnamemodify(v:val, ':h')")
+    call map(l:dirs, 'strpart(v:val, strlen(self.state.root) + 1)')
+  endif
   call uniq(sort(filter(l:dirs, '!empty(v:val)')))
+
   call map(l:dirs, {_, x ->
         \ (vimtex#paths#is_abs(self.build_dir) ? '' : self.state.root . '/')
         \ . self.build_dir . '/' . x})
@@ -184,6 +180,8 @@ function! s:compiler.create_build_dir() abort dict " {{{1
   " Create the non-existing directories
   call vimtex#log#warning(["Creating build_dir directorie(s):"]
         \ + map(copy(l:dirs), {_, x -> '* ' . x}))
+
+  unsilent echo 'DBG' l:dirs "\n"
 
   for l:dir in l:dirs
     call mkdir(l:dir, 'p')
@@ -221,6 +219,7 @@ function! s:compiler_jobs.exec(cmd) abort dict " {{{1
         \ 'err_io' : 'file',
         \ 'out_name' : self.output,
         \ 'err_name' : self.output,
+        \ 'cwd': self.state.root,
         \}
   if self.continuous
     let l:options.out_io = 'pipe'
@@ -232,14 +231,23 @@ function! s:compiler_jobs.exec(cmd) abort dict " {{{1
     let l:options.exit_cb = function('s:callback')
   endif
 
-  call vimtex#paths#pushd(self.state.root)
   let self.job = job_start(a:cmd, l:options)
-  call vimtex#paths#popd()
 endfunction
 
 " }}}1
 function! s:compiler_jobs.kill() abort dict " {{{1
   call job_stop(self.job)
+  sleep 25m
+endfunction
+
+" }}}1
+function! s:compiler_jobs.wait() abort dict " {{{1
+  for l:dummy in range(500)
+    sleep 10m
+    if !self.is_running() | return | endif
+  endfor
+
+  call self.stop()
 endfunction
 
 " }}}1
@@ -301,12 +309,22 @@ function! s:compiler_nvim.kill() abort dict " {{{1
 endfunction
 
 " }}}1
+function! s:compiler_nvim.wait() abort dict " {{{1
+  let l:retvals = jobwait([self.job], 5000)
+  if empty(l:retvals) | return | endif
+  let l:status = l:retvals[0]
+  if l:status >= 0 | return | endif
+
+  if l:status == -1 | call self.stop() | endif
+endfunction
+
+" }}}1
 function! s:compiler_nvim.is_running() abort dict " {{{1
   try
     let pid = jobpid(self.job)
-    return 1
+    return l:pid > 0
   catch
-    return 0
+    return v:false
   endtry
 endfunction
 

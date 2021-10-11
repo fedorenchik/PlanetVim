@@ -5,18 +5,6 @@
 "
 
 function! vimtex#view#skim#new() abort " {{{1
-  " Check if Skim is installed
-  let l:cmd = join([
-        \ 'osascript -e ',
-        \ '''tell application "Finder" to POSIX path of ',
-        \ '(get application file id (id of application "Skim") as alias)''',
-        \])
-
-  if system(l:cmd)
-    call vimtex#log#error('Skim is not installed!')
-    return {}
-  endif
-
   augroup vimtex_view_skim
     autocmd!
     autocmd User VimtexEventCompileSuccess
@@ -31,6 +19,7 @@ function! vimtex#view#skim#compiler_callback() abort " {{{1
   if !exists('b:vimtex.viewer') | return | endif
   let self = b:vimtex.viewer
   if !filereadable(self.out()) | return | endif
+  if !self.skim_available() | return | endif
 
   let l:cmd = join([
         \ 'osascript',
@@ -45,7 +34,7 @@ function! vimtex#view#skim#compiler_callback() abort " {{{1
         \ '-e ''end tell''',
         \])
 
-  let b:vimtex.viewer.process = vimtex#process#start(l:cmd)
+  let b:vimtex.viewer.job = vimtex#jobs#start(l:cmd)
 endfunction
 
 " }}}1
@@ -54,9 +43,31 @@ endfunction
 let s:skim = {
       \ 'name' : 'Skim',
       \ 'startskim' : 'open -a Skim',
+      \ '_requirements_checked' : v:false,
+      \ '_skim_available' : v:false,
       \}
 
+function! s:skim.skim_available() abort " {{{1
+  if !self._requirements_checked
+    let self._requirements_checked = v:true
+
+    " Check if Skim is installed
+    let l:output = vimtex#jobs#cached(
+          \ 'osascript -e '
+          \ . '''tell application "Finder" to get id of application "Skim"''')
+    let self._skim_available = l:output[0] =~# '^net.sourceforge.skim-app'
+    if !self._skim_available
+      call vimtex#log#error('Skim is not installed!')
+    endif
+  endif
+
+  return self._skim_available
+endfunction
+
+" }}}1
 function! s:skim.view(file) dict abort " {{{1
+  if !self.skim_available() | return | endif
+
   if empty(a:file)
     let outfile = self.out()
 
@@ -87,7 +98,7 @@ function! s:skim.view(file) dict abort " {{{1
         \ '-e ''end tell''',
         \])
 
-  let self.process = vimtex#process#start(l:cmd)
+  let self.job = vimtex#jobs#start(l:cmd)
 
   if exists('#User#VimtexEventView')
     doautocmd <nomodeline> User VimtexEventView
