@@ -78,6 +78,10 @@ function! flog#get(dict, key, ...) abort
   return get(a:dict, a:key, l:default)
 endfunction
 
+function! flog#filter_empty(list) abort
+  return filter(copy(a:list), '!empty(v:val)')
+endfunction
+
 " }}}
 
 " Deprecation helpers {{{
@@ -151,6 +155,10 @@ function! flog#systemlist(command) abort
     throw g:flog_shell_error
   endif
   return l:output
+endfunction
+
+function! flog#shellescapelist(list) abort
+  return map(copy(a:list), 'shellescape(v:val)')
 endfunction
 
 " }}}
@@ -402,6 +410,10 @@ function! flog#escape_completions(lead, completions) abort
   return map(a:completions, "a:lead . substitute(v:val, ' ', '\\\\ ', '')")
 endfunction
 
+function! flog#shellescape_completions(completions) abort
+  return map(a:completions, 'fnameescape(v:val)')
+endfunction
+
 function! flog#split_single_completable_arg(arg) abort
   let l:start_pattern = '^\([^=]*=\)\?'
   let l:start = matchstr(a:arg, l:start_pattern)
@@ -532,12 +544,12 @@ function! flog#complete_git(arg_lead, cmd_line, cursor_pos) abort
     let l:completions += flog#filter_completions(a:arg_lead, copy(g:flog_git_subcommands[l:command]))
   endif
 
-  return l:completions
+  return flog#shellescape_completions(l:completions)
 endfunction
 
 function! flog#complete_jump(arg_lead, cmd_line, cursor_pos) abort
   let l:state = flog#get_state()
-  return flog#complete_rev(a:arg_lead)
+  return flog#shellescape_completions(flog#complete_rev(a:arg_lead))
 endfunction
 
 " }}}
@@ -677,6 +689,8 @@ function! flog#get_initial_state(parsed_args, original_file) abort
         \ 'commit_refs': [],
         \ 'line_commit_refs': [],
         \ 'ref_line_lookup': {},
+        \ 'commit_line_lookup': {},
+        \ 'commit_marks': {},
         \ 'ansi_esc_called': v:false,
         \ })
 endfunction
@@ -747,7 +761,8 @@ function! flog#parse_log_commit(c) abort
   let l:c.ref_names_unwrapped = l:dat[g:flog_log_data_ref_index]
   let l:c.internal_data = l:dat
 
-  let l:c.ref_name_list = split(l:c.ref_names_unwrapped, ' -> \|, \|tag: ')
+  let l:c.ref_name_list = flog#filter_empty(
+        \ split(l:c.ref_names_unwrapped, ' -> \|, \|tag: '))
 
   let l:end = a:c[l:l  + len(g:flog_format_end):]
   if l:end !=# '' && l:end[0] !=# "\n"
@@ -871,9 +886,9 @@ function! flog#build_log_args() abort
   endif
   if len(l:opts.rev) >= 1
     if l:opts.limit
-      let l:rev = l:opts.rev[0]
+      let l:rev = shellescape(l:opts.rev[0])
     else
-      let l:rev = join(l:opts.rev, ' ')
+      let l:rev = join(flog#shellescapelist(l:opts.rev), ' ')
     endif
     let l:args .= ' ' . l:rev
   endif
@@ -1048,7 +1063,15 @@ function! flog#jump_to_ref(ref) abort
   if !has_key(l:state.ref_line_lookup, a:ref)
     return
   endif
-  exec l:state.ref_line_lookup[a:ref] + 1
+  exec l:state.ref_line_lookup[a:ref]
+endfunction
+
+function! flog#jump_to_commit(hash) abort
+  let l:state = flog#get_state()
+  if !has_key(l:state.commit_line_lookup, a:hash)
+    return
+  endif
+  exec l:state.commit_line_lookup[a:hash]
 endfunction
 
 function! flog#next_ref() abort
@@ -1093,11 +1116,13 @@ function! flog#set_graph_buffer_commits(commits) abort
   let l:state.commit_refs = []
   let l:state.line_commit_refs = []
   let l:state.ref_line_lookup = {}
+  let l:state.ref_commit_lookup = {}
 
   let l:cr = v:null
 
   let l:scr = l:state.commit_refs
   let l:srl = l:state.ref_line_lookup
+  let l:scl = l:state.commit_line_lookup
   let l:slc = l:state.line_commits
   let l:slr = l:state.line_commit_refs
 
@@ -1106,9 +1131,11 @@ function! flog#set_graph_buffer_commits(commits) abort
       let l:cr = l:c.ref_name_list
       let l:scr += [l:cr]
       for l:r in l:cr
-        let l:srl[l:r] = len(l:slc)
+        let l:srl[l:r] = len(l:slc) + 1
       endfor
     endif
+
+    let l:scl[l:c.short_commit_hash] = len(slc) + 1
 
     let l:slc += repeat([l:c], len(l:c.display))
     let l:slr += repeat([l:cr], len(l:c.display))
@@ -1219,17 +1246,12 @@ function! flog#restore_graph_cursor(cursor) abort
     return
   endif
 
-  let l:line = v:null
-  for l:commit in l:state.commits
-    if l:commit.short_commit_hash == l:short_commit_hash
-      call cursor(index(l:state.line_commits, l:commit) + 1, 1)
-      return
-    endif
-  endfor
+  return flog#jump_to_commit(l:short_commit_hash)
 endfunction
 
 function! flog#populate_graph_buffer() abort
   let l:state = flog#get_state()
+  let b:flog_status_summary = flog#get_status_summary()
 
   let l:cursor = flog#get_graph_cursor()
 
@@ -1372,6 +1394,21 @@ function! flog#clear_graph_update_hook() abort
   augroup END
 endfunction
 
+function! flog#get_status_summary() abort
+  let l:command = flog#get_fugitive_git_command()
+  let l:changes = len(systemlist(l:command . ' status -s'))
+  if l:changes == 0
+    let l:change_summary = 'no changes'
+  else 
+    let l:change_summary = l:changes . ' changed file'
+  endif
+  if l:changes > 1
+    let l:change_summary = l:change_summary . 's'
+  endif
+  let l:branch = systemlist(l:command . ' rev-parse --abbrev-ref HEAD')[0]
+  return '(' . l:branch . ')' . ' ' . l:change_summary
+endfunction
+
 function! flog#do_graph_update_hook(graph_buff_num) abort
   if bufnr() != a:graph_buff_num
     return
@@ -1506,6 +1543,95 @@ endfunction
 
 " }}}
 
+" Commit marks {{{
+
+function! flog#is_reserved_commit_mark(key) abort
+  return a:key ==# '<' || a:key ==# '>'
+endfunction
+
+function! flog#is_cancel_commit_mark(key) abort
+  " 27 is the code for <Esc>
+  return char2nr(a:key) == 27
+endfunction
+
+function! flog#get_commit_marks() abort
+  return flog#get_state().commit_marks
+endfunction
+
+function! flog#reset_commit_marks() abort
+  let l:state = flog#get_state()
+  let l:state.commit_marks = {}
+endfunction
+
+function! flog#set_commit_mark(key, commit) abort
+  if flog#is_reserved_commit_mark(a:key)
+    throw g:flog_invalid_mark
+  endif
+  if flog#is_cancel_commit_mark(a:key)
+    return
+  endif
+  let l:marks = flog#get_commit_marks()
+  let l:marks[a:key] = a:commit
+endfunction
+
+function! flog#set_commit_mark_at_line(key, line) abort
+  let l:commit = flog#get_commit_at_line(a:line)
+  return flog#set_commit_mark(a:key, l:commit)
+endfunction
+
+function! flog#remove_commit_mark(key) abort
+  let l:marks = flog#get_commit_marks()
+  unlet! l:marks[a:key]
+endfunction
+
+function! flog#has_commit_mark(key) abort
+  if flog#is_reserved_commit_mark(a:key)
+    return 1
+  endif
+  if flog#is_cancel_commit_mark(a:key)
+    throw g:flog_invalid_mark
+  endif
+  let l:marks = flog#get_commit_marks()
+  return has_key(l:marks, a:key)
+endfunction
+
+function! flog#get_commit_mark(key) abort
+  if a:key ==# '<' || a:key ==# '>'
+    return flog#get_commit_at_line("'" . a:key)
+  endif
+  if flog#is_cancel_commit_mark(a:key)
+    throw g:flog_invalid_mark
+  endif
+  if !flog#has_commit_mark(a:key)
+    return v:null
+  endif
+  let l:marks = flog#get_commit_marks()
+  return l:marks[a:key]
+endfunction
+
+function! flog#jump_to_commit_mark(key) abort
+  let l:previous_line = line('.')
+  let l:commit = flog#get_commit_mark(a:key)
+  if type(l:commit) != v:t_dict
+    return
+  endif
+  call flog#jump_to_commit(l:commit.short_commit_hash)
+  call flog#set_commit_mark_at_line("'", l:previous_line)
+endfunction
+
+function! flog#echo_commit_marks() abort
+  let l:marks = flog#get_commit_marks()
+  if empty(l:marks)
+    echo 'No commit marks.'
+    return
+  endif
+  for l:key in sort(keys(l:marks))
+    echo '  ' . l:key . '  ' . l:marks[l:key].short_commit_hash
+  endfor
+endfunction
+
+" }}}
+
 " Command utilities {{{
 
 " Command formatting {{{
@@ -1520,17 +1646,23 @@ function! flog#is_remote_ref(ref) abort
   return index(flog#get_remotes(), l:split_ref[0]) >= 0
 endfunction
 
-function! flog#get_cache_refs(cache, line) abort
+function! flog#get_cache_refs(cache, commit) abort
+  if type(a:commit) != v:t_dict
+    return v:null
+  endif
+
   let l:ref_cache = a:cache['refs']
 
-  if !has_key(l:ref_cache, a:line)
-    let l:commit = flog#get_commit_at_line(a:line)
-    if type(l:commit) != v:t_dict || empty(l:commit.ref_name_list)
+  let l:hash = a:commit.short_commit_hash
+
+  if !has_key(l:ref_cache, l:hash)
+    if empty(a:commit.ref_name_list)
       return v:null
     endif
-    let l:refs = l:commit.ref_name_list
+    let l:refs = a:commit.ref_name_list
 
-    let l:original_refs = split(l:commit.ref_names_unwrapped, ' \ze-> \|, \|\zetag: ')
+    let l:original_refs = flog#filter_empty(
+          \ split(a:commit.ref_names_unwrapped, ' \ze-> \|, \|\zetag: '))
 
     let l:remote_branches = []
     let l:local_branches = []
@@ -1554,7 +1686,7 @@ function! flog#get_cache_refs(cache, line) abort
       let l:i += 1
     endwhile
 
-    let l:ref_cache[a:line] = {
+    let l:ref_cache[l:hash] = {
           \ 'local_branches': l:local_branches,
           \ 'remote_branches': l:remote_branches,
           \ 'tags': l:tags,
@@ -1562,26 +1694,31 @@ function! flog#get_cache_refs(cache, line) abort
           \ }
   endif
 
-  return l:ref_cache[a:line]
+  return l:ref_cache[l:hash]
 endfunction
 
 " }}}
 
 " Command format specifier converters {{{
 
-function! flog#cmd_convert_hash(cache, item, line) abort
-  return flog#get(flog#get_commit_at_line(a:line), 'short_commit_hash')
+function! flog#cmd_convert_hash(cache, item, commit) abort
+  return flog#get(a:commit, 'short_commit_hash')
 endfunction
 
-function! flog#cmd_convert_branch(cache, item, line) abort
-  let l:refs = flog#get_cache_refs(a:cache, a:line)
+function! flog#cmd_convert_branch(cache, item, commit) abort
+  let l:refs = flog#get_cache_refs(a:cache, a:commit)
   let l:local_branches = flog#get(l:refs, 'local_branches', [])
   let l:remote_branches = flog#get(l:refs, 'remote_branches', [])
-  return get(l:local_branches, 0, get(l:remote_branches, 0, v:null))
+
+  let l:branch = get(l:local_branches, 0, get(l:remote_branches, 0, v:null))
+  if type(l:branch) != v:t_string
+    return v:null
+  endif
+  return shellescape(l:branch)
 endfunction
 
-function! flog#cmd_convert_local_branch(cache, item, line) abort
-  let l:refs = flog#get_cache_refs(a:cache, a:line)
+function! flog#cmd_convert_local_branch(cache, item, commit) abort
+  let l:refs = flog#get_cache_refs(a:cache, a:commit)
   let l:local_branches = flog#get(l:refs, 'local_branches', [])
   let l:remote_branches = flog#get(l:refs, 'remote_branches', [])
 
@@ -1589,17 +1726,22 @@ function! flog#cmd_convert_local_branch(cache, item, line) abort
     if empty(l:remote_branches)
       return v:null
     endif
-    return substitute(l:remote_branches[0], '.*/', '', '')
+    return shellescape(substitute(l:remote_branches[0], '.*/', '', ''))
   endif
-  return l:local_branches[0]
+  return shellescape(l:local_branches[0])
 endfunction
 
 function! flog#cmd_convert_line(cache, item, Convert) abort
-  return a:Convert(a:cache, a:item, '.')
+  return a:Convert(a:cache, a:item, flog#get_commit_at_line('.'))
 endfunction
 
-function! flog#cmd_convert_mark(cache, item, Convert) abort
-  return a:Convert(a:cache, a:item, a:item[1:])
+function! flog#cmd_convert_commit_mark(cache, item, Convert) abort
+  let l:commit = flog#get_commit_mark(a:item[2:])
+  if type(l:commit) != v:t_dict
+    return v:null
+  endif
+
+  return a:Convert(a:cache, a:item, l:commit)
 endfunction
 
 function! flog#cmd_convert_path(cache, item) abort
@@ -1626,15 +1768,15 @@ function! flog#convert_command_format_item(cache, item) abort
   if a:item ==# 'h'
     let l:converted_item = flog#cmd_convert_line(a:cache, a:item, function('flog#cmd_convert_hash'))
   elseif a:item =~# "^h'."
-    let l:converted_item = flog#cmd_convert_mark(a:cache, a:item, function('flog#cmd_convert_hash'))
+    let l:converted_item = flog#cmd_convert_commit_mark(a:cache, a:item, function('flog#cmd_convert_hash'))
   elseif a:item =~# 'b'
     let l:converted_item = flog#cmd_convert_line(a:cache, a:item, function('flog#cmd_convert_branch'))
   elseif a:item =~# "^b'."
-    let l:converted_item = flog#cmd_convert_mark(a:cache, a:item, function('flog#cmd_convert_branch'))
+    let l:converted_item = flog#cmd_convert_commit_mark(a:cache, a:item, function('flog#cmd_convert_branch'))
   elseif a:item =~# 'l'
     let l:converted_item = flog#cmd_convert_line(a:cache, a:item, function('flog#cmd_convert_local_branch'))
   elseif a:item =~# "^l'."
-    let l:converted_item = flog#cmd_convert_mark(a:cache, a:item, function('flog#cmd_convert_local_branch'))
+    let l:converted_item = flog#cmd_convert_commit_mark(a:cache, a:item, function('flog#cmd_convert_local_branch'))
   elseif a:item =~# 'p'
     let l:converted_item = flog#cmd_convert_path(a:cache, a:item)
   else
