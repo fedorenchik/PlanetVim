@@ -411,6 +411,7 @@ func! planet#menu#dev#Update() abort
     an 500.10  🔨&u.Ar&duino.Set\ Build\ Dir                 :let g:arduino_build_path = 'TODO'
     an 500.10  🔨&u.&PlatformIO.Edit\ Settings               :e platformio.ini<CR>
     an 500.10  🔨&u.&ROS.Setup                               :TODO
+    an 500.10  🔨&u.&ROS\ 2.Setup                            :TODO
     an 500.10  🔨&u.&Yocto.Setup                             :TODO
     an 500.10  🔨&u.&Flutter.Doctor                          <Cmd>call planet#term#RunCmd('flutter doctor')<CR>
     an 500.10  🔨&u.&Flutter.Set\ Android\ Sdk\ Location     <Cmd>call planet#term#RunCmd('flutter config --android-sdk')<CR>
