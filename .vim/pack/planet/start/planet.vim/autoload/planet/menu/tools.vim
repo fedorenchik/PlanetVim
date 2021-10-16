@@ -324,6 +324,52 @@ func! planet#menu#tools#Update() abort
     an 710.40  ⛏️&;.--6-- <Nop>
     an 710.40  ⛏️&;.Set\ Context\ Lines               :set diffopt+=context=12<CR>
 
+    " Writing
+    an 715.10  🔤&c.Writing <Nop>
+    an disable 🔤&c.Writing
+    an 715.10  🔤&c.Swap\ Words                   :TODO
+    an 715.10  🔤&c.Swap\ Words\ After            :TODO
+    an 715.10  🔤&c.--1-- <Nop>
+    an 715.10  🔤&c.Thesaurus                     :TODO
+    an 715.10  🔤&c.--2-- <Nop>
+    an 715.10  🔤&c.Generate\ Sample\ Text        :TODO
+    an 715.10  🔤&c.--3-- <Nop>
+    an 715.10  🔤&c.Left\ Align<Tab>:left         :left<CR>
+    an 715.10  🔤&c.Center\ Align<Tab>:center     :center<CR>
+    an 715.10  🔤&c.Right\ Align<Tab>:right       :right<CR>
+    an 715.10  🔤&c.--4-- <Nop>
+    an 715.10  🔤&c.Enable\ Distraction-Free\ Mode :TODO
+    an 715.10  🔤&c.Disable\ Distraction-Free\ Mode :TODO
+    an 715.10  🔤&c.--5-- <Nop>
+    am 715.10  🔤&c.Proofreading.Weak\ (first\ draft)<Tab>:Wordy\ weak             <Cmd>Wordy weak<CR>
+    am 715.10  🔤&c.Proofreading.Redundant<Tab>:Wordy\ redundant                   <Cmd>Wordy redundant<CR>
+    am 715.10  🔤&c.Proofreading.Problematic<Tab>:Wordy\ problematic               <Cmd>Wordy problematic<CR>
+    am 715.10  🔤&c.Proofreading.Puffery<Tab>:Wordy\ puffery                       <Cmd>Wordy puffery<CR>
+    am 715.10  🔤&c.Proofreading.Business\ Jargon<Tab>:Wordy\ business-jargon      <Cmd>Wordy business-jargon<CR>
+    am 715.10  🔤&c.Proofreading.Art\ Jargon<Tab>:Wordy\ art-jargon                <Cmd>Wordy art-jargon<CR>
+    am 715.10  🔤&c.Proofreading.Manipulative\ Language<Tab>:Wordy\ weasel         <Cmd>Wordy weasel<CR>
+    am 715.10  🔤&c.Proofreading.Verb\ 'to\ be'<Tab>:Wordy\ being                  <Cmd>Wordy being<CR>
+    am 715.10  🔤&c.Proofreading.Passive\ Voice<Tab>:Wordy\ passive-voice          <Cmd>Wordy passive-voice<CR>
+    am 715.10  🔤&c.Proofreading.Colloquialisms<Tab>:Wordy\ colloquial             <Cmd>Wordy colloquial<CR>
+    am 715.10  🔤&c.Proofreading.Idioms<Tab>:Wordy\ idiomatic                      <Cmd>Wordy idiomatic<CR>
+    am 715.10  🔤&c.Proofreading.Similies<Tab>:Wordy\ similies                     <Cmd>Wordy similies<CR>
+    am 715.10  🔤&c.Proofreading.Adjectives<Tab>:Wordy\ adjectives                 <Cmd>Wordy adjectives<CR>
+    am 715.10  🔤&c.Proofreading.Adverbs<Tab>:Wordy\ adverbs                       <Cmd>Wordy adverbs<CR>
+    am 715.10  🔤&c.Proofreading.'said'<Tab>:Wordy\ said-synonyms                  <Cmd>Wordy said-synonyms<CR>
+    am 715.10  🔤&c.Proofreading.Editorializing<Tab>:Wordy\ opinion                <Cmd>Wordy opinion<CR>
+    am 715.10  🔤&c.Proofreading.Contractions<Tab>:Wordy\ contractions             <Cmd>Wordy contractions<CR>
+    am 715.10  🔤&c.Proofreading.Vague\ Time<Tab>:Wordy\ vague-time                <Cmd>Wordy vague-time<CR>
+    am 715.10  🔤&c.Proofreading.Disable<Tab>:NoWordy                              <Cmd>NoWordy<CR>
+    am 715.10  🔤&c.Translation.Translate<Tab>:TranslateW                          :TranslateW
+    am 715.10  🔤&c.Translation.Replace\ with\ Translation<Tab>:TranslateR         :TranslateR
+    am 715.10  🔤&c.Translation.Echo\ Translation<Tab>:Translate                   :Translate
+    am 715.10  🔤&c.Translation.Set\ Source\ Language                              :TODO
+    am 715.10  🔤&c.Translation.Set\ Target\ Language                              :TODO
+    am 715.10  🔤&c.Translation.Edit\ Translation\ Engines                         :TODO
+    am 715.10  🔤&c.Translation.Export\ History                                    :TranslateH
+    am 715.10  🔤&c.Translation.Show\ Log                                          :TranslateL
+    am 715.10  🔤&c.Abbreviation.Enable\ AutoCorrect\ Typos                        <Cmd>call AutoCorrect()<CR>
+
     " Spelling (& Dictionary & Thesaurus)
     an 720.10  🔠&-.Spell\ Check <Nop>
     an disable 🔠&-.Spell\ Check
@@ -365,33 +411,6 @@ func! planet#menu#tools#Update() abort
     am 720.10  🔠&-.Grammar\ Check\ Comments                :GrammarousCheck --comments-only<CR>
     am 720.10  🔠&-.Grammar\ Check\ Reset<Tab>:GrammarousReset :GrammarousReset<CR>
     am 720.10  🔠&-.Grammar\ Check\ Status                  :GrammarousCheck --help<CR>
-    an 720.10  🔠&-.Proofreading <Nop>
-    an disable 🔠&-.Proofreading
-    am 720.10  🔠&-.Proofread.Weak\ (first\ draft)<Tab>:Wordy\ weak             :Wordy weak<CR>
-    am 720.10  🔠&-.Proofread.Redundant<Tab>:Wordy\ redundant                   :Wordy redundant<CR>
-    am 720.10  🔠&-.Proofread.Problematic<Tab>:Wordy\ problematic               :Wordy problematic<CR>
-    am 720.10  🔠&-.Proofread.Puffery<Tab>:Wordy\ puffery                       :Wordy puffery<CR>
-    am 720.10  🔠&-.Proofread.Business\ Jargon<Tab>:Wordy\ business-jargon      :Wordy business-jargon<CR>
-    am 720.10  🔠&-.Proofread.Art\ Jargon<Tab>:Wordy\ art-jargon                :Wordy art-jargon<CR>
-    am 720.10  🔠&-.Proofread.Manipulative\ Language<Tab>:Wordy\ weasel         :Wordy weasel<CR>
-    am 720.10  🔠&-.Proofread.Verb\ 'to\ be'<Tab>:Wordy\ being                  :Wordy being<CR>
-    am 720.10  🔠&-.Proofread.Passive\ Voice<Tab>:Wordy\ passive-voice          :Wordy passive-voice<CR>
-    am 720.10  🔠&-.Proofread.Colloquialisms<Tab>:Wordy\ colloquial             :Wordy colloquial<CR>
-    am 720.10  🔠&-.Proofread.Idioms<Tab>:Wordy\ idiomatic                      :Wordy idiomatic<CR>
-    am 720.10  🔠&-.Proofread.Similies<Tab>:Wordy\ similies                     :Wordy similies<CR>
-    am 720.10  🔠&-.Proofread.Adjectives<Tab>:Wordy\ adjectives                 :Wordy adjectives<CR>
-    am 720.10  🔠&-.Proofread.Adverbs<Tab>:Wordy\ adverbs                       :Wordy adverbs<CR>
-    am 720.10  🔠&-.Proofread.'said'<Tab>:Wordy\ said-synonyms                  :Wordy said-synonyms<CR>
-    am 720.10  🔠&-.Proofread.Editorializing<Tab>:Wordy\ opinion                :Wordy opinion<CR>
-    am 720.10  🔠&-.Proofread.Contractions<Tab>:Wordy\ contractions             :Wordy contractions<CR>
-    am 720.10  🔠&-.Proofread.Vague\ Time<Tab>:Wordy\ vague-time                :Wordy vague-time<CR>
-    am 720.10  🔠&-.Proofread.Disable<Tab>:NoWordy                              :NoWordy<CR>
-    an 720.10  🔠&-.Translation <Nop>
-    an disable 🔠&-.Translation
-    am 720.10  🔠&-.Translate.Translate<Tab>:TranslateW                         :TranslateW
-    am 720.10  🔠&-.Translate.Set\ Source\ Language                             :TODO
-    am 720.10  🔠&-.Translate.Set\ Target\ Language                             :TODO
-    am 720.10  🔠&-.Abbreviations.Enable\ AutoCorrect\ Common\ Typos            :TODO
 
     " Tools
     " TODO: add all '*.prg' options, eg: equalprg, keywordprg, etc.

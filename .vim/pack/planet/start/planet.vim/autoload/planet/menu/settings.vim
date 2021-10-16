@@ -104,26 +104,27 @@ func! planet#menu#settings#Update() abort
     " Help
     an 990.10  ❔&?.Help <Nop>
     an disable ❔&?.Help
+    an 990.10  ❔&?.Help\ Contents                             <Cmd>h<CR>
     an 990.10  ❔&?.&Lookup\ Word\ under\ Cursor<Tab>K         K
-    an 990.10  ❔&?.&TLDR\ Word\ under\ Cursor                 :call planet#term#RunCmd('tldr ' .. expand('<cword>'))<CR>
-    an 990.20  ❔&?.Inde&x                                     :h index<CR>
-    an 990.30  ❔&?.&QuickRef                                  :h quickref<CR>
-    an 990.40  ❔&?.&Plugins\ Documentation                    :h local-additions<CR>
-    an 990.50  ❔&?.View\ Log\ Messages<Tab>:messages          :messages<CR>
+    an 990.10  ❔&?.&TLDR\ Word\ under\ Cursor                 <Cmd>call planet#term#RunCmd('tldr ' .. expand('<cword>'))<CR>
+    an 990.20  ❔&?.Inde&x                                     <Cmd>h index<CR>
+    an 990.30  ❔&?.&QuickRef                                  <Cmd>h quickref<CR>
+    an 990.40  ❔&?.&Plugins\ Documentation                    <Cmd>h local-additions<CR>
+    an 990.50  ❔&?.View\ Log\ Messages<Tab>:messages          <Cmd>messages<CR>
     an 990.60  ❔&?.--1-- <Nop>
-    an 990.70  ❔&?.View\ &PlanetVim\ Community                :silent !xdg-open https://matrix.to/\#/+planetvim:matrix.org<CR>
-    an 990.70  ❔&?.&Join\ PlanetVim\ Chat                     :silent !xdg-open https://matrix.to/\#/\#planetvim_discussion:matrix.org?via=matrix.org<CR>
+    an 990.70  ❔&?.View\ &PlanetVim\ Community                <Cmd>silent !xdg-open https://matrix.to/\#/+planetvim:matrix.org<CR>
+    an 990.70  ❔&?.&Join\ PlanetVim\ Chat                     <Cmd>silent !xdg-open https://matrix.to/\#/\#planetvim_discussion:matrix.org?via=matrix.org<CR>
     an 990.80  ❔&?.--2-- <Nop>
-    an 990.90  ❔&?.Check\ for\ &Updates                       :silent !xdg-open https://github.com/fedorenchik/PlanetVim/releases<CR>
-    an 990.100 ❔&?.Add\ Feature\ Request                      :silent !xdg-open 'https://github.com/fedorenchik/PlanetVim/issues/new?assignees=&labels=enhancement&template=feature_request.md&title='<CR>
-    an 990.100 ❔&?.Report\ PlanetVim\ &Issue                  :silent !xdg-open 'https://github.com/fedorenchik/PlanetVim/issues/new?assignees=&labels=&template=bug_report.md&title'=<CR>
+    an 990.90  ❔&?.Check\ for\ &Updates                       <Cmd>silent !xdg-open https://github.com/fedorenchik/PlanetVim/releases<CR>
+    an 990.100 ❔&?.Add\ Feature\ Request                      <Cmd>silent !xdg-open 'https://github.com/fedorenchik/PlanetVim/issues/new?assignees=&labels=enhancement&template=feature_request.md&title='<CR>
+    an 990.100 ❔&?.Report\ PlanetVim\ &Issue                  <Cmd>silent !xdg-open 'https://github.com/fedorenchik/PlanetVim/issues/new?assignees=&labels=&template=bug_report.md&title'=<CR>
     an 990.110 ❔&?.--3-- <Nop>
     an 990.110 ❔&?.Others.Emergency\ Exit                     <Cmd>call planet#planet#EmergencyExit()<CR>
     an 990.110 ❔&?.Others.Restore\ PlanetVim\ Menu            <Cmd>call planet#planet#PlanetToggle()<CR>
     an 990.110 ❔&?.--4-- <Nop>
-    an 990.110 ❔&?.&Close\ Help\ Window                       :helpclose<CR>
+    an 990.110 ❔&?.&Close\ Help\ Window                       <Cmd>helpclose<CR>
     an 990.110 ❔&?.--5-- <Nop>
-    an 990.120 ❔&?.&About                                     :version<CR>
+    an 990.120 ❔&?.&About                                     <Cmd>version<CR>
   else
     silent! aunmenu ⚙️&\\
     silent! aunmenu ⌨️&\|

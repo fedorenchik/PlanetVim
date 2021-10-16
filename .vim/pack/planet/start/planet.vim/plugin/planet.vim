@@ -64,18 +64,6 @@ elseif g:PV_mode == 'p'
   call planet#planet#SetSuperChargedMode()
 end
 
-
-" Writing
-an 600.10  ]Writing.Writing <Nop>
-an disable ]Writing.Writing
-an 600.20  ]Writing.Swap\ Words                   :TODO
-an 600.20  ]Writing.Swap\ Words\ After            :TODO
-an 600.40  ]Writing.Thesaurus                     :TODO
-an 600.50  ]Writing.Generate\ Sample\ Text        :TODO
-an 600.50  ]Writing.Left\ Align<Tab>:left         :left<CR>
-an 600.50  ]Writing.Center\ Align<Tab>:center     :center<CR>
-an 600.50  ]Writing.Right\ Align<Tab>:right       :right<CR>
-
 " Avoid the ":ptag" when there is no word under the cursor, and a few other
 " things. Opens the tag under cursor in Preview window.
 hi previewWord term=bold ctermbg=green guibg=green
