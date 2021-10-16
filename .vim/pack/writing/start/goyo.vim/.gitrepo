@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/junegunn/goyo.vim.git
+	branch = master
+	commit = a865dec7ca7616dbbd69315ad1417b84d0c411f8
+	parent = dead4b2027d9323c399dead708c38a9aa47e5951
+	method = merge
+	cmdver = 0.4.3
