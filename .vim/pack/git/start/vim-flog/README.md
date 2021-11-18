@@ -1,6 +1,6 @@
 # Flog
 
-[![Build Status](https://travis-ci.org/rbong/vim-flog.svg?branch=master)](https://travis-ci.org/rbong/vim-flog)
+![test status](https://github.com/rbong/vim-flog/actions/workflows/test.yml/badge.svg?branch=master)
 
 Flog is a lightweight and powerful git branch viewer that integrates with
 [fugitive](https://github.com/tpope/vim-fugitive).
@@ -19,7 +19,7 @@ Plug 'rbong/vim-flog'
 See `:help plug-example` for more information.
 If you do not use plug, see your plugin manager of choice's documentation.
 
-Requires vim version 7.4.2204 or greater.
+Requires vim version 8 or greater.
 Neovim is also supported.
 
 ## Using Flog

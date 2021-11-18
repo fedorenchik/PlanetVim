@@ -84,6 +84,7 @@ describe ':Flogsplit'
   end
 end
 
+" opens the commit window
 describe 'flog#run_tmp_command("Gsplit %h", 1)'
   before
     Flog
@@ -106,11 +107,11 @@ describe 'flog#run_tmp_command("Gsplit %h", 1)'
   end
 end
 
-" implicitly does not open in a temp window
-describe 'flog#run_tmp_command("Git status", 1)'
+" try to open a temp window when no window is generated
+describe 'flog#run_tmp_command("!git status", 1)'
   before
     Flog
-    call flog#run_tmp_command('Git status', 1)
+    call flog#run_tmp_command('!git status', 1)
   end
 
   after
@@ -126,7 +127,7 @@ describe 'flog#run_tmp_command("Git status", 1)'
   end
 end
 
-" explicitly opens in a temp window
+" open a temp window with Git -p, which implicitly opens a window
 describe 'flog#run_tmp_command("Git -p status", 1)'
   before
     Flog
@@ -144,7 +145,7 @@ describe 'flog#run_tmp_command("Git -p status", 1)'
   end
 end
 
-" implicitly opens in a temp window
+" open a temp window with Git diff, which explicitly opens a window
 describe 'flog#run_tmp_command("Git diff", 1)'
   before
     Flog
@@ -162,7 +163,7 @@ describe 'flog#run_tmp_command("Git diff", 1)'
   end
 end
 
-" both explicitly and implicitly opens in a temp window
+" open a temp window with Git -p diff, which implicitly and explicitly opens a window
 describe 'flog#run_tmp_command("Git -p diff", 1)'
   before
     Flog
