@@ -62,6 +62,7 @@ class DebugSession( object ):
     self._variablesView = None
     self._saved_variables_data = None
     self._outputView = None
+    self._codeView = None
     self._breakpoints = breakpoints.ProjectBreakpoints()
     self._splash_screen = None
     self._remote_term = None
@@ -99,9 +100,21 @@ class DebugSession( object ):
         configurations.update( database.get( 'configurations' ) or {} )
         adapters.update( database.get( 'adapters' ) or {} )
 
+    if filetypes:
+      # filter out any configurations that have a 'filetypes' list set and it
+      # doesn't contain one of the current filetypes
+      configurations = {
+        k: c for k, c in configurations.items() if 'filetypes' not in c or any(
+          ft in c[ 'filetypes' ] for ft in filetypes
+        )
+      }
+
     return launch_config_file, configurations
 
-  def Start( self, force_choose=False, launch_variables = None ):
+  def Start( self,
+             force_choose=False,
+             launch_variables = None,
+             adhoc_configurations = None ):
     # We mutate launch_variables, so don't mutate the default argument.
     # https://docs.python-guide.org/writing/gotchas/#mutable-default-arguments
     if launch_variables is None:
@@ -115,7 +128,13 @@ class DebugSession( object ):
 
     current_file = utils.GetBufferFilepath( vim.current.buffer )
     adapters = {}
-    launch_config_file, configurations = self.GetConfigurations( adapters )
+
+    launch_config_file = None
+    configurations = None
+    if adhoc_configurations:
+      configurations = adhoc_configurations
+    else:
+      launch_config_file, configurations = self.GetConfigurations( adapters )
 
     if not configurations:
       utils.UserMessage( 'Unable to find any debug configurations. '
@@ -302,7 +321,10 @@ class DebugSession( object ):
         vim.current.tabpage = self._uiTab
 
       self._Prepare()
-      self._StartDebugAdapter()
+      if not self._StartDebugAdapter():
+        self._logger.info( "Failed to launch or attach to the debug adapter" )
+        return
+
       self._Initialise()
 
       self._stackTraceView.ConnectionUp( self._connection )
@@ -360,15 +382,18 @@ class DebugSession( object ):
       return wrapper
     return decorator
 
-  def _HasUI( self ):
+  def HasUI( self ):
     return self._uiTab and self._uiTab.valid
+
+  def IsUITab( self, tab_nubmer ):
+    return self.HasUI() and self._uiTab.number == tab_nubmer
 
   def RequiresUI( otherwise=None ):
     """Decorator, call fct if self._connected else echo warning"""
     def decorator( fct ):
       @functools.wraps( fct )
       def wrapper( self, *args, **kwargs ):
-        if not self._HasUI():
+        if not self.HasUI():
           utils.UserMessage(
             'Vimspector is not active',
             persist=False,
@@ -412,28 +437,43 @@ class DebugSession( object ):
       self._Reset()
 
   def _Reset( self ):
+    vim.vars[ 'vimspector_resetting' ] = 1
     self._logger.info( "Debugging complete." )
-    if self._uiTab:
-      self._logger.debug( "Clearing down UI" )
 
-      del vim.vars[ 'vimspector_session_windows' ]
-      vim.current.tabpage = self._uiTab
+    def ResetUI():
+      if self._stackTraceView:
+        self._stackTraceView.Reset()
+      if self._variablesView:
+        self._variablesView.Reset()
+      if self._outputView:
+        self._outputView.Reset()
+      if self._codeView:
+        self._codeView.Reset()
 
-      self._splash_screen = utils.HideSplash( self._api_prefix,
-                                              self._splash_screen )
-
-      self._stackTraceView.Reset()
-      self._variablesView.Reset()
-      self._outputView.Reset()
-      self._codeView.Reset()
-      vim.command( 'tabclose!' )
-      vim.command( 'doautocmd <nomodeline> User VimspectorDebugEnded' )
       self._stackTraceView = None
       self._variablesView = None
       self._outputView = None
       self._codeView = None
       self._remote_term = None
       self._uiTab = None
+
+    if self.HasUI():
+      self._logger.debug( "Clearing down UI" )
+      vim.current.tabpage = self._uiTab
+      self._splash_screen = utils.HideSplash( self._api_prefix,
+                                              self._splash_screen )
+      ResetUI()
+      vim.command( 'tabclose!' )
+    else:
+      ResetUI()
+
+    try:
+      del vim.vars[ 'vimspector_session_windows' ]
+    except KeyError:
+      pass
+
+    vim.command( 'doautocmd <nomodeline> User VimspectorDebugEnded' )
+    vim.vars[ 'vimspector_resetting' ] = 0
 
     # make sure that we're displaying signs in any still-open buffers
     self._breakpoints.UpdateUI()
@@ -676,7 +716,7 @@ class DebugSession( object ):
     self._stackTraceView.DownFrame()
 
   def ToggleLog( self ):
-    if self._HasUI():
+    if self.HasUI():
       return self.ShowOutput( 'Vimspector' )
 
     if self._logView and self._logView.WindowIsValid():
@@ -948,7 +988,7 @@ class DebugSession( object ):
     if self._connection:
       utils.UserMessage( 'The connection is already created. Please try again',
                          persist = True )
-      return
+      return False
 
     self._logger.info( 'Starting debug adapter with: %s',
                        json.dumps( self._adapter ) )
@@ -965,7 +1005,7 @@ class DebugSession( object ):
         port = utils.AskForInput( 'Enter port to connect to: ' )
         if port is None:
           self._Reset()
-          return
+          return False
         self._adapter[ 'port' ] = port
 
     self._connection_type = self._api_prefix + self._connection_type
@@ -981,10 +1021,19 @@ class DebugSession( object ):
                      "  g:_vimspector_adapter_spec "
                      ")".format( self._connection_type ) ):
       self._logger.error( "Unable to start debug server" )
-      self._splash_screen = utils.DisplaySplash( self._api_prefix,
-                                                 self._splash_screen,
-                                                 "Unable to start adapter" )
+      self._splash_screen = utils.DisplaySplash(
+        self._api_prefix,
+        self._splash_screen,
+        [
+          "Unable to start or connect to debug adapter",
+          "",
+          "Check :messages and :VimspectorToggleLog for more information.",
+          "",
+          ":VimspectorReset to close down vimspector",
+        ] )
+      return False
     else:
+      handlers = [ self ]
       if 'custom_handler' in self._adapter:
         spec = self._adapter[ 'custom_handler' ]
         if isinstance( spec, dict ):
@@ -993,10 +1042,12 @@ class DebugSession( object ):
         else:
           module, cls = spec.rsplit( '.', 1 )
 
-        CustomHandler = getattr( importlib.import_module( module ), cls )
-        handlers = [ CustomHandler( self ), self ]
-      else:
-        handlers = [ self ]
+        try:
+          CustomHandler = getattr( importlib.import_module( module ), cls )
+          handlers = [ CustomHandler( self ), self ]
+        except ImportError:
+          self._logger.exception( "Unable to load custom adapter %s",
+                                  spec )
 
       self._connection = debug_adapter_connection.DebugAdapterConnection(
         handlers,
@@ -1005,6 +1056,7 @@ class DebugSession( object ):
           msg ) )
 
     self._logger.info( 'Debug Adapter Started' )
+    return True
 
   def _StopDebugAdapter( self, interactive = False, callback = None ):
     arguments = {}

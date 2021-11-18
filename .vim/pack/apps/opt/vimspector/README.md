@@ -800,6 +800,32 @@ See [our YouCompleteMe integration guide](#usage-with-youcompleteme) for
 another example where it can be used to specify the port to connect the [java
 debugger](#java---partially-supported)
 
+To launch with an ad-hoc config you can use:
+
+* `call vimspector#LaunchWithConfigurations( dict )`
+
+The argument is a `dict` wich is the `configurations` section of a .vimspector file
+Pass one configuration in and that will be selected as the one to run.
+For example:
+
+```viml
+   let pid = <some_exression>
+   call vimspector#LaunchWithConfigurations({
+               \  "attach": {
+               \    "adapter": "netcoredbg",
+               \    "configuration": {
+               \      "request": "attach",
+               \      "processId": proc_id
+               \    }
+               \  }
+               \})
+```
+
+This would launch the debugger and attach to the specified process without the need
+to have a local .vimspector file on disk.
+The `${workspaceRoot}` variable will point to the parent folder of the file that is
+currently open in vim.
+
 ### Debug configuration selection
 
 Vimspector uses the following logic to choose a configuration to launch:
@@ -816,7 +842,8 @@ See [the reference guide][vimspector-ref-config-selection] for details.
 
 ### Get configurations
 
-* Use `vimspector#GetConfigurations()` to get a list of configurations
+* Use `vimspector#GetConfigurations()` to get a list of configurations for
+  filetype of the current buffer
 
 For example, to get an array of configurations and fuzzy matching on the result
 ```viml
@@ -945,6 +972,20 @@ Advanced users may wish to automate the process of loading and saving, for
 example by adding `VimEnter` and `VimLeave` autocommands. It's recommented in
 that case to use `silent!` to avoid annoying errors if the file can't be read or
 writtten.
+
+The simplest form of automation is to load the vimspector session whenever you
+start vim with a session file. This is as simple as doing this:
+
+```
+$ echo silent VimspectorLoadSession > Sessionx.vim
+```
+
+See `:help mksession` for details of the `*x.vim` file. You can also do
+something like this using `SessionLoadPost`:
+
+```viml
+autocmd SessionLoadPost * silent! VimspectorLoadSession
+```
 
 ## Stepping
 
@@ -1163,11 +1204,12 @@ For `lldb-vscode` replace the name of the adapter with `lldb-vscode`:
 
 * vscode-cpptools Linux/MacOS:
 
-```
+```json
 {
   "configurations": {
     "Launch": {
       "adapter": "vscode-cpptools",
+      "filetypes": [ "cpp", "c", "objc", "rust" ], // optional
       "configuration": {
         "request": "launch",
         "program": "<path to binary>",
@@ -1180,13 +1222,14 @@ For `lldb-vscode` replace the name of the adapter with `lldb-vscode`:
     },
     "Attach": {
       "adapter": "vscode-cpptools",
+      "filetypes": [ "cpp", "c", "objc", "rust" ], // optional
       "configuration": {
         "request": "attach",
         "program": "<path to binary>",
         "MIMode": "<lldb or gdb>"
       }
     }
-    ...
+    // ...
   }
 }
 ```
@@ -1197,11 +1240,12 @@ For `lldb-vscode` replace the name of the adapter with `lldb-vscode`:
 `scoop install gdb`. Vimspector cannot use the visual studio debugger due to
 licensing.
 
-```
+```json
 {
   "configurations": {
     "Launch": {
       "adapter": "vscode-cpptools",
+      "filetypes": [ "cpp", "c", "objc", "rust" ], // optional
       "configuration": {
         "request": "launch",
         "program": "<path to binary>",
@@ -1214,30 +1258,32 @@ licensing.
 
 ### Data visualization / pretty printing
 
-Depending on the backend you need to enable pretty printing of complex types manually.
+Depending on the backend you need to enable pretty printing of complex types
+manually.
 
 * LLDB: Pretty printing is enabled by default
 
 * GDB: To enable gdb pretty printers, consider the snippet below.
   It is not enough to have `set print pretty on` in your .gdbinit!
 
-```
+```json
 {
   "configurations": {
     "Launch": {
       "adapter": "vscode-cpptools",
+      "filetypes": [ "cpp", "c", "objc", "rust" ], // optional
       "configuration": {
         "request": "launch",
         "program": "<path to binary>",
-        ...
-        "MIMode": "gdb"
+        // ...
+        "MIMode": "gdb",
         "setupCommands": [
           {
             "description": "Enable pretty-printing for gdb",
             "text": "-enable-pretty-printing",
             "ignoreFailures": true
           }
-        ],
+        ]
       }
     }
   }
@@ -1308,6 +1354,7 @@ Rust is supported with any gdb/lldb-based debugger. So it works fine with
   "configurations": {
     "launch": {
       "adapter": "CodeLLDB",
+      "filetypes": [ "rust" ],
       "configuration": {
         "request": "launch",
         "program": "${workspaceRoot}/target/debug/vimspector_test"
@@ -1334,6 +1381,7 @@ Rust is supported with any gdb/lldb-based debugger. So it works fine with
   "configurations": {
     "<name>: Launch": {
       "adapter": "debugpy",
+      "filetypes": [ "pythyon" ],
       "configuration": {
         "name": "<name>: Launch",
         "type": "python",
@@ -1371,6 +1419,7 @@ to:
   "configurations": {
     "Python Attach": {
       "adapter": "multi-session",
+      "filetypes": [ "python" ], // optional
       "configuration": {
         "request": "attach",
         "pathMappings": [
@@ -1413,6 +1462,7 @@ netcoredbg`
   "configurations": {
     "launch - netcoredbg": {
       "adapter": "netcoredbg",
+      "filetypes": [ "csharp", "fsharp", "vbnet" ], // optional
       "configuration": {
         "request": "launch",
         "program": "${workspaceRoot}/bin/Debug/netcoreapp2.2/csharp.dll",
@@ -1443,6 +1493,7 @@ NOTE: Vimspector uses the ["legacy" vscode-go debug adapter](https://github.com/
   "configurations": {
     "run": {
       "adapter": "vscode-go",
+      "filetypes": [ "go" ], // optional
       "configuration": {
         "request": "launch",
         "program": "${fileDirname}",
@@ -1492,6 +1543,7 @@ xdebug.remote_port=9000
   "configurations": {
     "Listen for XDebug": {
       "adapter": "vscode-php-debug",
+      "filetypes": [ "php" ], // optional
       "configuration": {
         "name": "Listen for XDebug",
         "type": "php",
@@ -1505,6 +1557,7 @@ xdebug.remote_port=9000
     },
     "Launch currently open script": {
       "adapter": "vscode-php-debug",
+      "filetypes": [ "php" ], // optional
       "configuration": {
         "name": "Launch currently open script",
         "type": "php",
@@ -1550,6 +1603,7 @@ Requires:
   "configurations": {
     "run": {
       "adapter": "vscode-node",
+      "filetypes": [ "javascript", "typescript" ], // optional
       "configuration": {
         "request": "launch",
         "protocol": "auto",
@@ -1640,6 +1694,7 @@ This behaviour can be customised:
   "configurations": {
     "Java Attach": {
       "adapter": "vscode-java",
+      "filetypes": [ "java" ],
       "configuration": {
         "request": "attach",
         "hostName": "${host}",
@@ -1729,6 +1784,7 @@ This debugger uses stdio to communicate with the running process, so calls to
   "configurations": {
     "lua": {
       "adapter": "lua-local",
+      "filetypes": [ "lua" ],
       "configuration": {
         "request": "launch",
         "type": "lua-local",
@@ -1741,6 +1797,7 @@ This debugger uses stdio to communicate with the running process, so calls to
     },
     "luajit": {
       "adapter": "lua-local",
+      "filetypes": [ "lua" ],
       "configuration": {
         "request": "launch",
         "type": "lua-local",
@@ -1753,6 +1810,7 @@ This debugger uses stdio to communicate with the running process, so calls to
     },
     "love": {
       "adapter": "lua-local",
+      "filetypes": [ "love" ],
       "configuration": {
         "request": "launch",
         "type": "lua-local",
@@ -1773,6 +1831,8 @@ This debugger uses stdio to communicate with the running process, so calls to
   Server. Take a look at [this
   comment](https://github.com/puremourning/vimspector/issues/3#issuecomment-576916076)
   for instructions.
+- See also [the wiki](https://github.com/puremourning/vimspector/wiki/languages)
+  which has community-contributed plugin files for some languages.
 
 
 # Customisation
@@ -2103,7 +2163,9 @@ hi link jsonComment Comment
 10. Do I _have_ to put a `.vimspector.json` in the root of every project? No, you
     can put all of your adapter and debug configs in a [single directory](https://puremourning.github.io/vimspector/configuration.html#debug-configurations) if you want to, but note
     the caveat that `${workspaceRoot}` won't be calculated correctly in that case.
-    The vimsepctor author uses this [a lot](https://github.com/puremourning/.vim-mac/tree/master/vimspector-conf).
+    The vimsepctor author uses this [a lot](https://github.com/puremourning/.vim-mac/tree/master/vimspector-conf)
+11. I'm confused about remote debugging configuration, can you explain it?
+    eh... kind of. Reference: https://puremourning.github.io/vimspector/configuration.html#remote-debugging-support. Some explanations here too: https://github.com/puremourning/vimspector/issues/478#issuecomment-943515093
 
 
 [ycmd]: https://github.com/Valloric/ycmd

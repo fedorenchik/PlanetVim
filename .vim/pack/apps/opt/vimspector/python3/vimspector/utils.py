@@ -19,12 +19,13 @@ import os
 import contextlib
 import vim
 import json
-import functools
 import subprocess
 import shlex
 import collections
 import re
 import typing
+
+from vimspector.core_utils import memoize
 
 
 LOG_FILE = os.path.expanduser( os.path.join( '~', '.vimspector.log' ) )
@@ -117,6 +118,9 @@ def CleanUpCommand( name, api_prefix ):
 
 
 def CleanUpHiddenBuffer( buf ):
+  if not buf.valid:
+    return
+
   try:
     vim.command( 'bdelete! {}'.format( buf.number ) )
   except vim.error as e:
@@ -676,7 +680,7 @@ def ParseVariables( variables_list,
             "Unsupported variable defn {}: Missing 'shell'".format( n ) )
       else:
         new_variables[ n ] = ExpandReferencesInObject( v,
-                                                       mapping,
+                                                       new_mapping,
                                                        calculus,
                                                        user_choices )
 
@@ -728,26 +732,6 @@ def Call( vimscript_function, *args ):
   return vim.eval( call )
 
 
-MEMO = {}
-
-
-def memoize( func ):
-  global MEMO
-
-  @functools.wraps( func )
-  def wrapper( *args, **kwargs ):
-    dct = MEMO.setdefault( func, {} )
-    key = ( args, frozenset( kwargs.items() ) )
-    try:
-      return dct[ key ]
-    except KeyError:
-      result = func( *args, **kwargs )
-      dct[ key ] = result
-      return result
-
-  return wrapper
-
-
 @memoize
 def Exists( expr ):
   return int( vim.eval( f'exists( "{ expr }" )' ) )
@@ -796,7 +780,7 @@ def GetVisualSelection( bufnr ):
   return lines
 
 
-def DisplaySplash( api_prefix, splash, text ):
+def DisplaySplash( api_prefix: str, splash, text: typing.Union[ str, list ] ):
   if splash:
     return Call( f'vimspector#internal#{api_prefix}popup#UpdateSplash',
                  splash,
