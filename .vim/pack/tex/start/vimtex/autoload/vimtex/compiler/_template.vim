@@ -127,10 +127,35 @@ function! s:compiler.start(...) abort dict " {{{1
   call self.exec(l:cmd)
   let self.status = 1
 
+  " Use timer to check that compiler started properly
+  if self.continuous
+    let self.check_timer
+          \ = timer_start(50, function('s:check_if_running'), {'repeat': 20})
+    let self.vimtex_id = b:vimtex_id
+    let s:check_timers[self.check_timer] = self
+  endif
+
   if exists('#User#VimtexEventCompileStarted')
     doautocmd <nomodeline> User VimtexEventCompileStarted
   endif
 endfunction
+
+
+let s:check_timers = {}
+function! s:check_if_running(timer) abort " {{{2
+  if s:check_timers[a:timer].is_running() | return | endif
+
+  call timer_stop(a:timer)
+  let l:compiler = remove(s:check_timers, a:timer)
+  unlet l:compiler.check_timer
+
+  if l:compiler.vimtex_id == get(b:, 'vimtex_id', -1)
+    call vimtex#compiler#output()
+  endif
+  call vimtex#log#error('Compiler did not start successfully!')
+endfunction
+
+" }}}2
 
 " }}}1
 function! s:compiler.start_single() abort dict " {{{1
@@ -144,6 +169,7 @@ endfunction
 function! s:compiler.stop() abort dict " {{{1
   if !self.is_running() | return | endif
 
+  silent! call timer_stop(self.check_timer)
   call self.kill()
   let self.status = 0
 
@@ -181,8 +207,6 @@ function! s:compiler.create_build_dir() abort dict " {{{1
   call vimtex#log#warning(["Creating build_dir directorie(s):"]
         \ + map(copy(l:dirs), {_, x -> '* ' . x}))
 
-  unsilent echo 'DBG' l:dirs "\n"
-
   for l:dir in l:dirs
     call mkdir(l:dir, 'p')
   endfor
@@ -215,10 +239,11 @@ endfunction
 let s:compiler_jobs = {}
 function! s:compiler_jobs.exec(cmd) abort dict " {{{1
   let l:options = {
-        \ 'out_io' : 'file',
-        \ 'err_io' : 'file',
-        \ 'out_name' : self.output,
-        \ 'err_name' : self.output,
+        \ 'in_io': 'null',
+        \ 'out_io': 'file',
+        \ 'err_io': 'file',
+        \ 'out_name': self.output,
+        \ 'err_name': self.output,
         \ 'cwd': self.state.root,
         \}
   if self.continuous
@@ -237,7 +262,10 @@ endfunction
 " }}}1
 function! s:compiler_jobs.kill() abort dict " {{{1
   call job_stop(self.job)
-  sleep 25m
+  for l:dummy in range(25)
+    sleep 1m
+    if !self.is_running() | return | endif
+  endfor
 endfunction
 
 " }}}1
@@ -263,7 +291,18 @@ endfunction
 
 " }}}1
 function! s:callback(ch, msg) abort " {{{1
-  call vimtex#compiler#callback(2 + vimtex#qf#inquire(s:cb_target))
+  try
+    call vimtex#compiler#callback(2 + vimtex#qf#inquire(s:cb_target))
+  catch /E565:/
+    " In some edge cases, the callback seems to be issued while executing code
+    " in a protected context where "cclose" is not allowed with the resulting
+    " error code from compiler#callback->qf#open. The reported error message
+    " is:
+    "
+    "   E565: Not allowed to change text or change window:       cclose
+    "
+    " See https://github.com/lervag/vimtex/issues/2225
+  endtry
 endfunction
 
 " }}}1
@@ -289,18 +328,22 @@ endfunction
 let s:compiler_nvim = {}
 function! s:compiler_nvim.exec(cmd) abort dict " {{{1
   let l:shell = {
-        \ 'on_stdout' : function('s:callback_nvim_output'),
-        \ 'on_stderr' : function('s:callback_nvim_output'),
-        \ 'cwd' : self.state.root,
-        \ 'tex' : self.state.tex,
-        \ 'output' : self.output,
+        \ 'stdin': 'null',
+        \ 'on_stdout': function('s:callback_nvim_output'),
+        \ 'on_stderr': function('s:callback_nvim_output'),
+        \ 'cwd': self.state.root,
+        \ 'tex': self.state.tex,
+        \ 'output': self.output,
         \}
 
   if !self.continuous
     let l:shell.on_exit = function('s:callback_nvim_exit')
   endif
 
+  let s:saveshell = [&shell, &shellcmdflag]
+  set shell& shellcmdflag&
   let self.job = jobstart(a:cmd, l:shell)
+  let [&shell, &shellcmdflag] = s:saveshell
 endfunction
 
 " }}}1

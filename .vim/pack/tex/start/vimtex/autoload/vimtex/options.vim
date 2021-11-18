@@ -18,10 +18,6 @@ function! vimtex#options#init() abort " {{{1
   call s:init_option('vimtex_compiler_enabled', 1)
   call s:init_option('vimtex_compiler_silent', 0)
   call s:init_option('vimtex_compiler_method', 'latexmk')
-  call s:init_option('vimtex_compiler_progname',
-        \ has('nvim') && executable('nvr')
-        \   ? 'nvr'
-        \   : get(v:, 'progpath', get(v:, 'progname', '')))
   call s:init_option('vimtex_compiler_latexmk_engines', {})
   call s:init_option('vimtex_compiler_latexrun_engines', {})
 
@@ -198,7 +194,6 @@ function! vimtex#options#init() abort " {{{1
         \ { 'lhs' : 'w',  'rhs' : '\omega' },
         \ { 'lhs' : 'z',  'rhs' : '\zeta' },
         \ { 'lhs' : 'x',  'rhs' : '\xi' },
-        \ { 'lhs' : 'G',  'rhs' : '\Gamma' },
         \ { 'lhs' : 'D',  'rhs' : '\Delta' },
         \ { 'lhs' : 'F',  'rhs' : '\Phi' },
         \ { 'lhs' : 'G',  'rhs' : '\Gamma' },
@@ -258,6 +253,18 @@ function! vimtex#options#init() abort " {{{1
 
   call s:init_option('vimtex_labels_enabled', 1)
   call s:init_option('vimtex_labels_refresh_always', 1)
+
+
+  let s:chktexrc = (empty($XDG_CONFIG_HOME)
+        \ ? $HOME . '/.config'
+        \ : $XDG_CONFIG_HOME) . '/chktexrc'
+
+  call s:init_option('vimtex_lint_chktex_parameters',
+        \ filereadable(s:chktexrc)
+        \   ? '--localrc ' . shellescape(s:chktexrc)
+        \   : '')
+  call s:init_option('vimtex_lint_chktex_ignore_warnings',
+        \ '-n1 -n3 -n8 -n25 -n36')
 
   call s:init_option('vimtex_parser_bib_backend', 'bibtex')
 
@@ -320,7 +327,6 @@ function! vimtex#options#init() abort " {{{1
         \   ],
         \ }
         \})
-  call s:init_option('vimtex_syntax_nospell_commands', [])
   call s:init_option('vimtex_syntax_nospell_comments', 0)
   call s:init_option('vimtex_syntax_packages', {
         \ 'amsmath': {'load': 2},
@@ -473,6 +479,7 @@ function! s:check_for_deprecated_options() abort " {{{1
         \ 'g:vimtex_quickfix_warnings',
         \ 'g:vimtex_syntax_autoload_packages',
         \ 'g:vimtex_syntax_conceal_default',
+        \ 'g:vimtex_syntax_nospell_commands',
         \ 'g:vimtex_textidote_jar',
         \ 'g:vimtex_toc_fold',
         \ 'g:vimtex_toc_fold_level_start',

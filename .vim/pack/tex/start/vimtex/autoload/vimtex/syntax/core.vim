@@ -282,13 +282,6 @@ function! vimtex#syntax#core#init() abort " {{{1
   " Item elements in lists
   syntax match texCmdItem "\\item\>"
 
-  " Add @NoSpell for commands per configuration (TOP,@Spell implies NoSpell!)
-  for l:macro in g:vimtex_syntax_nospell_commands
-    execute 'syntax match texCmdNoSpell nextgroup=texNoSpellOpt,texNoSpellArg skipwhite skipnl "\\' . l:macro . '"'
-  endfor
-  call vimtex#syntax#core#new_opt('texNoSpellOpt', {'next': 'texNoSpellArg'})
-  call vimtex#syntax#core#new_arg('texNoSpellArg', {'next': 'texNoSpellArg', 'contains': 'TOP,@Spell'})
-
   " \begin \end environments
   syntax match texCmdEnv "\v\\%(begin|end)>" nextgroup=texEnvArgName
   call vimtex#syntax#core#new_arg('texEnvArgName', {
@@ -717,7 +710,6 @@ function! vimtex#syntax#core#init_highlights() abort " {{{1
   highlight def link texCmdNewcmd          texCmdNew
   highlight def link texCmdNewenv          texCmd
   highlight def link texCmdNewthm          texCmd
-  highlight def link texCmdNoSpell         texCmd
   highlight def link texCmdPackage         texCmd
   highlight def link texCmdParbox          texCmd
   highlight def link texCmdPart            texCmd
@@ -789,7 +781,6 @@ function! vimtex#syntax#core#init_highlights() abort " {{{1
   highlight def link texNewthmArgName      texArg
   highlight def link texNewthmOptCounter   texOpt
   highlight def link texNewthmOptNumberby  texOpt
-  highlight def link texNoSpellOpt         texOpt
   highlight def link texOptEqual           texSymbol
   highlight def link texParboxOptHeight    texError
   highlight def link texParboxOptIPos      texError
@@ -861,6 +852,10 @@ function! vimtex#syntax#core#new_cmd(cfg) abort " {{{1
         \ 'opt': v:true,
         \ 'arg': v:true,
         \ 'argstyle': '',
+        \ 'argspell': v:true,
+        \ 'arggreedy': v:false,
+        \ 'nextgroup': '',
+        \ 'hlgroup': '',
         \}, a:cfg)
 
   " Intuitive handling of concealchar
@@ -877,7 +872,6 @@ function! vimtex#syntax#core#new_cmd(cfg) abort " {{{1
     let l:cfg.optconceal = l:cfg.conceal
   endif
 
-
   " Define group names
   let l:name = 'C' . toupper(l:cfg.name[0]) . l:cfg.name[1:]
   let l:pre = l:cfg.mathmode ? 'texMath' : 'tex'
@@ -885,64 +879,80 @@ function! vimtex#syntax#core#new_cmd(cfg) abort " {{{1
   let l:group_opt = l:pre . l:name . 'Opt'
   let l:group_arg = l:pre . l:name . 'Arg'
 
+  " Specify rules for next groups
+  if !empty(l:cfg.nextgroup)
+    let l:nextgroups = 'skipwhite nextgroup=' . l:cfg.nextgroup
+  else
+    " Add syntax rules for the optional group
+    let l:nextgroups = []
+    if l:cfg.opt
+      let l:nextgroups += [l:group_opt]
 
-  " Add syntax rules for the argument group and optional group
-  let l:nextgroups = []
-  if l:cfg.opt
-    let l:nextgroups += [l:group_opt]
+      let l:opt_cfg = {'opts': l:cfg.optconceal ? 'conceal' : ''}
+      if l:cfg.arg
+        let l:opt_cfg.next = l:group_arg
+      endif
+      call vimtex#syntax#core#new_opt(l:group_opt, l:opt_cfg)
 
-    let l:opt_cfg = {'opts': l:cfg.optconceal ? 'conceal' : ''}
+      execute 'highlight def link' l:group_opt 'texOpt'
+    endif
+
+    " Add syntax rules for the argument group
     if l:cfg.arg
-      let l:opt_cfg.next = l:group_arg
-    endif
-    call vimtex#syntax#core#new_opt(l:group_opt, l:opt_cfg)
+      let l:nextgroups += [l:group_arg]
 
-    execute 'highlight def link' l:group_opt 'texOpt'
+      let l:arg_cfg = {'opts': 'contained'}
+      if l:cfg.conceal && empty(l:cfg.concealchar)
+        let l:arg_cfg.opts .= ' concealends'
+      endif
+      if l:cfg.mathmode
+        let l:arg_cfg.contains = '@texClusterMath'
+      elseif !l:cfg.argspell
+        let l:arg_cfg.contains = 'TOP,@Spell'
+      endif
+      if l:cfg.arggreedy
+        let l:arg_cfg.next = l:group_arg
+      endif
+      call vimtex#syntax#core#new_arg(l:group_arg, l:arg_cfg)
+
+      let l:style = get({
+            \ 'bold': 'texStyleBold',
+            \ 'ital': 'texStyleItal',
+            \ 'under': 'texStyleUnder',
+            \ 'boldital': 'texStyleBoth',
+            \ 'boldunder': 'texStyleBoldUnder',
+            \ 'italunder': 'texStyleItalUnder',
+            \ 'bolditalunder': 'texStyleBoldItalUnder',
+            \}, l:cfg.argstyle,
+            \ l:cfg.mathmode ? 'texMathArg' : '')
+      if !empty(l:style)
+        execute 'highlight def link' l:group_arg l:style
+      endif
+    endif
+
+    let l:nextgroups = !empty(l:nextgroups)
+          \ ? 'skipwhite nextgroup=' . join(l:nextgroups, ',')
+          \ : ''
   endif
 
-  if l:cfg.arg
-    let l:nextgroups += [l:group_arg]
-
-    let l:arg_cfg = {'opts': 'contained'}
-    if l:cfg.conceal && empty(l:cfg.concealchar)
-      let l:arg_cfg.opts .= ' concealends'
-    endif
-    if l:cfg.mathmode
-      let l:arg_cfg.contains = '@texClusterMath'
-    endif
-    call vimtex#syntax#core#new_arg(l:group_arg, l:arg_cfg)
-
-    let l:style = get({
-          \ 'bold': 'texStyleBold',
-          \ 'ital': 'texStyleItal',
-          \ 'under': 'texStyleUnder',
-          \ 'boldital': 'texStyleBoth',
-          \ 'boldunder': 'texStyleBoldUnder',
-          \ 'italunder': 'texStyleItalUnder',
-          \ 'bolditalunder': 'texStyleBoldItalUnder',
-          \}, l:cfg.argstyle,
-          \ l:cfg.mathmode ? 'texMathArg' : '')
-    if !empty(l:style)
-      execute 'highlight def link' l:group_arg l:style
-    endif
-  endif
-
-  let l:nextgroups = !empty(l:nextgroups)
-        \ ? 'skipwhite nextgroup=' . join(l:nextgroups, ',')
-        \ : ''
-
-
-  " Add syntax rule for the command
+  " Add to cluster if necessary
   if l:cfg.mathmode
     execute 'syntax cluster texClusterMath add=' . l:group_cmd
   endif
+
+  " Create the final syntax rule
   execute 'syntax match' l:group_cmd
         \ '"\v\\' . l:cfg.name . '>"'
         \ l:cfg.conceal ? 'conceal' : ''
         \ !empty(l:cfg.concealchar) ? 'cchar=' . l:cfg.concealchar : ''
         \ l:nextgroups
         \ l:cfg.mathmode ? 'contained' : ''
-  execute 'highlight def link' l:group_cmd l:pre . 'Cmd'
+
+  " Define default highlight rule
+  execute 'highlight def link' l:group_cmd
+        \ !empty(l:cfg.hlgroup)
+        \   ? l:cfg.hlgroup
+        \   : l:pre . 'Cmd'
 endfunction
 
 " }}}1
@@ -1339,6 +1349,8 @@ let s:cmd_symbols = [
       \ ['leftharpoonup', '↼'],
       \ ['leftrightarrow', '↔'],
       \ ['Leftrightarrow', '⇔'],
+      \ ['lhd', '◁'],
+      \ ['rhd', '▷'],
       \ ['leq', '≤'],
       \ ['ll', '≪'],
       \ ['lmoustache', '╭'],
@@ -1407,7 +1419,7 @@ let s:cmd_symbols = [
       \ ['supseteq', '⊇'],
       \ ['surd', '√'],
       \ ['swarrow', '↙'],
-      \ ['times', 'x'],
+      \ ['times', '×'],
       \ ['to', '→'],
       \ ['top', '⊤'],
       \ ['triangle', '∆'],

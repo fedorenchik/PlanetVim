@@ -13,6 +13,10 @@ function! vimtex#view#mupdf#new() abort " {{{1
     return {}
   endif
 
+  " Add reverse search mapping
+  nnoremap <buffer> <plug>(vimtex-reverse-search)
+        \ :<c-u>call b:vimtex.viewer.reverse_search()<cr>
+
   return vimtex#view#_template_xwin#apply(deepcopy(s:mupdf))
 endfunction
 
@@ -24,9 +28,13 @@ let s:mupdf = {
       \}
 
 function! s:mupdf.start(outfile) dict abort " {{{1
-  let self.job = vimtex#jobs#start('mupdf '
-        \ .  g:vimtex_view_mupdf_options
-        \ . ' ' . vimtex#util#shellescape(a:outfile))
+  let l:cmd = 'mupdf'
+  if !empty(g:vimtex_view_mupdf_options)
+    let l:cmd .= ' ' . g:vimtex_view_mupdf_options
+  endif
+  let l:cmd .= ' ' . vimtex#util#shellescape(a:outfile)
+
+  let self.job = vimtex#jobs#start(l:cmd)
 
   call self.xwin_get_id()
   call self.xwin_send_keys(g:vimtex_view_mupdf_send_keys)

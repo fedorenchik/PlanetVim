@@ -9,14 +9,11 @@ function! vimtex#view#init_buffer() abort " {{{1
 
   command! -buffer -nargs=? -complete=file VimtexView
         \ call vimtex#view#view(<q-args>)
-  if has_key(b:vimtex.viewer, 'reverse_search')
-    command! -buffer -nargs=* VimtexViewRSearch
-         \ call vimtex#view#reverse_search()
-  endif
 
   nnoremap <buffer> <plug>(vimtex-view) :VimtexView<cr>
-  if has_key(b:vimtex.viewer, 'reverse_search')
-    nnoremap <buffer> <plug>(vimtex-reverse-search) :VimtexViewRSearch<cr>
+
+  if has('nvim')
+    call s:nvim_prune_servernames()
   endif
 endfunction
 
@@ -50,13 +47,6 @@ function! vimtex#view#view(...) abort " {{{1
 endfunction
 
 " }}}1
-function! vimtex#view#reverse_search() abort " {{{1
-  if exists('*b:vimtex.viewer.reverse_search')
-    call b:vimtex.viewer.reverse_search()
-  endif
-endfunction
-
-" }}}1
 function! vimtex#view#not_readable(output) abort " {{{1
   if filereadable(a:output) | return 0 | endif
 
@@ -66,10 +56,20 @@ endfunction
 
 " }}}1
 
-function! vimtex#view#reverse_goto(line, filename) abort " {{{1
-  if mode() ==# 'i' | stopinsert | endif
+function! vimtex#view#inverse_search(line, filename) abort " {{{1
+  " Only activate in VimTeX buffers
+  if !exists('b:vimtex') | return -1 | endif
 
+  " Only activate in relevant VimTeX projects
   let l:file = resolve(a:filename)
+  let l:sources = copy(b:vimtex.sources)
+  if vimtex#paths#is_abs(l:file)
+    call map(l:sources, {_, x -> vimtex#paths#join(b:vimtex.root, x)})
+  endif
+  if index(l:sources, l:file) < 0 | return -2 | endif
+
+
+  if mode() ==# 'i' | stopinsert | endif
 
   " Open file if necessary
   if !bufloaded(l:file)
@@ -81,13 +81,13 @@ function! vimtex#view#reverse_goto(line, filename) abort " {{{1
               \ 'Reverse goto failed!',
               \ printf('Command error: %s %s',
               \        g:vimtex_view_reverse_search_edit_cmd, l:file)])
-        return
+        return -3
       endtry
     else
       call vimtex#log#warning([
             \ 'Reverse goto failed!',
             \ printf('File not readable: "%s"', l:file)])
-      return
+      return -4
     endif
   endif
 
@@ -104,12 +104,81 @@ function! vimtex#view#reverse_goto(line, filename) abort " {{{1
   endtry
 
   execute 'normal!' a:line . 'G'
-  redraw
   call s:focus_vim()
+  redraw
 
   if exists('#User#VimtexEventViewReverse')
     doautocmd <nomodeline> User VimtexEventViewReverse
   endif
+endfunction
+
+" }}}1
+function! vimtex#view#inverse_search_cmd(line, filename) abort " {{{1
+  " One may call this function manually, but the main usage is to through the
+  " command "VimtexInverseSearch". See ":help vimtex-synctex-inverse-search"
+  " for more info.
+
+  if a:line > 0 && !empty(a:filename)
+    try
+      if has('nvim')
+        call s:inverse_search_cmd_nvim(a:line, a:filename)
+      else
+        call s:inverse_search_cmd_vim(a:line, a:filename)
+      endif
+    catch
+    endtry
+  endif
+
+  quitall!
+endfunction
+
+" }}}1
+
+function! s:inverse_search_cmd_nvim(line, filename) abort " {{{1
+  if !filereadable(s:nvim_servernames) | return | endif
+
+  for l:server in readfile(s:nvim_servernames)
+    try
+      let l:socket = sockconnect('pipe', l:server, {'rpc': 1})
+    catch
+    endtry
+
+    call rpcnotify(l:socket,
+          \ 'nvim_call_function',
+          \ 'vimtex#view#inverse_search',
+          \ [a:line, a:filename])
+    call chanclose(l:socket)
+  endfor
+endfunction
+
+function! s:inverse_search_cmd_vim(line, filename) abort " {{{1
+  for l:server in split(serverlist(), "\n")
+    call remote_expr(l:server,
+          \ printf("vimtex#view#inverse_search(%d, '%s')", a:line, a:filename))
+  endfor
+endfunction
+
+" }}}1
+
+function! s:nvim_prune_servernames() abort " {{{1
+  " Load servernames from file
+  let l:servers = filereadable(s:nvim_servernames)
+        \ ? readfile(s:nvim_servernames)
+        \ : []
+
+  " Check which servers are available
+  let l:available_servernames = []
+  for l:server in vimtex#util#uniq_unsorted(l:servers + [v:servername])
+    try
+      let l:socket = sockconnect('pipe', l:server)
+      call add(l:available_servernames, l:server)
+      call chanclose(l:socket)
+    catch
+    endtry
+  endfor
+
+  " Write the pruned list to file
+  call writefile(l:available_servernames, s:nvim_servernames)
 endfunction
 
 " }}}1
@@ -129,7 +198,7 @@ function! s:focus_vim() abort " {{{1
     let l:current_pid = str2nr(vimtex#jobs#capture('ps o pid t ' . l:pts)[1])
   endif
 
-  let l:output = vimtex#jobs#capture('pstree -s -p ' . l:current_pid)
+  let l:output = join(vimtex#jobs#capture('pstree -s -p ' . l:current_pid))
   let l:pids = split(l:output, '\D\+')
   let l:pids = l:pids[: index(l:pids, string(l:current_pid))]
 
@@ -148,3 +217,6 @@ function! s:focus_vim() abort " {{{1
 endfunction
 
 " }}}1
+
+
+let s:nvim_servernames = vimtex#cache#path('nvim_servernames.log')
