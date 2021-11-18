@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/dracula/vim.git
 	branch = master
-	commit = 86eb25b3dc8aa228373723c92f102f9d5fffdf11
-	parent = 5ce4ef6f1b1c44972b4e1a22af78ef49442a7a30
+	commit = e5f09746562ef0226d3484a01609ceca41700a3d
+	parent = 7e25b03c205167e588c1953b9f7308aff20a6509
 	method = merge
 	cmdver = 0.4.3
