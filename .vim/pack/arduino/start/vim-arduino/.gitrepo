@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/stevearc/vim-arduino.git
 	branch = master
-	commit = f89114d41676b3219732f86cee721c62b06db2e9
-	parent = 16e388fc660845361aaa0a5b5843dcd6acc906dd
+	commit = 1ba0b41c377a5ddd0f3d3ceaa19b692e8c1d5793
+	parent = ec8a4c058bc8f81c54ee792a1c994da745d727bb
 	method = merge
 	cmdver = 0.4.3
