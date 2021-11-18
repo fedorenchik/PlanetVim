@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/janko/vim-test.git
 	branch = master
-	commit = 611bf381c212acfe4811ea085fd353f6f3856d66
-	parent = ca247cfe26569a297559017255ca1c14c940e071
+	commit = 8d942aa3b0eea1d53cccd1ee87a241b651f485ee
+	parent = 4fa87cd0b39b6e58ad5aff49fb0e0a63f00b74a7
 	method = merge
 	cmdver = 0.4.3
