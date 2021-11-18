@@ -255,6 +255,8 @@ call s:MakeDirectGroupMappings(! exists('g:mw_no_mappings'))
 delfunction s:MakeDirectGroupMappings
 
 if exists('g:mw_no_mappings')
+	let &cpo = s:save_cpo
+	unlet s:save_cpo
 	finish
 endif
 
