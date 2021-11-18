@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/liuchengxu/vista.vim.git
 	branch = master
-	commit = f49ca3dbf334ac33d2629c510524285335031706
-	parent = be26c4ee3e0ff72fc43dc9013e62a3210fe7b265
+	commit = a0469c645dcbe4033b857da27d35491f39e2f776
+	parent = 342a54ac9d64f115bf7d39cd777c7d55a54ba80c
 	method = merge
 	cmdver = 0.4.3
