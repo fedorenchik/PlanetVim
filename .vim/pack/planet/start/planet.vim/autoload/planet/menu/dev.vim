@@ -83,7 +83,7 @@ func! planet#menu#dev#Update() abort
     am 310.10  🪧&].Preview\ Next<Tab>]<C-t>                ]<C-t>
     an 310.10  🪧&].--4-- <Nop>
     am 310.10  🪧&].Toggle\ AutoPreview\ Tags               :call PlanetVim_TagsAutoPreview_Toggle()<CR>
-    an 310.10  🪧&].--4-- <Nop>
+    an 310.10  🪧&].--5-- <Nop>
     am 310.10  🪧&].Build\ tags\ File                       :call planet#term#RunCmd('ctags -R .')<CR>
     am 310.10  🪧&].Generate\ tags\.vim\ File               :sp tags<CR>:%s/^\([^	:]*:\)\=\([^	]*\).*/syntax keyword Tag \2/<CR>:wq! tags.vim<CR>/^<CR>
     am 310.10  🪧&].Highlight\ tags\ from\ tags\.vim        :so tags.vim<CR>
@@ -92,7 +92,12 @@ func! planet#menu#dev#Update() abort
 
     an 500.10  🎚️&{.Virtual\ Environments <Nop>
     an disable 🎚️&{.Virtual\ Environments
-    an 500.10  🎚️&{.&Docker.Test                            :TODO
+    an 500.10  🎚️&{.&Docker.CLI\ UI\ (lazydocker)           <Cmd>call planet#term#RunCmdTab('lazydocker')<CR>
+    an 500.10  🎚️&{.&Docker.--1-- <Nop>
+    an 500.10  🎚️&{.&Docker.List\ Running\ Containers       <Cmd>call planet#term#RunCmd('docker container ls')<CR>
+    an 500.10  🎚️&{.&Docker.List\ All\ Containers           <Cmd>call planet#term#RunCmd('docker container ls -a')<CR>
+    an 500.10  🎚️&{.&Docker.--2-- <Nop>
+    an 500.10  🎚️&{.&Docker.List\ Images                    <Cmd>call planet#term#RunCmd('docker image ls')<CR>
     an 500.10  🎚️&{.&Pipenv.Start\ Shell                    :call planet#term#RunCmd('pipenv shell')<CR>
     an 500.10  🎚️&{.&Pipenv.Run\ python\ main\.py           :call planet#term#RunCmd('pipenv run python ./main.py')<CR>
     an 500.10  🎚️&{.&Pipenv.Run\ python\ app\.py            :call planet#term#RunCmd('pipenv run python ./app.py')<CR>
@@ -107,7 +112,7 @@ func! planet#menu#dev#Update() abort
     an 500.10  🎚️&{.&Pipenv.Install\ Dev\ Package           :call planet#term#RunCmd('pipenv install --dev ...TODO')<CR>
     an 500.10  🎚️&{.&Pipenv.Update\ (Lock\ &&\ Sync)        :call planet#term#RunCmd('pipenv update')<CR>
     an 500.10  🎚️&{.&Pipenv.Sync\ with\ Pipfile\.lock       :call planet#term#RunCmd('pipenv sync')<CR>
-    an 500.10  🎚️&{.&Pipenv.--1-- <Nop>
+    an 500.10  🎚️&{.&Pipenv.--2-- <Nop>
     an 500.10  🎚️&{.&Pipenv.Uninstall\ Leftover\ Packages   :call planet#term#RunCmd('pipenv clean')<CR>
     an 500.10  🎚️&{.&Pipenv.Uninstall\ Package              :call planet#term#RunCmd('pipenv uninstall ...TODO')<CR>
     an 500.10  🎚️&{.&Pipenv.Uninstall\ Dev                  :call planet#term#RunCmd('pipenv uninstall --all-dev')<CR>
@@ -117,7 +122,7 @@ func! planet#menu#dev#Update() abort
     an 500.10  🎚️&{.&Pipenv.requirements\.t&xt.Install\ Dev :call planet#term#RunCmd('pipenv install -r dev-requirements.txt --dev')<CR>
     an 500.10  🎚️&{.&Pipenv.requirements\.t&xt.Export       :call planet#term#RunCmd('pipenv lock -r > requirements.txt')<CR>
     an 500.10  🎚️&{.&Pipenv.requirements\.t&xt.Export\ Dev  :call planet#term#RunCmd('pipenv lock -r -d > dev-requirements.txt')<CR>
-    an 500.10  🎚️&{.&Pipenv.--1-- <Nop>
+    an 500.10  🎚️&{.&Pipenv.--3-- <Nop>
     an 500.10  🎚️&{.&Pipenv.Open\ Specified\ Module         :call planet#term#RunCmd('pipenv open ...TODO')<CR>
     an 500.10  🎚️&{.&Pipenv.Security\ Check                 :call planet#term#RunCmd('pipenv check')<CR>
     an 500.10  🎚️&{.&Pipenv.Dependency\ Graph               :call planet#term#RunCmd('pipenv graph')<CR>
@@ -169,6 +174,7 @@ func! planet#menu#dev#Update() abort
     an 500.10  🎚️&{.Npm.Install\ Project\ Packages          <Cmd>call planet#term#RunCmd('npm install')<CR>
     an 500.10  🎚️&{.Npm.Install\ Package                    <Cmd>call planet#term#RunCmdAskArgs('npm install', 'Package name: ')<CR>
     an 500.10  🎚️&{.Npm.Install\ Package\ Globally          <Cmd>call planet#term#RunCmdAskArgs('sudo npm install -g', 'Package name: ')<CR>
+    an 500.10  🎚️&{.--1-- <Nop>
     an 500.10  🎚️&{.Set\ Compiler.gcc                       :TODO
     an 500.10  🎚️&{.Set\ Compiler.clang                     :TODO
     an 500.10  🎚️&{.Set\ Compiler.emcc\ (wasm,\ emscripten) :TODO
@@ -301,6 +307,7 @@ func! planet#menu#dev#Update() abort
     an 500.10  📐&}.Vue\ CLI.Add\ vue-router                <Cmd>call planet#term#RunCmd('npm install vue-router')<CR>
     an 500.10  📐&}.Vue\ CLI.Add\ vuex                      <Cmd>call planet#term#RunCmd('npm install vuex')<CR>
     an 500.10  📐&}.Vue\ CLI.Create                         <Cmd>call planet#term#RunCmdAskArgs('vue create', 'Name of new project', 'vue-app')<CR>
+    an 500.10  📐&}.Web\ Tools.TODO                         <Cmd>call planet#term#RunCmd('wget ...TODO')<CR>
     an 500.10  📐&}.i10n\ &&\ i18n <Nop>
     an disable 📐&}.i10n\ &&\ i18n
     an 500.10  📐&}.lupdate                                 :TODO
@@ -410,7 +417,12 @@ func! planet#menu#dev#Update() abort
     an 500.10  🔨&u.Ar&duino.Set\ Arduino\ Dir               :let g:arduino_dir = 'TODO'
     an 500.10  🔨&u.Ar&duino.Set\ Build\ Dir                 :let g:arduino_build_path = 'TODO'
     an 500.10  🔨&u.&PlatformIO.Edit\ Settings               :e platformio.ini<CR>
-    an 500.10  🔨&u.&ROS.Setup                               :TODO
+    an 500.10  🔨&u.&ROS.Build\ Workspace                    :TODO
+    an 500.10  🔨&u.&ROS.roslaunch                           :TODO
+    an 500.10  🔨&u.&ROS.rosrun                              :TODO
+    an 500.10  🔨&u.&ROS.Install.Kinetic                     :TODO
+    an 500.10  🔨&u.&ROS.Install.Melodic                     :TODO
+    an 500.10  🔨&u.&ROS.Install.Noetic                      :TODO
     an 500.10  🔨&u.&ROS\ 2.Setup                            :TODO
     an 500.10  🔨&u.&Yocto.Setup                             :TODO
     an 500.10  🔨&u.&Flutter.Doctor                          <Cmd>call planet#term#RunCmd('flutter doctor')<CR>
@@ -429,6 +441,38 @@ func! planet#menu#dev#Update() abort
     an 500.10  🔨&u.&Flutter.Add\ Desktop\ Linux\ Build      <Cmd>call planet#term#RunCmd('flutter config --enable-linux-desktop')<CR>
     an 500.10  🔨&u.&Flutter.Add\ Desktop\ Macos\ Build      <Cmd>call planet#term#RunCmd('flutter config --enable-macos-desktop')<CR>
     an 500.10  🔨&u.&Flutter.Add\ Desktop\ Windows\ Build    <Cmd>call planet#term#RunCmd('flutter config --enable-windows-desktop')<CR>
+    an 500.10  🔨&u.Elec&tron.List\ Project\ Deps            <Cmd>call planet#term#RunCmd('npm list --depth=0')<CR>
+    an 500.10  🔨&u.Elec&tron.--1-- <Nop>
+    an 500.10  🔨&u.Elec&tron.Run\ App                       <Cmd>call planet#term#RunCmd('electron .')<CR>
+    an 500.10  🔨&u.Elec&tron.Run\ with\ npm                 <Cmd>call planet#term#RunCmd('npm start')<CR>
+    an 500.10  🔨&u.Elec&tron.Run\ with\ auto\ reload        <Cmd>call planet#term#RunCmd('nodemon --exec electron .')<CR>
+    an 500.10  🔨&u.Elec&tron.Npm\ run\ with\ auto\ reload   <Cmd>call planet#term#RunCmd('npm run watch')<CR>
+    an 500.10  🔨&u.Elec&tron.--2-- <Nop>
+    an 500.10  🔨&u.Elec&tron.Start\ Debug                   <Cmd>call planet#term#RunCmd('electron --inspect=5858 .')<CR>
+    an 500.10  🔨&u.Elec&tron.Break\ on\ Start               <Cmd>call planet#term#RunCmd('electron --inspect-brk=5858 .')<CR>
+    an 500.10  🔨&u.Elec&tron.--3-- <Nop>
+    an 500.10  🔨&u.Elec&tron.Rebuild\ Native\ Package       <Cmd>call planet#term#RunCmdAskArgs('electron-rebuild', 'Package name: ')<CR>
+    an 500.10  🔨&u.Elec&tron.--4-- <Nop>
+    an 500.10  🔨&u.Elec&tron.Bulid\ Linux\ AppImage         <Cmd>call planet#term#RunCmd('electron-builder --linux AppImage')<CR>
+    an 500.10  🔨&u.Elec&tron.Bulid\ Linux\ snap             <Cmd>call planet#term#RunCmd('electron-builder --linux snap')<CR>
+    an 500.10  🔨&u.Elec&tron.Bulid\ Linux\ deb              <Cmd>call planet#term#RunCmd('electron-builder --linux deb')<CR>
+    an 500.10  🔨&u.Elec&tron.Bulid\ Linux\ tar\.gz          <Cmd>call planet#term#RunCmd('electron-builder --linux tar.gz')<CR>
+    an 500.10  🔨&u.Elec&tron.Bulid\ Linux\ apk              <Cmd>call planet#term#RunCmd('electron-builder --linux apk')<CR>
+    an 500.10  🔨&u.Elec&tron.Bulid\ Mac\ dmg                <Cmd>call planet#term#RunCmd('electron-builder --mac default')<CR>
+    an 500.10  🔨&u.Elec&tron.Bulid\ Mac\ App\ Store         <Cmd>call planet#term#RunCmd('electron-builder --mac mas')<CR>
+    an 500.10  🔨&u.Elec&tron.Bulid\ Mac\ tar\.gz            <Cmd>call planet#term#RunCmd('electron-builder --mac tar.gz')<CR>
+    an 500.10  🔨&u.Elec&tron.Bulid\ Windows\ self-signed-cert <Cmd>call planet#term#RunCmd('electron-builder create-self-signed-cert')<CR>
+    an 500.10  🔨&u.Elec&tron.Bulid\ Windows\ nsis           <Cmd>call planet#term#RunCmd('electron-builder --windows nsis')<CR>
+    an 500.10  🔨&u.Elec&tron.Bulid\ Windows\ Portable\ App  <Cmd>call planet#term#RunCmd('electron-builder --windows portable')<CR>
+    an 500.10  🔨&u.Elec&tron.Bulid\ Windows\ Appx           <Cmd>call planet#term#RunCmd('electron-builder --windows appx')<CR>
+    an 500.10  🔨&u.Elec&tron.Bulid\ Windows\ zip            <Cmd>call planet#term#RunCmd('electron-builder --windows zip')<CR>
+    an 500.10  🔨&u.Elec&tron.--5-- <Nop>
+    an 500.10  🔨&u.Elec&tron.Install\ as\ Local\ Dep        <Cmd>call planet#term#RunCmd('npm i -D electron@latest')<CR>
+    an 500.10  🔨&u.Elec&tron.Install\ Project\ Deps         <Cmd>call planet#term#RunCmd('npm i')<CR>
+    an 500.10  🔨&u.Elec&tron.Add\ electron-builder          <Cmd>call planet#term#RunCmd('npm i -D electron-builder')<CR>
+    an 500.10  🔨&u.Elec&tron.Add\ electron-updater          <Cmd>call planet#term#RunCmd('npm i electron-updater')<CR>
+    an 500.10  🔨&u.Elec&tron.Install\ electron-rebuild      <Cmd>call planet#term#RunCmd('sudo npm install -g electron-rebuild')<CR>
+    an 500.10  🔨&u.Elec&tron.Install\ electron-builder      <Cmd>call planet#term#RunCmd('sudo npm install -g electron-builder')<CR>
     an 500.10  🔨&u.&Other.&Ninja.Set\ DESTDIR                     :!ninja<CR>
     an 500.10  🔨&u.&Other.&QMake.Set\ DESTDIR                     :!qmake<CR>
     an 500.10  🔨&u.&Other.&Scons.Run\ Custom\ Target               <Cmd>call planet#term#RunCmdAskArgs('scons', 'scons: ', ' -j8 .')<CR>

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+prj_name="$1"
+shift
+
+if which git >&/dev/null && which npm >&/dev/null; then
+	git clone https://github.com/electron/electron-quick-start "$prj_name"
+	cd "$prj_name"
+	npm install
+	npm start
+fi
+
+# either git or npm not found, fallback to copy default files (may be outdated)
+BIN_DIR="$(readlink -f $(dirname $0))"
+"$BIN_DIR/copy-template" "electron-app" "$prj_name"
