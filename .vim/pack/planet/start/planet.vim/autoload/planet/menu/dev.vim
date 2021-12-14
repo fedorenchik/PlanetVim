@@ -416,6 +416,8 @@ func! planet#menu#dev#Update() abort
     an 500.10  🔨&u.Ar&duino.Info                            :ArduinoInfo<CR>
     an 500.10  🔨&u.Ar&duino.Set\ Arduino\ Dir               :let g:arduino_dir = 'TODO'
     an 500.10  🔨&u.Ar&duino.Set\ Build\ Dir                 :let g:arduino_build_path = 'TODO'
+    an 500.10  🔨&u.Ar&duino.Use\ Arduino\ IDE               :let g:arduino_use_cli = 0
+    an 500.10  🔨&u.Ar&duino.Use\ arduino-cli                :let g:arduino_use_cli = 1
     an 500.10  🔨&u.&PlatformIO.Edit\ Settings               :e platformio.ini<CR>
     an 500.10  🔨&u.&ROS.Build\ Workspace                    :TODO
     an 500.10  🔨&u.&ROS.roslaunch                           :TODO
