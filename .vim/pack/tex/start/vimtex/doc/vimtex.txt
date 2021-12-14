@@ -63,6 +63,7 @@ CONTENTS                                                      *vimtex-contents*
       nvim-completion-manager                   |vimtex-complete-ncm|
       YouCompleteMe                             |vimtex-complete-youcompleteme|
       VimCompletesMe                            |vimtex-complete-vcm|
+      nvim-cmp                                  |vimtex-complete-nvim-cmp|
       nvim-compe                                |vimtex-complete-nvim-compe|
   Folding                                       |vimtex-folding|
   Indentation                                   |vimtex-indent|
@@ -2279,7 +2280,15 @@ OPTIONS                                                        *vimtex-options*
   Each element in the list must be a dictionary with the following keys:
 
     name~
-      The command to highlight (`cmdname`).
+      Default: Undefined (REQUIRED)
+      The command to highlight (`cmdname`). This is also for defining the
+      syntax group names.
+
+    cmdre~
+      Default: Undefined
+      If this is defined, then it is used instead of `name` for matching the
+      `cmdname` part. It is interpreted as a regular expression with "very
+      magic" mode activated (see |/\v|).
 
     mathmode~
       Default: |v:false|
@@ -2868,7 +2877,8 @@ OPTIONS                                                        *vimtex-options*
 
 *g:vimtex_view_mupdf_options*
 *g:vimtex_view_zathura_options*
-  Set options for mupdf/zathura (|vimtex-view-mupdf|, |vimtex-view-zathura|).
+  Set options for mupdf (|vimtex-view-mupdf|) and Zathura
+  (|vimtex-view-zathura|), respectively.
 
   Default value: ''
 
@@ -2897,6 +2907,15 @@ OPTIONS                                                        *vimtex-options*
 
   Default value: ''
 
+*g:vimtex_view_sioyek_exe*
+  The name or path of the Sioyek executable. The default should usually work,
+  but in some cases it can be useful or necessary to specify the executable
+  directly. E.g., if one downloads a release version, it may be named
+  something like `'Sioyek-x86_64.AppImage'`. Unless the executable location is
+  available in `PATH` one must use an absolute path here.
+
+  Default value: `'sioyek'`
+
 *g:vimtex_view_skim_activate*
   Set this option to 1 to make Skim have focus after command |:VimtexView| in
   addition to being moved to the foreground.
@@ -2918,6 +2937,17 @@ OPTIONS                                                        *vimtex-options*
   If this option is set to 0 or |v:false|, then the check is skipped.
 
   Default value: 1
+
+*g:vimtex_callback_progpath*
+  The path to the Vim/neovim executable. This is currently passed to Zathura
+  (|vimtex-view-zathura|) for use with synctex callbacks.
+
+  You usually don't have to touch this variable; VimTeX will |v:progpath| if
+  the option is not defined. But some people may use wrappers and similar to
+  load Vim/neovim, in which case one may want to specify the executable
+  directly.
+
+  Default value: Undefined
 
 *$VIMTEX_OUTPUT_DIRECTORY*
   This environment variable allows to specify the output directory of
@@ -3518,9 +3548,9 @@ Examples: >
 
   " Close viewers when VimTeX buffers are closed
   function! CloseViewers()
-    " Close viewers on quit
-    if executable('xdotool') && exists('b:vimtex')
-        \ && exists('b:vimtex.viewer') && b:vimtex.viewer.xwin_id > 0
+    if executable('xdotool')
+          \ && exists('b:vimtex.viewer.xwin_id')
+          \ && b:vimtex.viewer.xwin_id > 0
       call system('xdotool windowclose '. b:vimtex.viewer.xwin_id)
     endif
   endfunction
@@ -4001,18 +4031,50 @@ for LaTeX documents with |VimCompletesMe| and VimTeX's omni completion function:
         \ let b:vcm_omni_pattern = g:vimtex#re#neocomplete
   augroup END
 
+nvim-cmp~
+                                                     *vimtex-complete-nvim-cmp*
+|nvim-cmp| [0] is the successor of |nvim-compe|. It provides completion for
+different sources, including omni-completion through the additional `cmp-omni`
+package [1]. It is relatively straightforward to configure with VimTeX. First,
+both |nvim-cmp| and `cmp-omni` has to be installed, then `cmp-omni` must be
+added to the list of sources in your config. For example, in Lua, it should
+look something like this: >
+
+  cmp = require('cmp')
+  cmp.setup {
+    -- additional config
+    sources = cmp.config.sources {
+      { name = 'omni' },
+      -- additional sources
+    }
+  }
+
+One may load this `cmp-omni` source only for TeX files. This is probably not
+necessary, but for the more conservative, this should do the trick: >
+
+  augroup VimTeX
+    autocmd!
+    autocmd FileType tex
+          \ lua require('cmp').setup.buffer { sources = { { name = 'omni' } } }
+  augroup END
+
+[0]: https://github.com/hrsh7th/nvim-cmp
+[1]: https://github.com/hrsh7th/cmp-omni
+
 nvim-compe~
                                                    *vimtex-complete-nvim-compe*
 |nvim-compe| is an automatic completion plugin for Neovim. It has support for
-many different completion sources, including omni-completion, making it is
-easy to use with VimTeX. The plugin is available here:
+many different completion sources, including omni-completion. However,
+|nvim-compe| has been deprecated in favor of the more recent |nvim-cmp|, see
+|vimtex-complete-nvim-cmp|. The following configuration examples should still
+be valid for anyone who for some reason would still wish to use |nvim-compe|.
 https://github.com/hrsh7th/nvim-compe.
 
 The omni-completion source can be enabled for TeX/LaTeX files by adding `omni`
 to the completion sources and specifying the `tex` filetype. For example, in
 Lua, it should look something like this: >
 
-  require("compe").setup({
+  require('compe').setup({
       source = {
           omni = {
               filetypes = {'tex'},
@@ -4662,9 +4724,9 @@ after compilation. This is used by VimTeX to achieve callbacks after
 compilation has finished through |vimtex#compiler#callback| with something
 like this: >
 
-  $compiling_cmd = "vim --remote-expr 'vimtex#compiler#callback(2)'";
-  $success_cmd = "vim --remote-expr 'vimtex#compiler#callback(1)'";
-  $failure_cmd = "vim --remote-expr 'vimtex#compiler#callback(0)'";
+  $compiling_cmd = "vim --remote-expr 'vimtex#compiler#callback(1)'";
+  $success_cmd = "vim --remote-expr 'vimtex#compiler#callback(2)'";
+  $failure_cmd = "vim --remote-expr 'vimtex#compiler#callback(3)'";
 
 Another neat way to use this is to use `xdotool` to change the window title of
 the viewer to indicate the compilation status: >
@@ -5094,20 +5156,18 @@ Sioyek is a PDF viewer designed for reading research papers and technical
 books.
 
 Configuration: >
-  let g:vimtex_view_general_viewer = 'sioyek'
-  let g:vimtex_view_general_options = '--reuse-instance'
-        \ . ' --inverse-search'
-        \ .   '"nvim --headless -c \"VimtexInverseSearch %2 ''%1''\""'
-        \ . ' --forward-search-file @tex --forward-search-line @line @pdf'
-  let g:vimtex_view_general_options_latexmk = '--reuse-instance'
+  let g:vimtex_view_method = 'sioyek'
 
-Note: The above configuration assumes that Sioyek is installed and available
-      in ones PATH as `'sioyek'`. If one downloads a release version, it may
-      be named something like `'Sioyek-x86_64.AppImage'. Make sure to point
-      the |g:vimtex_view_general_viewer| option to the correct path/name!
+Inverse search should be automatically configured and work out of the box.
+VimTeX will try to pass options to Sioyek to automatically configure inverse
+search. This means that, in most cases, inverse search should work as expected
+without any further configuration. One may still be interested in learning how
+inverse-search configuration works, in which case one should read
+|vimtex-synctex-inverse-search|. The interpolation variables for Sioyek
+configuration are `%2` and `%1`, not `%l` and `%f`.
 
-Note: The `--inverse-search` string should be adapted according to your Vim
-      flavor, see |vimtex-synctex-inverse-search| for more info.
+Associated settings:
+* |g:vimtex_view_sioyek_exe|
 
                                                              *vimtex-view-skim*
 Skim~

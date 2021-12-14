@@ -209,7 +209,11 @@ function! vimtex#syntax#core#init() abort " {{{1
   syntax match texCmdSize "\\Huge\>"
 
   " \newcommand
-  syntax match texCmdNewcmd nextgroup=texNewcmdArgName skipwhite skipnl "\\\%(re\)\?newcommand\>\*\?"
+  syntax match texCmdNewcmd "\\\%(re\)\?newcommand\>\*\?"
+        \ nextgroup=texNewcmdArgName skipwhite skipnl
+  syntax match texNewcmdArgName "\\[a-zA-Z@]\+"
+        \ nextgroup=texNewcmdOpt,texNewcmdArgBody skipwhite skipnl
+        \ contained
   call vimtex#syntax#core#new_arg('texNewcmdArgName', {
         \ 'next': 'texNewcmdOpt,texNewcmdArgBody',
         \ 'contains': ''
@@ -942,7 +946,7 @@ function! vimtex#syntax#core#new_cmd(cfg) abort " {{{1
 
   " Create the final syntax rule
   execute 'syntax match' l:group_cmd
-        \ '"\v\\' . l:cfg.name . '>"'
+        \ '"\v\\' . get(l:cfg, 'cmdre', l:cfg.name . '>') . '"'
         \ l:cfg.conceal ? 'conceal' : ''
         \ !empty(l:cfg.concealchar) ? 'cchar=' . l:cfg.concealchar : ''
         \ l:nextgroups
