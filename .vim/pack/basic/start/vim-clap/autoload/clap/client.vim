@@ -8,6 +8,8 @@ let s:req_id = get(s:, 'req_id', 0)
 let s:session_id = get(s:, 'session_id', 0)
 let s:handlers = get(s:, 'handlers', {})
 
+let s:last_recent_file = v:null
+
 function! s:set_total_size(msg) abort
   let g:clap.display.initial_size = a:msg.total
   if g:clap.provider.id ==# 'blines'
@@ -63,12 +65,12 @@ function! clap#client#handle(msg) abort
   endif
 endfunction
 
-function! clap#client#notify_on_init(method, ...) abort
-  let s:session_id += 1
+function! s:base_params() abort
   let params = {
         \   'cwd': clap#rooter#working_dir(),
         \   'enable_icon': g:clap_enable_icon ? v:true : v:false,
         \   'provider_id': g:clap.provider.id,
+        \   'no_cache': has_key(g:clap.context, 'no-cache') ? v:true : v:false,
         \   'source_fpath': expand('#'.g:clap.start.bufnr.':p'),
         \   'display_winwidth': winwidth(g:clap.display.winid),
         \ }
@@ -79,10 +81,28 @@ function! clap#client#notify_on_init(method, ...) abort
   if g:clap.provider.id ==# 'help_tags'
     let params['runtimepath'] = &runtimepath
   endif
+  return params
+endfunction
+
+function! clap#client#notify_on_init(method, ...) abort
+  let s:session_id += 1
+  let params = s:base_params()
   if a:0 > 0
     call extend(params, a:1)
   endif
-  call clap#client#notify(a:method, params)
+  call s:send_notification(a:method, params)
+endfunction
+
+function! clap#client#call_on_init(method, callback, ...) abort
+  let s:session_id += 1
+  let params = s:base_params()
+  if a:0 > 0
+    call extend(params, a:1)
+  endif
+  call s:send_method_call(a:method, params)
+  if a:callback isnot v:null
+    let s:handlers[s:req_id] = a:callback
+  endif
 endfunction
 
 function! clap#client#init_params(extra) abort
@@ -95,8 +115,42 @@ function! clap#client#init_params(extra) abort
   return type(a:extra) == v:t_dict ? extend(opts, a:extra) : opts
 endfunction
 
-function! clap#client#call_on_init(method, callback, ...) abort
-  call call(function('clap#client#notify_on_init'), [a:method] + a:000)
+function! s:send_notification(method, params) abort
+  call clap#job#daemon#send_message(json_encode({
+        \ 'method': a:method,
+        \ 'params': a:params,
+        \ 'session_id': s:session_id,
+        \ }))
+endfunction
+
+function! s:send_method_call(method, params) abort
+  let s:req_id += 1
+  call clap#job#daemon#send_message(json_encode({
+        \ 'id': s:req_id,
+        \ 'method': a:method,
+        \ 'params': a:params,
+        \ 'session_id': s:session_id,
+        \ }))
+endfunction
+
+function! clap#client#notify_recent_file() abort
+  if &buftype ==# 'nofile'
+    return
+  endif
+  let file = expand(expand('<afile>:p'))
+  if s:last_recent_file isnot v:null && s:last_recent_file == file
+    return
+  endif
+  call s:send_notification('note_recent_files', {'file': file})
+  let s:last_recent_file = file
+endfunction
+
+function! clap#client#notify(method, params) abort
+  call s:send_notification(a:method, a:params)
+endfunction
+
+function! clap#client#call(method, callback, params) abort
+  call s:send_method_call(a:method, a:params)
   if a:callback isnot v:null
     let s:handlers[s:req_id] = a:callback
   endif
@@ -128,30 +182,6 @@ endfunction
 
 function! clap#client#call_preview_file(extra) abort
   call clap#client#call('preview/file', function('clap#impl#on_move#handler'), clap#preview#maple_opts(a:extra))
-endfunction
-
-function! clap#client#notify(method, params) abort
-  let s:req_id += 1
-  call clap#job#daemon#send_message(json_encode({
-        \ 'id': s:req_id,
-        \ 'session_id': s:session_id,
-        \ 'method': a:method,
-        \ 'params': a:params,
-        \ }))
-endfunction
-
-function! clap#client#notify_recent_file() abort
-  if &buftype ==# 'nofile'
-    return
-  endif
-  call clap#client#call('note_recent_files', v:null, {'file': expand(expand('<afile>:p'))})
-endfunction
-
-function! clap#client#call(method, callback, params) abort
-  call clap#client#notify(a:method, a:params)
-  if a:callback isnot v:null
-    let s:handlers[s:req_id] = a:callback
-  endif
 endfunction
 
 let &cpoptions = s:save_cpo

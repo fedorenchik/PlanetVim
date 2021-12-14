@@ -4,11 +4,15 @@ use std::sync::{atomic::AtomicBool, Arc};
 use anyhow::Result;
 use filter::FilteredItem;
 use icon::{Icon, IconKind};
+use jsonrpc_core::Params;
 use matcher::MatchType;
 use parking_lot::Mutex;
 use serde::Deserialize;
 
-use crate::stdio_server::{types::ProviderId, Message};
+use crate::stdio_server::{
+    rpc::{Call, MethodCall, Notification},
+    types::ProviderId,
+};
 
 const DEFAULT_DISPLAY_WINWIDTH: u64 = 100;
 
@@ -76,6 +80,7 @@ pub struct SyncFilterResults {
 pub struct SessionContext {
     pub provider_id: ProviderId,
     pub cwd: PathBuf,
+    pub no_cache: bool,
     pub start_buffer_path: PathBuf,
     pub display_winwidth: u64,
     pub preview_winheight: u64,
@@ -106,7 +111,7 @@ impl SessionContext {
     fn fuzzy_matcher(&self) -> matcher::Matcher {
         matcher::Matcher::with_bonuses(
             matcher::FuzzyAlgorithm::Fzy,
-            self.match_type.clone(),
+            self.match_type,
             Vec::new(), // TODO: bonuses
         )
     }
@@ -136,16 +141,13 @@ impl SessionContext {
             decorated_lines,
         })
     }
-}
 
-impl From<Message> for SessionContext {
-    fn from(msg: Message) -> Self {
-        log::debug!("Creating a new SessionContext from: {:?}", msg);
-
+    fn from_params(params: Params) -> Self {
         #[derive(Deserialize)]
-        struct Params {
+        struct InnerParams {
             provider_id: ProviderId,
             cwd: PathBuf,
+            no_cache: bool,
             source_fpath: PathBuf,
             display_winwidth: Option<u64>,
             preview_winheight: Option<u64>,
@@ -154,16 +156,19 @@ impl From<Message> for SessionContext {
             enable_icon: Option<bool>,
         }
 
-        let Params {
+        let InnerParams {
             provider_id,
             cwd,
+            no_cache,
             source_fpath,
             display_winwidth,
             preview_winheight,
             source_cmd,
             runtimepath,
             enable_icon,
-        } = msg.deserialize_params_unsafe();
+        } = params
+            .parse()
+            .expect("Failed to deserialize SessionContext");
 
         let match_type = match provider_id.as_str() {
             "tags" | "proj_tags" => MatchType::TagName,
@@ -190,6 +195,7 @@ impl From<Message> for SessionContext {
         Self {
             provider_id,
             cwd,
+            no_cache,
             start_buffer_path: source_fpath,
             display_winwidth: display_winwidth.unwrap_or(DEFAULT_DISPLAY_WINWIDTH),
             preview_winheight: preview_winheight.unwrap_or(DEFAULT_PREVIEW_WINHEIGHT),
@@ -200,6 +206,28 @@ impl From<Message> for SessionContext {
             icon,
             scale: Arc::new(Mutex::new(Scale::Indefinite)),
             is_running: Arc::new(Mutex::new(true.into())),
+        }
+    }
+}
+
+impl From<MethodCall> for SessionContext {
+    fn from(method_call: MethodCall) -> Self {
+        Self::from_params(method_call.params)
+    }
+}
+
+impl From<Notification> for SessionContext {
+    fn from(notification: Notification) -> Self {
+        Self::from_params(notification.params)
+    }
+}
+
+impl From<Call> for SessionContext {
+    fn from(call: Call) -> Self {
+        tracing::debug!(?call, "Creating a new SessionContext from given call");
+        match call {
+            Call::MethodCall(method_call) => method_call.into(),
+            Call::Notification(notification) => notification.into(),
         }
     }
 }

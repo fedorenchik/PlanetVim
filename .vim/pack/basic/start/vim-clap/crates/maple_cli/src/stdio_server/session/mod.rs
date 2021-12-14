@@ -1,17 +1,17 @@
 mod context;
 mod manager;
 
+use std::borrow::Cow;
 use std::collections::HashSet;
 use std::sync::Arc;
 
 use anyhow::Result;
 use crossbeam_channel::Sender;
-use log::debug;
 use once_cell::sync::Lazy;
 use parking_lot::Mutex;
 
 use crate::stdio_server::providers::builtin::on_session_create;
-use crate::stdio_server::types::{Message, ProviderId};
+use crate::stdio_server::{rpc::Call, types::ProviderId, MethodCall};
 
 pub use self::context::{Scale, SessionContext, SyncFilterResults};
 pub use self::manager::{NewSession, SessionManager};
@@ -23,8 +23,13 @@ pub type SessionId = u64;
 
 #[async_trait::async_trait]
 pub trait EventHandler: Send + Sync + 'static {
-    async fn handle_on_move(&mut self, msg: Message, context: Arc<SessionContext>) -> Result<()>;
-    async fn handle_on_typed(&mut self, msg: Message, context: Arc<SessionContext>) -> Result<()>;
+    async fn handle_on_move(&mut self, msg: MethodCall, context: Arc<SessionContext>)
+        -> Result<()>;
+    async fn handle_on_typed(
+        &mut self,
+        msg: MethodCall,
+        context: Arc<SessionContext>,
+    ) -> Result<()>;
 }
 
 #[derive(Debug, Clone)]
@@ -39,18 +44,18 @@ pub struct Session<T> {
 
 #[derive(Debug, Clone)]
 pub enum SessionEvent {
-    OnTyped(Message),
-    OnMove(Message),
+    OnTyped(MethodCall),
+    OnMove(MethodCall),
     Create,
     Terminate,
 }
 
 impl SessionEvent {
     /// Simplified display of session event.
-    pub fn short_display(&self) -> String {
+    pub fn short_display(&self) -> Cow<'_, str> {
         match self {
-            Self::OnTyped(msg) => format!("OnTyped, msg id: {}", msg.id),
-            Self::OnMove(msg) => format!("OnMove, msg id: {}", msg.id),
+            Self::OnTyped(msg) => format!("OnTyped, msg_id: {}", msg.id).into(),
+            Self::OnMove(msg) => format!("OnMove, msg_id: {}", msg.id).into(),
             Self::Create => "Create".into(),
             Self::Terminate => "Terminate".into(),
         }
@@ -58,12 +63,12 @@ impl SessionEvent {
 }
 
 impl<T: EventHandler> Session<T> {
-    pub fn new(msg: Message, event_handler: T) -> (Self, Sender<SessionEvent>) {
+    pub fn new(call: Call, event_handler: T) -> (Self, Sender<SessionEvent>) {
         let (session_sender, session_receiver) = crossbeam_channel::unbounded();
 
         let session = Session {
-            session_id: msg.session_id,
-            context: Arc::new(msg.into()),
+            session_id: call.session_id(),
+            context: Arc::new(call.into()),
             event_handler,
             event_recv: session_receiver,
             source_scale: Scale::Indefinite,
@@ -76,10 +81,10 @@ impl<T: EventHandler> Session<T> {
     pub fn handle_terminate(&mut self) {
         let mut val = self.context.is_running.lock();
         *val.get_mut() = false;
-        debug!(
-            "session-{}-{} terminated",
-            self.session_id,
-            self.provider_id()
+        tracing::debug!(
+            session_id = self.session_id,
+            provider_id = %self.provider_id(),
+            "Session terminated",
         );
     }
 
@@ -119,10 +124,10 @@ impl<T: EventHandler> Session<T> {
         {
             Ok(scale_result) => match scale_result {
                 Ok(scale) => self.process_source_scale(scale),
-                Err(e) => log::error!("Error occurred on session create: {:?}", e),
+                Err(e) => tracing::error!(?e, "Error occurred on creating session"),
             },
             Err(_) => {
-                log::debug!("Did not receive value with {} ms", TIMEOUT);
+                tracing::debug!(timeout = TIMEOUT, "Did not receive value in time");
                 match self.context.provider_id.as_str() {
                     "grep" | "grep2" => {
                         let rg_cmd = crate::command::grep::RgBaseCommand::new(
@@ -131,19 +136,19 @@ impl<T: EventHandler> Session<T> {
                         let job_id = utility::calculate_hash(&rg_cmd.inner);
                         let mut background_jobs = BACKGROUND_JOBS.lock();
                         if background_jobs.contains(&job_id) {
-                            log::debug!("An existing job({}) for grep/grep2", job_id);
+                            tracing::debug!(job_id, "An existing job for grep/grep2");
                         } else {
-                            log::debug!("Spawning a background job {} for grep/grep2", job_id);
+                            tracing::debug!(job_id, "Spawning a background job for grep/grep2");
                             background_jobs.insert(job_id);
 
                             tokio::spawn(async move {
                                 let res = rg_cmd.create_cache().await;
                                 let mut background_jobs = BACKGROUND_JOBS.lock();
                                 background_jobs.remove(&job_id);
-                                log::debug!(
-                                    "The background job {} is done, result: {:?}",
-                                    job_id,
-                                    res
+                                tracing::debug!(
+                                  job_id,
+                                  result = ?res,
+                                  "The background job is done",
                                 );
                             });
                         }
@@ -154,47 +159,43 @@ impl<T: EventHandler> Session<T> {
         }
     }
 
+    async fn process_event(&mut self, event: SessionEvent) -> Result<()> {
+        match event {
+            SessionEvent::Terminate => self.handle_terminate(),
+            SessionEvent::Create => self.handle_create().await,
+            SessionEvent::OnMove(msg) => {
+                self.event_handler
+                    .handle_on_move(msg, self.context.clone())
+                    .await?;
+            }
+            SessionEvent::OnTyped(msg) => {
+                // TODO: use a buffered channel here, do not process on every
+                // single char change.
+                self.event_handler
+                    .handle_on_typed(msg, self.context.clone())
+                    .await?;
+            }
+        }
+        Ok(())
+    }
+
     pub fn start_event_loop(mut self) {
         tokio::spawn(async move {
-            debug!(
-                "Spawning a new task for session-{}-{}",
-                self.session_id,
-                self.provider_id()
+            tracing::debug!(
+                session_id = self.session_id,
+                provider_id = %self.provider_id(),
+                "Spawning a new session task",
             );
             loop {
                 match self.event_recv.recv() {
                     Ok(event) => {
-                        debug!("Received an event: {}", event.short_display());
-                        match event {
-                            SessionEvent::Terminate => {
-                                self.handle_terminate();
-                                return;
-                            }
-                            SessionEvent::Create => self.handle_create().await,
-                            SessionEvent::OnMove(msg) => {
-                                if let Err(e) = self
-                                    .event_handler
-                                    .handle_on_move(msg, self.context.clone())
-                                    .await
-                                {
-                                    debug!("Error occurrred when handling OnMove event: {:?}", e);
-                                }
-                            }
-                            SessionEvent::OnTyped(msg) => {
-                                // TODO: use a buffered channel here, do not process on every
-                                // single char change.
-                                if let Err(e) = self
-                                    .event_handler
-                                    .handle_on_typed(msg, self.context.clone())
-                                    .await
-                                {
-                                    debug!("Error occurrred when handling OnTyped event: {:?}", e);
-                                }
-                            }
+                        tracing::debug!(event = ?event.short_display(), "Received an event");
+                        if let Err(err) = self.process_event(event).await {
+                            tracing::debug!(?err, "Error processing SessionEvent");
                         }
                     }
                     Err(err) => {
-                        debug!("The channel is possibly broken, error: {:?}", err);
+                        tracing::debug!(?err, "The channel is possibly broken");
                         break;
                     }
                 }
