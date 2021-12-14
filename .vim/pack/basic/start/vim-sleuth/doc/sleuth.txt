@@ -17,18 +17,21 @@ current and parent directories.  In lieu of adjusting 'softtabstop',
                                                 *:Sleuth*
 :Sleuth                 Manually detect indentation.
 
+:verbose Sleuth         Manually detect indentation, and display what options
+                        were set and why.
+
                                                 *SleuthIndicator()*
 SleuthIndicator()       Indicator for inclusion in 'statusline'.  Or use
                         flagship.vim to have it included automatically.
 
 SETTINGS                                     *sleuth-settings*
 
-Automatic detection of buffer options can be controlled with:
+Automatic detection of buffer options can be disabled with:
 >
-  let g:sleuth_automatic = 0
+        let g:sleuth_automatic = 0
 <
 or:
 >
-  let b:sleuth_automatic = 0
+        let b:sleuth_automatic = 0
 <
  vim:tw=78:et:ft=help:norl:

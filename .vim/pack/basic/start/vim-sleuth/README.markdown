@@ -30,9 +30,8 @@ support:
   your `.irbrc`.  I consider this a feature.
 * If your file is consistently indented with hard tabs, `'shiftwidth'` will be
   set to your `'tabstop'`.  Otherwise, a `'tabstop'` of 8 is enforced.
-* The algorithm is rolled from scratch, fairly simplistic, and only lightly
-  battle tested.  It's probably not (yet) as good as [DetectIndent][].
-  Let me know what it fails on for you.
+* Indenting settings in modelines are used, even if `'modeline'` is disabled
+  globally.
 
 ## Self-Promotion
 
