@@ -25,6 +25,7 @@ import importlib
 
 from vimspector import ( breakpoints,
                          code,
+                         core_utils,
                          debug_adapter_connection,
                          install,
                          output,
@@ -100,16 +101,17 @@ class DebugSession( object ):
         configurations.update( database.get( 'configurations' ) or {} )
         adapters.update( database.get( 'adapters' ) or {} )
 
+    filetype_configurations = configurations
     if filetypes:
       # filter out any configurations that have a 'filetypes' list set and it
       # doesn't contain one of the current filetypes
-      configurations = {
+      filetype_configurations = {
         k: c for k, c in configurations.items() if 'filetypes' not in c or any(
           ft in c[ 'filetypes' ] for ft in filetypes
         )
       }
 
-    return launch_config_file, configurations
+    return launch_config_file, filetype_configurations, configurations
 
   def Start( self,
              force_choose=False,
@@ -122,9 +124,6 @@ class DebugSession( object ):
 
     self._logger.info( "User requested start debug session with %s",
                        launch_variables )
-    self._configuration = None
-    self._adapter = None
-    self._launch_config = None
 
     current_file = utils.GetBufferFilepath( vim.current.buffer )
     adapters = {}
@@ -134,7 +133,9 @@ class DebugSession( object ):
     if adhoc_configurations:
       configurations = adhoc_configurations
     else:
-      launch_config_file, configurations = self.GetConfigurations( adapters )
+      ( launch_config_file,
+        configurations,
+        all_configurations ) = self.GetConfigurations( adapters )
 
     if not configurations:
       utils.UserMessage( 'Unable to find any debug configurations. '
@@ -184,7 +185,27 @@ class DebugSession( object ):
     else:
       self._workspace_root = os.path.dirname( current_file )
 
-    configuration = configurations[ configuration_name ]
+    try:
+      configuration = configurations[ configuration_name ]
+    except KeyError:
+      # Maybe the specified one by name that's not for this filetype? Let's try
+      # that one...
+      configuration = all_configurations[ configuration_name ]
+
+    current_configuration_name = configuration_name
+    while 'extends' in configuration:
+      base_configuration_name = configuration.pop( 'extends' )
+      base_configuration = all_configurations.get( base_configuration_name )
+      if base_configuration is None:
+        raise RuntimeError( f"The adapter { current_configuration_name } "
+                            f"extends configuration { base_configuration_name }"
+                            ", but this does not exist" )
+
+      core_utils.override( base_configuration, configuration )
+      current_configuration_name = base_configuration_name
+      configuration = base_configuration
+
+
     adapter = configuration.get( 'adapter' )
     if isinstance( adapter, str ):
       adapter_dict = adapters.get( adapter )
@@ -211,12 +232,55 @@ class DebugSession( object ):
 
         utils.UserMessage( f"The specified adapter '{adapter}' is not "
                            "available. Did you forget to run "
-                           "'install_gadget.py'?",
+                           "'VimspectorInstall'?",
                            persist = True,
                            error = True )
         return
 
       adapter = adapter_dict
+
+    if not adapter:
+      utils.UserMessage( 'No adapter configured for {}'.format(
+        configuration_name ),
+        persist=True )
+      return
+
+    # Pull in anything from the base(s)
+    # FIXME: this is copypasta from above, but sharing the code is a little icky
+    # due to the way it returns from this method (maybe use an exception?)
+    while 'extends' in adapter:
+      base_adapter_name = adapter.pop( 'extends' )
+      base_adapter = adapters.get( base_adapter_name )
+
+      if base_adapter is None:
+        suggested_gadgets = installer.FindGadgetForAdapter( base_adapter_name )
+        if suggested_gadgets:
+          response = utils.AskForInput(
+            f"The specified base adapter '{base_adapter_name}' is not "
+            "installed. Would you like to install the following gadgets? ",
+            ' '.join( suggested_gadgets ) )
+          if response:
+            new_launch_variables = dict( launch_variables )
+            new_launch_variables[ 'configuration' ] = configuration_name
+
+            installer.RunInstaller(
+              self._api_prefix,
+              False, # Don't leave open
+              *shlex.split( response ),
+              then = lambda: self.Start( new_launch_variables ) )
+            return
+          elif response is None:
+            return
+
+        utils.UserMessage( f"The specified base adapter '{base_adapter_name}' "
+                           "is not available. Did you forget to run "
+                           "'VimspectorInstall'?",
+                           persist = True,
+                           error = True )
+        return
+
+      core_utils.override( base_adapter, adapter )
+      adapter = base_adapter
 
     # Additional vars as defined by VSCode:
     #
@@ -295,11 +359,6 @@ class DebugSession( object ):
                                     USER_CHOICES )
     except KeyboardInterrupt:
       self._Reset()
-      return
-
-    if not adapter:
-      utils.UserMessage( 'No adapter configured for {}'.format(
-        configuration_name ), persist=True )
       return
 
     self._StartWithConfiguration( configuration, adapter )
@@ -968,8 +1027,13 @@ class DebugSession( object ):
     # the codeView.SetCurrentFrame already checked the frame was valid and
     # countained a valid source
     assert frame
-    self._variablesView.SetSyntax( self._codeView.current_syntax )
-    self._stackTraceView.SetSyntax( self._codeView.current_syntax )
+    if self._codeView.current_syntax not in ( 'ON', 'OFF' ):
+      self._variablesView.SetSyntax( self._codeView.current_syntax )
+      self._stackTraceView.SetSyntax( self._codeView.current_syntax )
+    else:
+      self._variablesView.SetSyntax( None )
+      self._stackTraceView.SetSyntax( None )
+
     self._variablesView.LoadScopes( frame )
     self._variablesView.EvaluateWatches( frame )
 
@@ -1323,6 +1387,9 @@ class DebugSession( object ):
 
     self._logger.debug( "LAUNCH!" )
     self._launch_config = {}
+    # TODO: Should we use core_utils.override for this? That would strictly be a
+    # change in behaviour as dicts in the specific configuration would merge
+    # with dicts in the adapter, where before they would overlay
     self._launch_config.update( self._adapter.get( 'configuration', {} ) )
     self._launch_config.update( self._configuration[ 'configuration' ] )
 
@@ -1363,6 +1430,7 @@ class DebugSession( object ):
         '',
         'Use :VimspectorReset to close'
       ]
+      self._logger.info( "Launch failed: %s", '\n'.join( text ) )
       self._splash_screen = utils.DisplaySplash( self._api_prefix,
                                                  self._splash_screen,
                                                  text )
@@ -1402,10 +1470,10 @@ class DebugSession( object ):
     # leader rather than the process. The workaround is to manually SIGTRAP the
     # PID.
     #
-    self._splash_screen = utils.HideSplash( self._api_prefix,
-                                            self._splash_screen )
-
     if self._launch_complete and self._init_complete:
+      self._splash_screen = utils.HideSplash( self._api_prefix,
+                                              self._splash_screen )
+
       for h in self._on_init_complete_handlers:
         h()
       self._on_init_complete_handlers = []
