@@ -6,28 +6,32 @@ QuickUI is fully customizable, and can be easily configurated.
 
 <!-- TOC -->
 
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Available Widgets](#available-widgets)
+- [User Manual](#user-manual)
+- [Content](#content)
+  - [Requirements](#requirements)
+  - [Installation](#installation)
+  - [Available Widgets](#available-widgets)
     - [Menu](#menu)
     - [Listbox](#listbox)
+    - [Inputbox](#inputbox)
     - [Context menu](#context-menu)
     - [Textbox](#textbox)
     - [Preview window](#preview-window)
     - [Terminal](#terminal)
-- [Tools](#tools)
+    - [Confirm dialog](#confirm-dialog)
+  - [Tools](#tools)
     - [Buffer switcher](#buffer-switcher)
     - [Function list](#function-list)
     - [Help viewer](#help-viewer)
     - [Preview tag](#preview-tag)
     - [Preview quickfix](#preview-quickfix)
-- [Customize](#customize)
+  - [Customize](#customize)
     - [How to change border style](#how-to-change-border-style)
     - [How to change the color scheme](#how-to-change-the-color-scheme)
     - [How to change preview window size](#how-to-change-preview-window-size)
     - [Specify color group precisely](#specify-color-group-precisely)
-- [Who Am I ?](#who-am-i-)
-- [Credit](#credit)
+  - [Who Am I ?](#who-am-i-)
+  - [Credit](#credit)
 
 <!-- /TOC -->
 
@@ -236,6 +240,62 @@ echo quickui#listbox#inputlist(linelist, opts)
 
 The key difference between `open` and `inputlist` is `open` will return immediately to vim's event loop while `inputlist` won't return until you select an item or press `ESC`.
 
+### Inputbox
+
+Prompt user to input a string in a TUI box:
+
+![](https://skywind3000.github.io/images/p/quickui/input1.png)
+
+Could be used as a drop-in replacement of `input()` function:
+
+**APIs**:
+
+```VimL
+quickui#input#open(prompt [, text [, history_key]])
+```
+
+**Sample code**
+
+```VimL
+echo quickui#input#open('Enter your name:', 'nobody')
+```
+
+**Usage**:
+
+- `Left` / `Ctrl+B`: move cursor left.
+- `Right` / `Ctrl+F`: move cursor right.
+- `Shift+Left`: select left.
+- `Shift+Right`: select right.
+- `Ctrl+g`: select all.
+- `Up` / `Ctrl+P`: previous history.
+- `Down` / `Ctrl+N`: next history.
+- `Ctrl+Insert`: copy to register `*`.
+- `Shift+Insert`: paste from register `*`.
+- `Ctrl+K`: kill all characters on and after cursor.
+- `Ctrl+D`: delete character under cursor.
+- `Ctrl+W`: delete word before cursor.
+- `Home` / `Ctrl+A`: rewind cursor.
+- `End` / `Ctrl+E`: move cursor to the line end. 
+- `Ctrl+R Ctrl+W`: read current word.
+- `Ctrl+R =`: read evaluation.
+- `Ctrl+R {reg}`: read register.
+
+**Another Sample**
+
+```VimL
+function! SearchBox()
+	let cword = expand('<cword>')
+	let title = 'Enter text to search:'
+	let text = quickui#input#open(title, cword, 'search')
+	if text != ''
+		let text = escape(text, '[\/*~^')
+		call feedkeys("\<ESC>/" . text . "\<cr>", 'n')
+	endif
+endfunc
+```
+
+You can search text with this function without dealing with special character escaping.
+
 ### Context menu
 
 Context menu imitates Windows context menu (triggered by your mouse right button), which will display around the cursor:
@@ -345,6 +405,10 @@ It will not interfere your work, and will immediately close if you move your cur
 | syntax | String | `unset` | additional syntax file type, eg: `cpp` or `python` |
 | title | String | `unset` | additional title for preview window |
 | persist | Number | 0 | By default the preview window will be closed automatically when `CursorMove` happens, set to 1 to close it manually by `quickui#preview#close()` |
+| col | Number | `unset` | specify window position by column |
+| line | Number | `unset` | specify window position by line number |
+| w | Number | `unset` | specify window size by width |
+| h | Number | `unset` | specify window size by height |
 
 Usually the syntax highlighting and cursorline will help you when you are using it to peek symbol definitions.
 
@@ -378,7 +442,7 @@ Parameter `cmd` can be a string or a list, and `opts` is a dictionary of options
 | title | String | `unset` | window title |
 | callback | String/Function | `unset` | a function with one argument to receive exit code when terminal exit |
 
-**Sample code**:
+e.g.
 
 ```VimL
 function! TermExit(code)
@@ -395,6 +459,37 @@ When you run it, it will run `python` in a popup window:
 ![](https://skywind3000.github.io/images/p/quickui/terminal.png)
 
 This feature require vim `8.2.200` (nvim `0.4.0`) or later, it enables you to run various tui programs in a dialog window.
+
+### Confirm dialog
+
+This widget offers user a dialog, from which a choice can be made. It returns the number of the choice. For the first choice, this is 1.
+
+```VimL
+quickui#confirm#open(msg, [choices, [default, [title]]])
+```
+
+e.g.
+
+```VimL
+let question = "What do you want ?"
+let choices = "&Apples\n&Oranges\n&Bananas"
+
+let choice = quickui#confirm#open(question, choices, 1, 'Confirm')
+
+if choice == 0
+	echo "make up your mind!"
+elseif choice == 3
+	echo "tasteful"
+else
+	echo "I prefer bananas myself."
+endif
+```
+
+Result:
+
+![](https://skywind3000.github.io/images/p/quickui/confirm1.png)
+
+Use `h` and `l` to move cursor, `<space>` or `<cr>` to confirm and `<ESC>` to give up. Mouse is also supported.
 
 ## Tools
 

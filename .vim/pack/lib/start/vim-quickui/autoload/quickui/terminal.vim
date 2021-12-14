@@ -86,6 +86,9 @@ function! quickui#terminal#create(cmd, opts)
 		let opts.height = h
 		let opts.row = hwnd.opts.line - 1 + ((border > 0)? 1 : 0)
 		let opts.col = hwnd.opts.col - 1 + ((border > 0)? 1 : 0)
+		if has('nvim-0.5.0')
+			let opts.noautocmd = 1
+		endif
 		let winid = nvim_open_win(bid, 1, opts)
 		let hwnd.winid = winid
 		let hwnd.background = -1
@@ -106,6 +109,9 @@ function! quickui#terminal#create(cmd, opts)
 			let pos = nvim_win_get_config(winid)
 			let op.row = hwnd.opts.line - 1
 			let op.col = hwnd.opts.col - 1
+			if has('nvim-0.5.0')
+				let op.noautocmd = 1
+			endif
 			let background = nvim_open_win(nbid, 0, op)
 			call nvim_win_set_option(background, 'winhl', 'Normal:'. color)
 			let hwnd.background = background
@@ -224,7 +230,17 @@ function! quickui#terminal#open(cmd, opts)
 	endif
 	let g:quickui#terminal#capture = []
 	let g:quickui#terminal#tmpname = ''
+	let $VIM_INPUT = ''
 	let $VIM_CAPTURE = ''
+	if has_key(opts, 'input')
+		if has('win32') || has('win64') || has('win95') || has('win16')
+			let tmpname = fnamemodify(tempname(), ':h') . '\quickui1.txt'
+		else
+			let tmpname = fnamemodify(tempname(), ':h') . '/quickui1.txt'
+		endif
+		call writefile(opts.input, tmpname)
+		let $VIM_INPUT = tmpname
+	endif
 	if has_key(opts, 'capture')
 		if opts.capture
 			if has('win32') || has('win64') || has('win95') || has('win16')

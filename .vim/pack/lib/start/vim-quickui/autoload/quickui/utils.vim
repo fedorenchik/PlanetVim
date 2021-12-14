@@ -3,7 +3,7 @@
 " utils.vim - 
 "
 " Created by skywind on 2019/12/19
-" Last Modified: 2019/12/19 15:31:17
+" Last Modified: 2021/11/30 00:49
 "
 "======================================================================
 
@@ -343,7 +343,7 @@ endfunc
 "----------------------------------------------------------------------
 " centerize
 "----------------------------------------------------------------------
-function! quickui#utils#center(winid)
+function! quickui#utils#center(winid, ...)
 	if g:quickui#core#has_nvim == 0
 		let pos = popup_getpos(a:winid)
 	else
@@ -353,7 +353,9 @@ function! quickui#utils#center(winid)
 	endif
 	let h = pos.height
 	let w = pos.width
-	let limit1 = (&lines - 2) * 82 / 100
+	let mode = (a:0 < 1)? 0 : (a:1)
+	let scale = (mode == 0)? 80 : 68
+	let limit1 = (&lines - 2) * scale / 100
 	let limit2 = (&lines - 2)
 	let opts = {}
 	if h + 4 < limit1
@@ -588,5 +590,83 @@ function! quickui#utils#tools_width()
 	let size = (size < minimal)? minimal : size
 	return (size > &columns)? &columns : size
 endfunc
+
+
+"----------------------------------------------------------------------
+" read from register or evaluation
+"----------------------------------------------------------------------
+function! quickui#utils#read_eval(...)
+	let opts = (a:0 == 0)? {} : (a:1)
+	try
+		let code = getchar()
+	catch /^Vim:Interrupt$/
+		let code = "\<C-C>"
+	endtry
+	let ch = (type(code) == v:t_number)? nr2char(code) : code
+	if ch == "\<c-c>"
+		return ''
+	elseif ch == "\<esc>" || ch == "\<cr>"
+		return ''
+	elseif ch == "="
+		let e = input('=')
+		if e == ''
+			return ''
+		endif
+		return eval(e)
+	elseif ch == "\<c-w>"
+		let x = expand('<cword>')
+		return x
+	elseif len(ch) == 1
+		let x = eval('@' . ch)
+		return x
+	endif
+	return ''
+endfunc
+
+
+"----------------------------------------------------------------------
+" normalize textlist
+"----------------------------------------------------------------------
+function! quickui#utils#text_list_normalize(textlist)
+	if type(a:textlist) == v:t_list
+		let textlist = a:textlist
+	else
+		let textlist = split('' . a:textlist, '\n', 1)
+	endif
+	let out = []
+	for text in textlist
+		let text = substitute(text, '[\r\n\t]', ' ', 'g')
+		let out += [text]
+	endfor
+	return out
+endfunc
+
+
+
+"----------------------------------------------------------------------
+" getchar
+"----------------------------------------------------------------------
+function! quickui#utils#getchar(wait)
+	try
+		if a:wait != 0
+			let code = getchar()
+		else
+			let code = getchar(0)
+		endif
+	catch /^Vim:Interrupt$/
+		let code = "\<C-C>"
+	endtry
+	if type(code) == v:t_number && code == 0
+		try
+			exec 'sleep 15m'
+			continue
+		catch /^Vim:Interrupt$/
+			let code = "\<c-c>"
+		endtry
+	endif
+	let ch = (type(code) == v:t_number)? nr2char(code) : code
+	return ch
+endfunc
+
 
 

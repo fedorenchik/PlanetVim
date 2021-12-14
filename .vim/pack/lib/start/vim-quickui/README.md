@@ -1,12 +1,12 @@
 # What Is It ?
 
-There are many keymaps defined in my `.vimrc`. Getting tired from checking `.vimrc` time to time when I forget some, based on latest `+popup` feature (vim 8.2), I created this `vim-quickui` plugin to introduce some basic ui components to enrich vim's interactive experience:
+There are many keymaps defined in my `.vimrc`. Getting tired from checking `.vimrc` time to time when I forget some, based on the latest `+popup` feature (vim 8.2), I created this `vim-quickui` plugin to introduce some basic UI components to enrich vim's interactive experience:
 
 - Well designed and carefully colored Borland/Turbo C++ flavor ui system combined with vim's productivity.
 - Can be accessed by keyboard only while mouse is also supported.
 - Navigate with the usual Vim keys like `h/j/k/l`, confirm with `ENTER/SPACE` and cancel with `ESC/Ctrl+[`.
 - `Tip` for each entry can display in the cmdline when you are moving the cursor around.
-- Available widgets: [menu](#menu), [listbox](#listbox), [textbox](#textbox).. (coming soon)
+- Available widgets: [menu](#menu), [listbox](#listbox), [inputbox](#inputbox), [textbox](#textbox).. (coming soon)
 - Fully customizable, including color scheme and borders.
 - Corresponding experience in both `Vim` and `NeoVim`.
 - Pure vim-script, `+python` is not required.
@@ -22,18 +22,22 @@ Trying to share my configuration to my friends, I found that they did't have pat
 
 <!-- TOC -->
 
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Gallery Screenshot](#gallery-screenshot)
+- [What Is It ?](#what-is-it-)
+- [Content](#content)
+  - [Requirements](#requirements)
+  - [Installation](#installation)
+  - [Gallery Screenshot](#gallery-screenshot)
     - [Menu](#menu)
     - [Listbox](#listbox)
+    - [Inputbox](#inputbox)
     - [Context menu](#context-menu)
     - [Textbox](#textbox)
     - [Preview window](#preview-window)
     - [Terminal](#terminal)
-- [User Manual](#user-manual)
-- [Who Am I ?](#who-am-i-)
-- [Credit](#credit)
+    - [Confirm dialog](#confirm-dialog)
+  - [User Manual](#user-manual)
+  - [Who Am I ?](#who-am-i-)
+  - [Credit](#credit)
 
 <!-- /TOC -->
 
@@ -56,18 +60,15 @@ Display a dropdown menubar at top of the screen, use `hjkl` or mouse to navigate
 
 ![](https://skywind3000.github.io/images/p/quickui/mainmenu.png)
 
-Border style 1:
-
-![](https://skywind3000.github.io/images/p/quickui/border1.png)
-
-
-Border style 2:
+Customizable border style:
 
 ![](https://skywind3000.github.io/images/p/quickui/border2.png)
 
 Menu color schemes:
 
 ![](https://skywind3000.github.io/images/p/quickui/colors.png)
+
+See: [Menu help](MANUAL.md#menu).
 
 ### Listbox
 
@@ -83,6 +84,18 @@ It can be used to select buffers or functions in current file:
 
 The cursor will stay in the current function initially. Navigate and press enter to jump to the selected function. 
 
+See: [Listbox help](MANUAL.md#listbox).
+
+### Inputbox
+
+Prompt user to input a string in a TUI box:
+
+![](https://skywind3000.github.io/images/p/quickui/input1.png)
+
+Could be used as a drop-in replacement of `input()` function.
+
+See: [Input box help](MANUAL.md#inputbox).
+
 ### Context menu
 
 Context menu imitates Windows context menu (triggered by your mouse right button), which will display around the cursor:
@@ -96,6 +109,8 @@ The border can be changed too:
 ![](https://skywind3000.github.io/images/p/quickui/context2.png)
 
 Because some terminals or fonts cannot display unicode borders correctly, so QuickUI choose ascii border characters by default. But you can change it as you like.
+
+See: [Context menu help](MANUAL.md#context-menu).
 
 ### Textbox
 
@@ -115,6 +130,8 @@ Display vim messages:
 
 Navigating the messages with `HJKL` or `PageUp/PageDown` is much more convenient than using `:messages`.
 
+See: [Text box help](MANUAL.md#textbox).
+
 ### Preview window
 
 Preview window is used to replace traditional `pedit` command and can be used to display certain file in a small popup window around your cursor:
@@ -129,6 +146,8 @@ Use it to preview quickfix result:
 
 If you have many items in the quickfix window, instead of open them one by one, you are able to press `p` in the quickfix window and preview them in the popup.
 
+See: [Preview window help](MANUAL.md#preview-window).
+
 ### Terminal
 
 The `terminal` widget can allow you open a terminal in the popup window:
@@ -136,6 +155,19 @@ The `terminal` widget can allow you open a terminal in the popup window:
 ![](https://skywind3000.github.io/images/p/quickui/terminal.png)
 
 This feature require vim `8.2.200` (nvim `0.4.0`) or later, it enables you to run various tui programs in a dialog window.
+
+See: [Terminal help](MANUAL.md#terminal).
+
+### Confirm dialog
+
+This widget offers user a dialog, from which a choice can be made:
+
+![](https://skywind3000.github.io/images/p/quickui/confirm1.png)
+
+It returns the number of the choice. For the first choice, this is 1.
+
+See: [Confirm dialog help](MANUAL.md#confirm-dialog).
+
 
 ## User Manual
 
