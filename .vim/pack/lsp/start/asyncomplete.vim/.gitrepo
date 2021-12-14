@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/prabirshrestha/asyncomplete.vim.git
 	branch = master
-	commit = 73ac8e4e4525ba48e82d0f30643987b015233d4e
-	parent = 6bd5d23b8d2f5e7e2dde5633253a16d334b7b53a
+	commit = 9c7651894c2c6d656c0dc71e87cfabbbb71b9c78
+	parent = 941b068c8618ebc8263c27db5afa7b1616167916
 	method = merge
 	cmdver = 0.4.3
