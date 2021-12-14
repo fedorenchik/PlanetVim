@@ -64,6 +64,10 @@ function! flutter#quit() abort
   return flutter#send('q')
 endfunction
 
+function! flutter#screenshot() abort
+  return flutter#send('s')
+endfunction
+
 function! flutter#_exit_cb(job, status) abort
   if exists('g:flutter_job')
     unlet g:flutter_job
@@ -85,41 +89,68 @@ function! flutter#_on_output_nvim(job_id, data, event) abort dict
     let g:flutter_partial_line_nvim = str
   else
     if and(g:flutter_partial_line_nvim != '', str !~ 'Reloaded')
-	  let str = g:flutter_partial_line_nvim . str
+    let str = g:flutter_partial_line_nvim . str
       let b = bufnr('__Flutter_Output__')
       call nvim_buf_set_lines(b, -2, -1, v:true, [str])
       let g:flutter_partial_line_nvim = ''
-	  return
+    return
     endif
   endif
   let b = bufnr('__Flutter_Output__')
   call nvim_buf_set_lines(b, -1, -1, v:true, a:data)
+
+  call flutter#scroll_to_bottom()
 endfunction
 endif
 
-function! flutter#run(...) abort
+function! flutter#scroll_to_bottom()
+  if has('nvim') && g:flutter_autoscroll
+    let l:bufinfo = getbufinfo('__Flutter_Output__')[0]
+    let l:lnum = l:bufinfo['linecount']
+    let l:windows = l:bufinfo['windows']
+    if len(l:windows) > 0
+      call nvim_win_set_cursor(l:windows[0], [l:lnum, 0])
+    end
+  endif
+endfunction
+
+let s:last_options = {}
+
+function! flutter#run_or_attach(type, show, use_last_option, args) abort
   if exists('g:flutter_job')
     echoerr 'Another Flutter process is running.'
     return 0
   endif
 
-  if g:flutter_show_log_on_run
+  if a:show == 'tab' || a:show == 'hidden'
+    " open new tab and move it before the current tab
+    tabnew __Flutter_Output__
+    tabm -1
+  else
     split __Flutter_Output__
-    normal! ggdG
-    setlocal buftype=nofile
-    setlocal bufhidden=hide
-    setlocal noswapfile
+  endif
+  normal! ggdG
+  setlocal buftype=nofile
+  setlocal bufhidden=hide
+  setlocal noswapfile
+  if a:show == 'hidden'
+    tabclose
   endif
 
-  let cmd = g:flutter_command.' run'
-  if !empty(a:000)
-    let cmd = cmd." ".join(a:000)
-    if g:flutter_use_last_run_option
-      let g:flutter_last_run_option = a:000
+  let cmd = []
+  if has("win32") || has("win64")
+    let cmd += [&shell, &shellcmdflag]
+  endif
+  let cmd += [g:flutter_command, a:type]
+  if !empty(a:args)
+    let cmd += a:args
+    if a:use_last_option
+      let s:last_options[a:type] = a:args
     endif
   else
-    if g:flutter_use_last_run_option && exists('g:flutter_last_run_option')
-      let cmd += g:flutter_last_run_option
+    if a:use_last_option
+      let last_option = get(s:last_options, a:type, [])
+      let cmd += last_option
     endif
   endif
 
@@ -137,8 +168,20 @@ function! flutter#run(...) abort
           \ 'err_name': '__Flutter_Output__',
           \ 'exit_cb': 'flutter#_exit_cb',
           \ })
+
+    if job_status(g:flutter_job) == 'fail'
+      echo 'Could not start flutter job'
+      unlet g:flutter_job
+    endif
   else
     echoerr 'This vim does not support async jobs needed for running Flutter.'
   endif
+endfunction
 
+function! flutter#run(...) abort
+  call flutter#run_or_attach('run', g:flutter_show_log_on_run, g:flutter_use_last_run_option, a:000)
+endfunction
+
+function! flutter#attach(...) abort
+  call flutter#run_or_attach('attach', g:flutter_show_log_on_attach, g:flutter_use_last_attach_option, a:000)
 endfunction

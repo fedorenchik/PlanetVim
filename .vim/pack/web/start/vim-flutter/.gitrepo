@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/thosakwe/vim-flutter.git
 	branch = master
-	commit = 5a6de53adcc72742138b666b305869999fc8066e
-	parent = ccc1904f453f75e93acb9741779179b7fce0107a
+	commit = 2292de52c6b2470638b628ed2f3b1332e077cd46
+	parent = a9cd37dfb2a6b240bb0039deaaeeed4b85782272
 	method = merge
 	cmdver = 0.4.3

@@ -39,12 +39,24 @@ are saved; defaults to `1`.
 * `g:flutter_hot_restart_on_save` - Whether to auto hot-restart when `dart` files
 are saved; defaults to `0`.
 * `g:flutter_show_log_on_run` - Automatically open `__Flutter_Output__` when starting
-flutter; defaults to `1`. Setting this to 0 requires `set hidden` in your vimrc.
+flutter using `:FlutterRun`; it can have one of the following values:
+  * `"split"` or `1`: Open the log in a split, this is the default.
+  * `"tab"`: Open the log in a new tab.
+  * `"hidden"` or `0`: Do not open the log by default, can be opened later with `FlutterSplit` etc.
+* `g:flutter_show_log_on_attach` - Identical to `g:flutter_show_log_on_run` but affecting
+the `:FlutterAttach` command.
+* `g:flutter_autoscroll` - Autoscroll the flutter log when `1`, defaults to `0`.
+* `g:flutter_use_last_run_option` - When set to `1` then `:FlutterRun` will use the arguments from
+the previous call when no arguments are specified.
+* `g:flutter_use_last_attach_option` - Identical to `g:flutter_use_last_run_option` but
+affecting the `:FlutterAttach` command.
 
 ## Provided Commands
 * `:FlutterRun <args>` - calls `flutter run <args>`
+* `:FlutterAttach <args>` - calls `flutter attach <args>`
 * `:FlutterHotReload` - triggers a hot reload on the current Flutter process
 * `:FlutterHotRestart` - triggers a hot restart on the current Flutter process
+* `:FlutterScreenshot` - takes a screenshot of the current Flutter application and saves it in the project directory
 * `:FlutterQuit` - quits the current Flutter process
 * `:FlutterDevices` - opens a new buffer, and writes the output of `flutter devices` to it
 * `:FlutterSplit` - opens Flutter output in a horizontal split
