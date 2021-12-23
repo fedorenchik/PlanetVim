@@ -26,9 +26,9 @@ func! planet#menu#basic#Update() abort
     an 110.60  📁&f.New\ Project.C++\ DSL                      :TODO"example DSL in C++
     an 110.60  📁&f.New\ Project.Python\ DSL                   :TODO"example DSL in Python
     an 110.60  📁&f.New\ Project.LaTex\ Book                   :TODO
-    an 110.60  📁&f.New\ Project.OpenGL.Basic\ GLFW            :TODO
-    an 110.60  📁&f.New\ Project.OpenGL.Basic\ SDL             :TODO
-    an 110.60  📁&f.New\ Project.OpenGL.Basic\ SFML            :TODO
+    an 110.60  📁&f.New\ Project.OpenGL.GLFW\ App              :TODO
+    an 110.60  📁&f.New\ Project.OpenGL.SDL\ App               :TODO
+    an 110.60  📁&f.New\ Project.OpenGL.SFML\ App              <Cmd>call planet#file#NewProject('sfml-app')<CR>
     an 110.60  📁&f.New\ Project.Basic\ Vulkan                 :TODO
     an 110.60  📁&f.New\ Project.Git\ Clone\.\.\.              :TODO
     an 110.60  📁&f.New\ Project.Git\ Init\.\.\.               :TODO
