@@ -50,3 +50,20 @@ func! planet#file#ClearLocalCwd(mod) abort
   exe "noautocmd " .. a:mod .. " cd " .. l:global_cwd
   call win_gotoid(l:win_id)
 endfunc
+
+" Makes global cd from tcd & clears tcd
+func! planet#file#TcdToCd() abort
+  if haslocaldir() == 2
+    let l:win_id = win_getid()
+    let l:tab_cwd = getcwd(-1, 0)
+    exe "noautocmd windo cd " .. l:tab_cwd
+    call win_gotoid(l:win_id)
+  end
+endfunc
+
+" Makes global cd from lcd & clears lcd
+func! planet#file#LcdToCd() abort
+  if haslocaldir() == 1
+    exe "noautocmd cd " .. getcwd()
+  end
+endfunc

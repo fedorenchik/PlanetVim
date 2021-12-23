@@ -20,27 +20,50 @@ func! planet#menu#basic#Update() abort
     an 110.60  📁&f.New\ Project.Linux\ OOT\ Device\ Driver    :TODO"with parameters/OF framework support
     an 110.60  📁&f.New\ Project.Linux\ Device\ Tree           :TODO"device tree definition
     an 110.60  📁&f.New\ Project.Wordpress\ Plugin             :TODO
+    an 110.60  📁&f.New\ Project.Wordpress\ Theme              :TODO
     an 110.60  📁&f.New\ Project.Yocto\ System                 :TODO
     an 110.60  📁&f.New\ Project.ROS\ Package                  :TODO
     an 110.60  📁&f.New\ Project.C++\ DSL                      :TODO"example DSL in C++
     an 110.60  📁&f.New\ Project.Python\ DSL                   :TODO"example DSL in Python
     an 110.60  📁&f.New\ Project.LaTex\ Book                   :TODO
+    an 110.60  📁&f.New\ Project.OpenGL.Basic\ GLFW            :TODO
+    an 110.60  📁&f.New\ Project.OpenGL.Basic\ SDL             :TODO
+    an 110.60  📁&f.New\ Project.OpenGL.Basic\ SFML            :TODO
+    an 110.60  📁&f.New\ Project.Basic\ Vulkan                 :TODO
     an 110.60  📁&f.New\ Project.Git\ Clone\.\.\.              :TODO
     an 110.60  📁&f.New\ Project.Git\ Init\.\.\.               :TODO
     an 110.60  📁&f.New\ File.C++\ Class                       :TODO"copy from template
+    an 110.60  📁&f.New\ File.C++\ Class\ Enum                 :TODO"copy from template
+    an 110.60  📁&f.New\ File.C++\ Module                      :TODO"copy from template
     an 110.60  📁&f.New\ File.Python\ App                      :TODO"copy from template
     an 110.60  📁&f.New\ File.Python\ Class                    :TODO"copy from template
-    an 110.60  📁&f.New\ File.Qt\ Designer\ Form\ Class        :TODO"copy from template
-    an 110.60  📁&f.New\ File.SCXML                            :TODO"copy from template
-    an 110.60  📁&f.New\ File.qmodel                           :TODO"copy from template
-    an 110.60  📁&f.New\ File.Qt\ Item\ Model                  :TODO"copy from template
-    an 110.60  📁&f.New\ File.Qt\ Designer\ Form               :TODO"copy from template
-    an 110.60  📁&f.New\ File.Qt\ Resource\ File               :TODO"copy from template
-    an 110.60  📁&f.New\ File.QML                              :TODO"copy from template
-    an 110.60  📁&f.New\ File.QtQuick\ UI\ (\.ui\.qml)         :TODO"copy from template
-    an 110.60  📁&f.New\ File.JS                               :TODO"copy from template
-    an 110.60  📁&f.New\ File.LaTex\ Article                   :TODO"copy from template
-    an 110.60  📁&f.New\ File.LaTex\ Chapter                   :TODO"copy from template
+    an 110.60  📁&f.New\ File.Qt.Qt\ Designer\ Form\ Class     :TODO"copy from template
+    an 110.60  📁&f.New\ File.Qt.SCXML                         :TODO"copy from template
+    an 110.60  📁&f.New\ File.Qt.qmodel                        :TODO"copy from template
+    an 110.60  📁&f.New\ File.Qt.Qt\ Item\ Model               :TODO"copy from template
+    an 110.60  📁&f.New\ File.Qt.Qt\ Designer\ Form            :TODO"copy from template
+    an 110.60  📁&f.New\ File.Qt.Qt\ Resource\ File            :TODO"copy from template
+    an 110.60  📁&f.New\ File.Qt.QML                           :TODO"copy from template
+    an 110.60  📁&f.New\ File.Qt.QtQuick\ UI\ (\.ui\.qml)      :TODO"copy from template
+    an 110.60  📁&f.New\ File.GLSL.Vertex\ Shader\ (\.vert)    :TODO
+    an 110.60  📁&f.New\ File.GLSL.Fragment\ Shader\ (\.frag)  :TODO
+    an 110.60  📁&f.New\ File.GLSL.Geometry\ Shader\ (\.geom)  :TODO
+    an 110.60  📁&f.New\ File.GLSL.Compute\ Shader\ (\.comp)   :TODO
+    an 110.60  📁&f.New\ File.GLSL.Tesselation\ Control\ Shader\ (\.tesc) :TODO
+    an 110.60  📁&f.New\ File.GLSL.Tesselation\ Evaluation\ Shader\ (\.tese) :TODO
+    an 110.60  📁&f.New\ File.Web.HTML                         :TODO"copy from template
+    an 110.60  📁&f.New\ File.Web.CSS                          :TODO"copy from template
+    an 110.60  📁&f.New\ File.Web.JavaScript                   :TODO"copy from template
+    an 110.60  📁&f.New\ File.Web.TypeScript                   :TODO"copy from template
+    an 110.60  📁&f.New\ File.Web.PHP                          :TODO"copy from template
+    an 110.60  📁&f.New\ File.Web.Python\ Django               :TODO"copy from template
+    an 110.60  📁&f.New\ File.Web.Python\ Flask                :TODO"copy from template
+    an 110.60  📁&f.New\ File.Web.Vue\ Component               :TODO"copy from template
+    an 110.60  📁&f.New\ File.Web.--1-- <Nop>
+    an 110.60  📁&f.New\ File.Web.\.htaccess                   :TODO"copy from template
+    an 110.60  📁&f.New\ File.Web.robots\.txt                  :TODO"copy from template
+    an 110.60  📁&f.New\ File.LaTex.Article                    :TODO"copy from template
+    an 110.60  📁&f.New\ File.LaTex.Chapter                    :TODO"copy from template
     an 110.70  📁&f.--1-- <Nop>
     an 110.80  📁&f.Choose\ File                               :Clap files<CR>
     an 110.80  📁&f.Open\ File\ Dialog                         :browse confirm e<CR>
@@ -77,21 +100,37 @@ func! planet#menu#basic#Update() abort
     an 110.290 📁&f.Change\ File\ Permissions                  :Chmod 0755
     an 110.300 📁&f.Delete\ From\ Disk                         :Delete!<CR>
     an 110.310 📁&f.Mkdir                                      :Mkdir! <C-z>
-    an 110.320 📁&f.Cd<Tab>:cd                                 :cd <C-z>
-    an 110.330 📁&f.Advanced\ Cd.Temp\ Cd\ to\ Project\ Root\ in\ Window :TODO"lcd to project root, but back to global cwd on au WinLeave <buffer> <once>
-    an 110.330 📁&f.Advanced\ Cd.Temp\ Cd\ in\ Window             :TODO"lcd, but back to global cwd on au WinLeave <buffer> <once>
-    an 110.330 📁&f.Advanced\ Cd.Cd\ in\ Tab<Tab>:tcd             :tcd <C-z>
-    an 110.340 📁&f.Advanced\ Cd.Cd\ in\ Window<Tab>:lcd          :lcd <C-z>
-    an 110.320 📁&f.Advanced\ Cd.Cd\ to\ Previous\ Directory<Tab>:cd\ - :cd -<CR>
-    an 110.330 📁&f.Advanced\ Cd.Cd\ to\ Previous\ Directory\ in\ Tab<Tab>:tcd\ - :tcd -<CR>
-    an 110.340 📁&f.Advanced\ Cd.Cd\ to\ Previous\ Directory\ in\ Window<Tab>:lcd\ - :lcd -<CR>
-    an 110.330 📁&f.Advanced\ Cd.Cd\ Windows\ in\ Tab<Tab>:windo\ cd :windo cd <C-z>
-    an 110.330 📁&f.Advanced\ Cd.Cd\ All\ Tabs<Tab>:tabdo\ cd     :tabdo cd <C-z>
-    an 110.330 📁&f.Advanced\ Cd.Cd\ All\ Windows<Tab>:tabdo\ windo\ cd :tabdo windo cd <C-z>
-    an 110.330 📁&f.Advanced\ Cd.Clear\ Local\ cd                 <Cmd>call planet#file#ClearLocalCwd('')<CR>
-    an 110.330 📁&f.Advanced\ Cd.Clear\ Local\ cd\ in\ Tab        <Cmd>call planet#file#ClearLocalCwd('windo')<CR>
-    an 110.330 📁&f.Advanced\ Cd.Clear\ Local\ cd\ Globally       <Cmd>call planet#file#ClearLocalCwd('tabdo windo')<CR>
-    an 110.360 📁&f.&Close<Tab>:bdelete                        :bdelete<CR>
+    an 110.330 📁&f.C&d.Cd<Tab>:cd\ ->                         :cd <C-z>
+    an 110.330 📁&f.C&d.Tab\ Cd<Tab>:tcd\ ->                   :tcd <C-z>
+    an 110.340 📁&f.C&d.Local\ Cd<Tab>:lcd\ ->                 :lcd <C-z>
+    an 110.340 📁&f.C&d.Pwd<Tab>:pwd                           <Cmd>verbose pwd<CR>
+    an 110.330 📁&f.C&d.--1-- <Nop>
+    an 110.330 📁&f.C&d.Cd\ to\ File\ Directory                <Cmd>cd %:h<CR>
+    an 110.330 📁&f.C&d.Tcd\ to\ File\ Directory               <Cmd>tcd %:h<CR>
+    an 110.330 📁&f.C&d.Lcd\ to\ File\ Directory               <Cmd>lcd %:h<CR>
+    an 110.330 📁&f.C&d.--2-- <Nop>
+    an 110.330 📁&f.C&d.Temp\ Cd\ to\ Project\ Root\ in\ Window :TODO"lcd to project root, but back to global cwd on au WinLeave <buffer> <once>
+    an 110.330 📁&f.C&d.Temp\ Cd\ in\ Window                   :TODO"lcd, but back to global cwd on au WinLeave <buffer> <once>
+    an 110.330 📁&f.C&d.--3-- <Nop>
+    an 110.320 📁&f.C&d.Cd\ to\ Previous\ Directory<Tab>:cd\ - <Cmd>cd -<CR>
+    an 110.330 📁&f.C&d.Tab\ Cd\ to\ Previous\ Directory<Tab>:tcd\ - <Cmd>tcd -<CR>
+    an 110.340 📁&f.C&d.Local\ Cd\ to\ Previous\ Directory<Tab>:lcd\ - <Cmd>lcd -<CR>
+    an 110.330 📁&f.C&d.--4-- <Nop>
+    an 110.330 📁&f.C&d.Cd\ Windows\ in\ Tab<Tab>:windo\ cd    :windo cd <C-z>
+    an 110.330 📁&f.C&d.Cd\ All\ Tabs<Tab>:tabdo\ cd           :tabdo cd <C-z>
+    an 110.330 📁&f.C&d.Cd\ All\ Windows<Tab>:tabdo\ windo\ cd :tabdo windo cd <C-z>
+    an 110.330 📁&f.C&d.--5-- <Nop>
+    an 110.330 📁&f.C&d.cd\ \.\.                               <Cmd>cd ..<CR>
+    an 110.330 📁&f.C&d.tcd\ \.\.                              <Cmd>tcd ..<CR>
+    an 110.330 📁&f.C&d.lcd\ \.\.                              <Cmd>lcd ..<CR>
+    an 110.330 📁&f.C&d.--6-- <Nop>
+    an 110.330 📁&f.C&d.tcd\ ->\ cd                            <Cmd>call planet#file#TcdToCd()<CR>
+    an 110.330 📁&f.C&d.lcd\ ->\ cd                            <Cmd>call planet#file#LcdToCd()<CR>
+    an 110.330 📁&f.C&d.--7-- <Nop>
+    an 110.330 📁&f.C&d.Clear\ Local\ cd                       <Cmd>call planet#file#ClearLocalCwd('')<CR>
+    an 110.330 📁&f.C&d.Clear\ Local\ cd\ in\ Tab              <Cmd>call planet#file#ClearLocalCwd('windo')<CR>
+    an 110.330 📁&f.C&d.Clear\ Local\ cd\ Globally             <Cmd>call planet#file#ClearLocalCwd('tabdo windo')<CR>
+    an 110.360 📁&f.&Close<Tab>:bdelete                        <Cmd>bdelete<CR>
 
     " Edit
     an 120.10  📝&e.Edit <Nop>
