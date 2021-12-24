@@ -54,3 +54,14 @@ end
 if ! exists('g:PV_server_port')
   let g:PV_server_port = 8080
 end
+
+" Autocommands
+if ! exists('g:PV_alternate_tab')
+  let g:PV_alternate_tab = tabpagenr('#')
+end
+if ! exists('g:PV_current_tab')
+  let g:PV_current_tab = tabpagenr()
+end
+if ! exists('g:PV_new_tab')
+  let g:PV_new_tab = 1
+end
