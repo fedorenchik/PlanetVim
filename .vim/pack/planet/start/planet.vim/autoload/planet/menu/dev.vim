@@ -308,6 +308,8 @@ func! planet#menu#dev#Update() abort
     an 500.10  📐&}.Vue\ CLI.Add\ vuex                      <Cmd>call planet#term#RunCmd('npm install vuex')<CR>
     an 500.10  📐&}.Vue\ CLI.Create                         <Cmd>call planet#term#RunCmdAskArgs('vue create', 'Name of new project', 'vue-app')<CR>
     an 500.10  📐&}.Web\ Tools.TODO                         <Cmd>call planet#term#RunCmd('wget ...TODO')<CR>
+    an 500.10  📐&}.Vulkan.Compile\ Shader                  <Cmd>call planet#term#RunCmd('glslc file.ext -o file.ext.spv')<CR>
+    an 500.10  📐&}.Open\ GL.glxinfo                        <Cmd>call planet#term#RunCmd('glxinfo')<CR>
     an 500.10  📐&}.i10n\ &&\ i18n <Nop>
     an disable 📐&}.i10n\ &&\ i18n
     an 500.10  📐&}.lupdate                                 :TODO

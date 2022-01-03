@@ -222,6 +222,10 @@ func! planet#planet#SetTextDialogs() abort
   set guioptions+=c
 endfunc
 
+func! planet#planet#IsGuiDialogs() abort
+  return stridx(&guioptions, 'c') == -1
+endfunc
+
 func! planet#planet#PlanetToggle() abort
   if g:PlanetVim_menus_planet
     let g:PlanetVim_menus_planet = 0

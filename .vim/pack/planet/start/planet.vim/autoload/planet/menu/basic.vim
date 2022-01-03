@@ -26,9 +26,9 @@ func! planet#menu#basic#Update() abort
     an 110.60  📁&f.New\ Project.C++\ DSL                      :TODO"example DSL in C++
     an 110.60  📁&f.New\ Project.Python\ DSL                   :TODO"example DSL in Python
     an 110.60  📁&f.New\ Project.LaTex\ Book                   :TODO
-    an 110.60  📁&f.New\ Project.OpenGL.GLFW\ App              <Cmd>call planet#file#NewProject('glfw-app')<CR>
-    an 110.60  📁&f.New\ Project.OpenGL.SDL\ App               <Cmd>call planet#file#NewProject('sdl-app')<CR>
-    an 110.60  📁&f.New\ Project.OpenGL.SFML\ App              <Cmd>call planet#file#NewProject('sfml-app')<CR>
+    an 110.60  📁&f.New\ Project.OpenGL.GLFW\ (GLEW,\ C++,\ OpenGL\ 3\.2)\ App <Cmd>call planet#file#NewProject('glfw-app')<CR>
+    an 110.60  📁&f.New\ Project.OpenGL.SDL\ (GLEW,\ C++,\ OpenGL\ 3\.2)\ App <Cmd>call planet#file#NewProject('sdl-app')<CR>
+    an 110.60  📁&f.New\ Project.OpenGL.SFML\ (GLEW,\ C++,\ OpenGL\ 3\.2)\ App <Cmd>call planet#file#NewProject('sfml-app')<CR>
     an 110.60  📁&f.New\ Project.Basic\ Vulkan                 :TODO
     an 110.60  📁&f.New\ Project.Git\ Clone\.\.\.              :TODO
     an 110.60  📁&f.New\ Project.Git\ Init\.\.\.               :TODO
@@ -86,7 +86,7 @@ func! planet#menu#basic#Update() abort
     an 110.130 📁&f.--2-- <Nop>
     an 110.140 📁&f.&Save<Tab>:w                               :if expand("%") == ""<Bar>browse confirm w<Bar>else<Bar>confirm up<Bar>endif<CR>
     an 110.150 📁&f.Save\ &As\.\.\.<Tab>:saveas                :browse confirm saveas<CR>
-    an <silent> 110.160 📁&f.Save\ A&ll<Tab>:wall              :silent confirm wall<Bar>echohl Todo<Bar>echo "All Saved"<Bar>echohl None<CR>
+    an <silent> 110.160 📁&f.Save\ A&ll<Tab>:wall              :silent confirm wall<Bar>echohl Directory<Bar>echo "All Saved"<Bar>echohl None<CR>
     an 110.170 📁&f.--3-- <Nop>
     an 110.170 📁&f.Toggle\ AutoSave                           :TODO
     an 110.170 📁&f.--4-- <Nop>
@@ -275,10 +275,14 @@ func! planet#menu#basic#Update() abort
     an 140.10  🖍️&i.Select\ All                             :call planet#edit#SelectAll()<CR>
     an 140.10  🖍️&i.Reselect\ Previous\ Area                gv
     an 140.10  🖍️&i.--1-- <Nop>
+    " FIXME VIM_BUG: <Cmd> doesn't work for CopySelectionToFile() function, must use ':'
+    an 140.10  🖍️&i.Copy\ Selection\ to\ File               :call planet#selection#CopySelectionToFile()<CR>
+    an 140.10  🖍️&i.Move\ Selection\ to\ File               :call planet#selection#MoveSelectionToFile()<CR>
+    an 140.10  🖍️&i.--2-- <Nop>
     an 140.10  🖍️&i.Visual\ Mode<Tab>v                      v
     an 130.10  🖍️&i.Visual\ Line\ Mode<Tab>V                V
     an 140.10  🖍️&i.Visual\ Block\ Mode<Tab><C-v>           <C-v>
-    an 140.10  🖍️&i.--2-- <Nop>
+    an 140.10  🖍️&i.--3-- <Nop>
     an 140.10  🖍️&i.Select\ Mode<Tab>gh                     gh
     an 140.10  🖍️&i.Select\ Line\ Mode<Tab>gH               gH
     an 140.10  🖍️&i.Select\ Block\ Mode<Tab>g<C-h>          g<C-H>

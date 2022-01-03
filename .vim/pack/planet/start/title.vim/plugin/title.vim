@@ -23,11 +23,10 @@ def! g:TitleString(): string
     end
     buf += 1
   endwhile
-  var main_part = ''
+  var session_name = ''
   if ! empty(v:this_session)
-    main_part = fnamemodify(v:this_session, ':t')
-  else
-    main_part = fnamemodify(getcwd(-1), ":~")
+    session_name = fnamemodify(v:this_session, ':t') .. ' - '
   end
-  return m .. ' ' .. main_part .. ' - ' .. v:servername
+  var global_cwd = fnamemodify(getcwd(-1), ":~")
+  return m .. ' ' .. session_name .. global_cwd .. ' - ' .. v:servername
 enddef
