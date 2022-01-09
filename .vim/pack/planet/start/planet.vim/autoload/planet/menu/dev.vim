@@ -143,7 +143,6 @@ func! planet#menu#dev#Update() abort
     an 500.10  🎚️&{.C&onda.Create\ venv                     :call planet#term#RunCmd('conda create -n <venv-name>')
     an 500.10  🎚️&{.C&onda.Activate\ Anaconda               :call planet#term#RunCmd('source /opt/anaconda/bin/activate')<CR>
     an 500.10  🎚️&{.C&onda.Deactivate\ Anaconda             :call planet#term#RunCmd('source /opt/anaconda/bin/deactivate')<CR>
-    an 500.10  🎚️&{.Blender.Set\ PYTHONPATH                 :call planet#term#RunCmd('blender --background --python-expr ''print("PYTHONPATH="+":".join(__import__("sys").path))'' 2>/dev/null \| grep -F "PYTHONPATH="')<CR>
     an 500.10  🎚️&{.Vagrant.Test                            :TODO
     an 500.10  🎚️&{.QEMU.Test                               :TODO
     an 500.10  🎚️&{.QEMU\ Schroot.qemu-debootstrap          :TODO
@@ -310,6 +309,7 @@ func! planet#menu#dev#Update() abort
     an 500.10  📐&}.Web\ Tools.TODO                         <Cmd>call planet#term#RunCmd('wget ...TODO')<CR>
     an 500.10  📐&}.Vulkan.Compile\ Shader                  <Cmd>call planet#term#RunCmd('glslc file.ext -o file.ext.spv')<CR>
     an 500.10  📐&}.Open\ GL.glxinfo                        <Cmd>call planet#term#RunCmd('glxinfo')<CR>
+    an 500.10  📐&}.Blender.Print\ Blender\ PYTHONPATH      <Cmd>call planet#term#RunCmd('blender --background --python-expr ''print(\"PYTHONPATH=\"+\":\".join(__import__(\"sys\").path))'' 2>/dev/null \\| grep -F \"PYTHONPATH=\"')<CR>
     an 500.10  📐&}.i10n\ &&\ i18n <Nop>
     an disable 📐&}.i10n\ &&\ i18n
     an 500.10  📐&}.lupdate                                 :TODO
