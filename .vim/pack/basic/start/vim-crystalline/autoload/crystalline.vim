@@ -61,7 +61,7 @@ endfunction
 
 " Tab Line Utils {{{
 
-function! crystalline#get_tab_strings()
+function! crystalline#get_tab_strings() abort
   return [
         \ g:crystalline_tab_empty,
         \ g:crystalline_tab_mod,
@@ -464,6 +464,28 @@ endfunction
 
 function! crystalline#left_mode_sep(group) abort
   return crystalline#mode_sep(a:group, g:crystalline_separators[1], 1)
+endfunction
+
+" }}}
+
+" Padding Utils {{{
+
+function! crystalline#left_pad(s, ...) abort
+  if empty(a:s)
+    return ''
+  endif
+  let l:amount = a:0 >= 1 ? a:1 : 1
+  let l:char = a:0 >= 2 ? a:2 : ' '
+  return repeat(l:char, l:amount) . a:s
+endfunction
+
+function! crystalline#right_pad(s, ...) abort
+  if empty(a:s)
+    return ''
+  endif
+  let l:amount = a:0 >= 1 ? a:1 : 1
+  let l:char = a:0 >= 2 ? a:2 : ' '
+  return a:s . repeat(l:char, l:amount)
 endfunction
 
 " }}}
