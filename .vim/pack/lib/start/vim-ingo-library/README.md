@@ -175,6 +175,8 @@ HISTORY
 - Add ingo#encoding#IsUnicode().
 - Add ingo/buffer/network.vim module.
 - Add ingo/ranges.vim module (originally from AdvancedSorters.vim).
+- ingo#file#GetLines(): Robustness: Empty a:filespec throws E17
+- Add ingo#subst#Recurringly().
 
 ##### 1.042   03-Aug-2020
 - BUG: ingo#join#Lines() inserts the separator before the line's last
@@ -1152,7 +1154,7 @@ HISTORY
 - Started development of shared autoload functionality.
 
 ------------------------------------------------------------------------------
-Copyright: (C) 2009-2021 Ingo Karkat -
+Copyright: (C) 2009-2022 Ingo Karkat -
 Contains URL encoding / decoding algorithms written by Tim Pope. -
 The [VIM LICENSE](http://vimdoc.sourceforge.net/htmldoc/uganda.html#license) applies to this plugin.
 
