@@ -3,7 +3,7 @@
 " Version:      1.1
 " GetLatestVimScripts: 1725 1 :AutoInstall: capslock.vim
 
-if exists("g:loaded_capslock") || v:version < 700 || &cp
+if exists("g:loaded_capslock") || v:version < 704 || &cp
   finish
 endif
 let g:loaded_capslock = 1
@@ -14,10 +14,10 @@ set cpo&vim
 " Code {{{1
 
 function! s:enable(mode, ...) abort
-  if a:mode == 'i'
+  if a:mode ==# 'i'
     let b:capslock = 1 + a:0
   endif
-  if a:mode == 'c' || !exists('##InsertCharPre')
+  if a:mode ==# 'c'
     let i = char2nr('A')
     while i <= char2nr('Z')
         exe a:mode."noremap <buffer>" nr2char(i) nr2char(i+32)
@@ -30,15 +30,15 @@ function! s:enable(mode, ...) abort
 endfunction
 
 function! s:disable(mode) abort
-  if a:mode == 'i'
+  if a:mode ==# 'i'
     unlet! b:capslock
   endif
-  if a:mode == 'c' || !exists('##InsertCharPre')
+  if a:mode ==# 'c'
     let i = char2nr('A')
     while i <= char2nr('Z')
       silent! exe a:mode."unmap <buffer>" nr2char(i)
       silent! exe a:mode."unmap <buffer>" nr2char(i+32)
-      let i = i + 1
+      let i += 1
     endwhile
   endif
   let &l:readonly = &l:readonly
@@ -56,10 +56,10 @@ function! s:toggle(mode, ...) abort
 endfunction
 
 function! s:enabled(mode) abort
-  if a:mode == 'i' && exists('##InsertCharPre')
+  if a:mode ==# 'i'
     return get(b:, 'capslock', 0)
   else
-    return maparg('a',a:mode) == 'A'
+    return maparg('a', a:mode) ==# 'A'
   endif
 endfunction
 
@@ -78,12 +78,10 @@ augroup capslock
   autocmd User Flags call Hoist('window', 'CapsLockStatusline')
 
   autocmd InsertLeave * call s:exitcallback()
-  if exists('##InsertCharPre')
-    autocmd InsertCharPre *
-          \ if s:enabled('i') |
-          \   let v:char = v:char ==# tolower(v:char) ? toupper(v:char) : tolower(v:char) |
-          \ endif
-  endif
+  autocmd InsertCharPre *
+        \ if s:enabled('i') |
+        \   let v:char = v:char ==# tolower(v:char) ? toupper(v:char) : tolower(v:char) |
+        \ endif
 augroup END
 
 " }}}1
@@ -99,21 +97,22 @@ cnoremap <silent> <Plug>CapsLockToggle  <C-R>=<SID>toggle('c')<CR>
 cnoremap <silent> <Plug>CapsLockEnable  <C-R>=<SID>enable('c')<CR>
 cnoremap <silent> <Plug>CapsLockDisable <C-R>=<SID>disable('c')<CR>
 
-if empty(mapcheck("<C-L>", "i"))
-  if exists("*complete_info")
-    function! s:ctrl_l() abort
-      let l:compl_mode = complete_info(['mode']).mode
-      return l:compl_mode ==# 'ctrl_x' || l:compl_mode ==# 'whole_line' ||
-           \ (pumvisible() && complete_info(['selected']).selected !=# -1)
-           \ ? "\<C-L>" : "\<Plug>CapsLockToggle"
-    endfunction
-    imap <expr> <C-L> <SID>ctrl_l()
-  else
-    imap <C-L> <Plug>CapsLockToggle
-  endif
+if empty(mapcheck("<C-L>", "i")) && exists("*complete_info") && !&insertmode
+  function! s:ctrl_l() abort
+    let l:compl_mode = complete_info(['mode']).mode
+    return l:compl_mode ==# 'ctrl_x' || l:compl_mode ==# 'whole_line' ||
+          \ (pumvisible() && complete_info(['selected']).selected !=# -1) ||
+          \ &insertmode
+          \ ? "\<C-L>" : "\<Plug>CapsLockToggle"
+  endfunction
+  imap <expr> <C-L> <SID>ctrl_l()
 endif
-imap <C-G>c <Plug>CapsLockToggle
-nmap gC <Plug>CapsLockToggle
+if empty(mapcheck("<C-G>c", "i"))
+  imap <C-G>c <Plug>CapsLockToggle
+endif
+if empty(mapcheck("gC", "n"))
+  nmap gC <Plug>CapsLockToggle
+endif
 
 " }}}1
 

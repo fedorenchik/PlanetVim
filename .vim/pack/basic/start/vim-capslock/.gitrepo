@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/tpope/vim-capslock.git
 	branch = master
-	commit = 252a9166fecf79e2e2a0b2ee4e0712364472e825
+	commit = 529b32877e144f7c1a6fabe357317c4b7d94a98e
 	parent = b621d9dadd9fca310217b0f6ec08f45d75394d16
 	method = merge
 	cmdver = 0.4.3
