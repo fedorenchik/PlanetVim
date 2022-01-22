@@ -90,6 +90,20 @@ function! buffest#get_regname(filename) abort
   return l:regname
 endfunction
 
+function! buffest#get_reg_type_label(filename)
+  if &filetype ==# 'buffestreg'
+    let l:mode = getregtype(buffest#get_regname(a:filename))
+    if char2nr(l:mode) == 22
+      return 'BLOCKWISE'
+    elseif l:mode ==# 'v'
+      return 'CHARWISE'
+    elseif l:mode ==# 'V'
+      return 'LINEWISE'
+    endif
+  endif
+  return ''
+endfunction
+
 function! buffest#reg_complete(...) abort
   return g:buffest_supported_registers
 endfunction
@@ -115,7 +129,8 @@ function! buffest#read_reg() abort
   if l:regname == v:null
     return
   endif
-  call writefile(getreg(l:regname, 1, 1), l:filename)
+  set binary
+  call writefile(getreg(l:regname, 1, 1), l:filename, 'b')
   edit!
 endfunction
 
@@ -125,7 +140,13 @@ function! buffest#write_reg() abort
   if l:regname == v:null
     return
   endif
-  call setreg(l:regname, readfile(l:filename), visualmode())
+
+  let l:mode = visualmode()
+  if l:mode ==# ''
+    let l:mode = getregtype(l:regname)
+  endif
+
+  call setreg(l:regname, readfile(l:filename, 'b'), l:mode)
 endfunction
 
 " }}}

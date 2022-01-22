@@ -58,6 +58,17 @@ Write a buffer to the target:
 :w
 ```
 
+Change the type of a register:
+
+```
+" Change to single-line mode
+v:<C-U>w<CR>
+" Change to multi-line mode
+V:<C-U>w<CR>
+" Change to block mode
+<C-V>:<C-U>w<CR>
+```
+
 Reload the contents of the buffer:
 
 ```
