@@ -190,6 +190,7 @@ function! s:compiler.create_build_dir() abort dict " {{{1
     call filter(map(
           \ l:dirs, "fnamemodify(v:val, ':h')"),
           \ {_, x -> x !=# '.'})
+    call filter(l:dirs, {_, x -> stridx(x, '../') != 0})
   else
     let l:dirs = glob(self.state.root . '/**/*.tex', v:false, v:true)
     call map(l:dirs, "fnamemodify(v:val, ':h')")
@@ -394,7 +395,7 @@ function! s:callback_nvim_output(id, data, event) abort dict " {{{1
 
   call s:check_callback(
         \ get(filter(copy(a:data),
-        \   {_, x -> x =~# '^vimtex_compiler_callback'}), -1, ''))
+        \   {_, x -> x =~# 'vimtex_compiler_callback'}), -1, ''))
 
   try
     for l:Hook in get(get(get(b:, 'vimtex', {}), 'compiler', {}), 'hooks', [])
@@ -449,11 +450,11 @@ endfunction
 " }}}1
 
 function! s:check_callback(line) abort " {{{1
-  if a:line ==# 'vimtex_compiler_callback_compiling'
+  if a:line =~# 'echo vimtex_compiler_callback_compiling'
     call vimtex#compiler#callback(1)
-  elseif a:line ==# 'vimtex_compiler_callback_success'
+  elseif a:line =~# 'echo vimtex_compiler_callback_success'
     call vimtex#compiler#callback(2)
-  elseif a:line ==# 'vimtex_compiler_callback_failure'
+  elseif a:line =~# 'echo vimtex_compiler_callback_failure'
     call vimtex#compiler#callback(3)
   endif
 endfunction

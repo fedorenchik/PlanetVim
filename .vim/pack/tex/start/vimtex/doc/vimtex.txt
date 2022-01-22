@@ -523,7 +523,7 @@ applicable.
 * Enhanced matching and highlighting of delimiters  |vimtex-af-enhanced-matchparen|
 * Formatting                                        |vimtex-af-formatting|
 * Filetype plugin for bib files                     |vimtex-af-ftplugin-bib|
-* Language server / texlab                          |vimtex-af-lsp|
+* Language servers (texlab & ltex)                  |vimtex-af-lsp|
 
 Linting and syntax checking~
                                                             *vimtex-af-linting*
@@ -721,7 +721,7 @@ Filetype plugin for bib files~
   See also https://github.com/lervag/vimtex/issues/1293 for some related
   discussions.
 
-Language server / texlab~
+Language servers~
                                                                 *vimtex-af-lsp*
   In recent years, language servers (LSPs) [0] have become very popular. There
   is a language server for LaTeX and bibtex called texlab [1]. It may be
@@ -735,9 +735,13 @@ Language server / texlab~
   completion which should in most cases work well.
 
   To use texlab, one must use an LSP client, e.g. |vim-lsp| [2], neovim's
-  built-in LSP client [3], or |coc-nvim| [4, 5].
+  built-in LSP client [3], or |coc-nvim| [4, 5]. See also this VimTeX issue
+  [6] for more information.
 
-  See also this VimTeX issue [6] for more information.
+  In addition to texlab, there is also a dedicated grammar and spell checking
+  language server called LTeX [7]. It relies on LanguageTool and supports both
+  LaTeX and other markup languages. It may be a useful tool to use in
+  conjunction with VimTeX as an alternative to |vimtex-grammar|.
 
   [0]: https://langserver.org/
   [1]: https://texlab.netlify.app/
@@ -746,6 +750,7 @@ Language server / texlab~
   [4]: https://github.com/neoclide/coc.nvim
   [5]: https://github.com/fannheyward/coc-texlab
   [6]: https://github.com/lervag/vimtex/issues/1371
+  [7]: https://valentjn.github.io/ltex/index.html
 
 ==============================================================================
 USAGE                                                            *vimtex-usage*
@@ -2765,36 +2770,11 @@ OPTIONS                                                        *vimtex-options*
 *g:vimtex_view_automatic*
   If enabled, the viewer should open automatically when compilation has
   started in `continuous` mode and if `callback` is enabled, or if
-  `continuous` mode is disabled.
-
-  `latexmk` will typically start the viewer directly. However, with this
-  option enabled, VimTeX will start the viewer through callbacks also for
-  these compilers:
+  `continuous` mode is disabled. This should work for the following compilers:
+  * |vimtex-compiler-latexmk|
   * |vimtex-compiler-latexrun|
   * |vimtex-compiler-arara|
   * |vimtex-compiler-tectonic|
-
-  Note: If you are using |vimtex-view-mupdf| or |vimtex-view-zathura|, then
-        you should also be aware of the related option
-        |g:vimtex_view_automatic_xwin| below.
-
-  Default value: 1
-
-*g:vimtex_view_automatic_xwin*
-  This option is closely related to |g:vimtex_view_automatic|. With the
-  previous option enabled, the xwin based viewers |vimtex-view-mupdf| and
-  |vimtex-view-zathura| will use `xdotool` to check if a viewer was opened
-  by the compiler. If a viewer window is not found, VimTeX will automatically
-  start one.
-
-  However, the search for a viewer window is implemented with a loop that
-  calls `xdotool` 30 times with 50 ms interval. If a window is not found, the
-  search will therefore interrupt the editing session for 1.5 seconds; this
-  happens on every successful compile callback.
-
-  Some users can't use `xdotool`, e.g. on Wayland, but the viewers may still
-  work quite reliably. In these cases, one may want to disable this automatic
-  view feature by setting this option to 0.
 
   Default value: 1
 
@@ -2890,17 +2870,6 @@ OPTIONS                                                        *vimtex-options*
     macOS:   `open`
     Windows: `SumatraPDF` or `mupdf` if available, else `start`
 
-*g:vimtex_view_general_options_latexmk*
-  Set options that are passed on to `latexmk` for the specified general
-  viewer, see |vimtex-view-general|.  This allows to send options that ensures
-  a unique viewer, e.g. with |vimtex-view-qpdfview|. Only the `@line` escape
-  is expanded.
-
-  Note: This option is only relevant with |vimtex-compiler-latexmk| as the
-        compiler.
-
-  Default value: ''
-
 *g:vimtex_view_mupdf_send_keys*
   A string of keys that will be sent to MuPDF just after the PDF file has been
   opened.
@@ -2922,11 +2891,17 @@ OPTIONS                                                        *vimtex-options*
 
   Default value: 0
 
+*g:vimtex_view_skim_sync*
+  Set this option to 1 to make Skim perform a forward search after successful
+  compilation.
+
+  Default value: 0
+
 *g:vimtex_view_skim_reading_bar*
   Set this option to 1 to highlight current line in PDF after command
-  |:VimtexView|.
+  |:VimtexView| or compiler callback.
 
-  Default value: 1
+  Default value: 0
 
 *g:vimtex_view_zathura_check_libsynctex*
   Check on startup if Zathura is compiled with libsynctex. This is done by
@@ -3510,10 +3485,14 @@ further customization.
     post event may e.g. be used to automatically start compiling a document.
 
   *VimtexEventCompileStarted*
-    This event is triggered after compilation is started (in continuous mode).
+    This event is triggered after compilation is started.
 
   *VimtexEventCompileStopped*
     This event is triggered after compilation is stopped.
+
+  *VimtexEventCompiling*
+    This event is triggered when the compiler backend triggers a new
+    compilation. This is only supported by |vimtex-compiler-latexmk|.
 
   *VimtexEventCompileSuccess*
   *VimtexEventCompileFailed*
@@ -4042,21 +4021,32 @@ look something like this: >
 
   cmp = require('cmp')
   cmp.setup {
-    -- additional config
-    sources = cmp.config.sources {
-      { name = 'omni' },
-      -- additional sources
-    }
+    sources = cmp.config.sources { { name = 'omni', }, }
   }
 
-One may load this `cmp-omni` source only for TeX files. This is probably not
-necessary, but for the more conservative, this should do the trick: >
+One should note that |nvim-cmp| overrides the standard completion-menu
+formatting. To preserve the format as provided by VimTeX, one can supply
+a custom format function. One good solution is to put the |nvim-cmp|
+configuration for `.tex` files in your `after/ftplugin/tex.lua` with content
+similar to this:  >
 
-  augroup VimTeX
-    autocmd!
-    autocmd FileType tex
-          \ lua require('cmp').setup.buffer { sources = { { name = 'omni' } } }
-  augroup END
+  require('cmp').setup.buffer {
+    formatting = {
+      format = function(entry, vim_item)
+          vim_item.menu = ({
+            omni = (vim.inspect(vim_item.menu):gsub('%"', "")),
+            buffer = "[Buffer]",
+            -- formatting for other sources
+            })[entry.source.name]
+          return vim_item
+        end,
+    },
+    sources = {
+      { name = 'omni' },
+      { name = 'buffer' },
+      -- other sources
+    },
+  }
 
 [0]: https://github.com/hrsh7th/nvim-cmp
 [1]: https://github.com/hrsh7th/cmp-omni
@@ -4415,8 +4405,11 @@ Table 2: A list of the most common normal LaTeX groups.~
   texEnvArgName        PreCondit    \begin{ENVNAME}
   texCmdRef            texCmd       \CITE; \LABEL
   texRefArg            Special      \cite{REFERENCE}; \label{REF}
-  texE3Func            texCmdType   \STR_NEW:N
-  texE3Var             texCmd       \G_MYFILE_NAME_STR
+  texE3Variable        texCmd       \G_MYFILE_NAME_STR
+  texE3Constant        texE3Variable
+                                    \C_MYFILE_NAME_STR
+  texE3Function        texCmdType   \STR_NEW:n
+  texE3Type            texParm      \str_new:N
   texCmdParbox         texCmd       \PARBOX[p][h][i]{w}{c}
   texBoxOptPosVal      texSymbol    \parbox[P][h][i]{w}{c}
                                     \begin{minipage}[P][h][i]{w}
@@ -4706,9 +4699,11 @@ when source files have been changed.  VimTeX uses the continuous mode by
 default, but `latexmk` also allows single shot compilations.  The compiler may
 be configured through the |g:vimtex_compiler_latexmk| option.
 
-If the `callback` key is enabled (it is by default), then compilation errors
-will be parsed automatically.  This is done by utilizing the tricks explained
-below. Note: This only works for continuous compilation mode.
+If the `callback` key is enabled (it is by default and there is really no
+reason to disable it!), then compilation errors will be parsed automatically.
+This is done by utilizing the tricks explained below. Although `latexmk`
+can contorl viewers directly, VimTeX disables this feature with `-view=none`
+so as to get full control of the viewers.
 
 As stated, one may customize the `latexmk` options through
 |g:vimtex_compiler_latexmk|.  However, one may also configure `latexmk`
@@ -4757,9 +4752,7 @@ LATEXRUN                                             *vimtex-compiler-latexrun*
 
 `latexrun` is a compiler backend that handles recompilation of LaTeX documents
 when source files have been changed. However, it is a much simpler backend,
-and does not support e.g. continuous mode and automatic starting of viewers.
-The latter is supported by VimTeX, though, through the callback. See
-|g:vimtex_view_automatic|.
+and does not support e.g. continuous mode.
 
 The compiler may be configured through the |g:vimtex_compiler_latexrun| option.
 
@@ -4775,9 +4768,7 @@ downloading along with reproducible builds and full Unicode and OpenType
 fonts support thanks to the power of XeTeX. It does not support continuous
 compilation like |vimtex-compiler-latexmk|, so the only relevant commands are
 |:VimtexCompile| to start (single shot) compilation, and
-|:VimtexCompileOutput| to see the compilation output. As for
-|vimtex-compiler-latexrun| and |vimtex-compiler-arara|, the viewer can be
-started automatically with |g:vimtex_view_automatic|.
+|:VimtexCompileOutput| to see the compilation output.
 
 `tectonic` cleans up intermediate files like `.aux` and log files by default.
 However, VimTeX's backend invoke it with the flags `--keep-logs` and
@@ -4800,9 +4791,7 @@ https://ctan.uib.no/support/arara/doc/arara-manual.pdf
 
 `arara` does not do continuous compilation, so the only relevant commands are
 |:VimtexCompile| to start (single shot) compilation, and
-|:VimtexCompileOutput| to see the compilation output. As for
-|vimtex-compiler-latexrun| and |vimtex-compiler-tectonic|, the viewer can be
-started automatically with |g:vimtex_view_automatic|.
+|:VimtexCompileOutput| to see the compilation output.
 
 The compiler may be configured through the |g:vimtex_compiler_arara| option.
 
@@ -4963,6 +4952,10 @@ option can be specified in ones vimrc file, but it can also be specified in
 a |modeline| (see also the user manual section |21.6| for a gentle
 introduction to the use of modelines).
 
+Finally, one should also notice the LTeX project. It is a grammar and spell
+checking tool available as a language server. See |vimtex-af-lsp| for more
+info.
+
 ------------------------------------------------------------------------------
 TEXTIDOTE                                            *vimtex-grammar-textidote*
 
@@ -5037,12 +5030,10 @@ is opened. See |vimtex-synctex| for more details.
 Associated settings:
 * |g:vimtex_view_enabled|
 * |g:vimtex_view_automatic|
-* |g:vimtex_view_automatic_xwin|
 * |g:vimtex_view_forward_search_on_start|
 * |g:vimtex_view_use_temp_files|
 * |g:vimtex_view_method|
 * |g:vimtex_view_general_options|
-* |g:vimtex_view_general_options_latexmk|
 * |g:vimtex_view_general_viewer|
 
 Associated events:
@@ -5064,9 +5055,6 @@ The generic interface is flexible. It relies on three options:
     Specify the viewer executable.
 * |g:vimtex_view_general_options|
     Specify the viewer options (e.g. to specify forward search configuration).
-* |g:vimtex_view_general_options_latexmk|
-    Specify the viewer options that are forwarded by the `latexmk` compiler
-    backend (|vimtex-compiler-latexmk|).
 
 The following is a list of popular PDF viewers, in alphabetic order, and how
 they can be configured to work with VimTeX.
@@ -5123,7 +5111,6 @@ inverse search.
 Configuration: >
   let g:vimtex_view_general_viewer = 'okular'
   let g:vimtex_view_general_options = '--unique file:@pdf\#src:@line@tex'
-  let g:vimtex_view_general_options_latexmk = '--unique'
 
 Inverse search can be set up within Okular in the settings pane under
 "Settings > Editor > Custom Text Editor" [0]. Use the viewer configuration as
@@ -5147,7 +5134,6 @@ Configuration: >
   let g:vimtex_view_general_viewer = 'qpdfview'
   let g:vimtex_view_general_options
     \ = '--unique @pdf\#src:@tex:@line:@col'
-  let g:vimtex_view_general_options_latexmk = '--unique'
 <
                                                            *vimtex-view-sioyek*
 Sioyek~
@@ -5205,7 +5191,6 @@ Configuration: >
   let g:vimtex_view_general_viewer = 'SumatraPDF'
   let g:vimtex_view_general_options
       \ = '-reuse-instance -forward-search @tex @line @pdf'
-  let g:vimtex_view_general_options_latexmk = '-reuse-instance'
 
 For convenience, the above configuration is used by default on Windows if
 `SumatraPDF` is detected as executable.
@@ -5471,7 +5456,8 @@ Note: This API is currently a work in progress!
     3: Compilation complete - Failed
 
   The function does several useful things based on the status, such as running
-  the |VimtexEventCompileFailed| and |VimtexEventCompileSuccess| events.
+  the |VimtexEventCompiling|, |VimtexEventCompileFailed| and
+  |VimtexEventCompileSuccess| events.
 
 *vimtex#syntax#in_mathzone*
   Returns 1 if the position is inside a math zone. If called without

@@ -21,7 +21,11 @@ let s:viewer = vimtex#view#_template#new({
       \})
 
 function! s:viewer.compiler_callback(outfile) dict abort " {{{1
-  call self.xdo_start_from_compiler_callback(a:outfile)
+  if g:vimtex_view_automatic && !has_key(self, 'started_through_callback')
+    let self.started_through_callback = 1
+    call self._start(a:outfile)
+  endif
+
   call self.xdo_send_keys('r')
 endfunction
 
@@ -101,7 +105,7 @@ function! s:viewer._start(outfile) dict abort " {{{1
   call self.xdo_send_keys(g:vimtex_view_mupdf_send_keys)
 
   if g:vimtex_view_forward_search_on_start
-    call self.forward_search(a:outfile)
+    call self._forward_search(a:outfile)
   endif
 endfunction
 
@@ -126,17 +130,6 @@ function! s:viewer._forward_search(outfile) dict abort " {{{1
   endif
 
   call self.xdo_focus_viewer()
-endfunction
-
-" }}}1
-function! s:viewer._latexmk_append_argument() dict abort " {{{1
-  let cmd  = vimtex#compiler#latexmk#wrap_option('new_viewer_always', '0')
-  let cmd .= vimtex#compiler#latexmk#wrap_option('pdf_update_method', '2')
-  let cmd .= vimtex#compiler#latexmk#wrap_option('pdf_update_signal', 'SIGHUP')
-  let cmd .= vimtex#compiler#latexmk#wrap_option('pdf_previewer',
-        \ 'mupdf ' .  g:vimtex_view_mupdf_options)
-
-  return cmd
 endfunction
 
 " }}}1

@@ -17,12 +17,6 @@ let s:viewer = vimtex#view#_template#new({
       \ 'has_synctex': 1,
       \})
 
-function! s:viewer.compiler_callback(outfile) dict abort " {{{1
-  call self.xdo_start_from_compiler_callback(a:outfile)
-endfunction
-
-" }}}1
-
 function! s:viewer._check() dict abort " {{{1
   " Check if Zathura is executable
   if !executable('zathura')
@@ -88,23 +82,6 @@ function! s:viewer._forward_search(outfile) dict abort " {{{1
         \ vimtex#util#shellescape(self.outfile))
 
   call vimtex#jobs#run(self.cmd_forward_search)
-endfunction
-
-" }}}1
-function! s:viewer._latexmk_append_argument() dict abort " {{{1
-  let l:zathura = 'zathura ' . g:vimtex_view_zathura_options
-  if self.has_synctex
-    " The inverse search command requires insane amount of quote escapes,
-    " because the command is parsed through several layers of interpreting,
-    " e.g. perl -> shell, perhaps more.
-    let l:zathura .= ' -x \"' . s:inverse_search_cmd
-          \ . ' -c \"\\\"\"VimtexInverseSearch \%{line} ''"''"''\%{input}''"''"''\"\\\"\"\" \%S'
-  endif
-
-  let l:cmd  = vimtex#compiler#latexmk#wrap_option('new_viewer_always', '0')
-  let l:cmd .= vimtex#compiler#latexmk#wrap_option('pdf_previewer', l:zathura)
-
-  return l:cmd
 endfunction
 
 " }}}1

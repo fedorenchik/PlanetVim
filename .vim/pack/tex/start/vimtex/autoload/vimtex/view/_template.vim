@@ -30,15 +30,10 @@ endfunction
 
 " }}}1
 function! s:viewer.out() dict abort " {{{1
-  let l:out = g:vimtex_view_use_temp_files
-        \ ? b:vimtex.root . '/' . b:vimtex.name . '_vimtex.pdf'
-        \ : b:vimtex.out(1)
-
-  " Check if output files exist
-  if !filereadable(l:out) | return '' | endif
-
   " Copy pdf and synctex files if we use temporary files
   if g:vimtex_view_use_temp_files
+    let l:out = b:vimtex.root . '/' . b:vimtex.name . '_vimtex.pdf'
+
     if getftime(b:vimtex.out()) > getftime(l:out)
       call writefile(readfile(b:vimtex.out(), 'b'), l:out, 'b')
     endif
@@ -48,20 +43,11 @@ function! s:viewer.out() dict abort " {{{1
     if getftime(l:old) > getftime(l:new)
       call rename(l:old, l:new)
     endif
+  else
+    let l:out = b:vimtex.out(1)
   endif
 
-  return l:out
-endfunction
-
-" }}}1
-function! s:viewer.latexmk_append_argument() dict abort " {{{1
-  if g:vimtex_view_use_temp_files
-    return ' -view=none'
-  endif
-
-  if !self.check() | return '' | endif
-
-  return self._latexmk_append_argument()
+  return filereadable(l:out) ? l:out : ''
 endfunction
 
 " }}}1
@@ -87,6 +73,22 @@ function! s:viewer.view(file) dict abort " {{{1
 
   if exists('#User#VimtexEventView')
     doautocmd <nomodeline> User VimtexEventView
+  endif
+endfunction
+
+" }}}1
+function! s:viewer.compiler_callback(outfile) dict abort " {{{1
+  if !g:vimtex_view_automatic
+      \ || has_key(self, 'started_through_callback') | return | endif
+
+  call self._start(a:outfile)
+  let self.started_through_callback = 1
+endfunction
+
+" }}}1
+function! s:viewer.compiler_stopped() dict abort " {{{1
+  if has_key(self, 'started_through_callback')
+    unlet self.started_through_callback
   endif
 endfunction
 
@@ -233,26 +235,6 @@ function! s:viewer.xdo_focus_vim() dict abort " {{{1
       break
     endif
   endfor
-endfunction
-
-" }}}1
-function! s:viewer.xdo_start_from_compiler_callback(outfile) dict abort " {{{1
-  if !(self.xdo_check()
-        \ && g:vimtex_view_automatic
-        \ && g:vimtex_view_automatic_xwin
-        \ && !has_key(self, 'started_through_callback')) | return | endif
-
-  " Search for existing window created by latexmk
-  " Note: It may be necessary to wait some time before it is opened and
-  "       recognized. Sometimes it is very quick, other times it may take
-  "       a second. This way, we don't block longer than necessary.
-  for l:dummy in range(30)
-    if self.xdo_exists() | return | endif
-    sleep 50m
-  endfor
-
-  call self.start(a:outfile)
-  let self.started_through_callback = 1
 endfunction
 
 " }}}1
