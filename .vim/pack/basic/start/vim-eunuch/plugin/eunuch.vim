@@ -66,7 +66,7 @@ command! -bar -bang Unlink
       \   echoerr 'Failed to delete "'.expand('%').'"' |
       \ else |
       \   edit! |
-      \   exe 'doautocmd' s:nomodeline 'User FileUnlinkPost' |
+      \   silent exe 'doautocmd' s:nomodeline 'User FileUnlinkPost' |
       \ endif
 
 command! -bar -bang Remove Unlink<bang>
@@ -117,7 +117,7 @@ command! -bar -nargs=1 -bang -complete=custom,s:Rename_complete Rename
 
 let s:permlookup = ['---','--x','-w-','-wx','r--','r-x','rw-','rwx']
 function! s:Chmod(bang, perm, ...) abort
-  let autocmd = 'doautocmd ' . s:nomodeline . ' User FileChmodPost'
+  let autocmd = 'silent doautocmd ' . s:nomodeline . ' User FileChmodPost'
   let file = a:0 ? expand(join(a:000, ' ')) : @%
   if !a:bang && exists('*setfperm')
     let perm = ''
@@ -148,10 +148,10 @@ command! -bar -bang -nargs=? -complete=dir Mkdir
       \  silent keepalt execute 'file' s:fnameescape(expand('%')) |
       \ endif
 
-command! -bar -bang -complete=file -nargs=+ Cfind   exe s:Grep(<q-bang>, <q-args>, 'find', '')
-command! -bar -bang -complete=file -nargs=+ Clocate exe s:Grep(<q-bang>, <q-args>, 'locate', '')
-command! -bar -bang -complete=file -nargs=+ Lfind   exe s:Grep(<q-bang>, <q-args>, 'find', 'l')
-command! -bar -bang -complete=file -nargs=+ Llocate exe s:Grep(<q-bang>, <q-args>, 'locate', 'l')
+command! -bang -complete=file -nargs=+ Cfind   exe s:Grep(<q-bang>, <q-args>, 'find', '')
+command! -bang -complete=file -nargs=+ Clocate exe s:Grep(<q-bang>, <q-args>, 'locate', '')
+command! -bang -complete=file -nargs=+ Lfind   exe s:Grep(<q-bang>, <q-args>, 'find', 'l')
+command! -bang -complete=file -nargs=+ Llocate exe s:Grep(<q-bang>, <q-args>, 'locate', 'l')
 function! s:Grep(bang, args, prg, type) abort
   let grepprg = &l:grepprg
   let grepformat = &l:grepformat
