@@ -256,13 +256,15 @@ function! fugitive#Autowrite() abort
 endfunction
 
 function! fugitive#Wait(job_or_jobs, ...) abort
-  let jobs = type(a:job_or_jobs) == type([]) ? copy(a:job_or_jobs) : [a:job_or_jobs]
-  call map(jobs, 'type(v:val) ==# type({}) ? get(v:val, "job", "") : v:val')
+  let original = type(a:job_or_jobs) == type([]) ? copy(a:job_or_jobs) : [a:job_or_jobs]
+  let jobs = map(copy(original), 'type(v:val) ==# type({}) ? get(v:val, "job", "") : v:val')
   call filter(jobs, 'type(v:val) !=# type("")')
   let timeout_ms = a:0 ? a:1 : -1
   if exists('*jobwait')
     call map(copy(jobs), 'chanclose(v:val, "stdin")')
     call jobwait(jobs, timeout_ms)
+    let jobs = map(copy(original), 'type(v:val) ==# type({}) ? get(v:val, "job", "") : v:val')
+    call filter(jobs, 'type(v:val) !=# type("")')
     if len(jobs)
       sleep 1m
     endif
@@ -470,26 +472,6 @@ function! fugitive#GitVersion(...) abort
     endif
   endfor
   return a:000[i] ==# get(components, i)
-endfunction
-
-let s:commondirs = {}
-function! fugitive#CommonDir(dir) abort
-  if empty(a:dir)
-    return ''
-  endif
-  if !has_key(s:commondirs, a:dir)
-    if filereadable(a:dir . '/commondir') && getfsize(a:dir . '/HEAD') >= 10
-      let cdir = get(readfile(a:dir . '/commondir', '', 1), 0, '')
-      if cdir =~# '^/\|^\a:/'
-        let s:commondirs[a:dir] = s:Slash(FugitiveVimPath(cdir))
-      else
-        let s:commondirs[a:dir] = simplify(a:dir . '/' . cdir)
-      endif
-    else
-      let s:commondirs[a:dir] = a:dir
-    endif
-  endif
-  return s:commondirs[a:dir]
 endfunction
 
 function! s:Dir(...) abort
@@ -1746,7 +1728,7 @@ function! fugitive#Find(object, ...) abort
   elseif rev =~# '^\.git/'
     let f = strpart(rev, 5)
     let fdir = dir . '/'
-    let cdir = fugitive#CommonDir(dir) . '/'
+    let cdir = FugitiveCommonDir(dir) . '/'
     if f =~# '^\.\./\.\.\%(/\|$\)'
       let f = simplify(len(tree) ? tree . f[2:-1] : fdir . f)
     elseif f =~# '^\.\.\%(/\|$\)'
@@ -2326,12 +2308,14 @@ call s:add_methods('buffer', ['repo', 'type'])
 
 function! s:FilterEscape(items, ...) abort
   let items = copy(a:items)
-  call map(items, 's:fnameescape(v:val)')
-  if a:0 && type(a:1) == type('')
-    let cmp = s:FileIgnoreCase(1) ? '==?' : '==#'
-    call filter(items, 'strpart(v:val, 0, strlen(a:1)) ' . cmp . ' a:1')
+  call map(items, 'fnameescape(v:val)')
+  if !a:0 || type(a:1) != type('')
+    let match = ''
+  else
+    let match = substitute(a:1, '^[+>]\|\\\@<![' . substitute(s:fnameescape, '\\', '', '') . ']', '\\&', 'g')
   endif
-  return items
+  let cmp = s:FileIgnoreCase(1) ? '==?' : '==#'
+  return filter(items, 'strpart(v:val, 0, strlen(match)) ' . cmp . ' match')
 endfunction
 
 function! s:GlobComplete(lead, pattern, ...) abort
@@ -2812,7 +2796,7 @@ function! fugitive#BufReadStatus(...) abort
       call s:AddHeader('Push', push)
     endif
     if empty(s:Tree())
-      if get(fugitive#ConfigGetAll('core.bare', config), 0, 'true') !~# '^\%(false\|no|off\|0\|\)$'
+      if get(fugitive#ConfigGetAll('core.bare', config), 0, '') !~# '^\%(false\|no|off\|0\|\)$'
         call s:AddHeader('Bare', 'yes')
       else
         call s:AddHeader('Error', s:worktree_error)
@@ -3269,7 +3253,17 @@ function! s:RunEdit(state, tmp, job) abort
   call remove(a:state, 'request')
   let sentinel = a:state.file . '.edit'
   let file = FugitiveVimPath(readfile(sentinel, '', 1)[0])
-  exe substitute(a:state.mods, '\<tab\>', '-tab', 'g') 'keepalt split' s:fnameescape(file)
+  try
+    if !&equalalways && a:state.mods !~# '\<tab\>' && 3 > (a:state.mods =~# '\<vert' ? winwidth(0) : winheight(0))
+      let noequalalways = 1
+      setglobal equalalways
+    endif
+    exe substitute(a:state.mods, '\<tab\>', '-tab', 'g') 'keepalt split' s:fnameescape(file)
+  finally
+    if exists('l:noequalalways')
+      setglobal noequalalways
+    endif
+  endtry
   set bufhidden=wipe
   let bufnr = bufnr('')
   let s:edit_jobs[bufnr] = [a:state, a:tmp, a:job, sentinel]
@@ -3515,9 +3509,10 @@ if !exists('s:resume_queue')
 endif
 function! fugitive#Resume() abort
   while len(s:resume_queue)
-    if s:resume_queue[0][2] isnot# ''
+    let enqueued = remove(s:resume_queue, 0)
+    if enqueued[2] isnot# ''
       try
-        call call('s:RunWait', remove(s:resume_queue, 0))
+        call call('s:RunWait', enqueued)
       endtry
     endif
   endwhile
@@ -3537,8 +3532,8 @@ function! s:RunBufDelete(bufnr) abort
   endif
   if has_key(s:edit_jobs, a:bufnr) |
     call add(s:resume_queue, remove(s:edit_jobs, a:bufnr))
-    call feedkeys(":redraw!|call delete(" . string(s:resume_queue[-1][0].file . '.edit') .
-          \ ")|call fugitive#Resume()|silent checktime\r", 'n')
+    call feedkeys("\<C-\>\<C-N>:redraw!|call delete(" . string(s:resume_queue[-1][0].file . '.edit') .
+          \ ")|call fugitive#Resume()|checktime\r", 'n')
   endif
 endfunction
 
@@ -3813,7 +3808,7 @@ function! fugitive#Command(line1, line2, range, bang, mods, arg) abort
       return (after_edit . after)[1:-1]
     endif
     call add(s:resume_queue, [state, tmp, job])
-    return 'call fugitive#Resume()|silent checktime' . after
+    return 'call fugitive#Resume()|checktime' . after
   elseif pager
     let pre = s:BuildEnvPrefix(env)
     try
@@ -3862,7 +3857,7 @@ function! fugitive#Command(line1, line2, range, bang, mods, arg) abort
           endif
         endtry
       endif
-      return 'silent checktime' . after
+      return 'checktime' . after
     else
       return 'exe ' . string('noautocmd !' . escape(cmd, '!#%')) . after
     endif
@@ -5126,11 +5121,14 @@ function! s:StagePatch(lnum1,lnum2) abort
   for lnum in range(a:lnum1,a:lnum2)
     let info = s:StageInfo(lnum)
     if empty(info.paths) && info.section ==# 'Staged'
-      return 'tab Git reset --patch'
+      execute 'tab Git reset --patch'
+      break
     elseif empty(info.paths) && info.section ==# 'Unstaged'
-      return 'tab Git add --patch'
+      execute 'tab Git add --patch'
+      break
     elseif empty(info.paths) && info.section ==# 'Untracked'
-      return 'tab Git add --interactive'
+      execute 'tab Git add --interactive'
+      break
     elseif empty(info.paths)
       continue
     endif
@@ -6208,7 +6206,7 @@ function! fugitive#WriteCommand(line1, line2, range, bang, mods, arg, ...) abort
     endfor
   endfor
   call fugitive#DidChange()
-  return 'silent checktime' . after
+  return 'checktime' . after
 endfunction
 
 function! fugitive#WqCommand(...) abort
@@ -6238,6 +6236,9 @@ function! s:CompletePush(A, L, P, ...) abort
     call map(matches, 'lead . s:sub(v:val, "^.*\t", "")')
   else
     let matches = s:CompleteHeads(dir)
+    if a:A =~# '^[\''"]\=+'
+      call map(matches, '"+" . v:val')
+    endif
   endif
   return s:FilterEscape(matches, a:A)
 endfunction
@@ -6493,7 +6494,7 @@ function! fugitive#Diffsplit(autodir, keepfocus, mods, arg, ...) abort
     return 'echoerr ' . string(v:exception)
   finally
     if exists('l:equalalways')
-      let &l:equalalways = equalalways
+      let &g:equalalways = equalalways
     endif
     if exists('diffopt')
       let &diffopt = diffopt
