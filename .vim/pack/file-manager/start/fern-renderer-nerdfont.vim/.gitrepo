@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/lambdalisue/fern-renderer-nerdfont.vim.git
 	branch = master
-	commit = 942be10bda577ba4840c4a939200f05024b8603c
-	parent = 9104a6ffb4d82952fa5abe7d319ded971dc6ab4e
+	commit = 1a3719f226edc27e7241da7cda4bc4d4c7db889c
+	parent = 67390d563e3d67eebabe2cd2fcd9091270056d37
 	method = merge
 	cmdver = 0.4.3
