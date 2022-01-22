@@ -24,9 +24,10 @@ import shlex
 import collections
 import re
 import typing
+import base64
 
 from vimspector.core_utils import memoize
-
+from vimspector.vendor.hexdump import hexdump
 
 LOG_FILE = os.path.expanduser( os.path.join( '~', '.vimspector.log' ) )
 
@@ -689,7 +690,7 @@ def ParseVariables( variables_list,
   return new_variables
 
 
-def DisplayBalloon( is_term, display, is_hover = False ):
+def CreateTooltip( is_term, display: list, is_hover = False ):
   if not is_term:
     # To enable the Windows GUI to display the balloon correctly
     # Refer https://github.com/vim/vim/issues/1512#issuecomment-492070685
@@ -852,3 +853,8 @@ def UseWinBar():
   # Buggy neovim doesn't render correctly when the WinBar is defined:
   # https://github.com/neovim/neovim/issues/12689
   return not int( Call( 'has', 'nvim' ) )
+
+
+def Base64ToHexDump( data ):
+  data = base64.b64decode( data )
+  return list( hexdump( data, 'generator' ) )

@@ -65,6 +65,7 @@ GADGETS = {
       'checksum':
         'bab71db23b9221c6d5d40c7bb2243570ebe49a3bb7b9893033440681d27aa440',
     },
+    # doesn't work: https://github.com/microsoft/vscode-cpptools/issues/7035
     'macos_arm64': {
       'file_name': 'cpptools-osx-arm64.vsix',
       'checksum':
@@ -304,6 +305,35 @@ GADGETS = {
       }
     }
   },
+  'delve': {
+    'language': 'go',
+    'do': lambda name, root, gadget: installer.InstallDelve( name,
+                                                             root,
+                                                             gadget ),
+    'all': {
+      'path': 'github.com/go-delve/delve/cmd/dlv',
+      'version': '1.7.3',
+    },
+    'adapters': {
+      "delve": {
+        "variables": {
+          "port": "${unusedLocalPort}",
+          "dlvFlags": "",
+          "listenOn": "127.0.0.1",
+        },
+        "command": [
+          "${gadgetDir}/delve/bin/dlv",
+          "dap",
+          "--listen",
+          "${listenOn}:${port}",
+          "*${dlvFlags}",
+        ],
+        "tty": True, # because delve is a special snowflake and uses its own
+                     # controlling tty for the debugee
+        "port": "${port}"
+      }
+    }
+  },
   'vscode-go': {
     'language': 'go',
     'download': {
@@ -311,10 +341,10 @@ GADGETS = {
              'v${version}/${file_name}'
     },
     'all': {
-      'version': '0.19.1',
-      'file_name': 'go-0.19.1.vsix',
+      'version': '0.30.0',
+      'file_name': 'go-0.30.0.vsix',
       'checksum':
-        '7f9dc014245b030d9f562b28f3ea9b1fd6e2708fac996c53ff6a707f8204ec64',
+        '',
     },
     'adapters': {
       'vscode-go': {
@@ -325,6 +355,8 @@ GADGETS = {
         ],
         "configuration": {
           "cwd": "${workspaceRoot}",
+          # If the delva adapter is also installed, use that by default.
+          "dlvToolPath": "${gadgetDir}/delve/bin/dlv"
         }
       },
     },
@@ -429,7 +461,7 @@ GADGETS = {
     },
   },
   'CodeLLDB': {
-    'language': 'rust',
+    'language': [ 'c', 'cpp', 'rust' ],
     'enabled': True,
     'download': {
       'url': 'https://github.com/vadimcn/vscode-lldb/releases/download/'

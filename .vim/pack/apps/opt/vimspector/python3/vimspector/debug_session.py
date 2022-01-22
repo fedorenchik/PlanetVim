@@ -67,6 +67,7 @@ class DebugSession( object ):
     self._breakpoints = breakpoints.ProjectBreakpoints()
     self._splash_screen = None
     self._remote_term = None
+    self._adapter_term = None
 
     self._run_on_server_exit = None
 
@@ -725,6 +726,51 @@ class DebugSession( object ):
     self._variablesView.SetVariableValue( new_value, buf, line_num )
 
   @IfConnected()
+  def ReadMemory( self, length = None, offset = None ):
+    if not self._server_capabilities.get( 'supportsReadMemoryRequest' ):
+      utils.UserMessage( "Server does not support memory request",
+                         error = True )
+      return
+
+    memoryReference = self._variablesView.GetMemoryReference()
+    if memoryReference is None:
+      utils.UserMessage( "Cannot find memory reference for that",
+                         error = True )
+      return
+
+    if length is None:
+      length = utils.AskForInput( 'How much data to display? ',
+                                  default_value = '1024' )
+
+    try:
+      length = int( length )
+    except ValueError:
+      return
+
+    if offset is None:
+      offset = utils.AskForInput( 'Location offset? ',
+                                  default_value = '0' )
+
+    try:
+      offset = int( offset )
+    except ValueError:
+      return
+
+
+    def handler( msg ):
+      self._codeView.ShowMemory( memoryReference, length, offset, msg )
+
+    self._connection.DoRequest( handler, {
+      'command': 'readMemory',
+      'arguments': {
+        'memoryReference': memoryReference,
+        'count': int( length ),
+        'offset': int( offset )
+      }
+    } )
+
+
+  @IfConnected()
   def AddWatch( self, expression ):
     self._variablesView.AddWatch( self._stackTraceView.GetCurrentFrame(),
                                   expression )
@@ -741,7 +787,7 @@ class DebugSession( object ):
 
 
   @IfConnected()
-  def ShowEvalBalloon( self, winnr, expression, is_hover ):
+  def HoverEvalTooltip( self, winnr, bufnr, lnum, expression, is_hover ):
     frame = self._stackTraceView.GetCurrentFrame()
     # Check if RIP is in a frame
     if frame is None:
@@ -749,14 +795,13 @@ class DebugSession( object ):
       return ''
 
     # Check if cursor in code window
-    if winnr != int( self._codeView._window.number ):
-      self._logger.debug( 'Winnr %s is not the code window %s',
-                          winnr,
-                          self._codeView._window.number )
-      return ''
+    if winnr == int( self._codeView._window.number ):
+      return self._variablesView.HoverEvalTooltip( frame, expression, is_hover )
 
+    return self._variablesView.HoverVarWinTooltip( bufnr,
+                                                   lnum,
+                                                   is_hover )
     # Return variable aware function
-    return self._variablesView.VariableEval( frame, expression, is_hover )
 
 
   def CleanUpTooltip( self ):
@@ -924,8 +969,7 @@ class DebugSession( object ):
     with utils.LetCurrentWindow( stack_trace_window ):
       vim.command( f'{ one_third }wincmd _' )
 
-    self._variablesView = variables.VariablesView( vars_window,
-                                                   watch_window )
+    self._variablesView = variables.VariablesView( vars_window, watch_window )
 
     # Output/logging
     vim.current.window = code_window
@@ -982,8 +1026,7 @@ class DebugSession( object ):
     with utils.LetCurrentWindow( stack_trace_window ):
       vim.command( f'{ one_third }wincmd |' )
 
-    self._variablesView = variables.VariablesView( vars_window,
-                                                   watch_window )
+    self._variablesView = variables.VariablesView( vars_window, watch_window )
 
 
     # Output/logging
@@ -1081,6 +1124,36 @@ class DebugSession( object ):
       self._adapter[ 'cwd' ] = os.getcwd()
 
     vim.vars[ '_vimspector_adapter_spec' ] = self._adapter
+
+    # if the debug adapter is lame and requires a terminal or has any
+    # input/output on stdio, then launch it that way
+    if self._adapter.get( 'tty', False ):
+      if 'port' not in self._adapter:
+        utils.UserMessage( "Invalid adapter configuration. When using a tty, "
+                           "communication must use socket. Add the 'port' to "
+                           "the adapter config." )
+        return False
+
+      if 'command' not in self._adapter:
+        utils.UserMessage( "Invalid adapter configuration. When using a tty, "
+                           "a command must be supplied. Add the 'commmand' to "
+                           "the adapter config." )
+        return False
+
+      command = self._adapter[ 'command' ]
+      if isinstance( command, str ):
+        command = shlex.split( command )
+
+      self._adapter_term = terminal.LaunchTerminal(
+          self._api_prefix,
+          {
+            'args': command,
+            'cwd': self._adapter[ 'cwd' ],
+            'env': self._adapter[ 'env' ],
+          },
+          self._codeView._window,
+          self._adapter_term )
+
     if not vim.eval( "vimspector#internal#{}#StartDebugSession( "
                      "  g:_vimspector_adapter_spec "
                      ")".format( self._connection_type ) ):
@@ -1370,7 +1443,8 @@ class DebugSession( object ):
         'pathFormat': 'path',
         'supportsVariableType': True,
         'supportsVariablePaging': False,
-        'supportsRunInTerminalRequest': True
+        'supportsRunInTerminalRequest': True,
+        'supportsMemoryReferences': True
       },
     } )
 
