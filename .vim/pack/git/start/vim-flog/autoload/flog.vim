@@ -78,10 +78,6 @@ function! flog#get(dict, key, ...) abort
   return get(a:dict, a:key, l:default)
 endfunction
 
-function! flog#filter_empty(list) abort
-  return filter(copy(a:list), '!empty(v:val)')
-endfunction
-
 " }}}
 
 " Deprecation helpers {{{
@@ -96,7 +92,15 @@ function! flog#did_show_deprecation_warning(deprecated_usage) abort
   return has_key(g:flog_shown_deprecation_warnings, a:deprecated_usage)
 endfunction
 
-function! flog#deprecate_mapping(mapping, new_mapping, ...) abort
+function! flog#deprecate_default_mapping(mapping, new_mapping) abort
+  let l:deprecated_usage = a:mapping
+  if !flog#did_show_deprecation_warning(l:deprecated_usage)
+    let l:new_usage = a:new_mapping
+    return flog#show_deprecation_warning(l:deprecated_usage, l:new_usage)
+  endif
+endfunction
+
+function! flog#deprecate_plugin_mapping(mapping, new_mapping, ...) abort
   let l:deprecated_usage = a:mapping
   if hasmapto(a:mapping) && !flog#did_show_deprecation_warning(l:deprecated_usage)
     let l:new_mapping_type = get(a:, 1, '{nmap|vmap}')
@@ -183,13 +187,11 @@ function! flog#get_initial_fugitive_repo() abort
 endfunction
 
 function! flog#get_fugitive_workdir() abort
-  let l:tree = flog#get_state().fugitive_repo.tree()
-  return l:tree
+  return flog#get_state().fugitive_repo.tree()
 endfunction
 
 function! flog#get_fugitive_git_command() abort
-  let l:git_command = FugitiveShellCommand()
-  return l:git_command
+  return FugitiveShellCommand()
 endfunction
 
 function! flog#get_fugitive_git_dir() abort
@@ -197,7 +199,7 @@ function! flog#get_fugitive_git_dir() abort
 endfunction
 
 function! flog#trigger_fugitive_git_detection() abort
-  let b:git_dir = flog#get_state().fugitive_repo.dir()
+  let b:git_dir = flog#get_fugitive_git_dir()
   let l:workdir = flog#get_fugitive_workdir()
   call FugitiveDetect(l:workdir)
 endfunction
@@ -443,9 +445,42 @@ function! flog#split_completable_arg(arg) abort
   return [l:lead, l:last]
 endfunction
 
+function! flog#find_arg_command(split_args) abort
+  let l:i = 1
+  while l:i < len(a:split_args)
+    let l:arg = a:split_args[l:i]
+    if len(l:arg) && l:arg[0] !=# '-'
+      return [l:i, l:arg]
+    endif
+    let l:i += 1
+  endwhile
+  return [-1, '']
+endfunction
+
 " }}}
 
 " Argument commands {{{
+
+function! flog#get_git_commands() abort
+  return flog#systemlist(flog#get_fugitive_git_command() . ' --list-cmds=list-mainporcelain,others,nohelpers,alias,list-complete,config')
+endfunction
+
+function! flog#get_git_options(split_args, command_index) abort
+  let l:options = []
+
+  let l:command = a:split_args[a:command_index]
+  let l:command_spec = get(g:flog_git_command_spec, l:command, {})
+
+  if has_key(l:command_spec, 'subcommands') && a:command_index >= len(a:split_args) - 2
+    let l:options += l:command_spec.subcommands
+  endif
+
+  if has_key(l:command_spec, 'options')
+    let l:options += l:command_spec.options
+  endif
+
+  return l:options
+endfunction
 
 function! flog#get_remotes() abort
   return flog#systemlist(flog#get_fugitive_git_command() . ' remote')
@@ -510,46 +545,53 @@ function! flog#complete_line(arg_lead, cmd_line, cursor_pos) abort
 endfunction
 
 function! flog#complete_git(arg_lead, cmd_line, cursor_pos) abort
-  let l:state = flog#get_state()
+  call flog#deprecate_setting('g:flog_git_commands', '(None)')
+  call flog#deprecate_setting('g:flog_git_subcommands', 'g:flog_git_command_spec', '{ "command": { "subcommands": [...] } }')
+
+  let l:is_flog = flog#has_state()
+  if l:is_flog
+    let l:state = flog#get_state()
+  endif
+
+  let l:is_fugitive = flog#is_fugitive_buffer()
+
   let l:split_args = split(a:cmd_line, '\s', v:true)
+  let [l:command_index, l:command] = flog#find_arg_command(l:split_args)
 
   " complete commands
-  let l:current_arg_num = len(l:split_args)
-  if l:current_arg_num <= 2
-    return flog#filter_completions(a:arg_lead, copy(g:flog_git_commands))
+  if l:command ==# '' || l:command_index == len(l:split_args) - 1
+    return flog#filter_completions(a:arg_lead, flog#get_git_commands())
   endif
 
-  " complete line info
-  let l:completions = flog#complete_line(a:arg_lead, a:cmd_line, a:cursor_pos)
+  if l:is_flog
+    " complete line info
+    let l:completions = flog#complete_line(a:arg_lead, a:cmd_line, a:cursor_pos)
 
-  " complete all possible refs
-  let l:completed_refs = flog#filter_completions(a:arg_lead, flog#get_refs())
-  let l:completions += flog#exclude(l:completed_refs, l:completions)
+    " complete limit
+    if l:state.limit
+      let [l:limit, l:limit_path] = flog#split_limit(l:state.limit)
+      let l:completions += flog#filter_completions(a:arg_lead, [l:limit_path])
+    endif
 
-  " complete limit
-  if l:state.limit
-    let [l:limit, l:limit_path] = flog#split_limit(l:state.limit)
-    let l:completions += flog#filter_completions(a:arg_lead, [l:limit_path])
+    " complete path
+    let l:completions += flog#exclude(flog#filter_completions(a:arg_lead, l:state.path), l:completions)
+  else
+    let l:completions = []
   endif
 
-  " complete path
-  let l:completions += flog#exclude(flog#filter_completions(a:arg_lead, l:state.path), l:completions)
+  " complete options
+  let l:completions += flog#filter_completions(a:arg_lead, flog#get_git_options(l:split_args, l:command_index))
 
-  " complete all filenames
-  let l:completions += flog#exclude(getcompletion(a:arg_lead, 'file'), l:completions)
+  if l:is_fugitive
+    " complete all possible refs
+    let l:completed_refs = flog#filter_completions(a:arg_lead, flog#get_refs())
+    let l:completions += flog#exclude(l:completed_refs, l:completions)
 
-  " complete subcommands
-  let l:command = l:split_args[1]
-  if l:current_arg_num == 3 && has_key(g:flog_git_subcommands, l:command)
-    let l:completions += flog#filter_completions(a:arg_lead, copy(g:flog_git_subcommands[l:command]))
+    " complete all filenames
+    let l:completions += flog#exclude(getcompletion(a:arg_lead, 'file'), l:completions)
   endif
 
   return flog#shellescape_completions(l:completions)
-endfunction
-
-function! flog#complete_jump(arg_lead, cmd_line, cursor_pos) abort
-  let l:state = flog#get_state()
-  return flog#shellescape_completions(flog#complete_rev(a:arg_lead))
 endfunction
 
 " }}}
@@ -669,6 +711,11 @@ function! flog#complete(arg_lead, cmd_line, cursor_pos) abort
   return flog#filter_completions(a:arg_lead, copy(g:flog_default_completion))
 endfunction
 
+function! flog#complete_jump(arg_lead, cmd_line, cursor_pos) abort
+  let l:state = flog#get_state()
+  return flog#shellescape_completions(flog#complete_rev(a:arg_lead))
+endfunction
+
 " }}}
 
 " }}}
@@ -683,7 +730,8 @@ function! flog#get_initial_state(parsed_args, original_file) abort
         \ 'fugitive_repo': flog#get_initial_fugitive_repo(),
         \ 'original_file': a:original_file,
         \ 'graph_window_id': v:null,
-        \ 'tmp_window_ids': [],
+        \ 'tmp_cmd_window_ids': [],
+        \ 'last_cmd_window_ids': [],
         \ 'previous_log_command': v:null,
         \ 'line_commits': [],
         \ 'commit_refs': [],
@@ -699,8 +747,12 @@ function! flog#set_buffer_state(state) abort
   let b:flog_state = a:state
 endfunction
 
+function! flog#has_state() abort
+  return exists('b:flog_state')
+endfunction
+
 function! flog#get_state() abort
-  if !exists('b:flog_state')
+  if !flog#has_state()
     throw g:flog_missing_state
   endif
   return b:flog_state
@@ -720,99 +772,132 @@ endfunction
 " Log command management {{{
 
 function! flog#create_log_format() abort
+  call flog#deprecate_setting('g:flog_format_separator', '(None)')
+  call flog#deprecate_setting('g:flog_format_end', '(None)')
+  call flog#deprecate_setting('g:flog_display_commit_start', '(None)')
+  call flog#deprecate_setting('g:flog_display_commit_end', '(None)')
+  call flog#deprecate_setting('g:flog_format_specifiers', '(None)')
+  call flog#deprecate_setting('g:flog_log_data_format_specifiers', '(None)')
+
   let l:state = flog#get_state()
 
   " start format
   let l:format = 'format:'
   let l:format .= g:flog_format_start
-
-  " add data specifiers
-  let l:tokens = []
-  for l:specifier in g:flog_log_data_format_specifiers
-    let l:tokens += [g:flog_format_specifiers[l:specifier]]
-  endfor
-  let l:format .= join(l:tokens, g:flog_format_separator)
-
-  " add display specifiers
-  let l:format .= g:flog_format_separator . g:flog_display_commit_start
   let l:format .= l:state.format
-  let l:format .= g:flog_display_commit_end
 
-  " end format
-  let l:format .= g:flog_format_end
+  " add flog data
+  let l:format .= g:flog_data_start
+  " short hash and ref names
+  let l:format .= '%h %D'
+
   " perform string formatting to avoid shell interpolation
   return shellescape(l:format)
-endfunction
-
-function! flog#parse_log_commit(c) abort
-  let l:i = stridx(a:c, g:flog_format_start)
-  if l:i < 0
-    return {}
-  endif
-  let l:j = stridx(a:c, g:flog_display_commit_start)
-  let l:k = stridx(a:c, g:flog_display_commit_end)
-  let l:l = stridx(a:c, g:flog_format_end)
-
-  let l:dat = split(a:c[l:i + len(g:flog_format_start) : l:j - 1], g:flog_format_separator, v:true)
-
-  let l:c = {}
-
-  let l:c.short_commit_hash = l:dat[g:flog_log_data_hash_index]
-  let l:c.ref_names_unwrapped = l:dat[g:flog_log_data_ref_index]
-  let l:c.internal_data = l:dat
-
-  let l:c.ref_name_list = flog#filter_empty(
-        \ split(l:c.ref_names_unwrapped, ' -> \|, \|tag: '))
-
-  let l:end = a:c[l:l  + len(g:flog_format_end):]
-  if l:end !=# '' && l:end[0] !=# "\n"
-    let l:end = "\n" . l:end
-  endif
-  let l:c.display = split(
-        \ (l:i == 0 ? '' : a:c[0 : l:i - 1])
-        \ . a:c[l:j + len(g:flog_display_commit_start) : l:k - 1]
-        \ . l:end,
-        \ "\n")
-
-  return l:c
 endfunction
 
 function! flog#parse_log_output(output) abort
   let l:output_len = len(a:output)
   if l:output_len == 0
-    return []
+    return [[], []]
   endif
 
+  " Final filtered visual output
   let l:o = []
-  let l:raw = []
+  " Output index
   let l:i = 0
-
-  " Group non-commit lines at the start of output with the first commit
-  " See https://github.com/rbong/vim-flog/pull/14
-  while l:i < l:output_len && a:output[l:i] !~# g:flog_format_start
-    let l:raw += [a:output[l:i]]
-    let l:i += 1
-  endwhile
-  if l:raw != []
-    let l:raw += [a:output[l:i]]
-    let l:i += 1
-  endif
+  " Commits
+  let l:cs = []
+  " Number of commits
+  let l:cn = 0
+  " Current commit
+  let l:c = { 'display_len': 0 }
+  " Has found data
+  let l:d = 0
+  " Format start length
+  let l:lf = len(g:flog_format_start)
+  " Data start length
+  let l:ld = len(g:flog_data_start)
 
   while l:i < l:output_len
+    " Get current line
     let l:line = a:output[l:i]
-    if l:line =~# g:flog_format_start && l:raw != []
-      let l:o += [flog#parse_log_commit(join(l:raw, "\n"))]
-      let l:raw = []
+
+    " Data found or no commit parsed, check for format start
+    if l:d || !l:cn
+      " Find format start if any
+      let l:j = stridx(l:line, g:flog_format_start)
+
+      " Start of format found, start new commit
+      if l:j >= 0
+        " Start new commit if at least one parsed
+        if l:cn
+          " Add to list of commits
+          call add(l:cs, l:c)
+
+          " Set new current commit
+          let l:c = { 'display_len': 0 }
+        endif
+
+        " Remove format start from line
+        let l:line = strpart(l:line, 0, l:j)
+              \ . strpart(l:line, l:j + l:lf)
+
+        " Reset data found
+        let l:d = 0
+      endif
     endif
-    let l:raw += [l:line]
+
+    " No commit data, try to find it
+    if !l:d
+      " Find start of data
+      let l:k = stridx(l:line, g:flog_data_start)
+
+      " Start of data found
+      if l:k >= 0
+        " Find hash end
+        let l:hend = stridx(l:line, ' ', l:k + l:ld)
+
+        if l:hend > 0
+          " Set hash
+          let l:c.short_commit_hash = strpart(l:line,
+                \ l:k + l:ld, l:hend - l:k - l:ld)
+          " Set ref names
+          let l:c.ref_names_unwrapped = strpart(l:line, l:hend + 1)
+          let l:c.ref_name_list = split(
+                \ l:c.ref_names_unwrapped, '\( -> \|, \|tag: \)\+')
+        else
+          " No space found, no refs
+
+          " Set hash
+          let l:c.short_commit_hash = strpart(l:line, l:k + l:ld)
+          " Set ref names
+          let l:c.ref_names_unwrapped = ''
+          let l:c.ref_name_list = []
+        endif
+
+        " Set data found
+        let l:d = 1
+        " Increment number of commits
+        let l:cn += 1
+
+        " Remove data from line
+        let l:line = strpart(l:line, 0, l:k)
+      endif
+    endif
+
+    " Append line to output
+    call add(l:o, l:line)
+    let l:c.display_len += 1
+
     let l:i += 1
   endwhile
 
-  if l:raw != []
-      let l:o += [flog#parse_log_commit(join(l:raw, "\n"))]
+  " Add last commit if any
+  if l:cn
+    call add(l:cs, l:c)
   endif
 
-  return l:o
+  return [l:o, l:cs]
 endfunction
 
 function! flog#build_log_paths() abort
@@ -926,14 +1011,6 @@ function! flog#build_git_forest_log_command() abort
   return l:command
 endfunction
 
-function! flog#get_log_display(commits) abort
-  let l:o = []
-  for l:c in a:commits
-    let l:o += l:c.display
-  endfor
-  return l:o
-endfunction
-
 " }}}
 
 " Commit operations {{{
@@ -944,6 +1021,28 @@ function! flog#get_commit_at_line(...) abort
     let l:line = line(l:line)
   endif
   return get(flog#get_state().line_commits, l:line - 1, v:null)
+endfunction
+
+function! flog#get_commit_at_ref(ref) abort
+  let l:state = flog#get_state()
+  if !has_key(l:state.ref_line_lookup, a:ref)
+    return v:null
+  endif
+  return flog#get_commit_at_line(l:state.ref_line_lookup[a:ref])
+endfunction
+
+function! flog#get_commit_at_ref_spec(ref_spec) abort
+  let l:state = flog#get_state()
+
+  let l:command = flog#get_fugitive_git_command()
+        \ . ' rev-parse --short ' . shellescape(a:ref_spec)
+  let l:hash = flog#systemlist(l:command)[0]
+
+  if !has_key(l:state.commit_line_lookup, l:hash)
+    return v:null
+  endif
+
+  return flog#get_commit_at_line(l:state.commit_line_lookup[l:hash])
 endfunction
 
 function! flog#get_commit_selection(...) abort
@@ -995,10 +1094,12 @@ function! flog#jump_commits(commits) abort
 endfunction
 
 function! flog#next_commit() abort
+  call flog#set_jump_mark()
   call flog#jump_commits(v:count1)
 endfunction
 
 function! flog#previous_commit() abort
+  call flog#set_jump_mark()
   call flog#jump_commits(-v:count1)
 endfunction
 
@@ -1095,10 +1196,12 @@ function! flog#jump_to_commit(hash) abort
 endfunction
 
 function! flog#next_ref() abort
+  call flog#set_jump_mark()
   call flog#jump_refs(v:count1)
 endfunction
 
 function! flog#previous_ref() abort
+  call flog#set_jump_mark()
   call flog#jump_refs(-v:count1)
 endfunction
 
@@ -1118,8 +1221,7 @@ function! flog#modify_graph_buffer_contents(content) abort
   silent setlocal modifiable
   silent setlocal noreadonly
   1,$ d
-  call append(0, a:content)
-  $,$ d
+  call setline(1, a:content)
   call flog#graph_buffer_settings()
 
   exec l:cursor_pos
@@ -1129,13 +1231,12 @@ endfunction
 function! flog#set_graph_buffer_commits(commits) abort
   let l:state = flog#get_state()
 
-  call flog#modify_graph_buffer_contents(flog#get_log_display(a:commits))
-
   let l:state.line_commits = []
 
   let l:state.commit_refs = []
   let l:state.line_commit_refs = []
   let l:state.ref_line_lookup = {}
+  let l:state.commit_line_lookup = {}
   let l:state.ref_commit_lookup = {}
 
   let l:cr = v:null
@@ -1157,8 +1258,8 @@ function! flog#set_graph_buffer_commits(commits) abort
 
     let l:scl[l:c.short_commit_hash] = len(slc) + 1
 
-    let l:slc += repeat([l:c], len(l:c.display))
-    let l:slr += repeat([l:cr], len(l:c.display))
+    let l:slc += repeat([l:c], l:c.display_len)
+    let l:slr += repeat([l:cr], l:c.display_len)
   endfor
 endfunction
 
@@ -1280,8 +1381,9 @@ function! flog#populate_graph_buffer() abort
   let l:state.previous_log_command = l:command
 
   let l:output = flog#systemlist(l:command)
-  let l:commits = flog#parse_log_output(l:output)
+  let [l:final_output, l:commits] = flog#parse_log_output(l:output)
 
+  call flog#modify_graph_buffer_contents(l:final_output)
   call flog#set_graph_buffer_commits(l:commits)
   call flog#set_graph_buffer_title()
   call flog#set_graph_buffer_color()
@@ -1456,22 +1558,37 @@ endfunction
 
 " }}}
 
-" Temporary buffers {{{
+" Command buffers {{{
 
 function! flog#tmp_buffer_settings() abort
   call flog#deprecate_autocmd('FlogPreviewSetup', 'FlogTmpWinSetup')
-  silent doautocmd User FlogTmpWinSetup
+  call flog#deprecate_autocmd('FlogTmpCommandWinSetup', 'FlogTmpWinSetup')
+  call flog#deprecate_autocmd('FlogTmpWinSetup', 'FlogTmpCmdBufferSetup')
+  silent doautocmd User FlogTmpCmdBufferSetup
 endfunction
 
-function! flog#tmp_command_buffer_settings() abort
-  call flog#deprecate_autocmd('FlogCommitPreviewSetup', 'FlogTmpCommandWinSetup')
-  silent doautocmd User FlogTmpCommandWinSetup
+function! flog#non_tmp_cmd_buffer_settings() abort
+  silent doautocmd User FlogNonTmpCmdBufferSetup
 endfunction
 
-function! flog#initialize_tmp_buffer(state) abort
-  let a:state.tmp_window_ids += [win_getid()]
-  call flog#set_buffer_state(a:state)
-  call flog#tmp_buffer_settings()
+function! flog#cmd_buffer_settings() abort
+  silent doautocmd User FlogCmdBufferSetup
+endfunction
+
+function! flog#initialize_cmd_buffer(state, is_tmp) abort
+  if a:is_tmp
+    call flog#set_buffer_state(a:state)
+    call flog#cmd_buffer_settings()
+    call flog#tmp_buffer_settings()
+  else
+    call flog#set_buffer_state(a:state)
+    call flog#cmd_buffer_settings()
+    call flog#non_tmp_cmd_buffer_settings()
+  endif
+endfunction
+
+function! flog#initialize_tmp_cmd_buffer(state) abort
+  return flog#initialize_cmd_buffer(a:state, 1)
 endfunction
 
 " }}}
@@ -1480,13 +1597,13 @@ endfunction
 
 " Layout management {{{
 
-" Temporary window layout management {{{
+" Command window layout management {{{
 
 function! flog#close_tmp_win() abort
   let l:state = flog#get_state()
   let l:graph_window_id = win_getid()
 
-  for l:tmp_window_id in l:state.tmp_window_ids
+  for l:tmp_window_id in l:state.tmp_cmd_window_ids
     " temporary buffer is not open
     if win_id2tabwin(l:tmp_window_id) == [0, 0]
       continue
@@ -1497,7 +1614,7 @@ function! flog#close_tmp_win() abort
     close!
   endfor
 
-  let l:state.tmp_window_ids = []
+  let l:state.tmp_cmd_window_ids = []
 
   " go back to the previous window
   call win_gotoid(l:graph_window_id)
@@ -1505,22 +1622,39 @@ function! flog#close_tmp_win() abort
   return
 endfunction
 
-function! flog#open_tmp_win(command) abort
-  let l:graph_window_id = win_getid()
-
+function! flog#open_cmd(cmd, is_tmp) abort
   let l:state = flog#get_state()
 
+  let l:graph_window_id = win_getid()
   let l:saved_window_ids = flog#get_all_window_ids()
-  exec a:command
-  silent! let l:tmp_window_ids = flog#exclude(flog#get_all_window_ids(), l:saved_window_ids)
-  if l:tmp_window_ids != []
+
+  exec a:cmd
+  let l:final_cmd_window_id = win_getid()
+
+  silent! let l:new_window_ids = flog#exclude(flog#get_all_window_ids(), l:saved_window_ids)
+  let l:state.last_cmd_window_ids = l:new_window_ids
+
+  if l:new_window_ids != []
     silent! call win_gotoid(l:graph_window_id)
-    silent! call flog#close_tmp_win()
-    for l:tmp_window_id in l:tmp_window_ids
-      silent! call win_gotoid(l:tmp_window_id)
-      silent! call flog#initialize_tmp_buffer(l:state)
+
+    if a:is_tmp
+      silent! call flog#close_tmp_win()
+      let l:state.tmp_cmd_window_ids = l:new_window_ids
+    endif
+
+    for l:new_window_id in l:new_window_ids
+      silent! call win_gotoid(l:new_window_id)
+      if !flog#has_state()
+        silent! call flog#initialize_cmd_buffer(l:state, a:is_tmp)
+      endif
     endfor
+
+    silent! call win_gotoid(l:final_cmd_window_id)
   endif
+endfunction
+
+function! flog#open_tmp_cmd(cmd) abort
+  return flog#open_cmd(a:cmd, 1)
 endfunction
 
 " }}}
@@ -1566,7 +1700,11 @@ endfunction
 " Commit marks {{{
 
 function! flog#is_reserved_commit_mark(key) abort
-  return a:key ==# '<' || a:key ==# '>'
+  return a:key =~# '[<>@~^!]'
+endfunction
+
+function! flog#is_dynamic_commit_mark(key) abort
+  return a:key =~# '[<>@~^]'
 endfunction
 
 function! flog#is_cancel_commit_mark(key) abort
@@ -1583,10 +1721,7 @@ function! flog#reset_commit_marks() abort
   let l:state.commit_marks = {}
 endfunction
 
-function! flog#set_commit_mark(key, commit) abort
-  if flog#is_reserved_commit_mark(a:key)
-    throw g:flog_invalid_mark
-  endif
+function! flog#set_internal_commit_mark(key, commit) abort
   if flog#is_cancel_commit_mark(a:key)
     return
   endif
@@ -1594,9 +1729,26 @@ function! flog#set_commit_mark(key, commit) abort
   let l:marks[a:key] = a:commit
 endfunction
 
+function! flog#set_commit_mark(key, commit) abort
+  if flog#is_reserved_commit_mark(a:key)
+    throw g:flog_invalid_mark
+  endif
+  return flog#set_internal_commit_mark(a:key, a:commit)
+endfunction
+
+function! flog#set_internal_commit_mark_at_line(key, line) abort
+  let l:commit = flog#get_commit_at_line(a:line)
+  return flog#set_internal_commit_mark(a:key, l:commit)
+endfunction
+
 function! flog#set_commit_mark_at_line(key, line) abort
   let l:commit = flog#get_commit_at_line(a:line)
   return flog#set_commit_mark(a:key, l:commit)
+endfunction
+
+function! flog#set_jump_mark(...) abort
+  let l:line = a:0 >= 1 ? a:1 : line('.')
+  call flog#set_commit_mark_at_line("'", l:line)
 endfunction
 
 function! flog#remove_commit_mark(key) abort
@@ -1605,7 +1757,7 @@ function! flog#remove_commit_mark(key) abort
 endfunction
 
 function! flog#has_commit_mark(key) abort
-  if flog#is_reserved_commit_mark(a:key)
+  if flog#is_dynamic_commit_mark(a:key)
     return 1
   endif
   if flog#is_cancel_commit_mark(a:key)
@@ -1619,12 +1771,23 @@ function! flog#get_commit_mark(key) abort
   if a:key ==# '<' || a:key ==# '>'
     return flog#get_commit_at_line("'" . a:key)
   endif
+
+  if a:key ==# '@'
+    return flog#get_commit_at_ref('HEAD')
+  endif
+
+  if a:key ==# '~' || a:key ==# '^'
+    return flog#get_commit_at_ref_spec('HEAD~')
+  endif
+
   if flog#is_cancel_commit_mark(a:key)
     throw g:flog_invalid_mark
   endif
+
   if !flog#has_commit_mark(a:key)
     return v:null
   endif
+
   let l:marks = flog#get_commit_marks()
   return l:marks[a:key]
 endfunction
@@ -1636,7 +1799,7 @@ function! flog#jump_to_commit_mark(key) abort
     return
   endif
   call flog#jump_to_commit(l:commit.short_commit_hash)
-  call flog#set_commit_mark_at_line("'", l:previous_line)
+  call flog#set_jump_mark(l:previous_line)
 endfunction
 
 function! flog#echo_commit_marks() abort
@@ -1681,8 +1844,8 @@ function! flog#get_cache_refs(cache, commit) abort
     endif
     let l:refs = a:commit.ref_name_list
 
-    let l:original_refs = flog#filter_empty(
-          \ split(a:commit.ref_names_unwrapped, ' \ze-> \|, \|\zetag: '))
+    let l:original_refs = split(
+          \ a:commit.ref_names_unwrapped, '\( \ze-> \|, \|\zetag: \)\+')
 
     let l:remote_branches = []
     let l:local_branches = []
@@ -1727,6 +1890,11 @@ endfunction
 
 function! flog#cmd_convert_branch(cache, item, commit) abort
   let l:refs = flog#get_cache_refs(a:cache, a:commit)
+
+  if type(l:refs) != v:t_dict
+    return v:null
+  endif
+
   let l:local_branches = flog#get(l:refs, 'local_branches', [])
   let l:remote_branches = flog#get(l:refs, 'remote_branches', [])
 
@@ -1739,6 +1907,11 @@ endfunction
 
 function! flog#cmd_convert_local_branch(cache, item, commit) abort
   let l:refs = flog#get_cache_refs(a:cache, a:commit)
+
+  if type(l:refs) != v:t_dict
+    return v:null
+  endif
+
   let l:local_branches = flog#get(l:refs, 'local_branches', [])
   let l:remote_branches = flog#get(l:refs, 'remote_branches', [])
 
@@ -1786,6 +1959,9 @@ function! flog#convert_command_format_item(cache, item) abort
   let l:converted_item = v:null
 
   if a:item ==# 'h'
+    call flog#set_internal_commit_mark_at_line('!', '.')
+    let l:converted_item = flog#cmd_convert_line(a:cache, a:item, function('flog#cmd_convert_hash'))
+  elseif a:item ==# 'H'
     let l:converted_item = flog#cmd_convert_line(a:cache, a:item, function('flog#cmd_convert_hash'))
   elseif a:item =~# "^h'."
     let l:converted_item = flog#cmd_convert_commit_mark(a:cache, a:item, function('flog#cmd_convert_hash'))
@@ -1883,7 +2059,7 @@ endfunction
 
 " Command running {{{
 
-function! flog#handle_command_window_cleanup(keep_focus, graph_window_id) abort
+function! flog#handle_cmd_win_cleanup(keep_focus, graph_window_id) abort
   if !a:keep_focus
     call win_gotoid(a:graph_window_id)
     if has('nvim')
@@ -1892,7 +2068,7 @@ function! flog#handle_command_window_cleanup(keep_focus, graph_window_id) abort
   endif
 endfunction
 
-function! flog#handle_command_update_cleanup(should_update, graph_window_id, graph_buff_num) abort
+function! flog#handle_cmd_update_cleanup(should_update, graph_window_id, graph_buff_num) abort
   if a:should_update
     if win_getid() != a:graph_window_id
       call flog#initialize_graph_update_hook(a:graph_buff_num)
@@ -1902,15 +2078,21 @@ function! flog#handle_command_update_cleanup(should_update, graph_window_id, gra
   endif
 endfunction
 
-function! flog#handle_command_cleanup(keep_focus, should_update, graph_window_id, graph_buff_num) abort
-  call flog#handle_command_window_cleanup(a:keep_focus, a:graph_window_id)
-  call flog#handle_command_update_cleanup(a:should_update, a:graph_window_id, a:graph_buff_num)
+function! flog#handle_cmd_cleanup(keep_focus, should_update, graph_window_id, graph_buff_num) abort
+  call flog#handle_cmd_win_cleanup(a:keep_focus, a:graph_window_id)
+  call flog#handle_cmd_update_cleanup(a:should_update, a:graph_window_id, a:graph_buff_num)
 endfunction
 
 function! flog#run_raw_command(command, ...) abort
   let l:keep_focus = get(a:, 1, v:false)
   let l:should_update = get(a:, 2, v:false)
   let l:is_tmp = get(a:, 3, v:false)
+
+  " Not running in a graph buffer
+  if !flog#has_state()
+    exec a:command
+    return
+  endif
 
   let l:graph_window_id = win_getid()
   let l:graph_buff_num = bufnr('')
@@ -1919,16 +2101,9 @@ function! flog#run_raw_command(command, ...) abort
     return
   endif
 
-  if l:is_tmp
-    call flog#open_tmp_win(a:command)
-    silent! call flog#tmp_command_buffer_settings()
-    silent! call flog#handle_command_cleanup(
-          \ l:keep_focus, l:should_update, l:graph_window_id, l:graph_buff_num)
-  else
-    exec a:command
-    silent! call flog#handle_command_cleanup(
-          \ l:keep_focus, l:should_update, l:graph_window_id, l:graph_buff_num)
-  endif
+  call flog#open_cmd(a:command, l:is_tmp)
+  silent! call flog#handle_cmd_cleanup(
+        \ l:keep_focus, l:should_update, l:graph_window_id, l:graph_buff_num)
 endfunction
 
 function! flog#run_command(command, ...) abort
@@ -2093,6 +2268,9 @@ function! flog#cmd_item_path(...) range abort
         \ '(cache), (item)')
 endfunction
 
+function! flog#open_tmp_win(...) abort
+  call flog#deprecate_function('flog#open_tmp_win', 'flog#open_tmp_cmd')
+endfunction
 
 " }}}
 

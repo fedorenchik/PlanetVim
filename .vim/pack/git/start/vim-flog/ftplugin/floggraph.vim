@@ -37,6 +37,10 @@ endif
 if !hasmapto('<Plug>(FlogVDiffSplitPathsRight)')
   nmap <buffer> dp <Plug>(FlogVDiffSplitPathsRight)
   vmap <buffer> dp <Plug>(FlogVDiffSplitPathsRight)
+  nmap <buffer> DD <Plug>(FlogVDiffSplitPathsRight)
+  vmap <buffer> DD <Plug>(FlogVDiffSplitPathsRight)
+  nmap <buffer> DV <Plug>(FlogVDiffSplitPathsRight)
+  vmap <buffer> DV <Plug>(FlogVDiffSplitPathsRight)
 endif
 
 nnoremap <buffer> <silent> <Plug>(FlogVDiffSplitRight) :<C-U>call flog#run_tmp_command('vertical belowright Git diff HEAD %h')<CR>
@@ -44,6 +48,24 @@ vnoremap <buffer> <silent> <Plug>(FlogVDiffSplitRight) :<C-U>call flog#run_tmp_c
 
 nnoremap <buffer> <silent> <Plug>(FlogVDiffSplitPathsRight) :<C-U>call flog#run_tmp_command('vertical belowright Git diff HEAD %h -- %p')<CR>
 vnoremap <buffer> <silent> <Plug>(FlogVDiffSplitPathsRight) :<C-U>call flog#run_tmp_command("vertical belowright Git diff HEAD %(h'<) %(h'>) -- %p")<CR>
+
+if !hasmapto('<Plug>(FlogVDiffSplitLastCommitRight)')
+  nmap <buffer> d! <Plug>(FlogVDiffSplitLastCommitRight)
+endif
+
+if !hasmapto('<Plug>(FlogVDiffSplitLastCommitPathsRight)')
+  nmap <buffer> D! <Plug>(FlogVDiffSplitLastCommitPathsRight)
+endif
+
+nnoremap <buffer> <silent> <Plug>(FlogVDiffSplitLastCommitRight) :<C-U> call flog#run_tmp_command("vertical belowright Git diff %(h'!) %H")<CR>
+
+nnoremap <buffer> <silent> <Plug>(FlogVDiffSplitLastCommitPathsRight) :<C-U> call flog#run_tmp_command("vertical belowright Git diff %(h'!) %H -- %p")<CR>
+
+if !hasmapto('<Plug>(FlogCloseTmpWin)')
+  nmap <buffer> dq <Plug>(FlogCloseTmpWin)
+endif
+
+nnoremap <buffer> <silent> <Plug>(FlogCloseTmpWin) :<C-U>call flog#close_tmp_win()<CR>
 
 if !hasmapto('<Plug>(FlogYank)')
   nmap <buffer> y<C-G> <Plug>(FlogYank)
@@ -182,6 +204,28 @@ nnoremap <buffer> <silent> <Plug>(FlogSortTopo) :call flog#set_sort_option('topo
 
 " Commit/branch mappings {{{
 
+if !hasmapto('<Plug>(FlogFixup)')
+  nmap <buffer> cf <Plug>(FlogFixup)
+endif
+if !hasmapto('<Plug>(FlogFixupRebase)')
+  nmap <buffer> cF <Plug>(FlogFixupRebase)
+endif
+nnoremap <buffer> <silent> <Plug>(FlogFixup) :<C-U>call flog#run_command('Git commit --fixup=%H', 1, 1)<CR>
+nnoremap <buffer> <silent> <Plug>(FlogFixupRebase) :<C-U>call flog#run_command('Git commit --fixup=%H \| Git -c sequence.editor=true rebase --interactive --autosquash %H^', 1, 1)<CR>
+
+if !hasmapto('<Plug>(FlogSquash)')
+  nmap <buffer> cs <Plug>(FlogSquash)
+endif
+if !hasmapto('<Plug>(FlogSquashRebase)')
+  nmap <buffer> cS <Plug>(FlogSquashRebase)
+endif
+if !hasmapto('<Plug>(FlogSquashEdit)')
+  nmap <buffer> cA <Plug>(FlogSquashEdit)
+endif
+nnoremap <buffer> <silent> <Plug>(FlogSquash) :<C-U>call flog#run_command('Git commit --no-edit --squash=%H', 1, 1)<CR>
+nnoremap <buffer> <silent> <Plug>(FlogSquashRebase) :<C-U>call flog#run_command('Git commit --no-edit --squash=%H \| Git -c sequence.editor=true rebase --interactive --autosquash %H^', 1, 1)<CR>
+nnoremap <buffer> <silent> <Plug>(FlogSquashEdit) :<C-U>call flog#run_command('Git commit --edit --squash=%H', 1, 1)<CR>
+
 if !hasmapto('<Plug>(FlogRevert)')
   nmap <buffer> crc <Plug>(FlogRevert)
   vmap <buffer> crc <Plug>(FlogRevert)
@@ -192,16 +236,16 @@ if !hasmapto('<Plug>(FlogRevertNoEdit)')
   vmap <buffer> crn <Plug>(FlogRevertNoEdit)
 endif
 
-nnoremap <buffer> <silent> <Plug>(FlogRevert) :<C-U>call flog#run_command('Git revert %h', 1, 1)<CR>
+nnoremap <buffer> <silent> <Plug>(FlogRevert) :<C-U>call flog#run_command('Git revert %H', 1, 1)<CR>
 vnoremap <buffer> <silent> <Plug>(FlogRevert) :<C-U>call flog#run_command("Git revert %(h'<)^..%(h'>)", 1, 1)<CR>
 
-nnoremap <buffer> <silent> <Plug>(FlogRevertNoEdit) :<C-U>call flog#run_command('Git revert --no-edit %h', 1, 1)<CR>
+nnoremap <buffer> <silent> <Plug>(FlogRevertNoEdit) :<C-U>call flog#run_command('Git revert --no-edit %H', 1, 1)<CR>
 vnoremap <buffer> <silent> <Plug>(FlogRevertNoEdit) :<C-U>call flog#run_command("Git revert --no-edit %(h'<)^..%(h'>)", 1, 1)<CR>
 
 if !hasmapto('<Plug>(FlogCheckout)')
   nmap <buffer> coo <Plug>(FlogCheckout)
 endif
-nnoremap <buffer> <silent> <Plug>(FlogCheckout) :<C-U>call flog#run_command('Git checkout %h', 0, 1)<CR>
+nnoremap <buffer> <silent> <Plug>(FlogCheckout) :<C-U>call flog#run_command('Git checkout %H', 0, 1)<CR>
 
 if !hasmapto('<Plug>(FlogCheckoutBranch)')
   nmap <buffer> cob <Plug>(FlogCheckoutBranch)
@@ -212,6 +256,13 @@ if !hasmapto('<Plug>(FlogCheckoutLocalBranch)')
   nmap <buffer> cot <Plug>(FlogCheckoutLocalBranch)
 endif
 nnoremap <buffer> <silent> <Plug>(FlogCheckoutLocalBranch) :<C-U>call flog#run_command('Git checkout %l', 0, 1)<CR>
+
+if !hasmapto('<Plug>(FlogGitCommit)')
+  nmap <buffer> c<Space> <Plug>(FlogGitCommit)
+  vmap <buffer> c<Space> <Plug>(FlogGitCommit)
+endif
+nnoremap <buffer> <Plug>(FlogGitCommit) :Floggit commti<Space>
+vnoremap <buffer> <Plug>(FlogGitCommit) :Floggit commti<Space>
 
 if !hasmapto('<Plug>(FlogGitRevert)')
   nmap <buffer> cr<Space> <Plug>(FlogGitRevert)
@@ -248,12 +299,12 @@ vnoremap <buffer> <Plug>(FlogGitBranch) :Floggit branch<Space>
 if !hasmapto('<Plug>(FlogRebaseInteractive)')
   nmap <buffer> ri <Plug>(FlogRebaseInteractive)
 endif
-nnoremap <buffer> <silent> <Plug>(FlogRebaseInteractive) :<C-U>call flog#run_command('Git rebase --interactive %h^', 1, 1)<CR>
+nnoremap <buffer> <silent> <Plug>(FlogRebaseInteractive) :<C-U>call flog#run_command('Git rebase --interactive %H^', 1, 1)<CR>
 
 if !hasmapto('<Plug>(FlogRebaseInteractiveAutosquash)')
   nmap <buffer> rf <Plug>(FlogRebaseInteractiveAutosquash)
 endif
-nnoremap <buffer> <silent> <Plug>(FlogRebaseInteractiveAutosquash) :<C-U>call flog#run_command('Git rebase --interactive --autosquash %h^', 1, 1)<CR>
+nnoremap <buffer> <silent> <Plug>(FlogRebaseInteractiveAutosquash) :<C-U>call flog#run_command('Git -c sequence.editor=true rebase --interactive --autosquash %H^', 1, 1)<CR>
 
 if !hasmapto('<Plug>(FlogRebaseInteractiveUpstream)')
   nmap <buffer> ru <Plug>(FlogRebaseInteractiveUpstream)
@@ -288,17 +339,17 @@ nnoremap <buffer> <silent> <Plug>(FlogRebaseEditTodo) :<C-U>call flog#run_comman
 if !hasmapto('<Plug>(FlogRebaseInteractiveReword)')
   nmap <buffer> rw <Plug>(FlogRebaseInteractiveReword)
 endif
-nnoremap <buffer> <silent> <Plug>(FlogRebaseInteractiveReword) :<C-U>call flog#run_command('Git rebase --interactive %h^ \| s/^pick/reword/e', 1, 1)
+nnoremap <buffer> <silent> <Plug>(FlogRebaseInteractiveReword) :<C-U>call flog#run_command('Git rebase --interactive %H^ \| s/^pick/reword/e', 1, 1)
 
 if !hasmapto('<Plug>(FlogRebaseInteractiveEdit)')
   nmap <buffer> rm <Plug>(FlogRebaseInteractiveEdit)
 endif
-nnoremap <buffer> <silent> <Plug>(FlogRebaseInteractiveEdit) :<C-U>call flog#run_command('Git rebase --interactive %h^ \| s/^pick/edit/e', 1, 1)
+nnoremap <buffer> <silent> <Plug>(FlogRebaseInteractiveEdit) :<C-U>call flog#run_command('Git rebase --interactive %H^ \| s/^pick/edit/e', 1, 1)
 
 if !hasmapto('<Plug>(FlogRebaseInteractiveDrop)')
   nmap <buffer> rd <Plug>(FlogRebaseInteractiveDrop)
 endif
-nnoremap <buffer> <silent> <Plug>(FlogRebaseInteractiveDrop) :<C-U>call flog#run_command('Git rebase --interactive %h^ \| s/^pick/drop/e', 1, 1)
+nnoremap <buffer> <silent> <Plug>(FlogRebaseInteractiveDrop) :<C-U>call flog#run_command('Git rebase --interactive %H^ \| s/^pick/drop/e', 1, 1)
 
 if !hasmapto('<Plug>(FlogGitRebase)')
   nmap <buffer> r<Space> <Plug>(FlogGitRebase)
@@ -327,46 +378,46 @@ vnoremap <buffer> <silent> <Plug>(FlogJumpToCommitMark) :<C-U>call flog#jump_to_
 
 " }}}
 
-" Deprecated mappings {{{
+" Deprecated plugin mappings {{{
 
-call flog#deprecate_mapping('<Plug>Flogvsplitcommitright', '<Plug>(FlogVSplitCommitRight)', 'nmap')
-call flog#deprecate_mapping('<Plug>FlogVsplitcommitright', '<Plug>(FlogVSplitCommitRight)', 'nmap')
-call flog#deprecate_mapping('<Plug>FlogVnextcommitright', '<Plug>(FlogVNextCommitRight)', 'nmap')
-call flog#deprecate_mapping('<Plug>Flogvnextcommitright', '<Plug>(FlogVNextCommitRight)', 'nmap')
-call flog#deprecate_mapping('<Plug>FlogVprevcommitright', '<Plug>(FlogVPrevCommitRight)', 'nmap')
-call flog#deprecate_mapping('<Plug>Flogvprevcommitright', '<Plug>(FlogVPrevCommitRight)', 'nmap')
-call flog#deprecate_mapping('<Plug>FlogVnextrefright', '<Plug>(FlogVNextRefRight)', 'nmap')
-call flog#deprecate_mapping('<Plug>FlogVprevrefright', '<Plug>(FlogVPrevRefRight)', 'nmap')
+call flog#deprecate_plugin_mapping('<Plug>Flogvsplitcommitright', '<Plug>(FlogVSplitCommitRight)', 'nmap')
+call flog#deprecate_plugin_mapping('<Plug>FlogVsplitcommitright', '<Plug>(FlogVSplitCommitRight)', 'nmap')
+call flog#deprecate_plugin_mapping('<Plug>FlogVnextcommitright', '<Plug>(FlogVNextCommitRight)', 'nmap')
+call flog#deprecate_plugin_mapping('<Plug>Flogvnextcommitright', '<Plug>(FlogVNextCommitRight)', 'nmap')
+call flog#deprecate_plugin_mapping('<Plug>FlogVprevcommitright', '<Plug>(FlogVPrevCommitRight)', 'nmap')
+call flog#deprecate_plugin_mapping('<Plug>Flogvprevcommitright', '<Plug>(FlogVPrevCommitRight)', 'nmap')
+call flog#deprecate_plugin_mapping('<Plug>FlogVnextrefright', '<Plug>(FlogVNextRefRight)', 'nmap')
+call flog#deprecate_plugin_mapping('<Plug>FlogVprevrefright', '<Plug>(FlogVPrevRefRight)', 'nmap')
 
-call flog#deprecate_mapping('<Plug>FlogToggleall', '<Plug>(FlogToggleAll)', 'nmap')
-call flog#deprecate_mapping('<Plug>Flogtoggleall', '<Plug>(FlogToggleAll)', 'nmap')
-call flog#deprecate_mapping('<Plug>FlogTogglebisect', '<Plug>(FlogToggleBisect)', 'nmap')
-call flog#deprecate_mapping('<Plug>Flogtogglebisect', '<Plug>(FlogToggleBisect)', 'nmap')
-call flog#deprecate_mapping('<Plug>FlogTogglenomerges', '<Plug>(FlogToggleNoMerges)', 'nmap')
-call flog#deprecate_mapping('<Plug>Flogtogglenomerges', '<Plug>(FlogToggleNoMerges)', 'nmap')
-call flog#deprecate_mapping('<Plug>FlogTogglereflog', '<Plug>(FlogToggleReflog)', 'nmap')
+call flog#deprecate_plugin_mapping('<Plug>FlogToggleall', '<Plug>(FlogToggleAll)', 'nmap')
+call flog#deprecate_plugin_mapping('<Plug>Flogtoggleall', '<Plug>(FlogToggleAll)', 'nmap')
+call flog#deprecate_plugin_mapping('<Plug>FlogTogglebisect', '<Plug>(FlogToggleBisect)', 'nmap')
+call flog#deprecate_plugin_mapping('<Plug>Flogtogglebisect', '<Plug>(FlogToggleBisect)', 'nmap')
+call flog#deprecate_plugin_mapping('<Plug>FlogTogglenomerges', '<Plug>(FlogToggleNoMerges)', 'nmap')
+call flog#deprecate_plugin_mapping('<Plug>Flogtogglenomerges', '<Plug>(FlogToggleNoMerges)', 'nmap')
+call flog#deprecate_plugin_mapping('<Plug>FlogTogglereflog', '<Plug>(FlogToggleReflog)', 'nmap')
 
-call flog#deprecate_mapping('<Plug>FlogUpdate', '<Plug>(FlogUpdate)', 'nmap')
-call flog#deprecate_mapping('<Plug>Flogupdate', '<Plug>(FlogUpdate)', 'nmap')
+call flog#deprecate_plugin_mapping('<Plug>FlogUpdate', '<Plug>(FlogUpdate)', 'nmap')
+call flog#deprecate_plugin_mapping('<Plug>Flogupdate', '<Plug>(FlogUpdate)', 'nmap')
 
-call flog#deprecate_mapping('<Plug>FlogGit', '<Plug>(FlogGit)')
-call flog#deprecate_mapping('<Plug>Floggit', '<Plug>(FlogGit)')
+call flog#deprecate_plugin_mapping('<Plug>FlogGit', '<Plug>(FlogGit)')
+call flog#deprecate_plugin_mapping('<Plug>Floggit', '<Plug>(FlogGit)')
 
-call flog#deprecate_mapping('<Plug>FlogYank', '<Plug>(FlogYank)')
-call flog#deprecate_mapping('<Plug>Flogyank', '<Plug>(FlogYank)')
+call flog#deprecate_plugin_mapping('<Plug>FlogYank', '<Plug>(FlogYank)')
+call flog#deprecate_plugin_mapping('<Plug>Flogyank', '<Plug>(FlogYank)')
 
-call flog#deprecate_mapping('<Plug>FlogSearch', '<Plug>(FlogSearch)', 'nmap')
-call flog#deprecate_mapping('<Plug>FlogPatchSearch', '<Plug>(FlogPatchSearch)', 'nmap')
+call flog#deprecate_plugin_mapping('<Plug>FlogSearch', '<Plug>(FlogSearch)', 'nmap')
+call flog#deprecate_plugin_mapping('<Plug>FlogPatchSearch', '<Plug>(FlogPatchSearch)', 'nmap')
 
-call flog#deprecate_mapping('<Plug>FlogQuit', '<Plug>(FlogQuit)', 'nmap')
-call flog#deprecate_mapping('<Plug>Flogquit', '<Plug>(FlogQuit)', 'nmap')
+call flog#deprecate_plugin_mapping('<Plug>FlogQuit', '<Plug>(FlogQuit)', 'nmap')
+call flog#deprecate_plugin_mapping('<Plug>Flogquit', '<Plug>(FlogQuit)', 'nmap')
 
-call flog#deprecate_mapping('<Plug>FlogHelp', '<Plug>(FlogHelp)', 'nmap')
-call flog#deprecate_mapping('<Plug>Floghelp', '<Plug>(FlogHelp)', 'nmap')
+call flog#deprecate_plugin_mapping('<Plug>FlogHelp', '<Plug>(FlogHelp)', 'nmap')
+call flog#deprecate_plugin_mapping('<Plug>Floghelp', '<Plug>(FlogHelp)', 'nmap')
 
-call flog#deprecate_mapping('<Plug>FlogSetskip', '<Plug>(FlogSetSkip)', 'nmap')
-call flog#deprecate_mapping('<Plug>FlogSkipahead', '<Plug>(FlogSkipAhead)', 'nmap')
-call flog#deprecate_mapping('<Plug>FlogSkipback', '<Plug>(FlogSkipBack)', 'nmap')
+call flog#deprecate_plugin_mapping('<Plug>FlogSetskip', '<Plug>(FlogSetSkip)', 'nmap')
+call flog#deprecate_plugin_mapping('<Plug>FlogSkipahead', '<Plug>(FlogSkipAhead)', 'nmap')
+call flog#deprecate_plugin_mapping('<Plug>FlogSkipback', '<Plug>(FlogSkipBack)', 'nmap')
 
 " }}}
 
@@ -375,8 +426,6 @@ call flog#deprecate_mapping('<Plug>FlogSkipback', '<Plug>(FlogSkipBack)', 'nmap'
 " Commands {{{
 
 command! -buffer Flogsplitcommit call flog#run_tmp_command('<mods> Gsplit %h')
-
-command! -buffer -range -bang -complete=customlist,flog#complete_git -nargs=* Floggit call flog#run_raw_command('<mods> Git ' . <q-args>, 1, 1, !empty('<bang>'))
 
 command! -buffer -bang -complete=customlist,flog#complete -nargs=* Flogsetargs call flog#update_options([<f-args>], '<bang>' ==# '!')
 
