@@ -8,7 +8,7 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use anyhow::{anyhow, Result};
 use crossbeam_channel::{bounded, unbounded, Receiver, Sender};
 use jsonrpc_core::Params;
-use serde::{de::DeserializeOwned, Deserialize, Serialize};
+use serde::{de::DeserializeOwned, Serialize};
 use serde_json::Value;
 
 pub use self::messages::method_call::MethodCall;
@@ -138,7 +138,7 @@ fn loop_read(
         match reader.read_line(&mut line) {
             Ok(number) => {
                 if number > 0 {
-                    match serde_json::from_str::<RawMessage>(&line.trim()) {
+                    match serde_json::from_str::<RawMessage>(line.trim()) {
                         Ok(raw_message) => match raw_message {
                             RawMessage::MethodCall(method_call) => {
                                 sink.send(Call::MethodCall(method_call))?;

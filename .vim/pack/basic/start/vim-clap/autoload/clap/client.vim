@@ -19,8 +19,10 @@ endfunction
 
 function! s:init_display(msg) abort
   if empty(g:clap.input.get())
-    call g:clap.display.set_lines_lazy(a:msg.lines)
-    call g:clap#display_win.shrink_if_undersize()
+    if g:clap.provider.id !=# 'blines'
+      call g:clap.display.set_lines_lazy(a:msg.lines)
+      call g:clap#display_win.shrink_if_undersize()
+    endif
   endif
 
   call clap#indicator#update_matches_on_forerunner_done()
@@ -154,6 +156,17 @@ function! clap#client#call(method, callback, params) abort
   if a:callback isnot v:null
     let s:handlers[s:req_id] = a:callback
   endif
+endfunction
+
+let s:call_timer = -1
+let s:call_delay = 150
+
+function! clap#client#call_with_delay(method, callback, params) abort
+  if s:call_timer != -1
+    call timer_stop(s:call_timer)
+  endif
+
+  let s:call_timer = timer_start(s:call_delay, { -> clap#client#call(a:method, a:callback, a:params) })
 endfunction
 
 " One optional argument: Dict, extra params

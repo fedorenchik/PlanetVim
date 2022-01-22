@@ -24,6 +24,20 @@ impl ExactTerm {
     pub fn new(ty: ExactTermType, word: String) -> Self {
         Self { ty, word }
     }
+
+    /// The results of applying `other` is a subset of applying `self` on the same source.
+    pub fn contains(&self, other: &Self) -> bool {
+        use ExactTermType::*;
+
+        match (&self.ty, &other.ty) {
+            (Exact, Exact) | (PrefixExact, PrefixExact) | (SuffixExact, SuffixExact) => {
+                // Comparing with `'hello`, `'he` has more results.
+                other.word.starts_with(&self.word)
+            }
+            (Exact, PrefixExact) | (Exact, SuffixExact) => true,
+            _ => false,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Eq, PartialEq)]
@@ -51,6 +65,22 @@ pub struct InverseTerm {
 impl InverseTerm {
     pub fn new(ty: InverseTermType, word: String) -> Self {
         Self { ty, word }
+    }
+
+    /// The results of applying `other` is a subset of applying `self` on the same source.
+    pub fn contains(&self, other: &Self) -> bool {
+        use InverseTermType::*;
+
+        // Comparing with `!hello`, `!he` has less results.
+        // In order to have a superset results, `self.word` needs to be longer.
+
+        match (&self.ty, &other.ty) {
+            (InverseExact, InverseExact)
+            | (InversePrefixExact, InversePrefixExact)
+            | (InverseSuffixExact, InverseSuffixExact) => self.word.starts_with(&other.word),
+            (InversePrefixExact, InverseExact) | (InverseSuffixExact, InverseExact) => true,
+            _ => false,
+        }
     }
 
     /// Returns true if the full line of given `item` matches the inverse term.
@@ -127,17 +157,17 @@ impl SearchTerm {
 
 impl From<&str> for SearchTerm {
     fn from(s: &str) -> Self {
-        let (ty, word) = if let Some(stripped) = s.strip_prefix("'") {
+        let (ty, word) = if let Some(stripped) = s.strip_prefix('\'') {
             (TermType::Exact(ExactTermType::Exact), stripped)
-        } else if let Some(stripped) = s.strip_prefix("^") {
+        } else if let Some(stripped) = s.strip_prefix('^') {
             (TermType::Exact(ExactTermType::PrefixExact), stripped)
-        } else if let Some(stripped) = s.strip_prefix("!") {
-            if let Some(double_stripped) = stripped.strip_prefix("^") {
+        } else if let Some(stripped) = s.strip_prefix('!') {
+            if let Some(double_stripped) = stripped.strip_prefix('^') {
                 (
                     TermType::Inverse(InverseTermType::InversePrefixExact),
                     double_stripped,
                 )
-            } else if let Some(double_stripped) = stripped.strip_suffix("$") {
+            } else if let Some(double_stripped) = stripped.strip_suffix('$') {
                 (
                     TermType::Inverse(InverseTermType::InverseSuffixExact),
                     double_stripped,
@@ -145,7 +175,7 @@ impl From<&str> for SearchTerm {
             } else {
                 (TermType::Inverse(InverseTermType::InverseExact), stripped)
             }
-        } else if let Some(stripped) = s.strip_suffix("$") {
+        } else if let Some(stripped) = s.strip_suffix('$') {
             (TermType::Exact(ExactTermType::SuffixExact), stripped)
         } else {
             (TermType::Fuzzy(FuzzyTermType::Fuzzy), s)
