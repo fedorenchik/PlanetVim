@@ -651,6 +651,62 @@ xnoremap iz :<c-u>FastFoldUpdate<cr><esc>:<c-u>normal! ]zv[z<cr>
 xnoremap az :<c-u>FastFoldUpdate<cr><esc>:<c-u>normal! ]zV[z<cr>
 " }}}
 " Plugin: fern.vim {{{
+let g:fern#keepalt_on_edit = 1
+let g:fern#keepjumps_on_edit = 1
+let g:fern#disable_default_mappings = 1
+
+nnoremap <silent> - :Fern -reveal=% .<CR>
+
+func! s:InitFern() abort
+  nmap <buffer><expr> o
+        \ fern#smart#drawer(
+              \ fern#smart#leaf(
+                    \ "<Plug>(fern-action-open)<C-w>p",
+                    \ "<Plug>(fern-action-expand:stay)",
+                    \ "<Plug>(fern-action-collapse)"
+              \ ),
+              \ fern#smart#leaf(
+                    \ "<Plug>(fern-action-open)",
+                    \ "<Plug>(fern-action-expand:stay)",
+                    \ "<Plug>(fern-action-collapse)"
+              \ )
+        \ )
+  nmap <buffer><expr> <CR>
+        \ fern#smart#leaf(
+              \ "<Plug>(fern-action-open)",
+              \ "<Plug>(fern-action-expand:stay)",
+              \ "<Plug>(fern-action-collapse)"
+        \ )
+  nmap <buffer><expr> x
+        \ fern#smart#leaf(
+              \ "<Nop>",
+              \ "<Plug>(fern-action-expand:stay)",
+              \ "<Plug>(fern-action-collapse)"
+        \ )
+  nmap <buffer> C <Plug>(fern-action-enter)
+  nmap <buffer> u <Plug>(fern-action-leave)
+  nmap <buffer> q :<C-u>quit<CR>
+  nmap <buffer> . <Plug>(fern-action-hidden:toggle)
+  nmap <buffer> I <Plug>(fern-action-hidden:toggle)
+  nmap <buffer> r <Plug>(fern-action-reload:cursor)
+  nmap <buffer> R <Plug>(fern-action-reload:all)
+
+  nmap <buffer> t <Plug>(fern-action-open:tabedit)
+  nmap <buffer> T <Plug>(fern-action-open:tabedit)gT
+  nmap <buffer> i <Plug>(fern-action-open:split)
+  nmap <buffer> gi <Plug>(fern-action-open:split)<C-w>p
+  nmap <buffer> s <Plug>(fern-action-open:vsplit)
+  nmap <buffer> gs <Plug>(fern-action-open:vsplit)<C-w>p
+  nmap <buffer> ma <Plug>(fern-action-new-path)
+  nmap <buffer> P gg
+  nmap <buffer> cd <Plug>(fern-action-cd)
+endfunc
+
+augroup planetvim-fern
+  autocmd! *
+  autocmd FileType fern setlocal nonumber norelativenumber signcolumn=yes foldcolumn=0
+  autocmd FileType fern call s:InitFern()
+augroup END
 " }}}
 " Plugin: fern-bookmark.vim {{{
 let g:fern#scheme#bookmark#store#file = "~/.vim/fern-bookmark.json"
