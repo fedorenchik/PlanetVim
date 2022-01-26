@@ -310,6 +310,21 @@ func! planet#menu#dev#Update() abort
     an 500.10  📐&}.Vulkan.Compile\ Shader                  <Cmd>call planet#term#RunCmd('glslc file.ext -o file.ext.spv')<CR>
     an 500.10  📐&}.Open\ GL.glxinfo                        <Cmd>call planet#term#RunCmd('glxinfo')<CR>
     an 500.10  📐&}.Blender.Print\ Blender\ PYTHONPATH      <Cmd>call planet#term#RunCmd('blender --background --python-expr ''print(\"PYTHONPATH=\"+\":\".join(__import__(\"sys\").path))'' 2>/dev/null \\| grep -F \"PYTHONPATH=\"')<CR>
+    an 500.10  📐&}.Node.Run\ with\ node                    <Cmd>call planet#term#RunCmd('node ' .. expand('%'))<CR>
+    an 500.10  📐&}.Node.Start\ node\ REPL                  <Cmd>call planet#term#RunCmd('node')<CR>
+    an 500.10  📐&}.WebAssembly.Emscripten\ Install         <Cmd>call planet#term#RunScript('emsdk-install')<CR>
+    an 500.10  📐&}.WebAssembly.Emscripten\ Activate        <Cmd>call planet#term#RunScript('emsdk-activate')<CR>
+    an 500.10  📐&}.WebAssembly.Emscripten\ Update          <Cmd>call planet#term#RunScript('emsdk-update')<CR>
+    an 500.10  📐&}.WebAssembly.emcc\ version               <Cmd>call planet#term#RunCmd('emcc --version; emcc -v')<CR>
+    an 500.10  📐&}.WebAssembly.emcc\ compile\ to\ html     <Cmd>call planet#term#RunCmd('emcc ' .. expand('%') .. ' -o ' .. expand('%:r') .. '.html --emrun')<CR>
+    an 500.10  📐&}.WebAssembly.emcc\ compile\ to\ js       <Cmd>call planet#term#RunCmd('emcc ' .. expand('%') .. ' -o ' .. expand('%:r') .. '.js --emrun')<CR>
+    an 500.10  📐&}.WebAssembly.emcc\ compile\ to\ wasm     <Cmd>call planet#term#RunCmd('emcc ' .. expand('%') .. ' -o ' .. expand('%:r') .. '.wasm --emrun')<CR>
+    an 500.10  📐&}.WebAssembly.emcc\ compile\ bind         <Cmd>call planet#term#RunCmd('emcc ' .. expand('%') .. ' -o ' .. expand('%:r') .. '_wasm.js --emrun --bind')<CR>
+    an 500.10  📐&}.WebAssembly.emrun\ file                 <Cmd>call planet#term#RunCmd('emrun ' .. expand('%:r') .. '.html')<CR>
+    an 500.10  📐&}.WebAssembly.DisWebAssemble\ to\ js      <Cmd>call planet#term#RunCmd('$EMSDK/upstream/bin/wasm2js ' .. expand('%:r') .. '.wasm -o ' .. expand('%:r') .. '.js')<CR>
+    an 500.10  📐&}.WebAssembly.Configure                   <Cmd>call planet#term#RunCmd('emconfigure ./configure')<CR>
+    an 500.10  📐&}.WebAssembly.Cmake                       <Cmd>call planet#term#RunCmd('emconfigure cmake ..')<CR>
+    an 500.10  📐&}.WebAssembly.Emmake\ make                <Cmd>call planet#term#RunCmd('emmake make')<CR>
     an 500.10  📐&}.i10n\ &&\ i18n <Nop>
     an disable 📐&}.i10n\ &&\ i18n
     an 500.10  📐&}.lupdate                                 :TODO
