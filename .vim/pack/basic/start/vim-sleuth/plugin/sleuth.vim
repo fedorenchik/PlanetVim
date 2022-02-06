@@ -433,10 +433,13 @@ function! s:Detect() abort
   if c <= 0 || empty(dir)
     let detected.patterns = []
   else
-    let detected.patterns = ['*' . matchstr(file, '/\@<!\.[^./]\+$')]
+    let detected.patterns = ['*' . matchstr(file, '/\@<!\.[^][{}*?$~\`./]\+$')]
     if detected.patterns ==# ['*']
-      let detected.patterns = [matchstr(file, '[^/]\+\ze/\=$')]
+      let detected.patterns = [matchstr(file, '/\zs[^][{}*?$~\`/]\+\ze/\=$')]
       let dir = fnamemodify(dir, ':h')
+      if empty(detected.patterns[0])
+        let detected.patterns = []
+      endif
     endif
   endif
   while c > 0 && dir !~# '^$\|^//[^/]*$' && dir !=# fnamemodify(dir, ':h')
@@ -523,8 +526,11 @@ endfunction
 
 augroup sleuth
   autocmd!
-  autocmd BufNewFile,BufReadPost,BufFilePost * nested
+  autocmd BufNewFile,BufReadPost * nested
         \ if get(b:, 'sleuth_automatic', get(g:, 'sleuth_automatic', 1))
+        \ | silent call s:Init(0) | endif
+  autocmd BufFilePost * nested
+        \ if (@% !~# '^!' || exists('b:sleuth')) && get(b:, 'sleuth_automatic', get(g:, 'sleuth_automatic', 1))
         \ | silent call s:Init(0) | endif
   autocmd FileType * nested
         \ if exists('b:sleuth') | silent call s:Apply(b:sleuth, 1) | endif
