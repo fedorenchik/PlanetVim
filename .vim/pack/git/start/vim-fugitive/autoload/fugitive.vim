@@ -3948,7 +3948,7 @@ function! fugitive#Complete(lead, ...) abort
     let results = ['--literal-pathspecs', '--no-literal-pathspecs', '--glob-pathspecs', '--noglob-pathspecs', '--icase-pathspecs', '--no-optional-locks']
   elseif empty(subcmd)
     let results = s:CompletableSubcommands(dir)
-  elseif a:0 ==# 2 && subcmd =~# '^\%(commit\|revert\|push\|fetch\|pull\|merge\|rebase\)$'
+  elseif a:0 ==# 2 && subcmd =~# '^\%(commit\|revert\|push\|fetch\|pull\|merge\|rebase\|bisect\)$'
     let cmdline = substitute(a:1, '\u\w*\([! ] *\)' . subcmd, 'G' . subcmd, '')
     let caps_subcmd = substitute(subcmd, '\%(^\|-\)\l', '\u&', 'g')
     return fugitive#{caps_subcmd}Complete(a:lead, cmdline, a:2 + len(cmdline) - len(a:1), dir, root)
@@ -5247,6 +5247,22 @@ function! s:RebaseSubcommand(line1, line2, range, bang, mods, options) abort
   return {}
 endfunction
 
+" Section: :Git bisect
+
+function! s:CompleteBisect(A, L, P, ...) abort
+  let bisect_subcmd = matchstr(a:L, '\u\w*[! ] *.\{-\}\s\@<=\zs[^-[:space:]]\S*\ze ')
+  if empty(bisect_subcmd)
+    let subcmds = ['start', 'bad', 'new', 'good', 'old', 'terms', 'skip', 'next', 'reset', 'replay', 'log', 'run']
+    return s:FilterEscape(subcmds, a:A)
+  endif
+  let dir = a:0 ? a:1 : s:Dir()
+  return fugitive#CompleteObject(a:A, dir)
+endfunction
+
+function fugitive#BisectComplete(A, L, P, ...) abort
+  return s:CompleteSub('bisect', a:A, a:L, a:P, function('s:CompleteBisect'), a:000)
+endfunction
+
 " Section: :Git difftool, :Git mergetool
 
 function! s:ToolItems(state, from, to, offsets, text, ...) abort
@@ -5889,9 +5905,13 @@ function! s:ArgSplit(string) abort
     let arg = matchstr(string, '^\s*\%(\\.\|[^[:space:]]\)\+')
     let string = strpart(string, len(arg))
     let arg = substitute(arg, '^\s\+', '', '')
-    call add(args, substitute(arg, '\\\@<!\\ ', ' ', 'g'))
+    call add(args, substitute(arg, '\\\+[|" ]', '\=submatch(0)[len(submatch(0))/2 : -1]', 'g'))
   endwhile
   return args
+endfunction
+
+function! s:PlusEscape(string) abort
+  return substitute(a:string, '\\*[|" ]', '\=repeat("\\", len(submatch(0))).submatch(0)', 'g')
 endfunction
 
 function! s:OpenParse(string, wants_cmd) abort
@@ -5900,7 +5920,7 @@ function! s:OpenParse(string, wants_cmd) abort
   let args = s:ArgSplit(a:string)
   while !empty(args)
     if args[0] =~# '^++'
-      call add(opts, ' ' . escape(remove(args, 0), ' |"'))
+      call add(opts, ' ' . s:PlusEscape(remove(args, 0)))
     elseif a:wants_cmd && args[0] =~# '^+'
       call add(cmds, remove(args, 0)[1:-1])
     else
@@ -5967,9 +5987,9 @@ function! s:OpenParse(string, wants_cmd) abort
 
   let pre = join(opts, '')
   if len(cmds) > 1
-    let pre .= ' +' . escape(join(map(cmds, '"exe ".string(v:val)'), '|'), ' |"')
+    let pre .= ' +' . s:PlusEscape(join(map(cmds, '"exe ".string(v:val)'), '|'))
   elseif len(cmds)
-    let pre .= ' +' . escape(cmds[0], ' |"')
+    let pre .= ' +' . s:PlusEscape(cmds[0])
   endif
   return [url, pre]
 endfunction
@@ -7577,9 +7597,10 @@ function! fugitive#MapJumps(...) abort
     call s:Map('n', 'czA', ':<C-U>Git stash apply --quiet stash@{<C-R>=v:count<CR>}<CR>')
     call s:Map('n', 'czp', ':<C-U>Git stash pop --quiet --index stash@{<C-R>=v:count<CR>}<CR>')
     call s:Map('n', 'czP', ':<C-U>Git stash pop --quiet stash@{<C-R>=v:count<CR>}<CR>')
+    call s:Map('n', 'czs', ':<C-U>Git stash push --staged<CR>')
     call s:Map('n', 'czv', ':<C-U>exe "Gedit" fugitive#RevParse("stash@{" . v:count . "}")<CR>', '<silent>')
-    call s:Map('n', 'czw', ':<C-U>Git stash --keep-index<C-R>=v:count > 1 ? " --all" : v:count ? " --include-untracked" : ""<CR><CR>')
-    call s:Map('n', 'czz', ':<C-U>Git stash <C-R>=v:count > 1 ? " --all" : v:count ? " --include-untracked" : ""<CR><CR>')
+    call s:Map('n', 'czw', ':<C-U>Git stash push --keep-index<C-R>=v:count > 1 ? " --all" : v:count ? " --include-untracked" : ""<CR><CR>')
+    call s:Map('n', 'czz', ':<C-U>Git stash push <C-R>=v:count > 1 ? " --all" : v:count ? " --include-untracked" : ""<CR><CR>')
     call s:Map('n', 'cz?', ':<C-U>help fugitive_cz<CR>', '<silent>')
 
     call s:Map('n', 'co<Space>', ':Git checkout<Space>')
@@ -7888,7 +7909,7 @@ function! s:GF(mode) abort
   endtry
   if len(results) > 1
     let cmd = 'G' . a:mode .
-          \ (empty(results[1]) ? '' : ' +' . escape(results[1], ' |')) . ' ' .
+          \ (empty(results[1]) ? '' : ' +' . s:PlusEscape(results[1])) . ' ' .
           \ fnameescape(results[0])
     let tail = join(map(results[2:-1], '"|" . v:val'), '')
     if a:mode ==# 'pedit' && len(tail)
