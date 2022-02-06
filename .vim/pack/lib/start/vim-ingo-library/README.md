@@ -141,7 +141,7 @@ https://github.com/inkarkat/vim-ingo-library/issues or email (address below).
 HISTORY
 ------------------------------------------------------------------------------
 
-##### 1.043   RELEASEME
+##### 1.043   04-Feb-2022
 - Minor: Actually support no-argument form of
   ingo#query#get#[Writable]Register(), the documentation already states that
   the a:errorRegister defaults to the empty string.
@@ -177,6 +177,9 @@ HISTORY
 - Add ingo/ranges.vim module (originally from AdvancedSorters.vim).
 - ingo#file#GetLines(): Robustness: Empty a:filespec throws E17
 - Add ingo#subst#Recurringly().
+- Add ingo#text#Append() variant of ingo#text#Insert().
+- Add ingo/text/surroundings.vim modules.
+- Add ingo#regexp#EscapeLiteralReplacement().
 
 ##### 1.042   03-Aug-2020
 - BUG: ingo#join#Lines() inserts the separator before the line's last
