@@ -140,9 +140,13 @@ func! planet#menu#dev#Update() abort
     an 500.10  🎚️&{.C&onda.Install\ from\ requirements\.txt :call planet#term#RunCmd('conda install --file requirements.txt')<CR>
     an 500.10  🎚️&{.C&onda.Create\ from\ environment\.yml   :call planet#term#RunCmd('conda env create -f environment.yml')<CR>
     an 500.10  🎚️&{.C&onda.Deactivate                       :call planet#term#RunCmd('conda deactivate')<CR>
-    an 500.10  🎚️&{.C&onda.Create\ venv                     :call planet#term#RunCmd('conda create -n <venv-name>')
+    an 500.10  🎚️&{.C&onda.Create\ New\ Environment         :call planet#term#RunCmdAskArgs('conda create --name', 'Name: ', 'conda')<CR>
     an 500.10  🎚️&{.C&onda.Activate\ Anaconda               :call planet#term#RunCmd('source /opt/anaconda/bin/activate')<CR>
     an 500.10  🎚️&{.C&onda.Deactivate\ Anaconda             :call planet#term#RunCmd('source /opt/anaconda/bin/deactivate')<CR>
+    an 500.10  🎚️&{.C&onda.Conda\ Init                      :call planet#term#RunCmd('conda-init')<CR>
+    an 500.10  🎚️&{.C&onda.Conda\ Info                      :call planet#term#RunCmd('conda info')<CR>
+    an 500.10  🎚️&{.Android.Download\ System\ Image         <Cmd>call planet#term#RunCmd('$ANDROID_SDK/tools/bin/sdkmanager "system-images;android-27;google_apis;x86"')<CR>
+    an 500.10  🎚️&{.Android.Create\ AVD                     <Cmd>call planet#term#RunCmd('$ANDROID_SDK/tools/bin/avdmanager create avd -n virtualAndroid -k "system-images;android-27;google_apis;x86"')<CR>
     an 500.10  🎚️&{.Vagrant.Test                            :TODO
     an 500.10  🎚️&{.QEMU.Test                               :TODO
     an 500.10  🎚️&{.QEMU\ Schroot.qemu-debootstrap          :TODO
@@ -165,7 +169,12 @@ func! planet#menu#dev#Update() abort
     an 500.10  🎚️&{.Configuration <Nop>
     an disable 🎚️&{.Configuration
     an 500.10  🎚️&{.Install\ Qt.Set\ $QTDIR                 <Cmd>call planet#env#SetEnvVar('QTDIR')<CR>
-    an 500.10  🎚️&{.Install\ Qt.Choose\ Version             :aqtinstall ...
+    an 500.10  🎚️&{.Install\ Qt.Install\ Qt\ 6\.2\.3        <Cmd>call planet#term#RunCmd('aqt install-qt linux desktop 6.2.3 gcc_64')<CR>
+    an 500.10  🎚️&{.Install\ Qt.Install\ Qt\ 6\.2\.3\ Modules <Cmd>call planet#term#RunCmd('aqt install-qt linux desktop 6.2.3 gcc_64 -m all')<CR>
+    an 500.10  🎚️&{.Install\ Qt.Install\ Qt\ 6\.2\.3\ Android <Cmd>call planet#term#RunCmd('aqt install-qt linux android 6.2.3 android_arm64_v8a')<CR>
+    an 500.10  🎚️&{.Install\ Qt.Install\ Qt\ 6\.2\.3\ Android\ Modules <Cmd>call planet#term#RunCmd('aqt install-qt linux android 6.2.3 android_arm64_v8a -m all')<CR>
+    an 500.10  🎚️&{.Install\ Qt.Install\ Qt\ 6\.2\.3\ Wasm  <Cmd>call planet#term#RunCmd('aqt install-qt linux desktop 6.2.3 wasm_32')<CR>
+    an 500.10  🎚️&{.Install\ Qt.Install\ Qt\ 6\.2\.3\ Wasm\ Modules <Cmd>call planet#term#RunCmd('aqt install-qt linux desktop 6.2.3 wasm_32 -m all')<CR>
     an 500.10  🎚️&{.Install\ Conan\ Pkg.TODO                :TODO
     an 500.10  🎚️&{.Install\ pip\ Pkg.TODO                  :TODO
     an 500.10  🎚️&{.Npm.Start\ App                          <Cmd>call planet#term#RunCmd('npm run serve')<CR>
@@ -413,6 +422,8 @@ func! planet#menu#dev#Update() abort
     an 500.10  🔨&u.&CMake.&Configure                       <Cmd>call planet#term#RunCmd('cmake ' .. getcwd(), v:false, v:false, v:false, g:PV_build_dir)<CR>
     an 500.10  🔨&u.&CMake.Configure\ &Tui                  <Cmd>call planet#term#RunCmdTab('ccmake ' .. getcwd(), g:PV_build_dir)<CR>
     an 500.10  🔨&u.&CMake.Configure\ &Gui                  <Cmd>call planet#term#RunGuiApp('cmake-gui ' .. getcwd(), g:PV_build_dir)<CR>
+    an 500.10  🔨&u.&CMake.Configure\ Android\ armv7        <Cmd>call planet#term#RunScript('configure-cmake-android-armv7')<CR>
+    an 500.10  🔨&u.&CMake.Configure\ Android\ x86          <Cmd>call planet#term#RunScript('configure-cmake-android-x86')<CR>
     an 500.10  🔨&u.&CMake.--2-- <Nop>
     an 500.10  🔨&u.&CMake.&Build                           <Cmd>call planet#term#RunCmd('cmake --build .', v:false, v:false, v:false, g:PV_build_dir)<CR>
     an 500.10  🔨&u.&CMake.&Rebuild                         <Cmd>call planet#term#RunCmd('cmake --build . --target clean && cmake --build .', v:false, v:false, v:false, g:PV_build_dir)<CR>
