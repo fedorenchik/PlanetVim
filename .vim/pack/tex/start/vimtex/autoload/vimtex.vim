@@ -97,7 +97,7 @@ function! s:init_buffer() abort " {{{1
 
     " Several additional modules should be disabled in bib files
     let l:disabled_modules += [
-          \ 'fold', 'matchparen', 'format', 'doc', 'imaps', 'cmd', 'delim',
+          \ 'fold', 'matchparen', 'format', 'doc', 'imaps', 'delim',
           \ 'env', 'motion', 'complete',
           \]
 
@@ -134,15 +134,16 @@ function! s:init_default_mappings() abort " {{{1
   call s:map(1, 'n', 'dse', '<plug>(vimtex-env-delete)')
   call s:map(1, 'n', 'cse', '<plug>(vimtex-env-change)')
   call s:map(1, 'n', 'tse', '<plug>(vimtex-env-toggle-star)')
+  call s:map(1, 'n', 'ts$', '<plug>(vimtex-env-toggle-math)')
 
-  call s:map(1, 'n', 'dsc',  '<plug>(vimtex-cmd-delete)')
-  call s:map(1, 'n', 'csc',  '<plug>(vimtex-cmd-change)')
+  call s:map(0, 'n', 'dsc',  '<plug>(vimtex-cmd-delete)')
+  call s:map(0, 'n', 'csc',  '<plug>(vimtex-cmd-change)')
   call s:map(1, 'n', 'tsc',  '<plug>(vimtex-cmd-toggle-star)')
   call s:map(1, 'n', 'tsf',  '<plug>(vimtex-cmd-toggle-frac)')
   call s:map(1, 'x', 'tsf',  '<plug>(vimtex-cmd-toggle-frac)')
-  call s:map(1, 'i', '<F7>', '<plug>(vimtex-cmd-create)')
-  call s:map(1, 'n', '<F7>', '<plug>(vimtex-cmd-create)')
-  call s:map(1, 'x', '<F7>', '<plug>(vimtex-cmd-create)')
+  call s:map(0, 'i', '<F7>', '<plug>(vimtex-cmd-create)')
+  call s:map(0, 'n', '<F7>', '<plug>(vimtex-cmd-create)')
+  call s:map(0, 'x', '<F7>', '<plug>(vimtex-cmd-create)')
 
   call s:map(1, 'n', 'dsd', '<plug>(vimtex-delim-delete)')
   call s:map(1, 'n', 'csd', '<plug>(vimtex-delim-change-math)')
@@ -151,6 +152,7 @@ function! s:init_default_mappings() abort " {{{1
   call s:map(1, 'n', 'tsD', '<plug>(vimtex-delim-toggle-modifier-reverse)')
   call s:map(1, 'x', 'tsD', '<plug>(vimtex-delim-toggle-modifier-reverse)')
   call s:map(1, 'i', ']]',  '<plug>(vimtex-delim-close)')
+  call s:map(1, 'n', '<F8>', '<plug>(vimtex-delim-add-modifiers)')
 
   if g:vimtex_compiler_enabled
     call s:map(0, 'n', '<localleader>ll', '<plug>(vimtex-compile)')

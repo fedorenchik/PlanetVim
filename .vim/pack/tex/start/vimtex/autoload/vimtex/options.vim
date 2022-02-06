@@ -55,6 +55,12 @@ function! vimtex#options#init() abort " {{{1
   call s:init_option('vimtex_echo_verbose_input', 1)
 
   call s:init_option('vimtex_env_change_autofill', 0)
+  call s:init_option('vimtex_env_toggle_math_map', {
+        \ '$': '\[',
+        \ '\[': 'equation',
+        \ '$$': '\[',
+        \ '\(': '$',
+        \})
 
   if &diff
     let g:vimtex_fold_enabled = 0
@@ -405,7 +411,7 @@ function! vimtex#options#init() abort " {{{1
       call s:init_option('vimtex_view_general_viewer', 'mupdf')
       call s:init_option('vimtex_view_general_options', '@pdf')
     else
-      call s:init_option('vimtex_view_general_viewer', 'start')
+      call s:init_option('vimtex_view_general_viewer', 'start ""')
       call s:init_option('vimtex_view_general_options', '@pdf')
     endif
   else

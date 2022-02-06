@@ -182,7 +182,7 @@ FEATURE OVERVIEW                                              *vimtex-features*
   - `ic` `ac` Commands
   - `id` `ad` Delimiters
   - `ie` `ae` LaTeX environments
-  - `i$` `a$` Inline math structures
+  - `i$` `a$` Math environments
   - `iP` `aP` Sections
   - `im` `am` Items
 - Other mappings
@@ -191,9 +191,11 @@ FEATURE OVERVIEW                                              *vimtex-features*
   - Change the surrounding command, environment or delimiter with
     `csc`/`cse`/`cs$`/`csd`
   - Toggle starred command or environment with `tsc`/`tse`
+  - Toggle inline and displaymath with `ts$`
   - Toggle between e.g. `()` and `\left(\right)` with `tsd`/`tsD`
   - Toggle (inline) fractions with `tsf`
   - Close the current environment/delimiter in insert mode with `]]`
+  - Add `\left ... \right)` modifiers to surrounding delimiters with `<F8>`
   - Insert new command with `<F7>`
   - Convenient insert mode mappings for faster typing of e.g. maths
   - Context menu on citations (e.g. `\cite{...}`) mapped to `<cr>`
@@ -829,10 +831,12 @@ This feature is explained in more detail later, see |vimtex-imaps|.
    tsf              |<plug>(vimtex-cmd-toggle-frac)|                `nx`
    tsc              |<plug>(vimtex-cmd-toggle-star)|                `n`
    tse              |<plug>(vimtex-env-toggle-star)|                `n`
+   ts$              |<plug>(vimtex-env-toggle-math)|                `n`
    tsd              |<plug>(vimtex-delim-toggle-modifier)|          `nx`
    tsD              |<plug>(vimtex-delim-toggle-modifier-reverse)|  `nx`
    <F7>             |<plug>(vimtex-cmd-create)|                     `nxi`
    ]]               |<plug>(vimtex-delim-close)|                    `i`
+   <F8>             |<plug>(vimtex-delim-add-modifiers)|            `n`
    ac               |<plug>(vimtex-ac)|                             `xo`
    ic               |<plug>(vimtex-ic)|                             `xo`
    ad               |<plug>(vimtex-ad)|                             `xo`
@@ -1446,10 +1450,19 @@ OPTIONS                                                        *vimtex-options*
   Default value: 0
 
 *g:vimtex_doc_handlers*
-  By default, package documentation is looked up online through
-  http://texdoc.net/pkg/packagename. With this option, one may specify a list
-  of custom handlers. A handler is a function that takes a single |Dict|
-  argument with the following keys:
+  With this option, one may specify a list of custom documentation handlers.
+  The following pre-made handlers are available:
+
+    'vimtex#doc#handler#texdoc'  Open documentation with local `texdoc`.
+    Fallback                     Open documentation online through
+                                 http://texdoc.net/pkg/packagename.
+
+  To use the local `texdoc`, set: >
+
+    let g:vimtex_doc_handlers = ['vimtex#doc#handlers#texdoc']
+<
+  A handler is a function that takes a single |Dict| argument with the
+  following keys:
 
     type~
       One of `documentclass`, `usepackage`, `command` or `word`.
@@ -1467,24 +1480,24 @@ OPTIONS                                                        *vimtex-options*
       not defined.
 
   Each handler in the list will be tried until a handler provides a return
-  value of 1. One may add handlers that only makes minor modifications of the
-  context and passes it on to the default handler, as well as handlers that
-  fully completes the lookup e.g. through a local lookup with `texdoc`.
+  value of 1 or |v:true|. One may thus add handlers that only makes minor
+  modifications of the context and passes it on to the next handler.
 
-  Note that the context may have multiple candidates, and that the handlers
-  are applied before any internal selection is made. Thus the `selected` key
-  may not defined. This allows the handler to perform the selection itself, or
-  one may manually call the selection function `vimtex#doc#make_selection` to
-  get a simple selection menu.
+  The context may have multiple candidates and the handlers are applied before
+  any internal selection is made. Thus the `selected` key may be not defined.
+  This allows the handler to perform the selection itself. One may manually
+  call the selection function `vimtex#doc#make_selection` to get a simple
+  selection menu.
 
-  The following example uses the local `texdoc` to open the documentation: >
+  The following shows a generic example of how to write a custom handler: >
 
     let g:vimtex_doc_handlers = ['MyHandler']
+
     function! MyHandler(context)
       call vimtex#doc#make_selection(a:context)
-      if !empty(a:context.selected)
-        execute '!texdoc' a:context.selected '&'
-      endif
+      if empty(a:context.selected) | return 0 | endif
+
+      execute '!myhandler' a:context.selected '&'
       return 1
     endfunction
 <
@@ -1515,6 +1528,19 @@ OPTIONS                                                        *vimtex-options*
         `<c-u>`).
 
   Default: 0
+
+*g:vimtex_env_toggle_math_map*
+  Specify toggle map for |<plug>(vimtex-env-toggle-math)|. You can use this to
+  change the desired toggle sequence.
+
+  Default value: >
+
+    let g:vimtex_env_toggle_math_map = {
+          \ '$': '\[',
+          \ '\[': 'equation',
+          \ '$$': '\[',
+          \ '\(': '$',
+          \}
 
 *g:vimtex_fold_enabled*
   Use this option to enable folding. More detailed info can be found in the
@@ -2163,7 +2189,8 @@ OPTIONS                                                        *vimtex-options*
 *g:vimtex_syntax_conceal*
   A dictionary for specifying which core conceal features to activate. This
   mostly implies concealing particular elements with a replacement unicode
-  character. For more info, see |vimtex-syntax-conceal|.
+  character. For more info, see |vimtex-syntax-conceal|. To disable all
+  conceal features in one go, use |g:vimtex_syntax_conceal_disable|.
 
   The following keys are available:
 
@@ -2234,9 +2261,9 @@ OPTIONS                                                        *vimtex-options*
           \}
 
 *g:vimtex_syntax_conceal_disable*
-  The option |g:vimtex_syntax_conceal| allows to selectively disable conceal
-  features. For convenience, this option allows to disable all conceal
-  features in one go. For more info, see |vimtex-syntax-conceal|.
+  This option allows to disable all conceal features at once. For more fine
+  tuned control, see |g:vimtex_syntax_conceal|. For more info, see
+  |vimtex-syntax-conceal|.
 
   Default value: 0
 
@@ -2868,7 +2895,7 @@ OPTIONS                                                        *vimtex-options*
   Default value:
     Linux:   `xdg-open`
     macOS:   `open`
-    Windows: `SumatraPDF` or `mupdf` if available, else `start`
+    Windows: `SumatraPDF` or `mupdf` if available, else `start ""`
 
 *g:vimtex_view_mupdf_send_keys*
   A string of keys that will be sent to MuPDF just after the PDF file has been
@@ -3192,6 +3219,15 @@ MAP DEFINITIONS                                               *vimtex-mappings*
 *<plug>(vimtex-env-toggle-star)*
   Toggle starred command/environment.
 
+*<plug>(vimtex-env-toggle-math)*
+  Toggle between inline math and displayed math, e.g.: >
+
+                      ts$        \[
+    $f(x) = 1$         ↔            f(x) = 1
+                                 \]
+<
+  One may change the toggle sequence with |g:vimtex_env_toggle_math_map|.
+
 *<plug>(vimtex-delim-toggle-modifier)*
 *<plug>(vimtex-delim-toggle-modifier-reverse)*
   Toggle delimiter modifiers, by default alternating between `(...)` and
@@ -3225,6 +3261,10 @@ MAP DEFINITIONS                                               *vimtex-mappings*
 *<plug>(vimtex-delim-close)*
   Close the current environment or delimiter (insert mode).
 
+*<plug>(vimtex-delim-add-modifiers)*
+  Add `\left` and `\right)` modifiers to all surrounding "unmodified"
+  delimiteres in the current math scope.
+
 *<plug>(vimtex-reverse-search)*
   Do reverse search for the MuPDF viewer, see |vimtex-view-mupdf|.
 
@@ -3234,7 +3274,7 @@ MAP DEFINITIONS                                               *vimtex-mappings*
 *<plug>(vimtex-id)*
 *<plug>(vimtex-ae)*   Environments
 *<plug>(vimtex-ie)*
-*<plug>(vimtex-a$)*   Inline math
+*<plug>(vimtex-a$)*   Math environments
 *<plug>(vimtex-i$)*
 *<plug>(vimtex-aP)*   Sections
 *<plug>(vimtex-iP)*
@@ -4914,7 +4954,7 @@ suggested above) in `~/.vim/after/ftplugin/bib.vim`: >
         \ 'normal! m`' | silent AddMissingCommas | silent! exe 'normal! g``'
 
 Finally, for more full-fledged linting in Vim, see the plug-ins mentioned in
-|vimtex-non-features|.
+|vimtex-and-friends|.
 
 [1] https://ctan.org/pkg/lacheck
 [2] https://www.nongnu.org/chktex/
@@ -5068,12 +5108,14 @@ PDFs. It comes by default with Gnome.
 Configuration: >
   let g:vimtex_view_general_viewer = 'evince'
 
-Note: It is not so easy to setup forward and inverse search with Evince [0].
-      If anyone has a good setup that could be documented here, please open an
-      issue or email me. In the meantime, I can recommend to look into the
-      other alternative viewers.
 
-      [0]: https://github.com/lervag/vimtex/issues/179
+Note: Evince only supports synctex through DBus, which is not supported by
+      VimTeX. Thus VimTeX does not support forward and inverse search with
+      Evince. However, the Vim plugin `SVED` by Peter Jorgensen is reported to
+      work well in combination with VimTeX. See the plugin page [0] for more
+      information.
+
+      [0]: https://github.com/peterbjorgensen/sved
 
                                                             *vimtex-view-mupdf*
 MuPDF~
@@ -5910,7 +5952,7 @@ Deprecated options:
 Removed support for using `lacheck` for checking LaTeX syntax. The reason is
 that there exist several (good) external plugins for syntax checking files.
 These are general purpose plugins that work for multiple file types. For more
-info, see |vimtex-non-features|.
+info, see |vimtex-and-friends|.
 
 2017-05-20: Updated TOC options~
 There's been a few updates to the TOC. During this work, I removed some

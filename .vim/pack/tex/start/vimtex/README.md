@@ -193,7 +193,7 @@ features are enabled by default, but each feature may be disabled if desired.
   - `ic ac` Commands
   - `id ad` Delimiters
   - `ie ae` LaTeX environments
-  - `i$ a$` Inline math structures
+  - `i$ a$` Math environments
   - `iP aP` Sections
   - `im am` Items
 - Other mappings
@@ -202,9 +202,11 @@ features are enabled by default, but each feature may be disabled if desired.
   - Change the surrounding command, environment or delimiter with
     `csc`/`cse`/`cs$`/`csd`
   - Toggle starred command or environment with `tsc`/`tse`
+  - Toggle inline and displaymath with `ts$`
   - Toggle between e.g. `()` and `\left(\right)` with `tsd`
   - Toggle (inline) fractions with `tsf`
   - Close the current environment/delimiter in insert mode with `]]`
+  - Add `\left ... \right)` modifiers to surrounding delimiters with `<F8>`
   - Insert new command with `<F7>`
   - Convenient insert mode mappings for faster typing of e.g. maths
   - Context menu on citations (e.g. `\cite{...}`) mapped to `<cr>`
@@ -226,7 +228,7 @@ See the documentation for a thorough introduction to VimTeX (e.g. `:h vimtex`).
 Even though VimTeX provides a lot of nice features for working with LaTeX
 documents, there are several features that are better served by other,
 dedicated plugins. For a more detailed listing of these, please see [`:help
-vimtex-non-features`](doc/vimtex.txt#L156).
+vimtex-and-friends`](doc/vimtex.txt#L508).
 
 ### Linting and syntax checking
 

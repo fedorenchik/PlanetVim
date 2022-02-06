@@ -433,12 +433,28 @@ function! vimtex#syntax#core#init() abort " {{{1
   syntax case match
 
   " Highlight \iffalse ... \fi blocks as comments
-  syntax region texComment matchgroup=texCmd
-        \ start="^\s*\\iffalse\>" end="\\fi\>"
+  syntax region texComment matchgroup=texCmdConditional
+        \ start="^\s*\\iffalse\>" end="\\\%(fi\|else\)\>"
         \ contains=texCommentConditionals
+
   syntax region texCommentConditionals matchgroup=texComment
         \ start="\\if\w\+" end="\\fi\>"
         \ contained transparent
+
+  " Highlight \iftrue ... \else ... \fi blocks as comments
+  syntax region texConditionalTrueZone matchgroup=texCmdConditional
+        \ start="^\s*\\iftrue\>"  end="\v\\fi>|%(\\else>)@="
+        \ contains=TOP nextgroup=texCommentFalse
+        \ transparent
+
+  syntax region texConditionalNested matchgroup=texCmdConditional
+        \ start="\\if\w\+" end="\\fi\>"
+        \ contained contains=TOP
+        \ containedin=texConditionalTrueZone,texConditionalNested
+
+  syntax region texCommentFalse matchgroup=texCmdConditional
+        \ start="\\else\>"  end="\\fi\>"
+        \ contained contains=texCommentConditionals
 
   " }}}2
   " {{{2 Zone: Verbatim
@@ -502,6 +518,16 @@ function! vimtex#syntax#core#init() abort " {{{1
   call vimtex#syntax#core#new_arg('texMathEnvArgName',
         \ {'contains': 'texComment,@NoSpell'})
 
+  " Environments inside math zones
+  " * This is used to restrict the whitespace between environment name and
+  "   the option group (see https://github.com/lervag/vimtex/issues/2043).
+  syntax match texCmdEnvM "\v\\%(begin|end)>" contained nextgroup=texEnvMArgName
+  call vimtex#syntax#core#new_arg('texEnvMArgName', {
+        \ 'contains': 'texComment,@NoSpell',
+        \ 'next': 'texEnvOpt',
+        \ 'skipwhite': v:false
+        \})
+
   " Math regions: environments
   call vimtex#syntax#core#new_region_math('displaymath')
   call vimtex#syntax#core#new_region_math('eqnarray')
@@ -509,19 +535,29 @@ function! vimtex#syntax#core#init() abort " {{{1
   call vimtex#syntax#core#new_region_math('math')
 
   " Math regions: Inline Math Zones
-  if g:vimtex_syntax_conceal.math_bounds
-    syntax region texMathZone   matchgroup=texMathDelimZone concealends contains=@texClusterMath keepend start="\\("  end="\\)"
-    syntax region texMathZone   matchgroup=texMathDelimZone concealends contains=@texClusterMath keepend start="\\\[" end="\\]"
-    syntax region texMathZoneX  matchgroup=texMathDelimZone concealends contains=@texClusterMath         start="\$"   skip="\\\\\|\\\$"  end="\$"
-          \ nextgroup=texMathTextAfter
-    syntax region texMathZoneXX matchgroup=texMathDelimZone concealends contains=@texClusterMath keepend start="\$\$" end="\$\$"
-  else
-    syntax region texMathZone   matchgroup=texMathDelimZone contains=@texClusterMath keepend start="\\("  end="\\)"
-    syntax region texMathZone   matchgroup=texMathDelimZone contains=@texClusterMath keepend start="\\\[" end="\\]"
-    syntax region texMathZoneX  matchgroup=texMathDelimZone contains=@texClusterMath         start="\$"   skip="\\\\\|\\\$"  end="\$"
-          \ nextgroup=texMathTextAfter
-    syntax region texMathZoneXX matchgroup=texMathDelimZone contains=@texClusterMath keepend start="\$\$" end="\$\$"
-  endif
+  let l:conceal = g:vimtex_syntax_conceal.math_bounds ? 'concealends' : ''
+  execute 'syntax region texMathZone matchgroup=texMathDelimZone'
+          \ 'start="\%(\\\@<!\)\@<=\\("'
+          \ 'end="\%(\\\@<!\)\@<=\\)"'
+          \ 'contains=@texClusterMath keepend'
+          \ l:conceal
+  execute 'syntax region texMathZone matchgroup=texMathDelimZone'
+          \ 'start="\\\["'
+          \ 'end="\\]"'
+          \ 'contains=@texClusterMath keepend'
+          \ l:conceal
+  execute 'syntax region texMathZoneX matchgroup=texMathDelimZone'
+          \ 'start="\$"'
+          \ 'skip="\\\\\|\\\$"'
+          \ 'end="\$"'
+          \ 'contains=@texClusterMath'
+          \ 'nextgroup=texMathTextAfter'
+          \ l:conceal
+  execute 'syntax region texMathZoneXX matchgroup=texMathDelimZone'
+          \ 'start="\$\$"'
+          \ 'end="\$\$"'
+          \ 'contains=@texClusterMath keepend'
+          \ l:conceal
 
   " This is to disable spell check for text just after "$" (e.g. "$n$th")
   syntax match texMathTextAfter "\w\+" contained contains=@NoSpell
@@ -563,16 +599,6 @@ function! vimtex#syntax#core#init() abort " {{{1
 
   " Bold and italic commands
   call s:match_bold_italic_math()
-
-  " Environments inside math zones
-  " * This is used to restrict the whitespace between environment name and
-  "   the option group (see https://github.com/lervag/vimtex/issues/2043).
-  syntax match texCmdEnvM "\v\\%(begin|end)>" contained nextgroup=texEnvMArgName
-  call vimtex#syntax#core#new_arg('texEnvMArgName', {
-        \ 'contains': 'texComment,@NoSpell',
-        \ 'next': 'texEnvOpt',
-        \ 'skipwhite': v:false
-        \})
 
   " Support for array environment
   syntax match texMathCmdEnv contained contains=texCmdMathEnv "\\begin{array}"
@@ -746,6 +772,7 @@ function! vimtex#syntax#core#init_highlights() abort " {{{1
   highlight def link texCmdTitle           texCmd
   highlight def link texCmdVerb            texCmd
   highlight def link texCommentAcronym     texComment
+  highlight def link texCommentFalse       texComment
   highlight def link texCommentURL         texComment
   highlight def link texConditionalArg     texArg
   highlight def link texConditionalINCChar texSymbol
@@ -1821,6 +1848,10 @@ function! s:match_conceal_accents() abort " {{{1
   syntax match texCmdAccent   "\\AA\>" conceal cchar=Å
   syntax match texCmdAccent   "\\o\>"  conceal cchar=ø
   syntax match texCmdAccent   "\\O\>"  conceal cchar=Ø
+  syntax match texCmdAccent   "\\i\>"  conceal cchar=ı
+  syntax match texCmdAccent   "\\j\>"  conceal cchar=ȷ
+  syntax match texCmdAccent   "\\lq\>" conceal cchar=‘
+  syntax match texCmdAccent   "\\rq\>" conceal cchar=′
   syntax match texCmdLigature "\\AE\>" conceal cchar=Æ
   syntax match texCmdLigature "\\ae\>" conceal cchar=æ
   syntax match texCmdLigature "\\oe\>" conceal cchar=œ
