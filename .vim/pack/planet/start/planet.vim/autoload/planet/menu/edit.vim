@@ -142,11 +142,12 @@ func! planet#menu#edit#Update() abort
     " Folds
     an 250.10  📜&z.Folds <Nop>
     an disable 📜&z.Folds
-    an 250.20  📜&z.Fold\ by\ &Syntax<Tab><A-z>s            :setlocal foldmethod=syntax<CR>
-    an 250.30  📜&z.Fold\ by\ &Indent<Tab><A-z>i            :setlocal foldmethod=indent<CR>
-    an 250.40  📜&z.Fold\ by\ E&xpr<Tab><A-z>x              :setlocal foldmethod=expr<CR>
-    an 250.50  📜&z.Fold\ by\ Mar&kers<Tab><A-z>k           :setlocal foldmethod=marker<CR>
-    an 250.100 📜&z.Manua&l<Tab><A-z>l                      :setlocal foldmethod=manual<CR>
+    an 250.20  📜&z.Fold\ by\ &Syntax<Tab><A-z>s            <Cmd>setlocal foldmethod=syntax<CR>
+    an 250.30  📜&z.Fold\ by\ LSP                           <Cmd>setlocal foldmethod=expr foldexpr=lsp#ui#vim#folding#foldexpr() foldtext=lsp#ui#vim#folding#foldtext()<CR>
+    an 250.40  📜&z.Fold\ by\ &Indent<Tab><A-z>i            <Cmd>setlocal foldmethod=indent<CR>
+    an 250.50  📜&z.Fold\ by\ Mar&kers<Tab><A-z>k           <Cmd>setlocal foldmethod=marker<CR>
+    an 250.60  📜&z.Fold\ by\ E&xpr<Tab><A-z>x              <Cmd>setlocal foldmethod=expr<CR>
+    an 250.100 📜&z.Manua&l<Tab><A-z>l                      <Cmd>setlocal foldmethod=manual<CR>
     an 250.110 📜&z.--1-- <Nop>
     an 250.120 📜&z.&Open<Tab>zo                            zo
     an 250.130 📜&z.&Close<Tab>zc                           zc

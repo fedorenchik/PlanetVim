@@ -630,7 +630,6 @@ let g:xml_syntax_folding = 1
 " }}}
 " External Plugins: {{{
 " Plugin: asyncomplete.vim {{{
-let g:asyncomplete_log_file = ''
 let g:asyncomplete_auto_completeopt = 0
 " }}}
 " Plugin: editorconfig-vim {{{
@@ -880,15 +879,12 @@ call SetupCommandAlias("grep", "GrepperGrep")
 " Plugin: vim-lsp {{{
 let g:lsp_use_lua = has('nvim-0.4.0') || (has('lua') && has('patch-8.2.0775'))
 let g:lsp_preview_keep_focus = 1
-let g:lsp_preview_float = 0
-let g:lsp_preview_autoclose = 0
-let g:lsp_documentation_float_docked = 0 " disable because it will change focus to documentation window
+let g:lsp_preview_float = 1
+let g:lsp_preview_autoclose = 1
 let g:lsp_diagnostics_echo_cursor = 1
-let g:lsp_diagnostics_float_cursor = 0
-let g:lsp_signs_enabled = 1
-let g:lsp_signs_priority = 10
-let g:lsp_highlights_enabled = 1
-let g:lsp_textprop_enabled = 1
+" XXX: evaluate
+let g:lsp_diagnostics_float_cursor = 1
+let g:lsp_format_sync_timeout = 1000
 " make undercurl work in terminal
 let &t_Cs = "\e[4:3m"
 let &t_Ce = "\e[4:0m"
@@ -896,94 +892,18 @@ highlight LspErrorHighlight term=strikethrough cterm=strikethrough ctermul=Red g
 highlight LspWarningHighlight term=undercurl cterm=undercurl ctermul=Yellow gui=undercurl guisp=Orange
 highlight LspInformationHighlight term=underline cterm=undercurl ctermul=Blue gui=undercurl guisp=Blue
 highlight LspHintHighlight term=underline cterm=undercurl ctermul=Green gui=undercurl guisp=DarkGreen
-let g:lsp_peek_alignment = "top"
 let g:lsp_show_workspace_edits = 1
 let g:lsp_fold_enabled = 1
 let g:lsp_hover_conceal = 1
 let g:lsp_ignorecase = 1
 let g:lsp_log_file = ''
 let g:lsp_semantic_enabled = 0
-":LspCodeAction
-":LspCodeActionSync
-":LspCodeLens
-":LspCodeLensSync
-":LspDocumentDiagnostics
-":LspDeclaration
-":LspDefinition
-":LspDocumentFold
-":LspDocumentFoldSync
-":LspDocumentFormat
-":LspDocumentFormatSync
-":LspDocumentRangeFormat
-":LspDocumentSymbol
-":LspHover
-":LspNextDiagnostic [-wrap=0]
-":LspNextError [-wrap=0]
-":LspNextReference
-":LspNextWarning [-wrap=0]
-":LspPeekDeclaration
-":LspPeekDefinition
-":LspPeekImplementation
-":LspPeekTypeDefinition
-":LspPreviousDiagnostic [-wrap=0]
-":LspPreviousError [-wrap=0]
-":LspPreviousReference
-":LspPreviousWarning [-wrap=0]
-":LspImplementation
-":LspReferences
-":LspRename
-":LspSemanticScopes
-":LspTypeDefinition
-":LspTypeHierarchy
-":LspWorkspaceSymbol
-":LspStatus
-"nnoremap <plug>(lsp-code-action)
-"nnoremap <plug>(lsp-code-lens)
-"nnoremap <plug>(lsp-declaration)
-"nnoremap <plug>(lsp-peek-declaration)
-"nnoremap <plug>(lsp-definition)
-"nnoremap <plug>(lsp-peek-definition)
-"nnoremap <plug>(lsp-document-symbol)
-"nnoremap <plug>(lsp-document-diagnostics)
-"nnoremap <plug>(lsp-hover)
-"nnoremap <plug>(lsp-next-diagnostic)
-"nnoremap <plug>(lsp-next-diagnostic-nowrap)
-"nnoremap <plug>(lsp-next-error)
-"nnoremap <plug>(lsp-next-error-nowrap)
-"nnoremap <plug>(lsp-next-reference)
-"nnoremap <plug>(lsp-next-warning)
-"nnoremap <plug>(lsp-next-warning-nowrap)
-"nnoremap <plug>(lsp-preview-close)
-"nnoremap <plug>(lsp-preview-focus)
-"nnoremap <plug>(lsp-previous-diagnostic)
-"nnoremap <plug>(lsp-previous-diagnostic-nowrap)
-"nnoremap <plug>(lsp-previous-error)
-"nnoremap <plug>(lsp-previous-error-nowrap)
-"nnoremap <plug>(lsp-previous-reference)
-"nnoremap <plug>(lsp-previous-warning)
-"nnoremap <plug>(lsp-previous-warning-nowrap)
-"nnoremap <plug>(lsp-references)
-"nnoremap <plug>(lsp-rename)
-"nnoremap <plug>(lsp-workspace-symbol)
-"nnoremap <plug>(lsp-document-format)
-"vnoremap <plug>(lsp-document-format)
-"nnoremap <plug>(lsp-document-range-format)
-"xnoremap <plug>(lsp-document-range-format)
-"nnoremap <plug>(lsp-implementation)
-"nnoremap <plug>(lsp-peek-implementation)
-"nnoremap <plug>(lsp-type-definition)
-"nnoremap <plug>(lsp-peek-type-definition)
-"nnoremap <plug>(lsp-type-hierarchy)
-"nnoremap <plug>(lsp-status)
-"nnoremap <plug>(lsp-signature-help)
-"nnoremap <plug>(lsp-preview-close)
-"nnoremap <plug>(lsp-preview-focus)
+
 let g:lsp_async_completion = 1
-autocmd FileType c,cpp,cmake,python,vim setlocal tagfunc=lsp#tagfunc
+" autocmd FileType c,cpp,cmake,python,vim setlocal tagfunc=lsp#tagfunc
+autocmd User lsp_buffer_enabled setlocal tagfunc=lsp#tagfunc
+autocmd User lsp_buffer_enabled setlocal omnifunc=lsp#complete
 "TODO: snippets
-autocmd FileType python setlocal foldmethod=expr
-autocmd FileType python setlocal foldexpr=lsp#ui#vim#folding#foldexpr()
-autocmd FileType python setlocal foldtext=lsp#ui#vim#folding#foldtext()
 " }}}
 " Plugin: vim-mark {{{
 let g:mwPalettes = {

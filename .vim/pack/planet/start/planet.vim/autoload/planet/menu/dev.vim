@@ -6,52 +6,61 @@ func! planet#menu#dev#Update() abort
     an 300.10  ❇️&[.LSP <Nop>
     an disable ❇️&[.LSP
     an 300.10  ❇️&[.Choose\ Symbol<Tab>:Clap\ tags\ vim_lsp :Clap tags vim_lsp<CR>
-    an 300.10  ❇️&[.Document\ Symbol\ Choose                :LspDocumentSymbolSearch<CR>
-    an 300.10  ❇️&[.&Workspace\ Symbols\ Choose             :LspWorkspaceSymbolSearch<CR>
     an 300.10  ❇️&[.--1-- <Nop>
-    an 300.10  ❇️&[.&Definition                             :LspDefinition<CR>
-    an 300.10  ❇️&[.De&claration                            :LspDeclaration<CR>
-    an 300.10  ❇️&[.&References                             :LspReferences<CR>
-    an 300.10  ❇️&[.&Implementation                         :LspImplementation<CR>
-    an 300.10  ❇️&[.&Type\ Definition                       :LspTypeDefinition<CR>
-    an 300.10  ❇️&[.Type\ &Hierarchy                        :LspTypeHierarchy<CR>
-    an 300.10  ❇️&[.&Incoming\ Call\ Hierarchy              :LspCallHierarchyIncoming<CR>
-    an 300.10  ❇️&[.&Outgoing\ Call\ Hierarchy              :LspCallHierarchyOutgoing<CR>
-    an 300.10  ❇️&[.Symbol\ Hover                           :LspHover<CR>
-    an 300.10  ❇️&[.Document\ Semantic\ Scopes              :LspSemanticScopes<CR>
-    an 300.10  ❇️&[.--1-- <Nop>
-    an 300.10  ❇️&[.Preview\ Definition                     :LspPeekDefinition<CR>
-    an 300.10  ❇️&[.Preview\ Declaration                    :LspPeekDeclaration<CR>
-    an 300.10  ❇️&[.Preview\ Implementation                 :LspPeekImplementation<CR>
-    an 300.10  ❇️&[.Preview\ Type\ Definition               :LspPeekTypeDefinition<CR>
-    an 300.10  ❇️&[.--1-- <Nop>
-    an 300.10  ❇️&[.Rena&me                                 :LspRename<CR>
-    an 300.10  ❇️&[.Code\ Action\ (LSP\ Quick\ &Fix)        :LspCodeAction<CR>
-    an 300.10  ❇️&[.Code\ &Lens                             :LspCodeLens<CR>
-    an 300.10  ❇️&[.Format\ Document                        :LspDocumentFormat<CR>
-    an 300.10  ❇️&[.Format\ Document\ Selection             :LspDocumentRangeFormat<CR>
-    an 300.10  ❇️&[.Update\ Document\ Folds                 :call PlanetVim_LSPUpdateFolds()<CR>
-    an 300.10  ❇️&[.--1-- <Nop>
-    an 300.10  ❇️&[.Document\ Symbols                       :LspDocumentSymbol<CR>
-    an 300.10  ❇️&[.Workspace\ Symbols                      :LspWorkspaceSymbol<CR>
-    an 300.10  ❇️&[.--1-- <Nop>
-    an 300.10  ❇️&[.&Previous\ Reference                    :LspPreviousReference<CR>
-    an 300.10  ❇️&[.&Next\ Reference                        :LspNextReference<CR>
-    an 300.10  ❇️&[.--1-- <Nop>
-    an 300.10  ❇️&[.Document\ Diagnostics                   :LspDocumentDiagnostics<CR>
-    an 300.10  ❇️&[.Diagnostics\ (all\ buffers)             :LspDocumentDiagnostics --buffers=*<CR>
-    an 300.10  ❇️&[.--1-- <Nop>
-    an 300.10  ❇️&[.Previous\ Error                         :LspPreviousError -wrap=0<CR>
-    an 300.10  ❇️&[.Next\ Error                             :LspNextError -wrap=0<CR>
-    an 300.10  ❇️&[.--1-- <Nop>
-    an 300.10  ❇️&[.Previous\ Warning                       :LspPreviousWarning -wrap=0<CR>
-    an 300.10  ❇️&[.Next\ Warning                           :LspNextWarning -wrap=0<CR>
-    an 300.10  ❇️&[.--1-- <Nop>
-    an 300.10  ❇️&[.Previous\ Diagnostic                    :LspPreviousDiagnostic -wrap=0<CR>
-    an 300.10  ❇️&[.Next\ Diagnostic                        :LspNextDiagnostic -wrap=0<CR>
-    an 300.10  ❇️&[.--1-- <Nop>
-    an 300.10  ❇️&[.Status.LSP\ Status                      :LspStatus<CR>
-    an 300.10  ❇️&[.Status.Disable\ LSP                     :LspStopServer<CR>
+    an 300.10  ❇️&[.&Definition                             <Cmd>LspDefinition<CR>
+    an 300.10  ❇️&[.De&claration                            <Cmd>LspDeclaration<CR>
+    an 300.10  ❇️&[.&References                             <Cmd>LspReferences<CR>
+    an 300.10  ❇️&[.&Implementation                         <Cmd>LspImplementation<CR>
+    an 300.10  ❇️&[.&Type\ Definition                       <Cmd>LspTypeDefinition<CR>
+    an 300.10  ❇️&[.Type\ &Hierarchy                        <Cmd>LspTypeHierarchy<CR>
+    an 300.10  ❇️&[.&Incoming\ Call\ Hierarchy              <Cmd>LspCallHierarchyIncoming<CR>
+    an 300.10  ❇️&[.&Outgoing\ Call\ Hierarchy              <Cmd>LspCallHierarchyOutgoing<CR>
+    an 300.10  ❇️&[.Document\ Semantic\ Scopes              <Cmd>LspSemanticScopes<CR>
+    an 300.10  ❇️&[.--2-- <Nop>
+    an 300.10  ❇️&[.Preview.Hover                           <Cmd>LspHover<CR>
+    an 300.10  ❇️&[.Preview.Hover\ in\ Popup                <Cmd>LspHover --ui=float<CR>
+    an 300.10  ❇️&[.Preview.Hover\ in\ Preview              <Cmd>LspHover --ui=preview<CR>
+    an 300.10  ❇️&[.Preview.Definition                      <Cmd>LspPeekDefinition<CR>
+    an 300.10  ❇️&[.Preview.Declaration                     <Cmd>LspPeekDeclaration<CR>
+    an 300.10  ❇️&[.Preview.Implementation                  <Cmd>LspPeekImplementation<CR>
+    an 300.10  ❇️&[.Preview.Type\ Definition                <Cmd>LspPeekTypeDefinition<CR>
+    an 300.10  ❇️&[.--3-- <Nop>
+    an 300.10  ❇️&[.Rena&me                                 <Cmd>LspRename<CR>
+    an 300.10  ❇️&[.Code\ Action\ (LSP\ Quick\ &Fix)        <Cmd>LspCodeAction<CR>
+    an 300.10  ❇️&[.Code\ &Lens                             <Cmd>LspCodeLens<CR>
+    an 300.10  ❇️&[.Format\ Document                        <Cmd>LspDocumentFormat<CR>
+    an 300.10  ❇️&[.Format\ Document\ Selection             <Cmd>LspDocumentRangeFormat<CR>
+    an 300.10  ❇️&[.Update\ Document\ Folds                 <Cmd>LspDocumentFold<CR>
+    an 300.10  ❇️&[.--4-- <Nop>
+    an 300.10  ❇️&[.Document\ Symbols                       <Cmd>LspDocumentSymbol<CR>
+    an 300.10  ❇️&[.Document\ Symbol\ Search                <Cmd>LspDocumentSymbolSearch<CR>
+    an 300.10  ❇️&[.Workspace\ Symbols                      <Cmd>LspWorkspaceSymbol<CR>
+    an 300.10  ❇️&[.Workspace\ Symbol\ Search               <Cmd>LspWorkspaceSymbolSearch<CR>
+    an 300.10  ❇️&[.--5-- <Nop>
+    an 300.10  ❇️&[.&Previous\ Reference                    <Cmd>LspPreviousReference<CR>
+    an 300.10  ❇️&[.&Next\ Reference                        <Cmd>LspNextReference<CR>
+    an 300.10  ❇️&[.--6-- <Nop>
+    an 300.10  ❇️&[.Document\ Diagnostics                   <Cmd>LspDocumentDiagnostics<CR>
+    an 300.10  ❇️&[.Diagnostics\ (all\ buffers)             <Cmd>LspDocumentDiagnostics --buffers=*<CR>
+    an 300.10  ❇️&[.--7-- <Nop>
+    an 300.10  ❇️&[.Previous\ Error                         <Cmd>LspPreviousError -wrap=0<CR>
+    an 300.10  ❇️&[.Next\ Error                             <Cmd>LspNextError -wrap=0<CR>
+    an 300.10  ❇️&[.--8-- <Nop>
+    an 300.10  ❇️&[.Previous\ Warning                       <Cmd>LspPreviousWarning -wrap=0<CR>
+    an 300.10  ❇️&[.Next\ Warning                           <Cmd>LspNextWarning -wrap=0<CR>
+    an 300.10  ❇️&[.--9-- <Nop>
+    an 300.10  ❇️&[.Previous\ Diagnostic                    <Cmd>LspPreviousDiagnostic -wrap=0<CR>
+    an 300.10  ❇️&[.Next\ Diagnostic                        <Cmd>LspNextDiagnostic -wrap=0<CR>
+    an 300.10  ❇️&[.--10-- <Nop>
+    an 300.10  ❇️&[.Status.LSP\ Status                      <Cmd>LspStatus<CR>
+    an 300.10  ❇️&[.Status.--1-- <Nop>
+    an 300.10  ❇️&[.Status.Restart\ LSP                     <Cmd>call lsp#disable()<CR><Cmd>call lsp#enable()<CR>
+    an 300.10  ❇️&[.Status.Enable\ LSP                      <Cmd>call lsp#enable()<CR>
+    an 300.10  ❇️&[.Status.Disable\ LSP                     <Cmd>call lsp#disable()<CR>
+    an 300.10  ❇️&[.Status.Stop\ Server                     <Cmd>LspStopServer<CR>
+    an 300.10  ❇️&[.Status.--2-- <Nop>
+    an 300.10  ❇️&[.Status.Enable\ Diagnostics              <Cmd>call lsp#enable_diagnostics_for_buffer()<CR>
+    an 300.10  ❇️&[.Status.Disable\ Diagnostics             <Cmd>call lsp#disable_diagnostics_for_buffer()<CR>
 
     " Tags
     an 310.10  🪧&].Tags <Nop>
@@ -446,7 +455,8 @@ func! planet#menu#dev#Update() abort
     an 500.10  🔨&u.Ar&duino.Set\ Build\ Dir                 :let g:arduino_build_path = 'TODO'
     an 500.10  🔨&u.Ar&duino.Use\ Arduino\ IDE               :let g:arduino_use_cli = 0
     an 500.10  🔨&u.Ar&duino.Use\ arduino-cli                :let g:arduino_use_cli = 1
-    an 500.10  🔨&u.&PlatformIO.Edit\ Settings               :e platformio.ini<CR>
+    an 500.10  🔨&u.&PlatformIO.Build                        <Cmd>call planet#term#RunCmd('pio run')<CR>
+    an 500.10  🔨&u.&PlatformIO.Menuconfig                   <Cmd>call planet#term#RunCmd('pio run -t menuconfig')<CR>
     an 500.10  🔨&u.&ROS.Build\ Workspace                    :TODO
     an 500.10  🔨&u.&ROS.roslaunch                           :TODO
     an 500.10  🔨&u.&ROS.rosrun                              :TODO
