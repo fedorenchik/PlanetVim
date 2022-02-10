@@ -883,7 +883,7 @@ let g:lsp_preview_float = 1
 let g:lsp_preview_autoclose = 1
 let g:lsp_diagnostics_echo_cursor = 1
 " XXX: evaluate
-let g:lsp_diagnostics_float_cursor = 1
+let g:lsp_diagnostics_float_cursor = 0
 let g:lsp_format_sync_timeout = 1000
 " make undercurl work in terminal
 let &t_Cs = "\e[4:3m"
