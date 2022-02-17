@@ -438,7 +438,7 @@ func! planet#menu#dev#Update() abort
     an 500.10  🔨&u.&CMake.&Rebuild                         <Cmd>call planet#term#RunCmd('cmake --build . --target clean && cmake --build .', v:false, v:false, v:false, g:PV_build_dir)<CR>
     an 500.10  🔨&u.&CMake.Clean                            <Cmd>call planet#term#RunCmd('cmake --build . --target clean', v:false, v:false, v:false, g:PV_build_dir)<CR>
     an 500.10  🔨&u.&CMake.--3-- <Nop>
-    an 500.10  🔨&u.&CMake.Generate\ compile_commands\.json <Cmd>call planet#env#SenEnvVarValue('CMAKE_EXPORT_COMPILE_COMMANDS=ON')<CR><Cmd>call planet#term#RunCmd('cmake ' .. getcwd(), v:false, v:false, v:false, g:PV_build_dir)<CR>
+    an 500.10  🔨&u.&CMake.Generate\ compile_commands\.json <Cmd>call planet#env#SetEnvVarValue('CMAKE_EXPORT_COMPILE_COMMANDS=ON')<CR><Cmd>call planet#term#RunCmd('cmake ' .. getcwd(), v:false, v:false, v:false, g:PV_build_dir)<CR>
     an 500.10  🔨&u.&Meson.Set\ DESTDIR                     :!make<CR>
     an 500.10  🔨&u.Ar&duino.Verify                          :ArduinoVerify<CR>
     an 500.10  🔨&u.Ar&duino.Upload                          :ArduinoUpload<CR>
