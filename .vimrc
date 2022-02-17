@@ -692,7 +692,7 @@ func! s:InitFern() abort
   nmap <buffer> <C-t> <Plug>(fern-action-open:tabedit)
   nmap <buffer> g<C-t> <Plug>(fern-action-open:tabedit)gT
   nmap <buffer> <C-n> <Plug>(fern-action-new-path)
-  nmap <buffer> <C-m> <Plug>(fern-action-mark:toggle)
+  nmap <buffer> <C-k> <Plug>(fern-action-mark:toggle)
   nmap <buffer> <C-f> <Plug>(fern-action-new-file)
   nmap <buffer> <C-d> <Plug>(fern-action-new-dir)
   nmap <buffer> d <Plug>(fern-action-trash)
