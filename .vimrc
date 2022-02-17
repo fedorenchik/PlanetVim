@@ -689,14 +689,25 @@ func! s:InitFern() abort
   nmap <buffer> I <Plug>(fern-action-hidden:toggle)
   nmap <buffer> r <Plug>(fern-action-reload:cursor)
   nmap <buffer> R <Plug>(fern-action-reload:all)
+  nmap <buffer> <C-t> <Plug>(fern-action-open:tabedit)
+  nmap <buffer> g<C-t> <Plug>(fern-action-open:tabedit)gT
+  nmap <buffer> <C-n> <Plug>(fern-action-new-path)
+  nmap <buffer> <C-m> <Plug>(fern-action-mark:toggle)
+  nmap <buffer> <C-f> <Plug>(fern-action-new-file)
+  nmap <buffer> <C-d> <Plug>(fern-action-new-dir)
+  nmap <buffer> d <Plug>(fern-action-trash)
+  nmap <buffer> D <Plug>(fern-action-remove)
+  nmap <buffer> <C-y> <Plug>(fern-action-move)
+  nmap <buffer> <C-p> <Plug>(fern-action-copy)
+  nmap <buffer> <C-/> <Plug>(fern-action-grep)
+  nmap <buffer> <C-r> <Plug>(fern-action-rename)
+  nmap <buffer> <C-o> <Plug>(fern-action-open:system)
+  nmap <buffer> <C-t> <Plug>(fern-action-terminal:bottom)
 
-  nmap <buffer> t <Plug>(fern-action-open:tabedit)
-  nmap <buffer> T <Plug>(fern-action-open:tabedit)gT
   nmap <buffer> i <Plug>(fern-action-open:split)
   nmap <buffer> gi <Plug>(fern-action-open:split)<C-w>p
-  nmap <buffer> s <Plug>(fern-action-open:vsplit)
+  nmap <buffer> <C-s> <Plug>(fern-action-open:vsplit)
   nmap <buffer> gs <Plug>(fern-action-open:vsplit)<C-w>p
-  nmap <buffer> ma <Plug>(fern-action-new-path)
   nmap <buffer> P gg
   nmap <buffer> cd <Plug>(fern-action-cd)
 endfunc
