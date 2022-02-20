@@ -248,6 +248,8 @@ func! planet#menu#dev#Update() abort
     an 500.10  📐&}.&Qt\ Tools.Assistant                    <Cmd>call planet#term#RunGuiApp('assistant')<CR>
     an 500.10  📐&}.&Qt\ Tools.PixelTool                    <Cmd>call planet#term#RunGuiApp('pixeltool')<CR>
     an 500.10  📐&}.&Qt\ Tools.QDbusViewer                  <Cmd>call planet#term#RunGuiApp('qdbusviewer')<CR>
+    an 500.10  📐&}.&Qt\ Tools.pyside6-uic                  <Cmd>call planet#term#RunCmd('pyside6-uic ' .. expand('%') .. ' -o Ui_' .. expand('%:r') .. '.py')<CR>
+    an 500.10  📐&}.&Qt\ Tools.pyside6-rcc                  <Cmd>call planet#term#RunCmd('pyside6-rcc ' .. expand('%') .. ' -o ' .. expand('%:r') .. '_rc.py')<CR>
     an 500.10  📐&}.&Qt\ Tools.Generate\ qt\.conf           :TODO
     an 500.10  📐&}.&Qt\ Tools.androidtestrunner            :TODO
     an 500.10  📐&}.&Qt\ Tools.balsam                       :TODO
