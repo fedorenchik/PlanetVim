@@ -186,11 +186,13 @@ func! planet#menu#dev#Update() abort
     an 500.10  🎚️&{.Install\ Qt.Install\ Qt\ 6\.2\.3\ Wasm\ Modules <Cmd>call planet#term#RunCmd('aqt install-qt linux desktop 6.2.3 wasm_32 -m all')<CR>
     an 500.10  🎚️&{.Install\ Conan\ Pkg.TODO                :TODO
     an 500.10  🎚️&{.Install\ pip\ Pkg.TODO                  :TODO
-    an 500.10  🎚️&{.Npm.Start\ App                          <Cmd>call planet#term#RunCmd('npm run serve')<CR>
+    an 500.10  🎚️&{.Npm.Start\ App\ for\ Development        <Cmd>call planet#term#RunCmd('npm run dev')<CR>
     an 500.10  🎚️&{.Npm.Start\ Build                        <Cmd>call planet#term#RunCmd('npm run build')<CR>
+    an 500.10  🎚️&{.Npm.Start\ App                          <Cmd>call planet#term#RunCmd('npm run serve')<CR>
     an 500.10  🎚️&{.Npm.Install\ Project\ Packages          <Cmd>call planet#term#RunCmd('npm install')<CR>
     an 500.10  🎚️&{.Npm.Install\ Package                    <Cmd>call planet#term#RunCmdAskArgs('npm install', 'Package name: ')<CR>
     an 500.10  🎚️&{.Npm.Install\ Package\ Globally          <Cmd>call planet#term#RunCmdAskArgs('sudo npm install -g', 'Package name: ')<CR>
+    an 500.10  🎚️&{.Npm.Install\ create-nuxt-app            <Cmd>call planet#term#RunCmdAskArgs('sudo npm install -g create-nuxt-app')<CR>
     an 500.10  🎚️&{.--1-- <Nop>
     an 500.10  🎚️&{.Set\ Compiler.gcc                       :TODO
     an 500.10  🎚️&{.Set\ Compiler.clang                     :TODO

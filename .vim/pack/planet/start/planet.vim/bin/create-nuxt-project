@@ -1,0 +1,21 @@
+#!/bin/bash
+
+prj_name="$1"
+shift
+
+if which create-nuxt-app >&/dev/null; then
+	cd "$prj_name"
+	create-nuxt-app
+	exit
+fi
+
+if which npm >&/dev/null; then
+	cd "$prj_name"
+	npm install create-nuxt-app
+	./node_modules/.bin/create-nuxt-app --overwrite-dir
+	exit
+fi
+
+echo "Error: 'create-nuxt-app' or 'npm' not found."
+echo "Please install 'create-nuxt-app' or 'npm' and try again."
+exit 1

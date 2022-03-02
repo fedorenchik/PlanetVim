@@ -36,8 +36,8 @@ func! planet#file#NewProjectFromScript(project_type) abort
       return
     end
     call mkdir(l:project_name)
-    call planet#term#RunScript('create-' .. a:project_type .. '-project ' .. l:project_name)
     tabnew
+    call planet#term#RunScript('create-' .. a:project_type .. '-project ' .. l:project_name)
     exe "tcd " .. l:project_name
     Fern . -reveal=% -drawer -toggle
   end

@@ -13,6 +13,7 @@ func! planet#menu#basic#Update() abort
     an 110.60  📁&f.New\ Project.Vim\ Plugin                   <Cmd>call planet#file#NewProject('vim-plugin')<CR>
     an 110.60  📁&f.New\ Project.Gtk\ 3\ Builder\ App          <Cmd>call planet#file#NewProject('Gtk3BuilderApp')<CR>
     an 110.60  📁&f.New\ Project.Vue\ 3\ App                   <Cmd>call planet#file#NewProjectFromScript('vue3')<CR>
+    an 110.60  📁&f.New\ Project.Nuxt\ App                     <Cmd>call planet#file#NewProjectFromScript('nuxt')<CR>
     an 110.60  📁&f.New\ Project.Electron\ App                 <Cmd>call planet#file#NewProjectFromScript('electron')<CR>
     an 110.60  📁&f.New\ Project.Platformio\ espidf\ Firmware  <Cmd>call planet#file#NewProject('pio_idf_fw')<CR>
     an 110.60  📁&f.New\ Project.Blender\ Addon                :TODO
