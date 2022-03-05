@@ -731,6 +731,9 @@ augroup my-glyph-palette
   autocmd FileType startify call glyph_palette#apply()
 augroup END
 " }}}
+" Plugin: python-syntax {{{
+let g:python_highlight_all = 1
+" }}}
 " Plugin: spelunker.vim {{{
 let g:enable_spelunker_vim = 0
 " }}}
