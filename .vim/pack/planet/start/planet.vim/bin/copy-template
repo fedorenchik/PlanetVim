@@ -8,7 +8,14 @@ shift
 script_dir="$(readlink -f $(dirname $0))"
 tpl_dir="$(readlink -f $script_dir/../templates)"
 if which rsync >&/dev/null; then
-	rsync -aHAX "$tpl_dir/$tpl_name"/* "$prj_name/"
+	rsync -aHAX "$tpl_dir/$tpl_name/" "$prj_name/"
 else
-	cp -r "$tpl_dir/$tpl_name"/* "$prj_name/"
+	cp -r "$tpl_dir/$tpl_name/" "$prj_name/"
+fi
+if which direnv >&/dev/null; then
+	echo "AAA"
+	if [[ -e "$prj_name/.envrc" || -e "$prj_name/.env" ]]; then
+		echo "BBB"
+		direnv allow "$prj_name"
+	fi
 fi

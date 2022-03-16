@@ -328,6 +328,10 @@ func! planet#menu#dev#Update() abort
     an 500.10  📐&}.Vue\ CLI.Add\ vue-router                <Cmd>call planet#term#RunCmd('npm install vue-router')<CR>
     an 500.10  📐&}.Vue\ CLI.Add\ vuex                      <Cmd>call planet#term#RunCmd('npm install vuex')<CR>
     an 500.10  📐&}.Vue\ CLI.Create                         <Cmd>call planet#term#RunCmdAskArgs('vue create', 'Name of new project', 'vue-app')<CR>
+    an 500.10  📐&}.Nuxt.Run\ Dev                           <Cmd>call planet#term#RunCmd('npm run dev')<CR>
+    an 500.10  📐&}.Nuxt.Build                              <Cmd>call planet#term#RunCmd('npm run build')<CR>
+    an 500.10  📐&}.Nuxt.Start                              <Cmd>call planet#term#RunCmd('npm run start')<CR>
+    an 500.10  📐&}.Nuxt.Generate                           <Cmd>call planet#term#RunCmd('npm run generate')<CR>
     an 500.10  📐&}.Web\ Tools.TODO                         <Cmd>call planet#term#RunCmd('wget ...TODO')<CR>
     an 500.10  📐&}.Vulkan.Compile\ Shader                  <Cmd>call planet#term#RunCmd('glslc file.ext -o file.ext.spv')<CR>
     an 500.10  📐&}.Open\ GL.glxinfo                        <Cmd>call planet#term#RunCmd('glxinfo')<CR>
@@ -460,7 +464,16 @@ func! planet#menu#dev#Update() abort
     an 500.10  🔨&u.Ar&duino.Use\ Arduino\ IDE               :let g:arduino_use_cli = 0
     an 500.10  🔨&u.Ar&duino.Use\ arduino-cli                :let g:arduino_use_cli = 1
     an 500.10  🔨&u.&PlatformIO.Build                        <Cmd>call planet#term#RunCmd('pio run')<CR>
+    an 500.10  🔨&u.&PlatformIO.Upload                       <Cmd>call planet#term#RunCmd('pio run -t upload')<CR>
+    an 500.10  🔨&u.&PlatformIO.Serial\ Monitor              <Cmd>call planet#term#RunCmd('pio device monitor')<CR>
+    an 500.10  🔨&u.&PlatformIO.Build\ FS\ Image             <Cmd>call planet#term#RunCmd('pio run -t buildfs')<CR>
+    an 500.10  🔨&u.&PlatformIO.Upload\ FS\ Image            <Cmd>call planet#term#RunCmd('pio run -t uploadfs')<CR>
     an 500.10  🔨&u.&PlatformIO.Menuconfig                   <Cmd>call planet#term#RunCmd('pio run -t menuconfig')<CR>
+    an 500.10  🔨&u.&PlatformIO.Clean                        <Cmd>call planet#term#RunCmd('pio run -t clean')<CR>
+    an 500.10  🔨&u.&PlatformIO.Generate\ Compilation\ Database <Cmd>call planet#term#RunScript('pio-gen-compile-db')<CR>
+    an 500.10  🔨&u.&PlatformIO.Web\ UI                      <Cmd>call planet#term#RunCmd('pio home')<CR>
+    an 500.10  🔨&u.&PlatformIO.Update\ Packages             <Cmd>call planet#term#RunCmd('pio update')<CR>
+    an 500.10  🔨&u.&PlatformIO.Upgrade\ PlatformIO          <Cmd>call planet#term#RunCmd('pio upgrade')<CR>
     an 500.10  🔨&u.&ROS.Build\ Workspace                    :TODO
     an 500.10  🔨&u.&ROS.roslaunch                           :TODO
     an 500.10  🔨&u.&ROS.rosrun                              :TODO

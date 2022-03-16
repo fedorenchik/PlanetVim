@@ -1,0 +1,4 @@
+#!/bin/bash
+
+compile_db=$(pio run -t compiledb | tee /dev/stderr | grep 'compile_commands\.json' | cut -d' ' -f4-)
+ln -s "$compile_db" .

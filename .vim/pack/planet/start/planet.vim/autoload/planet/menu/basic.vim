@@ -10,30 +10,30 @@ func! planet#menu#basic#Update() abort
     an 110.40  📁&f.New\ &VSplit<Tab>:vnew                     :vnew<CR>
     an 110.50  📁&f.New\ &Tab                                  :confirm tabnew<CR>
     an 110.60  📁&f.New\ GUI\ &Window                          :silent !gvim<CR>
-    an 110.60  📁&f.New\ Project.Vim\ Plugin                   <Cmd>call planet#file#NewProject('vim-plugin')<CR>
-    an 110.60  📁&f.New\ Project.Gtk\ 3\ Builder\ App          <Cmd>call planet#file#NewProject('Gtk3BuilderApp')<CR>
-    an 110.60  📁&f.New\ Project.Vue\ 3\ App                   <Cmd>call planet#file#NewProjectFromScript('vue3')<CR>
-    an 110.60  📁&f.New\ Project.Nuxt\ App                     <Cmd>call planet#file#NewProjectFromScript('nuxt')<CR>
-    an 110.60  📁&f.New\ Project.Electron\ App                 <Cmd>call planet#file#NewProjectFromScript('electron')<CR>
-    an 110.60  📁&f.New\ Project.Platformio\ espidf\ Firmware  <Cmd>call planet#file#NewProject('pio_idf_fw')<CR>
-    an 110.60  📁&f.New\ Project.Blender\ Addon                :TODO
-    an 110.60  📁&f.New\ Project.Nextcloud\ App                :TODO
-    an 110.60  📁&f.New\ Project.Linux\ OOT\ Kernel\ Module    :TODO"with parameters/proc/debugfs support
-    an 110.60  📁&f.New\ Project.Linux\ OOT\ Device\ Driver    :TODO"with parameters/OF framework support
-    an 110.60  📁&f.New\ Project.Linux\ Device\ Tree           :TODO"device tree definition
-    an 110.60  📁&f.New\ Project.Wordpress\ Plugin             :TODO
-    an 110.60  📁&f.New\ Project.Wordpress\ Theme              :TODO
-    an 110.60  📁&f.New\ Project.Yocto\ System                 :TODO
-    an 110.60  📁&f.New\ Project.ROS\ Package                  :TODO
-    an 110.60  📁&f.New\ Project.C++\ DSL                      :TODO"example DSL in C++
-    an 110.60  📁&f.New\ Project.Python\ DSL                   :TODO"example DSL in Python
-    an 110.60  📁&f.New\ Project.LaTex\ Book                   :TODO
-    an 110.60  📁&f.New\ Project.OpenGL.GLFW\ (GLEW,\ C++,\ OpenGL\ 3\.2)\ App <Cmd>call planet#file#NewProject('glfw-app')<CR>
-    an 110.60  📁&f.New\ Project.OpenGL.SDL\ (GLEW,\ C++,\ OpenGL\ 3\.2)\ App <Cmd>call planet#file#NewProject('sdl-app')<CR>
-    an 110.60  📁&f.New\ Project.OpenGL.SFML\ (GLEW,\ C++,\ OpenGL\ 3\.2)\ App <Cmd>call planet#file#NewProject('sfml-app')<CR>
-    an 110.60  📁&f.New\ Project.Basic\ Vulkan                 :TODO
-    an 110.60  📁&f.New\ Project.Git\ Clone\.\.\.              <Cmd>call planet#term#RunCmdAskArgs('git clone --recurse-submodules ', 'Repo: ', 'https://github.com/')<CR>
-    an 110.60  📁&f.New\ Project.Git\ Init                     <Cmd>call planet#term#RunCmd('git init')<CR>
+    an 110.60  📁&f.New\ Pro&ject.Vim\ Plugin                   <Cmd>call planet#file#NewProject('vim-plugin')<CR>
+    an 110.60  📁&f.New\ Pro&ject.Gtk\ 3\ Builder\ App          <Cmd>call planet#file#NewProject('Gtk3BuilderApp')<CR>
+    an 110.60  📁&f.New\ Pro&ject.Vue\ 3\ App                   <Cmd>call planet#file#NewProjectFromScript('vue3')<CR>
+    an 110.60  📁&f.New\ Pro&ject.Nuxt\ App                     <Cmd>call planet#file#NewProjectFromScript('nuxt')<CR>
+    an 110.60  📁&f.New\ Pro&ject.Electron\ App                 <Cmd>call planet#file#NewProjectFromScript('electron')<CR>
+    an 110.60  📁&f.New\ Pro&ject.Platformio\ espidf\ Firmware  <Cmd>call planet#file#NewProject('pio_idf_fw')<CR>
+    an 110.60  📁&f.New\ Pro&ject.Blender\ Addon                :TODO
+    an 110.60  📁&f.New\ Pro&ject.Nextcloud\ App                :TODO
+    an 110.60  📁&f.New\ Pro&ject.Linux\ OOT\ Kernel\ Module    :TODO"with parameters/proc/debugfs support
+    an 110.60  📁&f.New\ Pro&ject.Linux\ OOT\ Device\ Driver    :TODO"with parameters/OF framework support
+    an 110.60  📁&f.New\ Pro&ject.Linux\ Device\ Tree           :TODO"device tree definition
+    an 110.60  📁&f.New\ Pro&ject.Wordpress\ Plugin             :TODO
+    an 110.60  📁&f.New\ Pro&ject.Wordpress\ Theme              :TODO
+    an 110.60  📁&f.New\ Pro&ject.Yocto\ System                 :TODO
+    an 110.60  📁&f.New\ Pro&ject.ROS\ Package                  :TODO
+    an 110.60  📁&f.New\ Pro&ject.C++\ DSL                      :TODO"example DSL in C++
+    an 110.60  📁&f.New\ Pro&ject.Python\ DSL                   :TODO"example DSL in Python
+    an 110.60  📁&f.New\ Pro&ject.LaTex\ Book                   :TODO
+    an 110.60  📁&f.New\ Pro&ject.OpenGL.GLFW\ (GLEW,\ C++,\ OpenGL\ 3\.2)\ App <Cmd>call planet#file#NewProject('glfw-app')<CR>
+    an 110.60  📁&f.New\ Pro&ject.OpenGL.SDL\ (GLEW,\ C++,\ OpenGL\ 3\.2)\ App <Cmd>call planet#file#NewProject('sdl-app')<CR>
+    an 110.60  📁&f.New\ Pro&ject.OpenGL.SFML\ (GLEW,\ C++,\ OpenGL\ 3\.2)\ App <Cmd>call planet#file#NewProject('sfml-app')<CR>
+    an 110.60  📁&f.New\ Pro&ject.Basic\ Vulkan                 :TODO
+    an 110.60  📁&f.New\ Pro&ject.Git\ Clone\.\.\.              <Cmd>call planet#term#RunCmdAskArgs('git clone --recurse-submodules ', 'Repo: ', 'https://github.com/')<CR>
+    an 110.60  📁&f.New\ Pro&ject.Git\ Init                     <Cmd>call planet#term#RunCmd('git init')<CR>
     an 110.60  📁&f.New\ File.Makefile                         :TODO"copy from template
     an 110.60  📁&f.New\ File.C++\ Class                       :TODO"copy from template
     an 110.60  📁&f.New\ File.C++\ Class\ Enum                 :TODO"copy from template
