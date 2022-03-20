@@ -44,7 +44,5 @@ def! g:GuiTabTooltip(): string
     endif
   endfor
 
-  tooltip ..= "\npwd: " .. fnamemodify(getcwd(-1), ":~")
-
   return tooltip
 enddef
