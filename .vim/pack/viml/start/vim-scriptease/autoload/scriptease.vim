@@ -260,7 +260,7 @@ function! scriptease#verbose_command(level, excmd) abort
         \ 'finally|' .
         \ 'let &verbosefile = '.string(verbosefile).'|' .
         \ 'endtry|' .
-        \ 'pedit '.temp.'|wincmd P|nnoremap <buffer> q :bd<CR>'
+        \ 'pedit '.temp.'|wincmd P'
 endfunction
 
 " Section: :Scriptnames
@@ -282,7 +282,7 @@ function! scriptease#scriptnames_qflist() abort
   for line in split(names, "\n")
     if line =~# ':'
       let filename = expand(matchstr(line, ': \zs.*'))
-      call add(list, {'text': matchstr(line, '\d\+'), 'filename': get(virtual, filename, filename)})
+      call add(list, {'text': matchstr(line, '\d\+'), 'filename': get(virtual, filename, filename), 'lnum': 1})
     endif
   endfor
   return list
@@ -303,7 +303,17 @@ function! scriptease#scriptid(filename) abort
       return +script.text
     endif
   endfor
-  return ''
+  return 0
+endfunction
+
+function! scriptease#prepare_eval(string, ...) abort
+  if a:string =~? '<sid>'
+    let sid = scriptease#scriptid(@%)
+    if sid
+      return substitute(a:string, '\c<sid>', '<SNR>' . sid . '_', 'g')
+    endif
+  endif
+  return a:string
 endfunction
 
 " Section: :Messages
@@ -581,10 +591,10 @@ function! s:break(type, arg) abort
     let lnum = searchpair('^\s*fu\%[nction]\>.*(', '', '^\s*endf\%[unction]\>', 'Wbn')
     if lnum && lnum < line('.')
       let function = matchstr(getline(lnum), '^\s*\w\+!\=\s*\zs[^( ]*')
-      if function =~# '^s:\|^<SID>'
+      if function =~# '^s:\|^<[Ss][Ii][Dd]>'
         let id = scriptease#scriptid('%')
         if id
-          let function = s:sub(function, '^s:|^\<SID\>', '<SNR>'.id.'_')
+          let function = s:sub(function, '^s:|^\<[Ss][Ii][Dd]\>', '<SNR>'.id.'_')
         else
           return 'echoerr "Could not determine script id"'
         endif
@@ -692,8 +702,9 @@ function! scriptease#time_command(cmd, count) abort
       execute a:cmd
     endif
   finally
+    let elapsed = reltime(time)
     redraw
-    echomsg matchstr(reltimestr(reltime(time)), '.*\..\{,3\}') . ' seconds to run :'.a:cmd
+    echomsg matchstr(reltimestr(elapsed), '.*\..\{,3\}') . ' seconds to run :'.a:cmd
   endtry
   return ''
 endfunction
