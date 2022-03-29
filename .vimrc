@@ -501,6 +501,7 @@ let g:tex_flavor = "latex"
 let g:awk_is_gawk = 1
 " }}}
 " ftplugin/changelog.vim {{{
+let no_changelog_maps = v:true
 runtime ftplugin/changelog.vim
 " }}}
 " ftplugin/man.vim {{{
