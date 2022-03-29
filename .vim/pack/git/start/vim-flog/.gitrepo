@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/rbong/vim-flog.git
 	branch = master
-	commit = 2358b199117900d3e36eada1de1f2a12556a5506
-	parent = d7659ba6e0a15a6e843ee2a8e66a58122fa90095
+	commit = 47123282f501fc77965e1d3c08357209d991c7f4
+	parent = 75ecacafe2cfbe3ef86d189836e5a726cb2ac694
 	method = merge
 	cmdver = 0.4.3
