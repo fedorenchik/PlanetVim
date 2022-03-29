@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/mbbill/undotree.git
 	branch = master
-	commit = 8a01863a8204b2382ec341d0203c4e9665212221
-	parent = 5190643f84b2288cff1ab44ff79c4ed1af8ff0ae
+	commit = 08e259be24d4476c1ee745dc735eefd44f90efdc
+	parent = 59f1cea5252e1bcc500f1116837ca91674a864dc
 	method = merge
 	cmdver = 0.4.3
