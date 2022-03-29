@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/leafgarland/typescript-vim.git
 	branch = master
-	commit = 67e81e4292186889a1a519e1bf3a600d671237eb
-	parent = e5fe71743b15e68c22b5f1f554c330eb66ea7c0e
+	commit = 52f3ca3474d51f5021696ffb7297d989e49121ac
+	parent = eb8eacac93f1fa664fff5b23b7620f0d79717fb5
 	method = merge
 	cmdver = 0.4.3
