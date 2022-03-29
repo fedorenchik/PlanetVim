@@ -1,7 +1,7 @@
 " Script Name: mark.vim
 " Description: Highlight several words in different colors simultaneously.
 "
-" Copyright:   (C) 2008-2021 Ingo Karkat
+" Copyright:   (C) 2008-2022 Ingo Karkat
 "              (C) 2005-2008 Yuheng Xie
 "   The VIM LICENSE applies to this script; see ':help copyright'.
 "
@@ -11,7 +11,7 @@
 "   - ingo-library.vim plugin
 "   - SearchSpecial.vim plugin (optional)
 "
-" Version:     3.1.1
+" Version:     3.2.1
 
 "- functions ------------------------------------------------------------------
 
@@ -744,14 +744,14 @@ function! s:Search( pattern, count, isBackward, currentMarkPosition, searchType 
 endfunction
 
 " Combine all marks into one regexp.
-function! s:AnyMark()
+function! mark#AnyMarkPattern()
 	return join(filter(copy(s:pattern), '! empty(v:val)'), '\|')
 endfunction
 
 " Search any mark.
 function! mark#SearchAnyMark( isBackward )
 	let l:markPosition = mark#CurrentMark()[1]
-	let l:markText = s:AnyMark()
+	let l:markText = mark#AnyMarkPattern()
 	let s:lastSearch = -1
 	return s:Search(l:markText, v:count1, a:isBackward, l:markPosition, 'mark*')
 endfunction

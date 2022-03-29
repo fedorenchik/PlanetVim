@@ -584,7 +584,10 @@ https://github.com/inkarkat/vim-mark/issues or email (address below).
 HISTORY
 ------------------------------------------------------------------------------
 
-##### 3.2.0   RELEASEME
+##### 3.2.1   RELEASEME
+- Expose mark#mark#AnyMarkPattern().
+
+##### 3.2.0   15-Feb-2022
 - Add mark#GetMarkNumber(), based on feedback by Snorch in #36.
 - Mark updates across windows now use win\_execute() (since Vim 8.1.1418)
   instead of :windo. This hopefully addresses the changes in window sizes that
@@ -923,7 +926,7 @@ __PLEASE UPDATE THE
 - Initial version published by Yuheng Xie on vim.org.
 
 ------------------------------------------------------------------------------
-Copyright: (C) 2008-2021 Ingo Karkat -
+Copyright: (C) 2008-2022 Ingo Karkat -
            (C) 2005-2008 Yuheng Xie -
 The [VIM LICENSE](http://vimdoc.sourceforge.net/htmldoc/uganda.html#license) applies to this plugin.
 

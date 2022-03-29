@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/inkarkat/vim-mark.git
 	branch = master
-	commit = 7f90d80d0d7a0b3696f4dfa0f8639bba4906d037
-	parent = 4f16ae17f72079bb234ba5f966272757e20112b8
+	commit = 89274036663c3322c669ff499a128583018604d3
+	parent = ab6dbc44154a2d664913042a065b2dddb9145a3b
 	method = merge
 	cmdver = 0.4.3
