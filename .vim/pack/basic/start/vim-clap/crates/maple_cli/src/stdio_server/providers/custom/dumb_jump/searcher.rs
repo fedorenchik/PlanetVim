@@ -1,98 +1,107 @@
 use std::path::Path;
 
 use anyhow::Result;
+use dumb_analyzer::resolve_reference_kind;
+use itertools::Itertools;
+use rayon::prelude::*;
 
-use super::SearchInfo;
-use crate::dumb_analyzer::{
-    CtagsSearcher, GtagsSearcher, RegexSearcher, SearchType, Usage, Usages,
+use super::QueryInfo;
+use crate::find_usages::{
+    AddressableUsage, CtagsSearcher, GtagsSearcher, QueryType, RegexSearcher, Usage, Usages,
 };
 use crate::tools::ctags::{get_language, TagsConfig};
 use crate::utils::ExactOrInverseTerms;
 
-fn search_ctags(dir: &Path, extension: &str, search_info: &SearchInfo) -> Result<Usages> {
-    let ignorecase = search_info.keyword.chars().all(char::is_lowercase);
+/// Context for performing a search.
+#[derive(Debug, Clone, Default)]
+pub(super) struct SearchingWorker {
+    pub cwd: String,
+    pub extension: String,
+    pub query_info: QueryInfo,
+}
 
-    let mut tags_config = TagsConfig::with_dir(dir);
-    if let Some(language) = get_language(extension) {
-        tags_config.languages(language.into());
+impl SearchingWorker {
+    fn ctags_search(self) -> Result<Vec<AddressableUsage>> {
+        let mut tags_config = TagsConfig::with_dir(self.cwd);
+        if let Some(language) = get_language(&self.extension) {
+            tags_config.languages(language.into());
+        }
+
+        let QueryInfo {
+            keyword,
+            query_type,
+            filtering_terms,
+        } = self.query_info;
+
+        CtagsSearcher::new(tags_config).search_usages(&keyword, &filtering_terms, query_type, true)
     }
 
-    let SearchInfo {
-        keyword,
-        search_type,
-        filtering_terms,
-    } = search_info;
+    fn gtags_search(self) -> Result<Vec<AddressableUsage>> {
+        let QueryInfo {
+            keyword,
+            filtering_terms,
+            ..
+        } = self.query_info;
+        GtagsSearcher::new(self.cwd.into()).search_usages(
+            &keyword,
+            &filtering_terms,
+            &self.extension,
+        )
+    }
 
-    let usages = CtagsSearcher::new(tags_config)
-        .search(keyword, search_type.clone(), true)?
-        .filter_map(|tag_line| {
-            let (line, indices) = tag_line.grep_format_ctags(keyword, ignorecase);
-            filtering_terms
-                .check_jump_line((line, indices.unwrap_or_default()))
-                .map(|(line, indices)| Usage::new(line, indices))
-        })
-        .collect::<Vec<_>>();
-
-    Ok(usages.into())
+    async fn regex_search(self) -> Result<Vec<AddressableUsage>> {
+        let QueryInfo {
+            keyword,
+            filtering_terms,
+            ..
+        } = self.query_info;
+        let searcher = RegexSearcher {
+            word: keyword,
+            extension: self.extension,
+            dir: Some(self.cwd.into()),
+        };
+        searcher.search_usages(false, &filtering_terms).await
+    }
 }
 
-fn search_gtags(dir: &Path, search_info: &SearchInfo) -> Result<Usages> {
-    let SearchInfo {
-        keyword,
-        filtering_terms,
-        ..
-    } = search_info;
-    let usages = GtagsSearcher::new(dir.to_path_buf())
-        .search_references(keyword)?
-        .filter_map(|tag_info| {
-            let (line, indices) = tag_info.grep_format_gtags("refs", keyword, false);
-            filtering_terms
-                .check_jump_line((line, indices.unwrap_or_default()))
-                .map(|(line, indices)| Usage::new(line, indices))
-        })
-        .collect::<Vec<_>>();
-    Ok(usages.into())
-}
-
-async fn search_regex(extension: String, cwd: String, search_info: &SearchInfo) -> Result<Usages> {
-    let SearchInfo {
-        keyword,
-        filtering_terms,
-        ..
-    } = search_info;
-    let searcher = RegexSearcher {
-        word: keyword.clone(),
-        extension,
-        dir: Some(cwd.into()),
-    };
-    searcher.search_usages(false, filtering_terms).await
-}
-
-// Returns a combo of various results in the order of [ctags, gtags, regex].
+/// Returns a combo of various results in the order of [ctags, gtags, regex].
 fn merge_all(
-    ctag_results: Usages,
-    maybe_gtags_results: Option<Usages>,
-    regex_results: Usages,
-) -> Usages {
+    ctag_results: Vec<AddressableUsage>,
+    maybe_gtags_results: Option<Vec<AddressableUsage>>,
+    regex_results: Vec<AddressableUsage>,
+) -> Vec<AddressableUsage> {
     let mut regex_results = regex_results;
     regex_results.retain(|r| !ctag_results.contains(r));
 
     let mut ctag_results = ctag_results;
-    if let Some(gtags_results) = maybe_gtags_results {
+    if let Some(mut gtags_results) = maybe_gtags_results {
         regex_results.retain(|r| !gtags_results.contains(r));
-        ctag_results.append(gtags_results);
+        ctag_results.append(&mut gtags_results);
     }
 
-    ctag_results.append(regex_results);
+    ctag_results.append(&mut regex_results);
     ctag_results
 }
 
-// The initialization of Ctags on a new project is normally
-// faster than Gtags, but once Gtags has been initialized,
-// the incremental update of Gtags should be instant enough
-// and is comparable to Ctags regarding the speed.
-//
-// Regex requires no initialization.
+/// These is no best option here, each search engine has its own advantages and
+/// disadvantages, hence, we make use of all of them to achieve a comprehensive
+/// result.
+///
+/// # Comparison between all the search engines
+///
+/// |                | Ctags | Gtags                     | Regex                        |
+/// | ----           | ----  | ----                      | ----                         |
+/// | Initialization | No    | Required                  | No                           |
+/// | Create         | Fast  | Slow                      | Fast                         |
+/// | Update         | Fast  | Fast                      | Fast                         |
+/// | Support        | Defs  | Defs(unpolished) and refs | Defs and refs(less accurate) |
+///
+/// The initialization of Ctags for a new project is normally
+/// faster than Gtags, but once Gtags has been initialized,
+/// the incremental update of Gtags should be instant enough
+/// and is comparable to Ctags regarding the speed.
+///
+/// Regex requires no initialization.
 #[derive(Debug, Clone)]
 pub(super) enum SearchEngine {
     Ctags,
@@ -103,61 +112,54 @@ pub(super) enum SearchEngine {
 }
 
 impl SearchEngine {
-    pub async fn search_usages(
-        &self,
-        cwd: String,
-        extension: String,
-        search_info: &SearchInfo,
-    ) -> Result<Usages> {
+    pub async fn run(&self, searching_worker: SearchingWorker) -> Result<Usages> {
         let ctags_future = {
-            let cwd = cwd.clone();
-            let extension = extension.clone();
-            let search_info = search_info.clone();
-            async move { search_ctags(Path::new(&cwd), &extension, &search_info) }
+            let searching_worker = searching_worker.clone();
+            async move { searching_worker.ctags_search() }
         };
 
-        match self {
-            SearchEngine::Ctags => search_ctags(Path::new(&cwd), &extension, search_info),
-            SearchEngine::Regex => search_regex(extension, cwd, search_info).await,
+        let addressable_usages = match self {
+            SearchEngine::Ctags => searching_worker.ctags_search()?,
+            SearchEngine::Regex => searching_worker.regex_search().await?,
             SearchEngine::CtagsAndRegex => {
-                let regex_future = search_regex(extension, cwd, search_info);
+                let regex_future = searching_worker.regex_search();
                 let (ctags_results, regex_results) = futures::join!(ctags_future, regex_future);
 
-                Ok(merge_all(
+                merge_all(
                     ctags_results.unwrap_or_default(),
                     None,
                     regex_results.unwrap_or_default(),
-                ))
+                )
             }
             SearchEngine::CtagsElseRegex => {
-                let results = search_ctags(Path::new(&cwd), &extension, search_info);
+                let results = searching_worker.clone().ctags_search();
                 // tags might be incomplete, try the regex way if no results from the tags file.
                 let try_regex =
                     results.is_err() || results.as_ref().map(|r| r.is_empty()).unwrap_or(false);
                 if try_regex {
-                    search_regex(extension, cwd, search_info).await
+                    searching_worker.regex_search().await?
                 } else {
-                    results
+                    results?
                 }
             }
             SearchEngine::All => {
                 let gtags_future = {
-                    let cwd = cwd.clone();
-                    let search_info = search_info.clone();
-                    async move { search_gtags(Path::new(&cwd), &search_info) }
+                    let searching_worker = searching_worker.clone();
+                    async move { searching_worker.gtags_search() }
                 };
-
-                let regex_future = search_regex(extension, cwd, search_info);
+                let regex_future = searching_worker.regex_search();
 
                 let (ctags_results, gtags_results, regex_results) =
                     futures::join!(ctags_future, gtags_future, regex_future);
 
-                Ok(merge_all(
+                merge_all(
                     ctags_results.unwrap_or_default(),
                     gtags_results.ok(),
                     regex_results.unwrap_or_default(),
-                ))
+                )
             }
-        }
+        };
+
+        Ok(addressable_usages.into())
     }
 }

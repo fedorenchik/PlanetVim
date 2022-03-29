@@ -137,35 +137,13 @@ pub struct LightCommand<'a> {
 
 impl<'a> LightCommand<'a> {
     /// Contructs LightCommand from various common opts.
-    pub fn new(
-        cmd: &'a mut Command,
-        number: Option<usize>,
-        icon: Icon,
-        output_threshold: usize,
-    ) -> Self {
-        Self {
-            cmd,
-            env: CommandEnv::new(None, number, icon, Some(output_threshold)),
-        }
-    }
-
-    /// Contructs LightCommand from grep opts.
-    pub fn new_grep(
-        cmd: &'a mut Command,
-        dir: Option<PathBuf>,
-        number: Option<usize>,
-        icon: Icon,
-        output_threshold: Option<usize>,
-    ) -> Self {
-        Self {
-            cmd,
-            env: CommandEnv::new(dir, number, icon, output_threshold),
-        }
+    pub fn new(cmd: &'a mut Command, env: CommandEnv) -> Self {
+        Self { cmd, env }
     }
 
     /// Collect the output of command, exit directly if any error happened.
     fn collect_stdout(&mut self) -> Result<Vec<u8>> {
-        match crate::process::rstd::collect_stdout(&mut self.cmd) {
+        match crate::process::rstd::collect_stdout(self.cmd) {
             Ok(stdout) => Ok(stdout),
             Err(e) => {
                 // vim-clap does not handle the stderr stream, we just pass the error info via stdout.
@@ -183,7 +161,7 @@ impl<'a> LightCommand<'a> {
             let lines = self.try_prepend_icon(
                 stdout
                     .split(|x| x == &b'\n')
-                    .map(|s| String::from_utf8_lossy(s))
+                    .map(String::from_utf8_lossy)
                     .take(number),
             );
             let total = self.env.total;
@@ -277,7 +255,7 @@ impl<'a> LightCommand<'a> {
         let lines = self.try_prepend_icon(
             cmd_stdout
                 .split(|n| n == &b'\n')
-                .map(|s| String::from_utf8_lossy(s)),
+                .map(String::from_utf8_lossy),
         );
 
         Ok(ExecutedInfo {

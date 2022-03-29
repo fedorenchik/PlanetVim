@@ -1,12 +1,18 @@
+use std::borrow::Cow;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, Ordering};
+use std::time::Duration;
 
 use anyhow::{anyhow, Context, Result};
 use once_cell::sync::Lazy;
 use serde_json::json;
 
 use pattern::*;
+use types::PreviewInfo;
 
+use crate::command::ctags::buffer_tags::{
+    current_context_tag, current_context_tag_async, BufferTagInfo,
+};
 use crate::previewer::{self, vim_help::HelpTagPreview};
 use crate::stdio_server::{
     global, providers::filer, session::SessionContext, write_response, MethodCall,
@@ -186,11 +192,11 @@ impl<'a> OnMoveHandler<'a> {
         })
     }
 
-    pub fn handle(&self) -> Result<()> {
+    pub async fn handle(&self) -> Result<()> {
         use OnMove::*;
         match &self.inner {
             BLines(position) | Grep(position) | ProjTags(position) | BufferTags(position) => {
-                self.preview_file_at(position)
+                self.preview_file_at(position).await
             }
             Filer(path) if path.is_dir() => self.preview_directory(&path)?,
             Files(path) | Filer(path) | History(path) => self.preview_file(&path)?,
@@ -217,7 +223,7 @@ impl<'a> OnMoveHandler<'a> {
             .split('\n')
             .take(self.size * 2)
             .collect::<Vec<_>>();
-        self.send_response(json!({ "event": "on_move", "lines": lines }));
+        self.send_response(json!({ "lines": lines }));
         Ok(())
     }
 
@@ -227,20 +233,16 @@ impl<'a> OnMoveHandler<'a> {
             let lines = std::iter::once(fname.clone())
                 .chain(lines.into_iter())
                 .collect::<Vec<_>>();
-            self.send_response(json!({
-              "event": "on_move",
-              "syntax": "help",
-              "lines": lines,
-              "hi_lnum": 1,
-              "fname": fname
-            }));
+            self.send_response(
+                json!({ "syntax": "help", "lines": lines, "hi_lnum": 1, "fname": fname }),
+            );
         } else {
             tracing::debug!(?preview_tag, "Can not find the preview help lines");
         }
     }
 
     fn try_refresh_cache(&self, latest_line: &str) {
-        if IS_FERESHING_CACHE.load(Ordering::Relaxed) {
+        if IS_FERESHING_CACHE.load(Ordering::SeqCst) {
             tracing::debug!(
                 "Skipping the cache refreshing as there is already one that is running or waitting"
             );
@@ -251,7 +253,7 @@ impl<'a> OnMoveHandler<'a> {
                 if !cache_line.eq(latest_line) {
                     tracing::debug!(?latest_line, ?cache_line, "The cache might be oudated");
                     let dir = self.context.cwd.clone();
-                    IS_FERESHING_CACHE.store(true, Ordering::Relaxed);
+                    IS_FERESHING_CACHE.store(true, Ordering::SeqCst);
                     // Spawn a future in the background
                     tokio::task::spawn_blocking(|| {
                         tracing::debug!(?dir, "Attempting to refresh grep2 cache");
@@ -263,28 +265,100 @@ impl<'a> OnMoveHandler<'a> {
                                 tracing::error!(error = ?e, "Failed to refresh the grep2 cache")
                             }
                         }
-                        IS_FERESHING_CACHE.store(false, Ordering::Relaxed);
+                        IS_FERESHING_CACHE.store(false, Ordering::SeqCst);
                     });
                 }
             }
         }
     }
 
-    fn preview_file_at(&self, position: &Position) {
+    async fn preview_file_at(&self, position: &Position) {
         tracing::debug!(?position, "Previewing file");
 
         let Position { path, lnum } = position;
 
         match utility::read_preview_lines(path, *lnum, self.size) {
-            Ok((lines_iter, hi_lnum)) => {
-                let fname = path.display().to_string();
-                let lines = std::iter::once(format!("{}:{}", fname, lnum))
-                    .chain(self.truncate_preview_lines(lines_iter.into_iter()))
-                    .collect::<Vec<_>>();
+            Ok(PreviewInfo {
+                lines,
+                highlight_lnum,
+                start,
+                ..
+            }) => {
+                let container_width = self.context.display_winwidth as usize;
 
-                if let Some(latest_line) = lines.get(hi_lnum) {
-                    self.try_refresh_cache(latest_line);
+                // Truncate the left of absolute path string.
+                let mut fname = path.display().to_string();
+                let max_fname_len = container_width - 1 - crate::utils::display_width(*lnum);
+                if fname.len() > max_fname_len {
+                    if let Some((offset, _)) =
+                        fname.char_indices().nth(fname.len() - max_fname_len + 2)
+                    {
+                        fname.replace_range(..offset, "..");
+                    }
                 }
+
+                let mut context_lines = Vec::new();
+
+                // Some checks against the latest preview line.
+                if let Some(latest_line) = lines.get(highlight_lnum - 1) {
+                    self.try_refresh_cache(latest_line);
+
+                    if let Some(ext) = path.extension().and_then(|e| e.to_str()) {
+                        const BLACK_LIST: &[&str] =
+                            &["log", "txt", "lock", "toml", "yaml", "mod", "conf"];
+
+                        if !BLACK_LIST.contains(&ext)
+                            && !dumb_analyzer::is_comment(latest_line, ext)
+                        {
+                            match context_tag_with_timeout(path.to_path_buf(), *lnum).await {
+                                Some(tag) if tag.line < start => {
+                                    context_lines.reserve_exact(3);
+
+                                    let border_line = if crate::stdio_server::global().is_nvim {
+                                        "─".repeat(container_width)
+                                    } else {
+                                        // Vim has a different border width.
+                                        let mut border_line =
+                                            String::with_capacity(container_width - 2);
+                                        border_line.extend(
+                                            std::iter::repeat('─').take(container_width - 2),
+                                        );
+                                        border_line
+                                    };
+
+                                    context_lines.push(border_line.clone());
+
+                                    // Truncate the right of pattern, 2 whitespaces + 💡
+                                    let max_pattern_len = container_width - 4;
+                                    let pattern = tag.extract_pattern();
+                                    let (mut context_line, to_push) = if pattern.len()
+                                        > max_pattern_len
+                                    {
+                                        // Use the chars instead of indexing the str to avoid the char boundary error.
+                                        let p: String =
+                                            pattern.chars().take(max_pattern_len - 4 - 2).collect();
+                                        (p, "..  💡")
+                                    } else {
+                                        (String::from(pattern), "  💡")
+                                    };
+                                    context_line.reserve(to_push.len());
+                                    context_line.push_str(to_push);
+                                    context_lines.push(context_line);
+
+                                    context_lines.push(border_line);
+                                }
+                                _ => {}
+                            }
+                        }
+                    }
+                }
+
+                let highlight_lnum = highlight_lnum + context_lines.len();
+
+                let lines = std::iter::once(format!("{}:{}", fname, lnum))
+                    .chain(context_lines.into_iter())
+                    .chain(self.truncate_preview_lines(lines.into_iter()))
+                    .collect::<Vec<_>>();
 
                 tracing::debug!(
                     msg_id = self.msg_id,
@@ -293,12 +367,15 @@ impl<'a> OnMoveHandler<'a> {
                     "<== message(out) preview file content",
                 );
 
-                self.send_response(json!({
-                  "event": "on_move",
-                  "lines": lines,
-                  "fname": fname,
-                  "hi_lnum": hi_lnum
-                }));
+                if let Some(syntax) = crate::stdio_server::vim::syntax_for(path) {
+                    self.send_response(
+                        json!({ "lines": lines, "syntax": syntax, "hi_lnum": highlight_lnum }),
+                    );
+                } else {
+                    self.send_response(
+                        json!({ "lines": lines, "fname": fname, "hi_lnum": highlight_lnum }),
+                    );
+                }
             }
             Err(err) => {
                 tracing::error!(
@@ -329,15 +406,36 @@ impl<'a> OnMoveHandler<'a> {
     }
 
     fn preview_file<P: AsRef<Path>>(&self, path: P) -> Result<()> {
-        let (lines, fname) = previewer::preview_file(path, 2 * self.size, self.max_width())?;
-        self.send_response(json!({ "event": "on_move", "lines": lines, "fname": fname }));
+        let (lines, fname) =
+            previewer::preview_file(path.as_ref(), 2 * self.size, self.max_width())?;
+        if let Some(syntax) = crate::stdio_server::vim::syntax_for(path.as_ref()) {
+            self.send_response(json!({ "lines": lines, "syntax": syntax }));
+        } else {
+            self.send_response(json!({ "lines": lines, "fname": fname }));
+        }
         Ok(())
     }
 
     fn preview_directory<P: AsRef<Path>>(&self, path: P) -> Result<()> {
         let enable_icon = global().enable_icon;
         let lines = filer::read_dir_entries(&path, enable_icon, Some(2 * self.size))?;
-        self.send_response(json!({ "event": "on_move", "lines": lines, "is_dir": true }));
+        self.send_response(json!({ "lines": lines, "is_dir": true }));
         Ok(())
+    }
+}
+
+async fn context_tag_with_timeout(path: PathBuf, lnum: usize) -> Option<BufferTagInfo> {
+    const TIMEOUT: Duration = Duration::from_millis(300);
+
+    match tokio::time::timeout(TIMEOUT, async move {
+        current_context_tag_async(path.as_path(), lnum).await
+    })
+    .await
+    {
+        Ok(res) => res,
+        Err(_) => {
+            tracing::debug!(timeout = ?TIMEOUT, "⏳ Did not get the context tag in time");
+            None
+        }
     }
 }

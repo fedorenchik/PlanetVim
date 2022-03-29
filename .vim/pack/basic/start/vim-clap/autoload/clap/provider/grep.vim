@@ -223,7 +223,7 @@ function! s:grep_sink(selected) abort
   call s:grep_exit()
   let line = a:selected
 
-  let pattern = '\(.*\):\(\d\+\):\(\d\+\):'
+  let pattern = '\(.\{-}\):\(\d\+\):\(\d\+\):'
   let matched = s:matchlist(line, pattern)
   let [fpath, linenr, column] = [matched[1], str2nr(matched[2]), str2nr(matched[3])]
   call clap#sink#open_file(fpath, linenr, column)
@@ -243,7 +243,7 @@ endfunction
 
 function! s:grep_sink_star(lines) abort
   call s:grep_exit()
-  let pattern = '\(.*\):\(\d\+\):\(\d\+\):\(.*\)'
+  let pattern = '\(.\{-}\):\(\d\+\):\(\d\+\):\(.*\)'
   call clap#util#open_quickfix(map(a:lines, 's:into_qf_item(v:val, pattern)'))
 endfunction
 

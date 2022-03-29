@@ -7,21 +7,21 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use anyhow::{Context, Result};
+use clap::Parser;
 use itertools::Itertools;
 use rayon::prelude::*;
-use clap::Parser;
 
-use filter::{
-    matcher::{Bonus, MatchType},
-    subprocess::Exec,
-    Source,
-};
+use filter::{matcher::MatchingTextKind, subprocess::Exec, Source};
 use icon::Icon;
 use utility::is_git_repo;
 
 use crate::app::Params;
-use crate::process::tokio::TokioCommand;
-use crate::process::{light::LightCommand, rstd::StdCommand, BaseCommand};
+use crate::process::{
+    light::{CommandEnv, LightCommand},
+    rstd::StdCommand,
+    tokio::TokioCommand,
+    BaseCommand,
+};
 use crate::tools::ripgrep::Match;
 use crate::utils::{send_response_from_cache, SendResponse};
 
@@ -65,6 +65,10 @@ pub struct Grep {
     /// Read input from a cached grep tempfile, only absolute file path is supported.
     #[clap(long, parse(from_os_str))]
     input: Option<PathBuf>,
+
+    /// Specify the directory for running ripgrep.
+    #[clap(long, parse(from_os_str))]
+    grep_dir: Vec<PathBuf>,
 
     /// Synchronous filtering, returns after the input stream is complete.
     #[clap(long)]
@@ -120,8 +124,10 @@ impl Grep {
 
         let mut cmd = std_cmd.into_inner();
 
-        let mut light_cmd =
-            LightCommand::new_grep(&mut cmd, None, number, Default::default(), None);
+        let mut light_cmd = LightCommand::new(
+            &mut cmd,
+            CommandEnv::new(None, number, Default::default(), None),
+        );
 
         let base_cmd = BaseCommand::new(grep_cmd, std::env::current_dir()?);
         let execute_info = light_cmd.execute(base_cmd)?;
@@ -168,8 +174,7 @@ impl Grep {
                 source,
                 params
                     .into_filter_context()
-                    .match_type(MatchType::IgnoreFilePath),
-                vec![Bonus::None],
+                    .matching_text_kind(MatchingTextKind::IgnoreFilePath),
             )
         };
 

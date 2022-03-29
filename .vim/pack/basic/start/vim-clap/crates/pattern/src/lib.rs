@@ -12,7 +12,7 @@ static DUMB_JUMP_LINE: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"^\[(.*)\](.*?):(\d+):(\d+):").unwrap());
 
 // match the file path and line number of grep line.
-static GREP_STRIP_FPATH: Lazy<Regex> = Lazy::new(|| Regex::new(r"^.*:\d+:\d+:").unwrap());
+static GREP_STRIP_FPATH: Lazy<Regex> = Lazy::new(|| Regex::new(r"^.*?:\d+:\d+:").unwrap());
 
 // match the tag_name:lnum of tag line.
 static TAG_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"^(.*:\d+)").unwrap());
@@ -52,7 +52,7 @@ pub fn tag_name_only(line: &str) -> Option<&str> {
 /// //                                |
 /// //                             offset
 #[inline]
-pub fn strip_grep_filepath(line: &str) -> Option<(&str, usize)> {
+pub fn extract_grep_pattern(line: &str) -> Option<(&str, usize)> {
     GREP_STRIP_FPATH
         .find(line)
         .map(|mat| (&line[mat.end()..], mat.end()))
@@ -86,21 +86,26 @@ pub fn extract_grep_file_path(line: &str) -> Option<String> {
 }
 
 /// Returns fpath part in grep line.
-#[inline]
 pub fn extract_fpath_from_grep_line(line: &str) -> Option<&str> {
     GREP_POS
         .captures(line)
         .and_then(|cap| cap.get(1).map(|x| x.as_str()))
 }
 
-/// Returns the file name of files entry.
-#[inline]
-pub fn file_name_only(line: &str) -> Option<(&str, usize)> {
-    let fpath: std::path::PathBuf = line.into();
+/// Returns the file name as well as its offset from the complete file path.
+pub fn find_file_name(file_path: &str) -> Option<(&str, usize)> {
+    // TODO: extract the file name efficiently
+    let fpath: std::path::PathBuf = file_path.into();
+
     fpath
         .file_name()
         .map(|x| x.to_string_lossy().into_owned())
-        .map(|fname| (&line[line.len() - fname.len()..], line.len() - fname.len()))
+        .map(|fname| {
+            (
+                &file_path[file_path.len() - fname.len()..],
+                file_path.len() - fname.len(),
+            )
+        })
 }
 
 fn parse_lnum(lnum: &str) -> Option<usize> {
@@ -173,14 +178,22 @@ mod tests {
         assert_eq!(
             info,
             (
-                "variable".into(),
+                "variable",
                 "crates/maple_cli/src/stdio_server/session/context.rs".into(),
                 36,
                 8
             )
         );
         let line = "[variable]crates/maple_cli/src/stdio_server/session/providers/dumb_jump.rs:9:8:        let cwd = msg.get_cwd();";
-        println!("{:?}", extract_jump_line_info(line));
+        assert_eq!(
+            extract_jump_line_info(line).unwrap(),
+            (
+                "variable",
+                "crates/maple_cli/src/stdio_server/session/providers/dumb_jump.rs".into(),
+                9,
+                8
+            )
+        );
     }
 
     #[test]
@@ -239,5 +252,17 @@ mod tests {
                 "pub async fn run(self) -> Result<()> {"
             ))
         )
+    }
+
+    #[test]
+    fn test_strip_grep_filepath() {
+        let line = r#"crates/pattern/src/lib.rs:51:1:/// // crates/printer/src/lib.rs:199:26:        let query = "srlisrlisrsr";"#;
+        assert_eq!(
+            extract_grep_pattern(line).unwrap(),
+            (
+                "/// // crates/printer/src/lib.rs:199:26:        let query = \"srlisrlisrsr\";",
+                31
+            )
+        );
     }
 }

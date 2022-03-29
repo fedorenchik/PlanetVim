@@ -13,57 +13,37 @@ use anyhow::Result;
 use rayon::prelude::*;
 
 use icon::Icon;
-use matcher::{Bonus, FuzzyAlgorithm, MatchType, Matcher};
+use matcher::{Matcher, MatchingTextKind};
 
 pub use self::dynamic::dyn_run;
 pub use self::source::Source;
 pub use matcher;
 #[cfg(feature = "dyn-filtering")]
 pub use subprocess;
-pub use types::{FilteredItem, Query, SourceItem};
+pub use types::{CaseMatching, FilteredItem, Query, SourceItem};
 
 /// Context for running the filter.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct FilterContext {
-    algo: FuzzyAlgorithm,
     icon: Icon,
     number: Option<usize>,
     winwidth: Option<usize>,
-    match_type: MatchType,
-}
-
-impl Default for FilterContext {
-    fn default() -> Self {
-        Self {
-            algo: Default::default(),
-            icon: Default::default(),
-            number: None,
-            winwidth: None,
-            match_type: MatchType::Full,
-        }
-    }
+    matcher: Matcher,
 }
 
 impl FilterContext {
     pub fn new(
-        algo: FuzzyAlgorithm,
         icon: Icon,
         number: Option<usize>,
         winwidth: Option<usize>,
-        match_type: MatchType,
+        matcher: Matcher,
     ) -> Self {
         Self {
-            algo,
             icon,
             number,
             winwidth,
-            match_type,
+            matcher,
         }
-    }
-
-    pub fn algo(mut self, algo: FuzzyAlgorithm) -> Self {
-        self.algo = algo;
-        self
     }
 
     pub fn number(mut self, number: Option<usize>) -> Self {
@@ -81,8 +61,8 @@ impl FilterContext {
         self
     }
 
-    pub fn match_type(mut self, match_type: MatchType) -> Self {
-        self.match_type = match_type;
+    pub fn matching_text_kind(mut self, matching_text_kind: MatchingTextKind) -> Self {
+        self.matcher = self.matcher.set_matching_text_kind(matching_text_kind);
         self
     }
 }
@@ -101,11 +81,8 @@ pub fn sort_initial_filtered(filtered: Vec<FilteredItem>) -> Vec<FilteredItem> {
 pub fn sync_run<I: Iterator<Item = SourceItem>>(
     query: &str,
     source: Source<I>,
-    algo: FuzzyAlgorithm,
-    match_type: MatchType,
-    bonuses: Vec<Bonus>,
+    matcher: Matcher,
 ) -> Result<Vec<FilteredItem>> {
-    let matcher = Matcher::with_bonuses(algo, match_type, bonuses);
     let query: Query = query.into();
     let filtered = source.filter_and_collect(matcher, &query)?;
     let ranked = sort_initial_filtered(filtered);
