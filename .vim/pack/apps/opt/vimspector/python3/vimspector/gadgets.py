@@ -227,15 +227,19 @@ GADGETS = {
       'format': 'tar',
     },
     'all': {
-      'version': '1.2.0-782'
+      'version': '2.0.0-895'
     },
     'macos': {
-      'file_name': 'netcoredbg-osx.tar.gz',
+      'file_name': 'netcoredbg-osx-amd64.tar.gz',
       'checksum':
         '',
     },
     'linux': {
-      'file_name': 'netcoredbg-linux-bionic-amd64.tar.gz',
+      'file_name': 'netcoredbg-linux-amd64.tar.gz',
+      'checksum': '',
+    },
+    'linux_arm64': {
+      'file_name': 'netcoredbg-linux-arm64.tar.gz',
       'checksum': '',
     },
     'windows': {
@@ -370,10 +374,10 @@ GADGETS = {
         '${version}/${file_name}',
     },
     'all': {
-            'version': 'v1.23.0',
-            'file_name': 'php-debug-1.23.0.vsix',
+            'version': 'v1.25.0',
+            'file_name': 'php-debug-1.25.0.vsix',
       'checksum':
-        'ae4a8d7cc1ccc49ba1fd353c53f17a404733cccdb06ea600e22bc63d3d4a5603',
+        '8cd9089735593bd2147aa325a8545e4122a3921dd6cc1062eb4d57b4419b2753',
     },
     'adapters': {
       'vscode-php-debug': {
@@ -428,7 +432,7 @@ GADGETS = {
         'type': 'firefox',
         'command': [
           'node',
-          '${gadgetDir}/debugger-for-firefox/dist/adapter.bundle.js'
+          '${gadgetDir}/vscode-firefox-debug/dist/adapter.bundle.js'
         ],
       },
     },

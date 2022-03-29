@@ -200,6 +200,12 @@ def ModifiableScratchBuffer( buf ):
 
 
 @contextlib.contextmanager
+def NoAutocommands():
+  with TemporaryVimOption( 'eventignore', 'all' ):
+    yield
+
+
+@contextlib.contextmanager
 def RestoreCursorPosition():
   current_pos = vim.current.window.cursor
   try:
@@ -212,15 +218,15 @@ def RestoreCursorPosition():
 
 @contextlib.contextmanager
 def RestoreCurrentWindow():
-  # TODO: Don't trigger autocommands when shifting windows
   old_tabpage = vim.current.tabpage
   old_window = vim.current.window
   try:
     yield
   finally:
     if old_tabpage.valid and old_window.valid:
-      vim.current.tabpage = old_tabpage
-      vim.current.window = old_window
+      with NoAutocommands():
+        vim.current.tabpage = old_tabpage
+        vim.current.window = old_window
 
 
 @contextlib.contextmanager
@@ -231,8 +237,9 @@ def RestoreCurrentBuffer( window ):
   finally:
     if window.valid:
       with RestoreCurrentWindow():
-        vim.current.window = window
-        vim.current.buffer = old_buffer
+        with NoAutocommands():
+          JumpToWindow( window )
+          vim.current.buffer = old_buffer
 
 
 @contextlib.contextmanager
@@ -250,14 +257,16 @@ def AnyWindowForBuffer( buf ):
 @contextlib.contextmanager
 def LetCurrentTabpage( tabpage ):
   with RestoreCurrentWindow():
-    vim.current.tabpage = tabpage
+    with NoAutocommands():
+      vim.current.tabpage = tabpage
     yield
 
 
 @contextlib.contextmanager
 def LetCurrentWindow( window ):
   with RestoreCurrentWindow():
-    JumpToWindow( window )
+    with NoAutocommands():
+      JumpToWindow( window )
     yield
 
 
@@ -265,7 +274,8 @@ def LetCurrentWindow( window ):
 def LetCurrentBuffer( buf ):
   with RestoreCursorPosition():
     with RestoreCurrentBuffer( vim.current.window ):
-      vim.current.buffer = buf
+      with NoAutocommands():
+        vim.current.buffer = buf
       yield
 
 
@@ -299,14 +309,14 @@ def TemporaryVimOption( opt, value ):
 
 
 def DirectoryOfCurrentFile():
-  return os.path.dirname( os.path.abspath( vim.current.buffer.name ) )
+  return os.path.dirname( NormalizePath( vim.current.buffer.name ) )
 
 
 def PathToConfigFile( file_name, from_directory = None ):
   if not from_directory:
     p = os.getcwd()
   else:
-    p = os.path.abspath( os.path.realpath( from_directory ) )
+    p = NormalizePath( os.path.realpath( from_directory ) )
 
   while True:
     candidate = os.path.join( p, file_name )
@@ -343,6 +353,10 @@ def UserMessage( msg, persist=False, error=False ):
 
 @contextlib.contextmanager
 def InputSave():
+  if vim.vars.get( 'vimspector_batch_mode', False ):
+    yield
+    return
+
   vim.eval( 'inputsave()' )
   try:
     yield
@@ -350,7 +364,7 @@ def InputSave():
     vim.eval( 'inputrestore()' )
 
 
-def SelectFromList( prompt, options ):
+def SelectFromList( prompt, options, ret='label' ):
   with InputSave():
     display_options = [ prompt ]
     display_options.extend( [ '{0}: {1}'.format( i + 1, v )
@@ -360,7 +374,10 @@ def SelectFromList( prompt, options ):
         'inputlist( ' + json.dumps( display_options ) + ' )' ) ) - 1
       if selection < 0 or selection >= len( options ):
         return None
-      return options[ selection ]
+      if ret == 'index':
+        return selection
+      else:
+        return options[ selection ]
     except ( KeyboardInterrupt, vim.error ):
       return None
 
@@ -458,6 +475,8 @@ def ClearBuffer( buf, modified = False ):
 
 def SetBufferContents( buf, lines, modified=False ):
   try:
+    # FIXME: Really any iteratble list-like type would work here (iterable isn't
+    # enough because strings are iterable)
     if not isinstance( lines, list ):
       lines = lines.splitlines()
 
@@ -827,7 +846,7 @@ def GetVimList( vim_dict, name, default=None ):
 def GetVimspectorBase():
   return GetVimValue( vim.vars,
                      'vimspector_base_dir',
-                      os.path.abspath(
+                      NormalizePath(
                         os.path.join( os.path.dirname( __file__ ),
                                       '..',
                                       '..' ) ) )
@@ -849,10 +868,70 @@ def WindowID( window, tab=None ):
   return int( Call( 'win_getid', window.number, tab.number ) )
 
 
+@memoize
 def UseWinBar():
   # Buggy neovim doesn't render correctly when the WinBar is defined:
   # https://github.com/neovim/neovim/issues/12689
   return not int( Call( 'has', 'nvim' ) )
+
+
+# Jump to a specific 1-based line/column
+def SetCursorPosInWindow( window, line, column = 1 ):
+  # simplify the interface and make column 1 based, same as line
+  column = max( 1, column )
+  # ofc column is actually 0 based in vim
+  window.cursor = ( line, column - 1 )
+
+
+def NormalizePath( filepath ):
+  absolute_path = os.path.abspath( filepath )
+  return absolute_path if os.path.isfile( absolute_path ) else filepath
+
+
+class Subject( object ):
+  def __init__( self, id, emitter ):
+    self.__id = id
+    self.__emitter = emitter
+
+  def __str__( self ):
+    return str( self.__id )
+
+  def unsubscribe( self ):
+    self.__emitter.unsubscribe( self )
+
+  def emit( self ):
+    self.__emitter.emit()
+
+
+class EventEmitter( object ):
+  def __init__( self ):
+    super().__init__()
+    self.__next_id = 0
+    self.__callbacks = {}
+
+  def subscribe( self, callback ):
+    if not callback:
+      return None
+
+    self.__next_id += 1
+    subscription = Subject( self.__next_id, self )
+    self.__callbacks[ subscription ] = callback
+
+    return subscription
+
+  def unsubscribe( self, subscription ):
+    if not subscription:
+      return
+
+    del self.__callbacks[ subscription ]
+
+  def emit( self ):
+    for _, callback in self.__callbacks.items():
+      if callback:
+        callback()
+
+  def unsubscribe_all( self ):
+    self.__callbacks = {}
 
 
 def Base64ToHexDump( data ):

@@ -65,6 +65,8 @@ nnoremap <silent> <Plug>VimspectorStepOut
 
 nnoremap <silent> <Plug>VimspectorRunToCursor
       \ :<c-u>call vimspector#RunToCursor()<CR>
+nnoremap <silent> <Plug>VimspectorGoToCurrentLine
+      \ :<c-u>call vimspector#GoToCurrentLine()<CR>
 
 " Eval for normal mode
 nnoremap <silent> <Plug>VimspectorBalloonEval
@@ -77,6 +79,9 @@ nnoremap <silent> <Plug>VimspectorUpFrame
       \ :<c-u>call vimspector#UpFrame()<CR>
 nnoremap <silent> <Plug>VimspectorDownFrame
       \ :<c-u>call vimspector#DownFrame()<CR>
+
+nnoremap <silent> <Plug>VimspectorBreakpoints
+      \ :<c-u>call vimspector#ListBreakpoints()<CR>
 
 if s:mappings ==# 'VISUAL_STUDIO'
   nmap <F5>         <Plug>VimspectorContinue
@@ -121,6 +126,9 @@ command! -nargs=1 -complete=custom,vimspector#CompleteExpr
 command! -bar
       \ VimspectorReset
       \ call vimspector#Reset( { 'interactive': v:true } )
+command! -bar
+      \ VimspectorBreakpoints
+      \ call vimspector#ListBreakpoints()
 
 " Installer commands
 command! -bar -bang -nargs=* -complete=custom,vimspector#CompleteInstall
