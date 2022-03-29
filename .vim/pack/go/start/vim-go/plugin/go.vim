@@ -50,7 +50,7 @@ let s:packages = {
       \ 'revive':        ['github.com/mgechev/revive@latest'],
       \ 'gopls':         ['golang.org/x/tools/gopls@latest', {}, {'after': function('go#lsp#Restart', [])}],
       \ 'golangci-lint': ['github.com/golangci/golangci-lint/cmd/golangci-lint@latest'],
-      \ 'staticcheck':   ['honnef.co/go/tools/cmd/staticcheck@latest'],
+      \ 'staticcheck':   ['honnef.co/go/tools/cmd/staticcheck@master'],
       \ 'gomodifytags':  ['github.com/fatih/gomodifytags@latest'],
       \ 'gorename':      ['golang.org/x/tools/cmd/gorename@master'],
       \ 'gotags':        ['github.com/jstemmer/gotags@master'],
@@ -108,7 +108,7 @@ function! s:GoInstallBinaries(updateBinaries, ...)
     set noshellslash
   endif
 
-  let l:get_base_cmd = ['go', 'install', '-v']
+  let l:get_base_cmd = ['go', 'install', '-v', '-mod=readonly']
 
   " Filter packages from arguments (if any).
   let l:packages = {}
@@ -245,7 +245,9 @@ function! s:register()
     return
   endif
 
-  call go#lsp#DidOpen(expand('<afile>:p'))
+  " Resolve any symlinks in <afile> so that the filename will match what Vim
+  " will ultimately and usually produce.
+  call go#lsp#DidOpen(resolve(expand('<afile>:p')))
 endfunction
 
 function! s:noop(...) abort
