@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/reedes/vim-wordy.git
 	branch = master
-	commit = 667426a0171787b2620dffa5b2d7c01c9040237f
-	parent = 84fadece967da3de4d31311740e8666d289ec8c6
+	commit = 590927f57277666e032702b26e4e0c82717cc3cb
+	parent = d619ccf872e8ed921b2dbb782ab653c470a3c745
 	method = merge
 	cmdver = 0.4.3
