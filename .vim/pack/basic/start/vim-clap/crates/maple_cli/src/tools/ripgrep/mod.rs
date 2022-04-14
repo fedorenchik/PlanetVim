@@ -7,6 +7,8 @@ use std::{borrow::Cow, convert::TryFrom};
 
 use anyhow::Result;
 
+use crate::utils::display_width;
+
 pub use self::jsont::{Match, Message, SubMatch};
 
 /// Word represents the input query around by word boundries.
@@ -105,7 +107,7 @@ impl Match {
 }
 
 impl TryFrom<&[u8]> for Match {
-    type Error = String;
+    type Error = Cow<'static, str>;
     fn try_from(byte_line: &[u8]) -> Result<Self, Self::Error> {
         let msg = serde_json::from_slice::<Message>(byte_line)
             .map_err(|e| format!("deserialize error: {:?}", e))?;
@@ -118,7 +120,7 @@ impl TryFrom<&[u8]> for Match {
 }
 
 impl TryFrom<&str> for Match {
-    type Error = String;
+    type Error = Cow<'static, str>;
     fn try_from(line: &str) -> Result<Self, Self::Error> {
         let msg = serde_json::from_str::<Message>(line)
             .map_err(|e| format!("deserialize error: {:?}", e))?;
@@ -128,23 +130,6 @@ impl TryFrom<&str> for Match {
             Err("Not Message::Match type".into())
         }
     }
-}
-
-/// Returns the width of displaying `n` on the screen.
-///
-/// Same with `n.to_string().len()` but without allocation.
-fn display_width(mut n: usize) -> usize {
-    if n == 0 {
-        return 1;
-    }
-
-    let mut len = 0;
-    while n > 0 {
-        len += 1;
-        n /= 10;
-    }
-
-    len
 }
 
 impl Match {
@@ -168,7 +153,7 @@ impl Match {
             path,
             line_number,
             column,
-            self.lines.text().trim_end()
+            self.pattern().trim_end()
         );
 
         // filepath:line_number:column:text, 3 extra `:` in the formatted String.
@@ -186,6 +171,20 @@ impl Match {
         (formatted, indices)
     }
 
+    #[inline]
+    pub fn pattern(&self) -> Cow<str> {
+        self.lines.text()
+    }
+
+    pub fn pattern_weight(&self) -> dumb_analyzer::Weight {
+        self.path()
+            .rsplit_once('.')
+            .and_then(|(_, file_ext)| {
+                dumb_analyzer::calculate_pattern_weight(self.pattern(), file_ext)
+            })
+            .unwrap_or_default()
+    }
+
     /// Returns a pair of the formatted `String` and the offset of matches for dumb_jump provider.
     ///
     /// NOTE: [`pattern::DUMB_JUMP_LINE`] must be updated accordingly once the format is changed.
@@ -200,7 +199,7 @@ impl Match {
             path,
             line_number,
             column,
-            self.lines.text().trim_end()
+            self.pattern().trim_end()
         );
 
         let offset = path.len()
@@ -222,12 +221,8 @@ impl Match {
         let line_number = self.line_number();
         let column = self.column();
 
-        let formatted_string = format!(
-            "  {}:{}:{}",
-            line_number,
-            column,
-            self.lines.text().trim_end()
-        );
+        let formatted_string =
+            format!("  {}:{}:{}", line_number, column, self.pattern().trim_end());
 
         let offset = display_width(line_number as usize) + display_width(column) + 2 + 2;
 

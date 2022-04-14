@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/tikhomirov/vim-glsl.git
 	branch = master
-	commit = 42ffed856d5d156ec0f9c12233be34182cbb08ea
-	parent = 47a7171faa1dde8a9917c35a1e8c047e320d9554
+	commit = 28a6dfbcd96095226bee90985b7f12c5679dbbb6
+	parent = 4eb0bb4c7006f4300b8c1f89d81d571c45e9b820
 	method = merge
 	cmdver = 0.4.3

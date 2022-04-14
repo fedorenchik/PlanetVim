@@ -37,13 +37,15 @@ Contents ~
    2. Debug configuration selection  |vimspector-debug-configuration-selection|
    3. Get configurations                        |vimspector-get-configurations|
   2. Breakpoints                                       |vimspector-breakpoints|
-   1. Summary                                              |vimspector-summary|
+   1. Breakpoints Window                        |vimspector-breakpoints-window|
    2. Line breakpoints                            |vimspector-line-breakpoints|
    3. Conditional breakpoints and logpoints |vimspector-conditional-breakpoints-logpoints|
    4. Exception breakpoints                  |vimspector-exception-breakpoints|
-   5. Clear breakpoints                          |vimspector-clear-breakpoints|
-   6. Run to Cursor                                  |vimspector-run-to-cursor|
-   7. Save and restore                                |vimspector-save-restore|
+   5. API Summary                                      |vimspector-api-summary|
+   6. Clear breakpoints                          |vimspector-clear-breakpoints|
+   7. Run to Cursor                                  |vimspector-run-to-cursor|
+   8. Go to current line                        |vimspector-go-to-current-line|
+   9. Save and restore                                |vimspector-save-restore|
   3. Stepping                                             |vimspector-stepping|
   4. Variables and scopes                         |vimspector-variables-scopes|
   5. Variable or selection hover evaluation |vimspector-variable-or-selection-hover-evaluation|
@@ -144,10 +146,11 @@ Image: Build [3] Image: Matrix [5] Image: Gitter [7]
   - Debug configuration selection
   - Get configurations
   - Breakpoints
-  - Summary
+  - Breakpoints Window
   - Line breakpoints
   - Conditional breakpoints and logpoints
   - Exception breakpoints
+  - API Summary
   - Clear breakpoints
   - Run to Cursor
   - Save and restore
@@ -167,10 +170,10 @@ Image: Build [3] Image: Matrix [5] Image: Gitter [7]
 
 - Debug profile configuration
 
-  - C, C++, Rust, etc.
+  - C, C , Rust, etc.
   - Data visualization / pretty printing
-  - C++ Remote debugging
-  - C++ Remote launch and attach
+  - C Remote debugging
+  - C Remote launch and attach
   - Rust
   - Python
   - Python Remote Debugging
@@ -232,6 +235,7 @@ Supported debugging features ~
 - conditional breakpoints (function, line)
 - step in/out/over/up, stop, restart
 - run to cursor
+- go to line (reset program counter to line)
 - launch and attach
 - remote launch, remote attach
 - locals and globals display
@@ -376,7 +380,7 @@ Why such a new vim ? Well 2 reasons:
 Why is neovim experimental? Because the author doesn't use neovim regularly,
 and there are no regression tests for vimspector in neovim, so it may break
 occasionally. Issue reports are handled on best-efforts basis, and PRs are
-welcome to fix bugs. See also the next section descibing differences for neovim
+welcome to fix bugs. See also the next section describing differences for neovim
 vs vim.
 
 Why Windows support experimental? Because it's effort and it's not a priority
@@ -606,7 +610,7 @@ Then add this to your '.vimrc':
 >
   let g:vimspector_base_dir=expand( '$HOME/.vim/vimspector-config' )
 <
-When usnig ':VimspectorInstall', the 'g:vimspector_base_dir' setting is
+When using ':VimspectorInstall', the 'g:vimspector_base_dir' setting is
 respected unless '--basedir' is manually added (not recommended).
 
 See '--help' for more info on the various options.
@@ -687,7 +691,7 @@ Example:
 The gadget file is automatically written by 'install_gadget.py' (or
 ':VimspectorInstall').
 
-Vimspector will also load any fies matching:
+Vimspector will also load any files matching:
 '</path/to/vimspector>/gadgets/<os>/.gadgets.d/*.json'. These have the same
 format as '.gadgets.json' but are not overwritten when running
 'install_gadget.py'.
@@ -744,7 +748,7 @@ probably will) change, including things like:
 - breaking changes to the configuration
 - keys, layout, functionality of the UI
 
-However, I commit to only doing this in the most extreme cases and to annouce
+However, I commit to only doing this in the most extreme cases and to announce
 such changes on Gitter well in advance. There's nothing more annoying than
 stuff just breaking on you. I get that.
 
@@ -835,11 +839,15 @@ following '<Plug>' mappings:
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 | '<Plug>VimspectorPause'                       | Pause debuggee.                                                     | 'vimspector#Pause()'                                              |
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| '<Plug>VimspectorBreakpoints'                 | Show/hide the breakpoints window                                    | 'vimspector#ListBreakpoints()'                                    |
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 | '<Plug>VimspectorToggleBreakpoint'            | Toggle line breakpoint on the current line.                         | 'vimspector#ToggleBreakpoint()'                                   |
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 | '<Plug>VimspectorToggleConditionalBreakpoint' | Toggle conditional line breakpoint or logpoint on the current line. | 'vimspector#ToggleBreakpoint( { trigger expr, hit count expr } )' |
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 | '<Plug>VimspectorAddFunctionBreakpoint'       | Add a function breakpoint for the expression under cursor           | "vimspector#AddFunctionBreakpoint( '<cexpr>' )"                   |
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| '<Plug>VimspectorGoToCurrentLine'             | Reset the current program counter to the current line               | 'vimspector#GoToCurrentLine()'                                    |
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 | '<Plug>VimspectorRunToCursor'                 | Run to Cursor                                                       | 'vimspector#RunToCursor()'                                        |
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1010,7 +1018,7 @@ To launch with an ad-hoc config you can use:
 - 'call vimspector#LaunchWithConfigurations( dict )'
 
 The argument is a 'dict' wich is the 'configurations' section of a .vimspector
-file Pass one configuration in and that will be selected as the one to run. For
+file. Pass one configuration in and that will be selected as the one to run. For
 example:
 >
   let pid = <some_exression>
@@ -1019,7 +1027,7 @@ example:
               \    "adapter": "netcoredbg",
               \    "configuration": {
               \      "request": "attach",
-              \      "processId": proc_id
+              \      "processId": pid
               \    }
               \  }
               \})
@@ -1066,56 +1074,28 @@ See the mappings section for the default mappings for working with breakpoints.
 This section describes the full API in vimscript functions.
 
 -------------------------------------------------------------------------------
-                                                           *vimspector-summary*
-Summary ~
+                                                *vimspector-breakpoints-window*
+Breakpoints Window ~
 
-- Use 'vimspector#ToggleBreakpoint( { options dict } )' to set/disable/delete
-  a line breakpoint. The argument is optional (see below).
+Use ':VimspectorBreakpoints' or map something to '<Plug>VimspectorBreakpoints'
+to open the breakpoints view. From here you can list, jump to delete, add and
+toggle breakpoints.
 
-- Use "vimspector#AddFunctionBreakpoint( '<name>', { options dict} )" to add
-  a function breakpoint. The second argument is optional (see below).
+I recommend a mapping like this to toggle the breakpoints window:
+>
+  nmap <Leader>db <Plug>VimspectorBreakpoints
+<
+The following mappings apply by default in the breakpoints window:
 
-- Use 'vimspector#SetLineBreakpoint( file_name, line_num, { options dict } )'
-  to set a breakpoint at a specific file/line. The last argument is optional
-  (see below)
+- 't', '<F9>' - toggle, i.e. enable/disable breakpoint
+- 'T' - toggle, i.e. enable/disable ALL breakpoints
+- 'dd', '<Del>' - delete the current breakpoint
+- 'i', 'a', 'o' - add a new line breakpoint
+- 'I', 'A', 'O' - add a new function breakpoint
+- '<Enter>' or double-click - jump to the line breakpoint
 
-- Use 'vimspector#ClearLineBreakpoint( file_name, line_num )' to remove a
-  breakpoint at a specific file/line
-
-- Use 'vimspector#ClearBreakpoints()' to clear all breakpoints
-
-- Use ':VimspectorMkSession' and ':VimspectorLoadSession' to save and restore
-  breakpoints
-
-Examples:
-
-- 'call vimspector#ToggleBreakpoint()' - toggle breakpoint on current line
-
-- "call vimspector#SetLineBreakpoint( 'some_file.py', 10 )" - set a
-  breakpoint on 'some_filepy:10'
-
-- "call vimspector#AddFunctionBreakpoint( 'main' )" - add a function
-  breakpoint on the 'main' function
-
-- "call vimspector#ToggleBreakpoint( { 'condition': 'i > 5' } )" - add a
-  breakpoint on the current line that triggers only when 'i > 5' is 'true'
-
-- "call vimspector#SetLineBreakpoint( 'some_file.py', 10, { 'condition': 'i >
-  5' } )" - add a breakpoint at 'some_file.py:10' that triggers only when 'i
-  > 5' is 'true'
-
-- "call vimspector#ClearLineBreakpoint( 'some_file.py', 10 )" - delete the
-  breakpoint at 'some_file.py:10'
-
-- 'call vimspector#ClearBreakpoints()' - clear all breakpoints
-
-- 'VimspectorMkSession' - create '.vimspector.session'
-
-- 'VimspectorLoadSession' - read '.vimspector.session'
-
-- 'VimspectorMkSession my_session_file' - create 'my_session_file'
-
-- 'VimspectorLoadSession my_session_file' - read 'my_session_file'
+A WinBar is provided (where supported) too. This adds functions like
+saving/restoring sessions and clearing all breakpoints too.
 
 -------------------------------------------------------------------------------
                                                   *vimspector-line-breakpoints*
@@ -1177,6 +1157,69 @@ You can configure your choices in the '.vimspector.json'. See the configuration
 guide [25] for details on that.
 
 -------------------------------------------------------------------------------
+                                                       *vimspector-api-summary*
+API Summary ~
+
+**NOTE:*** Previously, ToggleBreakpoint would cycle between 3 states: enabled,
+disabled, deleted. Many users found the 'disabled' state was rarely useful, so
+the behaviour has been changed. ToggleBreakpoint always creates or deletes a
+breakpoint. If you wish to 'disable' breakpoints, use the breakpoints window
+and 'toggle' ('t') from there.
+
+- Use 'vimspector#ToggleBreakpoint( { options dict } )' to set/delete a line
+  breakpoint. The argument is optional (see below).
+
+- Use "vimspector#AddFunctionBreakpoint( '<name>', { options dict} )" to add
+  a function breakpoint. The second argument is optional (see below).
+
+- Use 'vimspector#SetLineBreakpoint( file_name, line_num, { options dict } )'
+  to set a breakpoint at a specific file/line. The last argument is optional
+  (see below)
+
+- Use 'vimspector#ClearLineBreakpoint( file_name, line_num )' to remove a
+  breakpoint at a specific file/line
+
+- Use 'vimspector#ClearBreakpoints()' to clear all breakpoints
+
+- Use ':VimspectorMkSession' and ':VimspectorLoadSession' to save and restore
+  breakpoints
+
+- 'call vimspector#ListBreakpoints()' - toggle breakpoints window
+
+- 'call vimspector#BreakpointsAsQuickFix()' - return the current set of
+  breakpoints in vim quickfix format
+
+Examples:
+
+- 'call vimspector#ToggleBreakpoint()' - toggle breakpoint on current line
+
+- "call vimspector#SetLineBreakpoint( 'some_file.py', 10 )" - set a
+  breakpoint on 'some_filepy:10'
+
+- "call vimspector#AddFunctionBreakpoint( 'main' )" - add a function
+  breakpoint on the 'main' function
+
+- "call vimspector#ToggleBreakpoint( { 'condition': 'i > 5' } )" - add a
+  breakpoint on the current line that triggers only when 'i > 5' is 'true'
+
+- "call vimspector#SetLineBreakpoint( 'some_file.py', 10, { 'condition': 'i >
+  5' } )" - add a breakpoint at 'some_file.py:10' that triggers only when 'i
+  > 5' is 'true'
+
+- "call vimspector#ClearLineBreakpoint( 'some_file.py', 10 )" - delete the
+  breakpoint at 'some_file.py:10'
+
+- 'call vimspector#ClearBreakpoints()' - clear all breakpoints
+
+- 'VimspectorMkSession' - create '.vimspector.session'
+
+- 'VimspectorLoadSession' - read '.vimspector.session'
+
+- 'VimspectorMkSession my_session_file' - create 'my_session_file'
+
+- 'VimspectorLoadSession my_session_file' - read 'my_session_file'
+
+-------------------------------------------------------------------------------
                                                  *vimspector-clear-breakpoints*
 Clear breakpoints ~
 
@@ -1192,11 +1235,25 @@ breakpoint on the current line, then continues execution, clearing the
 breakpoint when it is hit.
 
 -------------------------------------------------------------------------------
+                                                *vimspector-go-to-current-line*
+Go to current line ~
+
+Use 'vimspector#GoToCurrentLine()' or some mapping to
+'<Plug>VimspectorGoToCurrentLine' to jump the current execution to the line
+your cursor is currently on.
+
+Where supported this can be useful to re-run sections of code or skip over them
+entirely.
+
+If there are multiple possible "targets" on the current line, you're prompted
+to pick one.
+
+-------------------------------------------------------------------------------
                                                       *vimspector-save-restore*
 Save and restore ~
 
 Vimspector can save and restore breakpoints (and some other stuff) to a session
-file. The following commands exist for htat:
+file. The following commands exist for that:
 
 - 'VimspectorMkSession [file name]' - save the current set of line
   breakpoints, logpoints, conditional breakpoints, function breakpoints and
@@ -1213,9 +1270,9 @@ named '.vimspector.session', but this can be changed globally by setting
 path when calling the command.
 
 Advanced users may wish to automate the process of loading and saving, for
-example by adding 'VimEnter' and 'VimLeave' autocommands. It's recommented in
+example by adding 'VimEnter' and 'VimLeave' autocommands. It's recommended in
 that case to use 'silent!' to avoid annoying errors if the file can't be read
-or writtten.
+or written.
 
 The simplest form of automation is to load the vimspector session whenever you
 start vim with a session file. This is as simple as doing this:
@@ -1255,7 +1312,7 @@ Scopes and variables are represented by the buffer 'vimspector.Variables'.
 If you prefer a more verbose display for variables and watches, then you can
 "let g:vimspector_variables_display_mode = 'full'". By default only the name
 and value are displayed, with other data available from hovering the mouse or
-triggering '<Plug>VimspectorBalloonEval' on the line contianing the value in
+triggering '<Plug>VimspectorBalloonEval' on the line containing the value in
 the variables (or watches) window.
 
 -------------------------------------------------------------------------------
@@ -1277,7 +1334,7 @@ All rules for 'Variables and scopes' apply plus the following:
 - Set the value of the variable with '<C-CR>' (control + '<CR>') or
   '<leader><CR>' (if 'modifyOtherKeys' doesn't work for you)
 
-- Use regular nagivation keys ('j', 'k') to choose the current selection;
+- Use regular navigation keys ('j', 'k') to choose the current selection;
   '<Esc>' (or leave the tooltip window) to close the tooltip.
 
   Image: variable eval hover (see reference [28])
@@ -1309,7 +1366,7 @@ The watches are represented by the buffer 'vimspector.StackTrace'.
 If you prefer a more verbose display for variables and watches, then you can
 "let g:vimspector_variables_display_mode = 'full'". By default only the name
 and value are displayed, with other data available from hovering the mouse or
-triggering '<Plug>VimspectorBalloonEval' on the line contianing the value in
+triggering '<Plug>VimspectorBalloonEval' on the line containing the value in
 the variables (or watches) window.
 
 -------------------------------------------------------------------------------
@@ -1326,7 +1383,7 @@ For YouCompleteMe, the following config works well:
 >
   let g:ycm_semantic_triggers =  {
     \   'VimspectorPrompt': [ '.', '->', ':', '<' ]
-  }
+    \ }
 <
 -------------------------------------------------------------------------------
                                                        *vimspector-dump-memory*
@@ -1342,7 +1399,7 @@ variables. This can be done from the Variables and Wathces windows with:
 On doing this, you're asked to enter a number of bytes to read (from the
 location associated with the current cursor line) and an offset from that
 location. A new buffer is displayed in the Code Window containing a memory dump
-in hex and ascii, simmilar to the output of 'xxd'.
+in hex and ascii, similar to the output of 'xxd'.
 
 **_NOTE_**: This feature is experimental and may change in any way based on
 user feedback.
@@ -1378,7 +1435,7 @@ be changed manually to "switch to" that thread.
   focussed thread to the thread of that frame and jump to that frame in the
   code window.
 
-- The current frame when a breakpoint is hit or if manuall jumping is also
+- The current frame when a breakpoint is hit or if manual jumping is also
   highlighted.
 
   Image: stack trace (see reference [30])
@@ -1434,7 +1491,7 @@ For YouCompleteMe, the following config works well:
 >
   let g:ycm_semantic_triggers =  {
     \   'VimspectorPrompt': [ '.', '->', ':', '<' ]
-  }
+    \ }
 <
 -------------------------------------------------------------------------------
                                                           *vimspector-log-view*
@@ -1506,7 +1563,7 @@ C, C++, Rust, etc. ~
   console apps in another Terminal window.
 
 Example '.vimspector.json' (works with both 'vscode-cpptools' and
-'lldb-vscode'. For 'lldb-vscode' replace the name of the adapter with
+'lldb-vscode'). For 'lldb-vscode' replace the name of the adapter with
 'lldb-vscode':
 
 - vscode-cpptools Linux/MacOS:
@@ -1884,7 +1941,7 @@ Requires:
 <
   replace  'localhost'  with the ip of your workstation.
 
-lazy alternative
+Lazy alternative
 >
   zend_extension=xdebug.so
   xdebug.remote_enable=on
@@ -1929,7 +1986,7 @@ lazy alternative
                                              *vimspector-debug-web-application*
 Debug web application ~
 
-append 'XDEBUG_SESSION_START=xdebug' to your query string
+Append 'XDEBUG_SESSION_START=xdebug' to your query string
 >
   curl "http://localhost?XDEBUG_SESSION_START=xdebug"
 <
@@ -2505,7 +2562,7 @@ FAQ ~
    necessarily be easy to work out what to put in the '.vimspector.json'. As
    you can see above, some of the servers aren't really editor agnostic, and
    require very-specific unique handling. See the wiki [53] for details on
-   additonal language support
+   additional language support
 
 2. How do I stop it starting a new Terminal.app on macOS? See this comment
    [54]
@@ -2550,12 +2607,12 @@ FAQ ~
    [56]
 
 5. I'm confused about remote debugging configuration, can you explain it?
-   eh... kind of. Reference: https://puremourning.github.io/vimspector/confi
+   Eh... kind of. Reference: https://puremourning.github.io/vimspector/confi
    guration.html#remote-debugging-support. Some explanations here too: https
    ://github.com/puremourning/vimspector/issues/478#issuecomment-943515093
 
 6. I'm trying to debug a Django (django?) project and it's not working. Can
-   you help? sure, check this link which has a working example [57]. Or
+   you help? Sure, check this link which has a working example [57]. Or
    google it.
 
 ===============================================================================

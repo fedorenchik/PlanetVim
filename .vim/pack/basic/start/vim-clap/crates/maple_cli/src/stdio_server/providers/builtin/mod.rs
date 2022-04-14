@@ -4,7 +4,7 @@ use std::ops::Deref;
 use std::sync::Arc;
 
 use anyhow::Result;
-use filter::{FilterContext, FilteredItem};
+use filter::{matcher::Matcher, FilterContext, FilteredItem};
 use parking_lot::Mutex;
 use serde_json::json;
 
@@ -36,9 +36,10 @@ impl EventHandle for BuiltinHandle {
     async fn on_move(&mut self, msg: MethodCall, context: Arc<SessionContext>) -> Result<()> {
         let msg_id = msg.id;
 
-        let source_scale = context.source_scale.lock();
-
-        let curline = match (source_scale.deref(), msg.get_u64("lnum").ok()) {
+        let curline = match (
+            context.state.source_scale.lock().deref(),
+            msg.get_u64("lnum").ok(),
+        ) {
             (SourceScale::Small { ref lines, .. }, Some(lnum)) => {
                 if let Some(curline) = self
                     .current_results
@@ -53,11 +54,9 @@ impl EventHandle for BuiltinHandle {
             }
             _ => None,
         };
-        drop(source_scale);
 
-        if let Err(error) =
-            on_move::OnMoveHandler::create(&msg, &context, curline).map(|x| x.handle())
-        {
+        let on_move_handler = on_move::OnMoveHandler::create(&msg, &context, curline)?;
+        if let Err(error) = on_move_handler.handle().await {
             tracing::error!(?error, "Failed to handle OnMove event");
             write_response(json!({"error": error.to_string(), "id": msg_id }));
         }
@@ -67,7 +66,7 @@ impl EventHandle for BuiltinHandle {
     async fn on_typed(&mut self, msg: MethodCall, context: Arc<SessionContext>) -> Result<()> {
         let query = msg.get_query();
 
-        let source_scale = context.source_scale.lock();
+        let source_scale = context.state.source_scale.lock();
 
         match source_scale.deref() {
             SourceScale::Small { ref lines, .. } => {
@@ -101,13 +100,13 @@ impl EventHandle for BuiltinHandle {
                     &query,
                     path.clone().into(),
                     FilterContext::new(
-                        Default::default(),
                         context.icon,
                         Some(40),
                         Some(context.display_winwidth as usize),
-                        context.match_type,
+                        Matcher::default()
+                            .set_matching_text_kind(context.matching_text_kind)
+                            .set_bonuses(context.match_bonuses.clone()),
                     ),
-                    context.match_bonuses.clone(),
                 ) {
                     tracing::error!(error = ?e, "Error occured when filtering the cache source");
                 }

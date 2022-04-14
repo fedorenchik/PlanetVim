@@ -12,8 +12,8 @@ use serde_json::json;
 
 use filter::Query;
 
-use self::searcher::SearchEngine;
-use crate::dumb_analyzer::{CtagsSearcher, GtagsSearcher, SearchType, Usage, Usages};
+use self::searcher::{SearchEngine, SearchingWorker};
+use crate::find_usages::{CtagsSearcher, GtagsSearcher, QueryType, Usage, Usages};
 use crate::stdio_server::{
     providers::builtin::OnMoveHandler,
     rpc::Call,
@@ -25,27 +25,27 @@ use crate::utils::ExactOrInverseTerms;
 
 /// Internal reprentation of user input.
 #[derive(Debug, Clone, Default)]
-struct SearchInfo {
+struct QueryInfo {
     /// Keyword for the tag or regex searching.
     keyword: String,
-    /// Search type for `keyword`.
-    search_type: SearchType,
+    /// Query type for `keyword`.
+    query_type: QueryType,
     /// Search terms for further filtering.
     filtering_terms: ExactOrInverseTerms,
 }
 
-impl SearchInfo {
-    /// Returns true if the filtered results of `self` is a superset of applying `other` on the
-    /// same source.
+impl QueryInfo {
+    /// Return `true` if the result of query info is a superset of the result of another,
+    /// i.e., `self` contains all the search results of `other`.
     ///
     /// The rule is as follows:
     ///
     /// - the keyword is the same.
     /// - the new query is a subset of last query.
-    fn has_superset_results(&self, other: &Self) -> bool {
+    fn is_superset(&self, other: &Self) -> bool {
         self.keyword == other.keyword
-            && self.search_type == other.search_type
-            && self.filtering_terms.contains(&other.filtering_terms)
+            && self.query_type == other.query_type
+            && self.filtering_terms.is_superset(&other.filtering_terms)
     }
 }
 
@@ -57,7 +57,7 @@ impl SearchInfo {
 /// # Argument
 ///
 /// - `query`: Initial query typed in the input window.
-fn parse_search_info(query: &str) -> SearchInfo {
+fn parse_query_info(query: &str) -> QueryInfo {
     let Query {
         exact_terms,
         inverse_terms,
@@ -66,17 +66,17 @@ fn parse_search_info(query: &str) -> SearchInfo {
 
     // If there is no fuzzy term, use the full query as the keyword,
     // otherwise restore the fuzzy query as the keyword we are going to search.
-    let (keyword, search_type, filtering_terms) = if fuzzy_terms.is_empty() {
+    let (keyword, query_type, filtering_terms) = if fuzzy_terms.is_empty() {
         if exact_terms.is_empty() {
             (
                 query.into(),
-                SearchType::StartWith,
+                QueryType::StartWith,
                 ExactOrInverseTerms::default(),
             )
         } else {
             (
                 exact_terms[0].word.clone(),
-                SearchType::Exact,
+                QueryType::Exact,
                 ExactOrInverseTerms {
                     exact_terms,
                     inverse_terms,
@@ -86,7 +86,7 @@ fn parse_search_info(query: &str) -> SearchInfo {
     } else {
         (
             fuzzy_terms.iter().map(|term| &term.word).join(" "),
-            SearchType::StartWith,
+            QueryType::StartWith,
             ExactOrInverseTerms {
                 exact_terms,
                 inverse_terms,
@@ -100,16 +100,16 @@ fn parse_search_info(query: &str) -> SearchInfo {
     // - foo
     //
     // if let Some(stripped) = query.strip_suffix('*') {
-    // (stripped, SearchType::Contain)
+    // (stripped, QueryType::Contain)
     // } else if let Some(stripped) = query.strip_prefix('\'') {
-    // (stripped, SearchType::Exact)
+    // (stripped, QueryType::Exact)
     // } else {
-    // (query, SearchType::StartWith)
+    // (query, QueryType::StartWith)
     // };
 
-    SearchInfo {
+    QueryInfo {
         keyword,
-        search_type,
+        query_type,
         filtering_terms,
     }
 }
@@ -125,8 +125,8 @@ struct SearchResults {
     usages: Usages,
     /// Last raw query.
     raw_query: String,
-    /// Last parsed search info.
-    search_info: SearchInfo,
+    /// Last parsed query info.
+    query_info: QueryInfo,
 }
 
 #[derive(Deserialize)]
@@ -144,7 +144,7 @@ fn parse_msg(msg: MethodCall) -> (u64, Params) {
 async fn search_for_usages(
     msg_id: u64,
     params: Params,
-    maybe_search_info: Option<SearchInfo>,
+    maybe_search_info: Option<QueryInfo>,
     search_engine: SearchEngine,
     force_execute: bool,
 ) -> SearchResults {
@@ -158,10 +158,14 @@ async fn search_for_usages(
         return Default::default();
     }
 
-    let search_info = maybe_search_info.unwrap_or_else(|| parse_search_info(query.as_ref()));
+    let query_info = maybe_search_info.unwrap_or_else(|| parse_query_info(query.as_ref()));
 
     let (response, usages) = match search_engine
-        .search_usages(cwd, extension, &search_info)
+        .run(SearchingWorker {
+            cwd,
+            extension,
+            query_info: query_info.clone(),
+        })
         .await
     {
         Ok(usages) => {
@@ -199,7 +203,7 @@ async fn search_for_usages(
     SearchResults {
         usages,
         raw_query: query,
-        search_info,
+        query_info,
     }
 }
 
@@ -214,6 +218,8 @@ pub struct DumbJumpHandle {
     ctags_regenerated: Arc<AtomicBool>,
     /// Whether the GTAGS file has been (re)-created.
     gtags_regenerated: Arc<AtomicBool>,
+    /// First on_typed event received.
+    first_on_typed_event_received: Arc<AtomicBool>,
 }
 
 impl DumbJumpHandle {
@@ -222,7 +228,7 @@ impl DumbJumpHandle {
         &self,
         msg_id: u64,
         params: Params,
-        search_info: SearchInfo,
+        query_info: QueryInfo,
     ) -> SearchResults {
         let search_engine = match (
             self.ctags_regenerated.load(Ordering::Relaxed),
@@ -232,12 +238,8 @@ impl DumbJumpHandle {
             (true, false) => SearchEngine::CtagsAndRegex,
             _ => SearchEngine::Regex,
         };
-        let job_future = search_for_usages(msg_id, params, Some(search_info), search_engine, false);
 
-        tokio::spawn(job_future).await.unwrap_or_else(|e| {
-            tracing::error!(?e, "Failed to spawn task search_for_usages");
-            Default::default()
-        })
+        search_for_usages(msg_id, params, Some(query_info), search_engine, false).await
     }
 }
 
@@ -258,15 +260,15 @@ impl EventHandle for DumbJumpHandle {
                 }
 
                 // TODO: smarter strategy to regenerate the tags?
-                let ctags_searcher = CtagsSearcher::new(tags_config);
                 async move {
                     let now = std::time::Instant::now();
+                    let ctags_searcher = CtagsSearcher::new(tags_config);
                     match ctags_searcher.generate_tags() {
                         Ok(()) => {
                             ctags_regenerated.store(true, Ordering::Relaxed);
                         }
                         Err(e) => {
-                            tracing::error!(error = ?e, "Error at generating the tags file for dumb_jump");
+                            tracing::error!(error = ?e, "💔 Error at generating the tags file for dumb_jump");
                         }
                     }
                     tracing::debug!(?cwd, "⏱️  Ctags elapsed: {:?}", now.elapsed());
@@ -275,14 +277,36 @@ impl EventHandle for DumbJumpHandle {
 
             let gtags_future = {
                 let gtags_regenerated = self.gtags_regenerated.clone();
-                let cwd = params.cwd.clone();
-                let gtags_searcher = GtagsSearcher::new(cwd.clone().into());
+                let cwd = params.cwd;
                 async move {
                     let now = std::time::Instant::now();
-                    if let Err(e) = gtags_searcher.create_or_update_tags() {
-                        tracing::error!(error = ?e, "Error at initializing GTAGS");
+                    let gtags_searcher = GtagsSearcher::new(cwd.clone().into());
+                    match tokio::task::spawn_blocking({
+                        let gtags_searcher = gtags_searcher.clone();
+                        move || gtags_searcher.create_or_update_tags()
+                    })
+                    .await
+                    {
+                        Ok(_) => gtags_regenerated.store(true, Ordering::Relaxed),
+                        Err(e) => {
+                            tracing::error!(error = ?e, "💔 Error at initializing GTAGS, attempting to recreate...");
+                            // TODO: creating gtags may take 20s+ for large project
+                            match tokio::task::spawn_blocking({
+                                let gtags_searcher = gtags_searcher.clone();
+                                move || gtags_searcher.force_recreate()
+                            })
+                            .await
+                            {
+                                Ok(_) => {
+                                    gtags_regenerated.store(true, Ordering::Relaxed);
+                                    tracing::debug!("Recreating gtags db successfully");
+                                }
+                                Err(e) => {
+                                    tracing::error!(error = ?e, "💔 Failed to recreate gtags db");
+                                }
+                            }
+                        }
                     }
-                    gtags_regenerated.store(true, Ordering::Relaxed);
                     tracing::debug!(?cwd, "⏱️  Gtags elapsed: {:?}", now.elapsed());
                 }
             };
@@ -307,10 +331,6 @@ impl EventHandle for DumbJumpHandle {
                 });
             }
         }
-
-        tokio::spawn(async move {
-            search_for_usages(msg_id, params, None, SearchEngine::Regex, true).await;
-        });
     }
 
     async fn on_move(&mut self, msg: MethodCall, context: Arc<SessionContext>) -> Result<()> {
@@ -327,9 +347,8 @@ impl EventHandle for DumbJumpHandle {
             .unwrap_or(&self.cached_results.usages)
             .get_line((lnum - 1) as usize)
         {
-            if let Err(error) =
-                OnMoveHandler::create(&msg, &context, Some(curline.into())).map(|x| x.handle())
-            {
+            let on_move_handler = OnMoveHandler::create(&msg, &context, Some(curline.into()))?;
+            if let Err(error) = on_move_handler.handle().await {
                 tracing::error!(?error, "Failed to handle OnMove event");
                 write_response(json!({"error": error.to_string(), "id": msg_id }));
             }
@@ -339,22 +358,29 @@ impl EventHandle for DumbJumpHandle {
     }
 
     async fn on_typed(&mut self, msg: MethodCall, _context: Arc<SessionContext>) -> Result<()> {
+        /*
+        // TODO: early initialization
+        if !self.first_on_typed_event_received.load(Ordering::Relaxed) {
+            self.first_on_typed_event_received
+                .store(true, Ordering::Relaxed);
+            // Earn some time for the initialization that can be done instantly so that we can have
+            // the results of high quality.
+            tokio::time::sleep(std::time::Duration::from_millis(50)).await;
+        }
+        */
+
         let (msg_id, params) = parse_msg(msg);
 
-        let search_info = parse_search_info(&params.query);
+        let query_info = parse_query_info(&params.query);
 
         // Try to refilter the cached results.
-        if self
-            .cached_results
-            .search_info
-            .has_superset_results(&search_info)
-        {
+        if self.cached_results.query_info.is_superset(&query_info) {
             let refiltered = self
                 .cached_results
                 .usages
                 .par_iter()
                 .filter_map(|Usage { line, indices }| {
-                    search_info
+                    query_info
                         .filtering_terms
                         .check_jump_line((line.clone(), indices.clone()))
                         .map(|(line, indices)| Usage::new(line, indices))
@@ -377,7 +403,7 @@ impl EventHandle for DumbJumpHandle {
             return Ok(());
         }
 
-        self.cached_results = self.start_search(msg_id, params, search_info).await;
+        self.cached_results = self.start_search(msg_id, params, query_info).await;
         self.current_usages.take();
 
         Ok(())
@@ -390,7 +416,7 @@ mod tests {
 
     #[test]
     fn test_parse_search_info() {
-        let search_info = parse_search_info("'foo");
-        println!("{:?}", search_info);
+        let query_info = parse_query_info("'foo");
+        println!("{:?}", query_info);
     }
 }

@@ -1,26 +1,54 @@
-use pattern::{file_name_only, strip_grep_filepath, tag_name_only};
+use pattern::{extract_grep_pattern, find_file_name, tag_name_only};
 
 /// A tuple of match text piece (matching_text, offset_of_matching_text).
-pub type FuzzyText<'a> = (&'a str, usize);
+#[derive(Debug, Clone)]
+pub struct FuzzyText<'a> {
+    pub text: &'a str,
+    pub matching_start: usize,
+}
+
+impl<'a> FuzzyText<'a> {
+    pub fn new(text: &'a str, matching_start: usize) -> Self {
+        Self {
+            text,
+            matching_start,
+        }
+    }
+}
+
+impl<'a> From<(&'a str, usize)> for FuzzyText<'a> {
+    fn from((text, matching_start): (&'a str, usize)) -> Self {
+        Self {
+            text,
+            matching_start,
+        }
+    }
+}
 
 #[derive(Debug, Clone, Copy)]
-pub enum MatchType {
+pub enum MatchingTextKind {
     Full,
     TagName,
     FileName,
     IgnoreFilePath,
 }
 
-impl std::str::FromStr for MatchType {
+impl Default for MatchingTextKind {
+    fn default() -> Self {
+        Self::Full
+    }
+}
+
+impl std::str::FromStr for MatchingTextKind {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Ok(s.into())
     }
 }
 
-impl<T: AsRef<str>> From<T> for MatchType {
-    fn from(match_type: T) -> Self {
-        match match_type.as_ref().to_lowercase().as_str() {
+impl<T: AsRef<str>> From<T> for MatchingTextKind {
+    fn from(matching_text_kind: T) -> Self {
+        match matching_text_kind.as_ref().to_lowercase().as_str() {
             "full" => Self::Full,
             "tagname" => Self::TagName,
             "filename" => Self::FileName,
@@ -43,7 +71,7 @@ pub trait MatchingText<'a> {
     /// Text for applying the fuzzy match algorithm.
     ///
     /// The fuzzy matching process only happens when Some(_) is returned.
-    fn fuzzy_text(&self, match_ty: &MatchType) -> Option<FuzzyText>;
+    fn fuzzy_text(&self, match_ty: &MatchingTextKind) -> Option<FuzzyText>;
 }
 
 impl<'a> MatchingText<'a> for SourceItem {
@@ -51,8 +79,8 @@ impl<'a> MatchingText<'a> for SourceItem {
         &self.raw
     }
 
-    fn fuzzy_text(&self, match_type: &MatchType) -> Option<FuzzyText> {
-        self.get_fuzzy_text(match_type)
+    fn fuzzy_text(&self, matching_text_kind: &MatchingTextKind) -> Option<FuzzyText> {
+        self.get_fuzzy_text(matching_text_kind)
     }
 }
 
@@ -61,8 +89,11 @@ impl<'a> MatchingText<'a> for &'a str {
         self
     }
 
-    fn fuzzy_text(&self, _match_type: &MatchType) -> Option<FuzzyText> {
-        Some((self, 0))
+    fn fuzzy_text(&self, _matching_text_kind: &MatchingTextKind) -> Option<FuzzyText> {
+        Some(FuzzyText {
+            text: self,
+            matching_start: 0,
+        })
     }
 }
 
@@ -126,15 +157,19 @@ impl SourceItem {
         }
     }
 
-    pub fn get_fuzzy_text(&self, match_ty: &MatchType) -> Option<FuzzyText> {
+    pub fn get_fuzzy_text(&self, match_ty: &MatchingTextKind) -> Option<FuzzyText> {
         if let Some((ref text, offset)) = self.fuzzy_text {
-            return Some((text, offset));
+            return Some(FuzzyText::new(text, offset));
         }
         match match_ty {
-            MatchType::Full => Some((&self.raw, 0)),
-            MatchType::TagName => tag_name_only(self.raw.as_str()).map(|s| (s, 0)),
-            MatchType::FileName => file_name_only(self.raw.as_str()),
-            MatchType::IgnoreFilePath => strip_grep_filepath(self.raw.as_str()),
+            MatchingTextKind::Full => Some(FuzzyText::new(&self.raw, 0)),
+            MatchingTextKind::TagName => {
+                tag_name_only(self.raw.as_str()).map(|s| FuzzyText::new(s, 0))
+            }
+            MatchingTextKind::FileName => find_file_name(self.raw.as_str()).map(Into::into),
+            MatchingTextKind::IgnoreFilePath => {
+                extract_grep_pattern(self.raw.as_str()).map(Into::into)
+            }
         }
     }
 }

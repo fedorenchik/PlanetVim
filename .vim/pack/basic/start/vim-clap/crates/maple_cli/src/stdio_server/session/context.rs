@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::{atomic::AtomicBool, Arc};
 
@@ -5,10 +6,11 @@ use anyhow::Result;
 use filter::FilteredItem;
 use icon::{Icon, IconKind};
 use jsonrpc_core::Params;
-use matcher::MatchType;
+use matcher::MatchingTextKind;
 use parking_lot::Mutex;
 use serde::Deserialize;
 
+use crate::command::ctags::buffer_tags::BufferTagInfo;
 use crate::stdio_server::{
     rpc::{Call, MethodCall, Notification},
     types::ProviderId,
@@ -70,6 +72,20 @@ impl SourceScale {
     }
 }
 
+// TODO: cache the buffer tags per session.
+#[derive(Debug, Clone)]
+pub struct CachedBufTags {
+    pub done: bool,
+    pub tags: Vec<BufferTagInfo>,
+}
+
+#[derive(Debug, Clone)]
+pub struct SessionState {
+    pub is_running: Arc<AtomicBool>,
+    pub source_scale: Arc<Mutex<SourceScale>>,
+    pub buf_tags_cache: Arc<Mutex<HashMap<PathBuf, CachedBufTags>>>,
+}
+
 #[derive(Debug, Clone)]
 pub struct SessionContext {
     pub provider_id: ProviderId,
@@ -80,12 +96,11 @@ pub struct SessionContext {
     pub display_winwidth: u64,
     pub preview_winheight: u64,
     pub icon: Icon,
-    pub match_type: MatchType,
+    pub matching_text_kind: MatchingTextKind,
     pub match_bonuses: Vec<matcher::Bonus>,
-    pub source_scale: Arc<Mutex<SourceScale>>,
     pub source_cmd: Option<String>,
     pub runtimepath: Option<String>,
-    pub is_running: Arc<Mutex<AtomicBool>>,
+    pub state: SessionState,
 }
 
 impl SessionContext {
@@ -105,14 +120,14 @@ impl SessionContext {
 
     pub fn fuzzy_matcher(&self) -> matcher::Matcher {
         matcher::Matcher::with_bonuses(
-            matcher::FuzzyAlgorithm::Fzy,
-            self.match_type,
             Vec::new(), // TODO: bonuses
+            matcher::FuzzyAlgorithm::Fzy,
+            self.matching_text_kind,
         )
     }
 
     pub fn set_source_scale(&self, new: SourceScale) {
-        let mut source_scale = self.source_scale.lock();
+        let mut source_scale = self.state.source_scale.lock();
         *source_scale = new;
     }
 
@@ -146,10 +161,10 @@ impl SessionContext {
             .parse()
             .expect("Failed to deserialize SessionContext");
 
-        let match_type = match provider_id.as_str() {
-            "tags" | "proj_tags" => MatchType::TagName,
-            "grep" | "grep2" => MatchType::IgnoreFilePath,
-            _ => MatchType::Full,
+        let matching_text_kind = match provider_id.as_str() {
+            "tags" | "proj_tags" => MatchingTextKind::TagName,
+            "grep" | "grep2" => MatchingTextKind::IgnoreFilePath,
+            _ => MatchingTextKind::Full,
         };
 
         let icon = if enable_icon.unwrap_or(false) {
@@ -179,11 +194,14 @@ impl SessionContext {
             preview_winheight: preview_winheight.unwrap_or(DEFAULT_PREVIEW_WINHEIGHT),
             source_cmd,
             runtimepath,
-            match_type,
+            matching_text_kind,
             match_bonuses,
             icon,
-            source_scale: Arc::new(Mutex::new(SourceScale::Indefinite)),
-            is_running: Arc::new(Mutex::new(true.into())),
+            state: SessionState {
+                is_running: Arc::new(true.into()),
+                source_scale: Arc::new(Mutex::new(SourceScale::Indefinite)),
+                buf_tags_cache: Arc::new(Mutex::new(HashMap::new())),
+            },
         }
     }
 }

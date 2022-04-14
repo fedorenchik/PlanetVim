@@ -51,6 +51,8 @@ class DebugSession( object ):
 
     self._api_prefix = api_prefix
 
+    self._render_emitter = utils.EventEmitter()
+
     self._logger.info( "**** INITIALISING NEW VIMSPECTOR SESSION ****" )
     self._logger.info( "API is: {}".format( api_prefix ) )
     self._logger.info( 'VIMSPECTOR_HOME = %s', VIMSPECTOR_HOME )
@@ -64,7 +66,8 @@ class DebugSession( object ):
     self._saved_variables_data = None
     self._outputView = None
     self._codeView = None
-    self._breakpoints = breakpoints.ProjectBreakpoints()
+    self._breakpoints = breakpoints.ProjectBreakpoints(
+      self._render_emitter, self._IsPCPresentAt )
     self._splash_screen = None
     self._remote_term = None
     self._adapter_term = None
@@ -83,6 +86,7 @@ class DebugSession( object ):
     self._launch_complete = False
     self._on_init_complete_handlers = []
     self._server_capabilities = {}
+    vim.vars[ 'vimspector_session_windows' ] = {}
     self.ClearTemporaryBreakpoints()
 
   def GetConfigurations( self, adapters ):
@@ -378,7 +382,8 @@ class DebugSession( object ):
       if not self._uiTab:
         self._SetUpUI()
       else:
-        vim.current.tabpage = self._uiTab
+        with utils.NoAutocommands():
+          vim.current.tabpage = self._uiTab
 
       self._Prepare()
       if not self._StartDebugAdapter():
@@ -398,21 +403,6 @@ class DebugSession( object ):
 
       self._outputView.ConnectionUp( self._connection )
       self._breakpoints.ConnectionUp( self._connection )
-
-      class Handler( breakpoints.ServerBreakpointHandler ):
-        def __init__( self, codeView ):
-          self.codeView = codeView
-
-        def ClearBreakpoints( self ):
-          self.codeView.ClearBreakpoints()
-
-        def AddBreakpoints( self, source, message ):
-          if 'body' not in message:
-            return
-          self.codeView.AddBreakpoints( source,
-                                        message[ 'body' ][ 'breakpoints' ] )
-
-      self._breakpoints.SetBreakpointsHandler( Handler( self._codeView ) )
 
     if self._connection:
       self._logger.debug( "_StopDebugAdapter with callback: start" )
@@ -496,6 +486,9 @@ class DebugSession( object ):
     else:
       self._Reset()
 
+  def _IsPCPresentAt( self, file_path, line ):
+    return self._codeView and self._codeView.IsPCPresentAt( file_path, line )
+
   def _Reset( self ):
     vim.vars[ 'vimspector_resetting' ] = 1
     self._logger.info( "Debugging complete." )
@@ -519,7 +512,8 @@ class DebugSession( object ):
 
     if self.HasUI():
       self._logger.debug( "Clearing down UI" )
-      vim.current.tabpage = self._uiTab
+      with utils.NoAutocommands():
+        vim.current.tabpage = self._uiTab
       self._splash_screen = utils.HideSplash( self._api_prefix,
                                               self._splash_screen )
       ResetUI()
@@ -527,10 +521,10 @@ class DebugSession( object ):
     else:
       ResetUI()
 
-    try:
-      del vim.vars[ 'vimspector_session_windows' ]
-    except KeyError:
-      pass
+    vim.vars[ 'vimspector_session_windows' ] = {
+      'breakpoints': vim.vars[ 'vimspector_session_windows' ].get(
+        'breakpoints' )
+    }
 
     vim.command( 'doautocmd <nomodeline> User VimspectorDebugEnded' )
     vim.vars[ 'vimspector_resetting' ] = 0
@@ -543,8 +537,10 @@ class DebugSession( object ):
       session_file = self._DetectSessionFile( invent_one_if_not_found = False )
 
     if session_file is None:
-      utils.UserMessage( "No session file found, specify a file name to load",
-                         persist=True,
+      utils.UserMessage( f"No { settings.Get( 'session_file_name' ) } file "
+                         "found. Specify a file with :VimspectorLoadSession "
+                         "<filename>",
+                         persist = True,
                          error = True )
       return False
 
@@ -564,6 +560,8 @@ class DebugSession( object ):
         self._variablesView.Load( variables_data )
       else:
         self._saved_variables_data = variables_data
+
+      utils.UserMessage( f"Loaded { session_file }" )
       return True
     except OSError:
       self._logger.exception( f"Invalid session file { session_file }" )
@@ -593,6 +591,7 @@ class DebugSession( object ):
           'variables': self._variablesView.Save() if self._variablesView else {}
         } ) )
 
+      utils.UserMessage( f"Wrote { session_file }" )
       return True
     except OSError:
       self._logger.exception( f"Unable to write session file { session_file }" )
@@ -895,8 +894,7 @@ class DebugSession( object ):
   def RefreshSigns( self ):
     if self._connection:
       self._codeView.Refresh()
-    else:
-      self._breakpoints.Refresh()
+    self._breakpoints.Refresh()
 
 
   def _SetUpUI( self ):
@@ -944,7 +942,10 @@ class DebugSession( object ):
   def _SetUpUIHorizontal( self ):
     # Code window
     code_window = vim.current.window
-    self._codeView = code.CodeView( code_window, self._api_prefix )
+    self._codeView = code.CodeView( code_window,
+      self._api_prefix,
+      self._render_emitter,
+      self._breakpoints.IsBreakpointPresentAt )
 
     # Call stack
     vim.command(
@@ -988,7 +989,9 @@ class DebugSession( object ):
       'variables': utils.WindowID( vars_window, self._uiTab ),
       'watches': utils.WindowID( watch_window, self._uiTab ),
       'output': utils.WindowID( output_window, self._uiTab ),
-      'eval': None # this is going to be updated every time eval popup is opened
+      'eval': None, # updated every time eval popup is opened
+      'breakpoints': vim.vars[ 'vimspector_session_windows' ].get(
+        'breakpoints' ) # same as above, but for breakpoints
     }
     with utils.RestoreCursorPosition():
       with utils.RestoreCurrentWindow():
@@ -999,7 +1002,10 @@ class DebugSession( object ):
   def _SetUpUIVertical( self ):
     # Code window
     code_window = vim.current.window
-    self._codeView = code.CodeView( code_window, self._api_prefix )
+    self._codeView = code.CodeView( code_window,
+                                    self._api_prefix,
+                                    self._render_emitter,
+                                    self._breakpoints.IsBreakpointPresentAt )
 
     # Call stack
     vim.command(
@@ -1046,7 +1052,9 @@ class DebugSession( object ):
       'variables': utils.WindowID( vars_window, self._uiTab ),
       'watches': utils.WindowID( watch_window, self._uiTab ),
       'output': utils.WindowID( output_window, self._uiTab ),
-      'eval': None # this is going to be updated every time eval popup is opened
+      'eval': None, # updated every time eval popup is opened
+      'breakpoints': vim.vars[ 'vimspector_session_windows' ].get(
+        'breakpoints' ) # same as above, but for breakpoints
     }
     with utils.RestoreCursorPosition():
       with utils.RestoreCurrentWindow():
@@ -1586,7 +1594,6 @@ class DebugSession( object ):
       "Launch Config: " ] + Pretty( self._launch_config ) + [
       "Server Capabilities: " ] + Pretty( self._server_capabilities ) + [
       "Line Breakpoints: " ] + Pretty( self._breakpoints._line_breakpoints ) + [
-      "Server Breakpoints: " ] + Pretty( self._codeView._breakpoints ) + [
       "Func Breakpoints: " ] + Pretty( self._breakpoints._func_breakpoints ) + [
       "Ex Breakpoints: " ] + Pretty( self._breakpoints._exception_breakpoints )
 
@@ -1606,6 +1613,7 @@ class DebugSession( object ):
 
   def OnEvent_initialized( self, message ):
     def onBreakpointsDone():
+      self._breakpoints.Refresh()
       if self._server_capabilities.get( 'supportsConfigurationDoneRequest' ):
         self._connection.DoRequest(
           lambda msg: self._OnInitializeComplete(),
@@ -1616,10 +1624,9 @@ class DebugSession( object ):
       else:
         self._OnInitializeComplete()
 
-    self._codeView.ClearBreakpoints()
     self._breakpoints.SetConfiguredBreakpoints(
       self._configuration.get( 'breakpoints', {} ) )
-    self._breakpoints.SendBreakpoints( onBreakpointsDone )
+    self._breakpoints.UpdateUI( onBreakpointsDone )
 
   def OnEvent_thread( self, message ):
     self._stackTraceView.OnThreadEvent( message[ 'body' ] )
@@ -1629,11 +1636,11 @@ class DebugSession( object ):
     reason = message[ 'body' ][ 'reason' ]
     bp = message[ 'body' ][ 'breakpoint' ]
     if reason == 'changed':
-      self._codeView.UpdateBreakpoint( bp )
+      self._breakpoints.UpdatePostedBreakpoint( bp )
     elif reason == 'new':
-      self._codeView.AddBreakpoint( bp )
+      self._breakpoints.AddPostedBreakpoint( bp )
     elif reason == 'removed':
-      self._codeView.RemoveBreakpoint( bp )
+      self._breakpoints.DeletePostedBreakpoint( bp )
     else:
       utils.UserMessage(
         'Unrecognised breakpoint event (undocumented): {0}'.format( reason ),
@@ -1743,17 +1750,27 @@ class DebugSession( object ):
 
     self._stackTraceView.OnStopped( event )
 
-  def ListBreakpoints( self ):
-    if self._connection:
-      qf = self._codeView.BreakpointsAsQuickFix()
-    else:
-      qf = self._breakpoints.BreakpointsAsQuickFix()
+  def BreakpointsAsQuickFix( self ):
+    return self._breakpoints.BreakpointsAsQuickFix()
 
-    vim.eval( 'setqflist( {} )'.format( json.dumps( qf ) ) )
-    vim.command( 'copen' )
+  def ListBreakpoints( self ):
+    self._breakpoints.ToggleBreakpointsView()
+
+  def ToggleBreakpointViewBreakpoint( self ):
+    self._breakpoints.ToggleBreakpointViewBreakpoint()
+
+  def ToggleAllBreakpointsViewBreakpoint( self ):
+    self._breakpoints.ToggleAllBreakpointsViewBreakpoint()
+
+  def DeleteBreakpointViewBreakpoint( self ):
+    self._breakpoints.ClearBreakpointViewBreakpoint()
+
+  def JumpToBreakpointViewBreakpoint( self ):
+    self._breakpoints.JumpToBreakpointViewBreakpoint()
 
   def ToggleBreakpoint( self, options ):
     return self._breakpoints.ToggleBreakpoint( options )
+
 
   def RunTo( self, file_name, line ):
     self.ClearTemporaryBreakpoints()
@@ -1761,6 +1778,49 @@ class DebugSession( object ):
                             line,
                             { 'temporary': True },
                             lambda: self.Continue() )
+
+  @IfConnected()
+  def GoTo( self, file_name, line ):
+    def failure_handler( reason, *args ):
+      utils.UserMessage( f"Can't jump to location: {reason}", error=True )
+
+    def handle_targets( msg ):
+      targets = msg.get( 'body', {} ).get( 'targets', [] )
+      if not targets:
+        failure_handler( "No targets" )
+        return
+
+      if len( targets ) == 1:
+        target_selected = 0
+      else:
+        target_selected = utils.SelectFromList( "Which target?", [
+          t[ 'label' ] for t in targets
+        ], ret = 'index' )
+
+      if target_selected is None:
+        return
+
+      self._connection.DoRequest( None, {
+        'command': 'goto',
+        'arguments': {
+          'threadId': self._stackTraceView.GetCurrentThreadId(),
+          'targetId': targets[ target_selected ][ 'id' ]
+        },
+      }, failure_handler )
+
+    if not self._server_capabilities.get( 'supportsGotoTargetsRequest', False ):
+      failure_handler( "Server doesn't support it" )
+      return
+
+    self._connection.DoRequest( handle_targets, {
+      'command': 'gotoTargets',
+      'arguments': {
+        'source': {
+          'path': utils.NormalizePath( file_name )
+        },
+        'line': line
+      },
+    }, failure_handler )
 
 
   def ClearTemporaryBreakpoints( self ):
@@ -1776,9 +1836,6 @@ class DebugSession( object ):
     return self._breakpoints.ClearLineBreakpoint( file_name, line_num )
 
   def ClearBreakpoints( self ):
-    if self._connection:
-      self._codeView.ClearBreakpoints()
-
     return self._breakpoints.ClearBreakpoints()
 
   def AddFunctionBreakpoint( self, function, options ):

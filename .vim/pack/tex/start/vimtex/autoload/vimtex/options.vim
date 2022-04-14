@@ -18,8 +18,24 @@ function! vimtex#options#init() abort " {{{1
   call s:init_option('vimtex_compiler_enabled', 1)
   call s:init_option('vimtex_compiler_silent', 0)
   call s:init_option('vimtex_compiler_method', 'latexmk')
-  call s:init_option('vimtex_compiler_latexmk_engines', {})
-  call s:init_option('vimtex_compiler_latexrun_engines', {})
+  call s:init_option('vimtex_compiler_latexmk_engines', {
+        \  '_'                : '-pdf',
+        \  'pdfdvi'           : '-pdfdvi',
+        \  'pdfps'            : '-pdfps',
+        \  'pdflatex'         : '-pdf',
+        \  'luatex'           : '-lualatex',
+        \  'lualatex'         : '-lualatex',
+        \  'xelatex'          : '-xelatex',
+        \  'context (pdftex)' : '-pdf -pdflatex=texexec',
+        \  'context (luatex)' : '-pdf -pdflatex=context',
+        \  'context (xetex)'  : '-pdf -pdflatex=''texexec --xtx''',
+        \ })
+  call s:init_option('vimtex_compiler_latexrun_engines', {
+        \ '_'        : 'pdflatex',
+        \ 'pdflatex' : 'pdflatex',
+        \ 'lualatex' : 'lualatex',
+        \ 'xelatex'  : 'xelatex',
+        \})
 
   call s:init_option('vimtex_complete_enabled', 1)
   call s:init_option('vimtex_complete_close_braces', 0)
@@ -130,6 +146,20 @@ function! vimtex#options#init() abort " {{{1
         \})
 
   call s:init_option('vimtex_format_enabled', 0)
+  call s:init_option('vimtex_format_border_begin', '\v^\s*%(' . join([
+        \ '\\item',
+        \ '\\begin',
+        \ '\\end',
+        \ '%(\\\[|\$\$)\s*$',
+        \], '|') . ')')
+  call s:init_option('vimtex_format_border_end', '\v\\%(' . join([
+        \ '\\\*?',
+        \ 'clear%(double)?page',
+        \ 'linebreak',
+        \ 'new%(line|page)',
+        \ 'pagebreak',
+        \ '%(begin|end)\{[^}]*\}',
+        \], '|') . ')\s*$' . '|^\s*%(\\\]|\$\$)\s*$')
 
   call s:init_option('vimtex_grammar_textidote', {
         \ 'jar': '',
@@ -288,6 +318,7 @@ function! vimtex#options#init() abort " {{{1
   call s:init_option('vimtex_syntax_enabled', 1)
   call s:init_option('vimtex_syntax_conceal', {
         \ 'accents': 1,
+        \ 'ligatures': 1,
         \ 'cites': 1,
         \ 'fancy': 1,
         \ 'greek': 1,

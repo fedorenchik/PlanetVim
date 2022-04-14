@@ -7,7 +7,7 @@ use std::path::PathBuf;
 use anyhow::Result;
 use clap::Parser;
 
-use crate::dumb_analyzer::{RegexSearcher, Usages};
+use crate::find_usages::{RegexSearcher, Usages};
 use crate::utils::ExactOrInverseTerms;
 
 /// Search-based jump.
@@ -51,8 +51,9 @@ impl DumbJump {
             extension: self.extension.to_string(),
             dir: self.cmd_dir.clone(),
         };
-        searcher
+        Ok(searcher
             .search_usages(classify, exact_or_inverse_terms)
-            .await
+            .await?
+            .into())
     }
 }

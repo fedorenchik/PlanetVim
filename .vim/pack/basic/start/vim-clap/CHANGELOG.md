@@ -2,13 +2,36 @@
 
 ## [unreleased]
 
+
+## [0.34] 2022-03-25
+## Added
+
+- Add `g:clap_cache_threshold`. #806
+- Add `+ignorecase` to enable case-insensitive search, e.g., `:Clap files +ignorecase`. #814
+
+## Improved
+
+- Tweak the final matching score using the language keyword matching. #808
+
+## [0.33] 2022-02-20
+
 ## Added
 
 - Support generating the source of `tags` provider using the Rust binary, remove the vista.vim dep from `tags` provider. #795
+- Initial support of preview with context. #798
 
 ## Fixed
 
 - Fix the `proj_tags` cmd list under Vim. #796
+- No syntax highlight for `c` preview. #800
+
+## Improved
+
+- Better performance for the pre-built binary. #804
+
+## Changed
+
+- Set `g:clap_builtin_fuzzy_filter_threshold` to `0` to always use the async `on_typed` implementation which is full-featured using the Rust backend.
 
 ### Internal
 

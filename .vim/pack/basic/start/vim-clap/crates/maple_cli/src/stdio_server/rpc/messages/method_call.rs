@@ -134,26 +134,8 @@ impl MethodCall {
     pub fn parse_filetypedetect(self) -> Value {
         let msg = self;
         let output = msg.get_string_unsafe("autocmd_filetypedetect");
-        let ext_map: HashMap<&str, &str> = output
-            .par_split(|x| x == '\n')
-            .filter(|s| s.contains("setf"))
-            .filter_map(|s| {
-                // *.mkiv    setf context
-                let items = s.split_whitespace().collect::<Vec<_>>();
-                if items.len() != 3 {
-                    None
-                } else {
-                    // (mkiv, context)
-                    items[0].split('.').last().map(|ext| (ext, items[2]))
-                }
-            })
-            .chain(
-                vec![("h", "c"), ("hpp", "cpp"), ("vimrc", "vim"), ("cc", "cpp")].into_par_iter(),
-            )
-            .map(|(ext, ft)| (ext, ft))
-            .collect();
-
-        json!({"method": "clap#ext#set", "ext_map": ext_map})
+        let ext_map = crate::stdio_server::vim::initialize_syntax_map(&output);
+        json!({ "method": "clap#ext#set", "ext_map": ext_map })
     }
 
     pub async fn preview_file(self) -> Result<Value> {

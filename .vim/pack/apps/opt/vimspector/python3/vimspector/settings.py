@@ -39,6 +39,9 @@ DEFAULTS = {
   # Session files
   'session_file_name': '.vimspector.session',
 
+  # Breakpoints
+  'toggle_disables_breakpoint': False,
+
   # Signs
   'sign_priority': {
     'vimspectorPC':            200,
@@ -65,6 +68,14 @@ DEFAULTS = {
     'stack_trace': {
       'expand_or_jump': [ '<CR>', '<2-LeftMouse>' ],
       'focus_thread': [ '<leader><CR>' ],
+    },
+    'breakpoints': {
+      'toggle': [ 't', '<F9>' ],
+      'toggle_all': [ 'T' ],
+      'delete': [ 'dd', '<Del>' ],
+      'add_line': [ 'i', 'a', 'o', '<Insert>' ],
+      'add_func': [ 'I', 'A', 'O', '<leader><Insert>' ],
+      'jump_to': [ '<2-LeftMouse>', '<Enter>' ]
     }
   },
 
@@ -81,6 +92,10 @@ def Get( option: str, cls=str ):
 
 def Int( option: str ):
   return Get( option, cls=builtins.int )
+
+
+def Bool( option: str ):
+  return bool( Int( option ) )
 
 
 def List( option: str ):

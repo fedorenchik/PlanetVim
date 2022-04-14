@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/lambdalisue/fern-hijack.vim.git
 	branch = master
-	commit = a858da03103a68566525e2ab6b9909e1de8f8604
-	parent = d2e79e5d06c2a492df48ced600e3d343dc66ad16
+	commit = 5989a1ac6ddffd0fe49631826b6743b129992b32
+	parent = ff58933bcdc5ad41d195eb364657f927dfa6ee2b
 	method = merge
 	cmdver = 0.4.3

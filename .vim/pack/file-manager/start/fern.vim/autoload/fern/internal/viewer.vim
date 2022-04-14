@@ -20,6 +20,7 @@ endfunction
 
 function! fern#internal#viewer#reveal(helper, path) abort
   let path = fern#internal#filepath#to_slash(a:path)
+  let path = substitute(path, '^\./', '', '')
   let reveal = split(path, '/')
   let previous = a:helper.sync.get_cursor_node()
   return s:Promise.resolve()
@@ -56,7 +57,6 @@ function! s:init() abort
     autocmd! * <buffer>
     autocmd BufEnter <buffer> setlocal nobuflisted
     autocmd BufReadCmd <buffer> nested call s:BufReadCmd()
-    autocmd ColorScheme <buffer> call s:ColorScheme()
     autocmd CursorMoved,CursorMovedI,BufLeave <buffer> let b:fern_cursor = getcurpos()[1:2]
   augroup END
   call fern#internal#viewer#auto_duplication#init()
@@ -92,15 +92,9 @@ function! s:init() abort
   if !g:fern#disable_viewer_spinner
     call fern#internal#spinner#start()
   endif
-  call helper.fern.renderer.highlight()
-  call fern#hook#emit('viewer:highlight', helper)
-  doautocmd <nomodeline> User FernHighlight
 
   " now the buffer is ready so set filetype to emit FileType
   setlocal filetype=fern
-  call helper.fern.renderer.syntax()
-  call fern#hook#emit('viewer:syntax', helper)
-  doautocmd <nomodeline> User FernSyntax
   call fern#action#_init()
 
   let l:Profile = fern#profile#start('fern#internal#viewer:init')
@@ -128,9 +122,6 @@ endfunction
 function! s:BufReadCmd() abort
   let helper = fern#helper#new()
   setlocal filetype=fern
-  call helper.fern.renderer.syntax()
-  call fern#hook#emit('viewer:syntax', helper)
-  doautocmd <nomodeline> User FernSyntax
   setlocal modifiable
   call setline(1, get(b:, 'fern_viewer_cache_content', []))
   setlocal nomodifiable
@@ -141,13 +132,6 @@ function! s:BufReadCmd() abort
         \.then({ -> helper.async.redraw() })
         \.then({ -> fern#hook#emit('viewer:ready', helper) })
         \.catch({ e -> fern#logger#error(e) })
-endfunction
-
-function! s:ColorScheme() abort
-  let helper = fern#helper#new()
-  call helper.fern.renderer.highlight()
-  call fern#hook#emit('viewer:highlight', helper)
-  doautocmd <nomodeline> User FernHighlight
 endfunction
 
 augroup fern_internal_viewer

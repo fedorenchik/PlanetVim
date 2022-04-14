@@ -1,12 +1,16 @@
-use std::path::{Path, PathBuf};
+use std::{
+    io::{BufRead, Lines},
+    path::{Path, PathBuf},
+};
 
 use anyhow::{anyhow, Result};
 use chrono::prelude::*;
 use directories::ProjectDirs;
 use once_cell::sync::Lazy;
 
+use filter::subprocess::Exec;
 use icon::Icon;
-use types::{ExactTerm, InverseTerm};
+use types::{CaseMatching, ExactTerm, InverseTerm};
 use utility::{println_json, println_json_with_length, read_first_lines};
 
 /// Project directory for Vim Clap.
@@ -18,25 +22,18 @@ pub static PROJECT_DIRS: Lazy<ProjectDirs> = Lazy::new(|| {
 });
 
 /// Yes or no terms.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct ExactOrInverseTerms {
     pub exact_terms: Vec<ExactTerm>,
     pub inverse_terms: Vec<InverseTerm>,
 }
 
-impl Default for ExactOrInverseTerms {
-    fn default() -> Self {
-        Self {
-            exact_terms: Vec::new(),
-            inverse_terms: Vec::new(),
-        }
-    }
-}
-
 impl ExactOrInverseTerms {
     /// Returns the match indices of exact terms if given `line` passes all the checks.
     fn check_terms(&self, line: &str) -> Option<Vec<usize>> {
-        if let Some((_, indices)) = matcher::search_exact_terms(self.exact_terms.iter(), line) {
+        if let Some((_, indices)) =
+            matcher::match_exact_terms(self.exact_terms.iter(), line, CaseMatching::Smart)
+        {
             let should_retain = !self
                 .inverse_terms
                 .iter()
@@ -52,17 +49,18 @@ impl ExactOrInverseTerms {
         }
     }
 
-    /// The results of applying `other` is a subset of applying `self` on the same source.
-    pub fn contains(&self, other: &Self) -> bool {
+    /// Returns `true` if the result of The results of applying `self`
+    /// is a superset of applying `other` on the same source.
+    pub fn is_superset(&self, other: &Self) -> bool {
         self.exact_terms
             .iter()
             .zip(other.exact_terms.iter())
-            .all(|(local, other)| local.contains(other))
+            .all(|(local, other)| local.is_superset(other))
             && self
                 .inverse_terms
                 .iter()
                 .zip(other.inverse_terms.iter())
-                .all(|(local, other)| local.contains(other))
+                .all(|(local, other)| local.is_superset(other))
     }
 
     pub fn check_jump_line(
@@ -202,8 +200,6 @@ pub fn build_abs_path(cwd: impl AsRef<Path>, curline: impl AsRef<Path>) -> PathB
 ///
 /// Credit: https://github.com/eclarke/linecount/blob/master/src/lib.rs
 pub fn count_lines<R: std::io::Read>(handle: R) -> Result<usize, std::io::Error> {
-    use std::io::BufRead;
-
     let mut reader = std::io::BufReader::with_capacity(1024 * 32, handle);
     let mut count = 0;
     loop {
@@ -219,6 +215,30 @@ pub fn count_lines<R: std::io::Read>(handle: R) -> Result<usize, std::io::Error>
     }
 
     Ok(count)
+}
+
+#[inline]
+pub fn lines(cmd: Exec) -> Result<Lines<impl BufRead>> {
+    // We usually have a decent amount of RAM nowdays.
+    Ok(std::io::BufReader::with_capacity(8 * 1024 * 1024, cmd.stream_stdout()?).lines())
+}
+
+/// Returns the width of displaying `n` on the screen.
+///
+/// Same with `n.to_string().len()` but without allocation.
+pub fn display_width(n: usize) -> usize {
+    if n == 0 {
+        return 1;
+    }
+
+    let mut n = n;
+    let mut len = 0;
+    while n > 0 {
+        len += 1;
+        n /= 10;
+    }
+
+    len
 }
 
 #[cfg(test)]
