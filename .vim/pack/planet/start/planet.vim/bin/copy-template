@@ -13,9 +13,7 @@ else
 	cp -r "$tpl_dir/$tpl_name/" "$prj_name/"
 fi
 if which direnv >&/dev/null; then
-	echo "AAA"
 	if [[ -e "$prj_name/.envrc" || -e "$prj_name/.env" ]]; then
-		echo "BBB"
 		direnv allow "$prj_name"
 	fi
 fi
