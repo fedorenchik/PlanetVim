@@ -339,6 +339,13 @@ g:codi#virtual_text_prefix
 
              Default value is "❯ "
 
+                                                      *g:codi#virtual_text_pos
+g:codi#virtual_text_pos
+             Position of the virtual text. Supported values: "eof",
+             "right_align", or a number for a specific column (ex: 90).
+
+             Default value is "eof".
+
                                                               *CodiVirtualText*
 CodiVirtualText
              Codi uses CodiVirtualText the custom highlight group to syntax
@@ -472,6 +479,12 @@ maintainer: @slavaGanzin
 bin: mathjs
 notes:
   - Evaluation may not work until a newline is entered
+
+haxe~
+bin: ihx 
+maintainer: @grepsuzette
+notes:
+  - `ihx` is a Haxe interpreter and should be installed with `haxelib install ihx`
 
 Note that Codi is not meant to be a replacement for actually running your
 program; it supports nothing more than what the underlying bin supports.

@@ -15,7 +15,7 @@ any language that provides a REPL (interactive interpreter)!
 
 Languages with built-in support:
 Python, JavaScript, CoffeeScript, Haskell, PureScript, Ruby, OCaml, R,
-Clojure/ClojureScript, PHP, Lua, C++, Julia, Elm, Elixir, TypeScript, Mathjs
+Clojure/ClojureScript, PHP, Lua, C++, Julia, Elm, Elixir, TypeScript, Mathjs, Haxe
 
 [Pull requests](https://github.com/metakirby5/codi.vim/pulls)
 for new language support welcome!
@@ -56,7 +56,7 @@ need `ghci`.
 
 Default interpreter dependencies:
 
-  - Python:       `python`
+  - Python:       `python` (Note: Python 3 requires config - see `:h codi-configuration`)
   - JavaScript:   `node`
   - CoffeeScript: `coffee`
   - Haskell:      `ghci` (be really careful with lazy evaluation!)
@@ -73,6 +73,7 @@ Default interpreter dependencies:
   - Elixir:       `iex`
   - TypeScript:   `tsun`
   - Mathjs:       `mathjs`
+  - Haxe:         `ihx` (installed with `haxelib install ihx`)
 
 ## Usage
 
