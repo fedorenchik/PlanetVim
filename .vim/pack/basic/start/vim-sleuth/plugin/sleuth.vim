@@ -1,6 +1,6 @@
 " sleuth.vim - Heuristically set buffer options
 " Maintainer:   Tim Pope <http://tpo.pe/>
-" Version:      1.3
+" Version:      2.0
 " GetLatestVimScripts: 4375 1 :AutoInstall: sleuth.vim
 
 if exists("#polyglot-sleuth")
@@ -34,10 +34,10 @@ else
 endif
 
 function! s:Guess(source, detected, lines) abort
-  let has_heredocs = a:detected.filetype =~# '^\%(perl\|php\|ruby\|[cz]\=sh\)$'
+  let has_heredocs = a:detected.filetype =~# '^\%(perl\|php\|ruby\|[cz]\=sh\|bash\)$'
   let options = {}
   let heuristics = {'spaces': 0, 'hard': 0, 'soft': 0, 'checked': 0, 'indents': {}}
-  let tabstop = get(a:detected.options, 'tabstop', [8])[0]
+  let tabstop = get(a:detected.options, 'tabstop', get(a:detected.defaults, 'tabstop', [8]))[0]
   let softtab = repeat(' ', tabstop)
   let waiting_on = ''
   let prev_indent = -1
@@ -262,15 +262,16 @@ function! s:DetectEditorConfig(absolute_path, ...) abort
     return [{}, '']
   endif
   let root = ''
-  let tail = a:0 ? '/' . a:1 : '/.editorconfig'
+  let tail = a:0 ? a:1 : '.editorconfig'
   let dir = fnamemodify(a:absolute_path, ':h')
   let previous_dir = ''
   let sections = []
   let overrides = get(g:, 'sleuth_editorconfig_overrides', {})
   while dir !=# previous_dir && dir !~# '^//\%([^/]\+/\=\)\=$'
-    let read_from = get(overrides, dir . tail, get(overrides, dir, dir . tail))
-    if type(read_from) == type('') && read_from !=# dir . tail && read_from !~# '^/\|^\a\+:\|^$'
-      let read_from = simplify(dir . '/' . read_from)
+    let head = substitute(dir, '/\=$', '/', '')
+    let read_from = get(overrides, head . tail, get(overrides, head, head . tail))
+    if type(read_from) == type('') && read_from !=# head . tail && read_from !~# '^/\|^\a\+:\|^$'
+      let read_from = simplify(head . read_from)
     endif
     let ftime = type(read_from) == type('') ? getftime(read_from) : -1
     let [cachetime; econfig] = get(s:editorconfig_cache, read_from, [-1, {}, []])
@@ -282,7 +283,7 @@ function! s:DetectEditorConfig(absolute_path, ...) abort
     endif
     call extend(sections, econfig[1], 'keep')
     if get(econfig[0], 'root', [''])[0] ==? 'true'
-      let root = dir
+      let root = head
       break
     endif
     let previous_dir = dir
@@ -381,7 +382,11 @@ let s:short_options = {
       \ 'endofline': 'eol', 'fileformat': 'ff', 'fileencoding': 'fenc'}
 
 function! s:Apply(detected, permitted_options) abort
-  let options = copy(a:detected.options)
+  let options = extend(copy(a:detected.defaults), a:detected.options)
+  if get(a:detected.defaults, 'shiftwidth', [1])[0] == 0 && get(options, 'shiftwidth', [0])[0] != 0 && !has_key(a:detected.declared, 'tabstop')
+    let options.tabstop = options.shiftwidth
+    let options.shiftwidth = a:detected.defaults.shiftwidth
+  endif
   if has_key(options, 'shiftwidth') && !has_key(options, 'expandtab')
     let options.expandtab = [stridx(join(getline(1, 256), "\n"), "\t") == -1, a:detected.bufname]
   endif
@@ -432,24 +437,56 @@ function! s:Apply(detected, permitted_options) abort
   if !&verbose && !empty(msg)
     echo ':setlocal' . msg
   endif
-  if !has_key(options, 'shiftwidth')
+  if has_key(options, 'shiftwidth')
+    let cmd .= ' softtabstop=' . (exists('*shiftwidth') ? -1 : options.shiftwidth[0])
+  else
     call s:Warn(':Sleuth failed to detect indent settings')
   endif
   return cmd ==# 'setlocal' ? '' : cmd
 endfunction
 
+function! s:UserOptions(ft, name) abort
+  let source = 'g:sleuth_' . a:ft . '_' . a:name
+  let val = get(g:, source[2 : -1])
+  let options = {}
+  if type(val) == type('')
+    call s:ParseOptions(split(substitute(val, '\S\@<![=+]\S\@=', 'ft=', 'g'), '[[:space:]:,]\+'), options, source)
+    if has_key(options, 'filetype')
+      call extend(options, s:UserOptions(remove(options, 'filetype')[0], a:name), 'keep')
+    endif
+    if has_key(options, 'tabstop')
+      call extend(options, {'shiftwidth': [0, source], 'expandtab': [0, source]}, 'keep')
+    elseif has_key(options, 'shiftwidth')
+      call extend(options, {'expandtab': [1, source]}, 'keep')
+    endif
+  elseif type(val) == type([])
+    call s:ParseOptions(val, options, source)
+  else
+    return {}
+  endif
+  call filter(options, 'index(s:safe_options, v:key) >= 0')
+  return options
+endfunction
+
 function! s:DetectDeclared() abort
   let detected = {'bufname': s:Slash(@%), 'declared': {}}
-  let actual_path = &l:buftype =~# '^\%(nowrite\|acwrite\)\=$'
-  if actual_path && detected.bufname !~# '^$\|^\a\+:\|^/'
+  let absolute_or_empty = detected.bufname =~# '^$\|^\a\+:\|^/'
+  if &l:buftype =~# '^\%(nowrite\)\=$' && !absolute_or_empty
     let detected.bufname = s:Slash(getcwd()) . '/' . detected.bufname
+    let absolute_or_empty = 1
   endif
-  let detected.path = actual_path ? detected.bufname : ''
+  let detected.path = absolute_or_empty ? detected.bufname : ''
   let pre = substitute(matchstr(detected.path, '^\a\a\+\ze:'), '^\a', '\u&', 'g')
   if len(pre) && exists('*' . pre . 'Real')
     let detected.path = s:Slash(call(pre . 'Real', [detected.path]))
   endif
 
+  try
+    if len(detected.path) && exists('*ExcludeBufferFromDiscovery') && !empty(ExcludeBufferFromDiscovery(detected.path, 'sleuth'))
+      let detected.path = ''
+    endif
+  catch
+  endtry
   let [detected.editorconfig, detected.root] = s:DetectEditorConfig(detected.path)
   call extend(detected.declared, s:EditorConfigToOptions(detected.editorconfig))
   call extend(detected.declared, s:ModelineOptions())
@@ -469,7 +506,8 @@ function! s:DetectHeuristics(into) abort
   if has_key(detected, 'patterns')
     call remove(detected, 'patterns')
   endif
-  if empty(filetype) || !get(b:, 'sleuth_automatic', 1) || empty(get(g:, 'sleuth_' . filetype . '_heuristics', get(g:, 'sleuth_heuristics', 1)))
+  let detected.defaults = s:UserOptions(filetype, 'defaults')
+  if empty(filetype) || !get(b:, 'sleuth_automatic', 1) || empty(get(b:, 'sleuth_heuristics', get(g:, 'sleuth_' . filetype . '_heuristics', get(g:, 'sleuth_heuristics', 1))))
     return detected
   endif
   if s:Ready(detected)
@@ -485,7 +523,7 @@ function! s:DetectHeuristics(into) abort
     return detected
   endif
   let dir = len(detected.path) ? fnamemodify(detected.path, ':h') : ''
-  let root = len(detected.root) ? detected.root : dir ==# s:Slash(expand('~')) ? dir : fnamemodify(dir, ':h')
+  let root = len(detected.root) ? fnamemodify(detected.root, ':h') : dir ==# s:Slash(expand('~')) ? dir : fnamemodify(dir, ':h')
   if detected.bufname =~# '^\a\a\+:' || root ==# '.' || !isdirectory(root)
     let dir = ''
   endif
@@ -534,11 +572,11 @@ function! s:DetectHeuristics(into) abort
 endfunction
 
 function! s:Init(redetect, unsafe, do_filetype) abort
-  if !a:redetect && exists('b:sleuth.declared')
+  if !a:redetect && exists('b:sleuth.defaults')
     let detected = b:sleuth
   endif
   unlet! b:sleuth
-  if &l:buftype =~# '^\%(quickfix\|help\|terminal\|prompt\|popup\)$'
+  if &l:buftype !~# '^\%(nowrite\|nofile\|acwrite\)\=$'
     return s:Warn(':Sleuth disabled for buftype=' . &l:buftype)
   endif
   if &l:filetype ==# 'netrw'
