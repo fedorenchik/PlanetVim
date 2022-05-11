@@ -17,13 +17,14 @@ filetype and syntax plugin for LaTeX files.
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Quick Start](#quick-start)
-- [Screenshots](#screenshots)
+- [Screenshots and GIFs](#screenshots-and-gifs)
 - [Features](#features)
 - [Other relevant plugins](#other-relevant-plugins)
   - [Linting and syntax checking](#linting-and-syntax-checking)
   - [Snippets and templates](#snippets-and-templates)
   - [Tag navigation](#tag-navigation)
 - [Alternatives](#alternatives)
+- [VimTeX on the Web](#vimtex-on-the-web)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -111,43 +112,54 @@ let maplocalleader = ","
 
 ## Quick Start
 
-The following is a video guide for how to use VimTeX (credits:
+The following video shows how to use VimTeX's main features (credits:
 [@DustyTopology](https://github.com/DustyTopology) from
 [#1946](https://github.com/lervag/vimtex/issues/1946#issuecomment-846345095)).
-It displays some of the main features. The example LaTeX file used in the video
-is available under
+The example LaTeX file used in the video is available under
 [`test/example-quick-start/main.tex`](test/example-quick-start/main.tex) and it
 may be instructive to copy the file and play with it to learn some of these
 basic functions.
 
 https://user-images.githubusercontent.com/66584581/119213849-1b7d4080-ba77-11eb-8a31-7ff7b9a4a020.mp4
 
-Users are of course _strongly_
-encouraged to read the documentation, at least the introduction, to learn about
-the different features and possibilities provided by VimTeX (see [`:h
-vimtex`](doc/vimtex.txt)).
-Advanced users and potential developers may also be interested in reading the
-supplementary documents:
+Both new and experienced users are also encouraged to read the third-party
+article [Getting started with the VimTeX
+plugin](https://ejmastnak.github.io/tutorials/vim-latex/vimtex.html). The
+article covers VimTeX's core features and contains plenty of examples and
+high-resolution animations intended to help new users ease into working with
+the plugin.
+
+Users are of course _strongly_ encouraged to read the documentation, at least
+the introduction, to learn about the different features and possibilities
+provided by VimTeX (see [`:h vimtex`](doc/vimtex.txt)). Advanced users and
+potential developers may also be interested in reading the supplementary
+documents:
 
 * [CONTRIBUTING.md](CONTRIBUTING.md)
 * [DOCUMENTATION.md](DOCUMENTATION.md)
 
-## Screenshots
+## Screenshots and GIFs
 
-Here is an example of the syntax highlighting provided by VimTeX. The example
-is made by @DustyTopology with the
+Here is an example of the syntax highlighting provided by VimTeX. The conceal
+feature is active on the right-hand side split. The example is made by
+@DustyTopology with the
 [vim-colors-xcode](https://github.com/arzg/vim-colors-xcode) colorscheme with
 some minor adjustments [described
 here](https://github.com/lervag/vimtex/issues/1946#issuecomment-843674951).
 
 ![Syntax example](https://github.com/lervag/vimtex-media/blob/main/img/syntax.png)
 
+Additionally, you can find animated demonstrations of VimTeX's core motions,
+text-editing commands, and text objects in the file [VISUALS.md](VISUALS.md).
+
 ## Features
 
 Below is a list of features offered by VimTeX. The features are accessible as
 both commands and mappings. The mappings generally start with `<localleader>l`,
-but if desired one can disable default mappings to define custom mappings. All
-features are enabled by default, but each feature may be disabled if desired.
+but if desired one can disable default mappings to define custom mappings. 
+Nearly all features are enabled by default, but each feature may be disabled if
+desired. The two exceptions are code folding and formating, which are disabled
+by default and must be manually enabled.
 
 - Document compilation with
   [latexmk](http://users.phys.psu.edu/~collins/software/latexmk-jcc/),
@@ -174,7 +186,7 @@ features are enabled by default, but each feature may be disabled if desired.
   - glossary entries
   - package and documentclass names based on available `.sty` and `.cls` files
 - Document navigation through
-  - table of content
+  - table of contents
   - table of labels
   - proper settings for `'include'`, `'includexpr'`, `'suffixesadd'` and
     `'define'`, which among other things
@@ -220,6 +232,10 @@ features are enabled by default, but each feature may be disabled if desired.
 - Support for multi-file project packages
   - [import](http://ctan.uib.no/macros/latex/contrib/import/import.pdf)
   - [subfiles](http://ctan.uib.no/macros/latex/contrib/subfiles/subfiles.pdf)
+
+For orientation, you can watch concise demonstrations of many of the motions,
+text objects, and text-editing features provided by VimTeX in the file
+[VISUALS.md](VISUALS.md).
 
 See the documentation for a thorough introduction to VimTeX (e.g. `:h vimtex`).
 
@@ -297,3 +313,16 @@ plugins for Vim, see:
 * [What are the differences between LaTeX plugins](http://vi.stackexchange.com/questions/2047/what-are-the-differences-between-latex-plugins)
 * [List of LaTeX editors (not only Vim)](https://tex.stackexchange.com/questions/339/latex-editors-ides)
 
+## VimTeX on the Web
+
+VimTeX users may be interested in reading
+[@ejmastnak](https://github.com/ejmastnak)'s series on [Efficient LaTeX Using
+(Neo)Vim](https://ejmastnak.github.io/tutorials/vim-latex/intro.html), which
+covers all the fundamentals of setting up a VimTeX-based LaTeX workflow,
+including usage of the VimTeX plugin, compilation, setting up forward and
+inverse search with a PDF reader, and Vimscript tools for user-specific
+customization.
+
+If you know of (or create) other up-to-date, high-quality guides to VimTeX's
+features on third-party websites, feel free to submit a pull request updating
+this section.

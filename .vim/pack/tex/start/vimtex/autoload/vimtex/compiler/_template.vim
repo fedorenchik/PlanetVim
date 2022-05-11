@@ -318,8 +318,9 @@ function! s:callback_continuous_output(channel, msg) abort " {{{1
 
   call s:check_callback(a:msg)
 
+  if !exists('b:vimtex.compiler.hooks') | return | endif
   try
-    for l:Hook in get(get(get(b:, 'vimtex', {}), 'compiler', {}), 'hooks', [])
+    for l:Hook in b:vimtex.compiler.hooks
       call l:Hook(a:msg)
     endfor
   catch /E716/
@@ -395,10 +396,11 @@ function! s:callback_nvim_output(id, data, event) abort dict " {{{1
 
   call s:check_callback(
         \ get(filter(copy(a:data),
-        \   {_, x -> x =~# 'vimtex_compiler_callback'}), -1, ''))
+        \   {_, x -> x =~# '^vimtex_compiler_callback'}), -1, ''))
 
+  if !exists('b:vimtex.compiler.hooks') | return | endif
   try
-    for l:Hook in get(get(get(b:, 'vimtex', {}), 'compiler', {}), 'hooks', [])
+    for l:Hook in b:vimtex.compiler.hooks
       call l:Hook(join(a:data, "\n"))
     endfor
   catch /E716/
@@ -450,13 +452,16 @@ endfunction
 " }}}1
 
 function! s:check_callback(line) abort " {{{1
-  if a:line =~# 'echo vimtex_compiler_callback_compiling'
-    call vimtex#compiler#callback(1)
-  elseif a:line =~# 'echo vimtex_compiler_callback_success'
-    call vimtex#compiler#callback(2)
-  elseif a:line =~# 'echo vimtex_compiler_callback_failure'
-    call vimtex#compiler#callback(3)
-  endif
+  let l:status = get(s:callbacks, substitute(a:line, '\r', '', ''))
+  if l:status <= 0 | return | endif
+
+  call vimtex#compiler#callback(l:status)
 endfunction
+
+let s:callbacks = {
+      \ 'vimtex_compiler_callback_compiling': 1,
+      \ 'vimtex_compiler_callback_success': 2,
+      \ 'vimtex_compiler_callback_failure': 3,
+      \}
 
 " }}}1
