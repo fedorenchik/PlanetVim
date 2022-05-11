@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/tpope/vim-unimpaired.git
 	branch = master
-	commit = f992923d336e93c7f50fe9b35a07d5a92660ecaf
-	parent = 5909d2b0c61673e175a29f971129cef67f23325d
+	commit = 98427183e2b35acee15c7628b1cd587b98025719
+	parent = 5a3689a11662aba7e815671b24e00346b4bf44ef
 	method = merge
 	cmdver = 0.4.3
