@@ -1,5 +1,0 @@
-instrument::addExtension 2.0 {test}
-
-instrument::addCommand Wrap { parseBody }
-
-# vim: ft=tcl
