@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/direnv/direnv.vim.git
 	branch = master
-	commit = 451e3637a15af7d4a206ac761af7a2247f139e0e
-	parent = 33c049d0d3c89ad0c8b56af65c1ea107856d85f4
+	commit = 4c858b8cd8cbfac998534096e6ffb710d7a07358
+	parent = 400ea931fba3f261aa7749ec58213daff4a4c637
 	method = merge
 	cmdver = 0.4.3
