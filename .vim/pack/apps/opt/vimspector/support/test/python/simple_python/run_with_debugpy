@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+if [ -z "$DEBUG_PORT" ]; then
+  DEBUG_PORT=5678
+fi
+
+pushd $(dirname $0)
+  if [ -d env ]; then
+    rm -rf env
+  fi
+
+  python3 -m venv env
+  . env/bin/activate
+  python -m pip install -r requirements.txt
+  echo "using port $DEBUG_PORT"
+  echo "*** Launching ***"
+  python -m debugpy --wait-for-client --listen 0.0.0.0:${DEBUG_PORT} main.py
+popd
+

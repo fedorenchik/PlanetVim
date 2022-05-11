@@ -1,0 +1,59 @@
+{
+  "adapters": {
+    "netcoredbg-debuglog": {
+      "attach": {
+        "pidProperty": "processId",
+        "pidSelect": "ask"
+      },
+      "command": [
+        "${gadgetDir}/netcoredbg/netcoredbg",
+        "--interpreter=vscode",
+        "--engineLogging=${workspaceRoot}/netcoredbg.engine.log",
+        "--log=${workspaceRoot}/netcoredbg.log"
+      ],
+      "configuration": {
+        "cwd": "${workspaceRoot}"
+      },
+      "name": "netcoredbg"
+    }
+  },
+  "configurations": {
+    //
+    // NOTE:
+    // If you add to this, you must update tests/get_configurations.test.vim
+    //
+
+    "launch - netcoredbg": {
+      "adapter": "netcoredbg",
+      "configuration": {
+        "request": "launch",
+        // If this changes, update language_csharp.test.vim
+        "program": "${workspaceRoot}/bin/Debug/netcoreapp5.0/csharp.dll",
+        "args": [],
+        "stopAtEntry": false
+      }
+    },
+    "launch - netcoredbg - with debug log": {
+      "adapter": "netcoredbg-debuglog",
+      "configuration": {
+        "request": "launch",
+        // If this changes, update language_csharp.test.vim
+        "program": "${workspaceRoot}/bin/Debug/netcoreapp5.0/csharp.dll",
+        "args": [],
+        "stopAtEntry": false
+      }
+    },
+    "launch - mono": {
+      "adapter": "vscode-mono-debug",
+      "configuration": {
+        "request": "launch",
+        "program": "${workspaceRoot}/Program.exe",
+        "console": "integratedTerminal",
+        "cwd": "${workspaceRoot}",
+        "args": [],
+        "env": {}
+      }
+    }
+  }
+}
+

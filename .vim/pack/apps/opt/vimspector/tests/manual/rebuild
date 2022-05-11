@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -e
+
+if [ "$1" = "--clean" ]; then
+  OPTS="--no-cache"
+else
+  OPTS=""
+fi
+
+ARCH=$(uname -m)
+
+docker build ${OPTS} --build-arg ARCH=${ARCH} \
+                     -t puremourning/vimspector:manual-${ARCH} image/

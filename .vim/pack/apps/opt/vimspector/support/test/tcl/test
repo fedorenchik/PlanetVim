@@ -1,0 +1,30 @@
+#!/usr/bin/env tclsh
+
+set SCALAR g
+array set ARRAY {key1 value1 key2 value2}
+
+set LIST [list a b c {def} {g h i j} k l m]
+
+proc Wrap { body } {
+  uplevel 1 $body
+}
+
+proc Main {} {
+  global SCALAR
+  set prefix "VAR: "
+  Wrap {
+    puts $SCALAR
+    global ARRAY
+    puts [array names ARRAY]
+
+    set vars [list]
+    foreach n [array names ::env] {
+      set prefix "ENVVAR: $n = "
+      puts "$prefix $::env($n)"
+      lappend vars $n
+    }
+  }
+  puts $vars
+}
+
+Main
