@@ -2,8 +2,14 @@
 
 ## [unreleased]
 
+## Fixed
+
+- Fix the incompatiblity issue between vim-signature and vim-clap popup window. #817
+- Escape the file name for filer sink. #822
+- Seperate the vista impl for tags provider completely. #827
 
 ## [0.34] 2022-03-25
+
 ## Added
 
 - Add `g:clap_cache_threshold`. #806
