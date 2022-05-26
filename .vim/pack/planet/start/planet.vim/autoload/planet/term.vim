@@ -16,37 +16,37 @@ func! planet#term#RunCmd(cmd, this_window = v:false, close_on_exit = v:false, st
       set winfixheight winfixwidth
     else
       exe l:winnr .. 'wincmd w'
-    end
-  end
+    endif
+  endif
   let l:term_opts = #{}
   let l:term_opts.term_name = '[Output - ' .. a:cmd .. ']'
   if ! a:this_window
     let l:term_opts.term_rows = 10
-  end
+  endif
   if a:start_hidden
     let l:term_opts.hidden = v:true
   else
     let l:term_opts.curwin = v:true
-  end
+  endif
   let l:term_opts.norestore = v:true
   let l:term_opts.term_kill = "kill"
   if a:close_on_exit == v:true
     let l:term_opts.term_finish = "close"
-  end
+  endif
   let l:cmd_cd = ''
   if ! empty(a:cd)
     let l:cmd_cd = 'cd ' .. a:cd .. ' ; '
-  end
+  endif
   let l:ret = term_start(s:bin_dir .. 'run-command ' .. l:cmd_cd .. a:cmd, l:term_opts)
   if l:ret == 0
     echohl Error
     echo "Failed to start commad: " .. a:cmd
     echohl None
     return 0
-  end
+  endif
   if ! a:this_window && ! a:start_hidden
     wincmd p
-  end
+  endif
   return l:ret
 endfunc
 
@@ -72,7 +72,7 @@ func! planet#term#RunGuiApp(app, cd = '') abort
   let l:cd_cmd = ''
   if ! empty(a:cd)
     let l:cd_cmd = 'cd ' .. a:cd .. ' && '
-  end
+  endif
   exe "silent !" .. l:cd_cmd .. "nohup " .. a:app .. " >/dev/null 2>&1 &"
 endfunc
 
@@ -89,7 +89,7 @@ func! planet#term#RunCmdFind(cmd, cmd_args) abort
   if ! empty(l:cmd_path)
     let l:cmd_path = fnamemodify(l:cmd_path, ":p")
     call planet#term#RunCmd(l:cmd_path .. ' ' .. a:cmd_args)
-  end
+  endif
 endfunc
 
 " Run @cmd with additional arguments asked from user.
@@ -100,7 +100,7 @@ func! planet#term#RunCmdAskArgs(cmd, prompt, default_input = '') abort
   let l:cmd_args = inputdialog(a:prompt, a:default_input)
   if ! empty(l:cmd_args)
     call planet#term#RunCmd(a:cmd .. ' ' .. l:cmd_args)
-  end
+  endif
 endfunc
 
 " Ask user whole command (with arguments) to run.
@@ -112,7 +112,7 @@ func! planet#term#RunCmdAsk(prompt, default_input = '') abort
   let l:cmd_with_args = inputdialog(a:prompt, a:default_input)
   if ! empty(l:cmd_with_args)
     call planet#term#RunCmd(l:cmd_with_args)
-  end
+  endif
 endfunc
 
 func! planet#term#ListTermWindows() abort
@@ -121,7 +121,7 @@ func! planet#term#ListTermWindows() abort
     let l:buf_name = bufname(bufnr)
     if l:buf_name !~# '^\[Output - '
       l:out_list->add({bufnr: l:buf_name})
-    end
+    endif
   endfor
   return l:out_list
 endfunc
@@ -134,8 +134,8 @@ func! planet#term#FindOutputWindow() abort
       let l:winnr = bufwinnr(bufnr)
       if l:winnr != -1
         return l:winnr
-      end
-    end
+      endif
+    endif
   endfor
   return -1
 endfunc
@@ -145,7 +145,7 @@ func! planet#term#CloseOutputWindow() abort
   if l:winnr != -1
     exe l:winnr .. 'wincmd w'
     wincmd c
-  end
+  endif
 endfunc
 
 func! planet#term#ListOutputWindows() abort
@@ -154,7 +154,7 @@ func! planet#term#ListOutputWindows() abort
     let l:buf_name = bufname(bufnr)
     if l:buf_name =~# '^\[Output - '
       let l:out_dict[bufnr] = l:buf_name
-    end
+    endif
   endfor
   return l:out_dict
 endfunc
@@ -169,10 +169,41 @@ func! planet#term#DefineOutputWindowsMenu() abort
   if ! l:found_windows
     an 2.10 ]Outputs.No\ Windows <Nop>
     an disable ]Outputs.No\ Windows
-  end
+  endif
 endfunc
 
 func! planet#term#PopupOutputsMenu() abort
   call planet#term#DefineOutputWindowsMenu()
   popup ]Outputs
+endfunc
+
+" Finds Terminal/Output/QF/LL window
+"   - LL windows should be ignored always (but not QF)
+" New Output window:
+"   - if have Output window, reuse it
+"   - if have other bottow window: vsplit
+"   - otherwise open at bottom
+" Terminal:
+"   - if have terminal (job is running (not finished)): vsplit
+"   - if terminal job finished: reuse
+"   - if output: vsplit or reuse
+"   - if QF: vsplit
+"   - otherwise opet at bottom
+" QF:
+"   - if have QF, reuse
+"   - if have bottom: vsplit
+"   - otherwise open bottom
+" Return:
+"   List of numbers:
+"     1 - terminal running
+"     2 - terminal finished
+"     3 - output running
+"     4 - output finished
+"     5 - QF
+"
+" ----------
+"  any special window at bottom ?
+"    vsplit
+func! planet#term#CheckBottomWindow() abort
+
 endfunc

@@ -5,35 +5,35 @@ func! planet#menu#basic#Update() abort
     " File
     an 110.10  📁&f.File <Nop>
     an disable 📁&f.File
-    an 110.20  📁&f.N&ew<Tab>:enew                             :confirm enew<CR>
+    an 110.20  📁&f.N&ew<Tab>:enew                             <Cmd>confirm enew<CR>
     an 110.30  📁&f.New\ Split<Tab>:new<Tab>+n                 <C-w>n
-    an 110.40  📁&f.New\ &VSplit<Tab>:vnew                     :vnew<CR>
-    an 110.50  📁&f.New\ &Tab                                  :confirm tabnew<CR>
-    an 110.60  📁&f.New\ GUI\ &Window                          :silent !gvim<CR>
-    an 110.60  📁&f.New\ Pro&ject.Vim\ Plugin                   <Cmd>call planet#file#NewProject('vim-plugin')<CR>
-    an 110.60  📁&f.New\ Pro&ject.Gtk\ 3\ Builder\ App          <Cmd>call planet#file#NewProject('Gtk3BuilderApp')<CR>
-    an 110.60  📁&f.New\ Pro&ject.Vue\ 3\ App                   <Cmd>call planet#file#NewProjectFromScript('vue3')<CR>
-    an 110.60  📁&f.New\ Pro&ject.Nuxt\ App                     <Cmd>call planet#file#NewProjectFromScript('nuxt')<CR>
-    an 110.60  📁&f.New\ Pro&ject.Electron\ App                 <Cmd>call planet#file#NewProjectFromScript('electron')<CR>
-    an 110.60  📁&f.New\ Pro&ject.Platformio\ espidf\ Firmware  <Cmd>call planet#file#NewProject('pio_idf_fw')<CR>
-    an 110.60  📁&f.New\ Pro&ject.Blender\ Addon                :TODO
-    an 110.60  📁&f.New\ Pro&ject.Nextcloud\ App                :TODO
-    an 110.60  📁&f.New\ Pro&ject.Linux\ OOT\ Kernel\ Module    :TODO"with parameters/proc/debugfs support
-    an 110.60  📁&f.New\ Pro&ject.Linux\ OOT\ Device\ Driver    :TODO"with parameters/OF framework support
-    an 110.60  📁&f.New\ Pro&ject.Linux\ Device\ Tree           :TODO"device tree definition
-    an 110.60  📁&f.New\ Pro&ject.Wordpress\ Plugin             :TODO
-    an 110.60  📁&f.New\ Pro&ject.Wordpress\ Theme              :TODO
-    an 110.60  📁&f.New\ Pro&ject.Yocto\ System                 :TODO
-    an 110.60  📁&f.New\ Pro&ject.ROS\ Package                  :TODO
-    an 110.60  📁&f.New\ Pro&ject.C++\ DSL                      :TODO"example DSL in C++
-    an 110.60  📁&f.New\ Pro&ject.Python\ DSL                   :TODO"example DSL in Python
-    an 110.60  📁&f.New\ Pro&ject.LaTex\ Book                   :TODO
+    an 110.40  📁&f.New\ &VSplit<Tab>:vnew                     <Cmd>vnew<CR>
+    an 110.50  📁&f.New\ &Tab                                  <Cmd>tabnew<CR>
+    an 110.60  📁&f.New\ GUI\ &Window                          <Cmd>silent !gvim<CR>
+    an 110.60  📁&f.New\ Pro&ject.Vim\ Plugin                  <Cmd>call planet#file#NewProject('vim-plugin')<CR>
+    an 110.60  📁&f.New\ Pro&ject.Gtk\ 3\ Builder\ App         <Cmd>call planet#file#NewProject('Gtk3BuilderApp')<CR>
+    an 110.60  📁&f.New\ Pro&ject.Vue\ 3\ App                  <Cmd>call planet#file#NewProjectFromScript('vue3')<CR>
+    an 110.60  📁&f.New\ Pro&ject.Nuxt\ App                    <Cmd>call planet#file#NewProjectFromScript('nuxt')<CR>
+    an 110.60  📁&f.New\ Pro&ject.Electron\ App                <Cmd>call planet#file#NewProjectFromScript('electron')<CR>
+    an 110.60  📁&f.New\ Pro&ject.Platformio\ espidf\ Firmware <Cmd>call planet#file#NewProject('pio_idf_fw')<CR>
+    an 110.60  📁&f.New\ Pro&ject.Blender\ Addon               :TODO
+    an 110.60  📁&f.New\ Pro&ject.Nextcloud\ App               :TODO
+    an 110.60  📁&f.New\ Pro&ject.Linux\ OOT\ Kernel\ Module   :TODO"with parameters/proc/debugfs support
+    an 110.60  📁&f.New\ Pro&ject.Linux\ OOT\ Device\ Driver   :TODO"with parameters/OF framework support
+    an 110.60  📁&f.New\ Pro&ject.Linux\ Device\ Tree          :TODO"device tree definition
+    an 110.60  📁&f.New\ Pro&ject.Wordpress\ Plugin            :TODO
+    an 110.60  📁&f.New\ Pro&ject.Wordpress\ Theme             :TODO
+    an 110.60  📁&f.New\ Pro&ject.Yocto\ System                :TODO
+    an 110.60  📁&f.New\ Pro&ject.ROS\ Package                 :TODO
+    an 110.60  📁&f.New\ Pro&ject.C++\ DSL                     :TODO"example DSL in C++
+    an 110.60  📁&f.New\ Pro&ject.Python\ DSL                  :TODO"example DSL in Python
+    an 110.60  📁&f.New\ Pro&ject.LaTex\ Book                  :TODO
     an 110.60  📁&f.New\ Pro&ject.OpenGL.GLFW\ (GLEW,\ C++,\ OpenGL\ 3\.2)\ App <Cmd>call planet#file#NewProject('glfw-app')<CR>
     an 110.60  📁&f.New\ Pro&ject.OpenGL.SDL\ (GLEW,\ C++,\ OpenGL\ 3\.2)\ App <Cmd>call planet#file#NewProject('sdl-app')<CR>
     an 110.60  📁&f.New\ Pro&ject.OpenGL.SFML\ (GLEW,\ C++,\ OpenGL\ 3\.2)\ App <Cmd>call planet#file#NewProject('sfml-app')<CR>
-    an 110.60  📁&f.New\ Pro&ject.Basic\ Vulkan                 :TODO
-    an 110.60  📁&f.New\ Pro&ject.Git\ Clone\.\.\.              <Cmd>call planet#term#RunCmdAskArgs('git clone --recurse-submodules ', 'Repo: ', 'https://github.com/')<CR>
-    an 110.60  📁&f.New\ Pro&ject.Git\ Init                     <Cmd>call planet#term#RunCmd('git init')<CR>
+    an 110.60  📁&f.New\ Pro&ject.Basic\ Vulkan                :TODO
+    an 110.60  📁&f.New\ Pro&ject.Git\ Clone\.\.\.             <Cmd>call planet#term#RunCmdAskArgs('git clone --recurse-submodules ', 'Repo: ', 'https://github.com/')<CR>
+    an 110.60  📁&f.New\ Pro&ject.Git\ Init                    <Cmd>call planet#term#RunCmd('git init')<CR>
     an 110.60  📁&f.New\ File.Makefile                         :TODO"copy from template
     an 110.60  📁&f.New\ File.C++\ Class                       :TODO"copy from template
     an 110.60  📁&f.New\ File.C++\ Class\ Enum                 :TODO"copy from template
@@ -68,40 +68,40 @@ func! planet#menu#basic#Update() abort
     an 110.60  📁&f.New\ File.LaTex.Article                    :TODO"copy from template
     an 110.60  📁&f.New\ File.LaTex.Chapter                    :TODO"copy from template
     an 110.70  📁&f.--1-- <Nop>
-    an 110.80  📁&f.Choose\ File                               :Clap files<CR>
-    an 110.80  📁&f.Open\ File\ Dialog                         :browse confirm e<CR>
-    an 110.90  📁&f.Open\ &File\ Manager<Tab>-                 :Fern . -reveal=%<CR>
-    an 110.100 📁&f.File\ &Manager\ Side\ Bar                  :Fern . -reveal=% -drawer -toggle<CR>
-    an 110.110 📁&f.Choose\ &Recent                            :Clap history<CR>
-    an 110.110 📁&f.QF\ &Recent                                :call planet#file#OldFilesQF()<CR>
+    an 110.80  📁&f.Choose\ File                               <Cmd>Clap files<CR>
+    an 110.80  📁&f.Open\ File\ Dialog                         <Cmd>browse confirm e<CR>
+    an 110.90  📁&f.Open\ &File\ Manager<Tab>-                 <Cmd>Fern . -reveal=%<CR>
+    an 110.100 📁&f.File\ &Manager\ Side\ Bar                  <Cmd>Fern . -reveal=% -drawer -toggle<CR>
+    an 110.110 📁&f.Choose\ &Recent                            <Cmd>Clap history<CR>
+    an 110.110 📁&f.QF\ &Recent                                <Cmd>call planet#file#OldFilesQF()<CR>
     an 110.120 📁&f.F&ind<Tab>:find                            :find 
     an 110.230 📁&f.Advanced.New\ Temp\ File                   <Cmd>exe "e " .. tempname()<CR>
     an 110.230 📁&f.Advanced.Open\ File\ under\ Cursor<Tab>gF           gF
     an 110.240 📁&f.Advanced.Split\ Open\ File\ under\ Cursor<Tab>+F    <C-w>F
     an 110.250 📁&f.Advanced.Tab\ Open\ File\ under\ Cursor<Tab>+gF     <C-w>gF
-    an 110.110 📁&f.Advanced.Open\ Read\ Only                  :browse view<CR>
-    an 110.110 📁&f.Advanced.Split\ Read\ Only                 :browse sview<CR>
-    an 110.110 📁&f.Advanced.VSplit\ Read\ Only                :browse view<CR>
-    an 110.110 📁&f.Advanced.Tab\ Read\ Only                   :browse view<CR>
+    an 110.110 📁&f.Advanced.Open\ Read\ Only                  <Cmd>browse view<CR>
+    an 110.110 📁&f.Advanced.Split\ Read\ Only                 <Cmd>browse sview<CR>
+    an 110.110 📁&f.Advanced.VSplit\ Read\ Only                <Cmd>browse view<CR>
+    an 110.110 📁&f.Advanced.Tab\ Read\ Only                   <Cmd>browse view<CR>
     an 110.110 📁&f.Advanced.Split\ Find                       :sfind 
     an 110.120 📁&f.Advanced.F&ind\ in\ Tab<Tab>:tabfind       :tabfind 
     an 110.130 📁&f.--2-- <Nop>
-    an 110.140 📁&f.&Save<Tab>:w                               :if expand("%") == ""<Bar>browse confirm w<Bar>else<Bar>confirm up<Bar>endif<CR>
-    an 110.150 📁&f.Save\ &As\.\.\.<Tab>:saveas                :browse confirm saveas<CR>
-    an <silent> 110.160 📁&f.Save\ A&ll<Tab>:wall              :silent confirm wall<Bar>echohl Directory<Bar>echo "All Saved"<Bar>echohl None<CR>
+    an 110.140 📁&f.&Save<Tab>:w                               <Cmd>if expand("%") == ""<Bar>browse confirm w<Bar>else<Bar>confirm up<Bar>endif<CR>
+    an 110.150 📁&f.Save\ &As\.\.\.<Tab>:saveas                <Cmd>browse confirm saveas<CR>
+    an <silent> 110.160 📁&f.Save\ A&ll<Tab>:wall              <Cmd>silent confirm wall<Bar>echohl Directory<Bar>echo "All Saved"<Bar>echohl None<CR>
     an 110.170 📁&f.--3-- <Nop>
     an 110.170 📁&f.Toggle\ AutoSave                           :TODO
     an 110.170 📁&f.--4-- <Nop>
-    an 110.180 📁&f.Export\ (Selected)\ as\ HTML               :TOhtml<CR>
-    an 110.180 📁&f.Convert\ to\ HTML                          :runtime syntax/2html.vim<CR>
+    an 110.180 📁&f.Export\ (Selected)\ as\ HTML               <Cmd>TOhtml<CR>
+    an 110.180 📁&f.Convert\ to\ HTML                          <Cmd>runtime syntax/2html.vim<CR>
     an 110.190 📁&f.--5-- <Nop>
     am 110.200 📁&f.&Previous\ in\ Folder<Tab>[f               [f
     am 110.210 📁&f.&Next\ in\ Folder<Tab>]f                   ]f
     an 110.220 📁&f.--6-- <Nop>
-    an 110.270 📁&f.SudoSave                                   :SudoWrite<CR>
-    an 110.280 📁&f.Rename                                     :browse confirm Rename<CR>
+    an 110.270 📁&f.SudoSave                                   <Cmd>SudoWrite<CR>
+    an 110.280 📁&f.Rename                                     <Cmd>browse confirm Rename<CR>
     an 110.290 📁&f.Change\ File\ Permissions                  :Chmod 0755
-    an 110.300 📁&f.Delete\ From\ Disk                         :Delete!<CR>
+    an 110.300 📁&f.Delete\ From\ Disk                         <Cmd>Delete!<CR>
     an 110.310 📁&f.Mkdir                                      :Mkdir! <C-z>
     an 110.330 📁&f.C&d.Cd<Tab>:cd\ ->                         :cd <C-z>
     an 110.330 📁&f.C&d.Tab\ Cd<Tab>:tcd\ ->                   :tcd <C-z>
@@ -145,29 +145,29 @@ func! planet#menu#basic#Update() abort
     an 120.60  📝&e.Repeat\ Command<Tab>@:                     @:
     an 120.70  📝&e.Repeat\ Macro<Tab>@@                       @@
     an 120.80  📝&e.--2-- <Nop>
-    an 120.90  📝&e.Undo\ &History                             :UndotreeToggle<CR>
+    an 120.90  📝&e.Undo\ &History                             <Cmd>UndotreeToggle<CR>
     an 120.100 📝&e.--3-- <Nop>
-    an 120.110 📝&e.Cu&t<Tab>"+d                               "+d
-    an 120.120 📝&e.&Copy<Tab>"+y                              "+y
+    an 120.110 📝&e.Cu&t<Tab>"+d                               <Cmd>d +<CR>
+    an 120.120 📝&e.&Copy<Tab>"+y                              <Cmd>y +<CR>
     an 120.130 📝&e.&Paste<Tab>"+p                             "+p
     an 120.140 📝&e.--4-- <Nop>
-    an 120.150 📝&e.Paste\ Before<Tab>"+P                     "+P
-    an 120.160 📝&e.Paste\ Before<Tab>"+gP                    "+gP
-    an 120.170 📝&e.Paste\ &&\ Cursor\ After<Tab>"+gp         "+gp
-    an 120.180 📝&e.Paste\ with\ Indent<Tab>"+]p               "+]p
-    an 120.190 📝&e.Paste\ Before\ with\ Indent<Tab>"+[P       "+[P
+    an 120.150 📝&e.Paste\ Before<Tab>"+P                      "+P
+    an 120.160 📝&e.Paste\ Before,\ Cursor\ After<Tab>"+gP     "+gP
+    an 120.170 📝&e.Paste,\ Cursor\ After<Tab>"+gp             "+gp
+    an 120.180 📝&e.Indent\ Paste<Tab>"+]p                     "+]p
+    an 120.190 📝&e.Indent\ Paste\ Before<Tab>"+[P             "+[P
     an 120.200 📝&e.--5-- <Nop>
-    an 120.210 📝&e.Choose\ Yank\ History<Tab>:Clap\ yanks     :Clap yanks<CR>
+    an 120.210 📝&e.Choose\ Yank\ History<Tab>:Clap\ yanks     <Cmd>Clap yanks<CR>
     an 120.220 📝&e.--6-- <Nop>
     am 120.230 📝&e.Swap\ Preious\ Line<Tab>[e                 [e
     am 120.240 📝&e.Swap\ Next\ Line<Tab>]e                    ]e
     an 120.250 📝&e.--7-- <Nop>
-    an 120.260 📝&e.Unindent<Tab><                             <
-    an 120.270 📝&e.Indent<Tab>>                               >
+    an 120.260 📝&e.Unindent<Tab><                             <Cmd><<CR>
+    an 120.270 📝&e.Indent<Tab>>                               <Cmd>><CR>
     an 120.280 📝&e.Auto\ Indent<Tab>=                         =
     an 120.290 📝&e.Auto\ Indent\ File<Tab>gg=G                gg=G
     an 120.290 📝&e.Retab\ File<Tab>:retab!                    <Cmd>retab!<CR>
-    an 120.300 📝&e.Auto\ Format\ File                         :!clang-format<CR>
+    an 120.300 📝&e.Auto\ Format\ File                         <Cmd>!clang-format<CR>
     an 120.310 📝&e.--8-- <Nop>
     an 120.320 📝&e.Insert<Tab>i                               i
     an 120.330 📝&e.Continue\ Insert<Tab>gi                    gi
@@ -183,9 +183,9 @@ func! planet#menu#basic#Update() abort
     an 120.430 📝&e.Replace\ Mode<Tab>R                        R
     an 120.440 📝&e.Virtual\ Replace\ Mode<Tab>gR              gR
 
-    " Advanced Edit (Modify)
-    an 125.10  ✏️&m.Advanced\ Edit <Nop>
-    an disable ✏️&m.Advanced\ Edit
+    " Modify
+    an 125.10  ✏️&m.Modify <Nop>
+    an disable ✏️&m.Modify
     an 125.310 ✏️&m.--8-- <Nop>
     an 125.320 ✏️&m.Format\ Text<Tab>gq                       gq
     an 125.330 ✏️&m.Format\ Text\ Keep\ Cursor<Tab>gw         gw
@@ -202,8 +202,9 @@ func! planet#menu#basic#Update() abort
     an 125.580 ✏️&m.Remove\ Trailing\ Whitespace               :TODO
     an 125.590 ✏️&m.--14-- <Nop>
     an 125.600 ✏️&m.Call\ 'operatorfunc'<Tab>g@                g@
-    an 125.610 ✏️&m.Filter<Tab>:g!/re/p                        :g!/re/d<CR>
-    an 125.620 ✏️&m.Filter\ Out<Tab>:g/re/p                    :g/re/d<CR>
+    an 125.600 ✏️&m.Read-in\ File\.\.\.<Tab>:r                 :r <C-z>
+    an 125.610 ✏️&m.Filter<Tab>:g!/re/d                        <Cmd>call planet#modify#Filter()<CR>
+    an 125.620 ✏️&m.Filter\ Out<Tab>:g/re/d                    <Cmd>call planet#modify#FilterOut()<CR>
     an 125.630 ✏️&m.Sort<Tab>!sort                             !sort<CR>
     an 125.640 ✏️&m.Reverse<Tab>!tac                           !tac<CR>
     an 125.650 ✏️&m.Uniq<Tab>!uniq                             !uniq<CR>
@@ -217,7 +218,7 @@ func! planet#menu#basic#Update() abort
     am 125.660 ✏️&m.C\ String\ Decode<Tab>]y{motion}          ]y
     an 125.660 ✏️&m.--4-- <Nop>
     an 125.660 ✏️&m.Rot13\ Operator<Tab>g?                    g?
-    an 125.660 ✏️&m.Rot13\ Line<Tab>g??<Tab>g?g?     g??
+    an 125.660 ✏️&m.Rot13\ Line<Tab>g??<Tab>g?g?              g??
     an 125.660 ✏️&m.--4-- <Nop>
     am 125.660 ✏️&m.Empty\ Line\ Before<Tab>[<Space>          [<Space>
     am 125.660 ✏️&m.Empty\ Line\ After<Tab>]<Space>           ]<Space>
@@ -256,7 +257,7 @@ func! planet#menu#basic#Update() abort
     an 130.260 🔎&/.Current\ \<word\><Tab>g*                 g*
     an 130.270 🔎&/.Current\ \<word\>\ Backwards<Tab>g#      g#
     an 130.280 🔎&/.--7-- <Nop>
-    an 130.300 🔎&/.Search\ Dialog<Tab>:promptfind           :promptfind<CR>
+    an 130.300 🔎&/.Search\ Dialog<Tab>:promptfind           <Cmd>promptfind<CR>
     an 130.320 🔎&/.Substitute <Nop>
     an disable 🔎&/.Substitute
     an 130.330 🔎&/.Substitute\ Selection                    :TODO...
@@ -268,18 +269,19 @@ func! planet#menu#basic#Update() abort
     an 130.340 🔎&/.Repeat\ with\ Search\ Pattern<Tab>:~     <Cmd>~<CR>
     an 130.340 🔎&/.Repeat\ with\ Search\ Pattern\ keep\ Flags<Tab>:~& <Cmd>~&<CR>
     an 130.280 🔎&/.--10-- <Nop>
-    an 130.340 🔎&/.Substitute\ Dialog<Tab>:promptrepl       :promptrepl<CR>
+    an 130.340 🔎&/.Substitute\ Dialog<Tab>:promptrepl       <Cmd>promptrepl<CR>
 
     " Selection
     "FIXME: In Insert mode this only works for a SINGLE Normal mode command
     an 140.10  🖍️&i.Selection <Nop>
     an disable 🖍️&i.Selection
-    an 140.10  🖍️&i.Select\ All                             :call planet#edit#SelectAll()<CR>
+    an 140.10  🖍️&i.Select\ All                             <Cmd>call planet#edit#SelectAll()<CR>
     an 140.10  🖍️&i.Reselect\ Previous\ Area                gv
     an 140.10  🖍️&i.--1-- <Nop>
-    " FIXME VIM_BUG: <Cmd> doesn't work for CopySelectionToFile() function, must use ':'
-    an 140.10  🖍️&i.Copy\ Selection\ to\ File               :call planet#selection#CopySelectionToFile()<CR>
-    an 140.10  🖍️&i.Move\ Selection\ to\ File               :call planet#selection#MoveSelectionToFile()<CR>
+    an 140.10  🖍️&i.Write\ Selection\ to\ File              <Cmd>call planet#selection#CopySelectionToFile()<CR>
+    an 140.10  🖍️&i.Append\ Selection\ to\ File             <Cmd>call planet#selection#CopySelectionToFile(v:false, "a")<CR>
+    an 140.10  🖍️&i.Move\ Selection\ and\ Overwrite\ File   <Cmd>call planet#selection#CopySelectionToFile(v:true)<CR>
+    an 140.10  🖍️&i.Move\ Selection\ and\ Append\ to\ File  <Cmd>call planet#selection#CopySelectionToFile(v:true, "a")<CR>
     an 140.10  🖍️&i.--2-- <Nop>
     an 140.10  🖍️&i.Visual\ Mode<Tab>v                      v
     an 130.10  🖍️&i.Visual\ Line\ Mode<Tab>V                V
@@ -290,7 +292,6 @@ func! planet#menu#basic#Update() abort
     an 140.10  🖍️&i.Select\ Block\ Mode<Tab>g<C-h>          g<C-H>
 
     " View
-    "TODO: add 'scrollbind' file in split
     an 150.10  📺&v.View <Nop>
     an disable 📺&v.View
     an 150.10  📺&v.&Command\ Palette                          <Cmd>Clap<CR>

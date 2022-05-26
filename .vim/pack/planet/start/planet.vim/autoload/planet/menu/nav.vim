@@ -82,10 +82,10 @@ func! planet#menu#nav#Update() abort
     " Vim Windows
     an 820.10  🪟&w.Windows <Nop>
     an disable 🪟&w.Windows
-    an 820.10  🪟&w.&Window\ Mode                           :WindowMode<CR>
-    an 820.10  🪟&w.ChooseWin\ Mode\ (&\\)<Tab>\\           :ChooseWin<CR>
+    an 820.10  🪟&w.&Window\ Mode                           <Cmd>WindowMode<CR>
+    an 820.10  🪟&w.ChooseWin\ Mode\ (&\\)<Tab>\\           <Cmd>ChooseWin<CR>
     an 820.10  🪟&w.--1-- <Nop>
-    an 820.10  🪟&w.C&hoose<Tab>:Clap\ windows              :Clap windows<CR>
+    an 820.10  🪟&w.C&hoose<Tab>:Clap\ windows              <Cmd>Clap windows<CR>
     an 820.10  🪟&w.--2-- <Nop>
     an 820.10  🪟&w.&Vertical\ Split<Tab>:vsplit<Tab>+v     <C-w>v
     an 820.10  🪟&w.Horizontal\ &Split<Tab>:split<Tab>+s    <C-w>s
@@ -183,30 +183,31 @@ func! planet#menu#nav#Update() abort
     an 820.10  🪟&w.Close\ &Other\ Windows<Tab>:only<Tab>+o <C-w>o
 
     " Tabs
-    an 830.10  🗂️&\..Tabs <Tabs>
-    an disable 🗂️&\..Tabs
-    an 830.10  🗂️&\..N&ew<Tab>:tabnew                       <Cmd>tabnew<CR>
-    an 830.10  🗂️&\..--1-- <Nop>
-    an 830.10  🗂️&\..&Alternate<Tab>g\<Tab\>                g<Tab>
-    an 830.10  🗂️&\..--2-- <Nop>
-    an 830.10  🗂️&\..&First<Tab>:tabfirst                   <Cmd>tabfirst<CR>
-    an 830.10  🗂️&\..&Previous<Tab><C-PgUp><Tab>gT          gT
-    an 830.10  🗂️&\..&Next<Tab><C-PgDown><Tab>gt            gt
-    an 830.10  🗂️&\..&Last<Tab>:tablast                     <Cmd>tablast<CR>
-    an 830.10  🗂️&\..--3-- <Nop>
-    an 830.10  🗂️&\..Move\ F&irst<Tab>:0tabmove             <Cmd>0tabmove<CR>
-    an 830.10  🗂️&\..Move\ P&revious<Tab>:-tabmove          <Cmd>-tabmove<CR>
-    an 830.10  🗂️&\..&Move\ Next<Tab>:+tabmove              <Cmd>+tabmove<CR>
-    an 830.10  🗂️&\..Mo&ve\ Last<Tab>:tabmove               <Cmd>tabmove<CR>
-    an 830.10  🗂️&\..--4-- <Nop>
-    an 830.10  🗂️&\..&Save\ Current\ Tab                    <Cmd>call planet#tab#Save()<CR>
-    an 830.10  🗂️&\..Open\ &Tab\.\.\.                       <Cmd>call planet#tab#Open()<CR>
-    an 830.10  🗂️&\..--5-- <Nop>
-    an 830.10  🗂️&\..E&xecute\ in\ each\ Tab<Tab>:tabdo     :tabdo 
-    an 830.10  🗂️&\..--6-- <Nop>
-    "TODO: autosave tab when close, using autocmds
-    an 830.10  🗂️&\..&Close<Tab>:tabclose                   <Cmd>tabclose<CR>
-    an 830.10  🗂️&\..Close\ &Other\ Tabs<Tab>:tabonly       <Cmd>tabonly<CR>
+    an 830.10  🗂️&t.Tabs <Tabs>
+    an disable 🗂️&t.Tabs
+    an 830.10  🗂️&t.N&ew<Tab>:tabnew                       <Cmd>tabnew<CR>
+    an 830.10  🗂️&t.--1-- <Nop>
+    an 830.10  🗂️&t.&Alternate<Tab>g\<Tab\>                g<Tab>
+    an 830.10  🗂️&t.C&hoose<Tab>:Clap\ windows             <Cmd>Clap windows<CR>
+    an 830.10  🗂️&t.--2-- <Nop>
+    an 830.10  🗂️&t.&First<Tab>:tabfirst                   <Cmd>tabfirst<CR>
+    an 830.10  🗂️&t.&Previous<Tab><C-PgUp><Tab>gT          gT
+    an 830.10  🗂️&t.&Next<Tab><C-PgDown><Tab>gt            gt
+    an 830.10  🗂️&t.&Last<Tab>:tablast                     <Cmd>tablast<CR>
+    an 830.10  🗂️&t.--3-- <Nop>
+    an 830.10  🗂️&t.Move\ F&irst<Tab>:0tabmove             <Cmd>0tabmove<CR>
+    an 830.10  🗂️&t.Move\ P&revious<Tab>:-tabmove          <Cmd>-tabmove<CR>
+    an 830.10  🗂️&t.&Move\ Next<Tab>:+tabmove              <Cmd>+tabmove<CR>
+    an 830.10  🗂️&t.Mo&ve\ Last<Tab>:tabmove               <Cmd>tabmove<CR>
+    an 830.10  🗂️&t.--4-- <Nop>
+    an 830.10  🗂️&t.&Save\ Current\ Tab                    <Cmd>call planet#tab#Save()<CR>
+    an 830.10  🗂️&t.Open\ &Tab\.\.\.                       <Cmd>call planet#tab#Open()<CR>
+    an 830.10  🗂️&t.--5-- <Nop>
+    an 830.10  🗂️&t.E&xecute\ in\ each\ Tab<Tab>:tabdo     :tabdo 
+    an 830.10  🗂️&t.--6-- <Nop>
+    an 830.10  🗂️&t.&Close<Tab>:tabclose                   <Cmd>tabclose<CR>
+    an 830.10  🗂️&t.Reopen\ Closed\ Tab                    <Cmd>call planet#tab#Reopen()<CR>
+    an 830.10  🗂️&t.Close\ &Other\ Tabs<Tab>:tabonly       <Cmd>tabonly<CR>
 
     " Sessions
     an 840.10  📚&s.Sessions <Nop>

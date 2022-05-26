@@ -222,17 +222,10 @@ cnoremap <expr> <C-u> ((getcmdtype() is# ":" && getcmdline() is# "") ? ("<Esc>")
 cnoremap <expr> <Tab> ((getcmdtype() is# ":" && getcmdline() is# "") ? ("<Esc>") : ("<C-z>"))
 " }}}
 " Terminal Window: {{{
-tno <Esc> <C-w>N
-tno <C-e> <Tab>
 tno <C-j> <C-w><C-j>
 tno <C-k> <C-w><C-k>
 tno <C-l> <C-w><C-l>
 tno <C-h> <C-w><C-h>
-if has('nvim')
-  tno <Esc> <C-\><C-n>
-  tno <C-v><Esc> <Esc>
-endif
-tno <A-:> <C-w>1gt
 tno <A-<> <C-w>gT
 tno <A->> <C-w>gt
 tno <A-1> <C-w>:1tabn<CR>
@@ -245,8 +238,6 @@ tno <A-7> <C-w>:7tabn<CR>
 tno <A-8> <C-w>:8tabn<CR>
 tno <A-9> <C-w>:9tabn<CR>
 tno <A-0> <C-w>:10tabn<CR>
-tno <ScrollWheelUp> <C-w>N<ScrollWheelUp>
-tno <ScrollWheelDown> <scrollWheelDown>
 " }}}
 " Operator-pending Mode: {{{
 onoremap <Tab> <Esc>
@@ -289,7 +280,10 @@ au FileType cmake setlocal ballooneval
 au FileType cmake setlocal balloonevalterm
 au FileType cmake setlocal balloonexpr=cmakehelp#balloonexpr()
 au FileType c,cpp setlocal foldmethod=syntax
+au FileType c,cpp inoreabbrev #e #endif 
+au FileType c,cpp inoreabbrev #d #define 
 au FileType c,cpp inoreabbrev #i #include 
+au FileType c,cpp inoreabbrev #n #ifndef 
 au FileType c,cpp inoreabbrev ,, <<
 au FileType c,cpp inoreabbrev ;b std::begin
 au FileType c,cpp inoreabbrev ;c std::cout
@@ -325,8 +319,8 @@ au GUIEnter * silent call system('wmctrl -i -b add,maximized_vert,maximized_horz
 au InsertLeave * if empty(&buftype) | pclose | end
 au SessionLoadPost * call planet#planet#SetPerSessionOptions()
 au StdinReadPost * set nomodified
-au TerminalWinOpen * setlocal foldcolumn=0 signcolumn=no nonumber norelativenumber
-au BufWinEnter * if &buftype == 'terminal' | setlocal foldcolumn=0 signcolumn=no nonumber norelativenumber | end
+au TerminalWinOpen * setlocal foldcolumn=0 signcolumn=no nonumber norelativenumber winfixheight winfixwidth
+au BufWinEnter * if &buftype == 'terminal' | setlocal foldcolumn=0 signcolumn=no nonumber norelativenumber winfixheight winfixwidth | end
 au VimEnter * if expand("%") != "" && getcwd() == expand("~") | cd %:h | end
 au VimLeavePre * call planet#planet#CheckExitSaveSession()
 aug END

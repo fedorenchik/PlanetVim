@@ -123,7 +123,7 @@ set numberwidth=3
 set patchmode=".orig"
 set path+=.,,./include,../include,../*/include,*/include,*,../*,/usr/include,**
 set nopreserveindent
-set previewheight=12
+set previewheight=6
 set printencoding=utf-8
 set printfont=&guifont
 set printmbcharset=ISO10646
@@ -140,7 +140,7 @@ set scrolljump=2
 set scrolloff=2
 set scrollopt=ver,hor,jump
 set secure
-set sessionoptions=blank,buffers,curdir,folds,globals,help,resize,slash,tabpages,terminal,unix,winpos,winsize
+set sessionoptions=blank,buffers,curdir,folds,globals,help,skiprtp,resize,slash,tabpages,terminal,unix,winpos,winsize
 if &shell =~# 'fish$' && (v:version < 704 || v:version == 704 && !has('patch276'))
   set shell=/bin/bash
 endif

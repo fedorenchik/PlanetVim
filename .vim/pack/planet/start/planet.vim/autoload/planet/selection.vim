@@ -1,27 +1,30 @@
 scriptversion 4
 
-
-func! planet#selection#CopySelectionToFile() abort
-  normal! y
+" XXX: Currently only works linewise.
+func! planet#selection#CopySelectionToFile(to_delete = v:false, flags = '') abort
+  let l:range = ""
+  if line("'<") != 0
+    let l:range = "'<,'>"
+  endif
+  exe "silent " .. l:range .. "y"
   let l:new_file_name = ""
   if has("browse") && planet#planet#IsGuiDialogs()
     let l:new_file_name = browse(v:true, "Choose a file to save", "", "")
   else
+    call inputsave()
+    call feedkeys("\<C-z>")
     let l:new_file_name = input("File: ", "", "file")
-  end
+    call inputrestore()
+  endif
   if empty(l:new_file_name)
     return
-  end
-  "TODO: if filename contains directories, do a "mkdir -p" (mkdir(dirs, "p")) on them
-  normal! gv
-  exe "w " .. l:new_file_name
-  normal! gv
+  endif
+  call mkdir(fnamemodify(l:new_file_name, ":h"), "p")
+  call writefile(getreg('0', 1, v:true), l:new_file_name, a:flags)
+  if a:to_delete
+    exe l:range .. "d"
+  endif
   echohl Directory
-  echo "Saved to " .. l:new_file_name
+  echo "\rSaved to " .. l:new_file_name
   echohl None
-endfunc
-
-func! planet#selection#MoveSelectionToFile() abort
-  call planet#selection#CopySelectionToFile()
-  normal! d
 endfunc

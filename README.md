@@ -8,7 +8,53 @@ Release version v0.0.1 (not ready for testing)
 
 # What is PlanetVim
 
-Vim that helps you to develop.
+PlanetVim is GVim Distribution that aims to make development easier. PlanetVim
+focuses on ease of use and making the power of vim accessible by a few clicks
+or keystrokes.
+
+PlanetVim supports GVim only (GUI version) and makes it easy to use many development tools.
+
+It focuses on developers and writers alike.
+
+Developers:
+
+* Anaconda
+* Arduino
+* Autotools
+* C++
+* CMake
+* Docker
+* Electron
+* Flutter
+* Gtk
+* KBuild
+* Make
+* Meson
+* Ninja
+* Node
+* Nuxt
+* PlatformIO
+* Python
+* Qt
+* Vim
+* Vue
+* WebAssembly
+
+Writers:
+
+* LaTeX
+* MarkDown
+
+## Few screenshots
+
+
+## PlanetVim Behavior
+
+PlanetVim can be used in 3 operation styles:
+
+1. Easy Mode - Makes PlanetVim modeless, like most editors.
+2. Standard Mode - Standard Vim Mode.
+3. Supercharged Mode - remaps few vim's antipattern keys:
 
 A picture is worth 1000 words, here is recording of what PlanetVim will be able to do in v1.0 release:
 

@@ -13,13 +13,13 @@ def! g:TitleString(): string
       buf += 1
       continue
     endif
+    if getbufvar(buf, "&buftype") !=# 'terminal' && getbufvar(buf, "&modified") && ! set_mod
+      m = '+' .. m
+      set_mod = true
+    endif
     #TODO: only show running (not finished) commands/terminals
     if getbufvar(buf, "&buftype") ==# 'terminal'
-      m = '!' .. m
-    endif
-    if getbufvar(buf, "&buftype") !=# 'terminal' && getbufvar(buf, "&modified") && ! set_mod
-      m ..= '+'
-      set_mod = true
+      m ..= '!'
     endif
     buf += 1
   endwhile

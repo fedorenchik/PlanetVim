@@ -657,24 +657,23 @@ func! planet#menu#dev#Update() abort
     an 540.10  🔬&y.tracefs                                 :Vimspector<CR>
 
     " Terminal
-    an 550.10  💻&t.Terminal <Nop>
-    an disable 💻&t.Terminal
-    "TODO: set winfixheight winfixwidth
-    an 550.10  💻&t.N&ew                                    <Cmd>botright terminal ++kill=kill ++rows=10<CR>
-    an 550.10  💻&t.New\ &Here                              <Cmd>terminal ++curwin ++kill=kill<CR>
-    an 550.10  💻&t.New\ &VSplit                            <Cmd>vertical terminal ++kill=kill<CR>
-    an 550.10  💻&t.New\ &Tab                               <Cmd>tab terminal ++kill=kill<CR>
-    an 550.10  💻&t.--1-- <Nop>
-    an 550.10  💻&t.&Run\ Custom\ Command                    <Cmd>call planet#term#RunCmdAsk('Command: ')<CR>
-    an 550.10  💻&t.--2-- <Nop>
-    an 550.10  💻&t.P&ython\ Shell                          <Cmd>botright terminal ++kill=kill ++rows=10 python<CR>
-    an 550.10  💻&t.C&++\ Shell                             <Cmd>botright terminal ++kill=kill ++rows=10 cling<CR>
-    an 550.10  💻&t.--3-- <Nop>
-    an 550.10  💻&t.&Close\ Output                          <Cmd>call planet#term#CloseOutputWindow()<CR>
-    an 550.10  💻&t.Terminal\ List <Nop>
-    an disable 💻&t.Terminal\ List
-    an 550.10  💻&t.Output\ List <Nop>
-    an disable 💻&t.Output\ List
+    an 550.10  💻&c.Terminal <Nop>
+    an disable 💻&c.Terminal
+    an 550.10  💻&c.N&ew                                    <Cmd>botright terminal ++kill=kill ++rows=10<CR>
+    an 550.10  💻&c.New\ &Here                              <Cmd>terminal ++curwin ++kill=kill<CR>
+    an 550.10  💻&c.New\ &VSplit                            <Cmd>vertical terminal ++kill=kill<CR>
+    an 550.10  💻&c.New\ &Tab                               <Cmd>tab terminal ++kill=kill<CR>
+    an 550.10  💻&c.--1-- <Nop>
+    an 550.10  💻&c.&Run\ Custom\ Command                    <Cmd>call planet#term#RunCmdAsk('Command: ')<CR>
+    an 550.10  💻&c.--2-- <Nop>
+    an 550.10  💻&c.P&ython\ Shell                          <Cmd>botright terminal ++kill=kill ++rows=10 python<CR>
+    an 550.10  💻&c.C&++\ Shell                             <Cmd>botright terminal ++kill=kill ++rows=10 cling<CR>
+    an 550.10  💻&c.--3-- <Nop>
+    an 550.10  💻&c.&Close\ Output                          <Cmd>call planet#term#CloseOutputWindow()<CR>
+    an 550.10  💻&c.Terminal\ List <Nop>
+    an disable 💻&c.Terminal\ List
+    an 550.10  💻&c.Output\ List <Nop>
+    an disable 💻&c.Output\ List
   else
     silent! aunmenu ❇️&[
     silent! aunmenu 🪧&]
