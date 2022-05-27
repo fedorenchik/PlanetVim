@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/kien/tabman.vim.git
+	branch = master
+	commit = 8f2ca9268a2ec1bcb29231b5b3f872101d169901
+	parent = bd41b5368054e24304a0a1788b9ade38d73d2f44
+	method = merge
+	cmdver = 0.4.3
