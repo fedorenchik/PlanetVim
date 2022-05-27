@@ -407,9 +407,9 @@ func! planet#menu#basic#Update() abort
     silent! aunmenu 📝&e
     silent! aunmenu ✏️&m
     silent! aunmenu 🔎&/
-    silent! aunmenu 🖍️&s
+    silent! aunmenu 🖍️&i
     silent! aunmenu 📺&v
-    silent! aunmenu ↕️&g
+    silent! aunmenu ↕️&,
     silent! aunmenu 🧭&n
   endif
 endfunc

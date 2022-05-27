@@ -128,6 +128,6 @@ func! planet#menu#settings#Update() abort
   else
     silent! aunmenu ⚙️&\\
     silent! aunmenu ⌨️&\|
-    silent! aunmenu ❔&h
+    silent! aunmenu ❔&?
   endif
 endfunc

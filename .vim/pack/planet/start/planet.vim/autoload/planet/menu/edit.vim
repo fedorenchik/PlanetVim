@@ -208,7 +208,7 @@ func! planet#menu#edit#Update() abort
     an 260.80  &QF.GrepAdd\ (&b)<Tab>:grepadd                   :grepadd 
     an 260.90  &QF.&VimGrep<Tab>:vimgrep                        :vimgrep 
     an 260.100 &QF.Vi&mGrepAdd<Tab>:vimgrepadd                  :vimgrepadd 
-    an 260.110 &QF.TODO                                         :Grepper -quickfix -noprompt -tool rg -query -E '(TODO\|FIXME\|XXX):'
+    an 260.110 &QF.TODO                                         <Cmd>Grepper -quickfix -noprompt -tool rg -query 'TODO|FIXME|XXX|NOTE|BUG|WARNING'<CR>
     an 260.120 &QF.--1-- <Nop>
     an 260.130 &QF.C&hoose<Tab>:Clap\ quickfix                  :Clap quickfix<CR>
     an 260.140 &QF.--2-- <Nop>
@@ -251,7 +251,7 @@ func! planet#menu#edit#Update() abort
     an 270.80  &LL.GrepAdd\ (&b)<Tab>:lgrepadd                  :lgrepadd 
     an 270.90  &LL.&VimGrep<Tab>:lvimgrep                       :lvimgrep 
     an 270.100 &LL.Vi&mGrepAdd<Tab>:lvimgrepadd                 :lvimgrepadd 
-    an 270.110 &LL.TODO                                         :Grepper -noquickfix -noprompt -tool rg -query -E '(TODO\|FIXME\|XXX):'
+    an 270.110 &LL.TODO                                         <Cmd>Grepper -noquickfix -noprompt -tool rg -query 'TODO|FIXME|XXX|NOTE|BUG|WARNING'<CR>
     an 270.120 &LL.--1-- <Nop>
     an 270.130 &LL.C&hoose<Tab>:Clap\ loclist                   :Clap loclist<CR>
     an 270.140 &LL.--2-- <Nop>
@@ -284,10 +284,10 @@ func! planet#menu#edit#Update() abort
     an 270.390 &LL.Delete\ All\ LocLists\ in\ Tab               :windo call setloclist(0, [], 'f')<CR>
     an 270.390 &LL.Delete\ All\ LocLists\ in\ All\ Tabs         :tabdo windo call setloclist(0, [], 'f')<CR>
   else
-    silent! aunmenu 📋&i
+    silent! aunmenu 📋&"
     silent! aunmenu 🔖&'
-    silent! aunmenu 🏷️&"
-    silent! aunmenu 🖌️&c
+    silent! aunmenu 🏷️&=
+    silent! aunmenu 🖌️&h
     silent! aunmenu 📎&k
     silent! aunmenu 📜&z
     silent! aunmenu &QF

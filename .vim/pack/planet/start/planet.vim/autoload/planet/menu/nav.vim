@@ -262,8 +262,8 @@ func! planet#menu#nav#Update() abort
     silent! aunmenu 📖&b
     silent! aunmenu 🗃️&a
     silent! aunmenu 🪟&w
-    silent! aunmenu 🗂️&\.
-    silent! aunmenu 📚&h
+    silent! aunmenu 🗂️&t
+    silent! aunmenu 📚&s
     silent! aunmenu 🗄️&x
     silent! aunmenu 🎛️&@
   endif

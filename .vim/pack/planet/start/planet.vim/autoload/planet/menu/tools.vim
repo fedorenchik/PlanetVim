@@ -442,6 +442,7 @@ func! planet#menu#tools#Update() abort
   else
     silent! aunmenu 🔀&g
     silent! aunmenu ⛏️&;
+    silent! aunmenu 🔤&\.
     silent! aunmenu 🔤&-
     silent! aunmenu 🔧&o
   endif

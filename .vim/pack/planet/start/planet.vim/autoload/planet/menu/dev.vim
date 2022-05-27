@@ -684,6 +684,6 @@ func! planet#menu#dev#Update() abort
     silent! aunmenu 🐞&d
     silent! aunmenu 🧪&j
     silent! aunmenu 🔬&y
-    silent! aunmenu 💻&t
+    silent! aunmenu 💻&c
   endif
 endfunc
