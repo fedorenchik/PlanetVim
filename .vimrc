@@ -732,6 +732,11 @@ let g:python_highlight_all = 1
 " Plugin: spelunker.vim {{{
 let g:enable_spelunker_vim = 0
 " }}}
+" Plugin: tabman.vim {{{
+let g:tabman_toggle = '<leader>gt'
+let g:tabman_focus = '<leader>gf'
+let g:tabman_specials = 1
+" }}}
 " Plugin: undotree {{{
 let g:undotree_WindowLayout=4
 nnoremap SU :UndotreeShow<CR>

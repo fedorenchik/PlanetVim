@@ -185,6 +185,7 @@ func! planet#menu#nav#Update() abort
     " Tabs
     an 830.10  🗂️&t.Tabs <Tabs>
     an disable 🗂️&t.Tabs
+    an 830.10  🗂️&t.Tab\ Manager<Tab>:TMToggle             <Cmd>TMToggle<CR>
     an 830.10  🗂️&t.N&ew<Tab>:tabnew                       <Cmd>tabnew<CR>
     an 830.10  🗂️&t.--1-- <Nop>
     an 830.10  🗂️&t.&Alternate<Tab>g\<Tab\>                g<Tab>

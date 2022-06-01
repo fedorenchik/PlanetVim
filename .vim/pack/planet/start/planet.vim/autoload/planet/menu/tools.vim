@@ -10,12 +10,12 @@ func! planet#menu#tools#Update() abort
     an 700.10  🔀&g.&Fetch                                        <Cmd>call planet#term#RunCmd('git fetch')<CR>
     an 700.10  🔀&g.P&ull                                         <Cmd>call planet#term#RunCmd('git pull --ff-only')<CR>
     an 700.10  🔀&g.&Push                                         <Cmd>call planet#term#RunCmd('git push ; git status --short --branch --show-stash --untracked-files=all')<CR>
-    an 700.10  🔀&g.Summar&y                                      <Cmd>tab Gstatus<CR>
+    an 700.10  🔀&g.Summar&y                                      <Cmd>tab Git<CR>
     an 700.10  🔀&g.&Add.This\ &File                              <Cmd>call planet#term#RunCmd('git add ' .. expand('%') .. ' ; git status --short --branch --show-stash --untracked-files=all')<CR>
     an 700.10  🔀&g.&Add.Current\ &Directory                      <Cmd>call planet#term#RunCmd('git add . ; git status --short --branch --show-stash --untracked-files=all')<CR>
     an 700.10  🔀&g.&Add.&All                                     <Cmd>call planet#term#RunCmd('git add --update ; git status --short --branch --show-stash --untracked-files=all')<CR>
     an 700.10  🔀&g.&Add.All\ with\ &Untracked                    <Cmd>call planet#term#RunCmd('git add --all ; git status --short --branch --show-stash --untracked-files=all')<CR>
-    an 700.10  🔀&g.&Add.&Interactively                           <Cmd>tab Gstatus<CR>
+    an 700.10  🔀&g.&Add.&Interactively                           <Cmd>tab Git<CR>
     an 700.10  🔀&g.&Add.&Interactive                             <Cmd>call planet#term#RunCmdTab('git add --interactive')<CR>
     an 700.10  🔀&g.&Add.&Patch                                   <Cmd>call planet#term#RunCmdTab('git add --patch')<CR>
     an 700.10  🔀&g.&Add.&Move                                    :TODO
