@@ -223,6 +223,7 @@ func! planet#menu#dev#Update() abort
     an 500.10  🎚️&{.Settings <Nop>
     an disable 🎚️&{.Settings
     an 500.10  🎚️&{.&Env.&Source\ \.env                     <Cmd>Dotenv .env<CR>
+    an 500.10  🎚️&{.&Env.&Source\ File\.\.\.                :Dotenv <C-z>
     an 500.10  🎚️&{.&Env.Set\ Env\ &Var                     <Cmd>call planet#env#NewEnvVar()<CR>
     an 500.10  🎚️&{.&Env.Edit\ &\.env                       <Cmd>e .env<CR>
     an 500.10  🎚️&{.&Env.Edit\ E&nv\ in\ Buffer             <Cmd>call planet#env#BufferFromCmd('env')<CR>
@@ -477,6 +478,7 @@ func! planet#menu#dev#Update() abort
     an 500.10  🔨&u.&PlatformIO.Menuconfig                   <Cmd>call planet#term#RunCmd('pio run -t menuconfig')<CR>
     an 500.10  🔨&u.&PlatformIO.Clean                        <Cmd>call planet#term#RunCmd('pio run -t clean')<CR>
     an 500.10  🔨&u.&PlatformIO.Generate\ Compilation\ Database <Cmd>call planet#term#RunScript('pio-gen-compile-db')<CR>
+    an 500.10  🔨&u.&PlatformIO.Activate                     <Cmd>Dotenv $HOME/.platformio/penv/bin/activate<CR>
     an 500.10  🔨&u.&PlatformIO.Web\ UI                      <Cmd>call planet#term#RunCmd('pio home')<CR>
     an 500.10  🔨&u.&PlatformIO.Update\ Packages             <Cmd>call planet#term#RunCmd('pio update')<CR>
     an 500.10  🔨&u.&PlatformIO.Upgrade\ PlatformIO          <Cmd>call planet#term#RunCmd('pio upgrade')<CR>
