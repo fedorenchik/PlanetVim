@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/bfrg/vim-cpp-modern.git
 	branch = master
-	commit = 95a88836743699705b9d19cb6316a529956ac28a
-	parent = 8c731d7b9786babec2975d5f9a467bee1dde5f0c
+	commit = f140b8c89b4f82a87770b5ad4973d34187e9357e
+	parent = f3ec3e40c4802d7e0c3f9deb67fd7a78e220254e
 	method = merge
 	cmdver = 0.4.3
