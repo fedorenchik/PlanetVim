@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/Shougo/neco-vim.git
 	branch = master
-	commit = 3a913173dcbf7bac303cb5ede8b3a732b6a0a692
-	parent = 7ab448db1751ce3a3d379ecb92e68cf1fbfb78f9
+	commit = facc3db7c5836fe2424936e8dd06f227e20f96db
+	parent = d18173c315f7586f049ab111578a9e55249157df
 	method = merge
 	cmdver = 0.4.3
