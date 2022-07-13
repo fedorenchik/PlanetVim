@@ -522,12 +522,12 @@ def ExpandReferencesInObject( obj, mapping, calculus, user_choices ):
   return obj
 
 
-# Based on the python standard library string.Template().substitue, enhanced to
+# Based on the python standard library string.Template().substitute, enhanced to
 # add ${name:default} parsing, and to remove the unnecessary generality.
 VAR_MATCH = re.compile(
   r"""
     \$(?:                               # A dollar, followed by...
-      (?P<escaped>\$)                |  # Another doller = escaped
+      (?P<escaped>\$)                |  # Another dollar = escaped
       (?P<named>[_a-z][_a-z0-9]*)    |  # or An identifier - named param
       {(?P<braced>[_a-z][_a-z0-9]*)} |  # or An {identifier} - braced param
       {(?P<braceddefault>               # or An {id:default} - default param, as
@@ -599,7 +599,7 @@ def ExpandReferencesInString( orig_s,
       else:
         default_value = user_choices.get( key )
         # Allow _one_ level of additional substitution. This allows a very real
-        # use case of "program": ${prgram:${file\\}}
+        # use case of "program": ${program:${file\\}}
         if default_value is None and e.default_value is not None:
           try:
             default_value = _Substitute( e.default_value, mapping )
@@ -610,7 +610,8 @@ def ExpandReferencesInString( orig_s,
               default_value = e.default_value
 
         mapping[ key ] = AskForInput( 'Enter value for {}: '.format( key ),
-                                      default_value )
+                                      default_value,
+                                      'file' )
 
         if mapping[ key ] is None:
           raise KeyboardInterrupt
@@ -709,12 +710,7 @@ def ParseVariables( variables_list,
   return new_variables
 
 
-def CreateTooltip( is_term, display: list, is_hover = False ):
-  if not is_term:
-    # To enable the Windows GUI to display the balloon correctly
-    # Refer https://github.com/vim/vim/issues/1512#issuecomment-492070685
-    display = '\n'.join( display )
-
+def CreateTooltip( display: list, is_hover = False ):
   created_win_id = int( vim.eval(
     "vimspector#internal#balloon#CreateTooltip({}, {})".format(
       int( is_hover ), json.dumps( display )
@@ -737,7 +733,7 @@ def ToUnicode( b ):
   return b
 
 
-# Call a vimscript function with suplied arguments.
+# Call a vimscript function with supplied arguments.
 def Call( vimscript_function, *args ):
   call = vimscript_function + '('
   for index, arg in enumerate( args ):
