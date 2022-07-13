@@ -232,8 +232,10 @@ function! s:toc.create() abort dict " {{{1
   let b:vimtex = l:vimtex
   let b:vimtex_syntax = l:vimtex_syntax
 
+  setlocal noreadonly
   setlocal bufhidden=wipe
   setlocal buftype=nofile
+  setlocal filetype=vimtex-toc
   setlocal concealcursor=nvic
   setlocal conceallevel=2
   setlocal cursorline
@@ -364,8 +366,8 @@ function! s:toc.set_syntax() abort dict "{{{1
   endif
 
   execute 'syntax match VimtexTocTodo'
-        \ '/\v\s\zs%('
-        \   . toupper(join(keys(g:vimtex_toc_todo_labels), '|')) . '): /'
+        \ '/\v\zs%('
+        \   . toupper(join(keys(g:vimtex_toc_todo_labels), '|')) . '):\ze /'
         \ 'contained'
 
   syntax match VimtexTocInclPath /.*/ contained
