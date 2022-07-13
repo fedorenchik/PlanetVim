@@ -2,11 +2,9 @@ use std::collections::HashMap;
 
 use pyo3::{prelude::*, wrap_pyfunction};
 
-use filter::{
-    matcher::{Bonus, FuzzyAlgorithm, MatchResult, Matcher, MatchingTextKind},
-    FilteredItem, Query, SourceItem,
-};
+use matcher::{Bonus, FuzzyAlgorithm, MatchResult, MatchScope, Matcher};
 use printer::truncate_long_matched_lines_v0;
+use types::{FilteredItem, Query, SourceItem};
 
 /// Pass a Vector of lines to Vim for setting them in Vim with one single API call.
 type LinesInBatch = Vec<String>;
@@ -25,7 +23,7 @@ const DEFAULT_WINWIDTH: usize = 80;
 struct MatchContext {
     winwidth: usize,
     enable_icon: bool,
-    matching_text_kind: MatchingTextKind,
+    match_scope: MatchScope,
     bonuses: Vec<Bonus>,
 }
 
@@ -41,10 +39,10 @@ impl From<HashMap<String, String>> for MatchContext {
             .map(|x| x.to_lowercase() == "true")
             .unwrap_or(false);
 
-        let matching_text_kind = ctx
-            .get("matching_text_kind")
+        let match_scope = ctx
+            .get("match_scope")
             .map(Into::into)
-            .unwrap_or(MatchingTextKind::Full);
+            .unwrap_or(MatchScope::Full);
 
         let bonus_type = ctx.get("bonus_type").map(Into::into).unwrap_or(Bonus::None);
 
@@ -56,7 +54,7 @@ impl From<HashMap<String, String>> for MatchContext {
         Self {
             winwidth,
             enable_icon,
-            matching_text_kind,
+            match_scope,
             bonuses,
         }
     }
@@ -75,13 +73,13 @@ fn fuzzy_match(
     let MatchContext {
         winwidth,
         enable_icon,
-        matching_text_kind,
+        match_scope,
         mut bonuses,
     } = context.into();
 
     bonuses.push(Bonus::RecentFiles(recent_files.into()));
 
-    let matcher = Matcher::with_bonuses(bonuses, FuzzyAlgorithm::Fzy, matching_text_kind);
+    let matcher = Matcher::with_bonuses(bonuses, FuzzyAlgorithm::Fzy, match_scope);
 
     let query: Query = query.into();
     let do_match = |line: &str| {
@@ -147,9 +145,10 @@ mod tests {
 
     #[test]
     fn py_and_rs_subscore_should_work() {
-        use filter::matcher::substring::substr_indices as substr_scorer;
+        use matcher::substring::substr_indices as substr_scorer;
         use pyo3::{prelude::*, types::PyModule};
         use std::fs;
+        use types::CaseMatching;
 
         let cur_dir = std::env::current_dir().unwrap();
         let py_path = cur_dir.parent().unwrap().join("scorer.py");
@@ -175,7 +174,7 @@ mod tests {
                 .extract()
                 .map(|(score, positions): (f64, Vec<usize>)| (score as i64, positions))
                 .unwrap();
-            let rs_result = substr_scorer(haystack, needle, filter::CaseMatching::Smart).unwrap();
+            let rs_result = substr_scorer(haystack, needle, CaseMatching::Smart).unwrap();
             assert_eq!(py_result, rs_result);
         }
     }
@@ -188,7 +187,7 @@ mod tests {
         let context: HashMap<String, String> = vec![
             ("winwidth", "62"),
             ("enable_icon", "True"),
-            ("matching_text_kind", "Full"),
+            ("match_scope", "Full"),
             ("bonus_type", "FileName"),
         ]
         .into_iter()

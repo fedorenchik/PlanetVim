@@ -36,6 +36,7 @@ pub struct ExecutedInfo {
     pub using_cache: bool,
     /// Optional temp cache file for the whole output.
     pub tempfile: Option<PathBuf>,
+    pub icon_added: bool,
 }
 
 impl ExecutedInfo {
@@ -46,22 +47,23 @@ impl ExecutedInfo {
             tempfile,
             total,
             lines,
+            icon_added,
         } = self;
 
         if self.using_cache {
             if self.tempfile.is_some() {
                 if self.lines.is_empty() {
-                    println_json!(using_cache, tempfile, total);
+                    println_json!(using_cache, tempfile, total, icon_added);
                 } else {
-                    println_json!(using_cache, tempfile, total, lines);
+                    println_json!(using_cache, tempfile, total, lines, icon_added);
                 }
             } else {
                 println_json!(total, lines);
             }
         } else if self.tempfile.is_some() {
-            println_json!(tempfile, total, lines);
+            println_json!(tempfile, total, lines, icon_added);
         } else {
-            println_json!(total, lines);
+            println_json!(total, lines, icon_added);
         }
     }
 }
@@ -101,18 +103,6 @@ impl CommandEnv {
             icon,
             output_threshold: output_threshold.unwrap_or(OUTPUT_THRESHOLD),
             ..Default::default()
-        }
-    }
-
-    #[inline]
-    pub fn try_paint_icon<'b>(
-        &self,
-        top_n: impl Iterator<Item = std::borrow::Cow<'b, str>>,
-    ) -> Vec<String> {
-        if let Some(painter) = self.icon.painter() {
-            top_n.map(|x| painter.paint(x)).collect()
-        } else {
-            top_n.map(Into::into).collect()
         }
     }
 
@@ -170,6 +160,7 @@ impl<'a> LightCommand<'a> {
                 lines,
                 using_cache: false,
                 tempfile: None,
+                icon_added: self.env.icon.painter().is_some(),
             });
         }
         Err(anyhow!(
@@ -181,24 +172,27 @@ impl<'a> LightCommand<'a> {
         &self,
         top_n: impl std::iter::Iterator<Item = std::borrow::Cow<'b, str>>,
     ) -> Vec<String> {
-        let mut lines = self.env.try_paint_icon(top_n);
+        let mut lines = if let Some(painter) = self.env.icon.painter() {
+            top_n.map(|x| painter.paint(x)).collect()
+        } else {
+            top_n.map(Into::into).collect()
+        };
+
         trim_trailing(&mut lines);
+
         lines
     }
 
-    fn handle_cache_digest(&self, digest: &Digest) -> Result<ExecutedInfo> {
+    fn exec_info_from_cache_digest(&self, digest: &Digest) -> Result<ExecutedInfo> {
         let Digest {
             total, cached_path, ..
         } = digest;
 
-        let lines = if let Ok(iter) = read_first_lines(&cached_path, 100) {
-            if let Some(painter) = self.env.icon.painter() {
-                iter.map(|x| painter.paint(&x)).collect()
-            } else {
-                iter.collect()
-            }
+        let lines_iter = read_first_lines(&cached_path, 100)?;
+        let lines = if let Some(painter) = self.env.icon.painter() {
+            lines_iter.map(|x| painter.paint(&x)).collect()
         } else {
-            Vec::new()
+            lines_iter.collect()
         };
 
         Ok(ExecutedInfo {
@@ -206,6 +200,7 @@ impl<'a> LightCommand<'a> {
             total: *total as usize,
             tempfile: Some(cached_path.clone()),
             lines,
+            icon_added: self.env.icon.painter().is_some(),
         })
     }
 
@@ -217,14 +212,13 @@ impl<'a> LightCommand<'a> {
         base_cmd: BaseCommand,
         no_cache: bool,
     ) -> Result<ExecutedInfo> {
-        if !no_cache {
-            if let Some(digest) = base_cmd.cache_digest() {
-                self.handle_cache_digest(&digest)
-            } else {
-                self.execute(base_cmd)
-            }
-        } else {
+        if no_cache {
             self.execute(base_cmd)
+        } else {
+            base_cmd
+                .cache_digest()
+                .map(|digest| self.exec_info_from_cache_digest(&digest))
+                .unwrap_or_else(|| self.execute(base_cmd))
         }
     }
 
@@ -263,6 +257,7 @@ impl<'a> LightCommand<'a> {
             lines,
             tempfile: cached_path,
             using_cache: false,
+            icon_added: self.env.icon.painter().is_some(),
         })
     }
 }

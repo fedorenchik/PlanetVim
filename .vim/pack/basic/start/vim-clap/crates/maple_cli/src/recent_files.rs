@@ -3,7 +3,7 @@ use std::path::Path;
 
 use chrono::prelude::*;
 use filter::SourceItem;
-use matcher::{Bonus, FuzzyAlgorithm, MatchingTextKind};
+use matcher::{Bonus, FuzzyAlgorithm, MatchScope};
 use serde::{Deserialize, Serialize};
 
 use crate::utils::UtcTime;
@@ -14,6 +14,7 @@ const DAY: i64 = HOUR * 24;
 const WEEK: i64 = DAY * 7;
 const MONTH: i64 = DAY * 30;
 
+/// Maximum number of recent files.
 const MAX_ENTRIES: u64 = 10_000;
 
 /// Preference for sorting the recent files.
@@ -108,7 +109,7 @@ impl FrecentEntry {
     }
 
     /// Add a bonus score based on cwd.
-    pub fn adjusted_score(&self, cwd: &str) -> u64 {
+    pub fn cwd_preferred_score(&self, cwd: &str) -> u64 {
         if self.fpath.starts_with(cwd) {
             self.frecent_score * 2
         } else {
@@ -161,23 +162,28 @@ impl SortedRecentFiles {
     /// Sort the entries by adding a bonus score given `cwd`.
     pub fn sort_by_cwd(&mut self, cwd: &str) {
         self.entries.sort_unstable_by(|a, b| {
-            b.adjusted_score(cwd)
-                .partial_cmp(&a.adjusted_score(cwd))
+            b.cwd_preferred_score(cwd)
+                .partial_cmp(&a.cwd_preferred_score(cwd))
                 .unwrap()
         });
     }
 
     pub fn filter_on_query(&self, query: &str, cwd: String) -> Vec<filter::FilteredItem> {
+        let mut cwd = cwd;
+        cwd.push(std::path::MAIN_SEPARATOR);
+
         let source_items: Vec<SourceItem> = self
             .entries
             .iter()
-            .map(|entry| entry.fpath.as_str().into())
+            .map(|entry| entry.fpath.replacen(&cwd, "", 1).into())
             .collect();
+
+        cwd.pop();
 
         let matcher = matcher::Matcher::with_bonuses(
             vec![Bonus::cwd(cwd), Bonus::FileName],
             FuzzyAlgorithm::Fzy,
-            MatchingTextKind::Full,
+            MatchScope::Full,
         );
 
         filter::par_filter(query, source_items, &matcher)

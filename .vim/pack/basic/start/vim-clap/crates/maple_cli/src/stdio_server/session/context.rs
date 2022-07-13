@@ -5,16 +5,13 @@ use std::sync::{atomic::AtomicBool, Arc};
 use anyhow::Result;
 use filter::FilteredItem;
 use icon::{Icon, IconKind};
-use jsonrpc_core::Params;
-use matcher::MatchingTextKind;
+use matcher::MatchScope;
 use parking_lot::Mutex;
 use serde::Deserialize;
 
 use crate::command::ctags::buffer_tags::BufferTagInfo;
-use crate::stdio_server::{
-    rpc::{Call, MethodCall, Notification},
-    types::ProviderId,
-};
+use crate::stdio_server::rpc::{Call, MethodCall, Notification, Params};
+use crate::stdio_server::types::ProviderId;
 
 const DEFAULT_DISPLAY_WINWIDTH: u64 = 100;
 
@@ -96,7 +93,7 @@ pub struct SessionContext {
     pub display_winwidth: u64,
     pub preview_winheight: u64,
     pub icon: Icon,
-    pub matching_text_kind: MatchingTextKind,
+    pub match_scope: MatchScope,
     pub match_bonuses: Vec<matcher::Bonus>,
     pub source_cmd: Option<String>,
     pub runtimepath: Option<String>,
@@ -105,7 +102,7 @@ pub struct SessionContext {
 
 impl SessionContext {
     /// Executes the command `cmd` and returns the raw bytes of stdout.
-    pub fn execute(&self, cmd: &str) -> Result<Vec<u8>> {
+    pub fn execute(&self, cmd: &str) -> std::io::Result<Vec<u8>> {
         let out = utility::execute_at(cmd, Some(&self.cwd))?;
         Ok(out.stdout)
     }
@@ -122,7 +119,7 @@ impl SessionContext {
         matcher::Matcher::with_bonuses(
             Vec::new(), // TODO: bonuses
             matcher::FuzzyAlgorithm::Fzy,
-            self.matching_text_kind,
+            self.match_scope,
         )
     }
 
@@ -161,10 +158,10 @@ impl SessionContext {
             .parse()
             .expect("Failed to deserialize SessionContext");
 
-        let matching_text_kind = match provider_id.as_str() {
-            "tags" | "proj_tags" => MatchingTextKind::TagName,
-            "grep" | "grep2" => MatchingTextKind::IgnoreFilePath,
-            _ => MatchingTextKind::Full,
+        let match_scope = match provider_id.as_str() {
+            "tags" | "proj_tags" => MatchScope::TagName,
+            "grep" | "grep2" => MatchScope::GrepLine,
+            _ => MatchScope::Full,
         };
 
         let icon = if enable_icon.unwrap_or(false) {
@@ -194,7 +191,7 @@ impl SessionContext {
             preview_winheight: preview_winheight.unwrap_or(DEFAULT_PREVIEW_WINHEIGHT),
             source_cmd,
             runtimepath,
-            matching_text_kind,
+            match_scope,
             match_bonuses,
             icon,
             state: SessionState {

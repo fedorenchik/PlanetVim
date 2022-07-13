@@ -9,12 +9,10 @@ use serde_json::json;
 use filter::FilteredItem;
 
 use crate::datastore::RECENT_FILES_IN_MEMORY;
-use crate::stdio_server::{
-    providers::builtin::OnMoveHandler,
-    rpc::Call,
-    session::{EventHandle, Session, SessionContext, SessionEvent},
-    write_response, MethodCall,
-};
+use crate::stdio_server::providers::builtin::OnMoveHandler;
+use crate::stdio_server::rpc::Call;
+use crate::stdio_server::session::{EventHandle, Session, SessionContext, SessionEvent};
+use crate::stdio_server::{write_response, MethodCall};
 
 async fn handle_recent_files_message(
     msg: MethodCall,
@@ -45,19 +43,23 @@ async fn handle_recent_files_message(
         //
         // This changes the order of existing recent file entries.
         recent_files.sort_by_cwd(&cwd);
+
+        let mut cwd = cwd.clone();
+        cwd.push(std::path::MAIN_SEPARATOR);
+
         recent_files
             .entries
             .iter()
             .map(|entry| {
                 FilteredItem::new(
-                    entry.fpath.clone(),
+                    entry.fpath.replacen(&cwd, "", 1),
                     entry.frecent_score as i64,
                     Default::default(),
                 )
             })
             .collect::<Vec<_>>()
     } else {
-        recent_files.filter_on_query(&query, cwd)
+        recent_files.filter_on_query(&query, cwd.clone())
     };
     let initial_size = recent_files.len();
 
@@ -86,6 +88,7 @@ async fn handle_recent_files_message(
         lines,
         indices,
         truncated_map,
+        icon_added,
     } = printer::decorate_lines(
         ranked.iter().take(200).cloned().collect(),
         winwidth,
@@ -96,11 +99,20 @@ async fn handle_recent_files_message(
         },
     );
 
+    let mut cwd = cwd;
+    cwd.push(std::path::MAIN_SEPARATOR);
+
+    let lines = lines
+        .into_iter()
+        .map(|abs_path| abs_path.replacen(&cwd, "", 1))
+        .collect::<Vec<_>>();
+
     let result = if truncated_map.is_empty() {
         json!({
             "lines": lines,
             "indices": indices,
             "total": total,
+            "icon_added": icon_added,
             "initial_size": initial_size,
             "preview": preview,
         })
@@ -110,6 +122,7 @@ async fn handle_recent_files_message(
             "indices": indices,
             "truncated_map": truncated_map,
             "total": total,
+            "icon_added": icon_added,
             "initial_size": initial_size,
             "preview": preview,
         })

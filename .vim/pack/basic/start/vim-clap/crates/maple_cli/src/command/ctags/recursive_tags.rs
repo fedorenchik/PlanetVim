@@ -4,13 +4,10 @@ use std::path::PathBuf;
 use anyhow::Result;
 use clap::Parser;
 
-use filter::{
-    matcher::{Matcher, MatchingTextKind},
-    FilterContext, Source,
-};
+use filter::{FilterContext, Source};
+use matcher::{MatchScope, Matcher};
 
 use super::SharedParams;
-
 use crate::app::Params;
 use crate::process::BaseCommand;
 use crate::tools::ctags::{ensure_has_json_support, CtagsCommand, DEFAULT_EXCLUDE_OPT};
@@ -31,7 +28,7 @@ pub struct RecursiveTags {
 
     /// Shared parameters arouns ctags.
     #[clap(flatten)]
-    shared: SharedParams,
+    pub(super) shared: SharedParams,
 }
 
 pub fn build_recursive_ctags_cmd(cwd: PathBuf) -> CtagsCommand {
@@ -80,7 +77,7 @@ impl RecursiveTags {
                     icon,
                     Some(30),
                     None,
-                    Matcher::default().set_matching_text_kind(MatchingTextKind::TagName),
+                    Matcher::default().set_match_scope(MatchScope::TagName),
                 ),
             )?;
         }

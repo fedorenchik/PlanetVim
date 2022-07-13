@@ -1,4 +1,3 @@
-use std::borrow::Cow;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Duration;
@@ -14,10 +13,10 @@ use crate::command::ctags::buffer_tags::{
     current_context_tag, current_context_tag_async, BufferTagInfo,
 };
 use crate::previewer::{self, vim_help::HelpTagPreview};
-use crate::stdio_server::{
-    global, providers::filer, session::SessionContext, write_response, MethodCall,
-};
-use crate::utils::build_abs_path;
+use crate::stdio_server::providers::filer;
+use crate::stdio_server::session::SessionContext;
+use crate::stdio_server::{global, write_response, MethodCall};
+use crate::utils::{build_abs_path, display_width, truncate_absolute_path};
 
 static IS_FERESHING_CACHE: Lazy<AtomicBool> = Lazy::new(|| AtomicBool::new(false));
 
@@ -54,11 +53,17 @@ pub enum OnMove {
 }
 
 impl OnMove {
-    pub fn new(curline: String, context: &SessionContext) -> Result<(Self, Option<String>)> {
+    pub fn new(
+        msg: &MethodCall,
+        curline: String,
+        context: &SessionContext,
+    ) -> Result<(Self, Option<String>)> {
         let mut line_content = None;
         let context = match context.provider_id.as_str() {
-            "filer" => unreachable!("filer has been handled ahead"),
-
+            "filer" => {
+              let path = build_abs_path(&msg.get_cwd(), curline);
+              OnMove::Filer(path)
+            },
             "files" | "git_files" => Self::Files(build_abs_path(&context.cwd, &curline)),
             "recent_files" => Self::Files(PathBuf::from(&curline)),
             "history" => {
@@ -122,9 +127,7 @@ impl OnMove {
                     .context("no runtimepath in the context")?;
                 let items = curline.split('\t').collect::<Vec<_>>();
                 if items.len() < 2 {
-                    return Err(anyhow!(
-                        "Can not extract subject and doc_filename from the line"
-                    ));
+                    return Err(anyhow!("Couldn't extract subject and doc_filename from the line"));
                 }
                 Self::HelpTags {
                     subject: items[0].trim().to_string(),
@@ -145,6 +148,11 @@ impl OnMove {
         };
 
         Ok((context, line_content))
+    }
+
+    /// Returns `true` if the file path of preview file should be truncateted relative to cwd.
+    fn should_truncate_cwd_relative(&self) -> bool {
+        matches!(self, Self::Files(_) | Self::Grep(_) | Self::ProjTags(_))
     }
 }
 
@@ -172,17 +180,7 @@ impl<'a> OnMoveHandler<'a> {
             Some(line) => line,
             None => msg.get_curline(&context.provider_id)?,
         };
-        if context.provider_id.as_str() == "filer" {
-            let path = build_abs_path(&msg.get_cwd(), curline);
-            return Ok(Self {
-                msg_id,
-                size: context.sensible_preview_size(),
-                context,
-                inner: OnMove::Filer(path),
-                cache_line: None,
-            });
-        }
-        let (inner, cache_line) = OnMove::new(curline, context)?;
+        let (inner, cache_line) = OnMove::new(msg, curline, context)?;
         Ok(Self {
             msg_id,
             size: context.sensible_preview_size(),
@@ -195,12 +193,12 @@ impl<'a> OnMoveHandler<'a> {
     pub async fn handle(&self) -> Result<()> {
         use OnMove::*;
         match &self.inner {
+            Files(path) | Filer(path) | History(path) => self.preview_file(&path)?,
             BLines(position) | Grep(position) | ProjTags(position) | BufferTags(position) => {
                 self.preview_file_at(position).await
             }
             Filer(path) if path.is_dir() => self.preview_directory(&path)?,
-            Files(path) | Filer(path) | History(path) => self.preview_file(&path)?,
-            Commit(rev) => self.show_commit(rev)?,
+            Commit(rev) => self.preview_commits(rev)?,
             HelpTags {
                 subject,
                 doc_filename,
@@ -211,13 +209,8 @@ impl<'a> OnMoveHandler<'a> {
         Ok(())
     }
 
-    fn send_response(&self, result: serde_json::value::Value) {
-        let provider_id = &self.context.provider_id;
-        write_response(json!({ "id": self.msg_id, "provider_id": provider_id, "result": result }));
-    }
-
-    fn show_commit(&self, rev: &str) -> Result<()> {
-        let stdout = self.context.execute(&format!("git show {}", rev))?;
+    fn preview_commits(&self, rev: &str) -> std::io::Result<()> {
+        let stdout = self.context.execute(&format!("git show {rev}"))?;
         let stdout_str = String::from_utf8_lossy(&stdout);
         let lines = stdout_str
             .split('\n')
@@ -241,41 +234,79 @@ impl<'a> OnMoveHandler<'a> {
         }
     }
 
-    fn try_refresh_cache(&self, latest_line: &str) {
-        if IS_FERESHING_CACHE.load(Ordering::SeqCst) {
-            tracing::debug!(
-                "Skipping the cache refreshing as there is already one that is running or waitting"
-            );
-            return;
-        }
-        if self.context.provider_id.as_str() == "grep2" {
-            if let Some(ref cache_line) = self.cache_line {
-                if !cache_line.eq(latest_line) {
-                    tracing::debug!(?latest_line, ?cache_line, "The cache might be oudated");
-                    let dir = self.context.cwd.clone();
-                    IS_FERESHING_CACHE.store(true, Ordering::SeqCst);
-                    // Spawn a future in the background
-                    tokio::task::spawn_blocking(|| {
-                        tracing::debug!(?dir, "Attempting to refresh grep2 cache");
-                        match crate::command::grep::refresh_cache(dir) {
-                            Ok(total) => {
-                                tracing::debug!(total, "Refresh the grep2 cache successfully");
-                            }
-                            Err(e) => {
-                                tracing::error!(error = ?e, "Failed to refresh the grep2 cache")
-                            }
-                        }
-                        IS_FERESHING_CACHE.store(false, Ordering::SeqCst);
-                    });
-                }
+    fn preview_directory<P: AsRef<Path>>(&self, path: P) -> std::io::Result<()> {
+        let enable_icon = global().enable_icon;
+        let lines = filer::read_dir_entries(&path, enable_icon, Some(2 * self.size))?;
+        self.send_response(json!({ "lines": lines, "is_dir": true }));
+        Ok(())
+    }
+
+    fn preview_file<P: AsRef<Path>>(&self, path: P) -> std::io::Result<()> {
+        let handle_io_error = |e: &std::io::Error| {
+            if e.kind() == std::io::ErrorKind::NotFound {
+                tracing::debug!(
+                    "TODO: {} not found, the files cache might be invalid, try refreshing the cache",
+                    path.as_ref().display()
+                );
             }
+        };
+
+        let (lines, fname) = if !global().is_nvim {
+            let (lines, abs_path) =
+                previewer::preview_file(path.as_ref(), 2 * self.size, self.max_line_width())
+                    .map_err(|e| {
+                        handle_io_error(&e);
+                        e
+                    })?;
+            let cwd = self.context.cwd.to_str().expect("Cwd is valid");
+            // cwd is shown via the popup title, no need to include it again.
+            let cwd_relative = abs_path.replacen(cwd, ".", 1);
+            let mut lines = lines;
+            lines[0] = cwd_relative;
+            (lines, abs_path)
+        } else {
+            let max_fname_len = self.context.display_winwidth as usize - 1;
+            previewer::preview_file_with_truncated_title(
+                path.as_ref(),
+                2 * self.size,
+                self.max_line_width(),
+                max_fname_len,
+            )
+            .map_err(|e| {
+                handle_io_error(&e);
+                e
+            })?
+        };
+
+        if let Some(syntax) = crate::stdio_server::vim::syntax_for(path.as_ref()) {
+            self.send_response(json!({ "lines": lines, "syntax": syntax }));
+        } else {
+            self.send_response(json!({ "lines": lines, "fname": fname }));
         }
+
+        Ok(())
     }
 
     async fn preview_file_at(&self, position: &Position) {
         tracing::debug!(?position, "Previewing file");
 
         let Position { path, lnum } = position;
+
+        let container_width = self.context.display_winwidth as usize;
+        let fname = path.display().to_string();
+
+        let truncated_preview_header = || {
+            if !global().is_nvim && self.inner.should_truncate_cwd_relative() {
+                // cwd is shown via the popup title, no need to include it again.
+                let cwd_relative =
+                    fname.replacen(self.context.cwd.to_str().expect("Cwd is valid"), ".", 1);
+                format!("{cwd_relative}:{lnum}")
+            } else {
+                let max_fname_len = container_width - 1 - display_width(*lnum);
+                let truncated_abs_path = truncate_absolute_path(&fname, max_fname_len);
+                format!("{truncated_abs_path}:{lnum}")
+            }
+        };
 
         match utility::read_preview_lines(path, *lnum, self.size) {
             Ok(PreviewInfo {
@@ -284,19 +315,6 @@ impl<'a> OnMoveHandler<'a> {
                 start,
                 ..
             }) => {
-                let container_width = self.context.display_winwidth as usize;
-
-                // Truncate the left of absolute path string.
-                let mut fname = path.display().to_string();
-                let max_fname_len = container_width - 1 - crate::utils::display_width(*lnum);
-                if fname.len() > max_fname_len {
-                    if let Some((offset, _)) =
-                        fname.char_indices().nth(fname.len() - max_fname_len + 2)
-                    {
-                        fname.replace_range(..offset, "..");
-                    }
-                }
-
                 let mut context_lines = Vec::new();
 
                 // Some checks against the latest preview line.
@@ -314,17 +332,12 @@ impl<'a> OnMoveHandler<'a> {
                                 Some(tag) if tag.line < start => {
                                     context_lines.reserve_exact(3);
 
-                                    let border_line = if crate::stdio_server::global().is_nvim {
-                                        "─".repeat(container_width)
+                                    let border_line = "─".repeat(if global().is_nvim {
+                                        container_width
                                     } else {
                                         // Vim has a different border width.
-                                        let mut border_line =
-                                            String::with_capacity(container_width - 2);
-                                        border_line.extend(
-                                            std::iter::repeat('─').take(container_width - 2),
-                                        );
-                                        border_line
-                                    };
+                                        container_width - 2
+                                    });
 
                                     context_lines.push(border_line.clone());
 
@@ -355,7 +368,8 @@ impl<'a> OnMoveHandler<'a> {
 
                 let highlight_lnum = highlight_lnum + context_lines.len();
 
-                let lines = std::iter::once(format!("{}:{}", fname, lnum))
+                let header_line = truncated_preview_header();
+                let lines = std::iter::once(header_line)
                     .chain(context_lines.into_iter())
                     .chain(self.truncate_preview_lines(lines.into_iter()))
                     .collect::<Vec<_>>();
@@ -384,8 +398,50 @@ impl<'a> OnMoveHandler<'a> {
                     ?err,
                     "Couldn't read first lines",
                 );
+                let header_line = truncated_preview_header();
+                let lines = vec![
+                    header_line,
+                    format!("Error while previewing the file: {err}"),
+                ];
+                self.send_response(json!({ "lines": lines, "fname": fname }));
             }
         }
+    }
+
+    fn try_refresh_cache(&self, latest_line: &str) {
+        if IS_FERESHING_CACHE.load(Ordering::SeqCst) {
+            tracing::debug!(
+                "Skipping the cache refreshing as there is already one running/waitting"
+            );
+            return;
+        }
+        if self.context.provider_id.as_str() == "grep2" {
+            if let Some(ref cache_line) = self.cache_line {
+                if cache_line != latest_line {
+                    tracing::debug!(?latest_line, ?cache_line, "The cache is probably outdated");
+                    let dir = self.context.cwd.clone();
+                    IS_FERESHING_CACHE.store(true, Ordering::SeqCst);
+                    // Spawn a future in the background
+                    tokio::task::spawn_blocking(|| {
+                        tracing::debug!(?dir, "Attempting to refresh grep2 cache");
+                        match crate::command::grep::refresh_cache(dir) {
+                            Ok(total) => {
+                                tracing::debug!(total, "Refresh the grep2 cache successfully");
+                            }
+                            Err(e) => {
+                                tracing::error!(error = ?e, "Failed to refresh the grep2 cache")
+                            }
+                        }
+                        IS_FERESHING_CACHE.store(false, Ordering::SeqCst);
+                    });
+                }
+            }
+        }
+    }
+
+    fn send_response(&self, result: serde_json::value::Value) {
+        let provider_id = &self.context.provider_id;
+        write_response(json!({ "id": self.msg_id, "provider_id": provider_id, "result": result }));
     }
 
     /// Truncates the lines that are awfully long as vim might have some performence issue with
@@ -396,31 +452,13 @@ impl<'a> OnMoveHandler<'a> {
         &self,
         lines: impl Iterator<Item = String>,
     ) -> impl Iterator<Item = String> {
-        previewer::truncate_preview_lines(self.max_width(), lines)
+        previewer::truncate_preview_lines(self.max_line_width(), lines)
     }
 
     /// Returns the maximum line width.
     #[inline]
-    fn max_width(&self) -> usize {
+    fn max_line_width(&self) -> usize {
         2 * self.context.display_winwidth as usize
-    }
-
-    fn preview_file<P: AsRef<Path>>(&self, path: P) -> Result<()> {
-        let (lines, fname) =
-            previewer::preview_file(path.as_ref(), 2 * self.size, self.max_width())?;
-        if let Some(syntax) = crate::stdio_server::vim::syntax_for(path.as_ref()) {
-            self.send_response(json!({ "lines": lines, "syntax": syntax }));
-        } else {
-            self.send_response(json!({ "lines": lines, "fname": fname }));
-        }
-        Ok(())
-    }
-
-    fn preview_directory<P: AsRef<Path>>(&self, path: P) -> Result<()> {
-        let enable_icon = global().enable_icon;
-        let lines = filer::read_dir_entries(&path, enable_icon, Some(2 * self.size))?;
-        self.send_response(json!({ "lines": lines, "is_dir": true }));
-        Ok(())
     }
 }
 

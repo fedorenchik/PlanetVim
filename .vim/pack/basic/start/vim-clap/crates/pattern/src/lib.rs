@@ -2,7 +2,6 @@
 
 use std::path::PathBuf;
 
-use log::error;
 use once_cell::sync::Lazy;
 use regex::Regex;
 
@@ -39,7 +38,7 @@ pub fn parse_gtags(line: &str) -> Option<(usize, &str, &str)> {
 
 /// Extract tag name from the line in tags provider.
 #[inline]
-pub fn tag_name_only(line: &str) -> Option<&str> {
+pub fn extract_tag_name(line: &str) -> Option<&str> {
     TAG_RE.find(line).map(|x| x.as_str())
 }
 
@@ -93,7 +92,7 @@ pub fn extract_fpath_from_grep_line(line: &str) -> Option<&str> {
 }
 
 /// Returns the file name as well as its offset from the complete file path.
-pub fn find_file_name(file_path: &str) -> Option<(&str, usize)> {
+pub fn extract_file_name(file_path: &str) -> Option<(&str, usize)> {
     // TODO: extract the file name efficiently
     let fpath: std::path::PathBuf = file_path.into();
 
@@ -108,14 +107,9 @@ pub fn find_file_name(file_path: &str) -> Option<(&str, usize)> {
         })
 }
 
+#[inline]
 fn parse_lnum(lnum: &str) -> Option<usize> {
-    match lnum.parse::<usize>() {
-        Err(e) => {
-            error!("failed to extract lnum from {}, error:{:?}", lnum, e);
-            None
-        }
-        Ok(p) => Some(p),
-    }
+    lnum.parse::<usize>().ok()
 }
 
 pub fn parse_rev(line: &str) -> Option<&str> {

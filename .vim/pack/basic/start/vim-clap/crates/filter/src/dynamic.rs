@@ -1,13 +1,15 @@
 use std::io::BufRead;
 use std::time::{Duration, Instant};
 
+use anyhow::Result;
 use rayon::slice::ParallelSliceMut;
 
 use icon::{Icon, ICON_LEN};
+use types::{FilteredItem, Query, SourceItem};
 use utility::{println_json, println_json_with_length};
 
-use super::*;
-use crate::FilteredItem;
+use super::{source_iter_exec, source_iter_file, source_iter_list, source_iter_stdin};
+use crate::{sort_initial_filtered, FilterContext, Source};
 
 /// The constant to define the length of `top_` queues.
 const ITEMS_TO_SHOW: usize = 40;
@@ -143,7 +145,7 @@ impl Watcher {
     /// # NOTE
     ///
     /// Printing to stdout is to send the content to the client.
-    pub fn maybe_notify(&mut self, top_results: &[usize; ITEMS_TO_SHOW], buffer: &[FilteredItem]) {
+    pub fn try_notify(&mut self, top_results: &[usize; ITEMS_TO_SHOW], buffer: &[FilteredItem]) {
         if self.total % 16 == 0 {
             let now = Instant::now();
             if now > self.past + UPDATE_INTERVAL {
@@ -221,7 +223,7 @@ fn dyn_collect_all(mut iter: impl Iterator<Item = FilteredItem>, icon: Icon) -> 
 
         watcher.total += 1;
 
-        watcher.maybe_notify(&top_results, &buffer);
+        watcher.try_notify(&top_results, &buffer);
     });
 
     buffer
@@ -266,7 +268,7 @@ fn dyn_collect_number(
 
         watcher.total += 1;
 
-        watcher.maybe_notify(&top_results, &buffer);
+        watcher.try_notify(&top_results, &buffer);
 
         if buffer.len() == buffer.capacity() {
             buffer.par_sort_unstable_by(|v1, v2| v2.score.partial_cmp(&v1.score).unwrap());
@@ -300,7 +302,6 @@ pub fn dyn_run<I: Iterator<Item = SourceItem>>(
     if let Some(number) = number {
         let (total, filtered) = match source {
             Source::Stdin => dyn_collect_number(source_iter_stdin!(scorer), number, icon),
-            #[cfg(feature = "dyn-filtering")]
             Source::Exec(exec) => dyn_collect_number(source_iter_exec!(scorer, exec), number, icon),
             Source::File(fpath) => {
                 dyn_collect_number(source_iter_file!(scorer, fpath), number, icon)
@@ -314,7 +315,6 @@ pub fn dyn_run<I: Iterator<Item = SourceItem>>(
     } else {
         let filtered = match source {
             Source::Stdin => dyn_collect_all(source_iter_stdin!(scorer), icon),
-            #[cfg(feature = "dyn-filtering")]
             Source::Exec(exec) => dyn_collect_all(source_iter_exec!(scorer, exec), icon),
             Source::File(fpath) => dyn_collect_all(source_iter_file!(scorer, fpath), icon),
             Source::List(list) => dyn_collect_all(source_iter_list!(scorer, list), icon),

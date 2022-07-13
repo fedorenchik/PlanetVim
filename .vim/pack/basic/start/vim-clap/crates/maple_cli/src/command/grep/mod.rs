@@ -11,8 +11,9 @@ use clap::Parser;
 use itertools::Itertools;
 use rayon::prelude::*;
 
-use filter::{matcher::MatchingTextKind, subprocess::Exec, Source};
+use filter::{subprocess::Exec, Source};
 use icon::Icon;
+use matcher::MatchScope;
 use utility::is_git_repo;
 
 use crate::app::Params;
@@ -174,7 +175,7 @@ impl Grep {
                 source,
                 params
                     .into_filter_context()
-                    .matching_text_kind(MatchingTextKind::IgnoreFilePath),
+                    .match_scope(MatchScope::GrepLine),
             )
         };
 

@@ -4,9 +4,23 @@
 
 ## Fixed
 
+- Maple self-upgrade is broken. #847, #848
+
+## [0.35] 2022-06-12
+
+## Changed
+
+- The default value of `g:clap_enable_background_shadow` is now `v:false` by default due to the side effect like #836.
+
+## Fixed
+
 - Fix the incompatiblity issue between vim-signature and vim-clap popup window. #817
 - Escape the file name for filer sink. #822
 - Seperate the vista impl for tags provider completely. #827
+
+## Improved
+
+- Strip the current working directory prefix from the entry of `recent_files` provider, all the entries which are not in cwd still shows the absolute path. #834
 
 ## [0.34] 2022-03-25
 

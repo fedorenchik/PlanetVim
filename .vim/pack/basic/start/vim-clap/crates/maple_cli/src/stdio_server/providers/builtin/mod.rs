@@ -11,10 +11,8 @@ use serde_json::json;
 use crate::command::ctags::recursive_tags::build_recursive_ctags_cmd;
 use crate::command::grep::RgBaseCommand;
 use crate::process::tokio::TokioCommand;
-use crate::stdio_server::{
-    session::{EventHandle, SessionContext, SourceScale},
-    write_response, MethodCall,
-};
+use crate::stdio_server::session::{EventHandle, SessionContext, SourceScale};
+use crate::stdio_server::{write_response, MethodCall};
 
 pub use on_move::{OnMove, OnMoveHandler};
 
@@ -81,6 +79,7 @@ impl EventHandle for BuiltinHandle {
                     lines,
                     indices,
                     truncated_map,
+                    icon_added,
                 } = printer::decorate_lines(
                     results.iter().take(200).cloned().collect(),
                     context.display_winwidth as usize,
@@ -90,7 +89,14 @@ impl EventHandle for BuiltinHandle {
                 let total = results.len();
 
                 let method = "s:process_filter_message";
-                utility::println_json_with_length!(total, lines, indices, truncated_map, method);
+                utility::println_json_with_length!(
+                    total,
+                    lines,
+                    indices,
+                    truncated_map,
+                    icon_added,
+                    method
+                );
 
                 let mut current_results = self.current_results.lock();
                 *current_results = results;
@@ -104,7 +110,7 @@ impl EventHandle for BuiltinHandle {
                         Some(40),
                         Some(context.display_winwidth as usize),
                         Matcher::default()
-                            .set_matching_text_kind(context.matching_text_kind)
+                            .set_match_scope(context.match_scope)
                             .set_bonuses(context.match_bonuses.clone()),
                     ),
                 ) {

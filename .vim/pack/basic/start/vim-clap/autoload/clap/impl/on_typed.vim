@@ -190,8 +190,15 @@ endfunction
 "          \
 "           \
 "             on_move
+"
+" NOTE: This implementation is only suitable for the providers having a
+" typical source, the providers like `blines` whose source can be a file or
+" g:__t_func_list needs to have its own on_typed impl.
 function! clap#impl#on_typed#() abort
-  if s:ALWAYS_ASYNC
+  let source_is_list = g:clap.provider.source_type == g:__t_list
+        \ || g:clap.provider.source_type == g:__t_func_list
+
+  if s:ALWAYS_ASYNC && !source_is_list
     call s:on_typed_async_impl()
     return
   endif
@@ -203,9 +210,7 @@ function! clap#impl#on_typed#() abort
     return
   endif
 
-  if exists('g:__clap_forerunner_result')
-        \ || g:clap.provider.source_type == g:__t_list
-        \ || g:clap.provider.source_type == g:__t_func_list
+  if exists('g:__clap_forerunner_result') || source_is_list
     call s:on_typed_sync_impl()
     return
   endif
