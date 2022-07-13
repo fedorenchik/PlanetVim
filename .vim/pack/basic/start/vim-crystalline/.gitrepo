@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/rbong/vim-crystalline.git
 	branch = master
-	commit = 2cb6ca80d4e9f96c8879769d0257e392d49c2eb7
-	parent = e2d392dbdcd6a2371705eade7814fc98a8571fa9
+	commit = dd1a59e5103c358292e4e113f479aae8f435b138
+	parent = a381fa18070ddfd10b4d43f467c76d1c7dbca21a
 	method = merge
 	cmdver = 0.4.3
