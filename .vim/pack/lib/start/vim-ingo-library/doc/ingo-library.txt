@@ -200,6 +200,26 @@ https://github.com/inkarkat/vim-ingo-library/issues or email (address below).
 ==============================================================================
 HISTORY							*ingo-library-history*
 
+1.045	RELEASEME
+- ingo#query#fromlist#Query(): CHG: Beep and continue querying on invalid
+  accelerator key or number instead of returning -1; only <Esc> or Ctrl-C
+  abort.
+- Add ingo/text/searchhighlights.vim module.
+- ingo#query#fromlist#Query(): BUG: 10th, 20th, etc. entry cannot be selected
+  by number if it is the last
+- ingo#query#confirm#AutoAccelerators(): ENH: Add optional
+  l:reservedAccelerators argument.
+- ingo#query#fromlist#Query(): BUG: Don't add accelerators for numbers, as
+  those interfere with the by-count selection.
+- Add ingo#regexp#fromwildcard#FileOrPath() variant of
+  ingo#regexp#fromwildcard#AnchoredToPathBoundaries().
+- Add ingo/option/autochdir.vim module.
+- ingo#fs#path#{Canonizalize,Equals}(): Small fixes, support a:isResolveLinks
+  in the latter, too.
+- Add ingo#window#preview#OpenNew().
+- ingo#buffer#{scratch,generate}#Create(): ENH: Support "pedit" as
+  a:windowOpenCommand.
+
 1.044	08-Apr-2022
 - Add ingo#cursor#IsBeyondEndOfLine() variant of ingo#cursor#IsAtEndOfLine().
 - ENH: Allow to customize the insertion point of ingo#text#InsertHere() via
