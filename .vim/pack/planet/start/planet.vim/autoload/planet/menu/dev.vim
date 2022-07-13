@@ -378,192 +378,193 @@ func! planet#menu#dev#Update() abort
     an 500.10  📐&}.readthedocs                             :TODO
     an 500.10  📐&}.gitbook                                 :TODO
 
-    an 500.10  🔨&u.Build <Nop>
-    an disable 🔨&u.Build
-    an 500.10  🔨&u.&Autotools.Autotools\ Status            <Cmd>call planet#term#RunScript('autotools-status')<CR>
-    an 500.10  🔨&u.&Autotools.Run\ autoconf                <Cmd>call planet#term#RunCmd('autoconf -f -i')<CR>
-    an 500.10  🔨&u.&Autotools.Run\ autoreconf              <Cmd>call planet#term#RunCmd('autoreconf -f -i')<CR>
-    an 500.10  🔨&u.&Autotools.Run\ autoheader              <Cmd>call planet#term#RunCmd('autoheader')<CR>
-    an 500.10  🔨&u.&Autotools.Run\ autoscan                <Cmd>call planet#term#RunCmd('autoscan')<CR>
-    an 500.10  🔨&u.&Autotools.Run\ autoupdate              <Cmd>call planet#term#RunCmd('autoupdate')<CR>
-    an 500.10  🔨&u.&Autotools.Run\ ifnames                 <Cmd>call planet#term#RunCmd('ifnames')<CR>
-    an 500.10  🔨&u.&Autotools.Run\ libtool                 <Cmd>call planet#term#RunCmd('libtool')<CR>
-    an 500.10  🔨&u.&Autotools.Run\ libtoolize              <Cmd>call planet#term#RunCmd('libtoolize')<CR>
-    an 500.10  🔨&u.&Autotools.Generate\ \./autogen\.sh     :TODO:"generate standard autogen.sh
-    an 500.10  🔨&u.&Autotools.Generate\ \./configure\.ac   <Cmd>call planet#project#CopyFile('autotools/configure.ac')<CR>
-    an 500.10  🔨&u.&Autotools.Run\ \./autogen\.sh          <Cmd>call planet#term#RunCmd('./autogen.sh')<CR>
-    an 500.10  🔨&u.&Autotools.Run\ \./bootstrap\.sh        <Cmd>call planet#term#RunCmd('./bootstrap.sh')<CR>
-    an 500.10  🔨&u.&Autotools.Run\ \./&configure           <Cmd>call planet#term#RunCmd('./configure')<CR>
-    an 500.10  🔨&u.&Autotools.Rerun\ \./&configure         <Cmd>call planet#term#RunCmdFind('config.status', '--recheck')<CR>
-    an 500.10  🔨&u.&Autotools.Set\ \./configure\ Options   :TODO"print ./configure --help & set options in buffer
-    an 500.10  🔨&u.&Autotools.Open\ config\.log            <Cmd>find config.log<CR>
-    an 500.10  🔨&u.&Autotools.Set\ $CC                     <Cmd>call planet#env#SenEnvVar("CC")<CR>
-    an 500.10  🔨&u.&Autotools.Set\ $CFLAGS                 <Cmd>call planet#env#SenEnvVar("CFLAGS")<CR>
-    an 500.10  🔨&u.&Autotools.Set\ $CXX                    <Cmd>call planet#env#SenEnvVar("CXX")<CR>
-    an 500.10  🔨&u.&Autotools.Set\ $CXXFLAGS               <Cmd>call planet#env#SenEnvVar("CXXFLAGS")<CR>
-    an 500.10  🔨&u.&Autotools.Set\ $LDFLAGS                <Cmd>call planet#env#SenEnvVar("LDFLAGS")<CR>
-    an 500.10  🔨&u.&Autotools.Set\ $CPPFLAGS               <Cmd>call planet#env#SenEnvVar("CPPFLAGS")<CR>
-    an 500.10  🔨&u.&Autotools.Set\ $DESTDIR                <Cmd>call planet#env#SenEnvVar("DESTDIR")<CR>
-    an 500.10  🔨&u.Mak&e.&Make                             <Cmd>call planet#term#RunCmd('make')<CR>
-    an 500.10  🔨&u.Mak&e.Make\ &All                        <Cmd>call planet#term#RunCmd('make all')<CR>
-    an 500.10  🔨&u.Mak&e.Make\ &Help                       <Cmd>call planet#term#RunCmd('make help')<CR>
-    an 500.10  🔨&u.Mak&e.Make\ &Clean                      <Cmd>call planet#term#RunCmd('make clean')<CR>
-    an 500.10  🔨&u.Mak&e.Make\ Distclea&n                  <Cmd>call planet#term#RunCmd('make distclean')<CR>
-    an 500.10  🔨&u.Mak&e.Make\ &Dist                       <Cmd>call planet#term#RunCmd('make dist')<CR>
-    an 500.10  🔨&u.Mak&e.Make\ Di&stcheck                  <Cmd>call planet#term#RunCmd('make distcheck')<CR>
-    an 500.10  🔨&u.Mak&e.Make\ Chec&k                      <Cmd>call planet#term#RunCmd('make check')<CR>
-    an 500.10  🔨&u.Mak&e.Make\ &Test                       <Cmd>call planet#term#RunCmd('make test')<CR>
-    an 500.10  🔨&u.Mak&e.Make\ &Install                    <Cmd>call planet#term#RunCmd('make install')<CR>
-    an 500.10  🔨&u.Mak&e.Make\ &Uninstall                  <Cmd>call planet#term#RunCmd('make uninstall')<CR>
-    an 500.10  🔨&u.Mak&e.Set\ $MAKEFLAGS                   <Cmd>call planet#env#SetEnvVar('MAKEFLAGS')<CR>
-    an 500.10  🔨&u.&KBuild.make\ &oldconfig                <Cmd>call planet#term#RunCmd("yes '' \| make oldconfig")<CR>
-    an 500.10  🔨&u.&KBuild.make\ &menuconfig               <Cmd>call planet#term#RunCmdTab('make menuconfig')<CR>
-    an 500.10  🔨&u.&KBuild.ma&ke                           <Cmd>call planet#term#RunCmd('make')<CR>
-    an 500.10  🔨&u.&KBuild.ma&ke\ Custom\ Target           <Cmd>call planet#term#RunCmdAskArgs('make', 'Target: ')<CR>
-    an 500.10  🔨&u.&KBuild.&Edit\ \.config                 <Cmd>e .config<CR>
-    an 500.10  🔨&u.&KBuild.&Edit\ $MAKEFLAGS               <Cmd>call planet#env#SetEnvVar('MAKEFLAGS')<CR>
-    an 500.10  🔨&u.&KBuild.make\ c&lean                    <Cmd>call planet#term#RunCmd('make clean')<CR>
-    an 500.10  🔨&u.&KBuild.make\ mr&proper                 <Cmd>call planet#term#RunCmd('make mrproper')<CR>
-    an 500.10  🔨&u.&KBuild.make\ dis&tclean                <Cmd>call planet#term#RunCmd('make distclean')<CR>
-    an 500.10  🔨&u.&KBuild.make\ &help                     <Cmd>call planet#term#RunCmd('make help')<CR>
-    an 500.10  🔨&u.&KBuild.make\ &config                   <Cmd>call planet#term#RunCmd('make config')<CR>
-    an 500.10  🔨&u.&KBuild.make\ allyesconfig              <Cmd>call planet#term#RunCmd('make allyesconfig')<CR>
-    an 500.10  🔨&u.&KBuild.make\ allnoconfig               <Cmd>call planet#term#RunCmd('make allnoconfig')<CR>
-    an 500.10  🔨&u.&KBuild.make\ defconfig                 <Cmd>call planet#term#RunCmd('make defconfig')<CR>
-    an 500.10  🔨&u.&KBuild.make\ install                   <Cmd>call planet#term#RunCmd('make install')<CR>
-    an 500.10  🔨&u.&KBuild.make\ uninstall                 <Cmd>call planet#term#RunCmd('make uninstall')<CR>
-    an 500.10  🔨&u.&KBuild.make\ randconfig                <Cmd>call planet#term#RunCmd('make randconfig')<CR>
-    an 500.10  🔨&u.&KBuild.make\ allmodconfig              <Cmd>call planet#term#RunCmd('make allmodconfig')<CR>
-    an 500.10  🔨&u.&KBuild.make\ &nconfig                  <Cmd>call planet#term#RunCmd('make nconfig')<CR>
-    an 500.10  🔨&u.&KBuild.make\ &xconfig                  <Cmd>call planet#term#RunCmd('make xconfig')<CR>
-    an 500.10  🔨&u.&KBuild.make\ &gconfig                  <Cmd>call planet#term#RunCmd('make gconfig')<CR>
-    an 500.10  🔨&u.&KBuild.make\ &tags                     <Cmd>call planet#term#RunCmd('make tags')<CR>
-    an 500.10  🔨&u.&CMake.Select\ Build\ Dir               <Cmd>call planet#build#SelectBuildDir()<CR>
-    an 500.10  🔨&u.&CMake.Create\ &In-Tree\ Build\ Dir     <Cmd>call planet#build#NewInTreeBuildDir()<CR>
-    an 500.10  🔨&u.&CMake.Create\ &OOT\ Build\ Dir         <Cmd>call planet#build#NewOOTBuildDir()<CR>
-    an 500.10  🔨&u.&CMake.Browse\ Build\ Directory         <Cmd>exe 'Fern ' .. g:PV_build_dir<CR>
-    an 500.10  🔨&u.&CMake.--1-- <Nop>
-    an 500.10  🔨&u.&CMake.&Configure                       <Cmd>call planet#term#RunCmd('cmake ' .. getcwd(), v:false, v:false, v:false, g:PV_build_dir)<CR>
-    an 500.10  🔨&u.&CMake.Configure\ &Tui                  <Cmd>call planet#term#RunCmdTab('ccmake ' .. getcwd(), g:PV_build_dir)<CR>
-    an 500.10  🔨&u.&CMake.Configure\ &Gui                  <Cmd>call planet#term#RunGuiApp('cmake-gui ' .. getcwd(), g:PV_build_dir)<CR>
-    an 500.10  🔨&u.&CMake.Configure\ Android\ armv7        <Cmd>call planet#term#RunScript('configure-cmake-android-armv7')<CR>
-    an 500.10  🔨&u.&CMake.Configure\ Android\ x86          <Cmd>call planet#term#RunScript('configure-cmake-android-x86')<CR>
-    an 500.10  🔨&u.&CMake.--2-- <Nop>
-    an 500.10  🔨&u.&CMake.&Build                           <Cmd>call planet#term#RunCmd('cmake --build .', v:false, v:false, v:false, g:PV_build_dir)<CR>
-    an 500.10  🔨&u.&CMake.&Rebuild                         <Cmd>call planet#term#RunCmd('cmake --build . --target clean && cmake --build .', v:false, v:false, v:false, g:PV_build_dir)<CR>
-    an 500.10  🔨&u.&CMake.Clean                            <Cmd>call planet#term#RunCmd('cmake --build . --target clean', v:false, v:false, v:false, g:PV_build_dir)<CR>
-    an 500.10  🔨&u.&CMake.--3-- <Nop>
-    an 500.10  🔨&u.&CMake.Generate\ compile_commands\.json <Cmd>call planet#env#SetEnvVarValue('CMAKE_EXPORT_COMPILE_COMMANDS=ON')<CR><Cmd>call planet#term#RunCmd('cmake ' .. getcwd(), v:false, v:false, v:false, g:PV_build_dir)<CR>
-    an 500.10  🔨&u.&Meson.Set\ DESTDIR                     <Cmd>!make<CR>
-    an 500.10  🔨&u.Ar&duino.Verify                          <Cmd>ArduinoVerify<CR>
-    an 500.10  🔨&u.Ar&duino.Upload                          <Cmd>ArduinoUpload<CR>
-    an 500.10  🔨&u.Ar&duino.Upload\ and\ Serial             <Cmd>ArduinoUploadAndSerial<CR>
-    an 500.10  🔨&u.Ar&duino.Serial                          <Cmd>ArduinoSerial<CR>
-    an 500.10  🔨&u.Ar&duino.Set\ Baud                       <Cmd>ArduinoSetBaud<CR>
-    an 500.10  🔨&u.Ar&duino.--2-- <Nop>
-    an 500.10  🔨&u.Ar&duino.Choose\ Board                   <Cmd>ArduinoChooseBoard<CR>
-    an 500.10  🔨&u.Ar&duino.Choose\ Programmer              <Cmd>ArduinoChooseProgrammer<CR>
-    an 500.10  🔨&u.Ar&duino.Choose\ Port                    <Cmd>ArduinoChoosePort<CR>
-    an 500.10  🔨&u.Ar&duino.--1-- <Nop>
-    an 500.10  🔨&u.Ar&duino.Info                            <Cmd>ArduinoInfo<CR>
-    an 500.10  🔨&u.Ar&duino.Set\ Arduino\ Dir               :let g:arduino_dir = 'TODO'
-    an 500.10  🔨&u.Ar&duino.Set\ Build\ Dir                 :let g:arduino_build_path = 'TODO'
-    an 500.10  🔨&u.Ar&duino.Use\ Arduino\ IDE               :let g:arduino_use_cli = 0
-    an 500.10  🔨&u.Ar&duino.Use\ arduino-cli                :let g:arduino_use_cli = 1
-    an 500.10  🔨&u.&PlatformIO.Build                        <Cmd>call planet#term#RunCmd('pio run')<CR>
-    an 500.10  🔨&u.&PlatformIO.Upload                       <Cmd>call planet#term#RunCmd('pio run -t upload')<CR>
-    an 500.10  🔨&u.&PlatformIO.Serial\ Monitor              <Cmd>call planet#term#RunCmd('pio device monitor')<CR>
-    an 500.10  🔨&u.&PlatformIO.Build\ FS\ Image             <Cmd>call planet#term#RunCmd('pio run -t buildfs')<CR>
-    an 500.10  🔨&u.&PlatformIO.Upload\ FS\ Image            <Cmd>call planet#term#RunCmd('pio run -t uploadfs')<CR>
-    an 500.10  🔨&u.&PlatformIO.Menuconfig                   <Cmd>call planet#term#RunCmd('pio run -t menuconfig')<CR>
-    an 500.10  🔨&u.&PlatformIO.Clean                        <Cmd>call planet#term#RunCmd('pio run -t clean')<CR>
-    an 500.10  🔨&u.&PlatformIO.Generate\ Compilation\ Database <Cmd>call planet#term#RunScript('pio-gen-compile-db')<CR>
-    an 500.10  🔨&u.&PlatformIO.Activate                     <Cmd>Dotenv $HOME/.platformio/penv/bin/activate<CR>
-    an 500.10  🔨&u.&PlatformIO.Web\ UI                      <Cmd>call planet#term#RunCmd('pio home')<CR>
-    an 500.10  🔨&u.&PlatformIO.Update\ Packages             <Cmd>call planet#term#RunCmd('pio update')<CR>
-    an 500.10  🔨&u.&PlatformIO.Upgrade\ PlatformIO          <Cmd>call planet#term#RunCmd('pio upgrade')<CR>
-    an 500.10  🔨&u.&ROS.Build\ Workspace                    :TODO
-    an 500.10  🔨&u.&ROS.roslaunch                           :TODO
-    an 500.10  🔨&u.&ROS.rosrun                              :TODO
-    an 500.10  🔨&u.&ROS.Install.Kinetic                     :TODO
-    an 500.10  🔨&u.&ROS.Install.Melodic                     :TODO
-    an 500.10  🔨&u.&ROS.Install.Noetic                      :TODO
-    an 500.10  🔨&u.&ROS\ 2.Setup                            :TODO
-    an 500.10  🔨&u.&Yocto.Setup                             :TODO
-    an 500.10  🔨&u.&Flutter.Doctor                          <Cmd>call planet#term#RunCmd('flutter doctor')<CR>
-    an 500.10  🔨&u.&Flutter.Set\ Android\ Sdk\ Location     <Cmd>call planet#term#RunCmd('flutter config --android-sdk')<CR>
-    an 500.10  🔨&u.&Flutter.Accept\ Android\ Licenses       <Cmd>call planet#term#RunCmd('flutter doctor --android-licenses')<CR>
-    an 500.10  🔨&u.&Flutter.Create\ Project                 <Cmd>call planet#term#RunCmd('flutter create new_project')<CR>
-    an 500.10  🔨&u.&Flutter.Run                             <Cmd>FlutterRun<CR>
-    an 500.10  🔨&u.&Flutter.Hot\ Reload                     <Cmd>FlutterHotReload<CR>
-    an 500.10  🔨&u.&Flutter.Hot\ Restart                    <Cmd>FlutterHotRestart<CR>
-    an 500.10  🔨&u.&Flutter.Stop\ App                       <Cmd>FlutterQuit<CR>
-    an 500.10  🔨&u.&Flutter.Devices                         <Cmd>FlutterDevices<CR>
-    an 500.10  🔨&u.&Flutter.Output                          <Cmd>FlutterSplit<CR>
-    an 500.10  🔨&u.&Flutter.Emulators                       <Cmd>FlutterEmulators<CR>
-    an 500.10  🔨&u.&Flutter.Launch\ Emulators               <Cmd>FlutterEmulatorsLaunch<CR>
-    an 500.10  🔨&u.&Flutter.Toggle\ Visual\ Debug           <Cmd>FlutterVisualDebug<CR>
-    an 500.10  🔨&u.&Flutter.Add\ Desktop\ Linux\ Build      <Cmd>call planet#term#RunCmd('flutter config --enable-linux-desktop')<CR>
-    an 500.10  🔨&u.&Flutter.Add\ Desktop\ Macos\ Build      <Cmd>call planet#term#RunCmd('flutter config --enable-macos-desktop')<CR>
-    an 500.10  🔨&u.&Flutter.Add\ Desktop\ Windows\ Build    <Cmd>call planet#term#RunCmd('flutter config --enable-windows-desktop')<CR>
-    an 500.10  🔨&u.Elec&tron.List\ Project\ Deps            <Cmd>call planet#term#RunCmd('npm list --depth=0')<CR>
-    an 500.10  🔨&u.Elec&tron.--1-- <Nop>
-    an 500.10  🔨&u.Elec&tron.Run\ App                       <Cmd>call planet#term#RunCmd('electron .')<CR>
-    an 500.10  🔨&u.Elec&tron.Run\ with\ npm                 <Cmd>call planet#term#RunCmd('npm start')<CR>
-    an 500.10  🔨&u.Elec&tron.Run\ with\ auto\ reload        <Cmd>call planet#term#RunCmd('nodemon --exec electron .')<CR>
-    an 500.10  🔨&u.Elec&tron.Npm\ run\ with\ auto\ reload   <Cmd>call planet#term#RunCmd('npm run watch')<CR>
-    an 500.10  🔨&u.Elec&tron.--2-- <Nop>
-    an 500.10  🔨&u.Elec&tron.Start\ Debug                   <Cmd>call planet#term#RunCmd('electron --inspect=5858 .')<CR>
-    an 500.10  🔨&u.Elec&tron.Break\ on\ Start               <Cmd>call planet#term#RunCmd('electron --inspect-brk=5858 .')<CR>
-    an 500.10  🔨&u.Elec&tron.--3-- <Nop>
-    an 500.10  🔨&u.Elec&tron.Rebuild\ Native\ Package       <Cmd>call planet#term#RunCmdAskArgs('electron-rebuild', 'Package name: ')<CR>
-    an 500.10  🔨&u.Elec&tron.--4-- <Nop>
-    an 500.10  🔨&u.Elec&tron.Bulid\ Linux\ AppImage         <Cmd>call planet#term#RunCmd('electron-builder --linux AppImage')<CR>
-    an 500.10  🔨&u.Elec&tron.Bulid\ Linux\ snap             <Cmd>call planet#term#RunCmd('electron-builder --linux snap')<CR>
-    an 500.10  🔨&u.Elec&tron.Bulid\ Linux\ deb              <Cmd>call planet#term#RunCmd('electron-builder --linux deb')<CR>
-    an 500.10  🔨&u.Elec&tron.Bulid\ Linux\ tar\.gz          <Cmd>call planet#term#RunCmd('electron-builder --linux tar.gz')<CR>
-    an 500.10  🔨&u.Elec&tron.Bulid\ Linux\ apk              <Cmd>call planet#term#RunCmd('electron-builder --linux apk')<CR>
-    an 500.10  🔨&u.Elec&tron.Bulid\ Mac\ dmg                <Cmd>call planet#term#RunCmd('electron-builder --mac default')<CR>
-    an 500.10  🔨&u.Elec&tron.Bulid\ Mac\ App\ Store         <Cmd>call planet#term#RunCmd('electron-builder --mac mas')<CR>
-    an 500.10  🔨&u.Elec&tron.Bulid\ Mac\ tar\.gz            <Cmd>call planet#term#RunCmd('electron-builder --mac tar.gz')<CR>
-    an 500.10  🔨&u.Elec&tron.Bulid\ Windows\ self-signed-cert <Cmd>call planet#term#RunCmd('electron-builder create-self-signed-cert')<CR>
-    an 500.10  🔨&u.Elec&tron.Bulid\ Windows\ nsis           <Cmd>call planet#term#RunCmd('electron-builder --windows nsis')<CR>
-    an 500.10  🔨&u.Elec&tron.Bulid\ Windows\ Portable\ App  <Cmd>call planet#term#RunCmd('electron-builder --windows portable')<CR>
-    an 500.10  🔨&u.Elec&tron.Bulid\ Windows\ Appx           <Cmd>call planet#term#RunCmd('electron-builder --windows appx')<CR>
-    an 500.10  🔨&u.Elec&tron.Bulid\ Windows\ zip            <Cmd>call planet#term#RunCmd('electron-builder --windows zip')<CR>
-    an 500.10  🔨&u.Elec&tron.--5-- <Nop>
-    an 500.10  🔨&u.Elec&tron.Install\ as\ Local\ Dep        <Cmd>call planet#term#RunCmd('npm i -D electron@latest')<CR>
-    an 500.10  🔨&u.Elec&tron.Install\ Project\ Deps         <Cmd>call planet#term#RunCmd('npm i')<CR>
-    an 500.10  🔨&u.Elec&tron.Add\ electron-builder          <Cmd>call planet#term#RunCmd('npm i -D electron-builder')<CR>
-    an 500.10  🔨&u.Elec&tron.Add\ electron-updater          <Cmd>call planet#term#RunCmd('npm i electron-updater')<CR>
-    an 500.10  🔨&u.Elec&tron.Install\ electron-rebuild      <Cmd>call planet#term#RunCmd('sudo npm install -g electron-rebuild')<CR>
-    an 500.10  🔨&u.Elec&tron.Install\ electron-builder      <Cmd>call planet#term#RunCmd('sudo npm install -g electron-builder')<CR>
-    an 500.10  🔨&u.&Other.&Ninja.Set\ DESTDIR                     :!ninja<CR>
-    an 500.10  🔨&u.&Other.&QMake.Set\ DESTDIR                     :!qmake<CR>
-    an 500.10  🔨&u.&Other.&Scons.Run\ Custom\ Target               <Cmd>call planet#term#RunCmdAskArgs('scons', 'scons: ', ' -j8 .')<CR>
-    an 500.10  🔨&u.Deploy <Nop>
-    an disable 🔨&u.Deploy
-    an 500.10  🔨&u.Windeployqt.Deploy                      :!make<CR>
-    an 500.10  🔨&u.Macdeployqt.Deploy                      :!make<CR>
-    an 500.10  🔨&u.Linuxdeploy.Deploy                      :!make<CR>
-    an 500.10  🔨&u.Androiddeployqt.Deploy                  :!make<CR>
-    an 500.10  🔨&u.Package <Nop>
-    an disable 🔨&u.Package
-    an 500.10  🔨&u.fpm.Build                               :!make<CR>
-    an 500.10  🔨&u.pyInstaller.Build                       :!make<CR>
-    an 500.10  🔨&u.CPack.Build                             :!make<CR>
-    an 500.10  🔨&u.AppImage.Build                          :!make<CR>
-    an 500.10  🔨&u.Snap.Build                              :!make<CR>
-    an 500.10  🔨&u.FlatPak.Build                           :!make<CR>
-    an 500.10  🔨&u.pyUpdater.Build                         :!make<CR>
-    an 500.10  🔨&u.Installer <Nop>
-    an disable 🔨&u.Installer
-    an 500.10  🔨&u.Qt\ Installer\ Framework.Build          :!make<CR>
-    " an 500.10  🔨&u.Choose\ Make\ Target                    :make <C-z>"TODO
-    " an 500.10  🔨&u.Rerun\ Previous\ Make                   :make prev_target
-    " an 500.10  🔨&u.--1-- <Nop>
-    " an 500.10  🔨&u.Set\ Compiler\ Globally<Tab>:compiler!\ {compiler} :compiler! 
-    " an 500.10  🔨&u.Set\ Compiler\ for\ Buffer<Tab>:compiler\ {compiler} :compiler 
+    an 500.10  🔨&b.Build <Nop>
+    an disable 🔨&b.Build
+    an 500.10  🔨&b.&Autotools.Autotools\ Status            <Cmd>call planet#term#RunScript('autotools-status')<CR>
+    an 500.10  🔨&b.&Autotools.Run\ autoconf                <Cmd>call planet#term#RunCmd('autoconf -f -i')<CR>
+    an 500.10  🔨&b.&Autotools.Run\ autoreconf              <Cmd>call planet#term#RunCmd('autoreconf -f -i')<CR>
+    an 500.10  🔨&b.&Autotools.Run\ autoheader              <Cmd>call planet#term#RunCmd('autoheader')<CR>
+    an 500.10  🔨&b.&Autotools.Run\ autoscan                <Cmd>call planet#term#RunCmd('autoscan')<CR>
+    an 500.10  🔨&b.&Autotools.Run\ autoupdate              <Cmd>call planet#term#RunCmd('autoupdate')<CR>
+    an 500.10  🔨&b.&Autotools.Run\ ifnames                 <Cmd>call planet#term#RunCmd('ifnames')<CR>
+    an 500.10  🔨&b.&Autotools.Run\ libtool                 <Cmd>call planet#term#RunCmd('libtool')<CR>
+    an 500.10  🔨&b.&Autotools.Run\ libtoolize              <Cmd>call planet#term#RunCmd('libtoolize')<CR>
+    an 500.10  🔨&b.&Autotools.Generate\ \./autogen\.sh     :TODO:"generate standard autogen.sh
+    an 500.10  🔨&b.&Autotools.Generate\ \./configure\.ac   <Cmd>call planet#project#CopyFile('autotools/configure.ac')<CR>
+    an 500.10  🔨&b.&Autotools.Run\ \./autogen\.sh          <Cmd>call planet#term#RunCmd('./autogen.sh')<CR>
+    an 500.10  🔨&b.&Autotools.Run\ \./bootstrap\.sh        <Cmd>call planet#term#RunCmd('./bootstrap.sh')<CR>
+    an 500.10  🔨&b.&Autotools.Run\ \./&configure           <Cmd>call planet#term#RunCmd('./configure')<CR>
+    an 500.10  🔨&b.&Autotools.Rerun\ \./&configure         <Cmd>call planet#term#RunCmdFind('config.status', '--recheck')<CR>
+    an 500.10  🔨&b.&Autotools.Set\ \./configure\ Options   :TODO"print ./configure --help & set options in buffer
+    an 500.10  🔨&b.&Autotools.Open\ config\.log            <Cmd>find config.log<CR>
+    an 500.10  🔨&b.&Autotools.Set\ $CC                     <Cmd>call planet#env#SenEnvVar("CC")<CR>
+    an 500.10  🔨&b.&Autotools.Set\ $CFLAGS                 <Cmd>call planet#env#SenEnvVar("CFLAGS")<CR>
+    an 500.10  🔨&b.&Autotools.Set\ $CXX                    <Cmd>call planet#env#SenEnvVar("CXX")<CR>
+    an 500.10  🔨&b.&Autotools.Set\ $CXXFLAGS               <Cmd>call planet#env#SenEnvVar("CXXFLAGS")<CR>
+    an 500.10  🔨&b.&Autotools.Set\ $LDFLAGS                <Cmd>call planet#env#SenEnvVar("LDFLAGS")<CR>
+    an 500.10  🔨&b.&Autotools.Set\ $CPPFLAGS               <Cmd>call planet#env#SenEnvVar("CPPFLAGS")<CR>
+    an 500.10  🔨&b.&Autotools.Set\ $DESTDIR                <Cmd>call planet#env#SenEnvVar("DESTDIR")<CR>
+    an 500.10  🔨&b.Mak&e.&Make                             <Cmd>call planet#term#RunCmd('make')<CR>
+    an 500.10  🔨&b.Mak&e.Make\ &All                        <Cmd>call planet#term#RunCmd('make all')<CR>
+    an 500.10  🔨&b.Mak&e.Make\ &Help                       <Cmd>call planet#term#RunCmd('make help')<CR>
+    an 500.10  🔨&b.Mak&e.Make\ &Clean                      <Cmd>call planet#term#RunCmd('make clean')<CR>
+    an 500.10  🔨&b.Mak&e.Make\ Distclea&n                  <Cmd>call planet#term#RunCmd('make distclean')<CR>
+    an 500.10  🔨&b.Mak&e.Make\ &Dist                       <Cmd>call planet#term#RunCmd('make dist')<CR>
+    an 500.10  🔨&b.Mak&e.Make\ Di&stcheck                  <Cmd>call planet#term#RunCmd('make distcheck')<CR>
+    an 500.10  🔨&b.Mak&e.Make\ Chec&k                      <Cmd>call planet#term#RunCmd('make check')<CR>
+    an 500.10  🔨&b.Mak&e.Make\ &Test                       <Cmd>call planet#term#RunCmd('make test')<CR>
+    an 500.10  🔨&b.Mak&e.Make\ &Install                    <Cmd>call planet#term#RunCmd('make install')<CR>
+    an 500.10  🔨&b.Mak&e.Make\ &Uninstall                  <Cmd>call planet#term#RunCmd('make uninstall')<CR>
+    an 500.10  🔨&b.Mak&e.Set\ $MAKEFLAGS                   <Cmd>call planet#env#SetEnvVar('MAKEFLAGS')<CR>
+    an 500.10  🔨&b.&KBuild.make\ &oldconfig                <Cmd>call planet#term#RunCmd("yes '' \| make oldconfig")<CR>
+    an 500.10  🔨&b.&KBuild.make\ &menuconfig               <Cmd>call planet#term#RunCmdTab('make menuconfig')<CR>
+    an 500.10  🔨&b.&KBuild.ma&ke                           <Cmd>call planet#term#RunCmd('make')<CR>
+    an 500.10  🔨&b.&KBuild.ma&ke\ Custom\ Target           <Cmd>call planet#term#RunCmdAskArgs('make', 'Target: ')<CR>
+    an 500.10  🔨&b.&KBuild.&Edit\ \.config                 <Cmd>e .config<CR>
+    an 500.10  🔨&b.&KBuild.&Edit\ $MAKEFLAGS               <Cmd>call planet#env#SetEnvVar('MAKEFLAGS')<CR>
+    an 500.10  🔨&b.&KBuild.make\ c&lean                    <Cmd>call planet#term#RunCmd('make clean')<CR>
+    an 500.10  🔨&b.&KBuild.make\ mr&proper                 <Cmd>call planet#term#RunCmd('make mrproper')<CR>
+    an 500.10  🔨&b.&KBuild.make\ dis&tclean                <Cmd>call planet#term#RunCmd('make distclean')<CR>
+    an 500.10  🔨&b.&KBuild.make\ &help                     <Cmd>call planet#term#RunCmd('make help')<CR>
+    an 500.10  🔨&b.&KBuild.make\ &config                   <Cmd>call planet#term#RunCmd('make config')<CR>
+    an 500.10  🔨&b.&KBuild.make\ allyesconfig              <Cmd>call planet#term#RunCmd('make allyesconfig')<CR>
+    an 500.10  🔨&b.&KBuild.make\ allnoconfig               <Cmd>call planet#term#RunCmd('make allnoconfig')<CR>
+    an 500.10  🔨&b.&KBuild.make\ defconfig                 <Cmd>call planet#term#RunCmd('make defconfig')<CR>
+    an 500.10  🔨&b.&KBuild.make\ install                   <Cmd>call planet#term#RunCmd('make install')<CR>
+    an 500.10  🔨&b.&KBuild.make\ uninstall                 <Cmd>call planet#term#RunCmd('make uninstall')<CR>
+    an 500.10  🔨&b.&KBuild.make\ randconfig                <Cmd>call planet#term#RunCmd('make randconfig')<CR>
+    an 500.10  🔨&b.&KBuild.make\ allmodconfig              <Cmd>call planet#term#RunCmd('make allmodconfig')<CR>
+    an 500.10  🔨&b.&KBuild.make\ &nconfig                  <Cmd>call planet#term#RunCmd('make nconfig')<CR>
+    an 500.10  🔨&b.&KBuild.make\ &xconfig                  <Cmd>call planet#term#RunCmd('make xconfig')<CR>
+    an 500.10  🔨&b.&KBuild.make\ &gconfig                  <Cmd>call planet#term#RunCmd('make gconfig')<CR>
+    an 500.10  🔨&b.&KBuild.make\ &tags                     <Cmd>call planet#term#RunCmd('make tags')<CR>
+    an 500.10  🔨&b.&CMake.Select\ Build\ Dir               <Cmd>call planet#build#SelectBuildDir()<CR>
+    an 500.10  🔨&b.&CMake.Create\ &In-Tree\ Build\ Dir     <Cmd>call planet#build#NewInTreeBuildDir()<CR>
+    an 500.10  🔨&b.&CMake.Create\ &OOT\ Build\ Dir         <Cmd>call planet#build#NewOOTBuildDir()<CR>
+    an 500.10  🔨&b.&CMake.Browse\ Build\ Directory         <Cmd>exe 'Fern ' .. g:PV_build_dir<CR>
+    an 500.10  🔨&b.&CMake.--1-- <Nop>
+    an 500.10  🔨&b.&CMake.&Configure                       <Cmd>call planet#term#RunCmd('cmake ' .. getcwd(), v:false, v:false, v:false, g:PV_build_dir)<CR>
+    an 500.10  🔨&b.&CMake.Configure\ &Tui                  <Cmd>call planet#term#RunCmdTab('ccmake ' .. getcwd(), g:PV_build_dir)<CR>
+    an 500.10  🔨&b.&CMake.Configure\ &Gui                  <Cmd>call planet#term#RunGuiApp('cmake-gui ' .. getcwd(), g:PV_build_dir)<CR>
+    an 500.10  🔨&b.&CMake.Configure\ Android\ armv7        <Cmd>call planet#term#RunScript('configure-cmake-android-armv7')<CR>
+    an 500.10  🔨&b.&CMake.Configure\ Android\ x86          <Cmd>call planet#term#RunScript('configure-cmake-android-x86')<CR>
+    an 500.10  🔨&b.&CMake.--2-- <Nop>
+    an 500.10  🔨&b.&CMake.&Build                           <Cmd>call planet#term#RunCmd('cmake --build .', v:false, v:false, v:false, g:PV_build_dir)<CR>
+    an 500.10  🔨&b.&CMake.&Rebuild                         <Cmd>call planet#term#RunCmd('cmake --build . --target clean && cmake --build .', v:false, v:false, v:false, g:PV_build_dir)<CR>
+    an 500.10  🔨&b.&CMake.Clean                            <Cmd>call planet#term#RunCmd('cmake --build . --target clean', v:false, v:false, v:false, g:PV_build_dir)<CR>
+    an 500.10  🔨&b.&CMake.--3-- <Nop>
+    an 500.10  🔨&b.&CMake.Generate\ compile_commands\.json <Cmd>call planet#env#SetEnvVarValue('CMAKE_EXPORT_COMPILE_COMMANDS=ON')<CR><Cmd>call planet#term#RunCmd('cmake ' .. getcwd(), v:false, v:false, v:false, g:PV_build_dir)<CR>
+    an 500.10  🔨&b.&Meson.Set\ DESTDIR                     <Cmd>!make<CR>
+    an 500.10  🔨&b.Ar&duino.Verify                          <Cmd>ArduinoVerify<CR>
+    an 500.10  🔨&b.Ar&duino.Upload                          <Cmd>ArduinoUpload<CR>
+    an 500.10  🔨&b.Ar&duino.Upload\ and\ Serial             <Cmd>ArduinoUploadAndSerial<CR>
+    an 500.10  🔨&b.Ar&duino.Serial                          <Cmd>ArduinoSerial<CR>
+    an 500.10  🔨&b.Ar&duino.Set\ Baud                       <Cmd>ArduinoSetBaud<CR>
+    an 500.10  🔨&b.Ar&duino.--2-- <Nop>
+    an 500.10  🔨&b.Ar&duino.Choose\ Board                   <Cmd>ArduinoChooseBoard<CR>
+    an 500.10  🔨&b.Ar&duino.Choose\ Programmer              <Cmd>ArduinoChooseProgrammer<CR>
+    an 500.10  🔨&b.Ar&duino.Choose\ Port                    <Cmd>ArduinoChoosePort<CR>
+    an 500.10  🔨&b.Ar&duino.--1-- <Nop>
+    an 500.10  🔨&b.Ar&duino.Info                            <Cmd>ArduinoInfo<CR>
+    an 500.10  🔨&b.Ar&duino.Set\ Arduino\ Dir               :let g:arduino_dir = 'TODO'
+    an 500.10  🔨&b.Ar&duino.Set\ Build\ Dir                 :let g:arduino_build_path = 'TODO'
+    an 500.10  🔨&b.Ar&duino.Use\ Arduino\ IDE               :let g:arduino_use_cli = 0
+    an 500.10  🔨&b.Ar&duino.Use\ arduino-cli                :let g:arduino_use_cli = 1
+    an 500.10  🔨&b.&PlatformIO.&Build                       <Cmd>call planet#term#RunCmd('pio run')<CR>
+    an 500.10  🔨&b.&PlatformIO.&Upload                      <Cmd>call planet#term#RunCmd('pio run -t upload')<CR>
+    an 500.10  🔨&b.&PlatformIO.Serial\ &Monitor             <Cmd>call planet#term#RunCmd('pio device monitor')<CR>
+    an 500.10  🔨&b.&PlatformIO.Serial\ &Monitor\ in\ Tab    <Cmd>call planet#term#RunCmdTab('pio device monitor')<CR>
+    an 500.10  🔨&b.&PlatformIO.Build\ FS\ &Image            <Cmd>call planet#term#RunCmd('pio run -t buildfs')<CR>
+    an 500.10  🔨&b.&PlatformIO.Upload\ &FS\ Image           <Cmd>call planet#term#RunCmd('pio run -t uploadfs')<CR>
+    an 500.10  🔨&b.&PlatformIO.Me&nuconfig                  <Cmd>call planet#term#RunCmdTab('pio run -t menuconfig')<CR>
+    an 500.10  🔨&b.&PlatformIO.&Clean                       <Cmd>call planet#term#RunCmd('pio run -t clean')<CR>
+    an 500.10  🔨&b.&PlatformIO.&Generate\ Compilation\ Database <Cmd>call planet#term#RunScript('pio-gen-compile-db')<CR>
+    an 500.10  🔨&b.&PlatformIO.&Activate                    <Cmd>Dotenv $HOME/.platformio/penv/bin/activate<CR>
+    an 500.10  🔨&b.&PlatformIO.&Web\ UI                     <Cmd>call planet#term#RunCmd('pio home')<CR>
+    an 500.10  🔨&b.&PlatformIO.Up&date\ Packages            <Cmd>call planet#term#RunCmd('pio update')<CR>
+    an 500.10  🔨&b.&PlatformIO.Upg&rade\ PlatformIO         <Cmd>call planet#term#RunCmd('pio upgrade')<CR>
+    an 500.10  🔨&b.&ROS.Build\ Workspace                    :TODO
+    an 500.10  🔨&b.&ROS.roslaunch                           :TODO
+    an 500.10  🔨&b.&ROS.rosrun                              :TODO
+    an 500.10  🔨&b.&ROS.Install.Kinetic                     :TODO
+    an 500.10  🔨&b.&ROS.Install.Melodic                     :TODO
+    an 500.10  🔨&b.&ROS.Install.Noetic                      :TODO
+    an 500.10  🔨&b.&ROS\ 2.Setup                            :TODO
+    an 500.10  🔨&b.&Yocto.Setup                             :TODO
+    an 500.10  🔨&b.&Flutter.Doctor                          <Cmd>call planet#term#RunCmd('flutter doctor')<CR>
+    an 500.10  🔨&b.&Flutter.Set\ Android\ Sdk\ Location     <Cmd>call planet#term#RunCmd('flutter config --android-sdk')<CR>
+    an 500.10  🔨&b.&Flutter.Accept\ Android\ Licenses       <Cmd>call planet#term#RunCmd('flutter doctor --android-licenses')<CR>
+    an 500.10  🔨&b.&Flutter.Create\ Project                 <Cmd>call planet#term#RunCmd('flutter create new_project')<CR>
+    an 500.10  🔨&b.&Flutter.Run                             <Cmd>FlutterRun<CR>
+    an 500.10  🔨&b.&Flutter.Hot\ Reload                     <Cmd>FlutterHotReload<CR>
+    an 500.10  🔨&b.&Flutter.Hot\ Restart                    <Cmd>FlutterHotRestart<CR>
+    an 500.10  🔨&b.&Flutter.Stop\ App                       <Cmd>FlutterQuit<CR>
+    an 500.10  🔨&b.&Flutter.Devices                         <Cmd>FlutterDevices<CR>
+    an 500.10  🔨&b.&Flutter.Output                          <Cmd>FlutterSplit<CR>
+    an 500.10  🔨&b.&Flutter.Emulators                       <Cmd>FlutterEmulators<CR>
+    an 500.10  🔨&b.&Flutter.Launch\ Emulators               <Cmd>FlutterEmulatorsLaunch<CR>
+    an 500.10  🔨&b.&Flutter.Toggle\ Visual\ Debug           <Cmd>FlutterVisualDebug<CR>
+    an 500.10  🔨&b.&Flutter.Add\ Desktop\ Linux\ Build      <Cmd>call planet#term#RunCmd('flutter config --enable-linux-desktop')<CR>
+    an 500.10  🔨&b.&Flutter.Add\ Desktop\ Macos\ Build      <Cmd>call planet#term#RunCmd('flutter config --enable-macos-desktop')<CR>
+    an 500.10  🔨&b.&Flutter.Add\ Desktop\ Windows\ Build    <Cmd>call planet#term#RunCmd('flutter config --enable-windows-desktop')<CR>
+    an 500.10  🔨&b.Elec&tron.List\ Project\ Deps            <Cmd>call planet#term#RunCmd('npm list --depth=0')<CR>
+    an 500.10  🔨&b.Elec&tron.--1-- <Nop>
+    an 500.10  🔨&b.Elec&tron.Run\ App                       <Cmd>call planet#term#RunCmd('electron .')<CR>
+    an 500.10  🔨&b.Elec&tron.Run\ with\ npm                 <Cmd>call planet#term#RunCmd('npm start')<CR>
+    an 500.10  🔨&b.Elec&tron.Run\ with\ auto\ reload        <Cmd>call planet#term#RunCmd('nodemon --exec electron .')<CR>
+    an 500.10  🔨&b.Elec&tron.Npm\ run\ with\ auto\ reload   <Cmd>call planet#term#RunCmd('npm run watch')<CR>
+    an 500.10  🔨&b.Elec&tron.--2-- <Nop>
+    an 500.10  🔨&b.Elec&tron.Start\ Debug                   <Cmd>call planet#term#RunCmd('electron --inspect=5858 .')<CR>
+    an 500.10  🔨&b.Elec&tron.Break\ on\ Start               <Cmd>call planet#term#RunCmd('electron --inspect-brk=5858 .')<CR>
+    an 500.10  🔨&b.Elec&tron.--3-- <Nop>
+    an 500.10  🔨&b.Elec&tron.Rebuild\ Native\ Package       <Cmd>call planet#term#RunCmdAskArgs('electron-rebuild', 'Package name: ')<CR>
+    an 500.10  🔨&b.Elec&tron.--4-- <Nop>
+    an 500.10  🔨&b.Elec&tron.Bulid\ Linux\ AppImage         <Cmd>call planet#term#RunCmd('electron-builder --linux AppImage')<CR>
+    an 500.10  🔨&b.Elec&tron.Bulid\ Linux\ snap             <Cmd>call planet#term#RunCmd('electron-builder --linux snap')<CR>
+    an 500.10  🔨&b.Elec&tron.Bulid\ Linux\ deb              <Cmd>call planet#term#RunCmd('electron-builder --linux deb')<CR>
+    an 500.10  🔨&b.Elec&tron.Bulid\ Linux\ tar\.gz          <Cmd>call planet#term#RunCmd('electron-builder --linux tar.gz')<CR>
+    an 500.10  🔨&b.Elec&tron.Bulid\ Linux\ apk              <Cmd>call planet#term#RunCmd('electron-builder --linux apk')<CR>
+    an 500.10  🔨&b.Elec&tron.Bulid\ Mac\ dmg                <Cmd>call planet#term#RunCmd('electron-builder --mac default')<CR>
+    an 500.10  🔨&b.Elec&tron.Bulid\ Mac\ App\ Store         <Cmd>call planet#term#RunCmd('electron-builder --mac mas')<CR>
+    an 500.10  🔨&b.Elec&tron.Bulid\ Mac\ tar\.gz            <Cmd>call planet#term#RunCmd('electron-builder --mac tar.gz')<CR>
+    an 500.10  🔨&b.Elec&tron.Bulid\ Windows\ self-signed-cert <Cmd>call planet#term#RunCmd('electron-builder create-self-signed-cert')<CR>
+    an 500.10  🔨&b.Elec&tron.Bulid\ Windows\ nsis           <Cmd>call planet#term#RunCmd('electron-builder --windows nsis')<CR>
+    an 500.10  🔨&b.Elec&tron.Bulid\ Windows\ Portable\ App  <Cmd>call planet#term#RunCmd('electron-builder --windows portable')<CR>
+    an 500.10  🔨&b.Elec&tron.Bulid\ Windows\ Appx           <Cmd>call planet#term#RunCmd('electron-builder --windows appx')<CR>
+    an 500.10  🔨&b.Elec&tron.Bulid\ Windows\ zip            <Cmd>call planet#term#RunCmd('electron-builder --windows zip')<CR>
+    an 500.10  🔨&b.Elec&tron.--5-- <Nop>
+    an 500.10  🔨&b.Elec&tron.Install\ as\ Local\ Dep        <Cmd>call planet#term#RunCmd('npm i -D electron@latest')<CR>
+    an 500.10  🔨&b.Elec&tron.Install\ Project\ Deps         <Cmd>call planet#term#RunCmd('npm i')<CR>
+    an 500.10  🔨&b.Elec&tron.Add\ electron-builder          <Cmd>call planet#term#RunCmd('npm i -D electron-builder')<CR>
+    an 500.10  🔨&b.Elec&tron.Add\ electron-updater          <Cmd>call planet#term#RunCmd('npm i electron-updater')<CR>
+    an 500.10  🔨&b.Elec&tron.Install\ electron-rebuild      <Cmd>call planet#term#RunCmd('sudo npm install -g electron-rebuild')<CR>
+    an 500.10  🔨&b.Elec&tron.Install\ electron-builder      <Cmd>call planet#term#RunCmd('sudo npm install -g electron-builder')<CR>
+    an 500.10  🔨&b.&Other.&Ninja.Set\ DESTDIR                     :!ninja<CR>
+    an 500.10  🔨&b.&Other.&QMake.Set\ DESTDIR                     :!qmake<CR>
+    an 500.10  🔨&b.&Other.&Scons.Run\ Custom\ Target               <Cmd>call planet#term#RunCmdAskArgs('scons', 'scons: ', ' -j8 .')<CR>
+    an 500.10  🔨&b.Deploy <Nop>
+    an disable 🔨&b.Deploy
+    an 500.10  🔨&b.Windeployqt.Deploy                      :!make<CR>
+    an 500.10  🔨&b.Macdeployqt.Deploy                      :!make<CR>
+    an 500.10  🔨&b.Linuxdeploy.Deploy                      :!make<CR>
+    an 500.10  🔨&b.Androiddeployqt.Deploy                  :!make<CR>
+    an 500.10  🔨&b.Package <Nop>
+    an disable 🔨&b.Package
+    an 500.10  🔨&b.fpm.Build                               :!make<CR>
+    an 500.10  🔨&b.pyInstaller.Build                       :!make<CR>
+    an 500.10  🔨&b.CPack.Build                             :!make<CR>
+    an 500.10  🔨&b.AppImage.Build                          :!make<CR>
+    an 500.10  🔨&b.Snap.Build                              :!make<CR>
+    an 500.10  🔨&b.FlatPak.Build                           :!make<CR>
+    an 500.10  🔨&b.pyUpdater.Build                         :!make<CR>
+    an 500.10  🔨&b.Installer <Nop>
+    an disable 🔨&b.Installer
+    an 500.10  🔨&b.Qt\ Installer\ Framework.Build          :!make<CR>
+    " an 500.10  🔨&b.Choose\ Make\ Target                    :make <C-z>"TODO
+    " an 500.10  🔨&b.Rerun\ Previous\ Make                   :make prev_target
+    " an 500.10  🔨&b.--1-- <Nop>
+    " an 500.10  🔨&b.Set\ Compiler\ Globally<Tab>:compiler!\ {compiler} :compiler! 
+    " an 500.10  🔨&b.Set\ Compiler\ for\ Buffer<Tab>:compiler\ {compiler} :compiler 
 
     " Run
     an 510.10  ▶️&r.Run <Nop>
@@ -667,9 +668,14 @@ func! planet#menu#dev#Update() abort
     an 550.10  💻&c.New\ &Tab                               <Cmd>tab terminal ++kill=kill<CR>
     an 550.10  💻&c.--1-- <Nop>
     an 550.10  💻&c.&Run\ Custom\ Command                    <Cmd>call planet#term#RunCmdAsk('Command: ')<CR>
+    an 550.10  💻&c.&Watch\ Command                          <Cmd>call planet#term#RunCmdAskArgs('watch -n0', 'Command: ')<CR>
     an 550.10  💻&c.--2-- <Nop>
     an 550.10  💻&c.P&ython\ Shell                          <Cmd>botright terminal ++kill=kill ++rows=10 python<CR>
+    an 550.10  💻&c.&IPython\ Shell                         <Cmd>botright terminal ++kill=kill ++rows=10 ipython<CR>
+    an 550.10  💻&c.&bpython\ Shell                         <Cmd>botright terminal ++kill=kill ++rows=10 bpython<CR>
     an 550.10  💻&c.C&++\ Shell                             <Cmd>botright terminal ++kill=kill ++rows=10 cling<CR>
+    an 550.10  💻&c.&Octave\ CLI                            <Cmd>botright terminal ++kill=kill ++rows=10 octave-cli<CR>
+    an 550.10  💻&c.Calculator\ (&bc)                       <Cmd>botright terminal ++kill=kill ++rows=10 bc<CR>
     an 550.10  💻&c.--3-- <Nop>
     an 550.10  💻&c.&Close\ Output                          <Cmd>call planet#term#CloseOutputWindow()<CR>
     an 550.10  💻&c.Terminal\ List <Nop>

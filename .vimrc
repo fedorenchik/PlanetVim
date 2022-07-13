@@ -648,6 +648,7 @@ xnoremap az :<c-u>FastFoldUpdate<cr><esc>:<c-u>normal! ]zV[z<cr>
 let g:fern#keepalt_on_edit = 1
 let g:fern#keepjumps_on_edit = 1
 let g:fern#disable_default_mappings = 1
+let g:fern#default_hidden = 1
 
 nnoremap <silent> - :Fern -reveal=% .<CR>
 

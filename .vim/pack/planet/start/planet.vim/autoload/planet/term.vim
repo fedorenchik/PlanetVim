@@ -81,7 +81,8 @@ func! planet#term#RunCmdBg(cmd) abort
   call planet#term#RunCmd(a:cmd, v:false, v:false, v:true)
 endfunc
 
-" Find @cmd in 'path' setting and run with @cmd_args arguments
+" Find @cmd in 'path' setting and run with @cmd_args arguments.
+" Can be used to find programs/scripts under current directory.
 " Example
 " call planet#term#RunCmdFind('config.status', '--recheck')<CR>
 func! planet#term#RunCmdFind(cmd, cmd_args) abort

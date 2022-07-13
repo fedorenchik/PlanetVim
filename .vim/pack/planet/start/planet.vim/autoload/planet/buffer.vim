@@ -51,7 +51,7 @@ endfunc
 func!planet#buffer#AddBuffer(name, num)
   if planet#buffer#IsNormal(a:name, a:num)
     let menu_name = planet#menu#MenuifyName(a:name)
-    exe 'an 800.500 📖&b.Buffer\ List.' .. menu_name .. ' :confirm b ' .. a:num .. '<CR>'
+    exe 'an 800.500 📖&u.Buffer\ List.' .. menu_name .. ' :confirm b ' .. a:num .. '<CR>'
   endif
 endfunc
 
@@ -65,7 +65,7 @@ func! planet#buffer#RemoveBufferAu()
   let name = expand("<afile>")
   let menu_name = planet#menu#MenuifyName(name)
   if ! empty(menu_name)
-    exe 'silent! aun 800.500 📖&b.Buffer\ List.' .. menu_name
+    exe 'silent! aun 800.500 📖&u.Buffer\ List.' .. menu_name
   endif
 endfunc
 

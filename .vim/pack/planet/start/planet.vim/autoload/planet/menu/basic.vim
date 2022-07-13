@@ -33,7 +33,7 @@ func! planet#menu#basic#Update() abort
     an 110.60  📁&f.New\ Pro&ject.OpenGL.SFML\ (GLEW,\ C++,\ OpenGL\ 3\.2)\ App <Cmd>call planet#file#NewProject('sfml-app')<CR>
     an 110.60  📁&f.New\ Pro&ject.Basic\ Vulkan                :TODO
     an 110.60  📁&f.New\ Pro&ject.Git\ Clone\.\.\.             <Cmd>call planet#term#RunCmdAskArgs('git clone --recurse-submodules ', 'Repo: ', 'https://github.com/')<CR>
-    an 110.60  📁&f.New\ Pro&ject.Git\ Init                    <Cmd>call planet#term#RunCmd('git init')<CR>
+    an 110.60  📁&f.New\ Pro&ject.Git\ Init                    <Cmd>call planet#term#RunCmd('git init && git add --all && git commit -m "Initial Commit"')<CR>
     an 110.60  📁&f.New\ File.Makefile                         :TODO"copy from template
     an 110.60  📁&f.New\ File.C++\ Class                       :TODO"copy from template
     an 110.60  📁&f.New\ File.C++\ Class\ Enum                 :TODO"copy from template

@@ -23,7 +23,7 @@ func! planet#menu#tools#Update() abort
     an 700.10  🔀&g.&Add.&Restore                                 :TODO
     an 700.10  🔀&g.&Commit.&Commit                               <Cmd>call planet#git#Commit(v:false, v:false, v:false)<CR>
     an 700.10  🔀&g.&Commit.Commit\ &File                         <Cmd>call planet#git#CommitFile(v:false, v:false)<CR>
-    an 700.10  🔀&g.&Commit.Commit\ &Tool                         <Cmd>call planet#term#RunCmdBg('git commit')<CR>
+    an 700.10  🔀&g.&Commit.Commit\ &Tool                         <Cmd>call planet#term#RunCmdBg('git commit ; git status --short --branch --show-stash --untracked-files=all')<CR>
     an 700.10  🔀&g.&Commit.Save\ &&\ Commit\ File                <Cmd>call planet#git#CommitFile(v:true, v:false)<CR>
     an 700.10  🔀&g.&Commit.Commit\ &All                          <Cmd>call planet#term#RunCmdAskArgs('git commit -a -m ', 'Commit message:', '')<CR>
     an 700.10  🔀&g.&Commit.Commit\ All\ with\ Untracked          <Cmd>call planet#term#RunCmdAskArgs('git add --all && git commit -m ', 'Commit message:', '')<CR>
