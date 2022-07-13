@@ -106,13 +106,13 @@ function! s:read_env(file, ...) abort
 endfunction
 
 function! s:echo_let(var, val) abort
-  echohl VimLet
+  echohl Statement
   echon 'let '
-  echohl vimEnvvar
+  echohl PreProc
   echon '$'.a:var
-  echohl vimOper
+  echohl Operator
   echon ' = '
-  echohl vimString
+  echohl String
   echon string(a:val)
   echohl None
 endfunction
@@ -148,7 +148,14 @@ function! s:Load(bang, ...) abort
     endif
     return ''
   endif
-  let files = map(copy(a:000), 'expand(v:val)')
+  let files = []
+  for glob in a:000
+    if glob =~# '[*]'
+      call extend(files, split(glob(glob), "\n"))
+    else
+      call extend(files, split(expand(glob), "\n"))
+    endif
+  endfor
   if !a:bang
     for file in files
       if !filereadable(file) && !filereadable(file.'/.env')
@@ -172,7 +179,7 @@ function! s:Load(bang, ...) abort
   return ''
 endfunction
 
-command! -bar -bang -nargs=? -complete=file Dotenv exe s:Load(<bang>0, <f-args>)
+command! -bar -bang -nargs=* -complete=file Dotenv exe s:Load(<bang>0, <f-args>)
 
 if !exists('g:dispatch_compilers')
   let g:dispatch_compilers = {}
@@ -194,5 +201,3 @@ augroup dotenvPlugin
   autocmd BufNewFile,BufReadPre * unlet! b:dotenv
   autocmd FileType netrw          unlet! b:dotenv
 augroup END
-
-" vim:set et sw=2 foldmethod=expr foldexpr=getline(v\:lnum)=~'^\"\ Section\:'?'>1'\:getline(v\:lnum)=~#'^fu'?'a1'\:getline(v\:lnum)=~#'^endf'?'s1'\:'=':

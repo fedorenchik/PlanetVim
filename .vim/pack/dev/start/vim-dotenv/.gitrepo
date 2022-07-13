@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/tpope/vim-dotenv.git
 	branch = master
-	commit = 0c2b6c42e7fc3044a10064eec02bbbad5c6897c2
-	parent = c903d1474ed32caa8cb20a30fc1ce46b38d13be0
+	commit = 5c51cfcf8d87280d6414e03cd6b253eb70ecb800
+	parent = 1305a59b97d568444149f9b6d6f9ea954d41cb5c
 	method = merge
 	cmdver = 0.4.3
