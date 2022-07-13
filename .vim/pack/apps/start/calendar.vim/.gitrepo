@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/itchyny/calendar.vim.git
 	branch = master
-	commit = 896360bfd9d5347b2726dd247df2d2cbdb8cf1d6
-	parent = d51227790d3288a54c217ec6a67b8cbefb61c1dc
+	commit = 3fbe34e21e5847fb40314eb0848faabfa609301a
+	parent = 700bf9760625dd937248af33491a5e385c31c513
 	method = merge
 	cmdver = 0.4.3
