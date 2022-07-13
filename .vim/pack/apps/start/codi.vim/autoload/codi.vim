@@ -104,6 +104,9 @@ let s:async_jobs = {} " { bufnr: job }
 let s:async_data = {} " { id (nvim -> job, vim -> ch): { data } }
 let s:magic = "\n\<cr>\<c-d>\<c-d>\<cr>" " to get out of REPL
 
+" Store results for later consultation (for :CodiExpand)
+let s:results = []
+
 " Is virtual text enabled?
 function! s:is_virtual_text_enabled()
   return s:nvim && g:codi#virtual_text
@@ -617,6 +620,9 @@ function! s:preprocess_and_parse(output, interpreter, num_lines)
     let passed_first = 0 " Whether we have passed the first prompt
     let taken = ''       " What to print at the prompt
 
+    let outtbl = []      " Output table [line: [output of repl]]
+    let out_lines = []   " Lines for the current prompt
+
     " Iterate through all lines
     for l in split(output, "\n")
       " If we hit a prompt
@@ -625,20 +631,26 @@ function! s:preprocess_and_parse(output, interpreter, num_lines)
         if passed_first
           " Record what was taken, empty if nothing happens
           call add(result, len(taken) ? taken : '')
+          call add(outtbl, out_lines)
           let taken = ''
+          let out_lines = []
         else
           let passed_first = 1
         endif
       else
-        " If we have passed the first prompt and it's content worth taking
-        if passed_first && l =~? '^\S'
-          let taken = l
+        if passed_first
+          call add(out_lines, l)
+          " If we have passed the first prompt and it's content worth taking
+          if l =~? '^\S'
+            let taken = l
+          endif
         endif
       endif
     endfor
 
     " Only take last num_lines of lines
     let lines = join(result[:a:num_lines - 1], "\n")
+    let s:results = outtbl
   else
     let lines = output
   endif
@@ -680,24 +692,32 @@ function! s:nvim_codi_output_to_virtual_text(bufnr, lines)
       let extmarks[i] = nvim_buf_set_extmark(a:bufnr, s:virtual_text_namespace, i, 0, opts)
       call s:let_codi("extmarks", extmarks)
     else
-      call nvim_buf_clear_namespace(a:bufnr, -1, i, i+1)
+      call nvim_buf_clear_namespace(a:bufnr, s:virtual_text_namespace, i, i+1)
     endif
     let i += 1
   endfor
 endfunction
 
-function! s:codi_spawn(filetype)
+" Return the interpreter to use far the given filetype or null if not found.
+" If null is returned, an error is logged.
+function! s:get_interpreter(ft)
   try
-    let i = s:interpreters[
-          \ get(s:aliases, a:filetype, a:filetype)]
-  " If interpreter not found...
+    return s:interpreters[get(s:aliases, a:ft, a:ft)]
   catch /E71\(3\|6\)/
-    if empty(a:filetype)
-      return s:err('Cannot run Codi with empty filetype.')
+    if empty(a:ft)
+      call s:err('Cannot run Codi with empty filetype.')
     else
-      return s:err('No Codi interpreter for '.a:filetype.'.')
+      call s:err('No Codi interpreter for '.a:ft.'.')
     endif
+    return v:null
   endtry
+endfunction
+
+function! s:codi_spawn(filetype)
+  let i = s:get_interpreter(a:filetype)
+  if i is v:null
+    return
+  endif
 
   " Error checking
   let interpreter_str = 'Codi interpreter for '.a:filetype
@@ -843,3 +863,72 @@ function! codi#complete(arg_lead, cmd_line, cursor_pos)
     endif
     return sort(candidates)
 endfunction
+
+function! codi#new(...)
+  let ft = a:0 ? a:1 : &filetype
+
+  if s:get_interpreter(ft) is v:null 
+    return
+  endif
+
+  noswapfile hide enew
+  setlocal buftype=nofile
+  setlocal bufhidden=hide
+
+  call codi#run(0, ft)
+endfunction
+
+lua << EOF
+function _G.codi_select(interpreters)
+  local filetypes = {}
+  for k, v in pairs(interpreters) do
+    filetypes[#filetypes + 1] = k
+  end
+
+  vim.ui.select(filetypes, {
+    prompt = "Codi Filetype",
+  }, function(ft)
+    vim.fn["codi#new"](ft)
+  end)
+end
+
+function _G.codi_expand_popup(lines)
+  local col = vim.g["codi#virtual_text_pos"]
+  local posx
+  if type(col) == "number" then
+    posx = col + #vim.g["codi#virtual_text_prefix"]
+  elseif col == "right_align" then
+    posx = vim.fn.winwidth(0)
+  else
+    posx = #vim.fn.getline(".") + #vim.g["codi#virtual_text_prefix"]
+  end
+
+  vim.lsp.util.open_floating_preview(lines, "", {
+    wrap = false,
+    border = "rounded",
+    offset_x = posx - vim.fn.wincol() + 1,
+  })
+end
+EOF
+
+function! codi#select()
+  call v:lua.codi_select(s:interpreters)
+endfunction
+
+function! codi#expand()
+  let lineidx = line(".") - 1
+  if lineidx >= len(s:results)
+    return
+  endif
+  let lines = s:results[lineidx]
+  if len(lines) ==  0
+    return
+  endif
+
+  if has("nvim")
+    call v:lua.codi_expand_popup(lines)
+  else
+    " TODO add vim support here (Probably using :h popup)
+  endif
+endfunction
+

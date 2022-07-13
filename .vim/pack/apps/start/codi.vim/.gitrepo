@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/metakirby5/codi.vim.git
 	branch = master
-	commit = 00b09bb4a02add481d4b7da82c5af8cdf65d957c
-	parent = 92eb73dc8d96cedd478101ddc4da25ef7b177166
+	commit = c120785c950f9991d32d3d4d2f3696fa8a8b5582
+	parent = d8f0064e0240b2f8e17685358ad4d5c7e2762184
 	method = merge
 	cmdver = 0.4.3
