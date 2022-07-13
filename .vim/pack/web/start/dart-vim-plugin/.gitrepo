@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/dart-lang/dart-vim-plugin.git
 	branch = master
-	commit = ceecea7895e469fc998d383818b2107d97cec06a
-	parent = 0f55618a0072602c255cfc0b25dc6e59078d97ea
+	commit = 81e50e80329e5eac2c115f45585b1838a614d07a
+	parent = ebf3fbf0045f20e78f5a9e4b9bfc52027b7ac0d7
 	method = merge
 	cmdver = 0.4.3
