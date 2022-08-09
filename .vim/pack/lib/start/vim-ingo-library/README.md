@@ -204,6 +204,12 @@ HISTORY
 - Add ingo#window#preview#OpenNew().
 - ingo#buffer#{scratch,generate}#Create(): ENH: Support "pedit" as
   a:windowOpenCommand.
+- ingo#plugin#historyrecall#RecallRepeat(): Also forward optional client
+  arguments to ingo#plugin#historyrecall#Recall().
+- ingo#plugin#register#Set(), ingo#plugin#register#PutContents(): ENH: Allow
+  passing optional target register.
+- ingo#subs#BraceCreation#FromList(): ENH: Add
+  a:options.singleCharacterElementsInSquareBraces.
 
 ##### 1.044   08-Apr-2022
 - Add ingo#cursor#IsBeyondEndOfLine() variant of ingo#cursor#IsAtEndOfLine().
