@@ -1005,11 +1005,15 @@ let g:mwPalettes = {
 let g:mwDefaultHighlightingPalette = 'mypalette'
 let g:mwAutoLoadMarks = 1
 let g:mwAutoSaveMarks = 1
+let g:mw_no_mappings = 1
+nmap <Leader>m <Plug>MarkSet
+nmap <Leader>n <Plug>MarkClear
+nmap <Leader>r <Plug>MarkRegex
+nmap <Leader>M <Plug>MarkToggle
+nmap <Leader>N <Plug>MarkConfirmAllClear
 vmap <Leader>m <Plug>MarkSet
 vmap <Leader>r <Plug>MarkRegex
 xmap <Leader>* <Plug>MarkIWhiteSet
-nmap <Leader>M <Plug>MarkToggle
-nmap <Leader>N <Plug>MarkConfirmAllClear
 " }}}
 " Plugin: vim-markdown-preview {{{
 let vim_markdown_preview_hotkey='<A-`>'
