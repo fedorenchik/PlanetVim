@@ -10,6 +10,9 @@ Contents ~
   3. Other languages                               |vimspector-other-languages|
  3. Installation                                      |vimspector-installation|
   1. Quick Start                                       |vimspector-quick-start|
+   1. Method 1: Using a release tarball and Vim packages |vimspector-method-1-using-release-tarball-vim-packages|
+   2. Method 2: Using a repo clone, Vim packages and select gadgets to be installed |vimspector-method-2-using-repo-clone-vim-packages-select-gadgets-to-be-installed|
+   3. Method 3: Using a plugin manager |vimspector-method-3-using-plugin-manager|
   2. Dependencies                                     |vimspector-dependencies|
   3. Neovim differences                         |vimspector-neovim-differences|
   4. Windows differences                       |vimspector-windows-differences|
@@ -320,10 +323,15 @@ Installation ~
                                                        *vimspector-quick-start*
 Quick Start ~
 
-There are 2 installation methods:
+There are 3 installation methods:
 
-- Using a release tarball and vim packages
-- Using a clone of the repo (e.g. package manager)
+- Using a release tarball and Vim packages
+- Using a repo clone and Vim packages
+- Using a plugin manager
+
+-------------------------------------------------------------------------------
+                       *vimspector-method-1-using-release-tarball-vim-packages*
+Method 1: Using a release tarball and Vim packages ~
 
 Release tarballs come with debug adapters for the default languages
 pre-packaged. To use a release tarball:
@@ -334,29 +342,42 @@ pre-packaged. To use a release tarball:
   $ mkdir -p $HOME/.vim/pack
   $ curl -L <url> | tar -C $HOME/.vim/pack zxvf -
 <
-1. Add 'packadd! vimspector' to you '.vimrc'
+1. Add 'packadd! vimspector' to your '.vimrc'
 
 2. (optionally) Enable the default set of mappings:
 >
   let g:vimspector_enable_mappings = 'HUMAN'
 <
 1. Configure your project's debug profiles (create '.vimspector.json', or
-   set 'g:vimspector_configurations')
+   set 'g:vimspector_configurations') - see the reference guide [2]
 
-Alternatively, you can clone the repo and select which gadgets are installed:
+-------------------------------------------------------------------------------
+*vimspector-method-2-using-repo-clone-vim-packages-select-gadgets-to-be-installed*
+Method 2: Using a repo clone, Vim packages and select gadgets to be installed ~
 
 1. Check the dependencies
 2. Install the plugin as a Vim package. See ':help packages'.
-3. Add 'packadd! vimspector' to you '.vimrc'
-4. Install some 'gadgets' (debug adapters) - see ':VimspectorInstall ...'
+3. Add 'packadd! vimspector' to your '.vimrc'
+4. Install some 'gadgets' (debug adapters) - see here for installation
+   commands and select gadgets to install
 5. Configure your project's debug profiles (create '.vimspector.json', or
-   set 'g:vimspector_configurations')
+   set 'g:vimspector_configurations') - see the reference guide [2]
 
-If you prefer to use a plugin manager, see the plugin manager's docs. For
-Vundle, use:
+-------------------------------------------------------------------------------
+                                     *vimspector-method-3-using-plugin-manager*
+Method 3: Using a plugin manager ~
+
+1. Check the dependencies
+2. See the plugin manager's docs and install the plugin For Vundle, use:
 >
   Plugin 'puremourning/vimspector'
 <
+1. Install some 'gadgets' (debug adapters) - see here for installation
+   commands and select gadgets to install
+
+2. Configure your project's debug profiles (create '.vimspector.json', or
+   set 'g:vimspector_configurations') - see the reference guide [2]
+
 The following sections expand on the above brief overview.
 
 -------------------------------------------------------------------------------
@@ -373,7 +394,7 @@ Vimspector requires:
 - macOS Mojave or later
 - Windows (experimental)
 
-Why such a new vim ? Well 2 reasons:
+Why such a new vim? Well 2 reasons:
 
 1. Because vimspector uses a lot of new Vim features
 2. Because there are Vim bugs that vimspector triggers that will frustrate
@@ -385,9 +406,9 @@ occasionally. Issue reports are handled on best-efforts basis, and PRs are
 welcome to fix bugs. See also the next section describing differences for
 neovim vs vim.
 
-Why Windows support experimental? Because it's effort and it's not a priority
-for the author. PRs are welcome to fix bugs. Windows will not be regularly
-tested.
+Why is Windows support experimental? Because it's effort and it's not a
+priority for the author. PRs are welcome to fix bugs. Windows will not be
+regularly tested.
 
 Which Linux versions? I only test on Ubuntu 18.04 and later and RHEL 7.
 
@@ -487,7 +508,7 @@ by cloning this repository into your package path, like this:
 >
   packadd! vimspector
 <
-See support/doc/example_vimrc.vim for a minimal example.
+See 'support/doc/example_vimrc.vim' for a minimal example.
 
 -------------------------------------------------------------------------------
                                                    *vimspector-install-gadgets*
@@ -612,7 +633,7 @@ Then add this to your '.vimrc':
 >
   let g:vimspector_base_dir=expand( '$HOME/.vim/vimspector-config' )
 <
-When usnig ':VimspectorInstall', the 'g:vimspector_base_dir' setting is
+When using ':VimspectorInstall', the 'g:vimspector_base_dir' setting is
 respected unless '--basedir' is manually added (not recommended).
 
 See '--help' for more info on the various options.
@@ -693,7 +714,7 @@ Example:
 The gadget file is automatically written by 'install_gadget.py' (or
 ':VimspectorInstall').
 
-Vimspector will also load any fies matching:
+Vimspector will also load any files matching:
 '</path/to/vimspector>/gadgets/<os>/.gadgets.d/*.json'. These have the same
 format as '.gadgets.json' but are not overwritten when running
 'install_gadget.py'.
@@ -964,7 +985,8 @@ normal and visual modes, for example:
   " for visual mode, the visually selected text
   xmap <Leader>di <Plug>VimspectorBalloonEval
 <
-You may also wish to add mappings for up/down the stack, for example:
+You may also wish to add mappings for navigating up/down the stack, for
+example:
 >
   nmap <LocalLeader><F11> <Plug>VimspectorUpFrame
   nmap <LocalLeader><F12> <Plug>VimspectorDownFrame
@@ -1020,8 +1042,8 @@ To launch with an ad-hoc config you can use:
 - 'call vimspector#LaunchWithConfigurations( dict )'
 
 The argument is a 'dict' which is the 'configurations' section of a .vimspector
-file Pass one configuration in and that will be selected as the one to run. For
-example:
+file. Pass one configuration in and that will be selected as the one to run.
+For example:
 >
   let pid = <some_expression>
   call vimspector#LaunchWithConfigurations({
@@ -1062,7 +1084,7 @@ See the reference guide [24] for details.
 Get configurations ~
 
 - Use 'vimspector#GetConfigurations()' to get a list of configurations for
-  filetype of the current buffer
+  the filetype of the current buffer
 
 For example, to get an array of configurations and fuzzy matching on the result
 >
@@ -1089,9 +1111,9 @@ I recommend a mapping like this to toggle the breakpoints window:
 <
 The following mappings apply by default in the breakpoints window:
 
-- 't', '<F9>' - toggle, i.e. enable/dissable breakpoint
-- 'T' - toggle, i.e. enable/dissable ALL breakpoints
-- 'dd', '<Del>' - delete the current breakpiont
+- 't', '<F9>' - toggle, i.e. enable/disable breakpoint
+- 'T' - toggle, i.e. enable/disable ALL breakpoints
+- 'dd', '<Del>' - delete the current breakpoint
 - 'i', 'a', 'o' - add a new line breakpoint
 - 'I', 'A', 'O' - add a new function breakpoint
 - '<Enter>' or double-click - jump to the line breakpoint
@@ -1162,7 +1184,7 @@ guide [25] for details on that.
                                                        *vimspector-api-summary*
 API Summary ~
 
-**NOTE:*** Previously, ToggleBreakpoint would cycle between 3 states: enabled,
+**_NOTE:_** Previously, ToggleBreakpoint would cycle between 3 states: enabled,
 disabled, deleted. Many users found the 'disabled' state was rarely useful, so
 the behaviour has been changed. ToggleBreakpoint always creates or deletes a
 breakpoint. If you wish to 'disable' breakpoints, use the breakpoints window
@@ -1305,7 +1327,7 @@ Variables and scopes ~
   '<leader><CR>' (if 'modifyOtherKeys' doesn't work for you)
 - View the type of the variable via mouse hover.
 - When changing the stack frame the locals window updates.
-- While paused, hover to see values
+- While paused, hover to see values.
 
   Image: locals window (see reference [27])
 
@@ -1363,7 +1385,7 @@ mode to add a new watch expression.
 
   Image: watch window (see reference [29])
 
-The watches are represented by the buffer 'vimspector.StackTrace'.
+The watches are represented by the buffer 'vimspector.Watches'.
 
 If you prefer a more verbose display for variables and watches, then you can
 "let g:vimspector_variables_display_mode = 'full'". By default only the name
@@ -1392,7 +1414,7 @@ For YouCompleteMe, the following config works well:
 Dump memory ~
 
 Some debug adapters provide a way to dump process memory associated with
-variables. This can be done from the Variables and Wathces windows with:
+variables. This can be done from the Variables and Watches windows with:
 
 - The WinBar option "Dump"
 - '<leader>m' mapping (by default, can be customised)
@@ -1419,8 +1441,8 @@ supported by the underlying debugger, threads can be paused and continued
 individually from within the Stack Trace window.
 
 A particular thread, highlighted with the 'CursorLine' highlight group is the
-"focussed" thread. This is the thread that receives commands like "Stop In",
-"Stop Out", "Continue" and "Pause" in the code window. The focussed thread can
+"focussed" thread. This is the thread that receives commands like "Step In",
+"Step Out", "Continue" and "Pause" in the code window. The focussed thread can
 be changed manually to "switch to" that thread.
 
 - Use '<CR>', or double-click with left mouse to expand/collapse a thread
@@ -1437,7 +1459,7 @@ be changed manually to "switch to" that thread.
   focussed thread to the thread of that frame and jump to that frame in the
   code window.
 
-- The current frame when a breakpoint is hit or if manuall jumping is also
+- The current frame when a breakpoint is hit or if manual jumping is also
   highlighted.
 
   Image: stack trace (see reference [30])
@@ -1544,15 +1566,15 @@ Debug profile configuration ~
 For an introduction to the configuration of '.vimspector.json', take a look at
 the Getting Started section of the Vimspector website [1].
 
-For full explanation, including how to use variables, substitutions and how to
-specify exception breakpoints, see the docs [2].
+For a full explanation, including how to use variables, substitutions and how
+to specify exception breakpoints, see the docs [2].
 
 The JSON configuration file allows C-style comments:
 
 - '// comment to end of line ...'
 - '/* inline comment ... */'
 
-Current tested with the following debug adapters.
+Currently tested with the following debug adapters.
 
 -------------------------------------------------------------------------------
                                                      *vimspector-c-c-rust-etc.*
@@ -1664,7 +1686,7 @@ The cpptools documentation describes how to attach cpptools to gdbserver using
                                             *vimspector-c-remote-launch-attach*
 C++ Remote launch and attach ~
 
-If you're feeling fancy, checkout the reference guide [33] for an example of
+If you're feeling fancy, check out the reference guide [33] for an example of
 getting Vimspector to remotely launch and attach.
 
 - CodeLLDB (MacOS)
@@ -2463,7 +2485,7 @@ The following global variable is set up for you to get access to the UI
 elements: 'g:vimspector_session_windows'. This is a 'dict' with the following
 keys:
 
-- 'g:vimspector_session_windows.tagpage': The tab page for the session
+- 'g:vimspector_session_windows.tabpage': The tab page for the session
 - 'g:vimspector_session_windows.variables': Window ID of the variables
   window, containing the 'vimspector.Variables' buffer.
 - 'g:vimspector_session_windows.watches': Window ID of the watches window,
@@ -2629,6 +2651,36 @@ FAQ ~
    'shell' variable to execute a command and just discard the output. Other
    options are discussed in this issue [57]
 
+8. It's annoying to manually type in the PID when attaching. Do you have a
+   PID picker? There's no PID picker in vimspector at the moment, but you
+   could write something and wrap "vimspector#LaunchWithSettings( {
+   'ThePID': the_pid_i_picked } )". Alternatively, you could use a 'shell'
+   variable to guess the PID, like this (which runs 'pgrep vim | sort | tail
+   -1' to get the 'highest' PID of the command to be debugged (NOTE: this is
+   for debugging Vim. replace with something appropriate to your actual use
+   case. If this doesn't make sense to you, you might be better off just
+   typing in the PID).
+>
+  "Attach: max PID": {
+    "adapter": "CodeLLDB",
+    "variables": {
+      "pid": {
+        "shell": [
+          "/bin/bash",
+          "-c",
+          "pgrep vim | sort | tail -1"
+        ]
+      }
+    },
+    "configuration": {
+      "request": "attach",
+      "program": "${workspaceRoot}/src/vim",
+      "expressions": "native",
+      "stopOnEntry#json": "${StopOnEntry:true}",
+      "pid": "${pid}"
+    }
+  },
+<
 Example 'g:vimspector_adapters' and 'g:vimspector_configurations':
 >
   let g:vimspector_adapters = #{
