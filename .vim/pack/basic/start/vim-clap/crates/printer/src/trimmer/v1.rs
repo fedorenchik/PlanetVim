@@ -34,7 +34,7 @@ fn trim_left(text: &str, width: usize, tabstop: usize) -> (String, usize) {
     let chars_count = text.chars().count();
     let (mut text, mut trimmed_len) = if chars_count > width + 2 {
         let diff = chars_count - width - 2;
-        (String::from(&text[diff..]), diff)
+        (text.chars().skip(diff).collect::<String>(), diff)
     } else {
         (text.into(), 0)
     };
@@ -116,7 +116,7 @@ pub fn trim_text(
         // right-fixed, ..ring
         let (trimmed_text, trimmed_len) = trim_left(text, container_width - 2, tabstop);
 
-        let text = format!("..{}", trimmed_text);
+        let text = format!("..{trimmed_text}");
         let indices = indices
             .iter()
             .filter_map(|x| (x + 2).checked_sub(trimmed_len))
@@ -128,7 +128,7 @@ pub fn trim_text(
         // left-fixed, Stri..
         let trimmed_text = trim_right(text, container_width - 2, tabstop);
 
-        let text = format!("{}..", trimmed_text);
+        let text = format!("{trimmed_text}..");
         let indices = indices
             .iter()
             .filter(|x| *x + 2 < container_width) // Ignore the highlights in `..`
@@ -141,7 +141,7 @@ pub fn trim_text(
         let left_truncated_text = &text[match_start..];
         let trimmed_text = trim_right(left_truncated_text, container_width - 2 - 2, tabstop);
 
-        let text = format!("..{}..", trimmed_text);
+        let text = format!("..{trimmed_text}..");
         let indices = indices
             .iter()
             .map(|x| x - match_start + 2)
@@ -156,7 +156,7 @@ pub fn trim_text(
 mod tests {
     use super::*;
     use crate::tests::filter_single_line;
-    use types::FilteredItem;
+    use types::MatchedItem;
 
     #[test]
     fn test_trim_left() {
@@ -236,13 +236,12 @@ mod tests {
         ];
 
         for (text, query, highlighted, container_width, display_line) in test_cases {
-            let ranked = filter_single_line(text, query);
+            let ranked = filter_single_line(text.to_string(), query);
 
-            let FilteredItem { match_indices, .. } = ranked[0].clone();
+            let MatchedItem { indices, .. } = ranked[0].clone();
 
-            let (display_line_got, indices_post) =
-                trim_text(text, &match_indices, container_width, 4)
-                    .unwrap_or((text.into(), match_indices.clone()));
+            let (display_line_got, indices_post) = trim_text(text, &indices, container_width, 4)
+                .unwrap_or((text.into(), indices.clone()));
 
             let truncated_text_got = display_line_got.clone();
 

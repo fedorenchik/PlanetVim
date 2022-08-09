@@ -10,12 +10,12 @@ mod stdio_server;
 mod tools;
 mod utils;
 
+/// For benchmarks.
 pub mod command;
+
+/// For benchmarks.
+pub use self::cache::find_largest_cache_digest;
+pub use self::utils::count_lines;
+
 /// Re-exports.
-pub use {
-    anyhow::{Context, Result},
-    app::{Cmd, Maple},
-    clap::Parser,
-    filter::{subprocess, Source},
-    icon::{Icon, IconKind},
-};
+pub use app::{Params, RunCmd};

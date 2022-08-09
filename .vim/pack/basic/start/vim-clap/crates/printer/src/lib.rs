@@ -5,7 +5,7 @@ mod trimmer;
 mod truncation;
 
 use icon::{Icon, ICON_LEN};
-use types::FilteredItem;
+use types::MatchedItem;
 use utility::{println_json, println_json_with_length};
 
 pub use self::truncation::{
@@ -16,10 +16,12 @@ pub use self::truncation::{
 /// 1. Truncate the line.
 /// 2. Add an icon.
 #[derive(Debug, Clone)]
-pub struct DecoratedLines {
-    /// Maybe truncated.
+pub struct DisplayLines {
+    /// Lines to display, maybe truncated.
     pub lines: Vec<String>,
+    /// Position of highlights in the lines above.
     pub indices: Vec<Vec<usize>>,
+    /// A map of the line number to the original untruncated line.
     pub truncated_map: LinesTruncatedMap,
     /// An icon is added to the head of line.
     ///
@@ -27,7 +29,7 @@ pub struct DecoratedLines {
     pub icon_added: bool,
 }
 
-impl DecoratedLines {
+impl DisplayLines {
     pub fn new(
         lines: Vec<String>,
         indices: Vec<Vec<usize>>,
@@ -42,7 +44,11 @@ impl DecoratedLines {
         }
     }
 
-    pub fn print_json_with_length(&self, total: Option<usize>) {
+    fn print_on_dyn_run_finished(
+        &self,
+        total_matched: usize,
+        maybe_total_processed: Option<usize>,
+    ) {
         let Self {
             lines,
             indices,
@@ -52,10 +58,25 @@ impl DecoratedLines {
 
         #[allow(non_upper_case_globals)]
         const method: &str = "s:process_filter_message";
-        if let Some(total) = total {
-            println_json_with_length!(method, lines, indices, icon_added, truncated_map, total);
+        if let Some(total_processed) = maybe_total_processed {
+            println_json_with_length!(
+                method,
+                lines,
+                indices,
+                icon_added,
+                truncated_map,
+                total_matched,
+                total_processed
+            );
         } else {
-            println_json_with_length!(method, lines, indices, icon_added, truncated_map);
+            println_json_with_length!(
+                method,
+                lines,
+                indices,
+                icon_added,
+                truncated_map,
+                total_matched
+            );
         }
     }
 
@@ -87,80 +108,70 @@ impl DecoratedLines {
 }
 
 /// Returns the info of the truncated top items ranked by the filtering score.
-pub fn decorate_lines<T>(
-    mut top_list: Vec<FilteredItem<T>>,
-    winwidth: usize,
-    icon: Icon,
-) -> DecoratedLines {
+pub fn decorate_lines(mut top_list: Vec<MatchedItem>, winwidth: usize, icon: Icon) -> DisplayLines {
     let truncated_map = truncate_long_matched_lines(top_list.iter_mut(), winwidth, None);
     if let Some(painter) = icon.painter() {
         let (lines, indices): (Vec<_>, Vec<Vec<usize>>) = top_list
             .into_iter()
             .enumerate()
-            .map(|(idx, filtered_item)| {
-                let text = filtered_item.display_text();
-                let iconized = if let Some(origin_text) = truncated_map.get(&(idx + 1)) {
-                    format!("{} {}", painter.icon(origin_text), text)
+            .map(|(idx, matched_item)| {
+                let display_text = matched_item.display_text();
+                let iconized = if let Some(output_text) = truncated_map.get(&(idx + 1)) {
+                    format!("{} {}", painter.icon(output_text), display_text)
                 } else {
-                    painter.paint(&text)
+                    painter.paint(&display_text)
                 };
-                (iconized, filtered_item.shifted_indices(ICON_LEN))
+                (iconized, matched_item.shifted_indices(ICON_LEN))
             })
             .unzip();
 
-        DecoratedLines::new(lines, indices, truncated_map, true)
+        DisplayLines::new(lines, indices, truncated_map, true)
     } else {
         let (lines, indices): (Vec<_>, Vec<_>) = top_list
             .into_iter()
-            .map(|filtered_item| {
+            .map(|matched_item| {
                 (
-                    filtered_item.display_text().to_owned(),
-                    filtered_item.match_indices,
+                    matched_item.display_text().to_string(),
+                    matched_item.indices,
                 )
             })
             .unzip();
 
-        DecoratedLines::new(lines, indices, truncated_map, false)
+        DisplayLines::new(lines, indices, truncated_map, false)
     }
 }
 
 /// Prints the results of filter::sync_run() to stdout.
 pub fn print_sync_filter_results(
-    ranked: Vec<FilteredItem>,
+    matched_items: Vec<MatchedItem>,
     number: Option<usize>,
     winwidth: usize,
     icon: Icon,
 ) {
     if let Some(number) = number {
-        let total = ranked.len();
-        let mut ranked = ranked;
-        ranked.truncate(number);
-        decorate_lines(ranked, winwidth, icon).print_json(Some(total));
+        let total_matched = matched_items.len();
+        let mut matched_items = matched_items;
+        matched_items.truncate(number);
+        decorate_lines(matched_items, winwidth, icon).print_json(Some(total_matched));
     } else {
-        for FilteredItem {
-            source_item,
-            match_indices,
-            display_text,
-            ..
-        } in ranked.into_iter()
-        {
-            let text = display_text.unwrap_or_else(|| source_item.display_text().into());
-            let indices = match_indices;
+        matched_items.iter().for_each(|matched_item| {
+            let indices = &matched_item.indices;
+            let text = matched_item.display_text();
             println_json!(text, indices);
-        }
+        });
     }
 }
 
 /// Prints the results of filter::dyn_run() to stdout.
-pub fn print_dyn_filter_results(
-    ranked: Vec<FilteredItem>,
-    total: usize,
-    number: usize,
+pub fn print_dyn_matched_items(
+    matched_items: Vec<MatchedItem>,
+    total_matched: usize,
+    total_processed: Option<usize>,
     winwidth: usize,
     icon: Icon,
 ) {
-    decorate_lines(ranked.into_iter().take(number).collect(), winwidth, icon)
-        .print_json_with_length(Some(total));
+    decorate_lines(matched_items, winwidth, icon)
+        .print_on_dyn_run_finished(total_matched, total_processed);
 }
 
 #[cfg(test)]
@@ -213,11 +224,11 @@ pub(crate) mod tests {
     pub(crate) fn filter_single_line(
         line: impl Into<SourceItem>,
         query: impl Into<Query>,
-    ) -> Vec<FilteredItem> {
+    ) -> Vec<MatchedItem> {
         let matcher = Matcher::new(Bonus::FileName, FuzzyAlgorithm::Fzy, MatchScope::Full);
 
         let mut ranked = Source::List(std::iter::once(line.into()))
-            .filter_and_collect(matcher, &query.into())
+            .run_and_collect(matcher, &query.into())
             .unwrap();
         ranked.par_sort_unstable_by(|v1, v2| v2.score.partial_cmp(&v1.score).unwrap());
 
@@ -237,8 +248,8 @@ pub(crate) mod tests {
         let mut ranked = filter_single_line(text, &query);
         let _truncated_map = truncate_long_matched_lines(ranked.iter_mut(), winwidth, skipped);
 
-        let FilteredItem { match_indices, .. } = ranked[0].clone();
-        let truncated_indices = match_indices;
+        let MatchedItem { indices, .. } = ranked[0].clone();
+        let truncated_indices = indices;
 
         let truncated_text_got = ranked[0].display_text();
         assert_eq!(truncated_text, truncated_text_got);
@@ -252,7 +263,7 @@ pub(crate) mod tests {
         println!("\n      winwidth: {}", "─".repeat(winwidth));
         println!(
             "       display: {}",
-            wrap_matches(truncated_text_got, &truncated_indices)
+            wrap_matches(&truncated_text_got, &truncated_indices)
         );
         // The highlighted result can be case insensitive.
         assert!(query

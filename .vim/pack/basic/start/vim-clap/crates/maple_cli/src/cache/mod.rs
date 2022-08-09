@@ -15,16 +15,16 @@ pub struct Digest {
     /// Base command.
     #[serde(flatten)]
     pub base: BaseCommand,
-    /// Time of last execution.
-    pub execution_time: UtcTime,
     /// Time of last visit.
     pub last_visit: UtcTime,
+    /// Time of last execution.
+    pub execution_time: UtcTime,
+    /// Number of results from last execution.
+    pub total: usize,
     /// Number of times the base command was visited.
     pub total_visits: usize,
     /// Number of times the command was executed so far.
     pub total_executions: usize,
-    /// Number of results from last execution.
-    pub total: usize,
     /// File persistent on the disk for caching the results.
     pub cached_path: PathBuf,
 }
@@ -85,6 +85,28 @@ impl CacheInfo {
         }
     }
 
+    /// Remove the entries whose `cwd` no longer exists.
+    ///
+    /// The original directory for the cache can be deleted or moved to another place.
+    pub fn remove_invalid_and_old_entries(&mut self) {
+        let now = Utc::now();
+
+        const MAX_DAYS: i64 = 30;
+
+        self.digests.retain(|digest| {
+            if digest.base.cwd.exists()
+                && digest.cached_path.exists()
+                && now.signed_duration_since(digest.last_visit).num_days() < MAX_DAYS
+            {
+                true
+            } else {
+                // Remove the cache file accordingly.
+                let _ = std::fs::remove_file(&digest.cached_path);
+                false
+            }
+        });
+    }
+
     /// Finds the digest given `base_cmd`.
     fn find_digest(&self, base_cmd: &BaseCommand) -> Option<usize> {
         self.digests.iter().position(|d| &d.base == base_cmd)
@@ -143,6 +165,10 @@ impl CacheInfo {
 
         Ok(())
     }
+
+    pub fn digests(&self) -> Vec<Digest> {
+        self.digests.clone()
+    }
 }
 
 /// Pushes the digest of the results of new fresh run to [`CACHE_INFO_IN_MEMORY`].
@@ -157,4 +183,24 @@ pub fn push_cache_digest(digest: Digest) -> Result<()> {
     });
 
     Ok(())
+}
+
+pub fn find_largest_cache_digest() -> Option<Digest> {
+    let cache_info = CACHE_INFO_IN_MEMORY.lock();
+    let mut digests = cache_info.digests();
+    digests.sort_unstable_by_key(|digest| digest.total);
+    digests.last().cloned()
+}
+
+pub fn store_cache_digest(base_cmd: BaseCommand, new_created_cache: PathBuf) -> Result<Digest> {
+    // TODO: mmap should be faster.
+    let total = crate::utils::count_lines(std::fs::File::open(&new_created_cache)?)?;
+
+    let digest = Digest::new(base_cmd, total, new_created_cache);
+
+    let cache_info = crate::datastore::CACHE_INFO_IN_MEMORY.clone();
+    let mut cache_info = cache_info.lock();
+    cache_info.limited_push(digest.clone())?;
+
+    Ok(digest)
 }

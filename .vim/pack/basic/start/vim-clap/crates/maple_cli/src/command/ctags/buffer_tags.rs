@@ -5,10 +5,10 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 
 use anyhow::{Context, Result};
 use clap::Parser;
-use filter::subprocess::{Exec as SubprocessCommand, Redirection};
 use itertools::Itertools;
 use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
+use subprocess::{Exec as SubprocessCommand, Redirection};
 use tokio::process::Command as TokioCommand;
 
 use crate::app::Params;
@@ -80,7 +80,7 @@ const CONTEXT_SUPERSET: &[&str] = &[
 fn subprocess_cmd_in_json_format(file: impl AsRef<std::ffi::OsStr>) -> SubprocessCommand {
     // Redirect stderr otherwise the warning message might occur `ctags: Warning: ignoring null tag...`
     SubprocessCommand::cmd("ctags")
-        .stderr(Redirection::Merge)
+        .stderr(Redirection::None)
         .arg("--fields=+n")
         .arg("--output-format=json")
         .arg(file)
@@ -89,7 +89,7 @@ fn subprocess_cmd_in_json_format(file: impl AsRef<std::ffi::OsStr>) -> Subproces
 fn subprocess_cmd_in_raw_format(file: impl AsRef<std::ffi::OsStr>) -> SubprocessCommand {
     // Redirect stderr otherwise the warning message might occur `ctags: Warning: ignoring null tag...`
     SubprocessCommand::cmd("ctags")
-        .stderr(Redirection::Merge)
+        .stderr(Redirection::None)
         .arg("--fields=+Kn")
         .arg("-f")
         .arg("-")
@@ -97,19 +97,24 @@ fn subprocess_cmd_in_raw_format(file: impl AsRef<std::ffi::OsStr>) -> Subprocess
 }
 
 fn tokio_cmd_in_json_format(file: &Path) -> TokioCommand {
-    let mut cmd = crate::process::tokio::build_command(format!(
-        "ctags --fields=+n --output-format=json {}",
-        file.display()
-    ));
-    cmd.stderr(Stdio::null());
-    cmd
+    let mut tokio_cmd = TokioCommand::new("ctags");
+    tokio_cmd
+        .stderr(Stdio::null())
+        .arg("--fields=+n")
+        .arg("--output-format=json")
+        .arg(file);
+    tokio_cmd
 }
 
 fn tokio_cmd_in_raw_format(file: &Path) -> TokioCommand {
-    let mut cmd =
-        crate::process::tokio::build_command(format!("ctags --fields=+Kn -f - {}", file.display()));
-    cmd.stderr(Stdio::null());
-    cmd
+    let mut tokio_cmd = TokioCommand::new("ctags");
+    tokio_cmd
+        .stderr(Stdio::null())
+        .arg("--fields=+Kn")
+        .arg("-f")
+        .arg("-")
+        .arg(file);
+    tokio_cmd
 }
 
 fn find_context_tag(superset_tags: Vec<BufferTagInfo>, at: usize) -> Option<BufferTagInfo> {

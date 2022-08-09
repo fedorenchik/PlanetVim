@@ -1,5 +1,5 @@
 use std::borrow::Cow;
-use std::io::{BufRead, Lines};
+use std::io::{BufRead, BufReader, Lines};
 use std::path::{Path, PathBuf};
 
 use anyhow::Result;
@@ -7,8 +7,8 @@ use chrono::prelude::*;
 use directories::ProjectDirs;
 use itertools::Itertools;
 use once_cell::sync::Lazy;
+use subprocess::Exec;
 
-use filter::subprocess::Exec;
 use icon::Icon;
 use types::{CaseMatching, ExactTerm, InverseTerm};
 use utility::{println_json, println_json_with_length, read_first_lines};
@@ -88,7 +88,7 @@ impl ExactOrInverseTerms {
 pub type UtcTime = DateTime<Utc>;
 
 /// Returns a `PathBuf` using given file name under the project data directory.
-pub fn generate_data_file_path(filename: &str) -> Result<PathBuf> {
+pub fn generate_data_file_path(filename: &str) -> std::io::Result<PathBuf> {
     let data_dir = PROJECT_DIRS.data_dir();
     std::fs::create_dir_all(data_dir)?;
 
@@ -99,7 +99,7 @@ pub fn generate_data_file_path(filename: &str) -> Result<PathBuf> {
 }
 
 /// Returns a `PathBuf` using given file name under the project cache directory.
-pub fn generate_cache_file_path(filename: impl AsRef<Path>) -> Result<PathBuf> {
+pub fn generate_cache_file_path(filename: impl AsRef<Path>) -> std::io::Result<PathBuf> {
     let cache_dir = PROJECT_DIRS.cache_dir();
     std::fs::create_dir_all(cache_dir)?;
 
@@ -109,9 +109,7 @@ pub fn generate_cache_file_path(filename: impl AsRef<Path>) -> Result<PathBuf> {
     Ok(file)
 }
 
-pub fn read_json_as<P: AsRef<Path>, T: serde::de::DeserializeOwned>(path: P) -> Result<T> {
-    use std::io::BufReader;
-
+fn read_json_as<P: AsRef<Path>, T: serde::de::DeserializeOwned>(path: P) -> Result<T> {
     let file = std::fs::File::open(path)?;
     let reader = BufReader::new(file);
     let deserializd = serde_json::from_reader(reader)?;
@@ -122,14 +120,17 @@ pub fn read_json_as<P: AsRef<Path>, T: serde::de::DeserializeOwned>(path: P) -> 
 pub fn load_json<T: serde::de::DeserializeOwned, P: AsRef<Path>>(path: Option<P>) -> Option<T> {
     path.and_then(|json_path| {
         if json_path.as_ref().exists() {
-            crate::utils::read_json_as::<_, T>(json_path).ok()
+            read_json_as::<_, T>(json_path).ok()
         } else {
             None
         }
     })
 }
 
-pub fn write_json<T: serde::Serialize, P: AsRef<Path>>(obj: T, path: Option<P>) -> Result<()> {
+pub fn write_json<T: serde::Serialize, P: AsRef<Path>>(
+    obj: T,
+    path: Option<P>,
+) -> std::io::Result<()> {
     if let Some(json_path) = path.as_ref() {
         utility::create_or_overwrite(json_path, serde_json::to_string(&obj)?.as_bytes())?;
     }
@@ -174,18 +175,16 @@ pub fn send_response_from_cache(
     }
 }
 
-pub(crate) fn expand_tilde(path: impl AsRef<str>) -> Result<PathBuf> {
+pub(crate) fn expand_tilde(path: impl AsRef<str>) -> PathBuf {
     static HOME_PREFIX: Lazy<String> = Lazy::new(|| format!("~{}", std::path::MAIN_SEPARATOR));
 
-    let fpath = if let Some(stripped) = path.as_ref().strip_prefix(HOME_PREFIX.as_str()) {
+    if let Some(stripped) = path.as_ref().strip_prefix(HOME_PREFIX.as_str()) {
         let mut home_dir = HOME_DIR.clone();
         home_dir.push(stripped);
         home_dir
     } else {
         path.as_ref().into()
-    };
-
-    Ok(fpath)
+    }
 }
 
 /// Build the absolute path using cwd and relative path.
@@ -203,7 +202,7 @@ pub fn build_abs_path(cwd: impl AsRef<Path>, curline: impl AsRef<Path>) -> PathB
 /// ```
 ///
 /// Credit: https://github.com/eclarke/linecount/blob/master/src/lib.rs
-pub fn count_lines<R: std::io::Read>(handle: R) -> Result<usize, std::io::Error> {
+pub fn count_lines<R: std::io::Read>(handle: R) -> std::io::Result<usize> {
     let mut reader = std::io::BufReader::with_capacity(1024 * 32, handle);
     let mut count = 0;
     loop {

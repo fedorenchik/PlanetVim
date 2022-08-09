@@ -4,12 +4,12 @@ use std::ops::Deref;
 use std::sync::Arc;
 
 use anyhow::Result;
-use filter::{matcher::Matcher, FilterContext, FilteredItem};
+use filter::{matcher::Matcher, FilterContext, MatchedItem};
 use parking_lot::Mutex;
 use serde_json::json;
 
 use crate::command::ctags::recursive_tags::build_recursive_ctags_cmd;
-use crate::command::grep::RgBaseCommand;
+use crate::command::grep::RgTokioCommand;
 use crate::process::tokio::TokioCommand;
 use crate::stdio_server::session::{EventHandle, SessionContext, SourceScale};
 use crate::stdio_server::{write_response, MethodCall};
@@ -18,7 +18,7 @@ pub use on_move::{OnMove, OnMoveHandler};
 
 #[derive(Clone)]
 pub struct BuiltinHandle {
-    pub current_results: Arc<Mutex<Vec<FilteredItem>>>,
+    pub current_results: Arc<Mutex<Vec<MatchedItem>>>,
 }
 
 impl BuiltinHandle {
@@ -26,6 +26,14 @@ impl BuiltinHandle {
         Self {
             current_results: Arc::new(Mutex::new(Vec::new())),
         }
+    }
+
+    /// `lnum` is 1-based.
+    fn line_at(&self, lnum: usize) -> Option<String> {
+        self.current_results
+            .lock()
+            .get((lnum - 1) as usize)
+            .map(|r| r.item.raw.clone())
     }
 }
 
@@ -39,12 +47,7 @@ impl EventHandle for BuiltinHandle {
             msg.get_u64("lnum").ok(),
         ) {
             (SourceScale::Small { ref lines, .. }, Some(lnum)) => {
-                if let Some(curline) = self
-                    .current_results
-                    .lock()
-                    .get((lnum - 1) as usize)
-                    .map(|r| r.source_item.raw.clone())
-                {
+                if let Some(curline) = self.line_at(lnum as usize) {
                     Some(curline)
                 } else {
                     lines.get(lnum as usize - 1).cloned()
@@ -70,12 +73,12 @@ impl EventHandle for BuiltinHandle {
             SourceScale::Small { ref lines, .. } => {
                 let results = filter::par_filter(
                     query,
-                    lines.iter().map(|s| s.as_str().into()).collect(),
+                    lines.iter().cloned().map(Into::into).collect(),
                     &context.fuzzy_matcher(),
                 );
 
                 // Take the first 200 entries and add an icon to each of them.
-                let printer::DecoratedLines {
+                let printer::DisplayLines {
                     lines,
                     indices,
                     truncated_map,
@@ -104,7 +107,6 @@ impl EventHandle for BuiltinHandle {
             SourceScale::Cache { ref path, .. } => {
                 if let Err(e) = filter::dyn_run::<std::iter::Empty<_>>(
                     &query,
-                    path.clone().into(),
                     FilterContext::new(
                         context.icon,
                         Some(40),
@@ -113,6 +115,7 @@ impl EventHandle for BuiltinHandle {
                             .set_match_scope(context.match_scope)
                             .set_bonuses(context.match_bonuses.clone()),
                     ),
+                    path.clone().into(),
                 ) {
                     tracing::error!(error = ?e, "Error occured when filtering the cache source");
                 }
@@ -176,7 +179,7 @@ pub async fn on_session_create(context: Arc<SessionContext>) -> Result<SourceSca
             return Ok(scale);
         }
         "grep2" => {
-            let rg_cmd = RgBaseCommand::new(context.cwd.to_path_buf());
+            let rg_cmd = RgTokioCommand::new(context.cwd.to_path_buf());
             let (total, path) = if context.no_cache {
                 rg_cmd.create_cache().await?
             } else {

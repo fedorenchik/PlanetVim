@@ -2,6 +2,16 @@
 
 ## [unreleased]
 
+
+## [0.36] 2022-08-06
+## Improved
+
+- Speed up the cache creation signigicantly. #858
+
+## Changed
+
+- The spinner will be hidden if it's idle.
+
 ## Fixed
 
 - Maple self-upgrade is broken. #847, #848
@@ -17,6 +27,7 @@
 - Fix the incompatiblity issue between vim-signature and vim-clap popup window. #817
 - Escape the file name for filer sink. #822
 - Seperate the vista impl for tags provider completely. #827
+- Fix the regression of command `ripgrep-forerunner`.
 
 ## Improved
 

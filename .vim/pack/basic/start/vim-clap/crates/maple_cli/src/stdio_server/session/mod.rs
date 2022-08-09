@@ -57,7 +57,7 @@ fn process_source_scale(source_scale: SourceScale, context: Arc<SessionContext>)
     }
 
     if let Some(lines) = source_scale.initial_lines(100) {
-        printer::decorate_lines::<i64>(lines, context.display_winwidth as usize, context.icon)
+        printer::decorate_lines(lines, context.display_winwidth as usize, context.icon)
             .print_on_session_create();
     }
 
@@ -80,7 +80,7 @@ pub trait EventHandle: Send + Sync + 'static {
                 match context.provider_id.as_str() {
                     "grep" | "grep2" => {
                         let rg_cmd =
-                            crate::command::grep::RgBaseCommand::new(context.cwd.to_path_buf());
+                            crate::command::grep::RgTokioCommand::new(context.cwd.to_path_buf());
                         let job_id = utility::calculate_hash(&rg_cmd.inner);
                         spawn_singleton_job(
                             async move {

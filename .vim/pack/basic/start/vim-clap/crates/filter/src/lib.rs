@@ -6,20 +6,19 @@
 //! 2. sort the all lines with a match result.
 //! 3. print the top rated filtered lines to stdout.
 
-mod dynamic;
 mod source;
+mod worker;
 
 use anyhow::Result;
 use rayon::prelude::*;
 
 use icon::Icon;
-use matcher::{MatchResult, MatchScope, Matcher};
+use matcher::{Bonus, MatchScope, Matcher};
 
-pub use self::dynamic::dyn_run;
 pub use self::source::Source;
+pub use self::worker::iterator::dyn_run;
 pub use matcher;
-pub use subprocess;
-pub use types::{CaseMatching, FilteredItem, Query, SourceItem};
+pub use types::{CaseMatching, MatchedItem, Query, SourceItem};
 
 /// Context for running the filter.
 #[derive(Debug, Clone, Default)]
@@ -64,15 +63,20 @@ impl FilterContext {
         self.matcher = self.matcher.set_match_scope(match_scope);
         self
     }
+
+    pub fn bonuses(mut self, bonuses: Vec<Bonus>) -> Self {
+        self.matcher = self.matcher.set_bonuses(bonuses);
+        self
+    }
 }
 
 /// Sorts the filtered result by the filter score.
 ///
 /// The item with highest score first, the item with lowest score last.
-pub fn sort_initial_filtered(filtered: Vec<FilteredItem>) -> Vec<FilteredItem> {
-    let mut filtered = filtered;
-    filtered.par_sort_unstable_by(|v1, v2| v2.score.partial_cmp(&v1.score).unwrap());
-    filtered
+pub fn sort_matched_items(matched_items: Vec<MatchedItem>) -> Vec<MatchedItem> {
+    let mut items = matched_items;
+    items.par_sort_unstable_by(|v1, v2| v2.score.partial_cmp(&v1.score).unwrap());
+    items
 }
 
 /// Returns the ranked results after applying the matcher algo
@@ -81,11 +85,10 @@ pub fn sync_run<I: Iterator<Item = SourceItem>>(
     query: &str,
     source: Source<I>,
     matcher: Matcher,
-) -> Result<Vec<FilteredItem>> {
+) -> Result<Vec<MatchedItem>> {
     let query: Query = query.into();
-    let filtered = source.filter_and_collect(matcher, &query)?;
-    let ranked = sort_initial_filtered(filtered);
-    Ok(ranked)
+    let matched_items = source.run_and_collect(matcher, &query)?;
+    Ok(sort_matched_items(matched_items))
 }
 
 /// Performs the synchorous filtering on a small scale of source in parallel.
@@ -93,15 +96,11 @@ pub fn par_filter(
     query: impl Into<Query>,
     source_items: Vec<SourceItem>,
     fuzzy_matcher: &Matcher,
-) -> Vec<FilteredItem> {
+) -> Vec<MatchedItem> {
     let query: Query = query.into();
-    let filtered: Vec<FilteredItem> = source_items
+    let matched_items: Vec<MatchedItem> = source_items
         .into_par_iter()
-        .filter_map(|item| {
-            fuzzy_matcher
-                .match_query(&item, &query)
-                .map(|MatchResult { score, indices }| (item, score, indices).into())
-        })
+        .filter_map(|item| fuzzy_matcher.match_item(item, &query))
         .collect();
-    sort_initial_filtered(filtered)
+    sort_matched_items(matched_items)
 }

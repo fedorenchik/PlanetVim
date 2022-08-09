@@ -16,8 +16,8 @@ const LOWEST_PRIORITY: usize = 1000usize;
 pub struct Priority(usize);
 
 impl Priority {
-    pub fn as_i64(self) -> i64 {
-        self.0 as i64
+    pub fn as_i32(self) -> i32 {
+        self.0 as i32
     }
 }
 
@@ -58,7 +58,7 @@ pub fn is_comment(line: &str, file_ext: &str) -> bool {
         .any(|comment_syntax| line.trim_start().starts_with(comment_syntax))
 }
 
-// TODO: More general precise reference resolution.
+// TODO: More general precise reference resolution, tree-sitter?
 /// Returns a tuple of (ref_kind, kind_weight) given the pattern and source file extension.
 pub fn resolve_reference_kind(pattern: impl AsRef<str>, file_ext: &str) -> (&'static str, usize) {
     let pattern = pattern.as_ref();
