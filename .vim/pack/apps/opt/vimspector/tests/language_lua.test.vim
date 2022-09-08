@@ -1,10 +1,10 @@
 function! SetUp()
   let g:vimspector_enable_mappings = 'HUMAN'
-  call vimspector#test#setup#SetUpWithMappings( v:none )
+  call vimspector#test#setup#SetUpWithMappings( v:null )
 endfunction
 
-function! ClearDown()
-  call vimspector#test#setup#ClearDown()
+function! TearDown()
+  call vimspector#test#setup#TearDown()
 endfunction
 
 function! SkipUnsupported() abort

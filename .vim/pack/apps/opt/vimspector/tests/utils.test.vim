@@ -1,11 +1,11 @@
 function! SetUp()
-  call vimspector#test#setup#SetUpWithMappings( v:none )
+  call vimspector#test#setup#SetUpWithMappings( v:null )
   py3 import vim
   py3 __import__( 'vimspector' )
 endfunction
 
-function! ClearDown()
-  call vimspector#test#setup#ClearDown()
+function! TearDown()
+  call vimspector#test#setup#TearDown()
 endfunction
 
 function! s:RunPyFile( file_name )
@@ -24,9 +24,11 @@ function! s:RunPyFile( file_name )
 endfunction
 
 function! Test_ExpandReferencesInDict()
+  call SkipNeovim()
   call s:RunPyFile( 'Test_ExpandReferencesInDict.py' )
 endfunction
 
 function! Test_CoreUtils()
+  call SkipNeovim()
   call s:RunPyFile( 'Test_CoreUtils.py' )
 endfunction

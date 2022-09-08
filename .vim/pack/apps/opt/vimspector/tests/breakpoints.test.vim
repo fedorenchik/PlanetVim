@@ -2,7 +2,7 @@ let s:init = 0
 let s:SETTING = {}
 
 function! SetUp() abort
-  call vimspector#test#setup#SetUpWithMappings( v:none )
+  call vimspector#test#setup#SetUpWithMappings( v:null )
   call ThisTestIsFlaky()
 
   if ! s:init
@@ -17,7 +17,7 @@ function! s:PushSetting( setting, value ) abort
 endfunction
 
 function! TearDown() abort
-  call vimspector#test#setup#ClearDown()
+  call vimspector#test#setup#TearDown()
 endfunction
 
 function! SetUp_Test_Signs_Placed_Using_API_Are_Shown()
@@ -141,6 +141,7 @@ function! SetUp_Test_DisableBreakpointWhileDebugging()
 endfunction
 
 function Test_DisableBreakpointWhileDebugging()
+  call SkipNeovim()
   lcd testdata/cpp/simple
   edit simple.cpp
   call setpos( '.', [ 0, 15, 1 ] )
@@ -233,6 +234,7 @@ function! SetUp_Test_DisableBreakpointWhileDebugging_Disable()
 endfunction
 
 function Test_DisableBreakpointWhileDebugging_Disable()
+  call SkipNeovim()
   lcd testdata/cpp/simple
   edit simple.cpp
   call setpos( '.', [ 0, 15, 1 ] )
@@ -366,6 +368,7 @@ function! Test_Add_Breakpoints_In_File_Then_Open()
 endfunction
 
 function! Test_Add_Breakpoints_In_NonOpenedFile_RunToBreak()
+  call SkipNeovim()
   lcd testdata/cpp/simple
 
   " add
@@ -946,6 +949,86 @@ function! Test_ListBreakpoints()
   %bwipe!
 endfunction
 
+function! Test_BreakpointMovements()
+  let g:test_is_flaky = 0
+  lcd testdata/cpp/simple
+  edit simple.cpp
+
+  " Define out of order
+  let breakpoint_lines = [ 15, 9, 17 ]
+  for line in breakpoint_lines
+    call cursor( [ line, 1 ] )
+    call vimspector#ToggleBreakpoint()
+  endfor
+
+  " Sort breakpoints by line, as movements are in sorted order
+  call sort( breakpoint_lines, 'n' )
+
+  call cursor( [ 1, 1 ] )
+  for line in breakpoint_lines
+    call vimspector#JumpToNextBreakpoint()
+    call vimspector#test#signs#AssertCursorIsAtLineInBuffer( 'simple.cpp',
+                                                           \ line,
+                                                           \ 1 )
+  endfor
+
+  " Don't do anything if already at last breakpoint
+  call vimspector#JumpToNextBreakpoint()
+  call vimspector#test#signs#AssertCursorIsAtLineInBuffer(
+      \ 'simple.cpp', breakpoint_lines[ -1 ], 1 )
+
+  " Backwards traverse, skip first (last in file) because already at it
+  for line in reverse( copy( breakpoint_lines ) )[ 1: ]
+    call vimspector#JumpToPreviousBreakpoint()
+    call vimspector#test#signs#AssertCursorIsAtLineInBuffer( 'simple.cpp',
+                                                           \ line,
+                                                           \ 1 )
+  endfor
+
+  " Don't do anything if already at first breakpoint
+  call vimspector#JumpToPreviousBreakpoint()
+  call vimspector#test#signs#AssertCursorIsAtLineInBuffer(
+      \ 'simple.cpp', breakpoint_lines[ 0 ], 1 )
+
+  call vimspector#test#setup#Reset()
+  %bwipe!
+endfunction
+
+function! Test_BreakpointMovements_MovedByServer()
+  let g:test_is_flaky = 0
+  lcd testdata/cpp/simple
+  edit simple.cpp
+
+  " Line 7 has just declaration without assignment
+  " Line 9 is the next line with actual executable statement
+  let unresolved_line = 7
+  let resolved_line = 9
+  call cursor( [ unresolved_line, 1 ] )
+  call vimspector#ToggleBreakpoint()
+
+  " Before starting server, breakpoint is on exact line it was placed
+  call cursor( [ 1, 1 ] )
+  call vimspector#JumpToNextBreakpoint()
+  call vimspector#test#signs#AssertCursorIsAtLineInBuffer( 'simple.cpp',
+                                                         \ unresolved_line,
+                                                         \ 1 )
+
+  " After starting server, breakpoint is moved to next executable line
+  " First assert is needed to wait for launch to finish before moving cursor
+  call vimspector#Launch()
+  call vimspector#test#signs#AssertCursorIsAtLineInBuffer( 'simple.cpp',
+                                                         \ s:break_main_line,
+                                                         \ 1 )
+  call cursor( [ 1, 1 ] )
+  call vimspector#JumpToNextBreakpoint()
+  call vimspector#test#signs#AssertCursorIsAtLineInBuffer( 'simple.cpp',
+                                                         \ resolved_line,
+                                                         \ 1 )
+
+  call vimspector#test#setup#Reset()
+  %bwipe!
+endfunction
+
 function! Test_Custom_Breakpoint_Priority()
   call s:PushSetting( 'vimspector_toggle_disables_breakpoint', 1 )
   let g:vimspector_sign_priority = {
@@ -1211,6 +1294,7 @@ function! Test_Add_Line_BP_In_Other_File_While_Debugging()
 endfunction
 
 function! Test_LineBreakpoint_Moved_By_Server()
+  call SkipNeovim()
   lcd testdata/cpp/simple
   edit simple.cpp
 
@@ -1247,12 +1331,103 @@ function! Test_LineBreakpoint_Moved_By_Server()
   call vimspector#test#signs#AssertSignGroupEmptyAtLine(
         \ 'VimspectorBP',
         \ 5 )
-
   call vimspector#ListBreakpoints()
   call s:CheckBreakpointView( [
         \ 'simple.cpp:' . s:break_foo_line . ' Line breakpoint - VERIFIED: {}'
         \ ] )
   wincmd p
+
+  " toggle off the breakpoint from the line where it is visible
+  call cursor( s:break_foo_line, 1 )
+  call vimspector#ToggleBreakpoint()
+  call vimspector#test#signs#AssertSignGroupEmptyAtLine(
+        \ 'VimspectorBP',
+        \ s:break_foo_line )
+
+  call vimspector#ListBreakpoints()
+  call s:CheckBreakpointView( [] )
+  wincmd p
+
+  " now toggle it back on from the original line
+  call vimspector#SetLineBreakpoint( 'simple.cpp', 5 )
+  call WaitForAssert( { ->
+      \ vimspector#test#signs#AssertSignAtLine(
+        \ 'VimspectorBP',
+        \ s:break_foo_line,
+        \ 'vimspectorBP',
+        \ 9 ) } )
+  call vimspector#test#signs#AssertSignGroupEmptyAtLine(
+        \ 'VimspectorBP',
+        \ 5 )
+  call vimspector#ListBreakpoints()
+  call s:CheckBreakpointView( [
+        \ 'simple.cpp:' . s:break_foo_line . ' Line breakpoint - VERIFIED: {}'
+        \ ] )
+
+  " Toggle off from bp window
+  call cursor( 1, 1 )
+  call vimspector#ToggleBreakpointViewBreakpoint()
+  wincmd p
+  " disabled bp is drawn at _user_ location
+  call WaitForAssert( { ->
+      \ vimspector#test#signs#AssertSignAtLine(
+        \ 'VimspectorBP',
+        \ 5,
+        \ 'vimspectorBPDisabled',
+        \ 9 ) } )
+  call vimspector#test#signs#AssertSignGroupEmptyAtLine(
+        \ 'VimspectorBP',
+        \ s:break_foo_line )
+  wincmd p
+  call s:CheckBreakpointView( [
+        \ 'simple.cpp:5 Line breakpoint - DISABLED: {}'
+        \ ] )
+
+  " And on again
+  call feedkeys( 't', 'xt' )
+  wincmd p
+  call WaitForAssert( { ->
+      \ vimspector#test#signs#AssertSignAtLine(
+        \ 'VimspectorBP',
+        \ s:break_foo_line,
+        \ 'vimspectorBP',
+        \ 9 ) } )
+  call vimspector#test#signs#AssertSignGroupEmptyAtLine(
+        \ 'VimspectorBP',
+        \ 5 )
+  wincmd p
+  call s:CheckBreakpointView( [
+        \ 'simple.cpp:' . s:break_foo_line . ' Line breakpoint - VERIFIED: {}'
+        \ ] )
+
+
+  " now delete it from the breakpoitns window
+  call cursor( 1, 1 )
+  call feedkeys( "\<Del>", 'xt' )
+  wincmd p
+  call vimspector#test#signs#AssertSignGroupEmptyAtLine(
+        \ 'VimspectorBP',
+        \ s:break_foo_line )
+
+  wincmd p
+  call s:CheckBreakpointView( [ '' ] )
+  wincmd p
+
+  " and add it one more time
+  call vimspector#SetLineBreakpoint( 'simple.cpp', 5 )
+  call WaitForAssert( { ->
+      \ vimspector#test#signs#AssertSignAtLine(
+        \ 'VimspectorBP',
+        \ s:break_foo_line,
+        \ 'vimspectorBP',
+        \ 9 ) } )
+  call vimspector#test#signs#AssertSignGroupEmptyAtLine(
+        \ 'VimspectorBP',
+        \ 5 )
+  wincmd p
+  call s:CheckBreakpointView( [
+        \ 'simple.cpp:' . s:break_foo_line . ' Line breakpoint - VERIFIED: {}'
+        \ ] )
 
   call vimspector#Reset()
   call vimspector#test#setup#WaitForReset()

@@ -2,8 +2,8 @@ function! SetUp()
   call vimspector#test#setup#SetUpWithMappings( 'HUMAN' )
 endfunction
 
-function! ClearDown()
-  call vimspector#test#setup#ClearDown()
+function! TearDown()
+  call vimspector#test#setup#TearDown()
 endfunction
 
 let s:fn='../support/test/python/simple_python/main.py'
@@ -60,6 +60,7 @@ function! Test_Step_With_Different_Tabpage()
 endfunction
 
 function! Test_All_Buffers_Deleted_NoHidden()
+  call SkipNeovim()
   call ThisTestIsFlaky()
 
   set nohidden
@@ -91,6 +92,7 @@ function! Test_All_Buffers_Deleted_NoHidden()
 endfunction
 
 function! Test_All_Buffers_Deleted_Hidden()
+  call SkipNeovim()
   call ThisTestIsFlaky()
 
   set hidden

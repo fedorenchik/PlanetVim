@@ -18,9 +18,27 @@ from collections import defaultdict
 import vim
 import os
 import logging
+import operator
 
 import json
 from vimspector import utils, signs, settings
+
+
+def _JumpToBreakpoint( bp ):
+  success = int( vim.eval(
+      f'win_gotoid( bufwinid( \'{ bp[ "filename" ] }\' ) )' ) )
+
+  try:
+    if not success:
+      vim.command( "leftabove split {}".format( bp[ 'filename' ] ) )
+
+    utils.SetCursorPosInWindow( vim.current.window, bp[ 'lnum' ], 1 )
+  except vim.error:
+    # 'filename' or 'lnum' might be missing,
+    # so don't trigger an exception here by referring to them
+    utils.UserMessage( "Unable to jump to file",
+                       persist = True,
+                       error = True )
 
 
 class BreakpointsView( object ):
@@ -236,7 +254,9 @@ class ProjectBreakpoints( object ):
     if bp.get( 'type' ) == 'F':
       self.ClearFunctionBreakpoint( bp.get( 'filename' ) )
     else:
-      self._ToggleBreakpoint( None,
+      # This should find the breakpoint by the "current" line in lnum. If not,
+      # pass an empty options just in case we end up in "ADD" codepath.
+      self._ToggleBreakpoint( {},
                               bp.get( 'filename' ),
                               bp.get( 'lnum' ),
                               should_delete = False )
@@ -274,21 +294,28 @@ class ProjectBreakpoints( object ):
     if bp.get( 'type' ) != 'L':
       return
 
-    success = int( vim.eval(
-        f'win_gotoid( bufwinid( \'{ bp[ "filename" ] }\' ) )' ) )
+    _JumpToBreakpoint( bp )
 
-    try:
-      if not success:
-        vim.command( "leftabove split {}".format( bp[ 'filename' ] ) )
+  def JumpToNextBreakpoint( self, reverse=False ):
+    bps = self._breakpoints_view._breakpoint_list
+    if not bps:
+      return
 
-      utils.SetCursorPosInWindow( vim.current.window, bp[ 'lnum' ], 1 )
-    except vim.error:
-      # 'filename' or 'lnum' might be missing,
-      # so don't trigger an exception here by referring to them
-      utils.UserMessage( "Unable to jump to file",
-                         persist = True,
-                         error = True )
+    line = vim.current.window.cursor[ 0 ]
+    comparator = operator.lt if reverse else operator.gt
+    sorted_bps = sorted( bps,
+                         key=operator.itemgetter( 'lnum' ),
+                         reverse=reverse )
+    bp = next( ( bp
+                 for bp in sorted_bps
+                 if comparator( bp[ 'lnum' ], line ) ),
+                None )
 
+    if bp:
+      _JumpToBreakpoint( bp )
+
+  def JumpToPreviousBreakpoint( self ):
+    self.JumpToNextBreakpoint( reverse=True )
 
   def ClearBreakpointViewBreakpoint( self ):
     bp = self._breakpoints_view.GetBreakpointForLine()
@@ -363,10 +390,17 @@ class ProjectBreakpoints( object ):
     file_name = utils.NormalizePath( file_name )
     for index, bp in enumerate( self._line_breakpoints[ file_name ] ):
       self._SignToLine( file_name, bp )
-      if bp[ 'line' ] == line:
+      # If we're connected, then operate on the server-bp position, not the
+      # user-bp position, as that's what the user sees in the UI (signs, and in
+      # the breakpoints window)
+      if 'server_bp' in bp:
+        if bp[ 'server_bp' ].get( 'line', line ) == line:
+          return bp, index
+      elif bp[ 'line' ] == line:
         return bp, index
 
     return None, None
+
 
   def _FindPostedBreakpoint( self, breakpoint_id ):
     if breakpoint_id is None:

@@ -71,6 +71,7 @@ Contents ~
   3. Python                                                 |vimspector-python|
    1. Python Remote Debugging              |vimspector-python-remote-debugging|
    2. Python Remote launch and attach  |vimspector-python-remote-launch-attach|
+   3. Python 2                                            |vimspector-python-2|
   4. TCL                                                       |vimspector-tcl|
   5. C♯                                                          |vimspector-c|
   6. Go                                                         |vimspector-go|
@@ -272,9 +273,9 @@ runtime dependencies). They are categorised by their level of support:
 =======================================================================================================================================================
 | C, C++, Rust etc. | Tested       | '--all' or '--enable-c' (or cpp)   | vscode-cpptools                      | mono-core                            |
 -------------------------------------------------------------------------------------------------------------------------------------------------------
-| C, C++, Rust etc. | Supported    | '--enable-rust'                    | CodeLLDB                             | Python 3                             |
+| C, C++, Rust etc. | Supported    | '--enable-rust'                    | CodeLLDB                             | none                                 |
 -------------------------------------------------------------------------------------------------------------------------------------------------------
-| Python            | Tested       | '--all' or '--enable-python'       | debugpy                              | Python 2.7 or Python 3               |
+| Python            | Tested       | '--all' or '--enable-python'       | debugpy                              | Python 3                             |
 -------------------------------------------------------------------------------------------------------------------------------------------------------
 | Go                | Tested       | '--enable-go'                      | delve                                | Go 1.16+                             |
 -------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -300,9 +301,7 @@ runtime dependencies). They are categorised by their level of support:
 -------------------------------------------------------------------------------------------------------------------------------------------------------
 | Go (legacy)       | Legacy       | '--enable-go'                      | vscode-go                            | Node, Go, Delve [14]                 |
 -------------------------------------------------------------------------------------------------------------------------------------------------------
-| C# (mono)         | _Retired_    | N/A                                | N/A                                  | N/A                                  |
--------------------------------------------------------------------------------------------------------------------------------------------------------
-| Python.legacy     | _Retired_    | N/A                                | N/A                                  | N/A                                  |
+| Python 2          | Legacy       | '--force-enable-python2'           | debugpy-python2                      | Python 2.7                           |
 -------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -884,6 +883,12 @@ following '<Plug>' mappings:
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 | '<Plug>VimspectorDownFrame'                   | Move down a frame in the current call stack                         | 'vimspector#DownFrame()'                                          |
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| '<Plug>VimspectorJumpToNextBreakpoint'        | Move Cursor to the next breakpoint in current file                  | 'vimspector#JumpToNextBreakpoint()'                               |
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| '<Plug>VimspectorJumpToPreviousBreakpoint'    | Move Cursor to the previous breakpoint in current file              | 'vimspector#JumpToPreviousBreakpoint()'                           |
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| '<Plug>VimspectorJumpToProgramCounter'        | Move Cursor to the program counter in the current frame             | 'vimspector#JumpToProgramCounter()'                               |
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 | '<Plug>VimspectorBalloonEval'                 | Evaluate expression under cursor (or visual) in popup               | _internal_                                                        |
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -912,27 +917,31 @@ loading vimspector**:
 >
   let g:vimspector_enable_mappings = 'VISUAL_STUDIO'
 <
-=========================================================================================================================
-|      _Key_      |                _Mapping_                |                         _Function_                        |
-=========================================================================================================================
-| 'F5'            | '<Plug>VimspectorContinue'              | When debugging, continue. Otherwise start debugging.      |
--------------------------------------------------------------------------------------------------------------------------
-| 'Shift F5'      | '<Plug>VimspectorStop'                  | Stop debugging.                                           |
--------------------------------------------------------------------------------------------------------------------------
-| 'Ctrl Shift F5' | '<Plug>VimspectorRestart'               | Restart debugging with the same configuration.            |
--------------------------------------------------------------------------------------------------------------------------
-| 'F6'            | '<Plug>VimspectorPause'                 | Pause debuggee.                                           |
--------------------------------------------------------------------------------------------------------------------------
-| 'F9'            | '<Plug>VimspectorToggleBreakpoint'      | Toggle line breakpoint on the current line.               |
--------------------------------------------------------------------------------------------------------------------------
-| 'Shift F9'      | '<Plug>VimspectorAddFunctionBreakpoint' | Add a function breakpoint for the expression under cursor |
--------------------------------------------------------------------------------------------------------------------------
-| 'F10'           | '<Plug>VimspectorStepOver'              | Step Over                                                 |
--------------------------------------------------------------------------------------------------------------------------
-| 'F11'           | '<Plug>VimspectorStepInto'              | Step Into                                                 |
--------------------------------------------------------------------------------------------------------------------------
-| 'Shift F11'     | '<Plug>VimspectorStepOut'               | Step out of current function scope                        |
--------------------------------------------------------------------------------------------------------------------------
+============================================================================================================================
+|      _Key_      |                 _Mapping_                  |                         _Function_                        |
+============================================================================================================================
+| 'F5'            | '<Plug>VimspectorContinue'                 | When debugging, continue. Otherwise start debugging.      |
+----------------------------------------------------------------------------------------------------------------------------
+| 'Shift F5'      | '<Plug>VimspectorStop'                     | Stop debugging.                                           |
+----------------------------------------------------------------------------------------------------------------------------
+| 'Ctrl Shift F5' | '<Plug>VimspectorRestart'                  | Restart debugging with the same configuration.            |
+----------------------------------------------------------------------------------------------------------------------------
+| 'F6'            | '<Plug>VimspectorPause'                    | Pause debuggee.                                           |
+----------------------------------------------------------------------------------------------------------------------------
+| 'F8'            | '<Plug>VimspectorJumpToNextBreakpoint'     | Jump to next breakpoint in the current file.              |
+----------------------------------------------------------------------------------------------------------------------------
+| 'Shift F8'      | '<Plug>VimspectorJumpToPreviousBreakpoint' | Jump to previous breakpoint in the current file.          |
+----------------------------------------------------------------------------------------------------------------------------
+| 'F9'            | '<Plug>VimspectorToggleBreakpoint'         | Toggle line breakpoint on the current line.               |
+----------------------------------------------------------------------------------------------------------------------------
+| 'Shift F9'      | '<Plug>VimspectorAddFunctionBreakpoint'    | Add a function breakpoint for the expression under cursor |
+----------------------------------------------------------------------------------------------------------------------------
+| 'F10'           | '<Plug>VimspectorStepOver'                 | Step Over                                                 |
+----------------------------------------------------------------------------------------------------------------------------
+| 'F11'           | '<Plug>VimspectorStepInto'                 | Step Into                                                 |
+----------------------------------------------------------------------------------------------------------------------------
+| 'Shift F11'     | '<Plug>VimspectorStepOut'                  | Step out of current function scope                        |
+----------------------------------------------------------------------------------------------------------------------------
 
 
 -------------------------------------------------------------------------------
@@ -1051,7 +1060,7 @@ For example:
               \    "adapter": "netcoredbg",
               \    "configuration": {
               \      "request": "attach",
-              \      "processId": proc_id
+              \      "processId": pid
               \    }
               \  }
               \})
@@ -1762,6 +1771,10 @@ Python ~
   debugpy', ideally requires a working compiler and the python development
   headers/libs to build a C python extension for performance.
 
+- **_NOTE_**: Debugpy no longer supports python 2. In order to continue to
+  debug python 2 applications, use the 'debugpy-python2' adapter after
+  installing the 'debugpy-python2' gadget.
+
 - Full options:
   https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings
 >
@@ -1828,6 +1841,26 @@ Python Remote launch and attach ~
 
 If you're feeling fancy, checkout the reference guide [33] for an example of
 getting Vimspector to remotely launch and attach.
+
+-------------------------------------------------------------------------------
+                                                          *vimspector-python-2*
+Python 2 ~
+
+In order to continue to debug python 2 applications, ensure that you install
+the 'debugpy-python2' gadget (e.g. '--force-enable-python2' or
+':VimspectorInstall debugpy-python2'), and then change your configuration to
+use:
+>
+  {
+    "configurations": {
+      "Python Attach": {
+        "adapter": "debugpy-python2",
+        // ...
+      }
+    }
+  }
+<
+for examk
 
 -------------------------------------------------------------------------------
                                                                *vimspector-tcl*

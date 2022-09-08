@@ -102,6 +102,14 @@ nnoremap <silent> <Plug>VimspectorUpFrame
 nnoremap <silent> <Plug>VimspectorDownFrame
       \ :<c-u>call <SID>SetRepeat( "\<Plug>VimspectorDownFrame" )<CR>
       \:<c-u>call vimspector#DownFrame()<CR>
+nnoremap <silent> <Plug>VimspectorJumpToNextBreakpoint
+      \ :<c-u>call <SID>SetRepeat( "\<Plug>VimspectorJumpToNextBreakpoint" )<CR>
+      \ :<c-u>call vimspector#JumpToNextBreakpoint()<CR>
+nnoremap <silent> <Plug>VimspectorJumpToPreviousBreakpoint
+      \ :<c-u>call <SID>SetRepeat( "\<Plug>VimspectorJumpToPreviousBreakpoint" )<CR>
+      \ :<c-u>call vimspector#JumpToPreviousBreakpoint()<CR>
+nnoremap <silent> <Plug>VimspectorJumpToProgramCounter
+      \ :<c-u>call vimspector#JumpToProgramCounter()<CR>
 
 nnoremap <silent> <Plug>VimspectorBreakpoints
       \ :<c-u>call vimspector#ListBreakpoints()<CR>
@@ -111,6 +119,8 @@ if s:mappings ==# 'VISUAL_STUDIO'
   nmap <S-F5>       <Plug>VimspectorStop
   nmap <C-S-F5>     <Plug>VimspectorRestart
   nmap <F6>         <Plug>VimspectorPause
+  nmap <F8>         <Plug>VimspectorJumpToNextBreakpoint
+  nmap <S-F8>       <Plug>VimspectorJumpToPreviousBreakpoint
   nmap <F9>         <Plug>VimspectorToggleBreakpoint
   nmap <S-F9>       <Plug>VimspectorAddFunctionBreakpoint
   nmap <F10>        <Plug>VimspectorStepOver

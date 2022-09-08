@@ -1,7 +1,7 @@
 let s:init = 0
 
 function! SetUp()
-  call vimspector#test#setup#SetUpWithMappings( v:none )
+  call vimspector#test#setup#SetUpWithMappings( v:null )
 
   if ! s:init
     let s:break_main_line = FunctionBreakOnBrace() ? 14 : 15
@@ -10,8 +10,8 @@ function! SetUp()
   endif
 endfunction
 
-function! ClearDown()
-  call vimspector#test#setup#ClearDown()
+function! TearDown()
+  call vimspector#test#setup#TearDown()
 endfunction
 
 function! SetUp_Test_Mappings_Are_Added_HUMAN()
@@ -52,6 +52,7 @@ function! SetUp_Test_Use_Mappings_HUMAN()
 endfunction
 
 function! Test_Use_Mappings_HUMAN()
+  call SkipNeovim()
   call ThisTestIsFlaky()
   lcd testdata/cpp/simple
   edit simple.cpp
@@ -155,6 +156,7 @@ function! SetUp_Test_Use_Mappings_HUMAN_Disable()
 endfunction
 
 function! Test_Use_Mappings_HUMAN_Disable()
+  call SkipNeovim()
   call ThisTestIsFlaky()
   lcd testdata/cpp/simple
   edit simple.cpp

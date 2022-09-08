@@ -1767,6 +1767,15 @@ class DebugSession( object ):
   def JumpToBreakpointViewBreakpoint( self ):
     self._breakpoints.JumpToBreakpointViewBreakpoint()
 
+  def JumpToNextBreakpoint( self ):
+    self._breakpoints.JumpToNextBreakpoint()
+
+  def JumpToPreviousBreakpoint( self ):
+    self._breakpoints.JumpToPreviousBreakpoint()
+
+  def JumpToProgramCounter( self ):
+    self._stackTraceView.JumpToProgramCounter()
+
   def ToggleBreakpoint( self, options ):
     return self._breakpoints.ToggleBreakpoint( options )
 

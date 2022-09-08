@@ -1,9 +1,9 @@
 function! SetUp()
-  call vimspector#test#setup#SetUpWithMappings( v:none )
+  call vimspector#test#setup#SetUpWithMappings( v:null )
 endfunction
 
-function! ClearDown()
-  call vimspector#test#setup#ClearDown()
+function! TearDown()
+  call vimspector#test#setup#TearDown()
 endfunction
 
 function Test_Get_Configurations()
@@ -56,6 +56,7 @@ function! Test_PickConfiguration_FilteredFiletypes()
 endfunction
 
 function Test_Get_Configurations_VimDict()
+  call SkipNeovim()
   call vimspector#test#setup#PushSetting( 'vimspector_configurations', #{
         \ test_config: #{
         \    extends: 'launch - netcoredbg'

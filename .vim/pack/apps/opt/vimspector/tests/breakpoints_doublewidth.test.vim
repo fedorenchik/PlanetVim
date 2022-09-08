@@ -2,7 +2,7 @@ let s:init = 0
 
 function! SetUp()
   set ambiwidth=double
-  call vimspector#test#setup#SetUpWithMappings( v:none )
+  call vimspector#test#setup#SetUpWithMappings( v:null )
   call ThisTestIsFlaky()
 
   if ! s:init
@@ -15,8 +15,8 @@ function! SetUp()
   let g:vimspector_toggle_disables_breakpoint = 1
 endfunction
 
-function! ClearDown()
-  call vimspector#test#setup#ClearDown()
+function! TearDown()
+  call vimspector#test#setup#TearDown()
 endfunction
 
 function! SetUp_Test_Signs_Placed_Using_API_Are_Shown()
@@ -64,6 +64,7 @@ function! SetUp_Test_Use_Mappings_HUMAN()
 endfunction
 
 function! Test_Use_Mappings_HUMAN()
+  call SkipNeovim()
   lcd testdata/cpp/simple
   edit simple.cpp
   call setpos( '.', [ 0, 16, 1 ] )
@@ -157,6 +158,7 @@ function! SetUp_Test_DisableBreakpointWhileDebugging()
 endfunction
 
 function Test_DisableBreakpointWhileDebugging()
+  call SkipNeovim()
   lcd testdata/cpp/simple
   edit simple.cpp
   call setpos( '.', [ 0, 15, 1 ] )

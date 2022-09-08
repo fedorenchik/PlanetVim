@@ -5,8 +5,8 @@ function! SetUp()
   let g:vimspector_variables_display_mode = 'compact'
 endfunction
 
-function! ClearDown()
-  call vimspector#test#setup#ClearDown()
+function! TearDown()
+  call vimspector#test#setup#TearDown()
 endfunction
 
 " TODO: SkipIf: Big endian system!
@@ -37,13 +37,13 @@ endfunction
 
 
 function! Test_DumpMemory_VariableWindow()
+  call SkipNeovim()
   call s:StartDebugging()
 
   call WaitForAssert( {->
         \   AssertMatchList(
         \     [
         \       '- Scope: Local',
-        \       ' \*- : .*',
         \       ' \*+ : {.*}',
         \       ' \*+ t: {i:0, c:''\\0'', fffff:0}',
         \       '+ Scope: Static',
@@ -57,7 +57,7 @@ function! Test_DumpMemory_VariableWindow()
         \ } )
 
   call win_gotoid( g:vimspector_session_windows.variables )
-  call cursor( [ 4, 1 ] )
+  call cursor( [ 3, 1 ] )
   call vimspector#ReadMemory( #{ length: 9, offset: 0 } )
 
   call win_gotoid( g:vimspector_session_windows.code )
@@ -87,7 +87,7 @@ function! Test_DumpMemory_VariableWindow()
         \ v:null )
 
   call win_gotoid( g:vimspector_session_windows.variables )
-  call cursor( [ 4, 1 ] )
+  call cursor( [ 3, 1 ] )
   call vimspector#ReadMemory( #{ length: 9, offset: 0 } )
   call WaitForAssert( {->
         \   AssertMatchList(
@@ -104,7 +104,7 @@ function! Test_DumpMemory_VariableWindow()
         \ } )
 
   call win_gotoid( g:vimspector_session_windows.variables )
-  call cursor( [ 4, 1 ] )
+  call cursor( [ 3, 1 ] )
   " Trigger the default configured mapping and answer the prompts
   py3 <<EOF
 from unittest import mock
@@ -128,13 +128,13 @@ EOF
 endfunction
 
 function! Test_DumpMemory_WatchWindow()
+  call SkipNeovim()
   call s:StartDebugging()
 
   call WaitForAssert( {->
         \   AssertMatchList(
         \     [
         \       '- Scope: Local',
-        \       ' \*- : .*',
         \       ' \*+ : {.*}',
         \       ' \*+ t: {i:0, c:''\\0'', fffff:0}',
         \       '+ Scope: Static',

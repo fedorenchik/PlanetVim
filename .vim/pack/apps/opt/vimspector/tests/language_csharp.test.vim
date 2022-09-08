@@ -1,9 +1,9 @@
 function! SetUp()
-  call vimspector#test#setup#SetUpWithMappings( v:none )
+  call vimspector#test#setup#SetUpWithMappings( v:null )
 endfunction
 
-function! ClearDown()
-  call vimspector#test#setup#ClearDown()
+function! TearDown()
+  call vimspector#test#setup#TearDown()
 endfunction
 
 function! SetUp_Test_Go_Simple()
@@ -15,6 +15,7 @@ function! SkipUnsupported() abort
 endfunction
 
 function! Test_CSharp_Simple_Adhoc_Config()
+  call SkipNeovim()
   call SkipUnsupported()
   let fn='Program.cs'
   lcd ../support/test/csharp

@@ -4,8 +4,8 @@ function! SetUp()
   call vimspector#test#setup#SetUpWithMappings( 'HUMAN' )
 endfunction
 
-function! ClearDown()
-  call vimspector#test#setup#ClearDown()
+function! TearDown()
+  call vimspector#test#setup#TearDown()
 endfunction
 
 function! s:StartDebugging()
@@ -358,6 +358,7 @@ function! Test_Multiple_Threads_Step()
 endfunction
 
 function! Test_UpDownStack()
+  call SkipNeovim()
   let fn='../support/test/python/simple_python/main.py'
   exe 'edit ' . fn
   call setpos( '.', [ 0, 6, 1 ] )
@@ -557,5 +558,40 @@ function! Test_UpDownStack()
 
   call vimspector#ClearBreakpoints()
   call vimspector#test#setup#Reset()
+  %bwipe!
+endfunction
+
+function! Test_JumpToProgramCounter()
+  let l:break_main_line = FunctionBreakOnBrace() ? 14 : 15
+  let l:break_foo_line = FunctionBreakOnBrace() ? 6 : 9
+  lcd testdata/cpp/simple
+  let fn = 'simple.cpp'
+  exe 'edit ' .. fn
+
+  call vimspector#SetLineBreakpoint( fn, 16 )
+  call vimspector#Launch()
+  call vimspector#test#signs#AssertCursorIsAtLineInBuffer( fn,
+                                                         \ break_main_line,
+                                                         \ 1 )
+
+  function! TestJumpToPCAux( line ) closure abort
+    call cursor( [ 1, 1 ] )
+    call vimspector#test#signs#AssertCursorIsAtLineInBuffer( fn, 1, 1 )
+    call vimspector#JumpToProgramCounter()
+    call vimspector#test#signs#AssertCursorIsAtLineInBuffer( fn, a:line, 1 )
+  endfunction
+
+  call vimspector#Continue()
+  call TestJumpToPCAux( 16 )
+  call vimspector#StepInto()
+  call TestJumpToPCAux( break_foo_line )
+
+  edit struct.cpp
+  call vimspector#JumpToProgramCounter()
+  call vimspector#test#signs#AssertCursorIsAtLineInBuffer( fn, break_foo_line, 1 )
+
+  call vimspector#ClearBreakpoints()
+  call vimspector#test#setup#Reset()
+  delfunc TestJumpToPCAux
   %bwipe!
 endfunction

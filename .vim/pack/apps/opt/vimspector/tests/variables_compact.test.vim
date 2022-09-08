@@ -6,8 +6,8 @@ function! SetUp()
   let s:setup_func_line = FunctionBreakOnBrace() ? 17 : 18
 endfunction
 
-function! ClearDown()
-  call vimspector#test#setup#ClearDown()
+function! TearDown()
+  call vimspector#test#setup#TearDown()
 endfunction
 
 function! s:StartDebugging( ... )
@@ -182,6 +182,7 @@ function! Test_SimpleWatches()
 endfunction
 
 function! Test_ExpandVariables()
+  call SkipNeovim()
   let fn =  'testdata/cpp/simple/struct.cpp'
   call s:StartDebugging( #{ fn: fn, line: 24, col: 1, launch: #{
         \   configuration: 'run-to-breakpoint'
@@ -354,6 +355,7 @@ function! Test_ExpandVariables()
 endfunction
 
 function! Test_ExpandWatch()
+  call SkipNeovim()
   let fn =  'testdata/cpp/simple/struct.cpp'
   call s:StartDebugging( #{ fn: fn, line: 24, col: 1, launch: #{
         \   configuration: 'run-to-breakpoint'
@@ -647,6 +649,7 @@ function! Test_EvaluateFailure()
 endfunction
 
 function! Test_VariableEval()
+  call SkipNeovim()
   let fn =  'testdata/cpp/simple/struct.cpp'
   call s:StartDebugging( #{ fn: fn, line: 24, col: 1, launch: #{
         \   configuration: 'run-to-breakpoint'
@@ -665,7 +668,7 @@ function! Test_VariableEval()
   call feedkeys( ',d', 'xt' )
 
   call WaitForAssert( {->
-        \   assert_notequal( v:none, g:vimspector_session_windows.eval )
+        \   AssertNotNull( g:vimspector_session_windows.eval )
         \ } )
 
   call WaitForAssert( {->
@@ -687,7 +690,7 @@ function! Test_VariableEval()
   call feedkeys( "\<Esc>", 'xt' )
 
   call WaitForAssert( {->
-        \ assert_equal( v:none, g:vimspector_session_windows.eval )
+        \ AssertNull( g:vimspector_session_windows.eval )
         \ } )
 
   " test selection
@@ -697,7 +700,7 @@ function! Test_VariableEval()
   call feedkeys( 'viw,d', 'xt' )
 
   call WaitForAssert( {->
-        \ assert_notequal( v:none, g:vimspector_session_windows.eval )
+        \ AssertNotNull( g:vimspector_session_windows.eval )
         \ } )
 
   call WaitForAssert( {->
@@ -719,7 +722,7 @@ function! Test_VariableEval()
   call feedkeys( "\<Esc>", 'xt' )
 
   call WaitForAssert( {->
-        \ assert_equal( v:none, g:vimspector_session_windows.eval )
+        \ AssertNull( g:vimspector_session_windows.eval )
         \ } )
 
   " Get back to normal mode
@@ -731,7 +734,7 @@ function! Test_VariableEval()
   call feedkeys( ',d', 'xt' )
 
   call WaitForAssert( {->
-        \   assert_notequal( v:none, g:vimspector_session_windows.eval )
+        \   AssertNotNull( g:vimspector_session_windows.eval )
         \ } )
 
   call WaitForAssert( {->
@@ -749,7 +752,7 @@ function! Test_VariableEval()
   call feedkeys( "\<Esc>", 'xt' )
 
   call WaitForAssert( {->
-        \ assert_equal( v:none, g:vimspector_session_windows.eval )
+        \ AssertNull( g:vimspector_session_windows.eval )
         \ } )
 
   call vimspector#test#setup#Reset()
@@ -757,6 +760,7 @@ function! Test_VariableEval()
 endfunction
 
 function! Test_VariableEvalExpand()
+  call SkipNeovim()
   let fn =  'testdata/cpp/simple/struct.cpp'
   call s:StartDebugging( #{ fn: fn, line: 24, col: 1, launch: #{
         \   configuration: 'run-to-breakpoint'
@@ -775,7 +779,7 @@ function! Test_VariableEvalExpand()
   call feedkeys( ',d', 'xt' )
 
   call WaitForAssert( {->
-        \ assert_notequal( v:none, g:vimspector_session_windows.eval )
+        \ AssertNotNull( g:vimspector_session_windows.eval )
         \ } )
 
   call WaitForAssert( {->
@@ -835,7 +839,7 @@ function! Test_VariableEvalExpand()
   call feedkeys( "\<Esc>", 'xt' )
 
   call WaitForAssert( {->
-        \ assert_equal( v:none, g:vimspector_session_windows.eval )
+        \ AssertNull( g:vimspector_session_windows.eval )
         \ } )
 
   call vimspector#test#setup#Reset()
@@ -1069,6 +1073,7 @@ EOF
 endfunction
 
 function! Test_SetVariableValue_Balloon()
+  call SkipNeovim()
   let fn =  'testdata/cpp/simple/struct.cpp'
   call s:StartDebugging( #{ fn: fn, line: 24, col: 1, launch: #{
         \   configuration: 'run-to-breakpoint'
@@ -1087,7 +1092,7 @@ function! Test_SetVariableValue_Balloon()
   call feedkeys( ',d', 'xt' )
 
   call WaitForAssert( {->
-        \   assert_notequal( v:none, g:vimspector_session_windows.eval )
+        \   AssertNotNull( g:vimspector_session_windows.eval )
         \ } )
 
   call WaitForAssert( {->

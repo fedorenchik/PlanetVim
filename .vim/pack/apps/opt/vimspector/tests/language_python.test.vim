@@ -1,9 +1,9 @@
 function! SetUp()
-  call vimspector#test#setup#SetUpWithMappings( v:none )
+  call vimspector#test#setup#SetUpWithMappings( v:null )
 endfunction
 
-function! ClearDown()
-  call vimspector#test#setup#ClearDown()
+function! TearDown()
+  call vimspector#test#setup#TearDown()
 endfunction
 
 function! SetUp_Test_Python_Simple()
@@ -108,6 +108,7 @@ function! SetUp_Test_Python_Remote_Attach()
 endfunction
 
 function! Test_Python_Remote_Attach()
+  call SkipNeovim()
   lcd ../support/test/python/simple_python
   let fn='main.py'
   exe 'edit ' . fn
