@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/chrisbra/Colorizer.git
 	branch = master
-	commit = 2b8f9909c88af934fcb12e52f106114af832add9
-	parent = 1feb3f7243939979a8cfa9a8aa595acf00dc7446
+	commit = 715c91303f0f7a59b21af39c9d168d975ca2c831
+	parent = 78e2c375658432e549e8bc7011911f36949f13ed
 	method = merge
 	cmdver = 0.4.3
