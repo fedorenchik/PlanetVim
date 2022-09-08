@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/junegunn/goyo.vim.git
 	branch = master
-	commit = d0bb582dd478011cfdba18ac3b2d52a7f1659aeb
-	parent = 2dde1c4d5e75575a194116f945fbbe1f0e2e9a2c
+	commit = 7f5d35a65510083ea5c2d0941797244b9963d4a9
+	parent = a5de53e7c206ca4f348a0fdd79be141b25b660c7
 	method = merge
 	cmdver = 0.4.3
