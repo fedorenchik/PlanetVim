@@ -108,6 +108,7 @@ function! vimtex#delim#toggle_modifier(...) abort " {{{1
 
   " Calculate new position
   let l:pos = vimtex#pos#get_cursor()
+  let l:do_adjust_right = l:pos[2] >= l:close.cnum + len(l:close.mod)
   if l:pos[1] == l:open.lnum && l:pos[2] > l:open.cnum
     if l:pos[2] > l:open.cnum + len(l:open.mod)
       let l:pos[2] += l:shift
@@ -116,7 +117,11 @@ function! vimtex#delim#toggle_modifier(...) abort " {{{1
     endif
   endif
   if l:pos[1] == l:close.lnum && l:pos[2] >= l:cnum
-    let l:pos[2] = l:cnum + max([0, len(newmods[1]) - len(l:close.mod)])
+    if l:do_adjust_right
+      let l:pos[2] += len(newmods[1]) - len(l:close.mod)
+    else
+      let l:pos[2] = l:cnum
+    endif
   endif
 
   " Change current text
@@ -278,10 +283,12 @@ function! vimtex#delim#change(...) abort " {{{1
           \ ? l:open.match . ' ... ' . l:open.corr
           \ : l:open.match . ' ... ' . l:open.corr)
 
-    let l:new_delim = vimtex#echo#input({
-          \ 'info' :
-          \   ['Change surrounding delimiter: ', ['VimtexWarning', l:name]],
-          \ 'complete' : 'customlist,vimtex#delim#change_input_complete',
+    let l:new_delim = vimtex#ui#input({
+          \ 'info': [
+          \   'Change surrounding delimiter: ',
+          \   ['VimtexWarning', l:name]
+          \ ],
+          \ 'completion': 'customlist,vimtex#delim#change_input_complete',
           \})
   endif
 
@@ -475,10 +482,12 @@ function! s:operator_setup(operator) abort " {{{1
           \ ? l:open.match . ' ... ' . l:open.corr
           \ : l:open.match . ' ... ' . l:open.corr)
 
-    let s:operator_delim = vimtex#echo#input({
-          \ 'info' :
-          \   ['Change surrounding delimiter: ', ['VimtexWarning', l:name]],
-          \ 'complete' : 'customlist,vimtex#delim#change_input_complete',
+    let s:operator_delim = vimtex#ui#input({
+          \ 'info': [
+          \   'Change surrounding delimiter: ',
+          \   ['VimtexWarning', l:name]
+          \ ],
+          \ 'completion': 'customlist,vimtex#delim#change_input_complete',
           \})
   endif
 endfunction
@@ -670,7 +679,7 @@ function! s:parser_tex(match, lnum, cnum, side, type, direction) abort " {{{1
         \ 'close' : '\m' . escape(a:match, '$'),
         \}
   let result.side = vimtex#syntax#in(
-        \   (a:match ==# '$' ? 'texMathZoneX' : 'texMathZoneXX'),
+        \   (a:match ==# '$' ? 'texMathZoneTI' : 'texMathZoneTD'),
         \   a:lnum, a:cnum+1)
         \ ? 'open' : 'close'
   let result.is_open = result.side ==# 'open'

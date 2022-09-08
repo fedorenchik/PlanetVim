@@ -289,10 +289,13 @@ Clientserver~
 
   A server will be started automatically if Vim is running on Windows or if it
   is running in a GUI (gVim). If you use Vim under a terminal in Linux or
-  MacOS, a server will not be started by default. Since Vim version 8.0.475,
-  one can use |remote_startserver()| to start a server from your `vimrc` file.
-  The following vimrc configuration snippet will ensure that Vim starts with
-  a server, if possible: >
+  MacOS, a server will not be started by defaul. Also, MacVim users should be
+  aware of some differences from regular Vim and should therefore read
+  |macvim-clientserver| carefully.
+
+  Since Vim version 8.0.475, one can use |remote_startserver()| to start
+  a server from your `vimrc` file. The following vimrc configuration snippet
+  will ensure that Vim starts with a server, if possible: >
 
     if empty(v:servername) && exists('*remote_startserver')
       call remote_startserver('VIM')
@@ -374,9 +377,10 @@ TeX root directive~
     %! TEX root = /path/to/my-main.tex
     % ! TeX root = ../*.tex
     %!Tex Root=**/main.tex
+    %! TeX root: ../main.tex
 <
   As can be seen, the words "tex root" are recognized regardless of casing and
-  the spaces are ignored.
+  the spaces are ignored. Also, both a colon and an equal sign can be used.
 
   Note: It is allowed to use a globbing pattern (see |wildcards|). If there
         are multiple matches, then VimTeX will ask for input when the buffer
@@ -1855,7 +1859,7 @@ OPTIONS                                                        *vimtex-options*
     shell_options~
       Pass additional options to `YaLafi`, e.g., `--equation-punctuation displ`;
       for more info, see:
-      https://github.com/matze-dd/YaLafi
+      https://github.com/torik42/YaLafi
 
     show_suggestions~
       If set to 1, then `LanguageTool's` replacement suggestions are included
@@ -2959,7 +2963,8 @@ OPTIONS                                                        *vimtex-options*
 
 *g:vimtex_callback_progpath*
   The path to the Vim/neovim executable. This is currently passed to Zathura
-  (|vimtex-view-zathura|) for use with synctex callbacks.
+  and Sioyek for use with synctex callbacks; see |vimtex-view-zathura| and
+  |vimtex-view-sioyek|.
 
   You usually don't have to touch this variable; VimTeX will |v:progpath| if
   the option is not defined. But some people may use wrappers and similar to
@@ -4377,11 +4382,11 @@ general idea can be described as follows.
 
   `tex{type}Zone`
     Some commands open specific syntax regions that have different rules. Math
-    mode is a good example. Math mode is highlighted differently, and the
-    syntax regions are name `texMathZone*`. The `tex{type}Zone`s may typically
-    contain their own (sub)sets of syntax groups that are only matched within
-    the specific region. Another example is the inclusion of nested syntax
-    highlighting with e.g. the `minted` or `listings` packages.
+    mode is a good example. Math mode is highlighted differently, and the main
+    syntax regions are named `texMathZone*`. The `tex{type}Zone`s may
+    typically contain their own (sub)sets of syntax groups that are only
+    matched within the specific region. Another example is the inclusion of
+    nested syntax highlighting with e.g. the `minted` or `listings` packages.
 
   `tex{type}{element}`
     Some regions or commands include other types of elements, e.g. parameters
@@ -4496,22 +4501,30 @@ Table 2: A list of the most common normal LaTeX groups.~
 
 Table 3: A list of math mode groups.~
 >
-  GROUP                    DEFAULT        EXAMPLE
+  GROUP                    DEFAULT           EXAMPLE
   ----------------------------------------------------------------------------
-  texMathZone              Special        \( HERE \); \[ HERE \]
-  texMathZoneEnv           texMathZone    \begin{menv}  HERE \end{menv}
-  texMathZoneEnvStarred    texMathZone    \begin{menv*} HERE \end{menv*}
-  texMathZoneX             texMathZone    $ HERE $
-  texMathZoneXX            texMathZone    $$ HERE $$
-  texMathZoneEnsured       texMathZone    \ensuremath{HERE}
-  texCmdMathEnv            texCmdEnv      \BEGIN; \END (for math environments)
-  texMathEnvArgName        Delimiter      \begin{EQUATION}
-  texCmdMath               texCmd         \ENSUREMATH
-  texMathDelim             Type           \LVERT
-  texMathDelimMod          texMathDelim   \LEFT\lvert \RIGHT\rvert
-  texMathOper              Operator       Basic operators: +-=/
-  texMathSuperSub          texMathOper    Sub and super operators (^, _)
-  texMathError             texError       Unmatched region endings
+  texMathZone              Special
+  texMathZoneLI            texMathZone       \( HERE \)
+  texMathZoneLD            texMathZone       \[ HERE \]
+  texMathZoneTI            texMathZone       $ HERE $
+  texMathZoneTD            texMathZone       $$ HERE $$
+  texMathZoneEnv           texMathZone       \begin{menv}  HERE \end{menv}
+  texMathZoneEnvStarred    texMathZone       \begin{menv*} HERE \end{menv*}
+  texMathZoneEnsured       texMathZone       \ensuremath{HERE}
+  texMathDelimZone         texDelim
+  texMathDelimZoneLI       texMathDelimZone  \(; \)
+  texMathDelimZoneLD       texMathDelimZone  \[; \]
+  texMathDelimZoneTI       texMathDelimZone  $
+  texMathDelimZoneTD       texMathDelimZone  $$
+  texCmdMathEnv            texCmdEnv         \BEGIN; \END
+                                             (Only for math environments.)
+  texMathEnvArgName        Delimiter         \begin{EQUATION}
+  texCmdMath               texCmd            \ENSUREMATH
+  texMathDelim             Type              \LVERT
+  texMathDelimMod          texMathDelim      \LEFT\lvert \RIGHT\rvert
+  texMathOper              Operator          Basic operators: +-=/
+  texMathSuperSub          texMathOper       Sub and super operators (^, _)
+  texMathError             texError          Unmatched region endings
 
 Table 4: A list of other important groups.~
 >
@@ -5091,7 +5104,7 @@ be found.
 Note: Spell checking with `LanguageTool` is only enabled if a country code is
       specified in |'spelllang'|.
 
-[1] https://github.com/matze-dd/YaLafi
+[1] https://github.com/torik42/YaLafi
 [2] https://www.languagetool.org
 [3] https://www.languagetool.org/download/
 
@@ -5235,6 +5248,7 @@ inverse-search configuration works, in which case one should read
 configuration are `%2` and `%1`, not `%l` and `%f`.
 
 Associated settings:
+* |g:vimtex_callback_progpath|
 * |g:vimtex_view_sioyek_exe|
 
                                                              *vimtex-view-skim*
@@ -5309,6 +5323,7 @@ one should read |vimtex-synctex-inverse-search|. The interpolation variables
 for Zathura configuration are `%{line}` and `%{input}`, not `%l` and `%f`.
 
 Associated settings:
+* |g:vimtex_callback_progpath|
 * |g:vimtex_view_zathura_check_libsynctex|
 * |g:vimtex_view_zathura_options|
 
@@ -5732,11 +5747,15 @@ A: If you change `TEXMFHOME` in your `.bashrc` or `.zshrc` or similar and use `g
                                                                *vimtex-faq-wsl*
 Q: Does VimTeX support WSL (Windows Subsystem for Linux)?
 A: For the moment, rudimentarily, as follows: To set up the viewer, install
-   mupdf [0] or SumatraPDF [1], add the executable to %PATH%, say by Rapidee
-   [2]. In your vimrc, the lines
+   Sioyek [0], MuPDF [1], or SumatraPDF [2], add the executable to `%PATH%`,
+   say by Rapidee [3]. In your vimrc, the lines
 >
    if has('win32') || (has('unix') && exists('$WSLENV'))
-     if executable('mupdf.exe')
+     if executable('sioyek.exe')
+       let g:vimtex_view_method = 'sioyek'
+       let g:vimtex_view_sioyek_exe = 'sioyek.exe'
+       let g:vimtex_callback_progpath = 'wsl nvim'
+     elseif executable('mupdf.exe')
        let g:vimtex_view_general_viewer = 'mupdf.exe'
      elseif executable('SumatraPDF.exe')
        let g:vimtex_view_general_viewer = 'SumatraPDF.exe'
@@ -5744,36 +5763,36 @@ A: For the moment, rudimentarily, as follows: To set up the viewer, install
    endif
 <
    make |:VimtexView| work under Windows, and also under WSL, provided that at
-   least Windows 10 version 1903 [3] of WSL is installed, the current work dir
-   and the compiled file is contained in the Linux home directory $HOME (as
-   opposed to %USERPROFILE% in Windows).
+   least Windows 10 version 1903 [4] of WSL is installed, the current work dir
+   and the compiled file is contained in the Linux home directory `$HOME` (as
+   opposed to `%USERPROFILE%` in Windows).
 
-   However, client-server capabilities seem to be disabled (perhaps because
-   WSL does not have built-in support for X11) and therefore inverse search
-   does not work. Neither does forward search work: While SumatraPDF opens
-   fine the PDF file in \\wsl$\<DistroName>\..., the forward search in
-   SumatraPDF itself does not find the corresponding source file in
-   \\wsl$\<DistroName>\....
+   With this configuration, both forward and inverse search should work with
+   Sioyek and neovim. However, forward search does not work for SumatraPDF. It
+   seems that, while SumatraPDF is able to find the PDF file in
+   `\\wsl$\<DistroName>\...`, the corresponding source file in
+   `\\wsl$\<DistroName>\...` is not available.
 
    To set up a LaTeX distribution, while reusing that of Windows as proposed
-   at [4] seems efficient, in practice accessing files on mounted NTFS drives
-   from WSL is slow, even more so under WSL2 [5]. Therefore a full TeXLive
+   at [5] seems efficient, in practice accessing files on mounted NTFS drives
+   from WSL is slow, even more so under WSL2 [6]. Therefore a full TeXLive
    installation is recommended.
 
    If only basic functionality is required, then a minimal TeXLive
-   installation, such as TinyTeX [6] or a minimal set of packages to compile
-   LaTeX as provided by your distribution, is an option, as discussed at [7].
+   installation, such as TinyTeX [7] or a minimal set of packages to compile
+   LaTeX as provided by your distribution, is an option, as discussed at [8].
    For example, under openSUSE, it suffices to install the packages
    texlive-scheme-basic, texlive-latexmk, texlive-collection-fontsrecommended.
 
-   [0]: https://chocolatey.org/packages/mupdf
-   [1]: https://chocolatey.org/packages/sumatrapdf
-   [2]: https://www.rapidee.com/en/about
-   [3]: https://devblogs.microsoft.com/commandline/whats-new-for-wsl-in-windows-10-version-1903/
-   [4]: https://github.com/lervag/vimtex/issues/1380
-   [5]: https://vxlabs.com/2019/12/06/wsl2-io-measurements/
-   [6]: https://yihui.org/tinytex/
-   [7]: https://tex.stackexchange.com/questions/397174/minimal-texlive-installation
+   [0]: https://sioyek.info/
+   [1]: https://chocolatey.org/packages/mupdf
+   [2]: https://chocolatey.org/packages/sumatrapdf
+   [3]: https://www.rapidee.com/en/about
+   [4]: https://devblogs.microsoft.com/commandline/whats-new-for-wsl-in-windows-10-version-1903/
+   [5]: https://github.com/lervag/vimtex/issues/1380
+   [6]: https://vxlabs.com/2019/12/06/wsl2-io-measurements/
+   [7]: https://yihui.org/tinytex/
+   [8]: https://tex.stackexchange.com/questions/397174/minimal-texlive-installation
 
 ------------------------------------------------------------------------------
                                                      *vimtex-faq-zathura-macos*
