@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/chrisbra/csv.vim.git
 	branch = master
-	commit = 5a62e08b7191848f2d67fcf7e25c3f672285d64d
-	parent = 3206ebee7cec3aba485fa5e4421acd21e370809e
+	commit = 2fcac7660734223f6cc57a3c5ec5d87e5a52d2e2
+	parent = 4e6b08733dfb46dcd1ae72092b67093b0a229abf
 	method = merge
 	cmdver = 0.4.3
