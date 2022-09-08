@@ -105,6 +105,9 @@ In all commands [args] are forwarded to the underlying test runner.
                                                 *test-:Jest*
 :Jest [args]                 Uses the `jest` command.
 
+                                                *test-:Vitest*
+:Vitest [args]                 Uses the `vitest` command.
+
                                                 *test-:Playwright*
 :Playwright [args]           Uses the `playwright test` command.
 
@@ -187,6 +190,9 @@ In all commands [args] are forwarded to the underlying test runner.
 
                                                 *test-:CargoTest*
 :CargoTest [args]            Uses the `cargo` `test` command.
+
+                                                *test-:CargoNextest*
+:CargoNextest [args]         Uses the `cargo` `nextest` command.
 
                                                 *test-:FireplaceTest*
 :FireplaceTest [args]        Uses `Fireplace.vim` to run test commands, and
@@ -360,6 +366,12 @@ Neoterm ~
 Runs test commands with `:T`. Requires the Neoterm plugin.
 >
   let test#strategy = 'neoterm'
+<
+Toggleterm ~
+
+Runs test commands with `:TermExec`. Requires the Toggleterm plugin.
+>
+  let test#strategy = 'toggleterm'
 <
 Floaterm ~
 
