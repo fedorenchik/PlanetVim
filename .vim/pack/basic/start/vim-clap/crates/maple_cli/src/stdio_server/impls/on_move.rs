@@ -9,13 +9,11 @@ use serde_json::json;
 use pattern::*;
 use types::PreviewInfo;
 
-use crate::command::ctags::buffer_tags::{
-    current_context_tag, current_context_tag_async, BufferTagInfo,
-};
 use crate::previewer::{self, vim_help::HelpTagPreview};
-use crate::stdio_server::providers::filer;
+use crate::stdio_server::impls::providers::filer;
 use crate::stdio_server::session::SessionContext;
 use crate::stdio_server::{global, write_response, MethodCall};
+use crate::tools::ctags::{current_context_tag, current_context_tag_async, BufferTag};
 use crate::utils::{build_abs_path, display_width, truncate_absolute_path};
 
 static IS_FERESHING_CACHE: Lazy<AtomicBool> = Lazy::new(|| AtomicBool::new(false));
@@ -193,11 +191,17 @@ impl<'a> OnMoveHandler<'a> {
     pub async fn handle(&self) -> Result<()> {
         use OnMove::*;
         match &self.inner {
-            Files(path) | Filer(path) | History(path) => self.preview_file(&path)?,
+            Filer(path) => {
+                if path.is_dir() {
+                    self.preview_directory(&path)?
+                } else {
+                    self.preview_file(&path)?;
+                }
+            }
+            Files(path) | History(path) => self.preview_file(&path)?,
             BLines(position) | Grep(position) | ProjTags(position) | BufferTags(position) => {
                 self.preview_file_at(position).await
             }
-            Filer(path) if path.is_dir() => self.preview_directory(&path)?,
             Commit(rev) => self.preview_commits(rev)?,
             HelpTags {
                 subject,
@@ -343,7 +347,7 @@ impl<'a> OnMoveHandler<'a> {
 
                                     // Truncate the right of pattern, 2 whitespaces + 💡
                                     let max_pattern_len = container_width - 4;
-                                    let pattern = tag.extract_pattern();
+                                    let pattern = crate::tools::ctags::trim_pattern(&tag.pattern);
                                     let (mut context_line, to_push) = if pattern.len()
                                         > max_pattern_len
                                     {
@@ -462,7 +466,7 @@ impl<'a> OnMoveHandler<'a> {
     }
 }
 
-async fn context_tag_with_timeout(path: PathBuf, lnum: usize) -> Option<BufferTagInfo> {
+async fn context_tag_with_timeout(path: PathBuf, lnum: usize) -> Option<BufferTag> {
     const TIMEOUT: Duration = Duration::from_millis(300);
 
     match tokio::time::timeout(TIMEOUT, current_context_tag_async(path.as_path(), lnum)).await {

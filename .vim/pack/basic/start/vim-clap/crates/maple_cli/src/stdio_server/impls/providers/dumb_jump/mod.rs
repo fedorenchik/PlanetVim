@@ -1,6 +1,7 @@
 mod searcher;
 
 use std::ops::Deref;
+use std::process::Output;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 
@@ -12,13 +13,14 @@ use serde::Deserialize;
 use serde_json::json;
 
 use filter::Query;
+use tracing::Instrument;
 
 use self::searcher::{SearchEngine, SearchingWorker};
 use crate::find_usages::{CtagsSearcher, GtagsSearcher, QueryType, Usage, Usages};
-use crate::stdio_server::providers::builtin::OnMoveHandler;
+use crate::stdio_server::impls::OnMoveHandler;
 use crate::stdio_server::rpc::Call;
 use crate::stdio_server::session::{
-    note_job_is_finished, register_job_successfully, EventHandle, SessionContext,
+    note_job_is_finished, register_job_successfully, ClapProvider, SessionContext,
 };
 use crate::stdio_server::{write_response, MethodCall};
 use crate::tools::ctags::{get_language, TagsGenerator, CTAGS_EXISTS};
@@ -207,8 +209,9 @@ async fn search_for_usages(
     }
 }
 
-#[derive(Debug, Clone, Default)]
-pub struct DumbJumpHandle {
+#[derive(Debug)]
+pub struct DumbJumpProvider {
+    context: SessionContext,
     /// Results from last searching.
     /// This might be a superset of searching results for the last query.
     cached_results: SearchResults,
@@ -222,7 +225,18 @@ pub struct DumbJumpHandle {
     first_on_typed_event_received: Arc<AtomicBool>,
 }
 
-impl DumbJumpHandle {
+impl DumbJumpProvider {
+    pub fn new(context: SessionContext) -> Self {
+        Self {
+            context,
+            cached_results: Default::default(),
+            current_usages: None,
+            ctags_regenerated: Arc::new(false.into()),
+            gtags_regenerated: Arc::new(false.into()),
+            first_on_typed_event_received: Arc::new(false.into()),
+        }
+    }
+
     /// Starts a new searching task.
     async fn start_search(
         &self,
@@ -244,8 +258,12 @@ impl DumbJumpHandle {
 }
 
 #[async_trait::async_trait]
-impl EventHandle for DumbJumpHandle {
-    async fn on_create(&mut self, call: Call, _context: Arc<SessionContext>) {
+impl ClapProvider for DumbJumpProvider {
+    fn session_context(&self) -> &SessionContext {
+        &self.context
+    }
+
+    async fn on_create(&mut self, call: Call) {
         let (msg_id, params) = parse_msg(call.unwrap_method_call());
 
         let job_id = utility::calculate_hash(&(&params.cwd, "dumb_jump"));
@@ -278,8 +296,8 @@ impl EventHandle for DumbJumpHandle {
             let gtags_future = {
                 let gtags_regenerated = self.gtags_regenerated.clone();
                 let cwd = params.cwd;
+                let span = tracing::span!(tracing::Level::INFO, "gtags");
                 async move {
-                    let now = std::time::Instant::now();
                     let gtags_searcher = GtagsSearcher::new(cwd.clone().into());
                     match tokio::task::spawn_blocking({
                         let gtags_searcher = gtags_searcher.clone();
@@ -307,8 +325,7 @@ impl EventHandle for DumbJumpHandle {
                             }
                         }
                     }
-                    tracing::debug!(?cwd, "⏱️  Gtags elapsed: {:?}", now.elapsed());
-                }
+                }.instrument(span)
             };
 
             fn run(job_future: impl Send + Sync + 'static + Future<Output = ()>, job_id: u64) {
@@ -336,7 +353,7 @@ impl EventHandle for DumbJumpHandle {
         }
     }
 
-    async fn on_move(&mut self, msg: MethodCall, context: Arc<SessionContext>) -> Result<()> {
+    async fn on_move(&mut self, msg: MethodCall) -> Result<()> {
         let msg_id = msg.id;
 
         let lnum = msg
@@ -350,7 +367,7 @@ impl EventHandle for DumbJumpHandle {
             .unwrap_or(&self.cached_results.usages)
             .get_line((lnum - 1) as usize)
         {
-            let on_move_handler = OnMoveHandler::create(&msg, &context, Some(curline.into()))?;
+            let on_move_handler = OnMoveHandler::create(&msg, &self.context, Some(curline.into()))?;
             if let Err(error) = on_move_handler.handle().await {
                 tracing::error!(?error, "Failed to handle OnMove event");
                 write_response(json!({"error": error.to_string(), "id": msg_id }));
@@ -360,7 +377,7 @@ impl EventHandle for DumbJumpHandle {
         Ok(())
     }
 
-    async fn on_typed(&mut self, msg: MethodCall, _context: Arc<SessionContext>) -> Result<()> {
+    async fn on_typed(&mut self, msg: MethodCall) -> Result<()> {
         /*
         // TODO: early initialization
         if !self.first_on_typed_event_received.load(Ordering::Relaxed) {
