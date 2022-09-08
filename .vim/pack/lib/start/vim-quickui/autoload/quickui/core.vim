@@ -3,7 +3,7 @@
 " core.vim - 
 "
 " Created by skywind on 2019/12/18
-" Last Modified: 2021/12/22 20:34
+" Last Modified: 2022/08/31 16:25
 "
 "======================================================================
 
@@ -18,6 +18,7 @@
 " global variables
 "----------------------------------------------------------------------
 let g:quickui#core#has_nvim = has('nvim')
+let g:quickui#core#has_vim9 = v:version >= 900
 let g:quickui#core#has_popup = exists('*popup_create') && v:version >= 800
 let g:quickui#core#has_floating = has('nvim-0.4')
 let g:quickui#core#has_nvim_040 = has('nvim-0.4')
@@ -25,6 +26,7 @@ let g:quickui#core#has_nvim_050 = has('nvim-0.5.0')
 let g:quickui#core#has_nvim_060 = has('nvim-0.6.0')
 let g:quickui#core#has_vim_820 = (has('nvim') == 0 && has('patch-8.2.1'))
 let g:quickui#core#has_win_exe = exists('*win_execute')
+let g:quickui#core#has_vim9script = (v:version >= 900) && has('vim9script')
 
 
 "----------------------------------------------------------------------
@@ -851,7 +853,7 @@ endfunc
 " string strip
 "----------------------------------------------------------------------
 function! quickui#core#string_strip(text)
-	return substitute(a:text, '^\s*\(.\{-}\)[\s\r\n]*$', '\1', '')
+	return substitute(a:text, '^\s*\(.\{-}\)[\t\r\n ]*$', '\1', '')
 endfunc
 
 
@@ -875,6 +877,22 @@ function! quickui#core#extract_opts(command)
 	let cmd = substitute(cmd, '^\s*\(.\{-}\)\s*$', '\1', '')
 	let cmd = substitute(cmd, '^@\s*', '', '')
 	return [cmd, opts]
+endfunc
+
+
+"----------------------------------------------------------------------
+" split cmdline to argv
+"----------------------------------------------------------------------
+function! quickui#core#split_argv(cmdline)
+	let cmd = quickui#core#string_strip(a:cmdline)
+	let argv = []
+	while cmd =~# '^\%(\\.\|\S\)\+'
+		let arg = matchstr(cmd, '^\%(\\.\|\S\)\+')
+		let cmd = substitute(cmd, '^\%(\\.\|\S\)\+\s*', '', '')
+		let val = substitute(arg, '\\\(\s\)', '\1', 'g')
+		let argv += [val]
+	endwhile
+	return argv
 endfunc
 
 
