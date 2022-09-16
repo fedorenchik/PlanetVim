@@ -4,7 +4,7 @@
 " Original Author: Jon Haggblad <https://github.com/octol>
 " Maintainer:      bfrg <https://github.com/bfrg>
 " Website:         https://github.com/bfrg/vim-cpp-modern
-" Last Change:     Nov 23, 2020
+" Last Change:     Sep 15, 2022
 "
 " This syntax file is based on:
 " https://github.com/octol/vim-cpp-enhanced-highlight
@@ -88,7 +88,6 @@ if !exists('cpp_no_cpp11')
     syntax keyword cppSTLexception
             \ bad_function_call future_error regex_error system_error bad_weak_ptr bad_array_new_length
 
-    " syntax keyword cppSTLiterator contained
     syntax keyword cppSTLiterator
             \ move_iterator regex_iterator regex_token_iterator const_local_iterator local_iterator
 
@@ -116,7 +115,7 @@ if !exists('cpp_no_cpp17')
     syntax keyword cppSTLnamespace filesystem execution string_view_literals
 
     syntax keyword cppSTLtype
-            \ any byte is_execution_policy parallel_policy parallel_unsequenced_policy sequenced_policy directory_entry directory_iterator file_status file_time_type path recursive_directory_iterator space_info default_order default_searcher boyer_moore_searcher boyer_moore_horspool_searcher memory_resource monotonic_buffer_resource polymorphic_allocator pool_options synchronized_pool_resource unsynchronized_pool_resource scoped_lock optional shared_mutex basic_string_view string_view u16string_view u32string_view wstring_view bool_constant conjunction disjunction has_unique_object_representations invoke_result is_aggregate is_callable is_invocable is_invocable_r is_nothrow_invocable is_nothrow_invocable_r is_nothrow_swappable is_nothrow_swappable_with is_nowthrow_callable is_swappable is_swappable_with negation node_type insert_return_type in_place_tag monostate variant variant_size variant_alternative
+            \ any byte is_execution_policy parallel_policy parallel_unsequenced_policy sequenced_policy directory_entry directory_iterator file_status file_time_type path recursive_directory_iterator space_info default_order default_searcher boyer_moore_searcher boyer_moore_horspool_searcher memory_resource monotonic_buffer_resource polymorphic_allocator pool_options synchronized_pool_resource unsynchronized_pool_resource scoped_lock optional shared_mutex basic_string_view string_view u16string_view u32string_view wstring_view bool_constant conjunction disjunction has_unique_object_representations invoke_result is_aggregate is_callable is_invocable is_invocable_r is_nothrow_invocable is_nothrow_invocable_r is_nothrow_swappable is_nothrow_swappable_with is_nowthrow_callable is_swappable is_swappable_with negation node_type insert_return_type in_place_tag monostate variant variant_size variant_alternative from_chars_result to_chars_result chars_format
 
     syntax keyword cppSTLtypedef
             \ invoke_result_t default_order_t nullopt_t void_t in_place_t in_place_type_t in_place_index_t variant_alternative_t
@@ -153,12 +152,13 @@ if !exists('cpp_no_cpp20')
     syntax keyword cppSTLnamespace ranges views
     syntax keyword cppSTLconstant dynamic_extent
     syntax keyword cppSTLvariable default_sentinel unreachable_sentinel
+    syntax keyword cppSTLexception format_error
 
     syntax keyword cppSTLtype
-            \ atomic_ref endian weak_ordering strong_ordering partial_ordering weak_equality strong_equality common_comparison_category contract_violation coroutine_traits coroutine_handle noop_coroutine_handle noop_coroutine_promise suspend_never suspend_always remove_cvref is_bounded_array is_layout_compatible is_unbounded_array is_nothrow_convertible has_strong_structural_equality is_pointer_interconvertible_base_of unwrap_reference unwrap_ref_decay basic_common_reference common_reference dangling ref_view filter_view transform_view iota_view join_view empty_view single_view split_view common_view reverse_view view_interface span basic_syncbuf basic_osyncstream syncbuf wsyncbuf osyncstream wosyncstream jthread latch barrier stop_token stop_source stop_callback counting_semaphore binary_semaphore source_location compare_three_way_result contiguous_iterator_tag incrementable_traits indirectly_readable_traits move_sentinel common_iterator counted_iterator projected type_identity
+            \ atomic_ref endian weak_ordering strong_ordering partial_ordering weak_equality strong_equality common_comparison_category contract_violation coroutine_traits coroutine_handle noop_coroutine_handle noop_coroutine_promise suspend_never suspend_always remove_cvref is_bounded_array is_layout_compatible is_unbounded_array is_nothrow_convertible has_strong_structural_equality is_pointer_interconvertible_base_of unwrap_reference unwrap_ref_decay basic_common_reference common_reference dangling ref_view filter_view transform_view iota_view join_view empty_view single_view split_view common_view reverse_view view_interface span basic_syncbuf basic_osyncstream syncbuf wsyncbuf osyncstream wosyncstream jthread latch barrier stop_token stop_source stop_callback counting_semaphore binary_semaphore source_location compare_three_way_result contiguous_iterator_tag incrementable_traits indirectly_readable_traits move_sentinel common_iterator counted_iterator projected type_identity formatter basic_format_context basic_format_args basic_format_string basic_format_parse_context
 
     syntax keyword cppSTLtypedef
-            \ common_comparison_category_t remove_cvref_t unwrap_reference_t unwrap_ref_decay_t common_reference_t iterator_t sentinel_t safe_iterator_t safe_subrange_t compare_three_way_result_t iter_value_t iter_reference_t iter_difference_t iter_rvalue_reference_t iter_common_reference_t default_sentinel_t unreachable_sentinel_t indirect_result_t type_identity_t
+            \ common_comparison_category_t remove_cvref_t unwrap_reference_t unwrap_ref_decay_t common_reference_t iterator_t sentinel_t safe_iterator_t safe_subrange_t compare_three_way_result_t iter_value_t iter_reference_t iter_difference_t iter_rvalue_reference_t iter_common_reference_t default_sentinel_t unreachable_sentinel_t indirect_result_t type_identity_t format_context wformat_context format_args wformat_args format_string wformat_string format_parse_context wformat_parse_context
 
     syntax keyword cppSTLfunction
             \ make_unique_default_init make_shared_default_init allocate_shared_default_init uses_allocator_construction_args make_obj_using_allocator is_corresponding_member subspan in_range is_pointer_interconvertible_with_class
@@ -168,6 +168,17 @@ if !exists('cpp_no_cpp20')
 
     syntax keyword cppSTLconcept
             \ assignable_from boolean common_reference_with common_with constructible_from convertible_to copy_constructible copyable default_constructible derived_from destructible equality_comparable equality_comparable_with equivalence_relation floating_point integral invocable movable move_constructible predicate regular regular_invocable relation same_as semiregular signed_integral strict_weak_order swappable swappable_with totally_ordered totally_ordered_with unsigned_integral default_initializable range sized_range view input_range output_range forward_range bidirectional_range random_access_range contiguous_range common_range viewable_range three_way_comparable three_way_comparable_with indirectly_readable indirectly_writable weakly_incrementable incrementable input_or_output_iterator sentinel_for sized_sentinel_for input_iterator output_iterator forward_iterator bidirectional_iterator random_access_iterator contiguous_iterator indirectly_unary_invocable indirectly_regular_unary_invocable indirect_unary_predicate indirect_binary_predicate indirect_equivalence_relation indirect_strict_weak_order indirectly_movable indirectly_movable_storable indirectly_copyable indirectly_copyable_storable indirectly_swappable indirectly_comparable permutable mergeable sortable
+endif
+
+
+" C++23 extensions {{{1
+if !exists('cpp_no_cpp23')
+    syntax keyword cppSTLtype basic_stacktrace stacktrace_entry is_scoped_enum
+    syntax keyword cppSTLtypedef stacktrace
+    syntax keyword cppSTLbool is_scoped_enum_v
+    syntax keyword cppSTLfunction invoke_r
+    syntax keyword cppSTLtype expected unexpected unexpect_t bad_expected_access
+    syntax keyword cppSTLvariable unexpect
 endif
 
 
