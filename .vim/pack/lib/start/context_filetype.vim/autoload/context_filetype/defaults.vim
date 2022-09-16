@@ -237,6 +237,24 @@ let g:context_filetype#defaults#_filetypes = {
       \    'end' : '\\]', 'filetype' : 'tex'
       \   },
       \ ],
+      \ 'pandoc': [
+      \   {
+      \    'start' : '^\s*```\s*\(\h\w*\)',
+      \    'end' : '^\s*```$', 'filetype' : '\1',
+      \   },
+      \   {
+      \    'start' : '\%^-\{3,}.*$',
+      \    'end' : '\_^-\{3,}.*$', 'filetype' : 'yaml'
+      \   },
+      \   {
+      \    'start' : '\\(',
+      \    'end' : '\\)', 'filetype' : 'tex'
+      \   },
+      \   {
+      \    'start' : '\\[',
+      \    'end' : '\\]', 'filetype' : 'tex'
+      \   },
+      \ ],
       \ 'haml': [
       \   {
       \    'start' : '^\s*-',
@@ -274,11 +292,16 @@ let g:context_filetype#defaults#_filetypes = {
       \ ],
       \ 'toml': [
       \   {
-      \    'start': '\<\%(hook_\%('.
+      \    'start': '\<hook_\%('.
       \             'add\|source\|post_source\|post_update'.
-      \             '\)\|[_a-z]\+'.
       \             '\)\s*=\s*\('."'''".'\|"""\)',
       \    'end': '\1', 'filetype': 'vim',
+      \   },
+      \   {
+      \    'start': '\<lua_\%('.
+      \             'add\|source\|post_source\|post_update'.
+      \             '\)\s*=\s*\('."'''".'\|"""\)',
+      \    'end': '\1', 'filetype': 'lua',
       \   },
       \ ],
       \ 'go': [
