@@ -214,20 +214,24 @@ func! planet#menu#nav#Update() abort
     an 840.20  📚&s.--1-- <Nop>
     an 840.30  📚&s.&Save                                   <Cmd>call planet#session#Save()<CR>
     an 840.40  📚&s.Save\ &As\.\.\.                         <Cmd>SSave<CR>
-    an 840.50  📚&s.--2-- <Nop>
-    an 840.60  📚&s.Advanced\ Save.Save\ with\ Relative\ Paths :TODO"set sessionoptions-=sesdir,+=curdir,v:this_session=dirname
-    an 840.70  📚&s.Advanced\ Save.Save\ with\ Local\ Options :TODO"set sessionoptions+=localoptions
-    an 840.80  📚&s.Advanced\ Save.Save\ with\ All\ Options :TODO"set sessionoptions+=localoptions,options
-    an 840.90  📚&s.Advanced\ Save.Save\ without\ Global\ Vars :TODO"set sessionoptions-=globals
+    an 840.60  📚&s.Ad&vanced\ Save.Save\ with\ Relative\ Paths :TODO"set sessionoptions-=sesdir,+=curdir,v:this_session=dirname
+    an 840.70  📚&s.Ad&vanced\ Save.Save\ with\ Local\ Options :TODO"set sessionoptions+=localoptions
+    an 840.80  📚&s.Ad&vanced\ Save.Save\ with\ All\ Options :TODO"set sessionoptions+=localoptions,options
+    an 840.90  📚&s.Ad&vanced\ Save.Save\ without\ Global\ Vars :TODO"set sessionoptions-=globals
     an 840.100 📚&s.--2-- <Nop>
+    an 840.100 📚&s.Add\ &Menu\ Entry                       <Cmd>call planet#session#ManageDesktopFile(0, 0)<CR>
+    an 840.100 📚&s.Add\ Des&ktop\ Entry                    <Cmd>call planet#session#ManageDesktopFile(0, 1)<CR>
+    an 840.100 📚&s.--3-- <Nop>
     an 840.110 📚&s.&Open                                   <Cmd>SLoad<CR>
     an 840.120 📚&s.Open\ &Last\ Session                    <Cmd>SLoad!<CR>
     an 840.130 📚&s.&Reopen                                 <Cmd>exe 'SLoad ' .. fnamemodify(v:this_session, ":t")<CR>
-    an 840.140 📚&s.--3-- <Nop>
+    an 840.140 📚&s.--4-- <Nop>
     an 840.150 📚&s.&Close                                  <Cmd>SClose<CR>
-    an 840.160 📚&s.--4-- <Nop>
+    an 840.160 📚&s.--5-- <Nop>
+    an 840.160 📚&s.Remove\ Menu\ Entry                       <Cmd>call planet#session#ManageDesktopFile(1, 0)<CR>
+    an 840.160 📚&s.Remove\ Desktop\ Entry                    <Cmd>call planet#session#ManageDesktopFile(1, 1)<CR>
+    an 840.160 📚&s.--6-- <Nop>
     an 840.170 📚&s.&Delete                                 <Cmd>SDelete<CR>
-    an 840.180 📚&s.--5-- <Nop>
 
     " Vim Apps: Open in new GUI window
     an 850.10  🗄️&x.GUI <Nop>

@@ -27,22 +27,25 @@ func! planet#menu#settings#Update() abort
     am 970.10  ⚙️&\\.'scrolloff':\ 1000                     :set so=1000<CR>
     an 970.10  ⚙️&\\.--4-- <Nop>
     an 970.10  ⚙️&\\.Set\ Text\ Width                       :call planet#settings#SetTextWidth()<CR>
-    an <silent> 970.10  ⚙️&\\.Set\ Line\ Endings\ ('fileformat')     :call planet#settings#SetLineEndings()<CR>
+    an <silent> 970.10  ⚙️&\\.Set\ Line\ Endings\ ('fileformat') :call planet#settings#SetLineEndings()<CR>
     an 970.10  ⚙️&\\.--5-- <Nop>
     an 970.10  ⚙️&\\.Set\ 'path'                            :call planet#settings#SetPath()<CR>
     an 970.10  ⚙️&\\.Set\ 'tags'                            :call planet#settings#SetTags()<CR>
     "TODO: add set *prg
     "TODO: add set *path
     an 970.10  ⚙️&\\.--6-- <Nop>
+    an 970.10  ⚙️&\\.Set\ GUI\ Dialogs                      :call planet#planet#SetGuiDialogs()<CR>
+    an 970.10  ⚙️&\\.Set\ Text\ Dialogs                     :call planet#planet#SetTextDialogs()<CR>
+    an 970.10  ⚙️&\\.--7-- <Nop>
     if has("win32") || has("gui_gtk") || has("gui_mac")
       an 970.10 ⚙️&\\.Select\ Fo&nt\.\.\.                   :set guifont=*<CR>
     endif
-    an 970.10  ⚙️&\\.--7-- <Nop>
-    an 970.10  ⚙️&\\.Set\ Window-Local\ Syntax<Tab>:ownsyntax\ {syn} q:iownsyntax <C-x><C-v>
     an 970.10  ⚙️&\\.--8-- <Nop>
+    an 970.10  ⚙️&\\.Set\ Window-Local\ Syntax<Tab>:ownsyntax\ {syn} q:iownsyntax <C-x><C-v>
+    an 970.10  ⚙️&\\.--9-- <Nop>
     an 970.10  ⚙️&\\.Toggle\ Verbosity<Tab>=oV              :VerbosityToggle<CR>
     an 970.10  ⚙️&\\.Open\ Verbosity\ Log<Tab>goV           :VerbosityOpenLast<CR>
-    an 970.10  ⚙️&\\.--9-- <Nop>
+    an 970.10  ⚙️&\\.--10-- <Nop>
     an 970.10  ⚙️&\\.Settings\ Buffer<Tab>:options          :options<CR>
 
     " Show current maps (nnoremap, etc.)

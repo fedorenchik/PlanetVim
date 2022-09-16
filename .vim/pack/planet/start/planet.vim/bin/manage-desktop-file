@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+ACTION="$1"
+shift
+WHERE="$1"
+shift
+SESSION_NAME="$1"
+shift
+
+DESKTOP_FILE_CONTENTS="[Desktop Entry]
+Name=PlanetVim-$SESSION_NAME
+Comment=Open $SESSION_NAME session in PlanetVim
+Exec=gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'SLoad $SESSION_NAME'
+Terminal=false
+Type=Application
+Icon=gvim
+Categories=Programming;
+StartupNotify=true
+"
+
+if [ $WHERE -eq 0 ]; then
+	FILE_NAME="$HOME/.local/share/applications/PlanetVim-$SESSION_NAME.desktop"
+elif [ $WHERE -eq 1 ]; then
+	DESKTOP_DIR=$(eval echo $(grep XDG_DESKTOP_DIR $HOME/.config/user-dirs.dirs | cut -d'=' -f2-))
+	FILE_NAME="$DESKTOP_DIR/PlanetVim-$SESSION_NAME.desktop"
+fi
+
+if [ $ACTION -eq 0 ]; then
+	echo "$DESKTOP_FILE_CONTENTS" > "$FILE_NAME"
+	chmod +x "$FILE_NAME"
+elif [ $ACTION -eq 1 ]; then
+	rm -f "$FILE_NAME"
+fi
