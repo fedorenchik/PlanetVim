@@ -37,6 +37,7 @@ runners are supported:
 |     **Kotlin** | Gradle (Groovy and Kotlin DSL)                                                                                     | `gradletest`                                                                                                                                 |
 |        **Lua** | Busted                                                                                                             | `busted`                                                                                                                                     |
 |       **Mint** | Mint                                                                                                               | `minttest`                                                                                                                                   |
+|        **Nim** | Nim                                                                                                                | `unittest`                                                                                                                                   |
 |        **PHP** | Behat, Codeception, Kahlan, Peridot, Pest, PHPUnit, Sail, PHPSpec, Dusk                                            | `behat`, `codeception`, `dusk`, `kahlan`, `peridot`, `phpunit`, `sail`, `phpspec`, `pest`                                                    |
 |       **Perl** | Prove                                                                                                              | `prove`                                                                                                                                      |
 |     **Python** | Behave, Django, Mamba, Nose, Nose2, PyTest, PyUnit                                                                 | `behave`, `djangotest`, `djangonose`, `mamba`, `nose`, `nose2`, `pytest`, `pyunit`                                                           |
@@ -430,12 +431,14 @@ let test#python#runner = 'pytest'
 " Runners available are 'pytest', 'nose', 'nose2', 'djangotest', 'djangonose', 'mamba', and Python's built-in unittest as 'pyunit'
 ```
 
-The pytest runner optionally supports [pipenv](https://github.com/pypa/pipenv).
+The `pytest` and `djangotest` runner optionally supports [pipenv](https://github.com/pypa/pipenv).
 If you have a `Pipfile`, it will use `pipenv run pytest` instead of just
-`python -m pytest`. It also supports [poetry](https://github.com/sdispater/poetry)
-and will use `poetry run pytest` if it detects a `poetry.lock`. The pyunit
+`python -m pytest`. They also support [poetry](https://github.com/sdispater/poetry)
+and will use `poetry run pytest` if it detects a `poetry.lock`. The pyunit and nose 
 runner supports [pipenv](https://github.com/pypa/pipenv) as well and will
-use `pipenv run python -m unittest` if there is a `Pipfile`.
+respectively use `pipenv run python -m unittest` or `pipenv run python -m nosetests` 
+if there is a `Pipfile`. It also supports [pdm](https://pdm.fming.dev/) as well and 
+will use `poetry run pytest` if there is a `pdm.lock` file.
 
 #### Java
 
