@@ -73,34 +73,41 @@ endfunction
 " }}}1
 function! vimtex#cache#clear(name) abort " {{{1
   if empty(a:name) | return | endif
+  let s:caches = get(s:, 'caches', {})
 
   if a:name ==# 'ALL'
     let l:caches = globpath(s:root(), '*.json', 0, 1)
     for l:file in map(l:caches, {_, x -> fnamemodify(x, ':t:r')})
       let l:cache = vimtex#cache#open(l:file)
       call l:cache.clear()
+      unlet! s:caches[l:file]
     endfor
-  else
-    let l:persistent = get(g:, 'vimtex_cache_persistent', 1)
-    let s:caches = get(s:, 'caches', {})
+    return
+  endif
 
-    " Clear global caches first (check if opened, then look for files)
-    let l:cache = get(s:caches, a:name, {})
-    if !empty(l:cache)
-      call l:cache.clear()
-    elseif l:persistent
-      let l:cache = vimtex#cache#open(a:name)
-      call l:cache.clear()
-    endif
+  let l:persistent = get(g:, 'vimtex_cache_persistent', 1)
 
-    " Clear local caches
-    let l:cache = get(s:caches, s:local_name(a:name), {})
-    if !empty(l:cache)
-      call l:cache.clear()
-    elseif l:persistent
-      let l:cache = vimtex#cache#open(a:name, {'local': 1})
-      call l:cache.clear()
-    endif
+  " Clear global caches first (check if opened, then look for files)
+  let l:cache = get(s:caches, a:name, {})
+  if !empty(l:cache)
+    call l:cache.clear()
+    unlet! s:caches[a:name]
+  elseif l:persistent
+    let l:cache = vimtex#cache#open(a:name)
+    call l:cache.clear()
+    unlet! s:caches[a:name]
+  endif
+
+  " Clear local caches
+  let l:name = s:local_name(a:name)
+  let l:cache = get(s:caches, l:name, {})
+  if !empty(l:cache)
+    call l:cache.clear()
+    unlet! s:caches[l:name]
+  elseif l:persistent
+    let l:cache = vimtex#cache#open(a:name, {'local': 1})
+    call l:cache.clear()
+    unlet! s:caches[l:name]
   endif
 endfunction
 
@@ -221,12 +228,22 @@ endfunction
 
 " }}}1
 function! s:cache.clear() dict abort " {{{1
-  let self.data = {}
+  call self.wipe()
   let self.ftime = -1
   let self.modified = 0
 
   if self.persistent
     call delete(self.path)
+  endif
+endfunction
+
+" }}}1
+function! s:cache.wipe() dict abort " {{{1
+  if has_key(self.data, '__validate')
+    let l:validate = self.data.__validate
+    let self.data = { '__validate': l:validate }
+  else
+    let self.data = {}
   endif
 endfunction
 
