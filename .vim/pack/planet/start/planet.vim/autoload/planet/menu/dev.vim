@@ -110,20 +110,20 @@ func! planet#menu#dev#Update() abort
     an 500.10  🎚️&{.&Pipenv.Start\ Shell                    <Cmd>call planet#term#RunCmd('pipenv shell')<CR>
     an 500.10  🎚️&{.&Pipenv.Run\ python\ main\.py           <Cmd>call planet#term#RunCmd('pipenv run python ./main.py')<CR>
     an 500.10  🎚️&{.&Pipenv.Run\ python\ app\.py            <Cmd>call planet#term#RunCmd('pipenv run python ./app.py')<CR>
-    an 500.10  🎚️&{.&Pipenv.Run\ Command                    <Cmd>call planet#term#RunCmdAskArgs('pipenv run', 'Command: ')<CR>
+    an 500.10  🎚️&{.&Pipenv.Run\ Command\.\.\.              <Cmd>call planet#term#RunCmdAskArgs('pipenv run', 'Command: ')<CR>
     an 500.10  🎚️&{.&Pipenv.Update\ Pipfile\.lock           <Cmd>call planet#term#RunCmd('pipenv lock')<CR>
     an 500.10  🎚️&{.&Pipenv.--1-- <Nop>
     an 500.10  🎚️&{.&Pipenv.New\ Project                    <Cmd>call planet#term#RunCmd('pipenv --three')<CR>
     an 500.10  🎚️&{.&Pipenv.New\ Project\ with\ Python      <Cmd>call planet#term#RunCmdAskArgs('pipenv --python', 'Python Version: ')<CR>
     an 500.10  🎚️&{.&Pipenv.Install\ Run\ &&\ Dev\ Deps     <Cmd>call planet#term#RunCmd('pipenv install --dev')<CR>
     an 500.10  🎚️&{.&Pipenv.Install\ Run\ Deps              <Cmd>call planet#term#RunCmd('pipenv install')<CR>
-    an 500.10  🎚️&{.&Pipenv.Install\ Package                <Cmd>call planet#term#RunCmdAskArgs('pipenv install', 'Package: ')<CR>
-    an 500.10  🎚️&{.&Pipenv.Install\ Dev\ Package           <Cmd>call planet#term#RunCmdAskArgs('pipenv install --dev', 'Package: ')<CR>
+    an 500.10  🎚️&{.&Pipenv.Install\ Packages\.\.\.         <Cmd>call planet#term#RunCmdAskArgs('pipenv install', 'Packages: ')<CR>
+    an 500.10  🎚️&{.&Pipenv.Install\ Dev\ Packages\.\.\.    <Cmd>call planet#term#RunCmdAskArgs('pipenv install --dev', 'Packages: ')<CR>
     an 500.10  🎚️&{.&Pipenv.Update\ (Lock\ &&\ Sync)        <Cmd>call planet#term#RunCmd('pipenv update')<CR>
     an 500.10  🎚️&{.&Pipenv.Sync\ with\ Pipfile\.lock       <Cmd>call planet#term#RunCmd('pipenv sync')<CR>
     an 500.10  🎚️&{.&Pipenv.--2-- <Nop>
     an 500.10  🎚️&{.&Pipenv.Uninstall\ Extra\ Packages      <Cmd>call planet#term#RunCmd('pipenv clean')<CR>
-    an 500.10  🎚️&{.&Pipenv.Uninstall\ Package              <Cmd>call planet#term#RunCmdAskArgs('pipenv uninstall', 'Package: ')<CR>
+    an 500.10  🎚️&{.&Pipenv.Uninstall\ Packages\.\.\.       <Cmd>call planet#term#RunCmdAskArgs('pipenv uninstall', 'Packages: ')<CR>
     an 500.10  🎚️&{.&Pipenv.Uninstall\ Dev\ Packages        <Cmd>call planet#term#RunCmd('pipenv uninstall --all-dev')<CR>
     an 500.10  🎚️&{.&Pipenv.Uninstall\ All                  <Cmd>call planet#term#RunCmd('pipenv uninstall --all')<CR>
     an 500.10  🎚️&{.&Pipenv.Remove\ Project's\ VEnv         <Cmd>call planet#term#RunCmd('pipenv --rm')<CR>
@@ -132,7 +132,7 @@ func! planet#menu#dev#Update() abort
     an 500.10  🎚️&{.&Pipenv.requirements\.t&xt.Export       <Cmd>call planet#term#RunCmd('pipenv lock -r > requirements.txt')<CR>
     an 500.10  🎚️&{.&Pipenv.requirements\.t&xt.Export\ Dev  <Cmd>call planet#term#RunCmd('pipenv lock -r -d > dev-requirements.txt')<CR>
     an 500.10  🎚️&{.&Pipenv.--3-- <Nop>
-    an 500.10  🎚️&{.&Pipenv.Open\ Specified\ Module         <Cmd>call planet#term#RunCmdAskArgs('pipenv open', 'Module: ')<CR>
+    an 500.10  🎚️&{.&Pipenv.Open\ Module\.\.\.              <Cmd>call planet#term#RunCmdAskArgs('pipenv open', 'Module: ')<CR>
     an 500.10  🎚️&{.&Pipenv.Security\ Check                 <Cmd>call planet#term#RunCmd('pipenv check')<CR>
     an 500.10  🎚️&{.&Pipenv.Dependency\ Graph               <Cmd>call planet#term#RunCmd('pipenv graph')<CR>
     an 500.10  🎚️&{.&Pipenv.Reverse\ Dependency\ Graph      <Cmd>call planet#term#RunCmd('pipenv graph --reverse')<CR>
@@ -145,11 +145,11 @@ func! planet#menu#dev#Update() abort
     an 500.10  🎚️&{.&Pipenv.Print\ Version                  <Cmd>call planet#term#RunCmd('pipenv --version')<CR>
     an 500.10  🎚️&{.&Pipenv.Clear\ Caches                   <Cmd>call planet#term#RunCmd('pipenv --clear')<CR>
     an 500.10  🎚️&{.&Pipenv.Install\ Pipenv                 <Cmd>call planet#term#RunCmd('pip install --user pipenv')<CR>
-    an 500.10  🎚️&{.C&onda.Activate                         <Cmd>call planet#term#RunCmdAskArgs('conda activate', 'Conda Environment: ')<CR>
+    an 500.10  🎚️&{.C&onda.Activate\.\.\.                   <Cmd>call planet#term#RunCmdAskArgs('conda activate', 'Conda Environment: ')<CR>
     an 500.10  🎚️&{.C&onda.Install\ from\ requirements\.txt <Cmd>call planet#term#RunCmd('conda install --file requirements.txt')<CR>
     an 500.10  🎚️&{.C&onda.Create\ from\ environment\.yml   <Cmd>call planet#term#RunCmd('conda env create -f environment.yml')<CR>
     an 500.10  🎚️&{.C&onda.Deactivate                       <Cmd>call planet#term#RunCmd('conda deactivate')<CR>
-    an 500.10  🎚️&{.C&onda.Create\ New\ Environment         <Cmd>call planet#term#RunCmdAskArgs('conda create --name', 'Name: ', 'conda')<CR>
+    an 500.10  🎚️&{.C&onda.Create\ New\ Environment\.\.\.   <Cmd>call planet#term#RunCmdAskArgs('conda create --name', 'Name: ', 'conda')<CR>
     an 500.10  🎚️&{.C&onda.Activate\ Anaconda               <Cmd>call planet#term#RunCmd('source /opt/anaconda/bin/activate')<CR>
     an 500.10  🎚️&{.C&onda.Deactivate\ Anaconda             <Cmd>call planet#term#RunCmd('source /opt/anaconda/bin/deactivate')<CR>
     an 500.10  🎚️&{.C&onda.Conda\ Init                      <Cmd>call planet#term#RunCmd('conda-init')<CR>
@@ -192,9 +192,9 @@ func! planet#menu#dev#Update() abort
     an 500.10  🎚️&{.Npm.Start\ Build                        <Cmd>call planet#term#RunCmd('npm run build')<CR>
     an 500.10  🎚️&{.Npm.Start\ App                          <Cmd>call planet#term#RunCmd('npm run serve')<CR>
     an 500.10  🎚️&{.Npm.Install\ Project\ Packages          <Cmd>call planet#term#RunCmd('npm install')<CR>
-    an 500.10  🎚️&{.Npm.Install\ Package                    <Cmd>call planet#term#RunCmdAskArgs('npm install', 'Package name: ')<CR>
-    an 500.10  🎚️&{.Npm.Install\ Package\ Globally          <Cmd>call planet#term#RunCmdAskArgs('sudo npm install -g', 'Package name: ')<CR>
-    an 500.10  🎚️&{.Npm.Install\ create-nuxt-app            <Cmd>call planet#term#RunCmdAskArgs('sudo npm install -g create-nuxt-app')<CR>
+    an 500.10  🎚️&{.Npm.Install\ Packages\.\.\.             <Cmd>call planet#term#RunCmdAskArgs('npm install', 'Packages: ')<CR>
+    an 500.10  🎚️&{.Npm.Install\ Packages\ Globally\.\.\.   <Cmd>call planet#term#RunCmdAskArgs('sudo npm install -g', 'Packages: ')<CR>
+    an 500.10  🎚️&{.Npm.Install\ create-nuxt-app            <Cmd>call planet#term#RunCmd('sudo npm install -g create-nuxt-app')<CR>
     an 500.10  🎚️&{.--1-- <Nop>
     an 500.10  🎚️&{.Set\ Compiler.gcc                       :TODO
     an 500.10  🎚️&{.Set\ Compiler.clang                     :TODO
@@ -332,7 +332,7 @@ func! planet#menu#dev#Update() abort
     an 500.10  📐&}.Vue\ CLI.Lint                           <Cmd>call planet#term#RunCmd('npm run lint')<CR>
     an 500.10  📐&}.Vue\ CLI.Add\ vue-router                <Cmd>call planet#term#RunCmd('npm install vue-router')<CR>
     an 500.10  📐&}.Vue\ CLI.Add\ vuex                      <Cmd>call planet#term#RunCmd('npm install vuex')<CR>
-    an 500.10  📐&}.Vue\ CLI.Create                         <Cmd>call planet#term#RunCmdAskArgs('vue create', 'Name of new project', 'vue-app')<CR>
+    an 500.10  📐&}.Vue\ CLI.Create\.\.\.                   <Cmd>call planet#term#RunCmdAskArgs('vue create', 'Name of new project: ', 'vue-app')<CR>
     an 500.10  📐&}.Nuxt.Run\ Dev                           <Cmd>call planet#term#RunCmd('npm run dev')<CR>
     an 500.10  📐&}.Nuxt.Build                              <Cmd>call planet#term#RunCmd('npm run build')<CR>
     an 500.10  📐&}.Nuxt.Start                              <Cmd>call planet#term#RunCmd('npm run start')<CR>
@@ -419,7 +419,7 @@ func! planet#menu#dev#Update() abort
     an 500.10  🔨&b.&KBuild.make\ &oldconfig                <Cmd>call planet#term#RunCmd("yes '' \| make oldconfig")<CR>
     an 500.10  🔨&b.&KBuild.make\ &menuconfig               <Cmd>call planet#term#RunCmdTab('make menuconfig')<CR>
     an 500.10  🔨&b.&KBuild.ma&ke                           <Cmd>call planet#term#RunCmd('make')<CR>
-    an 500.10  🔨&b.&KBuild.ma&ke\ Custom\ Target           <Cmd>call planet#term#RunCmdAskArgs('make', 'Target: ')<CR>
+    an 500.10  🔨&b.&KBuild.ma&ke\ Target\.\.\.             <Cmd>call planet#term#RunCmdAskArgs('make', 'Target: ')<CR>
     an 500.10  🔨&b.&KBuild.&Edit\ \.config                 <Cmd>e .config<CR>
     an 500.10  🔨&b.&KBuild.&Edit\ $MAKEFLAGS               <Cmd>call planet#env#SetEnvVar('MAKEFLAGS')<CR>
     an 500.10  🔨&b.&KBuild.make\ c&lean                    <Cmd>call planet#term#RunCmd('make clean')<CR>
@@ -517,7 +517,7 @@ func! planet#menu#dev#Update() abort
     an 500.10  🔨&b.Elec&tron.Start\ Debug                   <Cmd>call planet#term#RunCmd('electron --inspect=5858 .')<CR>
     an 500.10  🔨&b.Elec&tron.Break\ on\ Start               <Cmd>call planet#term#RunCmd('electron --inspect-brk=5858 .')<CR>
     an 500.10  🔨&b.Elec&tron.--3-- <Nop>
-    an 500.10  🔨&b.Elec&tron.Rebuild\ Native\ Package       <Cmd>call planet#term#RunCmdAskArgs('electron-rebuild', 'Package name: ')<CR>
+    an 500.10  🔨&b.Elec&tron.Rebuild\ Native\ Package\.\.\. <Cmd>call planet#term#RunCmdAskArgs('electron-rebuild', 'Package name: ')<CR>
     an 500.10  🔨&b.Elec&tron.--4-- <Nop>
     an 500.10  🔨&b.Elec&tron.Bulid\ Linux\ AppImage         <Cmd>call planet#term#RunCmd('electron-builder --linux AppImage')<CR>
     an 500.10  🔨&b.Elec&tron.Bulid\ Linux\ snap             <Cmd>call planet#term#RunCmd('electron-builder --linux snap')<CR>
@@ -539,9 +539,9 @@ func! planet#menu#dev#Update() abort
     an 500.10  🔨&b.Elec&tron.Add\ electron-updater          <Cmd>call planet#term#RunCmd('npm i electron-updater')<CR>
     an 500.10  🔨&b.Elec&tron.Install\ electron-rebuild      <Cmd>call planet#term#RunCmd('sudo npm install -g electron-rebuild')<CR>
     an 500.10  🔨&b.Elec&tron.Install\ electron-builder      <Cmd>call planet#term#RunCmd('sudo npm install -g electron-builder')<CR>
-    an 500.10  🔨&b.&Other.&Ninja.Set\ DESTDIR                     :!ninja<CR>
-    an 500.10  🔨&b.&Other.&QMake.Set\ DESTDIR                     :!qmake<CR>
-    an 500.10  🔨&b.&Other.&Scons.Run\ Custom\ Target               <Cmd>call planet#term#RunCmdAskArgs('scons', 'scons: ', ' -j8 .')<CR>
+    an 500.10  🔨&b.&Other.&Ninja.Set\ DESTDIR               <Cmd>!ninja<CR>
+    an 500.10  🔨&b.&Other.&QMake.Set\ DESTDIR               <Cmd>!qmake<CR>
+    an 500.10  🔨&b.&Other.&Scons.Run\ Target\.\.\.          <Cmd>call planet#term#RunCmdAskArgs('scons', 'scons: ', ' -j8 .')<CR>
     an 500.10  🔨&b.Deploy <Nop>
     an disable 🔨&b.Deploy
     an 500.10  🔨&b.Windeployqt.Deploy                      :!make<CR>
@@ -667,8 +667,8 @@ func! planet#menu#dev#Update() abort
     an 550.10  💻&c.New\ &VSplit                            <Cmd>vertical terminal ++kill=kill<CR>
     an 550.10  💻&c.New\ &Tab                               <Cmd>tab terminal ++kill=kill<CR>
     an 550.10  💻&c.--1-- <Nop>
-    an 550.10  💻&c.&Run\ Custom\ Command                    <Cmd>call planet#term#RunCmdAsk('Command: ')<CR>
-    an 550.10  💻&c.&Watch\ Command                          <Cmd>call planet#term#RunCmdAskArgs('watch -n0', 'Command: ')<CR>
+    an 550.10  💻&c.&Run\ Command\.\.\.                     <Cmd>call planet#term#RunCmdAsk('Command: ')<CR>
+    an 550.10  💻&c.&Watch\ Command\.\.\.                   <Cmd>call planet#term#RunCmdAskArgs('watch -n0', 'Command: ')<CR>
     an 550.10  💻&c.--2-- <Nop>
     an 550.10  💻&c.P&ython\ Shell                          <Cmd>botright terminal ++kill=kill ++rows=10 python<CR>
     an 550.10  💻&c.&IPython\ Shell                         <Cmd>botright terminal ++kill=kill ++rows=10 ipython<CR>
