@@ -14,9 +14,13 @@
 " limitations under the License.
 
 if !has( 'python3' )
-  echohl WarningMsg
-  echom 'Vimspector unavailable: Requires Vim compiled with +python3'
-  echohl None
+  augroup VimspectorNoPython
+    autocmd!
+    autocmd VimEnter *
+          \   echohl WarningMsg
+          \ | echom 'Vimspector unavailable: Requires Vim compiled with +python3'
+          \ | echohl None
+  augroup END
   finish
 endif
 
@@ -144,7 +148,7 @@ endif
 command! -bar -nargs=1 -complete=custom,vimspector#CompleteExpr
       \ VimspectorWatch
       \ call vimspector#AddWatch( <f-args> )
-command! -bar -nargs=? -complete=custom,vimspector#CompleteOutput
+command! -bar -nargs=? -complete=customlist,vimspector#CompleteOutput
       \ VimspectorShowOutput
       \ call vimspector#ShowOutput( <f-args> )
 command! -bar
@@ -206,4 +210,3 @@ augroup END
 " boilerplate {{{
 call s:restore_cpo()
 " }}}
-
