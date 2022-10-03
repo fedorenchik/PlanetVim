@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/voldikss/vim-translator.git
 	branch = master
-	commit = 42e5262a9491ae746f0d4e225ffffc86a3f714de
-	parent = 4fdaded4984d8d8dd3d528c8e2f960df98635f70
+	commit = 91b9bf71ce0ca6e85009fa6aa14eb0c6820574f6
+	parent = 2ddc60646532f62e0cd64e1f88978e628244f8ff
 	method = merge
 	cmdver = 0.4.3
