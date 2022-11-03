@@ -551,7 +551,10 @@ func! planet#menu#dev#Update() abort
     an 500.10  🔨&b.Package <Nop>
     an disable 🔨&b.Package
     an 500.10  🔨&b.fpm.Build                               :!make<CR>
-    an 500.10  🔨&b.pyInstaller.Build                       :!make<CR>
+    an 500.10  🔨&b.PyInstaller.Build\ app\.spec             <Cmd>call planet#term#RunCmd('pyinstaller app.spec')<CR>
+    an 500.10  🔨&b.PyInstaller.Basic\ Build\ app\.py        <Cmd>call planet#term#RunCmd('pyinstaller --windowed app.py')<CR>
+    an 500.10  🔨&b.PyInstaller.Install                      <Cmd>call planet#term#RunCmd('pip install PyInstaller pyinstaller-hooks-contrib')<CR>
+    an 500.10  🔨&b.PyInstaller.Update\ PyInstaller          <Cmd>call planet#term#RunCmd('pip install --upgrade PyInstaller pyinstaller-hooks-contrib')<CR>
     an 500.10  🔨&b.CPack.Build                             :!make<CR>
     an 500.10  🔨&b.AppImage.Build                          :!make<CR>
     an 500.10  🔨&b.Snap.Build                              :!make<CR>
