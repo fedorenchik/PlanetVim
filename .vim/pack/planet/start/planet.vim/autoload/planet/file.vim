@@ -14,40 +14,18 @@ func! QfOldFiles(info) abort
 endfunc
 
 func! planet#file#NewProject(project_type) abort
-  let l:project_name = input("Project Name: ", 'my-' .. a:project_type, "dir")
-  if ! empty(l:project_name)
-    if isdirectory(l:project_name) || filereadable(l:project_name) || filewritable(l:project_name)
-      call popup_notification("Error: Directory or file already exists! Please, change project name.", {})
-      return
-    end
-    call mkdir(l:project_name)
-    call planet#term#RunScript('copy-template ' .. a:project_type .. ' ' .. l:project_name)
-    tabnew
-    exe "tcd " .. l:project_name
-    Fern . -reveal=% -drawer -toggle
-  end
+  return planet#generate#Template(a:project_type, v:null, #{open: v:true})
 endfunc
 
 func! planet#file#NewProjectFromScript(project_type) abort
-  let l:project_name = input("Project Name: ", 'my-' .. a:project_type, "dir")
-  if ! empty(l:project_name)
-    if isdirectory(l:project_name) || filereadable(l:project_name) || filewritable(l:project_name)
-      call popup_notification("Error: Directory or file already exists! Please, change project name.", {})
-      return
-    end
-    call mkdir(l:project_name)
-    tabnew
-    call planet#term#RunScript('create-' .. a:project_type .. '-project ' .. l:project_name)
-    exe "tcd " .. l:project_name
-    Fern . -reveal=% -drawer -toggle
-  end
+  return planet#generate#Framework(a:project_type, v:null, #{open: v:true})
 endfunc
 
 " mod can be: '', 'windo', 'tabdo windo'
 func! planet#file#ClearLocalCwd(mod) abort
   let l:win_id = win_getid()
   let l:global_cwd = getcwd(-1)
-  exe "noautocmd " .. a:mod .. " cd " .. l:global_cwd
+  exe "noautocmd " .. a:mod .. " cd " .. fnameescape(l:global_cwd)
   call win_gotoid(l:win_id)
 endfunc
 
@@ -56,7 +34,7 @@ func! planet#file#TcdToCd() abort
   if haslocaldir() == 2
     let l:win_id = win_getid()
     let l:tab_cwd = getcwd(-1, 0)
-    exe "noautocmd windo cd " .. l:tab_cwd
+    exe "noautocmd windo cd " .. fnameescape(l:tab_cwd)
     call win_gotoid(l:win_id)
   end
 endfunc
@@ -64,6 +42,6 @@ endfunc
 " Makes global cd from lcd & clears lcd
 func! planet#file#LcdToCd() abort
   if haslocaldir() == 1
-    exe "noautocmd cd " .. getcwd()
+    exe "noautocmd cd " .. fnameescape(getcwd())
   end
 endfunc

@@ -1,15 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env python3
+"""Compatibility entry point for the portable PlanetVim generator."""
+from pathlib import Path
+import runpy
+import sys
 
-prj_name="$1"
-shift
-
-if which git >&/dev/null && which npm >&/dev/null; then
-	git clone https://github.com/electron/electron-quick-start "$prj_name"
-	cd "$prj_name"
-	npm install
-	npm start
-fi
-
-# either git or npm not found, fallback to copy default files (may be outdated)
-BIN_DIR="$(readlink -f $(dirname $0))"
-"$BIN_DIR/copy-template" "electron-app" "$prj_name"
+helper = Path(__file__).resolve().parent / 'generate-project.py'
+sys.argv = [str(helper)] + ['framework', 'electron'] + sys.argv[1:]
+runpy.run_path(str(helper), run_name='__main__')

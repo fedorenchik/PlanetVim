@@ -1,9 +1,9 @@
 scriptversion 4
 
-let s:templates_dir = expand('<sfile>:p:h:h:h')->resolve() .. '/templates/'
-
 func! planet#project#CopyFile(file) abort
+  return planet#generate#CopyFile(a:file)
 endfunc
 
 func! planet#project#CopyDir(dir) abort
+  return planet#generate#CopyDir(a:dir)
 endfunc

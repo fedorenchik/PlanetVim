@@ -1,22 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env python3
+"""Compatibility entry point for the portable PlanetVim generator."""
+from pathlib import Path
+import runpy
+import sys
 
-prj_name="$1"
-shift
-
-if which vue >&/dev/null; then
-	#vue found
-	vue create -p __default_vue_3__ --merge --skipGetStarted "$prj_name"
-	exit
-fi
-
-if which npm >&/dev/null; then
-	cd "$prj_name"
-	npm install @vue/cli
-	cd -
-	./"$prj_name"/node_modules/.bin/vue create -p __default_vue_3__ --merge --skipGetStarted "$prj_name"
-	exit
-fi
-
-# neither vue nor npm found, fallback to copy default files (may be outdated)
-BIN_DIR="$(readlink -f $(dirname $0))"
-"$BIN_DIR/copy-template" "vue-3-app" "$prj_name"
+helper = Path(__file__).resolve().parent / 'generate-project.py'
+sys.argv = [str(helper)] + ['framework', 'vue3'] + sys.argv[1:]
+runpy.run_path(str(helper), run_name='__main__')
