@@ -56,6 +56,11 @@ call assert_equal(0, &laststatus)
 call assert_equal(1, planet#prose#Focus(v:true))
 call assert_equal(1, planet#prose#Focus(v:false))
 call assert_equal(1, planet#prose#Focus(v:false))
+for s:attempt in range(200)
+  if !planet#prose#FocusPending() | break | endif
+  sleep 10m
+endfor
+call assert_false(planet#prose#FocusPending(), 'GUI layout restoration must finish')
 call assert_equal(s:count, winnr('$'))
 for s:option in keys(s:globals)
   call assert_equal(s:globals[s:option], eval('&' .. s:option), 'focus restores ' .. s:option)
@@ -64,6 +69,18 @@ for s:option in keys(s:local)
   call assert_equal(s:local[s:option], eval('&l:' .. s:option), 'focus restores ' .. s:option)
 endfor
 call assert_equal(s:sizes, map(getwininfo(), {_, w -> [w.winid, w.width, w.height]}))
+" A new focus operation cancels the older GUI resize callback.
+call planet#prose#Focus(v:true)
+call planet#prose#Focus(v:false)
+call planet#prose#Focus(v:true)
+sleep 100m
+call assert_equal(0, &laststatus)
+call assert_false(planet#prose#FocusPending())
+call planet#prose#Focus(v:false)
+for s:attempt in range(200)
+  if !planet#prose#FocusPending() | break | endif
+  sleep 10m
+endfor
 call assert_equal(1, planet#prose#AutoCorrect())
 call assert_equal('the', maparg('teh', 'i', 1))
 let g:PV_cache_dir = g:PV_test_dir .. '/cache with spaces 工作'

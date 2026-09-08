@@ -123,7 +123,13 @@ func! planet#prose#Focus(enable) abort
     if exists('s:focus')
       return 1
     endif
-    let s:focus = #{window: win_getid(), size: winrestcmd(), columns: &columns, lines: &lines, global: {}, local: {}}
+    if exists('s:focus_restore')
+      call timer_stop(s:focus_restore.timer)
+      unlet s:focus_restore
+    endif
+    let s:focus_generation = get(s:, 'focus_generation', 0) + 1
+    let s:focus = #{window: win_getid(), size: winrestcmd(), columns: &columns, lines: &lines, global: {}, local: {},
+          \ generation: s:focus_generation, windows: copy(gettabinfo(tabpagenr())[0].windows)}
     for l:option in ['guioptions', 'laststatus', 'showtabline', 'ruler', 'showmode']
       let s:focus.global[l:option] = eval('&' .. l:option)
     endfor
@@ -153,9 +159,62 @@ func! planet#prose#Focus(enable) abort
     endfor
     call win_execute(s:focus.window, s:focus.size)
   endif
+  if has('gui_running')
+    let s:focus_restore = deepcopy(s:focus)
+    let s:focus_restore.attempts = 0
+    let s:focus_restore.stable = 0
+    let s:focus_restore.timer = timer_start(20, function('s:RestoreFocus'), #{repeat: -1})
+  endif
   unlet s:focus
   return 1
 endfunc
+
+func! planet#prose#FocusPending() abort
+  return exists('s:focus_restore')
+endfunc
+
+func! s:RestoreFocus(timer) abort
+  if !exists('s:focus_restore') || s:focus_restore.timer != a:timer
+    call timer_stop(a:timer)
+    return
+  endif
+  let l:restore = s:focus_restore
+  let l:tab = win_id2tabwin(l:restore.window)[0]
+  " A new focus operation or user split/close must supersede this restore.
+  if exists('s:focus') || l:restore.generation != get(s:, 'focus_generation', 0)
+        \ || l:tab == 0 || gettabinfo(l:tab)[0].windows !=# l:restore.windows
+    call timer_stop(a:timer)
+    unlet s:focus_restore
+    return
+  endif
+  let l:restore.attempts += 1
+  if &columns != l:restore.columns || &lines != l:restore.lines
+    let l:restore.stable = 0
+    let &columns = l:restore.columns
+    let &lines = l:restore.lines
+  else
+    let l:restore.stable += 1
+  endif
+  call win_execute(l:restore.window, l:restore.size)
+  " GTK may deliver several grid resizes after the widgets are restored.
+  " Keep applying the saved split sizes while those events settle, bounded to
+  " one second; no callback survives a subsequent focus operation.
+  if (l:restore.attempts >= 10 && l:restore.stable >= 3) || l:restore.attempts >= 50
+    call timer_stop(a:timer)
+    unlet s:focus_restore
+  endif
+endfunc
+
+func! s:FocusResized() abort
+  if exists('s:focus_restore')
+    let s:focus_restore.stable = 0
+  endif
+endfunc
+
+augroup PlanetVimFocusRestore
+  autocmd!
+  autocmd VimResized * call s:FocusResized()
+augroup END
 
 func! planet#prose#Load(package, plugin) abort
   let l:path = planet#paths#Root() .. '/.vim/pack/writing/start/' .. a:package
