@@ -18,4 +18,5 @@ func! planet#tags#ToggleAutoPreview() abort
     aug END
     echo "Do not AutoPreview Tags"
   endif
+  return g:PV_tags_auto_preview
 endfunc

@@ -62,7 +62,7 @@ func! PreviewWord() abort
   let w = expand("<cword>")
   if w =~ '\a'
     try
-      exe "ptag " . w
+      exe "ptag " .. w
     catch
       return
     endtry
@@ -73,8 +73,8 @@ func! PreviewWord() abort
       endif
       call search("$", "b")
       let w = substitute(w, '\\', '\\\\', "")
-      call search('\<\V' . w . '\>')
-      exe 'match previewWord "\%' . line(".") . 'l\%' . col(".") . 'c\k*"'
+      call search('\<\V' .. w .. '\>')
+      exe 'match previewWord "\%' .. line(".") .. 'l\%' .. col(".") .. 'c\k*"'
       wincmd p
     endif
   endif

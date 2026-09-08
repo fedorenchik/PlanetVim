@@ -91,7 +91,7 @@ func! planet#menu#dev#Update() abort
     am 310.10  🪧&].Preview\ Previous<Tab>[<C-t>            [<C-t>
     am 310.10  🪧&].Preview\ Next<Tab>]<C-t>                ]<C-t>
     an 310.10  🪧&].--4-- <Nop>
-    am 310.10  🪧&].Toggle\ AutoPreview\ Tags               <Cmd>call PlanetVim_TagsAutoPreview_Toggle()<CR>
+    am 310.10  🪧&].Toggle\ AutoPreview\ Tags               <Cmd>call planet#tags#ToggleAutoPreview()<CR>
     an 310.10  🪧&].--5-- <Nop>
     am 310.10  🪧&].Build\ tags\ File                       <Cmd>call planet#integrations#Command(['ctags', '-R', '.'])<CR>
     am 310.10  🪧&].Generate\ tags\.vim\ File  <Cmd>call planet#integrations#Tags('tags')<CR>

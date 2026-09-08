@@ -29,8 +29,15 @@ class MenuContracts(unittest.TestCase):
 
     def test_callbacks_and_placeholders(self):
         definitions = set()
-        for path in PLUGIN.rglob('*.vim'):
-            definitions.update(re.findall(r'(?mi)^\s*fu[a-z]*!?\s+(planet#[\w#]+)\(', path.read_text()))
+        # Legacy global names and vendor autoload callbacks are just as callable
+        # as planet# APIs. Include vimrc's window-bar helpers in the definitions.
+        callback_pattern = r'(?:[A-Z]\w*|[a-z]\w*(?:#\w+)+)'
+        for path in [*(ROOT / '.vim').rglob('*.vim'), ROOT / '.vimrc']:
+            if not path.is_file():
+                continue
+            definitions.update(re.findall(
+                r'(?mi)^\s*(?:fu[a-z]*!?|def!?)\s+(' + callback_pattern + r')\s*\(',
+                path.read_text(errors='replace')))
         for path in [*(PLUGIN / 'autoload/planet/menu').glob('*.vim'), ROOT / '.vimrc']:
             for number, line in enumerate(path.read_text().splitlines(), 1):
                 if not re.match(r'\s*(?:an|am|[a-z]*menu)\s+(?:<[^>]+>\s+)*\d', line):
@@ -38,7 +45,7 @@ class MenuContracts(unittest.TestCase):
                 location = f'{path.name}:{number}'
                 self.assertNotRegex(line, r'(?i)(?:<Cmd>|:)TODO(?:\b|<)', location)
                 self.assertNotRegex(line, r"(?i)echo\s+['\"]TODO['\"]", location)
-                for callback in re.findall(r'(planet#[\w#]+)\(', line):
+                for callback in re.findall(r'\b(' + callback_pattern + r')\s*\(', line):
                     self.assertTrue(callback in definitions, location + ': missing ' + callback)
                 self.assertNotIn('SenEnvVar', line, location)
                 self.assertNotIn('<SID>Xxd', line, location)
