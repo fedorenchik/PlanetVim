@@ -18,12 +18,11 @@ aug END
 
 aug AugPv_TabPages
 au!
-" Save Alternate Tab
-au TabLeave * let g:PV_alternate_tab = tabpagenr('#') | let g:PV_current_tab = tabpagenr()
-au TabClosed * if g:PV_alternate_tab == 0 | let g:PV_alternate_tab = tabpagenr('$') | endif
-au TabClosed * if g:PV_current_tab <= g:PV_alternate_tab | let g:PV_new_tab = g:PV_alternate_tab - 1 | else | let g:PV_new_tab = g:PV_alternate_tab | endif
-au TabClosed * if g:PV_new_tab < 1 | let g:PV_new_tab = 1 | endif
-au TabClosed * exe 'tabnext ' .. g:PV_new_tab
-" Save Closed Tab, Add Menu Entry to Reopen Closed Tab
+au TabEnter * call planet#tab#Track()
 au TabLeave * call planet#tab#SaveTmp()
+if exists('##TabClosedPre')
+  au TabClosedPre * call planet#tab#BeforeClose()
+endif
+au TabClosed * call planet#tab#Closed()
+au VimLeavePre * call planet#tab#Cleanup()
 aug END
