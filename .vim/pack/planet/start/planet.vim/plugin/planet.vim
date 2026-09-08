@@ -42,11 +42,7 @@ scriptversion 4
 "TODO: detect 'rtp' based on v:progname ('pvim') (v:progname for PlanetVim
 "TODO:    package is 'pvim'
 
-runtime! START globals.vim
-
-if filereadable(expand(g:PV_config))
-  silent exe "source " .. fnameescape(g:PV_config)
-endif
+call planet#config#Initialize()
 
 call planet#menu#planet#Update()
 call planet#menu#basic#Update()
@@ -55,14 +51,6 @@ call planet#menu#dev#Update()
 call planet#menu#tools#Update()
 call planet#menu#nav#Update()
 call planet#menu#settings#Update()
-
-if g:PV_mode == 'e'
-  call planet#planet#SetEasyMode()
-elseif g:PV_mode == 's'
-  call planet#planet#SetStandardMode()
-elseif g:PV_mode == 'p'
-  call planet#planet#SetSuperChargedMode()
-end
 
 " Avoid the ":ptag" when there is no word under the cursor, and a few other
 " things. Opens the tag under cursor in Preview window.

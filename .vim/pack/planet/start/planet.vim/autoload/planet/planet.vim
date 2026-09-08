@@ -1,19 +1,8 @@
 scriptversion 4
 
 func! planet#planet#ConfigUpdate(conf_var) abort
-  let l:value = eval(a:conf_var)
-  if type(l:value) == v:t_string
-    let l:value = "'" .. l:value .. "'"
-  end
-  if empty(v:this_session) && filewritable(expand(g:PV_config))
-    silent call system('grep "let ' .. a:conf_var .. ' =" ' .. g:PV_config)
-    if ! v:shell_error
-      silent call system('sed -i -e "s/^let ' .. a:conf_var .. ' = .*$/let ' .. a:conf_var .. ' = ' .. l:value .. '/" ' .. g:PV_config)
-    else
-      silent call system('echo "let ' .. a:conf_var .. ' = ' .. l:value .. '" >> ' .. g:PV_config)
-    endif
-  else
-    silent call system('echo "let ' .. a:conf_var .. ' = ' .. l:value .. '" > ' .. g:PV_config)
+  if !get(g:, 'PV_initializing', 0)
+    call planet#config#SavePreference(a:conf_var, eval(a:conf_var))
   endif
 endfunc
 
@@ -124,94 +113,70 @@ func! planet#planet#k()
   endtry
 endfunc
 
-func! planet#planet#SetEasyMode() abort
-  set im
-  set selectmode=mouse,key
-  set keymodel=startsel,stopsel
-  set guioptions-=c
-  set guioptions+=r
-  set bs=indent,eol,nostop
-  set sel=exclusive
-  silent! nun b
-  silent! nun B
-  silent! nun e
-  silent! nun E
-  silent! nun f
-  silent! nun F
-  silent! nun ge
-  silent! nun gE
-  silent! nun h
-  silent! nun j
-  silent! nun k
-  silent! nun l
-  silent! nun t
-  silent! nun T
-  silent! nun w
-  silent! nun W
-  let g:PV_mode = 'e'
+let s:mode_maps = {
+      \ 'b': ':call planet#planet#comma()<CR>', 'B': ':bp<CR>',
+      \ 'e': 'g;', 'E': 'g,', 'f': ':call planet#planet#f()<CR>',
+      \ 'F': ':call planet#planet#F()<CR>', 'ge': '1gt', 'gE': ':tabl<CR>',
+      \ 'h': ':call planet#planet#h()<CR>', 'j': ':call planet#planet#j()<CR>',
+      \ 'k': ':call planet#planet#k()<CR>', 'l': ':call planet#planet#l()<CR>',
+      \ 't': ':call planet#planet#t()<CR>', 'T': ':call planet#planet#T()<CR>',
+      \ 'w': ':call planet#planet#semicolon()<CR>', 'W': ':bn<CR>'}
+let s:saved_maps = {}
+
+func! planet#planet#ModeKeys() abort
+  return keys(s:mode_maps)
+endfunc
+
+func! planet#planet#SetMode(mode) abort
+  if index(['e', 's', 'p'], a:mode) < 0
+    throw 'PlanetVim: mode must be e, s, or p'
+  endif
+  " Remove only mappings still owned by the previous mode.
+  for [l:key, l:rhs] in items(s:mode_maps)
+    if has_key(s:saved_maps, l:key)
+      if maparg(l:key, 'n') ==# l:rhs
+        execute 'nunmap ' .. l:key
+        if !empty(s:saved_maps[l:key])
+          call mapset('n', 0, s:saved_maps[l:key])
+        endif
+      endif
+    endif
+  endfor
+  let s:saved_maps = {}
+  let &insertmode = a:mode ==# 'e'
+  let &selectmode = a:mode ==# 'e' ? 'mouse,key' : ''
+  let &keymodel = a:mode ==# 'e' ? 'startsel,stopsel' : ''
+  let &backspace = a:mode ==# 'e' ? 'indent,eol,nostop' : 'start'
+  let &selection = a:mode ==# 'e' ? 'exclusive' : 'inclusive'
+  if a:mode ==# 'e'
+    set guioptions-=c
+    set guioptions+=r
+  else
+    set guioptions+=c
+    set guioptions-=r
+  endif
+  if a:mode ==# 'p'
+    for [l:key, l:rhs] in items(s:mode_maps)
+      let s:saved_maps[l:key] = maparg(l:key, 'n', 0, 1)
+      execute 'nnoremap <silent> ' .. l:key .. ' ' .. l:rhs
+    endfor
+  endif
+  let g:PV_mode = a:mode
   if empty(v:this_session)
     call planet#planet#ConfigUpdate('g:PV_mode')
   endif
+endfunc
+
+func! planet#planet#SetEasyMode() abort
+  call planet#planet#SetMode('e')
 endfunc
 
 func! planet#planet#SetStandardMode() abort
-  set noim
-  set selectmode=
-  set keymodel=
-  set guioptions+=c
-  set guioptions-=r
-  set bs=start
-  set sel=inclusive
-  silent! nun b
-  silent! nun B
-  silent! nun e
-  silent! nun E
-  silent! nun f
-  silent! nun F
-  silent! nun ge
-  silent! nun gE
-  silent! nun h
-  silent! nun j
-  silent! nun k
-  silent! nun l
-  silent! nun t
-  silent! nun T
-  silent! nun w
-  silent! nun W
-  let g:PV_mode = 's'
-  if empty(v:this_session)
-    call planet#planet#ConfigUpdate('g:PV_mode')
-  endif
+  call planet#planet#SetMode('s')
 endfunc
 
 func! planet#planet#SetSuperChargedMode() abort
-  set noim
-  set selectmode=
-  set keymodel=
-  set guioptions+=c
-  set guioptions-=r
-  set bs=start
-  set sel=inclusive
-  nn <silent> b :call planet#planet#comma()<CR>
-  nn <silent> B :bp<CR>
-  nn <silent> e g;
-  nn <silent> E g,
-  nn <silent> f :call planet#planet#f()<CR>
-  nn <silent> F :call planet#planet#F()<CR>
-  nn <silent> ge 1gt
-  nn <silent> gE :tabl<CR>
-  nn <silent> h :call planet#planet#h()<CR>
-  nn <silent> j :call planet#planet#j()<CR>
-  nn <silent> k :call planet#planet#k()<CR>
-  nn <silent> l :call planet#planet#l()<CR>
-  nn <silent> t :call planet#planet#t()<CR>
-  nn <silent> T :call planet#planet#T()<CR>
-  nn <silent> w :call planet#planet#semicolon()<CR>
-  nn <silent> W :bn<CR>
-  let g:PV_mode = 'p'
-  if empty(v:this_session)
-    call planet#planet#ConfigUpdate('g:PV_mode')
-  endif
+  call planet#planet#SetMode('p')
 endfunc
 
 func! planet#planet#SetGuiDialogs() abort

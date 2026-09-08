@@ -1,3 +1,9 @@
+scriptversion 4
+if exists('g:loaded_planet_vim_settings')
+  finish
+endif
+let g:loaded_planet_vim_settings = 1
+
 set autoindent
 set autoread
 set autowrite

@@ -104,8 +104,6 @@ nn ` '
 nn ' `
 nn <unique> ; :
 nm + <C-W>
-nn <silent> f :call PlanetVim_f()<CR>
-nn <silent> F :call PlanetVim_F()<CR>
 nn gA :args<CR>
 nn gb :tselect<CR>
 nn gB :tags<CR>
@@ -314,8 +312,6 @@ au FileType vim setlocal foldmethod=marker foldlevelstart=0 foldlevel=0
 au FileType * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | end
 au FileType * if &completefunc == "" | setlocal completefunc=syntaxcomplete#Complete | end
 au GUIEnter * set t_vb=
-au GUIEnter * set guifont=DejaVu\ Sans\ Mono\ 9,Monospace\ 9
-au GUIEnter * silent call system('wmctrl -i -b add,maximized_vert,maximized_horz -r' . v:windowid)
 au InsertLeave * if empty(&buftype) | pclose | end
 au SessionLoadPost * call planet#planet#SetPerSessionOptions()
 au StdinReadPost * set nomodified

@@ -6,7 +6,7 @@ endif
 let g:loaded_planet_vim_globals = 1
 
 
-let g:PV_config = "$HOME/.vim/planetvimrc.vim"
+let g:PV_config = get(g:, 'PV_config', planet#paths#Config() .. '/planetvimrc.vim')
 
 
 if ! exists("g:PlanetVim_menus_planet")
