@@ -1,10 +1,8 @@
 // License: CC0
 // Originally from: https://github.com/Overv/Open.GL
 
-// Link statically with GLEW
-#define GLEW_STATIC
-
 #include <GL/glew.h>
+#include <SFML/Config.hpp>
 #include <SFML/Window.hpp>
 
 // Vertex shader
@@ -38,7 +36,12 @@ int main()
     settings.majorVersion = 3;
     settings.minorVersion = 2;
 
+#if SFML_VERSION_MAJOR >= 3
+    sf::Window window(sf::VideoMode({800, 600}), "OpenGL", sf::Style::Titlebar | sf::Style::Close,
+                      sf::State::Windowed, settings);
+#else
     sf::Window window(sf::VideoMode(800, 600, 32), "OpenGL", sf::Style::Titlebar | sf::Style::Close, settings);
+#endif
 
     // Initialize GLEW
     glewExperimental = GL_TRUE;
@@ -105,6 +108,13 @@ int main()
     bool running = true;
     while (running)
     {
+#if SFML_VERSION_MAJOR >= 3
+        while (const auto event = window.pollEvent())
+        {
+            if (event->is<sf::Event::Closed>())
+                running = false;
+        }
+#else
         sf::Event windowEvent;
         while (window.pollEvent(windowEvent))
         {
@@ -113,8 +123,11 @@ int main()
             case sf::Event::Closed:
                 running = false;
                 break;
+            default:
+                break;
             }
         }
+#endif
 
         // Clear the screen to black
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);

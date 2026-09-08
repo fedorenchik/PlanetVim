@@ -25,7 +25,7 @@ def native(command):
     package_names = {'npm': 'npm', 'npx': 'npm', 'vue': '@vue/cli',
                      'electron': 'electron', 'electron-builder': 'electron-builder',
                      'electron-rebuild': '@electron/rebuild', 'nodemon': 'nodemon',
-                     'gitbook': 'gitbook-cli', 'create-nuxt-app': 'create-nuxt-app'}
+                     'gitbook': 'gitbook-cli', 'create-nuxt': 'create-nuxt'}
     name = path.stem
     for location in [path.parent / 'node_modules', path.parent.parent]:
         package = location / package_names.get(name, name)

@@ -1,5 +1,5 @@
-// All of the Node.js APIs are available in the preload process.
-// It has the same sandbox as a Chrome extension.
+// Sandboxed preload exposes only selected APIs. Version strings below are
+// available through Electron's sandboxed process object; filesystem access is not.
 window.addEventListener('DOMContentLoaded', () => {
   const replaceText = (selector, text) => {
     const element = document.getElementById(selector)

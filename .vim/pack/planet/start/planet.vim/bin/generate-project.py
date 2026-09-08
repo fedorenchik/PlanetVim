@@ -160,7 +160,7 @@ def run(argv, cwd):
     return result.returncode if result.returncode >= 0 else 128 - result.returncode
 
 
-def generate(operation, name, destination, templates, install=False, npm='npm', nuxt='create-nuxt-app'):
+def generate(operation, name, destination, templates, install=False, npm='npm', nuxt='create-nuxt'):
     destination = destination_path(destination)
     templates = Path(templates).resolve()
     if operation == 'framework':
@@ -168,7 +168,7 @@ def generate(operation, name, destination, templates, install=False, npm='npm', 
             if install:
                 raise GenerationError('Nuxt dependency choices belong to its interactive creator; omit --install.')
             check_empty_directory(destination)
-            command = executable_argv(nuxt, 'create-nuxt-app')
+            command = executable_argv(nuxt, 'create-nuxt')
             status = run(command + [str(destination)], destination.parent)
             if status == 0 and not (destination / 'package.json').is_file():
                 raise GenerationError('The Nuxt creator exited successfully but produced no package.json.')
@@ -195,7 +195,7 @@ def main(argv=None):
     parser.add_argument('--templates', type=Path, default=Path(__file__).resolve().parent.parent / 'templates')
     parser.add_argument('--install', action='store_true', help='explicitly run npm install for Electron/Vue')
     parser.add_argument('--npm', default='npm', help='npm executable name/path or JSON argv List')
-    parser.add_argument('--nuxt', default='create-nuxt-app', help='installed Nuxt creator executable or JSON argv List')
+    parser.add_argument('--nuxt', default='create-nuxt', help='installed create-nuxt executable or JSON argv List')
     args = parser.parse_args(argv)
     try:
         return generate(args.operation, args.name, args.destination, args.templates, args.install, args.npm, args.nuxt)

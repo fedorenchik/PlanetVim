@@ -1,45 +1,22 @@
-# electron-quick-start
+# Electron desktop project
 
-**Clone and run for a quick way to see Electron in action.**
+Requires Node.js 22.18+ or 24.12+ (even-numbered supported releases), npm, and a Linux or Windows desktop.
+The template derives from [electron-quick-start](https://github.com/electron/electron-quick-start);
+its original [CC0 notice](LICENSE.md) is preserved.
 
-This is a minimal Electron application based on the [Quick Start Guide](https://electronjs.org/docs/latest/tutorial/quick-start) within the Electron documentation.
+Run `npm ci` to install the pinned dependencies. Starting or packaging the app
+downloads the platform-specific Electron runtime when needed. Then use:
 
-**Use this app along with the [Electron API Demos](https://electronjs.org/#get-started) app for API code examples to help you get started.**
+- `npm start`, `npm run dev`, or `npm run serve`: run the desktop application.
+- `npm run lint`: ESLint checks all application JavaScript without modifying it.
+- `npm run build`: build an unpacked desktop application under `dist/` with electron-builder.
 
-A basic Electron application needs just these files:
+The Electron menu offers additional packaging targets. Install packaging prerequisites
+for the chosen target and replace the example app ID, product name, author and icons
+before distribution. Building the unpacked app does not sign, upload or publish it.
 
-- `package.json` - Points to the app's main file and lists its details and dependencies.
-- `main.js` - Starts the app and creates a browser window to render HTML. This is the app's **main process**.
-- `index.html` - A web page to render. This is the app's **renderer process**.
-
-You can learn more about each of these components within the [Quick Start Guide](https://electronjs.org/docs/latest/tutorial/quick-start).
-
-## To Use
-
-To clone and run this repository you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. From your command line:
-
-```bash
-# Clone this repository
-git clone https://github.com/electron/electron-quick-start
-# Go into the repository
-cd electron-quick-start
-# Install dependencies
-npm install
-# Run the app
-npm start
-```
-
-Note: If you're using Linux Bash for Windows, [see this guide](https://www.howtogeek.com/261575/how-to-run-graphical-linux-desktop-applications-from-windows-10s-bash-shell/) or use `node` from the command prompt.
-
-## Resources for Learning Electron
-
-- [electronjs.org/docs](https://electronjs.org/docs) - all of Electron's documentation
-- [electronjs.org/community#boilerplates](https://electronjs.org/community#boilerplates) - sample starter apps created by the community
-- [electron/electron-quick-start](https://github.com/electron/electron-quick-start) - a very basic starter Electron app
-- [electron/simple-samples](https://github.com/electron/simple-samples) - small applications with ideas for taking them further
-- [electron/electron-api-demos](https://github.com/electron/electron-api-demos) - an Electron app that teaches you how to use Electron
-- [hokein/electron-sample-apps](https://github.com/hokein/electron-sample-apps) - small demo apps for the various Electron APIs
-
-## License
-
-[CC0 1.0 (Public Domain)](LICENSE.md)
+`main.js` creates the window, `preload.js` exposes selected version strings, and
+`index.html`/`renderer.js` implement the page. The renderer has no Node integration;
+context isolation, the Chromium sandbox and a local-content policy are enabled.
+See the [Electron guide](https://www.electronjs.org/docs/latest/tutorial/tutorial-first-app)
+and [supported releases](https://releases.electronjs.org/).

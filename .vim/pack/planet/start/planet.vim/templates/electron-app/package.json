@@ -1,10 +1,14 @@
 {
-  "name": "electron-quick-start",
+  "name": "planetvim-electron-app",
   "version": "1.0.0",
   "description": "A minimal Electron application",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "dev": "electron .",
+    "serve": "electron .",
+    "build": "electron-builder --dir",
+    "lint": "eslint . --max-warnings 0"
   },
   "repository": "https://github.com/electron/electron-quick-start",
   "keywords": [
@@ -14,9 +18,32 @@
     "tutorial",
     "demo"
   ],
-  "author": "GitHub",
+  "author": "PlanetVim contributors",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "^16.0.2"
+    "electron": "44.2.0",
+    "electron-builder": "26.15.3",
+    "eslint": "10.10.0",
+    "@eslint/js": "10.0.1",
+    "globals": "17.12.0"
+  },
+  "private": true,
+  "engines": {
+    "node": "^22.18.0 || >=24.12.0"
+  },
+  "build": {
+    "appId": "org.planetvim.example",
+    "productName": "PlanetVim Example",
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer.js",
+      "index.html",
+      "styles.css",
+      "LICENSE.md"
+    ],
+    "directories": {
+      "output": "dist"
+    }
   }
 }

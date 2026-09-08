@@ -178,7 +178,7 @@ func! planet#menu#dev#Update() abort
     an 500.10  🎚️&{.Npm.Install\ Project\ Packages          <Cmd>call planet#integrations#Command(['npm', 'install'])<CR>
     an 500.10  🎚️&{.Npm.Install\ Packages\.\.\.             <Cmd>call planet#integrations#Ask(['npm', 'install'], 'Packages: ', [])<CR>
     an 500.10  🎚️&{.Npm.Install\ Packages\ Globally\.\.\.   <Cmd>call planet#integrations#Ask(['npm', 'install', '-g'], 'Packages: ', [])<CR>
-    an 500.10  🎚️&{.Npm.Install\ create-nuxt-app            <Cmd>call planet#integrations#Command(['npm', 'install', '-g', 'create-nuxt-app'])<CR>
+    an 500.10  🎚️&{.Npm.Install\ create-nuxt            <Cmd>call planet#integrations#Command(['npm', 'install', '-g', 'create-nuxt@3.37.0'])<CR>
     an 500.10  🎚️&{.--1-- <Nop>
     an 500.10  🎚️&{.Set\ Compiler.gcc  <Cmd>call planet#integrations#Compiler('gcc')<CR>
     an 500.10  🎚️&{.Set\ Compiler.clang  <Cmd>call planet#integrations#Compiler('clang')<CR>
@@ -310,15 +310,15 @@ func! planet#menu#dev#Update() abort
     an 500.10  📐&}.Virtual\ Display\ (Xvfb).Set\ Current\ to\ 8<Tab>$DISPLAY=:88  <Cmd>call planet#integrations#XDisplay('set', ':88')<CR>
     an 500.10  📐&}.Virtual\ Display\ (Xvfb).Set\ Current\ to\ 9<Tab>$DISPLAY=:89  <Cmd>call planet#integrations#XDisplay('set', ':89')<CR>
     an 500.10  📐&}.Virtual\ Display\ (Xvfb).Specify\ Custom\ $DISPLAY  <Cmd>call planet#integrations#XDisplay('set')<CR>
-    an 500.10  📐&}.Vue\ CLI.Start                          <Cmd>call planet#integrations#Command(['npm', 'run', 'serve'])<CR>
-    an 500.10  📐&}.Vue\ CLI.Build                          <Cmd>call planet#integrations#Command(['npm', 'run', 'build'])<CR>
-    an 500.10  📐&}.Vue\ CLI.Lint                           <Cmd>call planet#integrations#Command(['npm', 'run', 'lint'])<CR>
-    an 500.10  📐&}.Vue\ CLI.Add\ vue-router                <Cmd>call planet#integrations#Command(['npm', 'install', 'vue-router'])<CR>
-    an 500.10  📐&}.Vue\ CLI.Add\ vuex                      <Cmd>call planet#integrations#Command(['npm', 'install', 'vuex'])<CR>
-    an 500.10  📐&}.Vue\ CLI.Create\.\.\.                   <Cmd>call planet#integrations#Ask(['vue', 'create'], 'Name of new project: ', ['vue-app'])<CR>
+    an 500.10  📐&}.Vue.Start                          <Cmd>call planet#integrations#Command(['npm', 'run', 'serve'])<CR>
+    an 500.10  📐&}.Vue.Build                          <Cmd>call planet#integrations#Command(['npm', 'run', 'build'])<CR>
+    an 500.10  📐&}.Vue.Lint                           <Cmd>call planet#integrations#Command(['npm', 'run', 'lint'])<CR>
+    an 500.10  📐&}.Vue.Add\ vue-router                <Cmd>call planet#integrations#Command(['npm', 'install', 'vue-router'])<CR>
+    an 500.10  📐&}.Vue.Add\ vuex                      <Cmd>call planet#integrations#Command(['npm', 'install', 'vuex'])<CR>
+    an 500.10  📐&}.Vue.Create\.\.\.                   <Cmd>call planet#integrations#Ask(['npm', 'create', 'vue@latest'], 'Name of new project: ', ['vue-app'])<CR>
     an 500.10  📐&}.Nuxt.Run\ Dev                           <Cmd>call planet#integrations#Command(['npm', 'run', 'dev'])<CR>
     an 500.10  📐&}.Nuxt.Build                              <Cmd>call planet#integrations#Command(['npm', 'run', 'build'])<CR>
-    an 500.10  📐&}.Nuxt.Start                              <Cmd>call planet#integrations#Command(['npm', 'run', 'start'])<CR>
+    an 500.10  📐&}.Nuxt.Start                              <Cmd>call planet#integrations#Command(['npm', 'run', 'preview'])<CR>
     an 500.10  📐&}.Nuxt.Generate                           <Cmd>call planet#integrations#Command(['npm', 'run', 'generate'])<CR>
     an 500.10  📐&}.Web\ Tools.Download\ URL  <Cmd>call planet#integrations#Run('download')<CR>
     an 500.10  📐&}.Vulkan.Compile\ Shader  <Cmd>call planet#integrations#Run('glslc')<CR>
