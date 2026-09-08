@@ -89,3 +89,35 @@ endfor
 for s:reg in ['0', 'z', '"']
   call setreg(s:reg, s:registers[s:reg])
 endfor
+
+" Select All must execute from the real menu in both Normal and Insert mode.
+let g:PlanetVim_menus_basic = 1
+call planet#menu#basic#Update()
+func! s:CaptureAll() abort
+  let g:PV_selected_all = [mode(), line('v'), line('.')]
+endfunc
+nnoremap <F12> <Cmd>emenu n 🖍️i.Select\ All<CR>
+" Dispatch the actual Insert menu keys without wrapping them in another
+" Insert-mode <Cmd>, whose context would itself restore Insert mode.
+execute 'inoremap <F12> ' .. menu_info('🖍️i.Select All', 'i').rhs
+noremap <F11> <Cmd>call <SID>CaptureAll()<CR>
+snoremap <F11> <Cmd>call <SID>CaptureAll()<CR>
+inoremap <F11> <Cmd>call <SID>CaptureAll()<CR>
+let s:selectmode = &selectmode
+for s:selection_mode in ['', 'mouse,key,cmd']
+  let &selectmode = s:selection_mode
+  for s:entry_mode in ['', 'i']
+    call s:Buffer(['first', 'middle', 'last'])
+    call cursor(2, 2)
+    call feedkeys(s:entry_mode .. "\<F12>\<F11>\<Esc>", 'xt')
+    " Ex-mode reports 'c' while executing the same live selection callback.
+    let s:expected_mode = has('gui_running') ? (empty(s:selection_mode) ? 'V' : 'S') : 'c'
+    call assert_equal([s:expected_mode, 1, 3], g:PV_selected_all)
+    call assert_equal(['first', 'middle', 'last'], getline(1, '$'))
+  endfor
+endfor
+let &selectmode = s:selectmode
+nunmap <F12>
+iunmap <F12>
+unmap <F11>
+iunmap <F11>

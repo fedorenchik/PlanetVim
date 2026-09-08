@@ -273,10 +273,10 @@ func! planet#menu#basic#Update() abort
     an 130.340 🔎&/.Substitute\ Dialog<Tab>:promptrepl       <Cmd>promptrepl<CR>
 
     " Selection
-    "FIXME: In Insert mode this only works for a SINGLE Normal mode command
     an 140.10  🖍️&i.Selection <Nop>
     an disable 🖍️&i.Selection
     an 140.10  🖍️&i.Select\ All                             <Cmd>call planet#edit#SelectAll()<CR>
+    inoremenu 140.10 🖍️&i.Select\ All                       <Esc><Cmd>call planet#edit#SelectAll()<CR>
     an 140.10  🖍️&i.Reselect\ Previous\ Area                gv
     an 140.10  🖍️&i.--1-- <Nop>
     an 140.10  🖍️&i.Write\ Selection\ to\ File              <Cmd>call planet#selection#CopySelectionToFile()<CR>
