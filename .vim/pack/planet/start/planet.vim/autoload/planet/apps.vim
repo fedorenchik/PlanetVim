@@ -1,15 +1,39 @@
 scriptversion 4
 
 func! planet#apps#MenuListGuiWindows() abort
-  for win_name in systemlist("wmctrl -l | tr -s ' ' | cut -d' ' -f4-")
-    exe 'an 860.400 🎛️&@.&GUI\ Windows.&' .. planet#menu#MenuifyName(win_name) .. ' <Cmd>!wmctrl -a ' .. fnameescape(win_name) .. '<CR>'
+  silent! aunmenu 🎛️&@.&GUI\ Windows
+  if has('win32') || !executable('wmctrl')
+    return
+  endif
+  for l:line in systemlist('wmctrl -l')
+    let l:id = matchstr(l:line, '^0x[0-9a-fA-F]\+')
+    if !empty(l:id)
+      let l:name = substitute(l:line, '^\S\+\s\+\S\+\s\+\S\+\s\+', '', '')
+      execute 'an 860.400 🎛️&@.&GUI\ Windows.' .. planet#menu#MenuifyName(l:id .. ' ' .. l:name)
+            \ .. ' <Cmd>call planet#term#RunGuiApp(["wmctrl", "-ia", "' .. l:id .. '"])<CR>'
+    endif
   endfor
 endfunc
 
 func! planet#apps#WorkspaceListMenu() abort
-  let l:ws_names = systemlist("wmctrl -d | tr -s ' ' | cut -d' ' -f10-")
-  for ws_id in systemlist("wmctrl -d | tr -s ' ' | cut -d' ' -f1")
-    let l:menu_name = '&' .. planet#menu#MenuifyName(l:ws_names[str2nr(ws_id)])
-    exe 'an 860.600 🎛️&@.' .. l:menu_name .. ' <Cmd>!wmctrl -s ' .. ws_id .. '<CR>'
+  silent! aunmenu 🎛️&@.&Workspaces
+  if has('win32') || !executable('wmctrl')
+    return
+  endif
+  for l:line in systemlist('wmctrl -d')
+    let l:id = matchstr(l:line, '^\d\+')
+    if !empty(l:id)
+      execute 'an 860.600 🎛️&@.&Workspaces.' .. planet#menu#MenuifyName(l:line)
+            \ .. ' <Cmd>call planet#term#RunGuiApp(["wmctrl", "-s", "' .. l:id .. '"])<CR>'
+    endif
   endfor
+endfunc
+
+func! planet#apps#Open(command, prerequisite = '') abort
+  if !empty(a:prerequisite) && !executable(a:prerequisite)
+    echomsg 'PlanetVim: install ' .. a:prerequisite .. ' to use this app.'
+    return 0
+  endif
+  return planet#term#RunGuiApp(planet#gui#Command()
+        \ + ['--cmd', 'let g:startify_disable_at_vimenter = 1', '-c', a:command])
 endfunc

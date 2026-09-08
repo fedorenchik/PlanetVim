@@ -1,0 +1,13 @@
+{
+  "*": {"todo": ["TODO: ${description}${cursor}"]},
+  "python": {
+    "function": ["def ${name}(${arguments}):", "    ${cursor}pass"],
+    "main": ["if __name__ == '__main__':", "    ${cursor}main()"]
+  },
+  "cpp": {
+    "class": ["class ${name} {", "public:", "    ${cursor}${name}() = default;", "};"],
+    "main": ["int main(int argc, char **argv) {", "    ${cursor}", "    return 0;", "}"]
+  },
+  "markdown": {"link": ["[${label}](${url})${cursor}"]},
+  "html": {"page": ["<!doctype html>", "<html lang=\"en\">", "<head><meta charset=\"utf-8\"><title>${title}</title></head>", "<body>${cursor}</body>", "</html>"]}
+}

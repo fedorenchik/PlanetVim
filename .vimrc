@@ -426,9 +426,9 @@ endfunc
 " Terminals: Previous, Next, List (popup with choose), New, Close (send Ctrl-D)
 " W3m: Back, Forward, History, AddressBar
 func! PlanetVim_WinBarTerminalInit() abort
-  nnoremenu 1.10  WinBar.⏪ <Cmd>echo 'TODO'<CR>
+  nnoremenu 1.10  WinBar.⏪ <Cmd>call planet#winbar#Terminal(-1)<CR>
   nnoremenu 1.20  WinBar.📙 <Cmd>call planet#term#PopupOutputsMenu()<CR>
-  nnoremenu 1.30  WinBar.⏩ <Cmd>echo 'TODO'<CR>
+  nnoremenu 1.30  WinBar.⏩ <Cmd>call planet#winbar#Terminal(1)<CR>
   nnoremenu 1.40  WinBar.➕ <Cmd>terminal ++curwin ++kill=kill<CR>
   nnoremenu 1.100 WinBar.⬇️       z0<CR>
   nnoremenu 1.110 WinBar.↕️       10<C-w>_
@@ -675,7 +675,7 @@ augroup END
 let g:fern#scheme#bookmark#store#file = planet#paths#State() .. '/fern-bookmark.json'
 " }}}
 " Plugin: fern-renderer-nerdfont.vim {{{
-let g:fern#renderer = "nerdfont"
+let g:fern#renderer = get(g:, 'PV_fern_renderer', 'default')
 " }}}
 " Plugin: glyph-palette.vim {{{
 augroup my-glyph-palette
@@ -849,17 +849,19 @@ nnoremap sS :Grepper -tool git<CR>
 call SetupCommandAlias("grep", "GrepperGrep")
 " }}}
 " Plugin: vim-lsp {{{
-let g:lsp_use_lua = has('nvim-0.4.0') || (has('lua') && has('patch-8.2.0775'))
+let g:lsp_use_lua = 0
+let g:lsp_settings = get(g:, 'lsp_settings', {})
+for s:server in ['clangd', 'pyls-all', 'pyls', 'pyls-ms', 'pyright-langserver', 'jedi-language-server']
+  let g:lsp_settings[s:server] = extend(get(g:lsp_settings, s:server, {}), {'disabled': 1}, 'keep')
+endfor
 let g:lsp_preview_keep_focus = 1
 let g:lsp_preview_float = 1
 let g:lsp_preview_autoclose = 1
 let g:lsp_diagnostics_echo_cursor = 1
 " XXX: evaluate
 let g:lsp_diagnostics_float_cursor = 0
-let g:lsp_format_sync_timeout = 1000
+let g:lsp_format_sync_timeout = 5000
 " make undercurl work in terminal
-let &t_Cs = "\e[4:3m"
-let &t_Ce = "\e[4:0m"
 highlight LspErrorHighlight term=strikethrough cterm=strikethrough ctermul=Red gui=strikethrough guisp=Red
 highlight LspWarningHighlight term=undercurl cterm=undercurl ctermul=Yellow gui=undercurl guisp=Orange
 highlight LspInformationHighlight term=underline cterm=undercurl ctermul=Blue gui=undercurl guisp=Blue
@@ -873,8 +875,6 @@ let g:lsp_semantic_enabled = 0
 
 let g:lsp_async_completion = 1
 " autocmd FileType c,cpp,cmake,python,vim setlocal tagfunc=lsp#tagfunc
-autocmd User lsp_buffer_enabled setlocal tagfunc=lsp#tagfunc
-autocmd User lsp_buffer_enabled setlocal omnifunc=lsp#complete
 "TODO: snippets
 " }}}
 " Plugin: vim-mark {{{
@@ -974,6 +974,7 @@ xmap <Leader>* <Plug>MarkIWhiteSet
 " }}}
 " Plugin: vim-markdown-preview {{{
 let vim_markdown_preview_hotkey='<A-`>'
+let g:vim_markdown_preview_toggle = -1
 " }}}
 " Plugin: vim-qf {{{
 let g:qf_mapping_ack_style = 1
@@ -1050,7 +1051,7 @@ autocmd User Startified nmap <buffer> A i
 aug END
 " }}}
 " Plugin: vim-test {{{
-let test#strategy = "dispatch"
+let test#strategy = 'planet'
 " }}}
 " Plugin: vimspector {{{
 let g:vimspector_enable_mappings = 'HUMAN'

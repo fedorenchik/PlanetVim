@@ -178,5 +178,13 @@
   "qt-model": {
     "kind": "file",
     "path": "files/qt-model/model.qmodel"
+  },
+  "cmake": {
+    "kind": "directory",
+    "path": "cmake"
+  },
+  "python": {
+    "kind": "directory",
+    "path": "python"
   }
 }

@@ -10,7 +10,7 @@ function! planet#menu#planet#Update() abort
     an 100.10  🌐&P.PlanetVim <Nop>
     an disable 🌐&P.PlanetVim
     an 100.10  🌐&P.&Open\ Welcome\ Screen                  <Cmd>tabnew<CR><Cmd>Startify<CR>
-    an 100.10  🌐&P.New\ &PlanetVim                         <Cmd>silent !gvim<CR>
+    an 100.10  🌐&P.New\ &PlanetVim                         <Cmd>call planet#term#RunGuiApp(planet#gui#Command())<CR>
     an 100.10  🌐&P.--1-- <Nop>
     an 100.10  🌐&P.Set\ E&asy\ Mode                        <Cmd>call planet#planet#SetEasyMode()<CR>
     an 100.10  🌐&P.Set\ Standa&rd\ Mode                    <Cmd>call planet#planet#SetStandardMode()<CR>
@@ -22,9 +22,9 @@ function! planet#menu#planet#Update() abort
     an 100.50  🌐&P.&Development\ Menus                     <Cmd>call planet#planet#DevelopmentToggle()<CR>
     an 100.60  🌐&P.&Tools\ Menus                           <Cmd>call planet#planet#ToolsToggle()<CR>
     an 100.70  🌐&P.&Navigation\ Menus                      <Cmd>call planet#planet#NavigationToggle()<CR>
-    an 100.70  🌐&P.&Settings\ Menus                        <Cmd>call planet#planet#NavigationToggle()<CR>
+    an 100.70  🌐&P.&Settings\ Menus                        <Cmd>call planet#planet#SettingsToggle()<CR>
     an 100.80  🌐&P.--4-- <Nop>
-    an 100.90  🌐&P.Ed&it\ Settings                         <Cmd>tabedit ~/.vim/planetvimrc.vim<CR>
+    an 100.90  🌐&P.Ed&it\ Settings                         <Cmd>execute 'tabedit ' .. fnameescape(g:PV_config)<CR>
     an 100.100 🌐&P.--5-- <Nop>
     an 100.110 🌐&P.&Close\ Everything                      <Cmd>cd<CR><Cmd>SClose<CR>
     an 100.120 🌐&P.--6-- <Nop>

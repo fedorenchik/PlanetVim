@@ -1,0 +1,27 @@
+new
+setlocal filetype=python
+call setline(1, '    ')
+call assert_equal(1, planet#snippets#Insert('function', #{name: 'hello', arguments: 'value'}))
+call assert_equal(['    def hello(value):', '        pass'], getline(1, '$'))
+call assert_equal([2, 9], [line('.'), col('.')])
+let s:before = getline(1, '$')
+call assert_equal(0, planet#snippets#Insert('not-a-snippet', {}))
+call assert_equal(s:before, getline(1, '$'))
+let s:custom = planet#paths#Config('snippets') .. '/python.json'
+call writefile([json_encode(#{literal: ['${text}${cursor}']})], s:custom)
+call assert_equal(1, planet#snippets#Insert('literal', #{text: 'quote" and \ literal'}))
+call assert_match('quote" and \\ literal', getline('.'))
+let s:catalog = planet#snippets#Catalog()
+call assert_true(has_key(s:catalog, 'function'))
+setlocal filetype=text
+call assert_false(has_key(planet#snippets#Catalog(), 'function'))
+let s:register = getreginfo('"')
+call setline(1, ['b', 'b', 'a'])
+call deletebufline(bufnr(), 4, '$')
+call planet#editing#Order('uniq')
+call assert_equal(['b', 'a'], getline(1, '$'))
+call planet#editing#Order('sort')
+call assert_equal(['a', 'b'], getline(1, '$'))
+call planet#editing#Order('reverse')
+call assert_equal(['b', 'a'], getline(1, '$'))
+call assert_equal(s:register, getreginfo('"'))

@@ -11,13 +11,13 @@ func! planet#menu#MenuifyName(name) abort
   return menu_name
 endfunc
 
-func! planet#menu#AddMenuItem(priority, text, command, tooltip) abort
-    "TODO...
-    an 110.10  &File.&New                                   :confirm enew<CR>
-    an a:priority a:text a:command
-    tln 110.10  &File.&New                                  :confirm enew<CR>
-    no <A-f>n :confirm enew<CR>
-    no a:map a:command
-    ln <A-f>n :confirm enew<CR>
-    tno <A-f>n :confirm enew<CR>
+
+
+func! planet#menu#Plain() abort
+  for l:root in ['🌐&P', '📁&f', '📝&e', '✏️&m', '🔎&/', '🖍️&i', '📺&v', '↕️&,', '🧭&n', '📋&"', "🔖&'", '🏷️&=', '🖌️&h', '📎&k', '📜&z', '❇️&[', '🎚️&{', '📐&}', '🔨&b', '▶️&r', '🐞&d', '🧪&j', '🔬&y', '💻&c', '🔀&g', '🔤&\.', '🔠&-', '🔧&o', '📖&u', '🗃️&a', '🪟&w', '🗂️&t', '📚&s', '🗄️&x', '🎛️&@', '⚙️&\\', '⌨️&\|', '❔&?']
+    execute 'menutrans ' .. l:root .. ' [' .. matchstr(l:root, '&.*$') .. ']'
+  endfor
+  for l:module in ['planet', 'basic', 'edit', 'dev', 'tools', 'nav', 'settings']
+    call call('planet#menu#' .. l:module .. '#Update', [])
+  endfor
 endfunc

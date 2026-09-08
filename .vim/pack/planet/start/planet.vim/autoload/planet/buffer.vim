@@ -48,32 +48,39 @@ func! planet#buffer#IsNormal(name, num)
     return 1
 endfunc
 
-func!planet#buffer#AddBuffer(name, num)
+let s:entries = {}
+
+func! s:Remove(number) abort
+  if has_key(s:entries, a:number)
+    execute 'silent! aunmenu 📖&u.Buffer\ List.' .. s:entries[a:number]
+    call remove(s:entries, a:number)
+  endif
+endfunc
+
+func! planet#buffer#AddBuffer(name, num) abort
+  call s:Remove(a:num)
   if planet#buffer#IsNormal(a:name, a:num)
-    let menu_name = planet#menu#MenuifyName(a:name)
-    exe 'an 800.500 📖&u.Buffer\ List.' .. menu_name .. ' :confirm b ' .. a:num .. '<CR>'
+    let s:entries[a:num] = planet#menu#MenuifyName('[' .. a:num .. '] ' .. (empty(a:name) ? '[No Name]' : a:name))
+    execute 'an 800.500 📖&u.Buffer\ List.' .. s:entries[a:num] .. ' <Cmd>confirm buffer ' .. a:num .. '<CR>'
   endif
 endfunc
 
-func! planet#buffer#AddBufferAu()
-  let name = expand("<afile>")
-  let num = expand("<abuf>") + 0
-  call planet#buffer#AddBuffer(name, num)
-endfunc
-
-func! planet#buffer#RemoveBufferAu()
-  let name = expand("<afile>")
-  let menu_name = planet#menu#MenuifyName(name)
-  if ! empty(menu_name)
-    exe 'silent! aun 800.500 📖&u.Buffer\ List.' .. menu_name
+func! planet#buffer#AddBufferAu() abort
+  if get(g:, 'PlanetVim_menus_nav', 1)
+    call planet#buffer#AddBuffer(expand('<afile>'), str2nr(expand('<abuf>')))
   endif
 endfunc
 
-func! planet#buffer#AddBuffers()
-  let buf = 1
-  while buf <= bufnr('$')
-    let name = bufname(buf)
-    call planet#buffer#AddBuffer(name, num)
-    let buf += 1
-  endwhile
+func! planet#buffer#RemoveBufferAu() abort
+  call s:Remove(str2nr(expand('<abuf>')))
+endfunc
+
+func! planet#buffer#AddBuffers() abort
+  silent! aunmenu 📖&u.Buffer\ List
+  let s:entries = {}
+  if get(g:, 'PlanetVim_menus_nav', 1)
+    for l:buffer in getbufinfo({'buflisted': 1})
+      call planet#buffer#AddBuffer(l:buffer.name, l:buffer.bufnr)
+    endfor
+  endif
 endfunc

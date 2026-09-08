@@ -9,64 +9,66 @@ func! planet#menu#basic#Update() abort
     an 110.30  📁&f.New\ Split<Tab>:new<Tab>+n                 <C-w>n
     an 110.40  📁&f.New\ &VSplit<Tab>:vnew                     <Cmd>vnew<CR>
     an 110.50  📁&f.New\ &Tab                                  <Cmd>tabnew<CR>
-    an 110.60  📁&f.New\ GUI\ &Window                          <Cmd>silent !gvim<CR>
+    an 110.60  📁&f.New\ GUI\ &Window                          <Cmd>call planet#term#RunGuiApp(planet#gui#Command())<CR>
+    an 110.60 📁&f.New\ Pro&ject.CMake <Cmd>call planet#scaffold#New('cmake')<CR>
+    an 110.60 📁&f.New\ Pro&ject.Python <Cmd>call planet#scaffold#New('python')<CR>
     an 110.60  📁&f.New\ Pro&ject.Vim\ Plugin                  <Cmd>call planet#file#NewProject('vim-plugin')<CR>
     an 110.60  📁&f.New\ Pro&ject.Gtk\ 3\ Builder\ App         <Cmd>call planet#file#NewProject('Gtk3BuilderApp')<CR>
     an 110.60  📁&f.New\ Pro&ject.Vue\ 3\ App                  <Cmd>call planet#file#NewProjectFromScript('vue3')<CR>
     an 110.60  📁&f.New\ Pro&ject.Nuxt\ App                    <Cmd>call planet#file#NewProjectFromScript('nuxt')<CR>
     an 110.60  📁&f.New\ Pro&ject.Electron\ App                <Cmd>call planet#file#NewProjectFromScript('electron')<CR>
     an 110.60  📁&f.New\ Pro&ject.Platformio\ espidf\ Firmware <Cmd>call planet#file#NewProject('pio_idf_fw')<CR>
-    an 110.60  📁&f.New\ Pro&ject.Blender\ Addon               :TODO
-    an 110.60  📁&f.New\ Pro&ject.Nextcloud\ App               :TODO
-    an 110.60  📁&f.New\ Pro&ject.Linux\ OOT\ Kernel\ Module   :TODO"with parameters/proc/debugfs support
-    an 110.60  📁&f.New\ Pro&ject.Linux\ OOT\ Device\ Driver   :TODO"with parameters/OF framework support
-    an 110.60  📁&f.New\ Pro&ject.Linux\ Device\ Tree          :TODO"device tree definition
-    an 110.60  📁&f.New\ Pro&ject.Wordpress\ Plugin            :TODO
-    an 110.60  📁&f.New\ Pro&ject.Wordpress\ Theme             :TODO
-    an 110.60  📁&f.New\ Pro&ject.Yocto\ System                :TODO
-    an 110.60  📁&f.New\ Pro&ject.ROS\ Package                 :TODO
-    an 110.60  📁&f.New\ Pro&ject.C++\ DSL                     :TODO"example DSL in C++
-    an 110.60  📁&f.New\ Pro&ject.Python\ DSL                  :TODO"example DSL in Python
-    an 110.60  📁&f.New\ Pro&ject.LaTex\ Book                  :TODO
+    an 110.60 📁&f.New\ Pro&ject.Blender\ Addon <Cmd>call planet#scaffold#New('blender-addon')<CR>
+    an 110.60 📁&f.New\ Pro&ject.Nextcloud\ App <Cmd>call planet#scaffold#New('nextcloud-app')<CR>
+    an 110.60 📁&f.New\ Pro&ject.Linux\ OOT\ Kernel\ Module <Cmd>call planet#scaffold#New('linux-module')<CR>
+    an 110.60 📁&f.New\ Pro&ject.Linux\ OOT\ Device\ Driver <Cmd>call planet#scaffold#New('linux-driver')<CR>
+    an 110.60 📁&f.New\ Pro&ject.Linux\ Device\ Tree <Cmd>call planet#scaffold#New('linux-device-tree')<CR>
+    an 110.60 📁&f.New\ Pro&ject.Wordpress\ Plugin <Cmd>call planet#scaffold#New('wordpress-plugin')<CR>
+    an 110.60 📁&f.New\ Pro&ject.Wordpress\ Theme <Cmd>call planet#scaffold#New('wordpress-theme')<CR>
+    an 110.60 📁&f.New\ Pro&ject.Yocto\ System <Cmd>call planet#scaffold#New('yocto-system')<CR>
+    an 110.60 📁&f.New\ Pro&ject.ROS\ Package <Cmd>call planet#scaffold#New('ros-package')<CR>
+    an 110.60 📁&f.New\ Pro&ject.C++\ DSL <Cmd>call planet#scaffold#New('cpp-dsl')<CR>
+    an 110.60 📁&f.New\ Pro&ject.Python\ DSL <Cmd>call planet#scaffold#New('python-dsl')<CR>
+    an 110.60 📁&f.New\ Pro&ject.LaTex\ Book <Cmd>call planet#scaffold#New('latex-book')<CR>
     an 110.60  📁&f.New\ Pro&ject.OpenGL.GLFW\ (GLEW,\ C++,\ OpenGL\ 3\.2)\ App <Cmd>call planet#file#NewProject('glfw-app')<CR>
     an 110.60  📁&f.New\ Pro&ject.OpenGL.SDL\ (GLEW,\ C++,\ OpenGL\ 3\.2)\ App <Cmd>call planet#file#NewProject('sdl-app')<CR>
     an 110.60  📁&f.New\ Pro&ject.OpenGL.SFML\ (GLEW,\ C++,\ OpenGL\ 3\.2)\ App <Cmd>call planet#file#NewProject('sfml-app')<CR>
-    an 110.60  📁&f.New\ Pro&ject.Basic\ Vulkan                :TODO
+    an 110.60 📁&f.New\ Pro&ject.Basic\ Vulkan <Cmd>call planet#scaffold#New('vulkan-app')<CR>
     an 110.60  📁&f.New\ Pro&ject.Git\ Clone\.\.\.             <Cmd>call planet#term#RunCmdAskArgs('git clone --recurse-submodules ', 'Repo: ', 'https://github.com/')<CR>
-    an 110.60  📁&f.New\ Pro&ject.Git\ Init                    <Cmd>call planet#term#RunCmd('git init && git add --all && git commit -m "Initial Commit"')<CR>
-    an 110.60  📁&f.New\ File.Makefile                         :TODO"copy from template
-    an 110.60  📁&f.New\ File.C++\ Class                       :TODO"copy from template
-    an 110.60  📁&f.New\ File.C++\ Class\ Enum                 :TODO"copy from template
-    an 110.60  📁&f.New\ File.C++\ Module                      :TODO"copy from template
-    an 110.60  📁&f.New\ File.Python\ App                      :TODO"copy from template
-    an 110.60  📁&f.New\ File.Python\ Class                    :TODO"copy from template
-    an 110.60  📁&f.New\ File.Qt.Qt\ Designer\ Form\ Class     :TODO"copy from template
-    an 110.60  📁&f.New\ File.Qt.SCXML                         :TODO"copy from template
-    an 110.60  📁&f.New\ File.Qt.qmodel                        :TODO"copy from template
-    an 110.60  📁&f.New\ File.Qt.Qt\ Item\ Model               :TODO"copy from template
-    an 110.60  📁&f.New\ File.Qt.Qt\ Designer\ Form            :TODO"copy from template
-    an 110.60  📁&f.New\ File.Qt.Qt\ Resource\ File            :TODO"copy from template
-    an 110.60  📁&f.New\ File.Qt.QML                           :TODO"copy from template
-    an 110.60  📁&f.New\ File.Qt.QtQuick\ UI\ (\.ui\.qml)      :TODO"copy from template
-    an 110.60  📁&f.New\ File.GLSL.Vertex\ Shader\ (\.vert)    :TODO
-    an 110.60  📁&f.New\ File.GLSL.Fragment\ Shader\ (\.frag)  :TODO
-    an 110.60  📁&f.New\ File.GLSL.Geometry\ Shader\ (\.geom)  :TODO
-    an 110.60  📁&f.New\ File.GLSL.Compute\ Shader\ (\.comp)   :TODO
-    an 110.60  📁&f.New\ File.GLSL.Tesselation\ Control\ Shader\ (\.tesc) :TODO
-    an 110.60  📁&f.New\ File.GLSL.Tesselation\ Evaluation\ Shader\ (\.tese) :TODO
-    an 110.60  📁&f.New\ File.Web.HTML                         :TODO"copy from template
-    an 110.60  📁&f.New\ File.Web.CSS                          :TODO"copy from template
-    an 110.60  📁&f.New\ File.Web.JavaScript                   :TODO"copy from template
-    an 110.60  📁&f.New\ File.Web.TypeScript                   :TODO"copy from template
-    an 110.60  📁&f.New\ File.Web.PHP                          :TODO"copy from template
-    an 110.60  📁&f.New\ File.Web.Python\ Django               :TODO"copy from template
-    an 110.60  📁&f.New\ File.Web.Python\ Flask                :TODO"copy from template
-    an 110.60  📁&f.New\ File.Web.Vue\ Component               :TODO"copy from template
+    an 110.60  📁&f.New\ Pro&ject.Git\ Init                    <Cmd>call planet#term#RunArgv(['git', 'init'], v:false, v:false, v:false, getcwd())<CR>
+    an 110.60 📁&f.New\ File.Makefile <Cmd>call planet#scaffold#New('makefile')<CR>
+    an 110.60 📁&f.New\ File.C++\ Class <Cmd>call planet#scaffold#New('cpp-class')<CR>
+    an 110.60 📁&f.New\ File.C++\ Class\ Enum <Cmd>call planet#scaffold#New('cpp-enum')<CR>
+    an 110.60 📁&f.New\ File.C++\ Module <Cmd>call planet#scaffold#New('cpp-module')<CR>
+    an 110.60 📁&f.New\ File.Python\ App <Cmd>call planet#scaffold#New('python-app')<CR>
+    an 110.60 📁&f.New\ File.Python\ Class <Cmd>call planet#scaffold#New('python-class')<CR>
+    an 110.60 📁&f.New\ File.Qt.Qt\ Designer\ Form\ Class <Cmd>call planet#scaffold#New('qt-form-class')<CR>
+    an 110.60 📁&f.New\ File.Qt.SCXML <Cmd>call planet#scaffold#New('qt-scxml')<CR>
+    an 110.60 📁&f.New\ File.Qt.qmodel <Cmd>call planet#scaffold#New('qt-model')<CR>
+    an 110.60 📁&f.New\ File.Qt.Qt\ Item\ Model <Cmd>call planet#scaffold#New('qt-item-model')<CR>
+    an 110.60 📁&f.New\ File.Qt.Qt\ Designer\ Form <Cmd>call planet#scaffold#New('qt-form')<CR>
+    an 110.60 📁&f.New\ File.Qt.Qt\ Resource\ File <Cmd>call planet#scaffold#New('qt-resource')<CR>
+    an 110.60 📁&f.New\ File.Qt.QML <Cmd>call planet#scaffold#New('qt-qml')<CR>
+    an 110.60 📁&f.New\ File.Qt.QtQuick\ UI\ (\.ui\.qml) <Cmd>call planet#scaffold#New('qt-quick-ui')<CR>
+    an 110.60 📁&f.New\ File.GLSL.Vertex\ Shader\ (\.vert) <Cmd>call planet#scaffold#New('glsl-vertex')<CR>
+    an 110.60 📁&f.New\ File.GLSL.Fragment\ Shader\ (\.frag) <Cmd>call planet#scaffold#New('glsl-fragment')<CR>
+    an 110.60 📁&f.New\ File.GLSL.Geometry\ Shader\ (\.geom) <Cmd>call planet#scaffold#New('glsl-geometry')<CR>
+    an 110.60 📁&f.New\ File.GLSL.Compute\ Shader\ (\.comp) <Cmd>call planet#scaffold#New('glsl-compute')<CR>
+    an 110.60 📁&f.New\ File.GLSL.Tesselation\ Control\ Shader\ (\.tesc) <Cmd>call planet#scaffold#New('glsl-tess-control')<CR>
+    an 110.60 📁&f.New\ File.GLSL.Tesselation\ Evaluation\ Shader\ (\.tese) <Cmd>call planet#scaffold#New('glsl-tess-evaluation')<CR>
+    an 110.60 📁&f.New\ File.Web.HTML <Cmd>call planet#scaffold#New('web-html')<CR>
+    an 110.60 📁&f.New\ File.Web.CSS <Cmd>call planet#scaffold#New('web-css')<CR>
+    an 110.60 📁&f.New\ File.Web.JavaScript <Cmd>call planet#scaffold#New('web-javascript')<CR>
+    an 110.60 📁&f.New\ File.Web.TypeScript <Cmd>call planet#scaffold#New('web-typescript')<CR>
+    an 110.60 📁&f.New\ File.Web.PHP <Cmd>call planet#scaffold#New('web-php')<CR>
+    an 110.60 📁&f.New\ File.Web.Python\ Django <Cmd>call planet#scaffold#New('web-django')<CR>
+    an 110.60 📁&f.New\ File.Web.Python\ Flask <Cmd>call planet#scaffold#New('web-flask')<CR>
+    an 110.60 📁&f.New\ File.Web.Vue\ Component <Cmd>call planet#scaffold#New('web-vue')<CR>
     an 110.60  📁&f.New\ File.Web.--1-- <Nop>
-    an 110.60  📁&f.New\ File.Web.\.htaccess                   :TODO"copy from template
-    an 110.60  📁&f.New\ File.Web.robots\.txt                  :TODO"copy from template
-    an 110.60  📁&f.New\ File.LaTex.Article                    :TODO"copy from template
-    an 110.60  📁&f.New\ File.LaTex.Chapter                    :TODO"copy from template
+    an 110.60 📁&f.New\ File.Web.\.htaccess <Cmd>call planet#scaffold#New('web-htaccess')<CR>
+    an 110.60 📁&f.New\ File.Web.robots\.txt <Cmd>call planet#scaffold#New('web-robots')<CR>
+    an 110.60 📁&f.New\ File.LaTex.Article <Cmd>call planet#scaffold#New('latex-article')<CR>
+    an 110.60 📁&f.New\ File.LaTex.Chapter <Cmd>call planet#scaffold#New('latex-chapter')<CR>
     an 110.70  📁&f.--1-- <Nop>
     an 110.80  📁&f.Choose\ File                               <Cmd>Clap files<CR>
     an 110.80  📁&f.Open\ File\ Dialog                         <Cmd>browse confirm e<CR>
@@ -90,7 +92,7 @@ func! planet#menu#basic#Update() abort
     an 110.150 📁&f.Save\ &As\.\.\.<Tab>:saveas                <Cmd>browse confirm saveas<CR>
     an <silent> 110.160 📁&f.Save\ A&ll<Tab>:wall              <Cmd>silent confirm wall<Bar>echohl Directory<Bar>echo "All Saved"<Bar>echohl None<CR>
     an 110.170 📁&f.--3-- <Nop>
-    an 110.170 📁&f.Toggle\ AutoSave                           :TODO
+    an 110.170 📁&f.Toggle\ AutoSave <Cmd>call planet#editing#AutoSaveToggle()<CR>
     an 110.170 📁&f.--4-- <Nop>
     an 110.180 📁&f.Export\ (Selected)\ as\ HTML               <Cmd>TOhtml<CR>
     an 110.180 📁&f.Convert\ to\ HTML                          <Cmd>runtime syntax/2html.vim<CR>
@@ -112,8 +114,8 @@ func! planet#menu#basic#Update() abort
     an 110.330 📁&f.C&d.Tcd\ to\ File\ Directory               <Cmd>tcd %:h<CR>
     an 110.330 📁&f.C&d.Lcd\ to\ File\ Directory               <Cmd>lcd %:h<CR>
     an 110.330 📁&f.C&d.--2-- <Nop>
-    an 110.330 📁&f.C&d.Temp\ Cd\ to\ Project\ Root\ in\ Window :TODO"lcd to project root, but back to global cwd on au WinLeave <buffer> <once>
-    an 110.330 📁&f.C&d.Temp\ Cd\ in\ Window                   :TODO"lcd, but back to global cwd on au WinLeave <buffer> <once>
+    an 110.330 📁&f.C&d.Temp\ Cd\ to\ Project\ Root\ in\ Window <Cmd>call planet#editing#TemporaryDirectory(v:true)<CR>
+    an 110.330 📁&f.C&d.Temp\ Cd\ in\ Window <Cmd>call planet#editing#TemporaryDirectory(v:false)<CR>
     an 110.330 📁&f.C&d.--3-- <Nop>
     an 110.320 📁&f.C&d.Cd\ to\ Previous\ Directory<Tab>:cd\ - <Cmd>cd -<CR>
     an 110.330 📁&f.C&d.Tab\ Cd\ to\ Previous\ Directory<Tab>:tcd\ - <Cmd>tcd -<CR>
@@ -199,15 +201,15 @@ func! planet#menu#basic#Update() abort
     an 125.410 ✏️&m.Join\ Lines<Tab>J                          J
     an 125.420 ✏️&m.Join\ Lines\ without\ Whitespace<Tab>gJ    gJ
     an 125.570 ✏️&m.--13-- <Nop>
-    an 125.580 ✏️&m.Remove\ Trailing\ Whitespace               :TODO
+    an 125.580 ✏️&m.Remove\ Trailing\ Whitespace <Cmd>call planet#editing#TrimWhitespace()<CR>
     an 125.590 ✏️&m.--14-- <Nop>
     an 125.600 ✏️&m.Call\ 'operatorfunc'<Tab>g@                g@
     an 125.600 ✏️&m.Read-in\ File\.\.\.<Tab>:r                 :r <C-z>
     an 125.610 ✏️&m.Filter<Tab>:g!/re/d                        <Cmd>call planet#modify#Filter()<CR>
     an 125.620 ✏️&m.Filter\ Out<Tab>:g/re/d                    <Cmd>call planet#modify#FilterOut()<CR>
-    an 125.630 ✏️&m.Sort<Tab>!sort                             !sort<CR>
-    an 125.640 ✏️&m.Reverse<Tab>!tac                           !tac<CR>
-    an 125.650 ✏️&m.Uniq<Tab>!uniq                             !uniq<CR>
+    an 125.630 ✏️&m.Sort<Tab>!sort                             <Cmd>call planet#editing#Order('sort')<CR>
+    an 125.640 ✏️&m.Reverse<Tab>!tac                           <Cmd>call planet#editing#Order('reverse')<CR>
+    an 125.650 ✏️&m.Uniq<Tab>!uniq                             <Cmd>call planet#editing#Order('uniq')<CR>
     an 125.660 ✏️&m.Filter\ by\ Program<Tab>!<cmd>             !
     an 125.660 ✏️&m.--2-- <Nop>
     am 125.660 ✏️&m.XML\ Encode<Tab>[x{motion}                [x
@@ -222,10 +224,9 @@ func! planet#menu#basic#Update() abort
     an 125.660 ✏️&m.--4-- <Nop>
     am 125.660 ✏️&m.Empty\ Line\ Before<Tab>[<Space>          [<Space>
     am 125.660 ✏️&m.Empty\ Line\ After<Tab>]<Space>           ]<Space>
-    an 125.670 ✏️&m.Snippets <Nop>
-    an disable ✏️&m.Snippets
-    an 125.680 ✏️&m.Emmet <Nop>
-    an disable ✏️&m.Emmet
+    an 125.670 ✏️&m.Snippets.Insert <Cmd>call planet#snippets#Insert()<CR>
+    an 125.670 ✏️&m.Snippets.Edit\ Custom\ Snippets <Cmd>call planet#snippets#Edit()<CR>
+    an 125.680 ✏️&m.Emmet <Cmd>call emmet#expandAbbr(3, '')<CR>
 
     " Search
     an 130.10  🔎&/.Search <Nop>
@@ -258,9 +259,8 @@ func! planet#menu#basic#Update() abort
     an 130.270 🔎&/.Current\ \<word\>\ Backwards<Tab>g#      g#
     an 130.280 🔎&/.--7-- <Nop>
     an 130.300 🔎&/.Search\ Dialog<Tab>:promptfind           <Cmd>promptfind<CR>
-    an 130.320 🔎&/.Substitute <Nop>
-    an disable 🔎&/.Substitute
-    an 130.330 🔎&/.Substitute\ Selection                    :TODO...
+    an 130.320 🔎&/.Substitute :%s/
+    an 130.330 🔎&/.Substitute\ Selection <Cmd>call planet#editing#SubstituteSelection()<CR>
     an 130.280 🔎&/.--8-- <Nop>
     an 130.330 🔎&/.Repeat\ on\ Line<Tab>&                   &
     an 130.330 🔎&/.Repeat\ on\ Line\ keep\ Flags<Tab>:&&    <Cmd>&&<CR>
@@ -303,11 +303,11 @@ func! planet#menu#basic#Update() abort
     an 150.50  📺&v.--1-- <Nop>
     an 150.60  📺&v.WinBar <Nop>
     an disable 📺&v.WinBar
-    an 150.70  📺&v.Add\ Current                               <Cmd>call PV_WinBar_AddCurrent()<CR>
-    an 150.70  📺&v.Remove\ Current                            <Cmd>call PV_WinBar_RemoveCurrent()<CR>
-    an 150.70  📺&v.Remove\ Others                             <Cmd>call PV_WinBar_RemoveOthers()<CR>
+    an 150.70  📺&v.Add\ Current                               <Cmd>call planet#winbar#Change('add')<CR>
+    an 150.70  📺&v.Remove\ Current                            <Cmd>call planet#winbar#Change('remove')<CR>
+    an 150.70  📺&v.Remove\ Others                             <Cmd>call planet#winbar#Change('others')<CR>
     an 150.70  📺&v.--1-- <Nop>
-    an 150.70  📺&v.Clear                                      <Cmd>unmenu WinBar<CR>
+    an 150.70  📺&v.Clear                                      <Cmd>call planet#winbar#Change('clear')<CR>
     an 150.70  📺&v.--1-- <Nop>
     an 150.70  📺&v.Colorscheme <Nop>
     an disable 📺&v.Colorscheme
@@ -349,11 +349,11 @@ func! planet#menu#basic#Update() abort
     an 160.10  ↕️&,.Next\ Change\ Position<Tab>g,                g,
     an 160.10  ↕️&,.--3-- <Nop>
     an 160.10  ↕️&,.Start\ of\ File<Tab>gg                       gg
-    an 160.10  ↕️&,.Percentage\ in\ File<Tab>{count}%            :TODO:N%
+    an 160.10 ↕️&,.Percentage\ in\ File<Tab>{count}% <Cmd>call planet#editing#Percentage()<CR>
     an 160.10  ↕️&,.End\ of\ File<Tab>G                          G
     an 160.10  ↕️&,.--4-- <Nop>
-    an 160.10  ↕️&,.Middle\ of\ Text\ Line<Tab>gm                gM
-    an 160.10  ↕️&,.Middle\ of\ Screen\ Line<Tab>gM              gm
+    an 160.10  ↕️&,.Middle\ of\ Text\ Line<Tab>gM                gM
+    an 160.10  ↕️&,.Middle\ of\ Screen\ Line<Tab>gm              gm
     an 160.10  ↕️&,.--4-- <Nop>
     an 160.10  ↕️&,.Sentence\ Backward<Tab>(                     (
     an 160.10  ↕️&,.Sentence\ Forward<Tab>)                      )

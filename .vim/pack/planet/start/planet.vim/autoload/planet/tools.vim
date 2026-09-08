@@ -1,42 +1,40 @@
 scriptversion 4
 
-func s:XxdToHex()
-  let mod = &mod
-  if has("vms")
-    %!mc vim:xxd
+func! s:Hex(reverse) abort
+  let l:xxd = get(g:, 'xxdprogram', exepath('xxd'))
+  if empty(l:xxd) && has('win32')
+    let l:xxd = fnamemodify(v:progpath, ':h') .. '/xxd.exe'
+  endif
+  if !executable(l:xxd)
+    echomsg 'PlanetVim: install xxd or set g:xxdprogram to its executable path.'
+    return 0
+  endif
+  let l:lines = getline(1, '$')
+  let l:modified = &modified
+  let l:view = winsaveview()
+  execute '%!' .. shellescape(l:xxd) .. (a:reverse ? ' -r' : '')
+  if v:shell_error
+    let l:error = join(getline(1, '$'), ' ')
+    silent %delete _
+    call setline(1, l:lines)
+    let &modified = l:modified
+    call winrestview(l:view)
+    echomsg 'PlanetVim: HEX conversion failed: ' .. l:error
+    return 0
+  endif
+  if a:reverse
+    setlocal filetype=
+    filetype detect
   else
-    call s:XxdFind()
-    exe '%!' . g:xxdprogram
+    setlocal filetype=xxd
   endif
-  if getline(1) =~ "^0000000:"		" only if it worked
-    set ft=xxd
-  endif
-  let &mod = mod
-endfun
+  return 1
+endfunc
 
-func s:XxdFromHex()
-  let mod = &mod
-  if has("vms")
-    %!mc vim:xxd -r
-  else
-    call s:XxdFind()
-    exe '%!' . g:xxdprogram . ' -r'
-  endif
-  set ft=
-  doautocmd filetypedetect BufReadPost
-  let &mod = mod
-endfun
+func! planet#tools#XxdToHex() abort
+  return s:Hex(v:false)
+endfunc
 
-func s:XxdFind()
-  if !exists("g:xxdprogram")
-    " On the PC xxd may not be in the path but in the install directory
-    if has("win32") && !executable("xxd")
-      let g:xxdprogram = $VIMRUNTIME . (&shellslash ? '/' : '\') . "xxd.exe"
-      if g:xxdprogram =~ ' '
-        let g:xxdprogram = '"' .. g:xxdprogram .. '"'
-      endif
-    else
-      let g:xxdprogram = "xxd"
-    endif
-  endif
-endfun
+func! planet#tools#XxdFromHex() abort
+  return s:Hex(v:true)
+endfunc

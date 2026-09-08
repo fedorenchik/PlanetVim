@@ -5,8 +5,8 @@ func! planet#env#SetEnvVar(var) abort
   if l:old_value == v:null
     let l:old_value = ''
   end
-  let l:value = inputdialog(a:var .. '=', l:old_value)
-  if l:value != ""
+  let l:value = inputdialog(a:var .. '=', l:old_value, '\CANCEL')
+  if l:value !=# '\CANCEL'
     call setenv(a:var, l:value)
   end
   echo a:var .. '=' .. l:value
@@ -22,11 +22,14 @@ func! planet#env#PrintEnvVar(var) abort
 endfunc
 
 func! planet#env#PrintEnv() abort
-  call planet#term#RunCmd('env')
+  call planet#health#Scratch('PlanetVim Environment', map(sort(keys(environ())), {_, key -> key .. '=' .. getenv(key)}))
 endfunc
 
 func! planet#env#EditEnv() abort
-  call planet#env#BufferFromCmd('env')
+  tabnew
+  setlocal buftype=nofile bufhidden=wipe noswapfile filetype=sh
+  call setline(1, map(sort(keys(environ())), {_, key -> key .. '=' .. getenv(key)}))
+  autocmd BufUnload <buffer> if !v:exiting | call planet#env#SetBufEnv(expand('<abuf>')) | endif
 endfunc
 
 func! planet#env#BufferFromCmd(cmd) abort
@@ -50,6 +53,12 @@ endfunc
 
 func! planet#env#SetEnvVarValue(var_value) abort
   let l:eq = stridx(a:var_value, "=")
+  if l:eq <= 0 || strpart(a:var_value, 0, l:eq) !~# '^\h\w*$'
+    if !empty(a:var_value)
+      echomsg 'PlanetVim: enter NAME=value with a valid variable name.'
+    endif
+    return 0
+  endif
   let l:var = strpart(a:var_value, 0, l:eq)
   let l:value = strpart(a:var_value, l:eq + 1)
   call setenv(l:var, l:value)
