@@ -426,7 +426,7 @@ func! planet#menu#dev#Update() abort
     an 500.10  🔨&b.&CMake.Create\ &OOT\ Build\ Dir         <Cmd>call planet#build#NewOOTBuildDir()<CR>
     an 500.10  🔨&b.&CMake.Browse\ Build\ Directory         <Cmd>call planet#build#Browse()<CR>
     an 500.10  🔨&b.&CMake.--1-- <Nop>
-    an 500.10  🔨&b.&CMake.&Configure                       <Cmd>call planet#build#Configure()<CR>
+    an 500.10  🔨&b.&CMake.&Configure                       <Cmd>call planet#integrations#CmakeConfigure()<CR>
     an 500.10  🔨&b.&CMake.Configure\ &Tui                  <Cmd>call planet#build#ConfigureTui()<CR>
     an 500.10  🔨&b.&CMake.Configure\ &Gui                  <Cmd>call planet#build#ConfigureGui()<CR>
     an 500.10  🔨&b.&CMake.Configure\ Android\ armv7        <Cmd>call planet#integrations#AndroidCmake('armeabi-v7a')<CR>
@@ -436,7 +436,7 @@ func! planet#menu#dev#Update() abort
     an 500.10  🔨&b.&CMake.&Rebuild                         <Cmd>call planet#build#Rebuild()<CR>
     an 500.10  🔨&b.&CMake.Clean                            <Cmd>call planet#build#Build('clean')<CR>
     an 500.10  🔨&b.&CMake.--3-- <Nop>
-    an 500.10  🔨&b.&CMake.Generate\ compile_commands\.json <Cmd>call planet#build#Configure(v:true)<CR>
+    an 500.10  🔨&b.&CMake.Generate\ compile_commands\.json <Cmd>call planet#integrations#CmakeConfigure(v:true)<CR>
     an 500.10  🔨&b.&Meson.Set\ DESTDIR  <Cmd>call planet#integrations#Set('DESTDIR')<CR>
     an 500.10  🔨&b.Ar&duino.Verify                          <Cmd>ArduinoVerify<CR>
     an 500.10  🔨&b.Ar&duino.Upload                          <Cmd>ArduinoUpload<CR>

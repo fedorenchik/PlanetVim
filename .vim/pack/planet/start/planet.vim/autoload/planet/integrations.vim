@@ -448,9 +448,22 @@ func! planet#integrations#Configure(arguments = v:null) abort
     endif
   endfor
   if has_key(l:values, 'sysroot')
-    let l:args += ['--with-sysroot=' .. l:values.sysroot]
+    let l:flag = shellescape('--sysroot=' .. l:values.sysroot)
+    let l:args += ['CFLAGS=' .. $CFLAGS .. ' ' .. l:flag, 'CXXFLAGS=' .. $CXXFLAGS .. ' ' .. l:flag]
   endif
   return planet#integrations#Command([planet#run#Project().root .. '/configure'] + l:args)
+endfunc
+
+func! planet#integrations#CmakeConfigure(export_compile_commands = v:false) abort
+  let l:sysroot = get(get(t:, 'PV_configure_values', {}), 'sysroot', '')
+  if empty(l:sysroot)
+    return planet#build#Configure(a:export_compile_commands)
+  endif
+  let l:build = planet#build#GetBuildDir(v:true)
+  if empty(l:build) | return 0 | endif
+  let l:argv = ['cmake', '-S', planet#run#Project().root, '-B', l:build, '-DCMAKE_SYSROOT=' .. l:sysroot]
+  if a:export_compile_commands | call add(l:argv, '-DCMAKE_EXPORT_COMPILE_COMMANDS=ON') | endif
+  return planet#integrations#Command(l:argv)
 endfunc
 
 func! planet#integrations#ConfigureOptions(value = v:null) abort

@@ -72,6 +72,30 @@ try
   let g:PV_integration_tools.uic = 'planetvim-missing-uic'
   call assert_equal(0, planet#integrations#Run('uic', #{file:s:file, output:s:output}, #{hidden:v:true}), 'missing prerequisite launches nothing')
 
+  " Configure stores the selected sysroot as one CMake argv item and as quoted
+  " compiler flags for Autoconf, preserving spaces without a shell command.
+  let s:sysroot = s:root .. "/sysroot 'quoted' 工作"
+  call mkdir(s:sysroot, 'p')
+  let s:old_sysroot = getenv('SYSROOT')
+  call assert_equal(1, planet#integrations#ConfigureValue('sysroot', s:sysroot))
+  let g:PV_integration_tools.cmake = s:python + [s:stub]
+  call assert_equal(7, s:Wait(planet#integrations#CmakeConfigure(v:true)).exit_code)
+  let s:recorded = json_decode(join(readfile(s:record), "\n"))
+  call assert_equal(['-S', planet#run#Project().root, '-B', planet#build#GetBuildDir(),
+        \ '-DCMAKE_SYSROOT=' .. s:sysroot, '-DCMAKE_EXPORT_COMPILE_COMMANDS=ON'], s:recorded.argv)
+  let g:PV_integration_tools[planet#run#Project().root .. '/configure'] = s:python + [s:stub]
+  call assert_equal(7, s:Wait(planet#integrations#Configure(['--enable-fixture'])).exit_code)
+  let s:recorded = json_decode(join(readfile(s:record), "\n"))
+  let s:flag = shellescape('--sysroot=' .. s:sysroot)
+  call assert_equal(['--enable-fixture', 'CFLAGS=' .. $CFLAGS .. ' ' .. s:flag,
+        \ 'CXXFLAGS=' .. $CXXFLAGS .. ' ' .. s:flag], s:recorded.argv)
+  let s:count = len(term_list())
+  call assert_equal(0, planet#integrations#ConfigureValue('sysroot', ''))
+  call assert_equal(0, planet#integrations#ConfigureOptions(''))
+  call assert_equal(s:count, len(term_list()), 'cancelled configure prompts launch no process')
+  call setenv('SYSROOT', s:old_sysroot)
+  unlet! t:PV_configure_values
+
   " A real installed Qt tool compiles a small form; this exercises output-file
   " creation with spaces and quote characters, beyond the argv fixture.
   let g:PV_integration_tools = {}
