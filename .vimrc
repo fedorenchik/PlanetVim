@@ -118,7 +118,7 @@ nn gq :clist<CR>
 nn gQ :chistory<CR>
 nn gS ^vg_y:execute @@<CR>:echo 'Sourced: ' . @@<CR>
 nn gW Q
-nn gx :silent !xdg-open <cWORD><CR>
+nn gx <Cmd>call planet#gui#OpenUrl(expand('<cWORD>'))<CR>
 nn gX gQ
 nn gy :%y+<CR>
 nn gY :undolist<CR>
