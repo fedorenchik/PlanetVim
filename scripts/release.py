@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Build deterministic, unpublished PlanetVim archives from a clean Git commit."""
+"""Build deterministic, unpublished PlanetVim archives from a clean Git commit.
+
+Three pinned upstream test/website submodules are intentionally omitted and
+listed in the manifest. All other submodules, including changed exclusion pins,
+must be reviewed and vendored before packaging. Runtime help and license files
+are ordinary tracked files and remain in both archives.
+"""
 import argparse
 import gzip
 import hashlib
@@ -18,14 +24,31 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 
+# Verified against each vendored plugin's .gitmodules and test harness. These
+# are exact path/commit exceptions, never a general tests/ or docs/ exclusion.
+OPTIONAL_SUBMODULES = {
+    '.vim/pack/basic/start/editorconfig-vim/tests/core/tests': {
+        'commit': '6c8fe6815b12f96f4b357d610ee1cd8da074880a',
+        'reason': 'Upstream EditorConfig core conformance test fixtures; not used by the Vim runtime.',
+    },
+    '.vim/pack/basic/start/editorconfig-vim/tests/plugin/spec/plugin_tests': {
+        'commit': 'cb7ae15d16ab3d72a1139f7a629b11cfe16d972f',
+        'reason': 'Upstream EditorConfig plugin test fixtures; not used by the Vim runtime.',
+    },
+    '.vim/pack/web/start/emmet-vim/docs': {
+        'commit': 'ff5a094cc821051de0eea9b51fd8c90356d2c712',
+        'reason': 'Upstream gh-pages website; runtime help is the separately vendored doc/emmet.txt.',
+    },
+}
+
 
 class ReleaseError(RuntimeError):
     pass
 
 
-def git(source, *arguments):
+def git(source, *arguments, input=None):
     result = subprocess.run(['git', '-c', 'core.fsmonitor=false', '-C', str(source), *arguments],
-                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                            input=input, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if result.returncode:
         raise ReleaseError(result.stderr.decode(errors='replace').strip() or 'Git command failed')
     return result.stdout
@@ -55,35 +78,48 @@ def included(name):
 
 
 def snapshot(source, commit):
-    # Git supplies committed blobs and executable bits independently of checkout
-    # line-ending conversion, ignored files, timestamps, and filesystem modes.
-    raw = git(source, 'archive', '--format=tar', commit)
-    result = []
-    with tarfile.open(fileobj=io.BytesIO(raw), mode='r:') as archive:
-        for member in archive:
-            name = member.name.rstrip('/')
-            if not name or not included(name):
-                continue
-            if member.issym() or member.islnk():
-                raise ReleaseError('Distribution symlinks are unsupported by the safe installer: ' + name)
-            if member.isdir():
-                continue
-            if not member.isfile():
-                raise ReleaseError('Unsupported Git archive entry: ' + name)
-            result.append((name, archive.extractfile(member).read(), 0o755 if member.mode & 0o111 else 0o644))
-    names = {name for name, _, _ in result}
+    tracked = []
+    excluded_submodules = []
     for record in git(source, 'ls-tree', '-r', '-z', commit).split(b'\0'):
         if not record:
             continue
         metadata, path = record.split(b'\t', 1)
         name = path.decode('utf-8')
-        if not included(name):
-            continue
-        if metadata.startswith(b'160000 '):
-            raise ReleaseError('Submodule contents are not vendored into the release: ' + name)
-        if name not in names:
-            raise ReleaseError('Git archive omitted a tracked source file (check export-ignore attributes): ' + name)
-    return sorted(result)
+        mode, kind, object_id = metadata.split()
+        if mode == b'160000':
+            pin = object_id.decode('ascii')
+            optional = OPTIONAL_SUBMODULES.get(name)
+            # Check before generic generated-state exclusions: an unknown
+            # gitlink must not silently disappear even under build/ or dist/.
+            if optional is None:
+                raise ReleaseError('Submodule contents are not vendored into the release: ' + name)
+            if pin != optional['commit']:
+                raise ReleaseError('Optional submodule pin changed; review the release exclusion: ' + name)
+            excluded_submodules.append(dict(path=name, commit=pin, reason=optional['reason']))
+        elif included(name):
+            if mode == b'120000':
+                raise ReleaseError('Distribution symlinks are unsupported by the safe installer: ' + name)
+            if kind != b'blob' or mode not in (b'100644', b'100755'):
+                raise ReleaseError('Unsupported Git source entry: ' + name)
+            tracked.append((name, object_id, 0o755 if mode == b'100755' else 0o644))
+    # Read committed blobs directly. Unlike git archive, this does not honor
+    # upstream export-ignore/export-subst rules that can omit or rewrite notices.
+    # Checkout line endings, ignored files and filesystem modes have no effect.
+    raw = git(source, 'cat-file', '--batch', input=b''.join(oid + b'\n' for _, oid, _ in tracked))
+    stream = io.BytesIO(raw)
+    result = []
+    for name, object_id, mode in tracked:
+        header = stream.readline().split()
+        if len(header) != 3 or header[:2] != [object_id, b'blob']:
+            raise ReleaseError('Cannot read committed Git blob: ' + name)
+        size = int(header[2])
+        contents = stream.read(size)
+        if len(contents) != size or stream.read(1) != b'\n':
+            raise ReleaseError('Incomplete committed Git blob: ' + name)
+        result.append((name, contents, mode))
+    if stream.read(1):
+        raise ReleaseError('Unexpected data after committed Git blobs.')
+    return sorted(result), sorted(excluded_submodules, key=lambda item: item['path'])
 
 
 def write_tar(path, prefix, entries, epoch):
@@ -117,7 +153,7 @@ def build(source=ROOT, output=None):
     source = Path(source).resolve()
     commit = clean_commit(source)
     epoch = int(git(source, 'show', '-s', '--format=%ct', commit).decode().strip())
-    entries = snapshot(source, commit)
+    entries, excluded_submodules = snapshot(source, commit)
     files = {name: contents for name, contents, _ in entries}
     try:
         version = files['VERSION'].decode('ascii').strip()
@@ -142,7 +178,7 @@ def build(source=ROOT, output=None):
         write_tar(staging / filenames[0], prefix, entries, epoch)
         write_zip(staging / filenames[1], prefix, entries, epoch)
         manifest = dict(schema=1, version=version, source_commit=commit, source_date_epoch=epoch,
-                        archive_root=prefix, file_count=len(entries),
+                        archive_root=prefix, file_count=len(entries), excluded_submodules=excluded_submodules,
                         artifacts=[dict(filename=name, sha256=digest(staging / name),
                                         bytes=(staging / name).stat().st_size) for name in filenames[:2]])
         (staging / filenames[2]).write_text(json.dumps(manifest, indent=2, sort_keys=True) + '\n', encoding='utf-8', newline='\n')

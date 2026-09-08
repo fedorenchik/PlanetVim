@@ -62,6 +62,7 @@ class ReleaseTests(unittest.TestCase):
         first, metadata = self.build('first')
         second, repeated = self.build('second')
         self.assertEqual(metadata, repeated)
+        self.assertEqual(metadata['excluded_submodules'], [])
         self.assertEqual(metadata['source_commit'], self.git('rev-parse', 'HEAD').decode().strip())
         for artifact in metadata['artifacts']:
             content = (first / artifact['filename']).read_bytes()
@@ -110,12 +111,83 @@ class ReleaseTests(unittest.TestCase):
         with self.assertRaisesRegex(release.ReleaseError, 'semantic version'):
             self.build()
 
-    def test_export_ignore_cannot_silently_drop_vendored_notices(self):
-        (self.source / '.gitattributes').write_text('**/LICENSE export-ignore\n')
-        self.git('add', '.gitattributes')
-        self.commit('bad export attribute')
-        with self.assertRaisesRegex(release.ReleaseError, 'omitted a tracked source file'):
+    def test_export_attributes_cannot_drop_or_rewrite_vendored_notices(self):
+        (self.source / '.gitattributes').write_text('**/LICENSE export-ignore\n.gitattributes export-ignore\nNOTICE export-subst\n')
+        (self.source / 'NOTICE').write_text('Literal upstream notice: $Format:%H$\n')
+        self.git('add', '.gitattributes', 'NOTICE')
+        self.commit('upstream export attributes')
+        output, metadata = self.build()
+        with zipfile.ZipFile(output / metadata['artifacts'][1]['filename']) as archive:
+            prefix = metadata['archive_root'] + '/'
+            self.assertEqual(archive.read(prefix + '.vim/pack/vendor/start/plugin/LICENSE'), b'Vendored license notice\n')
+            self.assertEqual(archive.read(prefix + 'NOTICE'), b'Literal upstream notice: $Format:%H$\n')
+            self.assertEqual(archive.read(prefix + '.gitattributes'), (self.source / '.gitattributes').read_bytes())
+
+    def add_gitlink(self, path, commit):
+        (self.source / path).mkdir(parents=True, exist_ok=True)
+        self.git('update-index', '--add', '--cacheinfo', '160000', commit, path)
+        self.commit('gitlink fixture')
+
+    def test_known_optional_gitlinks_are_recorded_without_dropping_runtime_help(self):
+        for path, exclusion in release.OPTIONAL_SUBMODULES.items():
+            self.add_gitlink(path, exclusion['commit'])
+        for name in ['.vim/pack/web/start/emmet-vim/doc/emmet.txt',
+                     '.vim/pack/web/start/emmet-vim/LICENSE']:
+            target = self.source / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text('Retained runtime help or license\n')
+        self.git('add', '.')
+        self.commit('retained runtime documentation')
+        output, metadata = self.build()
+        expected = [dict(path=path, **details) for path, details in sorted(release.OPTIONAL_SUBMODULES.items())]
+        self.assertEqual(metadata['excluded_submodules'], expected)
+        with zipfile.ZipFile(output / metadata['artifacts'][1]['filename']) as archive:
+            prefix = metadata['archive_root'] + '/'
+            names = archive.namelist()
+            for excluded in expected:
+                self.assertFalse(any(name == prefix + excluded['path'] or
+                                     name.startswith(prefix + excluded['path'] + '/') for name in names))
+            self.assertIn(prefix + '.vim/pack/web/start/emmet-vim/doc/emmet.txt', names)
+            self.assertIn(prefix + '.vim/pack/web/start/emmet-vim/LICENSE', names)
+
+    def test_unknown_submodules_are_rejected_even_in_generated_directories(self):
+        commit = next(iter(release.OPTIONAL_SUBMODULES.values()))['commit']
+        for path in ['.vim/pack/vendor/start/runtime', 'build/unknown-submodule']:
+            with self.subTest(path=path):
+                self.add_gitlink(path, commit)
+                with self.assertRaisesRegex(release.ReleaseError, 'Submodule contents are not vendored'):
+                    self.build()
+                self.assertFalse((self.root / 'artifacts').exists())
+                self.git('update-index', '--force-remove', path)
+                self.commit('remove gitlink fixture')
+
+    def test_known_optional_submodule_with_changed_pin_is_rejected(self):
+        path = next(iter(release.OPTIONAL_SUBMODULES))
+        self.add_gitlink(path, '1' * 40)
+        with self.assertRaisesRegex(release.ReleaseError, 'Optional submodule pin changed'):
             self.build()
+        self.assertFalse((self.root / 'artifacts').exists())
+
+    def test_committed_symlink_is_rejected_without_following_checkout_files(self):
+        # Construct the Git tree directly so this test also runs on Windows
+        # hosts where creating filesystem symlinks requires extra privileges.
+        object_id = self.git('hash-object', '-w', 'README.md').decode().strip()
+        self.git('update-index', '--add', '--cacheinfo', '120000', object_id, 'unsafe-link')
+        self.commit('symlink fixture')
+        commit = self.git('rev-parse', 'HEAD').decode().strip()
+        with self.assertRaisesRegex(release.ReleaseError, 'symlinks are unsupported'):
+            release.snapshot(self.source, commit)
+
+    def test_executable_modes_come_from_committed_tree(self):
+        self.git('config', 'core.filemode', 'false')
+        self.git('update-index', '--chmod=+x', 'scripts/install.py')
+        self.commit('executable installer fixture')
+        output, metadata = self.build()
+        name = metadata['archive_root'] + '/scripts/install.py'
+        with zipfile.ZipFile(output / metadata['artifacts'][1]['filename']) as archive:
+            self.assertEqual((archive.getinfo(name).external_attr >> 16) & 0o777, 0o755)
+        with tarfile.open(output / metadata['artifacts'][0]['filename']) as archive:
+            self.assertEqual(archive.getmember(name).mode, 0o755)
 
     def test_failed_output_copy_removes_partial_artifacts(self):
         original = release.shutil.copyfileobj
