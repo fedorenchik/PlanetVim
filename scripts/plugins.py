@@ -14,6 +14,15 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_MANIFEST = ROOT / 'docs/plugins.json'
 IGNORED_DIRECTORIES = {'.git', '__pycache__'}
 LICENSE_NAME = re.compile(r'^(licen[sc]e|copying|copyright|notice)([._-].*)?$', re.I)
+VIM_LICENSE_HEADER = re.compile(
+    r'^\s*"\s*(?:licen[sc]e\b|copyright\s+(?:\(c\)|©)|permission is hereby granted)',
+    re.I | re.M)
+FIRST_PARTY_PACKAGES = {
+    '.vim/pack/planet/start/guitablabel.vim',
+    '.vim/pack/planet/start/guitabtooltip.vim',
+    '.vim/pack/planet/start/planet.vim',
+    '.vim/pack/planet/start/title.vim',
+}
 
 
 def package_files(package):
@@ -22,9 +31,18 @@ def package_files(package):
                   and path.suffix not in ('.pyc', '.pyo'))
 
 
-def license_evidence(package):
+def license_evidence(package, first_party=False):
     files = []
     for path in sorted(package.iterdir()):
+        if path.is_file() and LICENSE_NAME.match(path.name):
+            files.append(path.relative_to(ROOT).as_posix())
+    if files:
+        return {'status': 'notice_files_found', 'paths': files}
+    if first_party and (ROOT / 'LICENSE').is_file():
+        return {'status': 'project_license', 'paths': ['LICENSE']}
+    # Some upstreams keep their notice beside Vim help instead of at the root.
+    # Test-fixture/dependency notices do not describe the plugin itself.
+    for path in sorted((package / 'doc').glob('*')):
         if path.is_file() and LICENSE_NAME.match(path.name):
             files.append(path.relative_to(ROOT).as_posix())
     if files:
@@ -34,7 +52,18 @@ def license_evidence(package):
     for path in sorted(candidates):
         if path.is_file() and re.search(r'\blicen[sc]e\b|\bcopyright\b', path.read_text(errors='replace'), re.I):
             files.append(path.relative_to(ROOT).as_posix())
-    return {'status': 'documentation_mentions' if files else 'not_found', 'paths': files}
+    if files:
+        return {'status': 'documentation_mentions', 'paths': files}
+    # Header evidence can cover only one source file, not the whole package.
+    # Restrict matching to comments so syntax keywords such as "license" do not
+    # masquerade as notices. This is still an evidence pointer, not a conclusion.
+    for path in package_files(package):
+        if path.suffix == '.vim':
+            with path.open(encoding='utf-8', errors='replace') as source:
+                header = ''.join(next(source, '') for _ in range(80))
+            if VIM_LICENSE_HEADER.search(header):
+                files.append(path.relative_to(ROOT).as_posix())
+    return {'status': 'source_header_mentions' if files else 'not_found', 'paths': files}
 
 
 def tree_hash(package, files):
@@ -62,9 +91,12 @@ def inventory():
                           'branch': section.get('branch'), 'commit': section.get('commit')}
             if not re.fullmatch(r'[0-9a-f]{40}', provenance['commit'] or ''):
                 raise ValueError('Missing/invalid upstream commit in ' + str(metadata))
+        relative_path = path.relative_to(ROOT).as_posix()
+        first_party = provenance['kind'] == 'local' and relative_path in FIRST_PARTY_PACKAGES
         plugin = {'name': path.name, 'group': path.parent.parent.name,
                   'load': path.parent.name, 'path': path.relative_to(ROOT).as_posix(),
-                  'provenance': provenance, 'license_evidence': license_evidence(path)}
+                  'provenance': provenance,
+                  'license_evidence': license_evidence(path, first_party=first_party)}
         if provenance['kind'] == 'git-subrepo':
             plugin['snapshot_sha256'] = tree_hash(path, files)
             plugin['local_patches'] = 'not_compared_with_upstream'

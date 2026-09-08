@@ -242,11 +242,9 @@
       "group": "basic",
       "license_evidence": {
         "paths": [
-          ".vim/pack/basic/start/Colorizer/README.md",
-          ".vim/pack/basic/start/Colorizer/doc/Colorizer.txt",
           ".vim/pack/basic/start/Colorizer/doc/license.txt"
         ],
-        "status": "documentation_mentions"
+        "status": "notice_files_found"
       },
       "load": "start",
       "local_patches": "not_compared_with_upstream",
@@ -263,8 +261,10 @@
     {
       "group": "basic",
       "license_evidence": {
-        "paths": [],
-        "status": "not_found"
+        "paths": [
+          ".vim/pack/basic/start/FastFold/plugin/fastfold.vim"
+        ],
+        "status": "source_header_mentions"
       },
       "load": "start",
       "local_patches": "not_compared_with_upstream",
@@ -299,8 +299,11 @@
     {
       "group": "basic",
       "license_evidence": {
-        "paths": [],
-        "status": "not_found"
+        "paths": [
+          ".vim/pack/basic/start/QFEnter/autoload/QFEnter.vim",
+          ".vim/pack/basic/start/QFEnter/plugin/QFEnter.vim"
+        ],
+        "status": "source_header_mentions"
       },
       "load": "start",
       "local_patches": "not_compared_with_upstream",
@@ -1426,8 +1429,11 @@
     {
       "group": "git",
       "license_evidence": {
-        "paths": [],
-        "status": "not_found"
+        "paths": [
+          ".vim/pack/git/start/vim-twiggy/autoload/twiggy.vim",
+          ".vim/pack/git/start/vim-twiggy/plugin/twiggy.vim"
+        ],
+        "status": "source_header_mentions"
       },
       "load": "start",
       "local_patches": "not_compared_with_upstream",
@@ -1603,8 +1609,10 @@
     {
       "group": "lsp",
       "license_evidence": {
-        "paths": [],
-        "status": "not_found"
+        "paths": [
+          ".vim/pack/lsp/start/asyncomplete-emoji.vim/autoload/asyncomplete/sources/emoji/data.vim"
+        ],
+        "status": "source_header_mentions"
       },
       "load": "start",
       "local_patches": "not_compared_with_upstream",
@@ -1952,8 +1960,10 @@
     {
       "group": "planet",
       "license_evidence": {
-        "paths": [],
-        "status": "not_found"
+        "paths": [
+          "LICENSE"
+        ],
+        "status": "project_license"
       },
       "load": "start",
       "local_patches": "part_of_distribution_checkout",
@@ -1969,8 +1979,10 @@
     {
       "group": "planet",
       "license_evidence": {
-        "paths": [],
-        "status": "not_found"
+        "paths": [
+          "LICENSE"
+        ],
+        "status": "project_license"
       },
       "load": "start",
       "local_patches": "part_of_distribution_checkout",
@@ -1987,9 +1999,9 @@
       "group": "planet",
       "license_evidence": {
         "paths": [
-          ".vim/pack/planet/start/planet.vim/doc/planetvim.txt"
+          "LICENSE"
         ],
-        "status": "documentation_mentions"
+        "status": "project_license"
       },
       "load": "start",
       "local_patches": "part_of_distribution_checkout",

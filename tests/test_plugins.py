@@ -43,6 +43,45 @@ class PluginInventoryTests(unittest.TestCase):
         (self.package / 'plugin.vim').write_text('let g:example = 2\n')
         self.assertNotEqual(original['plugins'][0]['snapshot_sha256'], plugins.inventory()['plugins'][0]['snapshot_sha256'])
 
+    def test_nested_notice_is_found(self):
+        (self.package / 'LICENSE').unlink()
+        (self.package / 'spec').mkdir()
+        (self.package / 'spec/LICENSE').write_text('a test fixture license')
+        self.assertEqual(plugins.inventory()['plugins'][0]['license_evidence']['status'], 'not_found')
+        (self.package / 'doc').mkdir()
+        (self.package / 'doc/license.txt').write_text('fixture notice')
+        self.assertEqual(plugins.inventory()['plugins'][0]['license_evidence'], {
+            'status': 'notice_files_found',
+            'paths': ['.vim/pack/example/start/demo/doc/license.txt'],
+        })
+
+    def test_source_header_is_evidence_but_syntax_keyword_is_not(self):
+        (self.package / 'LICENSE').unlink()
+        source = self.package / 'plugin.vim'
+        source.write_text('syntax keyword demo Copyright license\n')
+        self.assertEqual(plugins.inventory()['plugins'][0]['license_evidence']['status'], 'not_found')
+        source.write_text('" License: MIT License\nlet g:example = 1\n')
+        self.assertEqual(plugins.inventory()['plugins'][0]['license_evidence'], {
+            'status': 'source_header_mentions',
+            'paths': ['.vim/pack/example/start/demo/plugin.vim'],
+        })
+
+    def test_project_license_applies_only_to_known_first_party_packages(self):
+        (self.root / 'LICENSE').write_text('first-party fixture notice')
+        (self.package / 'LICENSE').unlink()
+        self.assertEqual(plugins.inventory()['plugins'][0]['license_evidence']['status'], 'not_found')
+        (self.package / '.gitrepo').unlink()
+        self.assertEqual(plugins.inventory()['plugins'][0]['license_evidence']['status'], 'not_found')
+        with mock.patch.object(plugins, 'FIRST_PARTY_PACKAGES', {'.vim/pack/example/start/demo'}):
+            self.assertEqual(plugins.inventory()['plugins'][0]['license_evidence'], {
+                'status': 'project_license', 'paths': ['LICENSE'],
+            })
+            (self.package / 'LICENSE').write_text('package-specific notice')
+            self.assertEqual(plugins.inventory()['plugins'][0]['license_evidence'], {
+                'status': 'notice_files_found',
+                'paths': ['.vim/pack/example/start/demo/LICENSE'],
+            })
+
     def test_missing_pin_is_rejected(self):
         (self.package / '.gitrepo').write_text('[subrepo]\nremote=https://github.com/example/demo.git\n')
         with self.assertRaisesRegex(ValueError, 'upstream commit'):

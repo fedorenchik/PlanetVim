@@ -28,8 +28,13 @@ establish ancestry, compatibility, or that the newest revision is desirable.
 Use `--all` only when a full network check is wanted. Failed or absent upstream
 refs produce a nonzero exit status. No scheduled update or notification is enabled.
 
-License entries are paths to evidence. `documentation_mentions` is not proof of
-a particular license; `not_found` is an unresolved documentation/attribution item.
+License entries are paths to evidence. `documentation_mentions` and
+`source_header_mentions` are not proof of a package-wide license; a header may
+apply only to one file. `project_license` links a known first-party package to the
+project license when it has no package-specific notice; missing `.gitrepo`
+metadata alone does not qualify. `not_found` is an unresolved
+documentation/attribution item. The [local evidence review](LICENSE_REVIEW.md)
+records the remaining upstream follow-ups, including ambiguous documentation.
 The root project license does not replace upstream notices. Preserve notices,
 headers, and attribution when copying, packaging, or updating each plugin.
 

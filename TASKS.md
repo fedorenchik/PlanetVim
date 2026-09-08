@@ -314,8 +314,10 @@ can include a sanitized health report and exact distribution version.
 Implemented: the owner selected MIT, version `0.1.0-rc.1` and changelog conventions
 are established, and reproducible archives include upstream notices and an exact
 source/checksum manifest. Local installation and GUI checks are recorded in
-[ACCEPTANCE.md](docs/ACCEPTANCE.md). Publication, hosted CI, native Windows desktop
-acceptance, and the remaining upstream attribution review have not been completed.
+[ACCEPTANCE.md](docs/ACCEPTANCE.md). The [local license evidence review](docs/LICENSE_REVIEW.md)
+is complete and lists 22 upstream publication follow-ups. Publication, hosted CI,
+native Windows desktop acceptance, and resolution of those upstream evidence gaps
+have not been completed.
 
 Done when: a release candidate installs from its published artifact, passes CI and
 a recorded real-GVim GUI run, supports every feature it claims, and has no open
