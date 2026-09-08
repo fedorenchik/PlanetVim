@@ -1,0 +1,2631 @@
+{
+  "vagrant": {
+    "argv": [
+      "vagrant",
+      "validate"
+    ],
+    "fields": []
+  },
+  "qemu": {
+    "argv": [
+      "qemu-system-x86_64",
+      "-m",
+      "{memory}",
+      "-drive",
+      "file={image},format={format}",
+      "{args}"
+    ],
+    "fields": [
+      {
+        "name": "image",
+        "label": "Disk image",
+        "default": "",
+        "kind": "file"
+      },
+      {
+        "name": "format",
+        "label": "Image format (qcow2 or raw)",
+        "default": "qcow2",
+        "kind": "text"
+      },
+      {
+        "name": "memory",
+        "label": "Memory (MiB)",
+        "default": "2048",
+        "kind": "text"
+      },
+      {
+        "name": "args",
+        "label": "Additional arguments (JSON array)",
+        "default": [],
+        "kind": "args"
+      }
+    ]
+  },
+  "qemu-debootstrap": {
+    "argv": [
+      "qemu-debootstrap",
+      "--arch={arch}",
+      "{release}",
+      "{destination}",
+      "{mirror}"
+    ],
+    "fields": [
+      {
+        "name": "arch",
+        "label": "Target Debian architecture",
+        "default": "arm64",
+        "kind": "text"
+      },
+      {
+        "name": "release",
+        "label": "Debian suite",
+        "default": "bookworm",
+        "kind": "text"
+      },
+      {
+        "name": "destination",
+        "label": "New root filesystem directory",
+        "default": "%root%/rootfs",
+        "kind": "output"
+      },
+      {
+        "name": "mirror",
+        "label": "Debian mirror",
+        "default": "https://deb.debian.org/debian",
+        "kind": "text"
+      }
+    ],
+    "linux": true
+  },
+  "conan": {
+    "argv": [
+      "conan",
+      "install",
+      "{path}",
+      "--build=missing",
+      "{args}"
+    ],
+    "fields": [
+      {
+        "name": "path",
+        "label": "Conan recipe directory",
+        "default": "%root%",
+        "kind": "dir"
+      },
+      {
+        "name": "args",
+        "label": "Additional arguments (JSON array)",
+        "default": [],
+        "kind": "args"
+      }
+    ]
+  },
+  "sdk-image": {
+    "argv": [
+      "sdkmanager",
+      "{image}"
+    ],
+    "fields": [
+      {
+        "name": "image",
+        "label": "Android SDK package identifier",
+        "default": "system-images;android-35;google_apis;x86_64",
+        "kind": "text"
+      }
+    ]
+  },
+  "sdk-avd": {
+    "argv": [
+      "avdmanager",
+      "create",
+      "avd",
+      "--name",
+      "{name}",
+      "--package",
+      "{image}"
+    ],
+    "fields": [
+      {
+        "name": "name",
+        "label": "Android virtual device name",
+        "default": "planetvim",
+        "kind": "text"
+      },
+      {
+        "name": "image",
+        "label": "Installed system image package",
+        "default": "system-images;android-35;google_apis;x86_64",
+        "kind": "text"
+      }
+    ]
+  },
+  "flex": {
+    "argv": [
+      "flex",
+      "--outfile={output}",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%stem%.c",
+        "kind": "output"
+      }
+    ]
+  },
+  "bison": {
+    "argv": [
+      "bison",
+      "--defines",
+      "--output={output}",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%stem%.c",
+        "kind": "output"
+      }
+    ]
+  },
+  "androidtestrunner": {
+    "argv": [
+      "androidtestrunner",
+      "--path",
+      "{directory}",
+      "--make",
+      "{make}",
+      "--adb",
+      "{adb}",
+      "--apk",
+      "{apk}"
+    ],
+    "fields": [
+      {
+        "name": "directory",
+        "label": "Android build directory",
+        "default": "%build%",
+        "kind": "dir"
+      },
+      {
+        "name": "make",
+        "label": "Build command",
+        "default": "make",
+        "kind": "text"
+      },
+      {
+        "name": "adb",
+        "label": "ADB executable",
+        "default": "adb",
+        "kind": "text"
+      },
+      {
+        "name": "apk",
+        "label": "Test APK",
+        "default": "",
+        "kind": "output"
+      }
+    ],
+    "qt": true
+  },
+  "balsam": {
+    "argv": [
+      "balsam",
+      "{file}",
+      "-o",
+      "{directory}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      },
+      {
+        "name": "directory",
+        "label": "Asset output directory",
+        "default": "%root%",
+        "kind": "dir"
+      }
+    ],
+    "qt": true
+  },
+  "moc": {
+    "argv": [
+      "moc",
+      "{file}",
+      "-o",
+      "{output}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%stem%_moc.cpp",
+        "kind": "output"
+      }
+    ],
+    "qt": true
+  },
+  "moc-ng": {
+    "argv": [
+      "moc-ng",
+      "{file}",
+      "-o",
+      "{output}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%stem%_moc.cpp",
+        "kind": "output"
+      }
+    ],
+    "qt": true
+  },
+  "qdbus": {
+    "argv": [
+      "qdbus",
+      "{service}",
+      "{object}",
+      "{method}",
+      "{args}"
+    ],
+    "fields": [
+      {
+        "name": "service",
+        "label": "D-Bus service",
+        "default": "",
+        "kind": "text"
+      },
+      {
+        "name": "object",
+        "label": "D-Bus object path",
+        "default": "/",
+        "kind": "text"
+      },
+      {
+        "name": "method",
+        "label": "Method or property",
+        "default": "",
+        "kind": "text"
+      },
+      {
+        "name": "args",
+        "label": "Additional arguments (JSON array)",
+        "default": [],
+        "kind": "args"
+      }
+    ],
+    "qt": true
+  },
+  "qdbuscpp2xml": {
+    "argv": [
+      "qdbuscpp2xml",
+      "-A",
+      "-o",
+      "{output}",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%stem%.xml",
+        "kind": "output"
+      }
+    ],
+    "qt": true
+  },
+  "qdbusxml2cpp": {
+    "argv": [
+      "qdbusxml2cpp",
+      "-p",
+      "{output}",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%stem%_interface",
+        "kind": "output"
+      }
+    ],
+    "qt": true
+  },
+  "qlalr": {
+    "argv": [
+      "qlalr",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      }
+    ],
+    "qt": true
+  },
+  "qsb": {
+    "argv": [
+      "qsb",
+      "--qt6",
+      "-o",
+      "{output}",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%file%.qsb",
+        "kind": "output"
+      }
+    ],
+    "qt": true
+  },
+  "qtattributionsscanner": {
+    "argv": [
+      "qtattributionsscanner",
+      "--output-format",
+      "json",
+      "{directory}"
+    ],
+    "fields": [
+      {
+        "name": "directory",
+        "label": "Source directory",
+        "default": "%root%",
+        "kind": "dir"
+      }
+    ],
+    "qt": true
+  },
+  "qt-cmake": {
+    "argv": [
+      "qt-cmake",
+      "-S",
+      "%root%",
+      "-B",
+      "{directory}",
+      "{args}"
+    ],
+    "fields": [
+      {
+        "name": "directory",
+        "label": "Build directory",
+        "default": "%root%/build-qt",
+        "kind": "output"
+      },
+      {
+        "name": "args",
+        "label": "Additional arguments (JSON array)",
+        "default": [],
+        "kind": "args"
+      }
+    ],
+    "qt": true
+  },
+  "qt-configure-module": {
+    "argv": [
+      "qt-configure-module",
+      "{directory}",
+      "{args}"
+    ],
+    "fields": [
+      {
+        "name": "directory",
+        "label": "Qt module source",
+        "default": "%root%",
+        "kind": "dir"
+      },
+      {
+        "name": "args",
+        "label": "Additional arguments (JSON array)",
+        "default": [],
+        "kind": "args"
+      }
+    ],
+    "qt": true
+  },
+  "qtdiag": {
+    "argv": [
+      "qtdiag"
+    ],
+    "fields": [],
+    "qt": true
+  },
+  "qtpaths": {
+    "argv": [
+      "qtpaths",
+      "--query"
+    ],
+    "fields": [],
+    "qt": true
+  },
+  "qtplugininfo": {
+    "argv": [
+      "qtplugininfo",
+      "--full-json",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      }
+    ],
+    "qt": true
+  },
+  "qtwaylandscanner": {
+    "argv": [
+      "qtwaylandscanner",
+      "{mode}",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "mode",
+        "label": "Mode (client-header/client-code/server-header/server-code)",
+        "default": "client-header",
+        "kind": "text"
+      },
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      }
+    ],
+    "qt": true
+  },
+  "qvkgen": {
+    "argv": [
+      "qvkgen",
+      "{file}",
+      "{header}",
+      "{output}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Vulkan registry XML",
+        "default": "%file%",
+        "kind": "file"
+      },
+      {
+        "name": "header",
+        "label": "License header file",
+        "default": "",
+        "kind": "file"
+      },
+      {
+        "name": "output",
+        "label": "Output filename base",
+        "default": "%stem%_vulkan",
+        "kind": "output"
+      }
+    ],
+    "qt": true
+  },
+  "rcc": {
+    "argv": [
+      "rcc",
+      "{file}",
+      "-o",
+      "{output}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%stem%_rc.cpp",
+        "kind": "output"
+      }
+    ],
+    "qt": true
+  },
+  "shadergen": {
+    "argv": [
+      "shadergen",
+      "-C",
+      "{directory}",
+      "-o",
+      "{output}"
+    ],
+    "fields": [
+      {
+        "name": "directory",
+        "label": "QML source directory",
+        "default": "%root%",
+        "kind": "dir"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%root%/generated-shaders",
+        "kind": "output"
+      }
+    ],
+    "qt": true
+  },
+  "syncqt.pl": {
+    "argv": [
+      "syncqt.pl",
+      "-version",
+      "{version}",
+      "-outdir",
+      "{output}",
+      "{directory}"
+    ],
+    "fields": [
+      {
+        "name": "version",
+        "label": "Qt module version",
+        "default": "",
+        "kind": "text"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%root%/include",
+        "kind": "output"
+      },
+      {
+        "name": "directory",
+        "label": "Qt module directory",
+        "default": "%root%",
+        "kind": "dir"
+      }
+    ],
+    "qt": true
+  },
+  "tracegen": {
+    "argv": [
+      "tracegen",
+      "{backend}",
+      "{file}",
+      "{output}"
+    ],
+    "fields": [
+      {
+        "name": "backend",
+        "label": "Tracing backend (lttng/etw)",
+        "default": "lttng",
+        "kind": "text"
+      },
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%stem%_tracepoints_p.h",
+        "kind": "output"
+      }
+    ],
+    "qt": true
+  },
+  "uic": {
+    "argv": [
+      "uic",
+      "{file}",
+      "-o",
+      "{output}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%stem%_ui.h",
+        "kind": "output"
+      }
+    ],
+    "qt": true
+  },
+  "scxml": {
+    "argv": [
+      "qscxmlc",
+      "{file}",
+      "-o",
+      "{output}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%stem%",
+        "kind": "output"
+      }
+    ],
+    "qt": true
+  },
+  "pyside6-uic": {
+    "argv": [
+      "pyside6-uic",
+      "{file}",
+      "-o",
+      "{output}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%stem%_ui.py",
+        "kind": "output"
+      }
+    ],
+    "qt": true
+  },
+  "pyside6-rcc": {
+    "argv": [
+      "pyside6-rcc",
+      "{file}",
+      "-o",
+      "{output}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%stem%_rc.py",
+        "kind": "output"
+      }
+    ],
+    "qt": true
+  },
+  "qml": {
+    "argv": [
+      "qml",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      }
+    ],
+    "qt": true
+  },
+  "qmlcachegen": {
+    "argv": [
+      "qmlcachegen",
+      "-o",
+      "{output}",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%stem%_qml.cpp",
+        "kind": "output"
+      }
+    ],
+    "qt": true
+  },
+  "qmleasing": {
+    "argv": [
+      "qmleasing"
+    ],
+    "fields": [],
+    "qt": true
+  },
+  "qmlformat": {
+    "argv": [
+      "qmlformat",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      }
+    ],
+    "qt": true
+  },
+  "qmlimportscanner": {
+    "argv": [
+      "qmlimportscanner",
+      "-rootPath",
+      "{directory}"
+    ],
+    "fields": [
+      {
+        "name": "directory",
+        "label": "QML source root",
+        "default": "%root%",
+        "kind": "dir"
+      }
+    ],
+    "qt": true
+  },
+  "qmllint": {
+    "argv": [
+      "qmllint",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      }
+    ],
+    "qt": true
+  },
+  "qmlplugindump": {
+    "argv": [
+      "qmlplugindump",
+      "{module}",
+      "{version}",
+      "{directory}"
+    ],
+    "fields": [
+      {
+        "name": "module",
+        "label": "QML import module",
+        "default": "QtQuick",
+        "kind": "text"
+      },
+      {
+        "name": "version",
+        "label": "Module version",
+        "default": "2.0",
+        "kind": "text"
+      },
+      {
+        "name": "directory",
+        "label": "Import directory",
+        "default": "%root%",
+        "kind": "dir"
+      }
+    ],
+    "qt": true
+  },
+  "qmlpreview": {
+    "argv": [
+      "qmlpreview",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      }
+    ],
+    "qt": true
+  },
+  "qmlprofiler": {
+    "argv": [
+      "qmlprofiler",
+      "--output",
+      "{output}",
+      "{program}",
+      "{args}"
+    ],
+    "fields": [
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%root%/qml-profile.qtd",
+        "kind": "output"
+      },
+      {
+        "name": "program",
+        "label": "Application with QML debugging enabled",
+        "default": "",
+        "kind": "file"
+      },
+      {
+        "name": "args",
+        "label": "Additional arguments (JSON array)",
+        "default": [],
+        "kind": "args"
+      }
+    ],
+    "qt": true
+  },
+  "qmlscene": {
+    "argv": [
+      "qmlscene",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      }
+    ],
+    "qt": true
+  },
+  "qmltestrunner": {
+    "argv": [
+      "qmltestrunner",
+      "-input",
+      "{directory}"
+    ],
+    "fields": [
+      {
+        "name": "directory",
+        "label": "QML test directory",
+        "default": "%root%",
+        "kind": "dir"
+      }
+    ],
+    "qt": true
+  },
+  "qmltime": {
+    "argv": [
+      "qmltime",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      }
+    ],
+    "qt": true
+  },
+  "qmltyperegistrar": {
+    "argv": [
+      "qmltyperegistrar",
+      "--import-name",
+      "{module}",
+      "--major-version",
+      "{major}",
+      "--minor-version",
+      "{minor}",
+      "-o",
+      "{output}",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      },
+      {
+        "name": "module",
+        "label": "QML module",
+        "default": "",
+        "kind": "text"
+      },
+      {
+        "name": "major",
+        "label": "Major version",
+        "default": "1",
+        "kind": "text"
+      },
+      {
+        "name": "minor",
+        "label": "Minor version",
+        "default": "0",
+        "kind": "text"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%stem%_qmltyperegistrations.cpp",
+        "kind": "output"
+      }
+    ],
+    "qt": true
+  },
+  "download": {
+    "argv": [
+      "curl",
+      "--fail",
+      "--location",
+      "--output",
+      "{output}",
+      "{url}"
+    ],
+    "fields": [
+      {
+        "name": "url",
+        "label": "Download URL",
+        "default": "",
+        "kind": "text"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%root%/download",
+        "kind": "output"
+      }
+    ]
+  },
+  "glslc": {
+    "argv": [
+      "glslc",
+      "{file}",
+      "-o",
+      "{output}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%file%.spv",
+        "kind": "output"
+      }
+    ]
+  },
+  "emcc-html": {
+    "argv": [
+      "emcc",
+      "{file}",
+      "-o",
+      "{output}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%stem%.html",
+        "kind": "output"
+      }
+    ]
+  },
+  "emcc-js": {
+    "argv": [
+      "emcc",
+      "{file}",
+      "-o",
+      "{output}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%stem%.js",
+        "kind": "output"
+      }
+    ]
+  },
+  "emcc-wasm": {
+    "argv": [
+      "emcc",
+      "{file}",
+      "-o",
+      "{output}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%stem%.wasm",
+        "kind": "output"
+      }
+    ]
+  },
+  "emcc-bind": {
+    "argv": [
+      "emcc",
+      "{file}",
+      "--bind",
+      "-o",
+      "{output}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%stem%_wasm.js",
+        "kind": "output"
+      }
+    ]
+  },
+  "wasm2js": {
+    "argv": [
+      "wasm2js",
+      "{file}",
+      "-o",
+      "{output}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%stem%.js",
+        "kind": "output"
+      }
+    ]
+  },
+  "lupdate": {
+    "argv": [
+      "lupdate",
+      "{directory}",
+      "-ts",
+      "{output}"
+    ],
+    "fields": [
+      {
+        "name": "directory",
+        "label": "Source directory",
+        "default": "%root%",
+        "kind": "dir"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%root%/translations.ts",
+        "kind": "output"
+      }
+    ],
+    "qt": true
+  },
+  "lrelease": {
+    "argv": [
+      "lrelease",
+      "{file}",
+      "-qm",
+      "{output}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%stem%.qm",
+        "kind": "output"
+      }
+    ],
+    "qt": true
+  },
+  "lconvert": {
+    "argv": [
+      "lconvert",
+      "-i",
+      "{file}",
+      "-o",
+      "{output}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%stem%.po",
+        "kind": "output"
+      }
+    ],
+    "qt": true
+  },
+  "linguist": {
+    "argv": [
+      "linguist",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      }
+    ],
+    "qt": true
+  },
+  "lprodump": {
+    "argv": [
+      "lprodump",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      }
+    ],
+    "qt": true
+  },
+  "lrelease-pro": {
+    "argv": [
+      "lrelease-pro",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      }
+    ],
+    "qt": true
+  },
+  "lupdate-pro": {
+    "argv": [
+      "lupdate-pro",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      }
+    ],
+    "qt": true
+  },
+  "gettext": {
+    "argv": [
+      "xgettext",
+      "--output",
+      "{output}",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%root%/messages.pot",
+        "kind": "output"
+      }
+    ],
+    "qt": false
+  },
+  "auto-translation": {
+    "argv": [
+      "weblate",
+      "auto_translate",
+      "--source",
+      "{source}",
+      "{project}",
+      "{component}",
+      "{language}"
+    ],
+    "fields": [
+      {
+        "name": "source",
+        "label": "Source project/component",
+        "default": "",
+        "kind": "text"
+      },
+      {
+        "name": "project",
+        "label": "Destination project",
+        "default": "",
+        "kind": "text"
+      },
+      {
+        "name": "component",
+        "label": "Destination component",
+        "default": "",
+        "kind": "text"
+      },
+      {
+        "name": "language",
+        "label": "Language code",
+        "default": "en",
+        "kind": "text"
+      }
+    ],
+    "note": "Runs on a configured Weblate server environment and changes its translations. Activate that server environment first. Credentials come from its configuration."
+  },
+  "doxygen": {
+    "argv": [
+      "doxygen",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Doxygen configuration",
+        "default": "%root%/Doxyfile",
+        "kind": "file"
+      }
+    ],
+    "qt": false
+  },
+  "qdoc": {
+    "argv": [
+      "qdoc",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "QDoc configuration",
+        "default": "%file%",
+        "kind": "file"
+      }
+    ],
+    "qt": true
+  },
+  "qhelpgenerator": {
+    "argv": [
+      "qhelpgenerator",
+      "{file}",
+      "-o",
+      "{output}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%stem%.qch",
+        "kind": "output"
+      }
+    ],
+    "qt": true
+  },
+  "readthedocs": {
+    "argv": [
+      "sphinx-build",
+      "-M",
+      "html",
+      "{directory}",
+      "{output}"
+    ],
+    "fields": [
+      {
+        "name": "directory",
+        "label": "Sphinx source directory",
+        "default": "%root%/docs",
+        "kind": "dir"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%root%/build/docs",
+        "kind": "output"
+      }
+    ],
+    "qt": false
+  },
+  "gitbook": {
+    "argv": [
+      "gitbook",
+      "build",
+      "{directory}",
+      "{output}"
+    ],
+    "fields": [
+      {
+        "name": "directory",
+        "label": "GitBook source directory",
+        "default": "%root%",
+        "kind": "dir"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%root%/_book",
+        "kind": "output"
+      }
+    ],
+    "qt": false
+  },
+  "autoconf-options": {
+    "argv": [
+      "%root%/configure",
+      "{args}"
+    ],
+    "fields": [
+      {
+        "name": "args",
+        "label": "Configure arguments (JSON array)",
+        "default": [],
+        "kind": "args"
+      }
+    ]
+  },
+  "ros-build": {
+    "argv": [
+      "catkin_make",
+      "{args}"
+    ],
+    "fields": [
+      {
+        "name": "args",
+        "label": "Additional arguments (JSON array)",
+        "default": [],
+        "kind": "args"
+      }
+    ],
+    "linux": true
+  },
+  "roslaunch": {
+    "argv": [
+      "roslaunch",
+      "{package}",
+      "{launch}",
+      "{args}"
+    ],
+    "fields": [
+      {
+        "name": "package",
+        "label": "ROS package",
+        "default": "",
+        "kind": "text"
+      },
+      {
+        "name": "launch",
+        "label": "Launch filename",
+        "default": "",
+        "kind": "text"
+      },
+      {
+        "name": "args",
+        "label": "Additional arguments (JSON array)",
+        "default": [],
+        "kind": "args"
+      }
+    ],
+    "linux": true
+  },
+  "rosrun": {
+    "argv": [
+      "rosrun",
+      "{package}",
+      "{executable}",
+      "{args}"
+    ],
+    "fields": [
+      {
+        "name": "package",
+        "label": "ROS package",
+        "default": "",
+        "kind": "text"
+      },
+      {
+        "name": "executable",
+        "label": "ROS executable",
+        "default": "",
+        "kind": "text"
+      },
+      {
+        "name": "args",
+        "label": "Additional arguments (JSON array)",
+        "default": [],
+        "kind": "args"
+      }
+    ],
+    "linux": true
+  },
+  "ros-install-kinetic": {
+    "argv": [
+      "docker",
+      "run",
+      "--rm",
+      "-it",
+      "-v",
+      "%root%:/workspace",
+      "-w",
+      "/workspace",
+      "ros:kinetic-ros-base",
+      "bash"
+    ],
+    "fields": [],
+    "note": "Runs the selected legacy ROS distribution in its official container; Docker downloads the image if absent. Workspace is mounted at /workspace."
+  },
+  "ros-install-melodic": {
+    "argv": [
+      "docker",
+      "run",
+      "--rm",
+      "-it",
+      "-v",
+      "%root%:/workspace",
+      "-w",
+      "/workspace",
+      "ros:melodic-ros-base",
+      "bash"
+    ],
+    "fields": [],
+    "note": "Runs the selected legacy ROS distribution in its official container; Docker downloads the image if absent. Workspace is mounted at /workspace."
+  },
+  "ros-install-noetic": {
+    "argv": [
+      "docker",
+      "run",
+      "--rm",
+      "-it",
+      "-v",
+      "%root%:/workspace",
+      "-w",
+      "/workspace",
+      "ros:noetic-ros-base",
+      "bash"
+    ],
+    "fields": [],
+    "note": "Runs the selected legacy ROS distribution in its official container; Docker downloads the image if absent. Workspace is mounted at /workspace."
+  },
+  "windeployqt": {
+    "argv": [
+      "windeployqt",
+      "--dir",
+      "{directory}",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "directory",
+        "label": "Deployment directory",
+        "default": "%root%/deploy",
+        "kind": "output"
+      },
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      }
+    ],
+    "qt": true
+  },
+  "linuxdeploy": {
+    "argv": [
+      "linuxdeploy",
+      "--appdir",
+      "{directory}",
+      "--executable",
+      "{file}",
+      "--desktop-file",
+      "{desktop}",
+      "--icon-file",
+      "{icon}",
+      "--output",
+      "appimage"
+    ],
+    "fields": [
+      {
+        "name": "directory",
+        "label": "AppDir",
+        "default": "%root%/AppDir",
+        "kind": "output"
+      },
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      },
+      {
+        "name": "desktop",
+        "label": "Desktop entry",
+        "default": "",
+        "kind": "file"
+      },
+      {
+        "name": "icon",
+        "label": "Application icon",
+        "default": "",
+        "kind": "file"
+      }
+    ],
+    "linux": true
+  },
+  "androiddeployqt": {
+    "argv": [
+      "androiddeployqt",
+      "--input",
+      "{file}",
+      "--output",
+      "{directory}",
+      "--android-platform",
+      "{platform}",
+      "--gradle"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Android deployment settings JSON",
+        "default": "%file%",
+        "kind": "file"
+      },
+      {
+        "name": "directory",
+        "label": "Android build output",
+        "default": "%root%/android-build",
+        "kind": "output"
+      },
+      {
+        "name": "platform",
+        "label": "Android platform",
+        "default": "android-35",
+        "kind": "text"
+      }
+    ],
+    "qt": true
+  },
+  "fpm": {
+    "argv": [
+      "fpm",
+      "-s",
+      "dir",
+      "-t",
+      "{format}",
+      "-n",
+      "{name}",
+      "-v",
+      "{version}",
+      "-C",
+      "{directory}",
+      "."
+    ],
+    "fields": [
+      {
+        "name": "format",
+        "label": "Package format (deb/rpm)",
+        "default": "deb",
+        "kind": "text"
+      },
+      {
+        "name": "name",
+        "label": "Package name",
+        "default": "",
+        "kind": "text"
+      },
+      {
+        "name": "version",
+        "label": "Package version",
+        "default": "1.0.0",
+        "kind": "text"
+      },
+      {
+        "name": "directory",
+        "label": "Staged filesystem directory",
+        "default": "",
+        "kind": "dir"
+      }
+    ]
+  },
+  "cpack": {
+    "argv": [
+      "cpack",
+      "--config",
+      "{file}",
+      "-B",
+      "{directory}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "CPack configuration",
+        "default": "%build%/CPackConfig.cmake",
+        "kind": "file"
+      },
+      {
+        "name": "directory",
+        "label": "Package output directory",
+        "default": "%build%",
+        "kind": "dir"
+      }
+    ]
+  },
+  "appimage": {
+    "argv": [
+      "appimagetool",
+      "{directory}",
+      "{output}"
+    ],
+    "fields": [
+      {
+        "name": "directory",
+        "label": "Prepared AppDir",
+        "default": "%root%/AppDir",
+        "kind": "dir"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%root%/application.AppImage",
+        "kind": "output"
+      }
+    ],
+    "linux": true
+  },
+  "snap": {
+    "argv": [
+      "snapcraft",
+      "pack",
+      "{directory}",
+      "--output",
+      "{output}"
+    ],
+    "fields": [
+      {
+        "name": "directory",
+        "label": "Prepared snap directory",
+        "default": "%root%/prime",
+        "kind": "dir"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%root%/application.snap",
+        "kind": "output"
+      }
+    ],
+    "linux": true
+  },
+  "flatpak": {
+    "argv": [
+      "flatpak-builder",
+      "--user",
+      "{directory}",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "directory",
+        "label": "New build directory",
+        "default": "%root%/build-flatpak",
+        "kind": "output"
+      },
+      {
+        "name": "file",
+        "label": "Flatpak manifest",
+        "default": "%file%",
+        "kind": "file"
+      }
+    ],
+    "linux": true
+  },
+  "pyupdater": {
+    "argv": [
+      "pyupdater",
+      "build",
+      "--app-version",
+      "{version}",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "version",
+        "label": "Application version",
+        "default": "1.0.0",
+        "kind": "text"
+      },
+      {
+        "name": "file",
+        "label": "PyInstaller spec",
+        "default": "%file%",
+        "kind": "file"
+      }
+    ]
+  },
+  "qt-installer": {
+    "argv": [
+      "binarycreator",
+      "-c",
+      "{file}",
+      "-p",
+      "{directory}",
+      "{output}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Installer config.xml",
+        "default": "%root%/config/config.xml",
+        "kind": "file"
+      },
+      {
+        "name": "directory",
+        "label": "Installer packages directory",
+        "default": "%root%/packages",
+        "kind": "dir"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%root%/installer",
+        "kind": "output"
+      }
+    ]
+  },
+  "clang-tidy": {
+    "argv": [
+      "clang-tidy",
+      "-p",
+      "%build%",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      }
+    ],
+    "linux": false
+  },
+  "clazy": {
+    "argv": [
+      "clazy-standalone",
+      "-p",
+      "%build%",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      }
+    ],
+    "linux": false
+  },
+  "cppcheck": {
+    "argv": [
+      "cppcheck",
+      "--enable=warning,style,performance,portability",
+      "--error-exitcode=1",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      }
+    ],
+    "linux": false
+  },
+  "perf": {
+    "argv": [
+      "perf",
+      "record",
+      "-g",
+      "-o",
+      "{output}",
+      "--",
+      "{program}",
+      "{args}"
+    ],
+    "fields": [
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%root%/perf.data",
+        "kind": "output"
+      },
+      {
+        "name": "program",
+        "label": "Program to profile",
+        "default": "",
+        "kind": "file"
+      },
+      {
+        "name": "args",
+        "label": "Additional arguments (JSON array)",
+        "default": [],
+        "kind": "args"
+      }
+    ],
+    "linux": true
+  },
+  "memcheck": {
+    "argv": [
+      "valgrind",
+      "--tool=memcheck",
+      "--leak-check=full",
+      "--error-exitcode=1",
+      "{program}",
+      "{args}"
+    ],
+    "fields": [
+      {
+        "name": "program",
+        "label": "Program to check",
+        "default": "",
+        "kind": "file"
+      },
+      {
+        "name": "args",
+        "label": "Additional arguments (JSON array)",
+        "default": [],
+        "kind": "args"
+      }
+    ],
+    "linux": true
+  },
+  "memcheck-gdb": {
+    "argv": [
+      "valgrind",
+      "--tool=memcheck",
+      "--vgdb=yes",
+      "--vgdb-error=0",
+      "{program}",
+      "{args}"
+    ],
+    "fields": [
+      {
+        "name": "program",
+        "label": "Program to check (attach GDB with target remote | vgdb)",
+        "default": "",
+        "kind": "file"
+      },
+      {
+        "name": "args",
+        "label": "Additional arguments (JSON array)",
+        "default": [],
+        "kind": "args"
+      }
+    ],
+    "linux": true
+  },
+  "callgrind": {
+    "argv": [
+      "valgrind",
+      "--tool=callgrind",
+      "--callgrind-out-file={output}",
+      "{program}",
+      "{args}"
+    ],
+    "fields": [
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%root%/callgrind.out",
+        "kind": "output"
+      },
+      {
+        "name": "program",
+        "label": "Program to profile",
+        "default": "",
+        "kind": "file"
+      },
+      {
+        "name": "args",
+        "label": "Additional arguments (JSON array)",
+        "default": [],
+        "kind": "args"
+      }
+    ],
+    "linux": true
+  },
+  "coverity": {
+    "argv": [
+      "cov-build",
+      "--dir",
+      "{directory}",
+      "{args}"
+    ],
+    "fields": [
+      {
+        "name": "directory",
+        "label": "Coverity intermediate directory",
+        "default": "%root%/cov-int",
+        "kind": "output"
+      },
+      {
+        "name": "args",
+        "label": "Clean build command (JSON array)",
+        "default": [
+          "cmake",
+          "--build",
+          "%build%",
+          "--clean-first"
+        ],
+        "kind": "required_args"
+      }
+    ],
+    "linux": false
+  },
+  "ltrace": {
+    "argv": [
+      "ltrace",
+      "-f",
+      "--",
+      "{program}",
+      "{args}"
+    ],
+    "fields": [
+      {
+        "name": "program",
+        "label": "Program to trace",
+        "default": "",
+        "kind": "file"
+      },
+      {
+        "name": "args",
+        "label": "Additional arguments (JSON array)",
+        "default": [],
+        "kind": "args"
+      }
+    ],
+    "linux": true
+  },
+  "strace": {
+    "argv": [
+      "strace",
+      "-f",
+      "-o",
+      "{output}",
+      "--",
+      "{program}",
+      "{args}"
+    ],
+    "fields": [
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%root%/strace.log",
+        "kind": "output"
+      },
+      {
+        "name": "program",
+        "label": "Program to trace",
+        "default": "",
+        "kind": "file"
+      },
+      {
+        "name": "args",
+        "label": "Additional arguments (JSON array)",
+        "default": [],
+        "kind": "args"
+      }
+    ],
+    "linux": true
+  },
+  "ptrace": {
+    "argv": [
+      "strace",
+      "-f",
+      "-p",
+      "{pid}"
+    ],
+    "fields": [
+      {
+        "name": "pid",
+        "label": "Process ID to attach",
+        "default": "",
+        "kind": "pid"
+      }
+    ],
+    "linux": true
+  },
+  "pstree": {
+    "argv": [
+      "pstree",
+      "-p",
+      "{pid}"
+    ],
+    "fields": [
+      {
+        "name": "pid",
+        "label": "Process ID",
+        "default": "",
+        "kind": "pid"
+      }
+    ],
+    "linux": true
+  },
+  "coccinelle": {
+    "argv": [
+      "spatch",
+      "--sp-file",
+      "{file}",
+      "--dir",
+      "%root%"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Semantic patch (.cocci)",
+        "default": "",
+        "kind": "file"
+      }
+    ],
+    "linux": false
+  },
+  "sparse": {
+    "argv": [
+      "make",
+      "C=2",
+      "CHECK=sparse",
+      "{args}"
+    ],
+    "fields": [
+      {
+        "name": "args",
+        "label": "Additional arguments (JSON array)",
+        "default": [],
+        "kind": "args"
+      }
+    ],
+    "linux": true
+  },
+  "ftrace": {
+    "argv": [
+      "trace-cmd",
+      "record",
+      "-p",
+      "function",
+      "-o",
+      "{output}",
+      "{program}",
+      "{args}"
+    ],
+    "fields": [
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%root%/trace.dat",
+        "kind": "output"
+      },
+      {
+        "name": "program",
+        "label": "Program to trace",
+        "default": "",
+        "kind": "file"
+      },
+      {
+        "name": "args",
+        "label": "Additional arguments (JSON array)",
+        "default": [],
+        "kind": "args"
+      }
+    ],
+    "linux": true
+  },
+  "asan": {
+    "argv": [
+      "cmake",
+      "-S",
+      "%root%",
+      "-B",
+      "{directory}",
+      "-DCMAKE_BUILD_TYPE=Debug",
+      "-DCMAKE_C_FLAGS=-fsanitize=address -fno-omit-frame-pointer",
+      "-DCMAKE_CXX_FLAGS=-fsanitize=address -fno-omit-frame-pointer",
+      "-DCMAKE_EXE_LINKER_FLAGS=-fsanitize=address",
+      "-DCMAKE_SHARED_LINKER_FLAGS=-fsanitize=address"
+    ],
+    "fields": [
+      {
+        "name": "directory",
+        "label": "Separate sanitizer build directory",
+        "default": "%root%/build-asan",
+        "kind": "output"
+      }
+    ],
+    "then_build": true
+  },
+  "tsan": {
+    "argv": [
+      "cmake",
+      "-S",
+      "%root%",
+      "-B",
+      "{directory}",
+      "-DCMAKE_BUILD_TYPE=Debug",
+      "-DCMAKE_C_FLAGS=-fsanitize=thread -fno-omit-frame-pointer",
+      "-DCMAKE_CXX_FLAGS=-fsanitize=thread -fno-omit-frame-pointer",
+      "-DCMAKE_EXE_LINKER_FLAGS=-fsanitize=thread",
+      "-DCMAKE_SHARED_LINKER_FLAGS=-fsanitize=thread"
+    ],
+    "fields": [
+      {
+        "name": "directory",
+        "label": "Separate sanitizer build directory",
+        "default": "%root%/build-tsan",
+        "kind": "output"
+      }
+    ],
+    "then_build": true
+  },
+  "lsan": {
+    "argv": [
+      "cmake",
+      "-S",
+      "%root%",
+      "-B",
+      "{directory}",
+      "-DCMAKE_BUILD_TYPE=Debug",
+      "-DCMAKE_C_FLAGS=-fsanitize=leak -fno-omit-frame-pointer",
+      "-DCMAKE_CXX_FLAGS=-fsanitize=leak -fno-omit-frame-pointer",
+      "-DCMAKE_EXE_LINKER_FLAGS=-fsanitize=leak",
+      "-DCMAKE_SHARED_LINKER_FLAGS=-fsanitize=leak"
+    ],
+    "fields": [
+      {
+        "name": "directory",
+        "label": "Separate sanitizer build directory",
+        "default": "%root%/build-lsan",
+        "kind": "output"
+      }
+    ],
+    "then_build": true
+  },
+  "ubsan": {
+    "argv": [
+      "cmake",
+      "-S",
+      "%root%",
+      "-B",
+      "{directory}",
+      "-DCMAKE_BUILD_TYPE=Debug",
+      "-DCMAKE_C_FLAGS=-fsanitize=undefined -fno-omit-frame-pointer",
+      "-DCMAKE_CXX_FLAGS=-fsanitize=undefined -fno-omit-frame-pointer",
+      "-DCMAKE_EXE_LINKER_FLAGS=-fsanitize=undefined",
+      "-DCMAKE_SHARED_LINKER_FLAGS=-fsanitize=undefined"
+    ],
+    "fields": [
+      {
+        "name": "directory",
+        "label": "Separate sanitizer build directory",
+        "default": "%root%/build-ubsan",
+        "kind": "output"
+      }
+    ],
+    "then_build": true
+  },
+  "sanitizers": {
+    "argv": [
+      "cmake",
+      "-S",
+      "%root%",
+      "-B",
+      "{directory}",
+      "-DCMAKE_BUILD_TYPE=Debug",
+      "-DCMAKE_C_FLAGS=-fsanitize=address,undefined -fno-omit-frame-pointer",
+      "-DCMAKE_CXX_FLAGS=-fsanitize=address,undefined -fno-omit-frame-pointer",
+      "-DCMAKE_EXE_LINKER_FLAGS=-fsanitize=address,undefined",
+      "-DCMAKE_SHARED_LINKER_FLAGS=-fsanitize=address,undefined"
+    ],
+    "fields": [
+      {
+        "name": "directory",
+        "label": "Separate sanitizer build directory",
+        "default": "%root%/build-sanitizers",
+        "kind": "output"
+      }
+    ],
+    "then_build": true
+  },
+  "kcov": {
+    "argv": [
+      "%root%/scripts/config",
+      "--file",
+      "{file}",
+      "--enable",
+      "KCOV"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Kernel .config",
+        "default": "%root%/.config",
+        "kind": "file"
+      }
+    ],
+    "linux": true,
+    "note": "Enables CONFIG_KCOV in the selected source configuration. Resolve dependencies with make olddefconfig, rebuild and boot that kernel before collecting runtime data."
+  },
+  "gcov": {
+    "argv": [
+      "%root%/scripts/config",
+      "--file",
+      "{file}",
+      "--enable",
+      "GCOV_KERNEL"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Kernel .config",
+        "default": "%root%/.config",
+        "kind": "file"
+      }
+    ],
+    "linux": true,
+    "note": "Enables CONFIG_GCOV_KERNEL in the selected source configuration. Resolve dependencies with make olddefconfig, rebuild and boot that kernel before collecting runtime data."
+  },
+  "kasan": {
+    "argv": [
+      "%root%/scripts/config",
+      "--file",
+      "{file}",
+      "--enable",
+      "KASAN"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Kernel .config",
+        "default": "%root%/.config",
+        "kind": "file"
+      }
+    ],
+    "linux": true,
+    "note": "Enables CONFIG_KASAN in the selected source configuration. Resolve dependencies with make olddefconfig, rebuild and boot that kernel before collecting runtime data."
+  },
+  "kubsan": {
+    "argv": [
+      "%root%/scripts/config",
+      "--file",
+      "{file}",
+      "--enable",
+      "UBSAN"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Kernel .config",
+        "default": "%root%/.config",
+        "kind": "file"
+      }
+    ],
+    "linux": true,
+    "note": "Enables CONFIG_UBSAN in the selected source configuration. Resolve dependencies with make olddefconfig, rebuild and boot that kernel before collecting runtime data."
+  },
+  "kmemleak": {
+    "argv": [
+      "%root%/scripts/config",
+      "--file",
+      "{file}",
+      "--enable",
+      "DEBUG_KMEMLEAK"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Kernel .config",
+        "default": "%root%/.config",
+        "kind": "file"
+      }
+    ],
+    "linux": true,
+    "note": "Enables CONFIG_DEBUG_KMEMLEAK in the selected source configuration. Resolve dependencies with make olddefconfig, rebuild and boot that kernel before collecting runtime data."
+  },
+  "kcsan": {
+    "argv": [
+      "%root%/scripts/config",
+      "--file",
+      "{file}",
+      "--enable",
+      "KCSAN"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Kernel .config",
+        "default": "%root%/.config",
+        "kind": "file"
+      }
+    ],
+    "linux": true,
+    "note": "Enables CONFIG_KCSAN in the selected source configuration. Resolve dependencies with make olddefconfig, rebuild and boot that kernel before collecting runtime data."
+  },
+  "kfence": {
+    "argv": [
+      "%root%/scripts/config",
+      "--file",
+      "{file}",
+      "--enable",
+      "KFENCE"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Kernel .config",
+        "default": "%root%/.config",
+        "kind": "file"
+      }
+    ],
+    "linux": true,
+    "note": "Enables CONFIG_KFENCE in the selected source configuration. Resolve dependencies with make olddefconfig, rebuild and boot that kernel before collecting runtime data."
+  },
+  "kernel-checkpatch": {
+    "argv": [
+      "perl",
+      "%root%/scripts/checkpatch.pl",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      }
+    ],
+    "linux": true
+  },
+  "kernel-maintainer": {
+    "argv": [
+      "perl",
+      "%root%/scripts/get_maintainer.pl",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      }
+    ],
+    "linux": true
+  },
+  "kernel-dtc": {
+    "argv": [
+      "dtc",
+      "-I",
+      "dts",
+      "-O",
+      "dtb",
+      "-o",
+      "{output}",
+      "{file}"
+    ],
+    "fields": [
+      {
+        "name": "file",
+        "label": "Input file",
+        "default": "%file%",
+        "kind": "file"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%stem%.dtb",
+        "kind": "output"
+      }
+    ],
+    "linux": true
+  },
+  "kernel-compdb": {
+    "argv": [
+      "python3",
+      "%root%/scripts/clang-tools/gen_compile_commands.py",
+      "-d",
+      "%root%"
+    ],
+    "fields": [],
+    "linux": true
+  },
+  "xvfb-command": {
+    "argv": [
+      "xvfb-run",
+      "-a",
+      "{args}"
+    ],
+    "fields": [
+      {
+        "name": "args",
+        "label": "Command (JSON array)",
+        "default": [
+          "gvim"
+        ],
+        "kind": "required_args"
+      }
+    ],
+    "linux": true
+  },
+  "xvfb-screenshot": {
+    "argv": [
+      "import",
+      "-display",
+      "{display}",
+      "-window",
+      "root",
+      "{output}"
+    ],
+    "fields": [
+      {
+        "name": "display",
+        "label": "X display",
+        "default": "%display%",
+        "kind": "text"
+      },
+      {
+        "name": "output",
+        "label": "Output path",
+        "default": "%root%/screenshot.png",
+        "kind": "output"
+      }
+    ],
+    "linux": true
+  },
+  "xvfb-view": {
+    "argv": [
+      "x11vnc",
+      "-display",
+      "{display}",
+      "-localhost",
+      "-rfbauth",
+      "{password}",
+      "-rfbport",
+      "{port}"
+    ],
+    "fields": [
+      {
+        "name": "display",
+        "label": "X display",
+        "default": "%display%",
+        "kind": "text"
+      },
+      {
+        "name": "password",
+        "label": "VNC password file (create with x11vnc -storepasswd)",
+        "default": "",
+        "kind": "file"
+      },
+      {
+        "name": "port",
+        "label": "Local VNC port",
+        "default": "5900",
+        "kind": "pid"
+      }
+    ],
+    "linux": true,
+    "note": "Opens a VNC viewer on the original GUI display with a private localhost-only authenticated server. Closing the viewer stops its server."
+  }
+}
