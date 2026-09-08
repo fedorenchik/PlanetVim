@@ -4,6 +4,9 @@ if exists('g:loaded_planet_vim_settings')
 endif
 let g:loaded_planet_vim_settings = 1
 
+" Fix the string encoding before assigning any Unicode filesystem options.
+set encoding=utf-8
+
 set autoindent
 set autoread
 set noautowrite
@@ -28,7 +31,7 @@ if has("gui_running")
   set columns=128
 endif
 set complete-=i
-set completeopt=menuone,preview,popup,popuphidden,noinsert,noselect
+set completeopt=menuone,noinsert,noselect
 set confirm
 set copyindent
 set cscopequickfix=s-,g-,d-,c-,t-,e-,f-,i-,a-
@@ -45,7 +48,6 @@ let &directory = escape(planet#paths#State('swap'), ',') .. '//'
 set display=lastline,uhex
 set noedcompatible
 set emoji
-set encoding=utf-8
 set noequalalways
 set noerrorbells
 set esckeys
@@ -69,8 +71,19 @@ set nogdefault
 set grepprg=grep\ -nH\ $*
 "TODO: Colorize cursor in different modes.
 "set guicursor+=a:blinkon0
-if has("gui")
-  set guifont=DejaVu\ Sans\ Mono\ 9,Monospace\ 9
+if has('win32')
+  " Font availability differs between Windows installations and Wine.
+  " Keep GVim's usable default if none of the preferred fonts is installed.
+  for s:font in ['Consolas:h10', 'Liberation_Mono:h10', 'Courier_New:h10']
+    try
+      let &guifont = s:font
+      break
+    catch /^Vim\%((\a\+)\)\=:E596/
+    endtry
+  endfor
+  unlet s:font
+else
+  set guifont=Monospace\ 10
 endif
 set guiheadroom=0
 " Adding '!' to guioptions causes too much redraw & 'hit enter' prompts (vim bug)

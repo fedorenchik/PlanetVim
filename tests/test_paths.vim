@@ -10,6 +10,7 @@ for s:kind in ['State', 'Config', 'Cache']
   endif
 endfor
 runtime plugin/settings.vim
+set nomore
 call assert_match(escape(s:base, '\'), &directory)
 call assert_match(escape(s:base, '\'), &backupdir)
 call assert_match(escape(s:base, '\'), &undodir)
@@ -29,6 +30,14 @@ write
 call assert_equal(['after'], readfile(s:file))
 call assert_false(empty(globpath(planet#paths#State('backup'), '*', 0, 1)))
 call assert_true(stridx(undofile(s:file), g:PV_state_dir) == 0)
-execute 'wundo ' .. fnameescape(undofile(s:file))
+" Verify the actual automatic undo persistence used by the distribution.
+" :wundo has different filename parsing on Windows and is not used here.
 call assert_true(filereadable(undofile(s:file)))
+execute 'bwipeout ' .. bufnr()
+execute 'edit ' .. fnameescape(s:file)
+" Vim 9.1.0's lazyredraw message check polls closed stdin during :undo in
+" silent Ex mode and exits. The supported GUI exercises the configured value.
+if !has('gui_running') | set nolazyredraw | endif
+silent undo
+call assert_equal(['before'], getline(1, '$'))
 set nomore

@@ -1,4 +1,8 @@
 set hidden
+func! s:Native(path) abort
+  let l:path = substitute(fnamemodify(a:path, ':p'), '[/\\]\+$', '', '')
+  return has('win32') && !&shellslash ? substitute(l:path, '/', '\\', 'g') : l:path
+endfunc
 let &runtimepath ..= ',' .. g:PV_root .. '/.vim/pack/basic/start/vim-startify'
 let g:startify_session_dir = planet#paths#State('sessions')
 let g:startify_disable_at_vimenter = 1
@@ -71,7 +75,7 @@ for s:variant in ['relative', 'local', 'all', 'no-globals']
   call assert_equal(s:contents, readfile(s:path))
 endfor
 " Saving/reopening a project session retains its full path, outside Startify.
-let s:external_session = s:project .. '/session local.vim'
+let s:external_session = s:Native(s:project .. '/session local.vim')
 let v:this_session = s:external_session
 call planet#session#Save()
 call assert_equal(s:external_session, v:this_session)

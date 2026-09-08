@@ -12,6 +12,11 @@ let g:PV_templates_dir = s:templates
 let s:buffers = []
 let s:callbacks = []
 
+func! s:Native(path) abort
+  let l:path = substitute(fnamemodify(a:path, ':p'), '[/\\]\+$', '', '')
+  return has('win32') && !&shellslash ? substitute(l:path, '/', '\\', 'g') : l:path
+endfunc
+
 func! s:Completed(result, buffer) abort
   call add(s:callbacks, [a:result.status, a:result.exit_code])
 endfunc
@@ -93,7 +98,7 @@ try
   call assert_true(filereadable(s:failed .. '/package.json'), 'failed install retains generated project for inspection')
   let s:recorded = json_decode(readfile(s:record)[0])
   call assert_equal(['install'], s:recorded.argv, 'no implicit npm start or fallback')
-  call assert_equal(fnamemodify(s:failed, ':p'), fnamemodify(s:recorded.cwd, ':p'))
+  call assert_equal(s:Native(s:failed), s:Native(s:recorded.cwd))
   call assert_equal(['failed', 7], s:callbacks[-1])
 
   let s:no_tool = s:base .. '/missing dependency'
@@ -118,7 +123,7 @@ try
   call assert_equal('success', s:Wait(planet#generate#Template('sample', s:opened,
         \ extend(copy(s:options), #{open: v:true}))).status)
   call assert_equal(s:tabs + 1, tabpagenr('$'))
-  call assert_equal(fnamemodify(s:opened, ':p'), fnamemodify(getcwd(), ':p'))
+  call assert_equal(s:Native(s:opened), s:Native(getcwd()))
   tabclose!
 finally
   for s:buffer in s:buffers

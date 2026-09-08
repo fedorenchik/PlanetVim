@@ -1,4 +1,8 @@
 set hidden
+func! s:Native(path) abort
+  let l:path = substitute(fnamemodify(a:path, ':p'), '[/\\]\+$', '', '')
+  return has('win32') && !&shellslash ? substitute(l:path, '/', '\\', 'g') : l:path
+endfunc
 runtime plugin/writing.vim
 let s:python = exepath('python3')
 if empty(s:python)
@@ -23,7 +27,7 @@ func! s:Wait(buffer) abort
   return {}
 endfunc
 
-let s:markdown = s:project .. '/a document.md'
+let s:markdown = s:Native(s:project .. '/a document.md')
 call writefile(readfile(g:PV_root .. '/tests/fixtures/writing/sample.md'), s:markdown)
 execute 'edit ' .. fnameescape(s:markdown)
 setfiletype markdown
@@ -45,7 +49,7 @@ endfor
 call assert_equal([s:result.output], json_decode(join(readfile(s:viewer_record), '')))
 call assert_false(filereadable(s:project .. '/preview.html'))
 
-let s:tex = s:project .. '/a document.tex'
+let s:tex = s:Native(s:project .. '/a document.tex')
 call writefile(readfile(g:PV_root .. '/tests/fixtures/writing/sample.tex'), s:tex)
 execute 'edit ' .. fnameescape(s:tex)
 setfiletype tex

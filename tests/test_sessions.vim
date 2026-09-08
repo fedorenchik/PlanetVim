@@ -2,6 +2,10 @@
 func! s:Stage(name) abort
   call writefile([a:name], g:PV_test_dir .. '/stage.txt')
 endfunc
+func! s:Native(path) abort
+  let l:path = substitute(fnamemodify(a:path, ':p'), '[/\\]\+$', '', '')
+  return has('win32') && !&shellslash ? substitute(l:path, '/', '\\', 'g') : l:path
+endfunc
 call s:Stage('tab setup')
 set hidden
 execute 'source ' .. fnameescape(g:PV_root .. '/.vim/pack/planet/start/planet.vim/plugin/autocmds.vim')
@@ -35,14 +39,14 @@ call assert_equal(['b.txt', 'c.txt'], sort(map(gettabinfo(tabpagenr())[0].window
       \ {_, id -> fnamemodify(bufname(winbufnr(id)), ':t')})))
 call assert_equal('b.txt', expand('%:t'))
 call assert_equal(s:cursor, getcurpos()[1:2])
-call assert_equal(g:PV_test_dir .. '/project b', getcwd())
+call assert_equal(s:Native(g:PV_test_dir .. '/project b'), getcwd())
 call assert_equal(g:PV_test_dir, getcwd(-1))
-call assert_equal(g:PV_test_dir .. '/project a', getcwd(win_id2tabwin(s:original_window)[1], win_id2tabwin(s:original_window)[0]))
+call assert_equal(s:Native(g:PV_test_dir .. '/project a'), getcwd(win_id2tabwin(s:original_window)[1], win_id2tabwin(s:original_window)[0]))
 call assert_equal(s:ssop, &sessionoptions)
 call assert_equal(s:session, v:this_session)
 let s:directories = globpath(planet#paths#State('tabs'), '*', 0, 1)
 call assert_equal(1, len(s:directories))
-call assert_match('/' .. getpid() .. '-', s:directories[0])
+call assert_match('[/\\]' .. getpid() .. '-', s:directories[0])
 call s:Stage('native tab recovery')
 
 " Newer Vim builds also preserve every split when using native :tabclose.
@@ -101,7 +105,7 @@ execute 'cd ' .. fnameescape(g:PV_test_dir .. '/session name with spaces')
 let v:this_session = ''
 call s:Stage('Startify save')
 call planet#session#Save()
-let s:saved_session = g:startify_session_dir .. '/session name with spaces'
+let s:saved_session = s:Native(g:startify_session_dir .. '/session name with spaces')
 call assert_true(filereadable(s:saved_session))
 call assert_equal(s:saved_session, v:this_session)
 call assert_false(empty(menu_info('📚s.Open Session.session name with spaces')))
