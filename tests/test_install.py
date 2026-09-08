@@ -1,5 +1,6 @@
 """Installer tests use disposable sources and destinations only."""
 import importlib.util
+import io
 import json
 import os
 from pathlib import Path
@@ -267,6 +268,27 @@ class InstallerTests(unittest.TestCase):
     def test_main_returns_failure_status(self):
         with mock.patch.object(install.Installer, "run", side_effect=OSError("copy failed")):
             self.assertEqual(install.main(["install", "--prefix", str(self.prefix)]), 1)
+
+    def test_unicode_console_reporting_keeps_success_and_failure_status(self):
+        prefix = self.directory / "destination, 'quoted' 工作"
+        for failure in (False, True):
+            with self.subTest(failure=failure):
+                output, errors = io.BytesIO(), io.BytesIO()
+                stdout = io.TextIOWrapper(output, encoding="cp1252", errors="strict")
+                stderr = io.TextIOWrapper(errors, encoding="cp1252", errors="strict")
+                instance = mock.Mock(prefix=prefix)
+                if failure:
+                    instance.run.side_effect = install.InstallError("Cannot use 工作 destination")
+                with mock.patch.object(install, "Installer", return_value=instance), \
+                        mock.patch.object(install.sys, "stdout", stdout), \
+                        mock.patch.object(install.sys, "stderr", stderr):
+                    code = install.main(["install", "--prefix", str(prefix)])
+                    stdout.flush()
+                    stderr.flush()
+                self.assertEqual(code, 1 if failure else 0)
+                message = errors.getvalue() if failure else output.getvalue()
+                self.assertIn(b"\\u5de5\\u4f5c", message)
+                instance.run.assert_called_once_with("install", None)
 
 
 if __name__ == "__main__":

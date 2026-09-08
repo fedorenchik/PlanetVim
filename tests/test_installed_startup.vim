@@ -4,15 +4,16 @@ if !has('gui_running')
   finish
 endif
 
+let s:started = reltime()
 func! s:Wait(job, label, logfile) abort
-  for l:index in range(4000)
+  while reltimefloat(reltime(s:started)) < get(g:, 'PV_test_timeout', 60) - 5
     if job_status(a:job) !=# 'run'
       let l:exit = get(job_info(a:job), 'exitval', -1)
       call assert_equal(0, l:exit, a:label .. ': ' .. join(readfile(a:logfile), "\n"))
       return l:exit == 0
     endif
     sleep 10m
-  endfor
+  endwhile
   call job_stop(a:job, 'kill')
   call assert_report(a:label .. ' timed out')
   return 0

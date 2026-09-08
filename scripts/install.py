@@ -486,6 +486,12 @@ class Installer:
 
 
 def main(argv=None):
+    # Redirected Windows consoles may use cp1252 even for a valid Unicode
+    # destination. Retain the chosen encoding, but never abort a transaction or
+    # mask its original error just because its path cannot be printed there.
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(errors="backslashreplace")
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("operation", choices=("install", "update", "uninstall", "restore"))
     parser.add_argument("--prefix", type=Path, help="private installation directory")

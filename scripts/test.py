@@ -46,7 +46,7 @@ def virtual_display(executable):
         server.wait(timeout=10)
 
 
-def run(path, executable, gui, display=None):
+def run(path, executable, gui, display=None, timeout=60):
     with tempfile.TemporaryDirectory(prefix="planetvim-test-") as directory:
         temp = Path(directory)
         for child in ("config", "state", "cache"):
@@ -61,6 +61,7 @@ def run(path, executable, gui, display=None):
             "if !has('win32') | set shell=/bin/sh | endif",
             f"let g:PV_root = {vim_string(ROOT)}",
             f"let g:PV_test_dir = {vim_string(temp)}",
+            f"let g:PV_test_timeout = {timeout}",
             f"let g:PV_config_dir = {vim_string(temp / 'config')}",
             f"let g:PV_state_dir = {vim_string(temp / 'state')}",
             f"let g:PV_cache_dir = {vim_string(temp / 'cache')}",
@@ -93,9 +94,9 @@ def run(path, executable, gui, display=None):
             environment[f"PLANETVIM_{kind}_DIR"] = str(temp / kind.lower())
         try:
             process = subprocess.run(command, cwd=temp, env=environment,
-                                     capture_output=True, text=True, timeout=60)
+                                     capture_output=True, text=True, timeout=timeout)
         except subprocess.TimeoutExpired:
-            return ["GVim timed out after 60 seconds"], ''
+            return [f"GVim timed out after {timeout} seconds"], ''
         if not result.exists():
             return [f"GVim exited {process.returncode} without a result: "
                     + process.stderr[-2000:]], ''
@@ -112,7 +113,10 @@ def main():
     parser.add_argument("--gui", action="store_true")
     parser.add_argument("--gvim", default=os.environ.get("GVIM", "gvim"))
     parser.add_argument("--xvfb", help="Xvfb executable for an isolated GUI display (Linux)")
+    parser.add_argument("--timeout", type=int, default=60, help="Seconds allowed per test (default: 60; increase for slow Wine filesystem tests)")
     args = parser.parse_args()
+    if args.timeout < 1:
+        parser.error("--timeout must be a positive number of seconds")
     executable = shutil.which(args.gvim)
     if not executable:
         parser.error("GVim was not found; install GVim or pass --gvim PATH")
@@ -123,7 +127,7 @@ def main():
     skipped = 0
     with virtual_display(args.xvfb) as display:
         for test in tests:
-            errors, skip = run(test, executable, args.gui, display)
+            errors, skip = run(test, executable, args.gui, display, args.timeout)
             print(f"{'FAIL' if errors else 'SKIP' if skip else 'PASS'} {test.name}", flush=True)
             if skip:
                 print('  ' + skip, flush=True)
