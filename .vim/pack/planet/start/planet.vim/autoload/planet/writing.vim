@@ -192,13 +192,34 @@ func! planet#writing#LatexBuild() abort
   endtry
 endfunc
 
+" Accept an option value (commas in a single path must already be escaped).
+" Vim 9.1 validates every byte against 'isfname', including the comma escape
+" and UTF-8 bytes. Allow those while setting it, without changing gf behavior.
+func! planet#writing#SetSpellFile(value, local = v:true) abort
+  let l:isfname = &isfname
+  try
+    set isfname+=32,39,92,128-255
+    if a:local
+      let &l:spellfile = a:value
+    else
+      let &spellfile = a:value
+    endif
+  finally
+    let &isfname = l:isfname
+  endtry
+endfunc
+
 func! planet#writing#Undo() abort
   if !exists('b:PV_writing_setup')
     return
   endif
   let l:setup = b:PV_writing_setup
   for [l:option, l:value] in items(l:setup.options)
-    execute 'let &l:' .. l:option .. ' = l:value'
+    if l:option ==# 'spellfile'
+      call planet#writing#SetSpellFile(l:value)
+    else
+      execute 'let &l:' .. l:option .. ' = l:value'
+    endif
   endfor
   if l:setup.mapped
     silent! nunmap <buffer> <A-`>
@@ -217,7 +238,8 @@ func! planet#writing#Setup() abort
         \ 'mapping': get(l:mapping, 'buffer', 0) ? l:mapping : {}, 'mapped': v:false}
   if has('spell')
     let b:PV_writing_setup.options = {'spell': &l:spell, 'spellfile': &l:spellfile, 'spelllang': &l:spelllang}
-    let &l:spellfile = get(g:, 'PV_personal_spell_file', planet#paths#State('spell') .. '/personal.utf-8.add')
+    call planet#writing#SetSpellFile(escape(get(g:, 'PV_personal_spell_file',
+          \ planet#paths#State('spell') .. '/personal.utf-8.add'), ','))
     let &l:spelllang = get(g:, 'PV_spell_language', 'en_us')
     setlocal spell
   endif

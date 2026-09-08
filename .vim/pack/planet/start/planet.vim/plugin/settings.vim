@@ -179,8 +179,8 @@ set smartcase
 set smartindent
 set smarttab
 set softtabstop=8
-"TODO: spellfile: 1 - per session, 2 - global, 3 - tmp cache
-let &spellfile = escape(planet#paths#Config('spell') .. '/personal.utf-8.add', ',')
+" Ordinary buffers share a private dictionary; writing buffers can override it.
+call planet#writing#SetSpellFile(escape(planet#paths#Config('spell') .. '/personal.utf-8.add', ','), v:false)
 set spelllang+=cjk
 set spelloptions=camel
 set spellsuggest=best,10
