@@ -10,9 +10,16 @@ let s:old_shellcmdflag = &shellcmdflag
 func! s:Wait(bufnr) abort
   for l:i in range(200)
     call term_wait(a:bufnr, 50)
+    sleep 10m
     if get(planet#term#Result(a:bufnr), 'status', '') !=# 'running'
-      call term_wait(a:bufnr, 20)
-      return
+      let l:context = getbufvar(a:bufnr, 'planet_command', {})
+      " The exit callback precedes the GUI terminal-drain/close timer.
+      if ! get(l:context, 'close_on_exit', v:false)
+            \ || planet#term#Result(a:bufnr).status !=# 'success'
+            \ || empty(win_findbuf(a:bufnr))
+        call term_wait(a:bufnr, 20)
+        return
+      endif
     endif
   endfor
   call assert_report('command timed out: ' .. string(planet#term#Result(a:bufnr)))

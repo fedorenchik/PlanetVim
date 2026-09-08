@@ -316,9 +316,28 @@ func! planet#planet#SetPerSessionOptions()
   silent! rviminfo!
 endfunc
 
+func! planet#planet#SaveAll() abort
+  try
+    confirm wall
+  catch
+    echohl ErrorMsg
+    echom 'PlanetVim: save cancelled or failed: ' .. v:exception
+    echohl None
+    return v:false
+  endtry
+  if !empty(getbufinfo({'bufmodified': 1}))
+    echohl WarningMsg
+    echom 'PlanetVim: unsaved changes remain; keeping the editor open.'
+    echohl None
+    return v:false
+  endif
+  return v:true
+endfunc
+
 func! planet#planet#SaveExit() abort
-  confirm wall
-  qa!
+  if planet#planet#SaveAll()
+    qa
+  endif
 endfunc
 
 func! planet#planet#EmergencyExit() abort

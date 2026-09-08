@@ -54,7 +54,7 @@ def run(path, executable, gui, display=None):
         result = temp / "result.json"
         runtime = ROOT / ".vim/pack/planet/start/planet.vim"
         script = temp / "run.vim"
-        script.write_text("\n".join([
+        lines = [
             "set nocompatible nomore nomodeline noswapfile noundofile",
             "set viminfofile=NONE",
             "set guioptions+=c",
@@ -76,7 +76,8 @@ def run(path, executable, gui, display=None):
             "endtry",
             f"call writefile([json_encode(v:errors)], {vim_string(result)})",
             "execute 'cquit ' .. (empty(v:errors) ? 0 : 1)",
-        ]) + "\n", encoding="utf-8")
+        ]
+        script.write_text("\n".join(lines) + "\n", encoding="utf-8")
         command = [executable, "-f", "-Nu", "NONE", "-U", "NONE", "-i", "NONE", "-n"]
         if not gui:
             command += ["-v", "-es"]
@@ -90,7 +91,7 @@ def run(path, executable, gui, display=None):
             process = subprocess.run(command, cwd=temp, env=environment,
                                      capture_output=True, text=True, timeout=60)
         except subprocess.TimeoutExpired:
-            return ["GVim timed out after 60 seconds; stage=" + ((temp / "stage.txt").read_text() if (temp / "stage.txt").exists() else "initial")]
+            return ["GVim timed out after 60 seconds"]
         if not result.exists():
             return [f"GVim exited {process.returncode} without a result: "
                     + process.stderr[-2000:]]
