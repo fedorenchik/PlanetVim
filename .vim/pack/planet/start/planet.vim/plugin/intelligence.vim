@@ -1,0 +1,18 @@
+scriptversion 4
+
+command! PlanetLspStatus call planet#intelligence#ShowStatus()
+command! PlanetLspSetup call planet#intelligence#Register()
+command! PlanetDefinition call planet#intelligence#Action('LspDefinition')
+command! PlanetReferences call planet#intelligence#Action('LspReferences')
+command! PlanetHover call planet#intelligence#Action('LspHover')
+command! PlanetRename call planet#intelligence#Action('LspRename')
+command! PlanetFormat call planet#intelligence#Action('LspDocumentFormatSync')
+command! PlanetDiagnostics call planet#intelligence#Action('LspDocumentDiagnostics')
+
+augroup PlanetVimIntelligence
+  autocmd!
+  autocmd User lsp_setup call planet#intelligence#Register()
+  autocmd User asyncomplete_setup call planet#intelligence#CompletionSources()
+  autocmd User lsp_buffer_enabled call planet#intelligence#Attach()
+  autocmd FileType c,cpp,python call planet#intelligence#SetupBuffer()
+augroup END
