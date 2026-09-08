@@ -1,6 +1,6 @@
 " Load only the pinned language client and its completion sources.
 for s:dependency in ['vim-lsp', 'asyncomplete.vim', 'asyncomplete-lsp.vim', 'asyncomplete-buffer.vim', 'asyncomplete-file.vim']
-  let &runtimepath ..= ',' .. g:PV_root .. '/.vim/pack/lsp/start/' .. s:dependency
+  let &runtimepath ..= ',' .. planet#paths#Runtime(g:PV_root .. '/.vim/pack/lsp/start/' .. s:dependency)
 endfor
 let g:lsp_use_lua = 0
 let g:lsp_auto_enable = 0

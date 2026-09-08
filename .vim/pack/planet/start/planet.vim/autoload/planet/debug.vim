@@ -20,16 +20,17 @@ func! planet#debug#Init() abort
   endif
   let g:vimspector_base_dir = get(g:, 'vimspector_base_dir', planet#paths#State('debugger'))
   let l:log = planet#paths#State('debugger') .. '/vimspector.log'
-  let &runtimepath = escape(l:path, ',') .. ',' .. &runtimepath
+  let &runtimepath = planet#paths#Runtime(l:path) .. ',' .. &runtimepath
   try
     " Pinned and current upstream open ~/.vimspector.log in write mode on
     " import, with no path setting. Redirect exactly that constructor once;
     " never change HOME or leave a logging constructor installed globally.
     py3 << EOF
 import importlib, logging, os, sys, vim, warnings
-def _pv_import_utils(state_log):
+def _pv_import_utils(state_log, module_path):
     original_handler = logging.FileHandler
     original_bytecode = sys.dont_write_bytecode
+    original_path = sys.path[:]
     default_log = os.path.abspath(os.path.expanduser('~/.vimspector.log'))
     def log_handler(filename, *args, **kwargs):
         if os.path.abspath(os.fspath(filename)) == default_log:
@@ -38,6 +39,9 @@ def _pv_import_utils(state_log):
     try:
         logging.FileHandler = log_handler
         sys.dont_write_bytecode = True
+        # Vim's Python importer does not decode escaped runtimepath entries.
+        # Use the native directory only while importing the bundled packages.
+        sys.path.insert(0, os.path.join(module_path, 'python3'))
         with warnings.catch_warnings():
             # Python 3.12 warns about the pinned json_minify regex literals.
             # Early Vim 9.1 treats Python stderr as a failed import. Limit the
@@ -48,9 +52,10 @@ def _pv_import_utils(state_log):
     finally:
         logging.FileHandler = original_handler
         sys.dont_write_bytecode = original_bytecode
+        sys.path[:] = original_path
     utils.LOG_FILE = state_log
 try:
-    _pv_import_utils(vim.eval('l:log'))
+    _pv_import_utils(vim.eval('l:log'), vim.eval('l:path'))
 finally:
     del _pv_import_utils
 EOF

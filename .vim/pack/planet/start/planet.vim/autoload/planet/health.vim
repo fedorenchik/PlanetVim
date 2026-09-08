@@ -63,7 +63,7 @@ func! s:IntegrationItems(items) abort
   catch
     call add(a:items, #{name:'SDK command inventory', ok:0, optional:1, help:v:exception})
   endtry
-  for l:file in globpath(s:runtime .. '/autoload/planet', '**/*.vim', 0, 1)
+  for l:file in globpath(planet#paths#Runtime(s:runtime .. '/autoload/planet'), '**/*.vim', 0, 1)
     if fnamemodify(l:file, ':t') ==# 'health.vim' | continue | endif
     for l:line in readfile(l:file)
       if l:line =~# '^\s*"' | continue | endif

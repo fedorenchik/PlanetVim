@@ -3,7 +3,7 @@ func! s:Native(path) abort
   let l:path = substitute(fnamemodify(a:path, ':p'), '[/\\]\+$', '', '')
   return has('win32') && !&shellslash ? substitute(l:path, '/', '\\', 'g') : l:path
 endfunc
-let &runtimepath ..= ',' .. g:PV_root .. '/.vim/pack/basic/start/vim-startify'
+let &runtimepath ..= ',' .. planet#paths#Runtime(g:PV_root .. '/.vim/pack/basic/start/vim-startify')
 let g:startify_session_dir = planet#paths#State('sessions')
 let g:startify_disable_at_vimenter = 1
 runtime plugin/startify.vim

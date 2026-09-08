@@ -40,3 +40,9 @@ endfunc
 func! planet#paths#Root() abort
   return get(g:, 'PV_root', s:root)
 endfunc
+
+" Escape one entry for runtimepath/packpath/globpath, not for native file APIs.
+" An unescaped apostrophe otherwise invokes Unix shell expansion during lookup.
+func! planet#paths#Runtime(path) abort
+  return escape(a:path, ",'")
+endfunc

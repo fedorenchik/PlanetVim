@@ -221,8 +221,9 @@ func! planet#prose#Load(package, plugin) abort
   if !filereadable(l:path .. '/plugin/' .. a:plugin .. '.vim')
     return s:Warn('bundled ' .. a:package .. ' is missing.')
   endif
-  if stridx(',' .. &runtimepath .. ',', ',' .. l:path .. ',') < 0
-    let &runtimepath = escape(l:path, ',') .. ',' .. &runtimepath
+  let l:entry = planet#paths#Runtime(l:path)
+  if stridx(',' .. &runtimepath .. ',', ',' .. l:entry .. ',') < 0
+    let &runtimepath = l:entry .. ',' .. &runtimepath
   endif
   execute 'source ' .. fnameescape(l:path .. '/plugin/' .. a:plugin .. '.vim')
   return 1
@@ -238,8 +239,9 @@ endfunc
 
 func! planet#prose#Proofread(category) abort
   let g:wordy_spell_dir = planet#paths#Cache('wordy')
-  if stridx(',' .. &runtimepath .. ',', ',' .. g:wordy_spell_dir .. ',') < 0
-    let &runtimepath ..= ',' .. escape(g:wordy_spell_dir, ',')
+  let l:entry = planet#paths#Runtime(g:wordy_spell_dir)
+  if stridx(',' .. &runtimepath .. ',', ',' .. l:entry .. ',') < 0
+    let &runtimepath ..= ',' .. l:entry
   endif
   if exists(':Wordy') != 2 && !planet#prose#Load('vim-wordy', 'wordy')
     return 0

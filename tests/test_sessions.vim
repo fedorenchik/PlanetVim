@@ -98,7 +98,7 @@ call s:Stage('Startify setup')
 let g:startify_session_dir = planet#paths#State('sessions')
 let g:startify_session_persistence = 0
 let g:startify_disable_at_vimenter = 1
-execute 'set runtimepath+=' .. fnameescape(g:PV_root .. '/.vim/pack/basic/start/vim-startify')
+let &runtimepath ..= ',' .. planet#paths#Runtime(g:PV_root .. '/.vim/pack/basic/start/vim-startify')
 runtime plugin/startify.vim
 call mkdir(g:PV_test_dir .. '/session name with spaces', 'p')
 execute 'cd ' .. fnameescape(g:PV_test_dir .. '/session name with spaces')

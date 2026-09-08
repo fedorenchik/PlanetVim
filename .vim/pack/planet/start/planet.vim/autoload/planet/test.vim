@@ -13,7 +13,7 @@ func! planet#test#Init() abort
     if !filereadable(l:path .. '/plugin/test.vim')
       return s:Warn('bundled vim-test is missing.')
     endif
-    let &runtimepath = escape(l:path, ',') .. ',' .. &runtimepath
+    let &runtimepath = planet#paths#Runtime(l:path) .. ',' .. &runtimepath
     execute 'source ' .. fnameescape(l:path .. '/plugin/test.vim')
   endif
   let g:test#custom_strategies = get(g:, 'test#custom_strategies', {})
