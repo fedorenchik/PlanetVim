@@ -84,4 +84,18 @@ Three pinned upstream test/documentation submodules are not present in the vendo
 
 The remaining local license evidence review was completed; the inventory now recognizes source-header and Vim-help notices and the owner-selected first-party license. The eight plugin-inventory tests passed. This maintenance-only change does not alter the previously tested GUI runtime or third-party snapshots.
 
+The subsequent home-installation follow-up makes `make install` configure plain
+GVim by default and keeps `make install-private` for separate launching. All 50
+Linux installer tests passed, including 25 home-installation cases, plus the 14
+release tests. Windows Python 3.12 under Wine passed 23 of the 25 home cases; two
+symlink-privilege cases were explicitly skipped. Actual plain-GVim startup with
+no `-u` option, package/after ordering, help, and restoration of the old vimrc
+after uninstall passed on Linux GVim 9.2.849 and 9.1.0000. Private-launcher startup
+also passed on both versions; help/configuration/menu checks passed on current
+GVim. The GUI fixtures use an ordinary temporary HOME with a quoted, comma and
+Unicode installation/config/state/cache path. Stock Vim can fail to parse a
+comma-containing HOME in its system initialization before the home loader runs.
+These focused checks extend the earlier full-suite record; a new full native
+Windows GUI acceptance run is still required.
+
 Before a public release, require successful hosted minimum/current Linux and native Windows jobs, a native Windows GUI acceptance run, resolution of the 22 upstream evidence items in [LICENSE_REVIEW.md](LICENSE_REVIEW.md), and live acceptance for any external SDK/target workflow advertised as fully validated. Keep those limitations visible in release notes. No public tag, push, or release publication is claimed by this local record.

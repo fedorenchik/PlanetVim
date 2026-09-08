@@ -6,6 +6,7 @@ First GVim-only release candidate, with Linux as the primary platform and Window
 
 - Preserve unsaved edits on cancelled or failed Save & Exit; export exactly the selected characters, lines, or block.
 - Install privately with previews, ownership manifests, backups, rollback, and uninstall.
+- Make home startup the default (`make install`) for plain GVim, with transactional backup/restoration of the previous vimrc or symlink. Reinstalls preserve the original backup; `make install-private` retains the separate-launcher option.
 - Run native argv commands with explicit working directories, status, cancellation, retained output, and stdin support.
 - Apply defaults, modes, and user overrides deterministically; retain preferences, sessions, undo, backup, and spelling outside projects.
 - Complete project generation, build/run profiles, Git actions, test runners, Python/C++ debugging, and language intelligence.

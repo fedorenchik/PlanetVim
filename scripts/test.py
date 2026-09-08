@@ -61,6 +61,7 @@ def run(path, executable, gui, display=None, timeout=60):
             "if !has('win32') | set shell=/bin/sh | endif",
             f"let g:PV_root = {vim_string(ROOT)}",
             f"let g:PV_test_dir = {vim_string(temp)}",
+            f"let g:PV_test_gvim = {vim_string(executable)}",
             f"let g:PV_test_timeout = {timeout}",
             f"let g:PV_config_dir = {vim_string(temp / 'config')}",
             f"let g:PV_state_dir = {vim_string(temp / 'state')}",

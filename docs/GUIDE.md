@@ -4,6 +4,59 @@ Start with `:PlanetDoctor`, `:PlanetLspStatus`, and `:PlanetVersion`. Doctor rep
 
 Git is optional for basic editing. Git menu actions remain available and report missing prerequisites; gutter change indicators start automatically when Git is available. You can set `g:gitgutter_git_executable` to a custom Git executable or explicitly set `g:gitgutter_enabled`. Restart PlanetVim after installing Git or changing its executable path.
 
+## Home startup and recovery
+
+`make install` (or `python3 scripts/install.py install`)
+installs a managed `~/.vimrc` loader on Linux so plain `/usr/bin/gvim` loads
+PlanetVim. Windows uses `$HOME/_vimrc`, with HOME taking precedence over the user
+profile, and `py -3` instead of `python3`. If the alternate home `_vimrc` (Linux)
+or `.vimrc` (Windows) is already in use, that file is managed instead.
+The distribution stays in its private
+prefix; your existing `.vim` or `vimfiles` directory is not replaced.
+
+Run `make preview` first to inspect the exact paths. Use `PREFIX="/path"`
+with Make, or `--prefix "/path"` with Python, consistently for a custom private
+installation. The same installation can be switched from private launching to
+home startup by running `install` again; future update/uninstall operations
+remember the mode. Always run them under the same user/HOME. `install-home` and
+`preview-home` remain explicit aliases. For separate launching only, use
+`make install-private` / `make preview-private`, or add `--private` to the Python
+install command. To switch an existing home installation to private launching,
+uninstall first to restore the old configuration, then install privately.
+
+The original startup file's bytes and permissions, or its symlink itself, are
+backed up before replacement. A symlink's target is not modified. The original
+backup remains available across updates. `make uninstall` restores the original
+file/link or removes the generated loader when no original existed. `make restore`
+undoes the latest transaction, including the home startup change. Payload and
+home changes share one journal and rollback; backups remain under the private
+prefix's `.planetvim/backups` directory.
+
+Put PlanetVim customizations in its private `planetvimrc.vim`, not in the managed
+home loader. Update refuses to replace an edited loader. Uninstall preserves an
+edited/replaced loader and reports the original backup for manual recovery.
+Restore also refuses conflicting edits to the home startup file. Keep that backup
+directory until you have recovered any configuration you want to retain.
+
+Repeated installation of an already managed PlanetVim updates its files and
+retains the original pre-PlanetVim backup. A recognized older, unmanaged PlanetVim
+vimrc is replaced as an update: its snapshot is kept for explicit rollback, but
+uninstall does not restore that old PlanetVim vimrc as personal configuration.
+No earlier personal configuration can be recovered unless it was backed up.
+Legacy plugin files outside the private prefix remain untouched and are not
+claimed by this installer. A managed loader from another prefix is reported;
+use that prefix to update/uninstall it instead of taking over its backup history.
+
+The loader selects PlanetVim only when GVim starts in GUI mode. Otherwise it
+sources the previous configuration when available. A regular previous vimrc is
+sourced from its backup location; configurations that derive relative paths from
+`<sfile>` should use an explicit home/dotfiles path. Existing `.gvimrc`/`_gvimrc`
+files still run afterward according to GVim's normal startup rules. `VIMINIT`
+overrides home vimrc discovery, so installing this mode reports it and requires it
+to be unset. Explicit `gvim -u ...` and `gvim --clean` still bypass the home loader.
+Stock Vim/system startup must be able to read HOME before the loader runs;
+comma-containing HOME paths can fail in that earlier runtimepath lookup on Linux.
+
 ## Editing modes
 
 The PlanetVim menu selects and saves the mode:

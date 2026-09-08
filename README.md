@@ -20,23 +20,45 @@ On Windows, run the same GVim command from PowerShell or use the full path to `g
 
 ## Install, update, and remove
 
-Linux:
+To make plain `/usr/bin/gvim` load PlanetVim on Linux:
 
 ```sh
-python3 scripts/install.py install --dry-run
-python3 scripts/install.py install
+make preview
+make install
+/usr/bin/gvim
+```
+
+This keeps the distribution in `~/.local/share/planetvim` and installs a small
+loader at `~/.vimrc`. An existing startup file or symlink is backed up first;
+`make uninstall` restores it. `make update` remembers this mode, and `make restore`
+undoes the most recent operation. Use `PREFIX="/your/private/PlanetVim"` with each
+command for a custom distribution location. Do not use your home itself as PREFIX.
+
+The equivalent Python command is `python3 scripts/install.py install`.
+On Windows use `py -3 scripts/install.py install`; the loader is
+installed at `$HOME/_vimrc` (normally your user profile), or an existing `.vimrc`.
+An already managed PlanetVim installation is updated without replacing its
+original personal-config backup. Restart GVim after install
+or update. See [home startup and recovery](docs/GUIDE.md#home-startup-and-recovery)
+for customization and preservation behavior.
+
+For a private installation that you launch separately on Linux:
+
+```sh
+make preview-private
+make install-private
 ~/.local/share/planetvim/bin/planetvim
 ```
 
 Windows PowerShell:
 
 ```powershell
-py -3 scripts/install.py install --dry-run
-py -3 scripts/install.py install
+py -3 scripts/install.py install --private --dry-run
+py -3 scripts/install.py install --private
 & "$env:LOCALAPPDATA\PlanetVim\bin\planetvim.cmd"
 ```
 
-The installer owns a private directory. It leaves your normal `.vimrc` and `.vim` alone. Use `--prefix "/path with spaces/PlanetVim"` to choose another location; pass the same prefix to later operations. Put its `bin` directory on PATH if you want a `planetvim` command. `PLANETVIM_GVIM` may name a particular GVim executable.
+The distribution always lives in a private directory. Default installation manages the home startup file; `install-private` or `--private` keeps home startup unchanged. Your existing `.vim`/`vimfiles` directory is left alone in both modes. Use `--prefix "/path with spaces/PlanetVim"` to choose another location; pass the same prefix to later operations. Put its `bin` directory on PATH if you want a `planetvim` command. `PLANETVIM_GVIM` may name a particular GVim executable for that launcher.
 
 From a newer checkout or extracted release:
 

@@ -53,6 +53,13 @@ all unsaved edits available. Tests assert both disk and buffer contents.
   every failed copy/setup step. Separate user installation from the maintainer
   `all: commit pull push install` target. See **R2** and `Makefile`.
 
+Follow-up: `make install` now installs a home startup loader for plain GVim by
+default. The previous vimrc or symlink is backed up in the same transaction as
+the private payload and restored on uninstall. Reinstallation retains the first
+personal-config backup; recognized legacy PlanetVim startup files are updated.
+`make install-private` keeps the separate-launcher option. See
+[home startup and recovery](docs/GUIDE.md#home-startup-and-recovery).
+
 Done when: clean install, repeat install, upgrade, and uninstall work in disposable
 destinations. Existing `.vimrc`, plugins, snippets, state, and custom config remain
 recoverable. Paths with spaces work. An interrupted/failed update reports failure

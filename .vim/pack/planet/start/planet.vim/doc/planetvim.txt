@@ -19,14 +19,32 @@ STARTING                                                     *planetvim-start*
 From a checkout: >
     gvim -u scripts/planetvim.vim
 <
-For a private installation, run the Python installer from the checkout: >
+For installation, run the Python installer from the checkout: >
     python3 scripts/install.py install --dry-run
     python3 scripts/install.py install
 <
 Use `py -3` on Windows. Linux installs into ~/.local/share/planetvim; Windows
 uses %LOCALAPPDATA%\PlanetVim. Use --prefix to choose a different private path.
-Start bin/planetvim (Linux) or bin/planetvim.cmd (Windows) in that directory.
-The installer does not replace your ordinary .vimrc or .vim.
+Plain gvim loads PlanetVim after installation. You can also start bin/planetvim
+(Linux) or bin/planetvim.cmd (Windows) in that directory.
+
+To make plain gvim load PlanetVim through your home startup file: >
+    make preview
+    make install
+<
+Or use `python3 scripts/install.py install` (`py -3` on Windows).
+This creates a managed ~/.vimrc on Linux or $HOME/_vimrc on Windows while keeping
+the distribution in its private prefix. An existing vimrc or symlink is backed
+up. An existing alternate _vimrc/.vimrc is used when applicable. Reinstalling
+PlanetVim updates it without replacing the original personal-config backup.
+Update remembers this mode; uninstall restores the original file/link, and
+restore undoes the latest operation. Use the same PREFIX/--prefix and HOME later.
+Existing .vim/vimfiles directories remain untouched. Customize PlanetVim in its
+private planetvimrc.vim; update refuses an edited loader and uninstall preserves
+it with a report of the original backup. VIMINIT must be unset for home discovery.
+For separate launching without modifying home startup, use `make install-private`
+or `python3 scripts/install.py install --private`. To switch an existing home
+installation to private mode, uninstall it first to restore the previous vimrc.
 
 Update/uninstall/restore use the same installer and prefix. Backups and the
 ownership manifest allow rollback of the latest transaction. Uninstall preserves
