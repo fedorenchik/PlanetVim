@@ -233,15 +233,8 @@ func! planet#writing#Setup() abort
 endfunc
 
 func! planet#writing#GrammarCheck() abort
-  let l:command = get(g:, 'PV_languagetool_command', 'languagetool')
-  if type(l:command) != v:t_string || !executable(l:command)
+  if !planet#grammar#Configure()
     return s:Error('Install the local LanguageTool command and Java, or configure g:PV_languagetool_command')
   endif
-  if exists(':GrammarousCheck') != 2
-    return s:Error('Load the bundled vim-grammarous plugin before checking grammar')
-  endif
-  " A configured local executable prevents Grammarous from downloading a JAR.
-  let g:grammarous#languagetool_cmd = '"' .. escape(l:command, '"') .. '"'
-  GrammarousCheck
-  return 1
+  return planet#prose#Grammar('check')
 endfunc

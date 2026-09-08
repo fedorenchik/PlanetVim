@@ -25,6 +25,7 @@ let s:python = executable('python3') ? exepath('python3') : exepath('python')
 let g:PV_python = [s:python]
 let g:PV_clangd_argv = [s:python, s:fake]
 let g:PV_pandoc_argv = [s:python, s:fake]
+let g:PV_languagetool_argv = [s:python, s:fake]
 let g:PV_debugpy_command = [s:python, s:fake]
 let g:PV_debug_tools = #{lldb:[s:python, s:fake]}
 let g:PV_test_tools = #{ffmpeg:[s:python, s:fake]}
@@ -41,7 +42,7 @@ for s:name in ['Generation Python', 'C++ language server', 'Markdown preview', '
   call assert_true(index(s:names, s:name) >= 0, s:name .. ' covered')
 endfor
 call assert_true(len(filter(copy(s:checks), {_, item -> item.name =~# '^Tool: '})) > 100)
-for s:name in ['C++ language server', 'Markdown preview', 'Tool: qvkgen', 'Debug tool: lldb', 'Test tool: ffmpeg']
+for s:name in ['C++ language server', 'Markdown preview', 'Grammar checking', 'Tool: qvkgen', 'Debug tool: lldb', 'Test tool: ffmpeg']
   let s:item = filter(copy(s:checks), {_, item -> item.name ==# s:name})[0]
   call assert_true(s:item.ok, s:name .. ' honors configured executable')
   call assert_equal([s:python, s:fake], s:item.argv)
@@ -49,4 +50,4 @@ endfor
 call assert_false(filter(copy(s:checks), {_, item -> item.name ==# 'Tool: uic'})[0].ok)
 call assert_equal('unverified', filter(copy(s:checks), {_, item -> item.name ==# 'Python debug adapter command'})[0].status)
 let g:PV_state_dir = s:original_state
-unlet! g:PV_python g:PV_clangd_argv g:PV_pandoc_argv g:PV_debugpy_command g:PV_debug_tools g:PV_test_tools g:PV_integration_tools
+unlet! g:PV_python g:PV_clangd_argv g:PV_pandoc_argv g:PV_languagetool_argv g:PV_debugpy_command g:PV_debug_tools g:PV_test_tools g:PV_integration_tools

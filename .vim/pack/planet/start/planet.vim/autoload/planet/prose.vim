@@ -268,8 +268,11 @@ endfunc
 
 func! planet#prose#Grammar(action) abort
   if a:action ==# 'status'
-    echom 'LanguageTool: ' .. get(g:, 'PV_languagetool_command', 'languagetool')
+    echom 'LanguageTool: ' .. string(get(g:, 'PV_languagetool_argv', [get(g:, 'PV_languagetool_command', 'languagetool')]))
     echom 'Grammar results in this buffer: ' .. string(get(b:, 'grammarous_result', {}))
+    if filereadable(get(g:, 'PV_grammar_error_file', ''))
+      echom 'Last LanguageTool error: ' .. join(readfile(g:PV_grammar_error_file), "\n")
+    endif
     return 1
   endif
   if exists(':GrammarousCheck') != 2 && !planet#prose#Load('vim-grammarous', 'grammarous')
@@ -279,11 +282,9 @@ func! planet#prose#Grammar(action) abort
     GrammarousReset
     return 1
   endif
-  let l:command = get(g:, 'PV_languagetool_command', 'languagetool')
-  if type(l:command) != v:t_string || !executable(l:command)
-    return s:Warn('install LanguageTool and Java or set g:PV_languagetool_command to the local executable.')
+  if !planet#grammar#Configure()
+    return 0
   endif
-  let g:grammarous#languagetool_cmd = '"' .. escape(l:command, '"') .. '"'
   if a:action ==# 'comments'
     GrammarousCheck --comments-only
   else

@@ -177,7 +177,7 @@ func! planet#health#Check() abort
   call s:Configured(l:items, 'Python language server', 'PV_pylsp_argv', ['pylsp'], 'Install python-lsp-server with diagnostics/formatting extras.')
   call s:Configured(l:items, 'Markdown preview', 'PV_pandoc_argv', ['pandoc'], 'Pandoc 2.19+ is required.')
   call s:Configured(l:items, 'LaTeX build', 'PV_latexmk_argv', ['latexmk'], 'Install TeX Live/MiKTeX with latexmk.')
-  call s:Configured(l:items, 'Grammar checking', 'PV_languagetool_command', 'languagetool', 'Install LanguageTool and Java.')
+  call s:Configured(l:items, 'Grammar checking', 'PV_languagetool_argv', [get(g:, 'PV_languagetool_command', 'languagetool')], 'Install the local LanguageTool JSON CLI and Java. An argv List can select java -jar and a local command-line JAR.')
   call s:Configured(l:items, 'Document viewer', 'PV_document_viewer_argv', has('win32') ? ['explorer.exe'] : ['xdg-open'], 'Select the viewer used for generated previews.')
   call s:Configured(l:items, 'HEX conversion', 'xxdprogram', 'xxd', 'xxd provides reversible HEX conversion.')
   call add(l:items, #{name:'Python debugger provider', ok:has('python3'), optional:1, help:'Vimspector needs GVim +python3 and its compatible shared library.'})
