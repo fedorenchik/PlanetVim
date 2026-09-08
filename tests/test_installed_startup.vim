@@ -44,6 +44,7 @@ let s:state = g:PV_test_dir .. "/child state, 'quoted' 工作"
 let s:cache = g:PV_test_dir .. "/child cache, 'quoted' 工作"
 call writefile([
       \ 'set encoding=utf-8 nomore nomodeline',
+      \ 'set guioptions+=c',
       \ 'let g:startify_disable_at_vimenter = 1',
       \ 'let g:PV_config_dir = ' .. string(s:config),
       \ 'let g:PV_state_dir = ' .. string(s:state),

@@ -42,7 +42,8 @@ func! planet#paths#Root() abort
 endfunc
 
 " Escape one entry for runtimepath/packpath/globpath, not for native file APIs.
-" An unescaped apostrophe otherwise invokes Unix shell expansion during lookup.
+" Apostrophes invoke shell expansion on Unix. On Windows a backslash before an
+" apostrophe becomes a path separator after settings adds 39 to 'isfname'.
 func! planet#paths#Runtime(path) abort
-  return escape(a:path, ",'")
+  return escape(a:path, has('win32') ? ',' : ",'")
 endfunc

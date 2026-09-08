@@ -1,4 +1,7 @@
 " Real plugin/autoload/spell lookups under a copied installation with quotes.
+" Reproduce the former Windows override for the isolated autoload check:
+" default isfname alone misses the escaped-apostrophe interpretation bug.
+set isfname+=39,128-255
 func! s:CopyTree(source, target) abort
   call mkdir(a:target, 'p')
   for l:name in readdir(a:source)
@@ -36,6 +39,10 @@ let g:PV_state_dir = g:PV_test_dir .. "/state, 'quoted' 工作"
 let g:PV_cache_dir = g:PV_test_dir .. "/cache, 'quoted' 工作"
 call assert_true(isdirectory(planet#paths#Config()))
 call assert_true(isdirectory(planet#paths#State()))
+" Force the former Windows setting just for an autoload lookup, then restore
+" native Windows rules before exercising fnameescape() source/edit commands.
+call planet#writing#SetSpellFile('', v:false)
+if has('win32') | set isfname-=39 | endif
 call assert_equal(1, planet#prose#AutoCorrect())
 call assert_equal('the', maparg('teh', 'i', 1))
 call assert_equal(['', ''], spellbadword('very'))

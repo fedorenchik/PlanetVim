@@ -34,10 +34,11 @@ for s:path in s:packages + [s:runtime]
     call add(s:entries, s:path .. '/after')
   endif
 endfor
-let &runtimepath = join(map(s:entries, 'escape(v:val, ",''")'), ',')
+let s:path_escapes = has('win32') ? ',' : ",'"
+let &runtimepath = join(map(s:entries, 'escape(v:val, s:path_escapes)'), ',')
 " Built-in optional packages remain available through :packadd. Bundled
 " optional Vimspector uses planet#debug#Init(), which escapes its entry too.
-let &packpath = escape($VIMRUNTIME, ",'")
+let &packpath = escape($VIMRUNTIME, s:path_escapes)
 let g:PV_config = planet#paths#Config() .. '/planetvimrc.vim'
 execute 'source ' .. fnameescape(g:PV_root .. '/.vimrc')
 

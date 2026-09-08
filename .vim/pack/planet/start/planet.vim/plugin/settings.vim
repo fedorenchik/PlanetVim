@@ -105,7 +105,12 @@ if has('reltime')
   set incsearch
 endif
 set infercase
-set isfname+=@-@,39,128-255
+set isfname+=@-@,128-255
+" On Windows, adding apostrophe changes how fnameescape() backslashes are
+" interpreted and breaks :source/:edit for quoted paths. Keep native rules.
+if !has('win32')
+  set isfname+=39
+endif
 set joinspaces
 set keymodel=
 set keywordprg=:Man
