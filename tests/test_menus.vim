@@ -1,5 +1,5 @@
 execute 'source ' .. fnameescape(g:PV_root .. '/scripts/planetvim.vim')
-packloadall
+runtime! plugin/**/*.vim
 set nomore noautowrite noautowriteall
 let s:groups = [
       \ ['planet', 'planet', '🌐P'], ['basic', 'basic', '📁f'],

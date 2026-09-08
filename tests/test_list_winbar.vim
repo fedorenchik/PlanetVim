@@ -1,5 +1,5 @@
 execute 'source ' .. fnameescape(g:PV_root .. '/scripts/planetvim.vim')
-packloadall
+runtime! plugin/**/*.vim
 set nomore hidden
 call setqflist([#{filename:g:PV_test_dir .. '/q1.txt', lnum:1, text:'q1'}], ' ')
 call setqflist([#{filename:g:PV_test_dir .. '/q2.txt', lnum:1, text:'q2'}], ' ')

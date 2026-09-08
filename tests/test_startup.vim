@@ -1,5 +1,5 @@
 execute 'source ' .. fnameescape(g:PV_root .. '/scripts/planetvim.vim')
-packloadall
+runtime! plugin/**/*.vim
 call assert_true(exists('g:loaded_planet_vim_globals'))
 call assert_equal('s', g:PV_mode)
 call assert_false(&insertmode)
