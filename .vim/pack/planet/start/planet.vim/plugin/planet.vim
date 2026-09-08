@@ -44,6 +44,12 @@ scriptversion 4
 
 call planet#config#Initialize()
 
+" Git is optional for editor startup. Apply this after the user's config and
+" before bundled GitGutter loads; explicit preferences remain authoritative.
+if !exists('g:gitgutter_enabled')
+  let g:gitgutter_enabled = executable(get(g:, 'gitgutter_git_executable', 'git'))
+endif
+
 call planet#menu#planet#Update()
 call planet#menu#basic#Update()
 call planet#menu#edit#Update()

@@ -2,6 +2,8 @@
 
 Start with `:PlanetDoctor`, `:PlanetLspStatus`, and `:PlanetVersion`. Doctor reports prerequisites without launching SDKs or adapters. An executable being present does not prove its version, credentials, or target configuration is usable. The [acceptance record](ACCEPTANCE.md) separates those checks from real workflow tests.
 
+Git is optional for basic editing. Git menu actions remain available and report missing prerequisites; gutter change indicators start automatically when Git is available. You can set `g:gitgutter_git_executable` to a custom Git executable or explicitly set `g:gitgutter_enabled`. Restart PlanetVim after installing Git or changing its executable path.
+
 ## Editing modes
 
 The PlanetVim menu selects and saves the mode:
