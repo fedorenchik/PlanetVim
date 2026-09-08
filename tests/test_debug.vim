@@ -6,7 +6,6 @@ call assert_equal(2, exists(':PlanetDebug'))
 call assert_equal(2, exists(':PlanetDebugSetup'))
 call assert_equal(0, planet#debug#Action('not-an-action'))
 call assert_equal(0, planet#debug#Action('launch'))
-call assert_equal(0, planet#debug#Action('detach'))
 call assert_equal({}, planet#debug#Configuration('unknown'))
 call assert_equal(1, planet#debug#Setup('python'))
 let s:config = json_decode(join(readfile(s:root .. '/.vimspector.json'), "\n"))
@@ -24,7 +23,8 @@ call writefile(['invalid json'], s:root .. '/.vimspector.json')
 call assert_equal(0, planet#debug#Action('launch'))
 
 if has('python3')
-  py3 import logging, os, hashlib, importlib
+  py3 import logging, os, hashlib, importlib, warnings, sys
+  py3 _pv_test_filters, _pv_test_bytecode = list(warnings.filters), sys.dont_write_bytecode
   py3 _pv_test_constructor = logging.FileHandler
   py3 _pv_test_log = os.path.expanduser('~/.vimspector.log')
   py3 _pv_test_before = (os.stat(_pv_test_log).st_mtime_ns, hashlib.sha256(open(_pv_test_log, 'rb').read()).hexdigest()) if os.path.exists(_pv_test_log) else None
@@ -45,14 +45,17 @@ EOF
     py3 del _pv_test_failed_import, _pv_test_import
   endtry
   call assert_true(py3eval('logging.FileHandler is _pv_test_constructor'))
+  call assert_true(py3eval('warnings.filters == _pv_test_filters and sys.dont_write_bytecode == _pv_test_bytecode'))
   call assert_true(py3eval("'_pv_import_utils' not in globals()"))
   call assert_equal(1, planet#debug#Init())
   call assert_equal(s:home, $HOME)
   call assert_true(py3eval('logging.FileHandler is _pv_test_constructor'))
+  call assert_true(py3eval('warnings.filters == _pv_test_filters and sys.dont_write_bytecode == _pv_test_bytecode'))
   call assert_true(py3eval("'_pv_import_utils' not in globals()"))
   call assert_equal(planet#paths#State('debugger') .. '/vimspector.log', py3eval("__import__('vimspector.utils', fromlist=['']).LOG_FILE"))
   call assert_equal(planet#paths#State('debugger') .. '/vimspector.log', py3eval("__import__('vimspector.utils', fromlist=[''])._log_handler.baseFilename"))
   py3 _pv_test_after = (os.stat(_pv_test_log).st_mtime_ns, hashlib.sha256(open(_pv_test_log, 'rb').read()).hexdigest()) if os.path.exists(_pv_test_log) else None
   call assert_true(py3eval('_pv_test_before == _pv_test_after'), 'user log must not be created or truncated')
   call assert_equal(1, planet#debug#Init(), 'repeated initialization is safe')
+  call assert_equal(0, planet#debug#Action('detach'), 'no active session cannot detach')
 endif

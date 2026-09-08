@@ -26,9 +26,10 @@ func! planet#debug#Init() abort
     " import, with no path setting. Redirect exactly that constructor once;
     " never change HOME or leave a logging constructor installed globally.
     py3 << EOF
-import importlib, logging, os, vim
+import importlib, logging, os, sys, vim, warnings
 def _pv_import_utils(state_log):
     original_handler = logging.FileHandler
+    original_bytecode = sys.dont_write_bytecode
     default_log = os.path.abspath(os.path.expanduser('~/.vimspector.log'))
     def log_handler(filename, *args, **kwargs):
         if os.path.abspath(os.fspath(filename)) == default_log:
@@ -36,9 +37,17 @@ def _pv_import_utils(state_log):
         return original_handler(filename, *args, **kwargs)
     try:
         logging.FileHandler = log_handler
-        utils = importlib.import_module('vimspector.utils')
+        sys.dont_write_bytecode = True
+        with warnings.catch_warnings():
+            # Python 3.12 warns about the pinned json_minify regex literals.
+            # Early Vim 9.1 treats Python stderr as a failed import. Limit the
+            # warning filter to these imports; never change the user's filters.
+            warnings.simplefilter('ignore', SyntaxWarning)
+            utils = importlib.import_module('vimspector.utils')
+            importlib.import_module('vimspector.debug_session')
     finally:
         logging.FileHandler = original_handler
+        sys.dont_write_bytecode = original_bytecode
     utils.LOG_FILE = state_log
 try:
     _pv_import_utils(vim.eval('l:log'))
@@ -146,7 +155,7 @@ func! planet#debug#Action(action, configuration = '') abort
   let l:actions = {'continue': 'Continue', 'breakpoint': 'ToggleBreakpoint', 'step-over': 'StepOver',
         \ 'step-into': 'StepInto', 'step-out': 'StepOut', 'restart': 'Restart', 'pause': 'Pause', 'stop': 'Stop'}
   if a:action ==# 'detach'
-    return s:Warn("this bundled Vimspector has no public detach API. Stop uses the adapter's disconnect behavior.")
+    return planet#debug#Detach()
   elseif a:action !=# 'launch' && a:action !=# 'reset' && !has_key(l:actions, a:action)
     return s:Warn('unknown action: ' .. a:action)
   endif
@@ -194,6 +203,34 @@ func! planet#debug#Action(action, configuration = '') abort
       call call('vimspector#' .. l:actions[a:action], [])
     endif
     return 1
+  catch
+    return s:Warn(v:exception)
+  endtry
+endfunc
+
+func! planet#debug#Detach() abort
+  if !planet#debug#Init()
+    return 0
+  endif
+  try
+    py3 << EOF
+_pv_detach_bytecode = sys.dont_write_bytecode
+try:
+    sys.dont_write_bytecode = True
+    import planetvim_debug
+finally:
+    sys.dont_write_bytecode = _pv_detach_bytecode
+    del _pv_detach_bytecode
+def _pv_detach_report(result):
+    vim.vars['PV_debug_detach_result'] = result
+    if result['status'] == 'failed':
+        vim.command("echohl WarningMsg | echom 'PlanetVim detach: ' . g:PV_debug_detach_result.error | echohl None")
+_pv_detach_started = planetvim_debug.detach(
+    globals().get('_vimspector_session'),
+    lambda kind: vim.eval('vimspector#internal#{}#StopDebugSession()'.format(kind)),
+    _pv_detach_report)
+EOF
+    return py3eval('_pv_detach_started') ? 1 : 0
   catch
     return s:Warn(v:exception)
   endtry

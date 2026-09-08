@@ -1,15 +1,15 @@
 " Runs only in the real GUI suite. Both adapters must be installed separately.
 runtime plugin/development.vim
-call assert_true(has('python3'), 'debugging requires GVim +python3')
+execute 'source ' .. fnameescape(g:PV_root .. '/tests/helpers/debug_prerequisites.vim')
+if !PlanetDebugTestAvailable(g:PV_debug_test_language)
+  finish
+endif
 let s:root = g:PV_test_dir .. '/debug lifecycle'
 call mkdir(s:root, 'p')
 execute 'tcd ' .. fnameescape(s:root)
 let s:python = g:PV_debug_test_language ==# 'python'
 let s:source = s:root .. '/debug_sample.' .. (s:python ? 'py' : 'cpp')
 call writefile(readfile(g:PV_root .. '/tests/fixtures/development/debug_sample.' .. (s:python ? 'py' : 'cpp')), s:source)
-if s:python && !empty($PLANETVIM_TEST_DEBUGPY_ADAPTER)
-  let g:PV_debugpy_command = [executable('python3') ? 'python3' : 'python', $PLANETVIM_TEST_DEBUGPY_ADAPTER]
-endif
 
 func! s:Wait(condition, message) abort
   for l:i in range(1200)
