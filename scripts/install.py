@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Install into a private prefix without changing ~/.vim or ~/.vimrc.
+"""Install PlanetVim for plain GVim, backing up the previous home startup file.
 
 Payload replacements are staged, backed up, then atomically replaced per file.
 A journal permits rollback after failure/interruption. This is not a simultaneous
 snapshot switch for running editors: restart PlanetVim after updating. The
 PLANETVIM_PREFIX environment variable supplies the prefix used by Makefile.
+Use --private to install only the separate launcher without changing home startup.
 """
 import argparse
 from contextlib import contextmanager
@@ -20,7 +21,10 @@ import tempfile
 import uuid
 
 METADATA = ".planetvim"
-SCHEMA = 1
+SCHEMA = 2
+READABLE_SCHEMAS = (1, SCHEMA)
+STARTUP_KEY = "__home_vimrc__"  # Journal key, never a path in the payload.
+STARTUP_MARKER = b'" PlanetVim managed GVim startup\n'
 STATE_NAMES = {"session", "undo", "view", "viminfo", "tab"}
 USER_FILES = {"planetvimrc.vim", "fern-bookmark.json", "clap_yanks.history"}
 
@@ -104,6 +108,35 @@ def atomic_json(target, value):
             os.unlink(temporary)
 
 
+def startup_info(path):
+    """Record the startup link itself, never the file it points to."""
+    if path.is_symlink():
+        return {"symlink": os.readlink(path)}
+    return file_info(path) if regular_or_absent(path) else None
+
+
+def copy_startup(source, target):
+    if not source.is_symlink():
+        return atomic_copy(source, target)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary = tempfile.mkstemp(prefix=".planetvim-", dir=str(target.parent))
+    os.close(descriptor)
+    os.unlink(temporary)
+    try:
+        os.symlink(os.readlink(source), temporary)
+        os.replace(temporary, target)
+        sync_directory(target.parent)
+    finally:
+        if os.path.lexists(temporary):
+            os.unlink(temporary)
+
+
+def vim_string(value):
+    if any(character in str(value) for character in "\r\n\0"):
+        raise InstallError("Home startup paths cannot contain newline or NUL characters.")
+    return "'" + str(value).replace("'", "''") + "'"
+
+
 def read_json(path):
     regular_or_absent(path)
     try:
@@ -114,7 +147,8 @@ def read_json(path):
 
 
 class Installer:
-    def __init__(self, source, prefix, dry_run=False, platform=None, report=print):
+    def __init__(self, source, prefix, dry_run=False, platform=None, report=print,
+                 default_gvim=False, home=None, private=False):
         self.source = Path(source).resolve()
         original = Path(prefix).expanduser().absolute()
         if original.is_symlink():
@@ -129,8 +163,26 @@ class Installer:
         self.platform = sys.platform if platform is None else platform
         if self.platform != "win32" and not self.platform.startswith("linux"):
             raise InstallError("Supported hosts are Linux and Windows; macOS is unsupported.")
+        self.default_gvim = default_gvim
+        self.private = private
+        # Windows Vim honors HOME ahead of USERPROFILE (Path.home()).
+        selected_home = home if home is not None else (
+            os.environ.get("HOME") if self.platform == "win32" else None)
+        self.home = Path(selected_home or Path.home()).expanduser().resolve()
+        self.startup_path = self.home / ("_vimrc" if self.platform == "win32" else ".vimrc")
+        alternate = self.home / (".vimrc" if self.platform == "win32" else "_vimrc")
+        if not os.path.lexists(self.startup_path) and os.path.lexists(alternate):
+            self.startup_path = alternate
 
     def target(self, relative):
+        if relative == STARTUP_KEY:
+            if self.startup_path.is_relative_to(self.prefix) or self.startup_path.is_relative_to(self.source):
+                raise InstallError("The home startup file must be outside the installation and source.")
+            for parent in self.startup_path.parents:
+                if parent.is_symlink() or (parent.exists() and not parent.is_dir()):
+                    raise InstallError("Unsafe home directory: " + str(parent))
+            startup_info(self.startup_path)
+            return self.startup_path
         path = self.prefix.joinpath(*checked_relative(relative).parts)
         for parent in path.parents:
             if parent.is_symlink() or (parent.exists() and not parent.is_dir()):
@@ -140,12 +192,24 @@ class Installer:
         regular_or_absent(path)
         return path
 
+    def info(self, relative, path=None):
+        path = self.target(relative) if path is None else path
+        if relative == STARTUP_KEY:
+            return startup_info(path)
+        return file_info(path) if regular_or_absent(path) else None
+
+    def copy(self, relative, source, target):
+        if relative == STARTUP_KEY:
+            return copy_startup(source, target)
+        return atomic_copy(source, target)
+
     def validate_metadata(self, create=False):
         if self.metadata.is_symlink() or (self.metadata.exists() and not self.metadata.is_dir()):
             raise InstallError("Unsafe metadata path: " + str(self.metadata))
         owner = self.metadata / "owner.json"
         if self.metadata.exists():
-            if not owner.is_file() or read_json(owner) != {"tool": "planetvim", "schema": SCHEMA}:
+            if not owner.is_file() or read_json(owner) not in [
+                    {"tool": "planetvim", "schema": version} for version in READABLE_SCHEMAS]:
                 raise InstallError("Refusing unrecognized metadata: " + str(self.metadata))
             backups = self.metadata / "backups"
             if backups.is_symlink() or (backups.exists() and not backups.is_dir()):
@@ -191,13 +255,116 @@ class Installer:
         if not regular_or_absent(self.manifest_path):
             return None
         result = read_json(self.manifest_path)
-        if not isinstance(result, dict) or result.get("schema") != SCHEMA or not isinstance(result.get("files"), dict):
+        if not isinstance(result, dict) or result.get("schema") not in READABLE_SCHEMAS or not isinstance(result.get("files"), dict):
             raise InstallError("Unsupported or invalid installation manifest.")
         for relative, info in result["files"].items():
             checked_relative(relative)
+            if relative == STARTUP_KEY:
+                raise InstallError("Startup journal key cannot be a payload file.")
             if not isinstance(info, dict) or not isinstance(info.get("sha256"), str):
                 raise InstallError("Invalid file entry in installation manifest.")
+        self.validate_startup(result.get("startup"))
         return result
+
+    def validate_startup(self, record):
+        if record is None:
+            return
+        if (not isinstance(record, dict) or not isinstance(record.get("path"), str)
+                or Path(record["path"]) not in {self.home / ".vimrc", self.home / "_vimrc"}):
+            raise InstallError("This installation manages another home startup file; use the original HOME.")
+        self.startup_path = Path(record["path"])
+        self.transaction_directory(record.get("backup"))
+        if not isinstance(record.get("installed"), dict) or "sha256" not in record["installed"]:
+            raise InstallError("Invalid startup loader entry in installation manifest.")
+        if "original" not in record or not isinstance(record.get("fallback"), str):
+            raise InstallError("Invalid original startup entry in installation manifest.")
+
+    def prior_startup(self):
+        if self.platform == "win32":
+            candidates = [self.home / ".vimrc", self.home / "vimfiles/vimrc"]
+        else:
+            candidates = [self.home / "_vimrc", self.home / ".vim/vimrc",
+                          Path(os.environ.get("XDG_CONFIG_HOME") or self.home / ".config") / "vim/vimrc"]
+        return next((str(path) for path in candidates if path != self.startup_path and path.is_file()), "")
+
+    def startup_loader(self, fallback):
+        entry = self.prefix / "scripts/planetvim.vim"
+        lines = [STARTUP_MARKER.decode().rstrip(), "scriptencoding utf-8",
+                 '" Managed by install.py; customize PlanetVim in its private config.',
+                 "if has('gui_running') && filereadable(" + vim_string(entry) + ")",
+                 "  let $PLANETVIM_ROOT = " + vim_string(self.prefix),
+                 "  execute 'source ' . fnameescape(" + vim_string(entry) + ")",
+                 "  finish", "endif"]
+        if fallback:
+            lines += ["if filereadable(" + vim_string(fallback) + ")",
+                      "  execute 'source ' . fnameescape(" + vim_string(fallback) + ")",
+                      "else", "  runtime defaults.vim", "endif"]
+        else:
+            lines += ["runtime defaults.vim"]
+        return ("\n".join(lines) + "\n").encode("utf-8")
+
+    def is_legacy_planetvim(self, target):
+        if not target.is_file():
+            return False
+        content = target.read_bytes()
+        for entry in (self.source / ".vimrc", self.source / "scripts/planetvim.vim"):
+            if entry.is_file() and content == entry.read_bytes():
+                return True
+        # Recognize the historical first-party vimrc even after local edits.
+        # A mention of PlanetVim alone is not enough to discard a personal rc.
+        return all(marker in content for marker in (
+            b'let g:loaded_home_vimrc = 1', b'PlanetVim_AugroupWinBar', b'planet#planet#'))
+
+    def startup_plan(self, before, staging, command, transaction):
+        previous = before.get("startup") if before else None
+        if previous is None and (not self.default_gvim or command == "uninstall"):
+            return None, [], []
+        if command != "uninstall" and os.environ.get("VIMINIT"):
+            raise InstallError("VIMINIT overrides the home vimrc. Unset it before enabling default GVim.")
+        target = self.target(STARTUP_KEY)
+        actual = self.info(STARTUP_KEY)
+        if previous:
+            record = dict(previous)
+            original = record["original"]
+            original_path = self.backup_file(self.transaction_directory(record["backup"]), "before", STARTUP_KEY)
+            if original and self.info(STARTUP_KEY, original_path) != original:
+                raise InstallError("Original startup backup has changed: " + str(original_path))
+            if actual is not None and actual != record["installed"]:
+                if command == "uninstall":
+                    if original:
+                        self.report("Original startup backup retained at " + str(original_path))
+                    else:
+                        self.report("No earlier personal startup file was recorded; the edited loader is retained.")
+                    return None, [], [STARTUP_KEY]
+                raise InstallError("Locally modified startup loader preserved: " + str(target)
+                                   + "; reconcile it with the backup before updating.")
+        else:
+            if actual and not target.is_symlink() and target.read_bytes().startswith(STARTUP_MARKER):
+                raise InstallError("Another PlanetVim loader already owns " + str(target)
+                                   + "; uninstall its installation first.")
+            legacy = self.is_legacy_planetvim(target)
+            fallback = self.prior_startup()
+            if actual and not legacy:
+                fallback = str(target.resolve()) if target.is_symlink() else str(
+                    self.transaction_directory(transaction) / "before" / STARTUP_KEY)
+            if legacy:
+                self.report("Existing PlanetVim startup detected; updating it. Its snapshot is retained for rollback;")
+                self.report("no earlier personal configuration is known, so uninstall will remove this loader.")
+            record = {"path": str(target), "backup": transaction, "original": None if legacy else actual,
+                      "fallback": fallback}
+        output = staging / STARTUP_KEY
+        if command == "uninstall":
+            wanted = record["original"]
+            if wanted:
+                self.copy(STARTUP_KEY, original_path, output)
+            record = None
+        else:
+            output.write_bytes(self.startup_loader(record["fallback"]))
+            output.chmod(0o600)
+            wanted = file_info(output)
+            record["installed"] = wanted
+        changes = [] if actual == wanted else [{"path": STARTUP_KEY, "before": actual, "after": wanted}]
+        return record, changes, []
 
     def launcher(self):
         if self.platform == "win32":
@@ -307,7 +474,10 @@ class Installer:
                 break
             if parent.is_symlink() or (parent.exists() and not parent.is_dir()):
                 raise InstallError("Unsafe backup directory: " + str(parent))
-        regular_or_absent(path)
+        if relative == STARTUP_KEY:
+            startup_info(path)
+        else:
+            regular_or_absent(path)
         return path
 
     def describe(self, changes, preserved):
@@ -317,11 +487,11 @@ class Installer:
             action = "REMOVE" if change["after"] is None else "REPLACE" if change["before"] else "CREATE"
             counts[action] += 1
             if self.dry_run:
-                self.report(action + " " + str(self.prefix / change["path"]))
+                self.report(action + " " + str(self.target(change["path"])))
         if changes:
             self.report("Planned files: " + ", ".join(str(counts[key]) + " " + key.lower() for key in counts))
         for relative in preserved:
-            self.report("KEEP locally modified " + str(self.prefix / relative))
+            self.report("KEEP locally modified " + str(self.target(relative)))
         self.report("Backups/rollback metadata: " + str(self.metadata / "backups") if changes else "No payload changes.")
 
     def rollback(self, receipt, directory):
@@ -332,23 +502,24 @@ class Installer:
         for change in reversed(receipt["changes"]):
             relative = change["path"]
             target = self.target(relative)
-            actual = file_info(target) if target.exists() else None
+            actual = self.info(relative)
             if actual == change["before"]:
                 continue
             if actual != change["after"]:
                 raise InstallError("Concurrent edit preserved; reconcile before recovery: " + str(target))
             if change["before"]:
                 source = self.backup_file(directory, "before", relative)
-                if file_info(source) != change["before"]:
+                if self.info(relative, source) != change["before"]:
                     raise InstallError("Rollback backup has changed: " + str(source))
             applicable.append(change)
         for change in applicable:
             target = self.target(change["path"])
             if change["before"]:
                 source = self.backup_file(directory, "before", change["path"])
-                atomic_copy(source, target)
-            elif target.exists():
+                self.copy(change["path"], source, target)
+            elif target.exists() or target.is_symlink():
                 target.unlink()
+                sync_directory(target.parent)
         if receipt["before_manifest"] is None:
             if self.manifest_path.exists():
                 self.manifest_path.unlink()
@@ -366,6 +537,9 @@ class Installer:
         pending = read_json(self.pending_path)
         directory = self.transaction_directory(pending.get("transaction"))
         receipt = read_json(directory / "transaction.json")
+        for manifest in (receipt["before_manifest"], receipt["after_manifest"]):
+            if manifest:
+                self.validate_startup(manifest.get("startup"))
         current = self.manifest()
         if current and current.get("transaction") == pending["transaction"]:
             receipt["status"] = "committed"
@@ -375,24 +549,26 @@ class Installer:
             self.rollback(receipt, directory)
             self.report("Recovered interrupted transaction from " + str(directory))
 
-    def transact(self, command, before, after, changes, staging):
-        transaction = uuid.uuid4().hex
+    def transact(self, command, before, after, changes, staging, startup=None, transaction=None):
+        transaction = transaction or uuid.uuid4().hex
         directory = self.transaction_directory(transaction)
         directory.mkdir(parents=True)
         updated = {"schema": SCHEMA, "transaction": transaction, "files": after}
+        if startup:
+            updated["startup"] = startup
         receipt = {"schema": SCHEMA, "command": command, "status": "preparing",
                    "before_manifest": before, "after_manifest": updated, "changes": changes}
         for change in changes:
             relative = change["path"]
             if change["before"]:
                 backup = self.backup_file(directory, "before", relative)
-                atomic_copy(self.target(relative), backup)
-                if file_info(backup) != change["before"]:
+                self.copy(relative, self.target(relative), backup)
+                if self.info(relative, backup) != change["before"]:
                     raise InstallError("File changed while preparing backup: " + relative)
             if change["after"]:
                 backup = self.backup_file(directory, "after", relative)
-                atomic_copy(staging / relative, backup)
-                if file_info(backup) != change["after"]:
+                self.copy(relative, staging / relative, backup)
+                if self.info(relative, backup) != change["after"]:
                     raise InstallError("Staged payload changed: " + relative)
         receipt["status"] = "prepared"
         atomic_json(directory / "transaction.json", receipt)
@@ -400,12 +576,12 @@ class Installer:
         try:
             for change in changes:
                 target = self.target(change["path"])
-                actual = file_info(target) if target.exists() else None
+                actual = self.info(change["path"])
                 if actual != change["before"]:
                     raise InstallError("File changed during installation: " + str(target))
                 if change["after"]:
-                    atomic_copy(self.backup_file(directory, "after", change["path"]), target)
-                elif target.exists():
+                    self.copy(change["path"], self.backup_file(directory, "after", change["path"]), target)
+                elif target.exists() or target.is_symlink():
                     target.unlink()
                     sync_directory(target.parent)
             atomic_json(self.manifest_path, updated)
@@ -432,27 +608,37 @@ class Installer:
         if receipt.get("status") != "committed":
             raise InstallError("This backup is not a committed transaction.")
         previous = receipt["before_manifest"]
+        self.validate_startup(previous.get("startup") if previous else None)
         after = previous["files"] if previous else {}
         changes = []
         for change in receipt["changes"]:
             relative = change["path"]
             target = self.target(relative)
-            actual = file_info(target) if target.exists() else None
+            actual = self.info(relative)
+            if relative == STARTUP_KEY and actual not in (change["after"], change["before"]):
+                raise InstallError("Locally modified startup file preserved during restore: " + str(target))
             if change["after"] is None and actual is not None:
                 raise InstallError("An unmanaged file occupies the restore destination: " + str(target))
             wanted = change["before"]
             if wanted:
                 source = self.backup_file(directory, "before", relative)
-                if file_info(source) != wanted:
+                if self.info(relative, source) != wanted:
                     raise InstallError("Restore backup has changed: " + str(source))
                 output = staging / relative
                 output.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copy2(source, output)
+                self.copy(relative, source, output)
             if actual != wanted:
                 changes.append({"path": relative, "before": actual, "after": wanted})
-        return after, changes
+        return after, changes, previous.get("startup") if previous else None
 
     def run(self, command, backup=None):
+        if self.default_gvim and command not in ("install", "update"):
+            raise InstallError("--default-gvim applies only to install or update; later operations remember the mode.")
+        if self.default_gvim:
+            # Validate before creating metadata (Windows rejects these names at
+            # mkdir, while a Unix newline could otherwise enter generated code).
+            vim_string(self.prefix)
+            vim_string(self.home)
         self.validate_metadata()
         if self.dry_run:
             return self.run_locked(command, backup)
@@ -462,10 +648,14 @@ class Installer:
     def run_locked(self, command, backup):
         self.recover()
         before = self.manifest()
+        if self.private and command in ("install", "update") and before and before.get("startup"):
+            raise InstallError("This installation already manages home startup. Uninstall it to restore"
+                               " the previous configuration before installing with --private.")
         if command in ("update", "uninstall") and not before:
             raise InstallError("No PlanetVim installation found at " + str(self.prefix))
         with tempfile.TemporaryDirectory(prefix="planetvim-stage-") as temporary:
             staging = Path(temporary)
+            transaction = uuid.uuid4().hex
             preserved = []
             if command in ("install", "update"):
                 after = self.payload(staging)
@@ -474,14 +664,22 @@ class Installer:
                 after = {}
                 changes, preserved = self.plan(before, after, command)
             elif command == "restore":
-                after, changes = self.restore_plan(before, staging, backup)
+                after, changes, startup = self.restore_plan(before, staging, backup)
             else:
                 raise InstallError("Unknown operation: " + command)
+            if command != "restore":
+                startup, startup_changes, startup_preserved = self.startup_plan(before, staging, command, transaction)
+                # Install the loader last, after its source is available. Remove
+                # it first on uninstall, before removing the source it loads.
+                changes = startup_changes + changes if command == "uninstall" else changes + startup_changes
+                preserved += startup_preserved
+            if startup:
+                self.report("Default GVim startup: " + str(self.startup_path))
             self.describe(changes, preserved)
             if self.dry_run:
                 return before
-            if changes or (before and before["files"] != after):
-                return self.transact(command, before, after, changes, staging)
+            if changes or (before and (before["files"] != after or before.get("startup") != startup)):
+                return self.transact(command, before, after, changes, staging, startup, transaction)
             return before
 
 
@@ -497,17 +695,28 @@ def main(argv=None):
     parser.add_argument("--prefix", type=Path, help="private installation directory")
     parser.add_argument("--dry-run", action="store_true", help="report changes without writing destination files")
     parser.add_argument("--backup", help="restore this backup (must be the most recent transaction)")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--default-gvim", action="store_true", default=None,
+                      help="enable home startup explicitly (the default for install)")
+    mode.add_argument("--private", dest="default_gvim", action="store_false",
+                      help="install only the private launcher; keep home startup unchanged")
     arguments = parser.parse_args(argv)
     if arguments.backup and arguments.operation != "restore":
         parser.error("--backup is only valid with restore")
     try:
         prefix = arguments.prefix if arguments.prefix is not None else (os.environ.get("PLANETVIM_PREFIX") or default_prefix())
-        installer = Installer(Path(__file__).resolve().parents[1], prefix, arguments.dry_run)
-        installer.run(arguments.operation, arguments.backup)
+        default_gvim = arguments.default_gvim if arguments.default_gvim is not None else arguments.operation == "install"
+        installer = Installer(Path(__file__).resolve().parents[1], prefix, arguments.dry_run,
+                              default_gvim=default_gvim, private=arguments.default_gvim is False)
+        result = installer.run(arguments.operation, arguments.backup)
         if arguments.operation in ("install", "update") and not arguments.dry_run:
             executable = "planetvim.cmd" if sys.platform == "win32" else "planetvim"
             print("Launch: " + str(installer.prefix / "bin" / executable))
-            print("Restart PlanetVim after updating. Existing ~/.vim and ~/.vimrc were not changed.")
+            if isinstance(result, dict) and result.get("startup"):
+                print("Plain GVim now loads PlanetVim. Original startup configuration is backed up.")
+            else:
+                print("Existing home Vim startup files were not changed.")
+            print("Restart PlanetVim after updating. Your existing Vim plugin directory was not changed.")
         return 0
     except (InstallError, OSError) as error:
         print("PlanetVim installer: " + str(error), file=sys.stderr)

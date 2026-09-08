@@ -216,7 +216,7 @@ class ReleaseTests(unittest.TestCase):
         source_one = extraction / metadata['archive_root']
         prefix = self.root / 'installation'
         def invoke(source, command):
-            result = subprocess.run([sys.executable, str(source / 'scripts/install.py'), command,
+            result = subprocess.run([sys.executable, str(source / 'scripts/install.py'), command, '--private',
                                      '--prefix', str(prefix)], capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         invoke(source_one, 'install')
