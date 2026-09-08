@@ -6,6 +6,13 @@ call mkdir(s:cwd, 'p')
 let s:buffers = []
 let s:old_shell = &shell
 let s:old_shellcmdflag = &shellcmdflag
+let s:python = planet#generate#Python()
+call assert_false(empty(s:python), 'Python 3 is available for the native argv fixture')
+
+func! s:Native(path) abort
+  let l:path = substitute(fnamemodify(a:path, ':p'), '[/\\]\+$', '', '')
+  return has('win32') && !&shellslash ? substitute(l:path, '/', '\\', 'g') : l:path
+endfunc
 
 func! s:Wait(bufnr) abort
   for l:i in range(200)
@@ -27,15 +34,14 @@ func! s:Wait(bufnr) abort
 endfunc
 
 func! s:Fixture(name, arguments, status, ...) abort
-  let l:script = s:base .. '/' .. a:name .. '.vim'
+  let l:script = s:base .. '/' .. a:name .. '.py'
   let l:result = s:base .. '/' .. a:name .. '.json'
   call writefile([
-        \ 'call writefile([json_encode({"argv": argv(), "cwd": getcwd()})], ' .. string(l:result) .. ')',
-        \ "echomsg 'planet-command-output'",
-        \ a:status < 0 ? 'sleep 10' : 'cquit ' .. a:status,
-        \ 'qa!'], l:script)
-  let l:argv = [v:progpath, '-Nu', 'NONE', '-U', 'NONE', '-i', 'NONE', '-n',
-        \ '-es', '-V1', '-S', l:script, '--'] + a:arguments
+        \ 'import json, os, pathlib, sys, time',
+        \ 'pathlib.Path(sys.argv[1]).write_text(json.dumps({"argv": sys.argv[2:], "cwd": os.getcwd()}), encoding="utf-8")',
+        \ 'print("planet-command-output", flush=True)',
+        \ a:status < 0 ? 'time.sleep(10)' : 'sys.exit(' .. a:status .. ')'], l:script)
+  let l:argv = s:python + [l:script, l:result] + a:arguments
   let l:buffer = planet#term#RunArgv(l:argv, v:false,
         \ get(a:000, 0, v:false), get(a:000, 1, v:true), s:cwd)
   call assert_true(l:buffer > 0, 'native command starts')
@@ -53,18 +59,22 @@ func! s:BrokenCallback(result, bufnr) abort
 endfunc
 
 try
-  " The editor process itself is the portable argv/cwd fixture executable.
+  " A real console process records arguments verbatim. GVim's Windows argv()
+  " interprets filename quoting and removes empty entries before scripts run.
   let s:arguments = ['two words', "apostrophe's", 'a"quote', 'semi;colon',
-        \ '$literal', '$(literal)', '工作', '-leading-dash', '']
+        \ '$literal', '$(literal)', '工作', '-leading-dash', '', 'tail\', 'two words\', 'back\"quote', '']
   let [s:buffer, s:json, s:argv] = s:Fixture('literal', s:arguments, 0)
   let s:job = term_getjob(s:buffer)
   let s:success_argv = copy(s:argv)
   call s:Wait(s:buffer)
-  call assert_equal(s:argv, job_info(s:job).cmd)
+  call assert_equal(s:argv, planet#term#Result(s:buffer).argv)
+  if !has('win32')
+    call assert_equal(s:argv, job_info(s:job).cmd)
+  endif
   call assert_equal('success', planet#term#Result(s:buffer).status)
   let s:record = json_decode(readfile(s:json)[0])
   call assert_equal(s:arguments, s:record.argv)
-  call assert_equal(fnamemodify(s:cwd, ':p'), fnamemodify(s:record.cwd, ':p'))
+  call assert_equal(s:Native(s:cwd), s:Native(s:record.cwd))
 
   " Failed jobs retain their real status and a terminal transcript even when
   " the caller requested close-on-exit.
@@ -109,10 +119,15 @@ try
 
   let s:missing = planet#term#RunArgv(['planetvim-command-that-does-not-exist'],
         \ v:false, v:false, v:true, s:cwd)
-  call add(s:buffers, s:missing)
-  call s:Wait(s:missing)
-  call assert_equal('failed', planet#term#Result(s:missing).status)
-  call assert_notequal(0, planet#term#Result(s:missing).exit_code)
+  if s:missing > 0
+    call add(s:buffers, s:missing)
+    call s:Wait(s:missing)
+    call assert_equal('failed', planet#term#Result(s:missing).status)
+    call assert_notequal(0, planet#term#Result(s:missing).exit_code)
+  else
+    " Windows can reject CreateProcess before a terminal buffer exists.
+    call assert_equal(0, s:missing)
+  endif
 
   " Shell text is one untouched argument, using the user's shell command flags.
   let s:shell_file = s:base .. '/shell-output.txt'

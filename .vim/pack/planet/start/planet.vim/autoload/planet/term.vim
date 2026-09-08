@@ -2,6 +2,34 @@ scriptversion 4
 
 let s:bin_dir = expand('<sfile>:p:h:h:h')->resolve() .. '/bin/'
 
+func! s:WindowsArgument(argument) abort
+  " Quote for CommandLineToArgvW/the C runtime, including a zero-length arg.
+  let l:quoted = '"'
+  let l:slashes = 0
+  for l:char in split(a:argument, '\zs')
+    if l:char ==# '\'
+      let l:slashes += 1
+    elseif l:char ==# '"'
+      let l:quoted ..= repeat('\', 2 * l:slashes + 1) .. '"'
+      let l:slashes = 0
+    else
+      let l:quoted ..= repeat('\', l:slashes) .. l:char
+      let l:slashes = 0
+    endif
+  endfor
+  return l:quoted .. repeat('\', 2 * l:slashes) .. '"'
+endfunc
+
+func! s:NativeCommand(argv) abort
+  if !has('win32') || index(a:argv, '') < 0
+    return a:argv
+  endif
+  " Vim's win32_escape_arg() drops empty List items. A String here is the
+  " native CreateProcess command line, with no shell involved. Serialize only
+  " this affected case ourselves and retain the original argv in the result.
+  return join(map(copy(a:argv), {_, arg -> s:WindowsArgument(arg)}), ' ')
+endfunc
+
 " A List is native argv; a String is an intentional script for the configured
 " shell. Never split/rejoin a script: doing so loses quotes and argument bounds.
 func! s:ShellCommand(script) abort
@@ -237,7 +265,7 @@ func! planet#term#RunCmd(cmd, this_window = v:false, close_on_exit = v:false, st
         \ script_file: l:command.script_file,
         \ on_exit: a:on_exit,
         \ result: #{status: 'running', exit_code: v:null, signal: '',
-        \ cwd: l:cwd, command: s:Label(a:cmd)}}
+        \ cwd: l:cwd, command: s:Label(a:cmd), argv: copy(l:command.argv)}}
   " Omitting term_finish retains the terminal on all supported Vim 9.1 builds;
   " early 9.1 rejects the later explicit 'noclose' option value.
   let l:term_opts = #{cwd: l:cwd,
@@ -258,7 +286,7 @@ func! planet#term#RunCmd(cmd, this_window = v:false, close_on_exit = v:false, st
   let l:term_opts.norestore = v:true
   let l:term_opts.term_kill = ''
   try
-    let l:ret = term_start(l:command.argv, l:term_opts)
+    let l:ret = term_start(s:NativeCommand(l:command.argv), l:term_opts)
   catch
     call s:DeleteScript(l:command)
     call win_gotoid(l:origin)
