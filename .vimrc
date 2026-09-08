@@ -402,13 +402,7 @@ tlnoremenu 1.10 PopUp.Close                  <C-w><C-c>
 " QF, LL: colder, cnewer, chistory popup, merge with prev, filter, filter-out,
 " min size, std size(10lines), max size
 func! PlanetVim_WinBarFilter(bang) abort
-  let m = mode()
-  if m == 'n'
-    exe "Cfilter" .. a:bang .. " " .. expand('<cword>')
-  elseif match("vVsS", m) != -1
-    normal! y
-    exe 'Cfilter' .. a:bang .. ' <C-r>"'
-  endif
+  call planet#winbar#Filter(a:bang ==# '!')
 endfunc
 func! PlanetVim_WinBarQfInit() abort
   nnoremenu 1.10 WinBar.⏪ <Cmd>colder<CR>
@@ -437,7 +431,7 @@ func! PlanetVim_WinBarTerminalInit() abort
 endfunc
 aug PlanetVim_AugroupWinBar
 au!
-au BufWinEnter * if &buftype == 'quickfix' | call PlanetVim_WinBarQfInit() | endif
+au BufWinEnter * if &buftype == 'quickfix' | call planet#winbar#Preset('quickfix') | endif
 au BufWinLeave * if &buftype == 'quickfix' | nunmenu WinBar | endif
 au TerminalWinOpen * call PlanetVim_WinBarTerminalInit()
 au BufWinEnter * if &buftype == 'terminal' | call PlanetVim_WinBarTerminalInit() | endif

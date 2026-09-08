@@ -26,6 +26,10 @@ call planet#editing#SubstituteSelection('selected suffix', 'bad')
 call assert_equal('prefix selected suffix', getline(1), 'match cannot escape selected range')
 call planet#editing#SubstituteSelection('selected', '')
 call assert_equal('prefix  suffix', getline(1), 'empty replacement is supported')
+call setline(3, 'three')
+normal! 3G0v4l
+call planet#editing#SubstituteSelection('three', 'THREE')
+call assert_equal('THREE', getline(3), 'the active selection replaces stale marks')
 
 let s:directory = g:PV_test_dir .. '/temporary 工作'
 call mkdir(s:directory)
@@ -34,7 +38,7 @@ let s:scope = haslocaldir()
 call assert_equal(0, planet#editing#TemporaryDirectory(0, ''))
 call assert_equal(0, planet#editing#TemporaryDirectory(0, s:directory .. '/missing'))
 call assert_equal(1, planet#editing#TemporaryDirectory(0, s:directory))
-call assert_equal(fnamemodify(s:directory, ':p'), fnamemodify(getcwd(), ':p'))
+call assert_equal(substitute(fnamemodify(s:directory, ':p'), '\\', '/', 'g'), substitute(fnamemodify(getcwd(), ':p'), '\\', '/', 'g'))
 split
 call assert_equal(s:cwd, getcwd())
 close

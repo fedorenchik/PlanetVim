@@ -1,6 +1,12 @@
 scriptversion 4
 let s:left_directory = {}
 
+func! s:PathKey(path) abort
+  let l:path = substitute(fnamemodify(resolve(a:path), ':p'), '\\', '/', 'g')
+  let l:path = substitute(l:path, '/\+$', '', '')
+  return has('win32') ? tolower(l:path) : l:path
+endfunc
+
 func! planet#editing#Order(action) abort
   let l:first = 1
   let l:last = line('$')
@@ -48,6 +54,11 @@ func! planet#editing#Percentage(value = v:null) abort
 endfunc
 
 func! planet#editing#SubstituteSelection(pattern = v:null, replacement = v:null) abort
+  " <Cmd> menus retain Visual/Select mode; publish this selection's marks
+  " before reading a range, rather than reusing an older selection.
+  if mode() =~# '^[vV\x16sS\x13]'
+    execute "normal! \<Esc>"
+  endif
   let l:pattern = a:pattern is v:null ? inputdialog('Pattern in the last visual selection: ') : a:pattern
   if empty(l:pattern)
     return 0
@@ -101,7 +112,7 @@ endfunc
 
 func! planet#editing#RestoreInheritedDirectory() abort
   if !empty(s:left_directory) && index(s:left_directory.windows, win_getid()) < 0
-        \ && getcwd() ==# s:left_directory.temporary
+        \ && s:PathKey(getcwd()) ==# s:left_directory.temporary
     execute 'noautocmd ' .. s:left_directory.command .. ' ' .. fnameescape(s:left_directory.path)
   endif
   let s:left_directory = {}
@@ -121,7 +132,7 @@ func! planet#editing#TemporaryDirectory(project, directory = v:null) abort
   endif
   call planet#editing#RestoreDirectory(win_getid())
   let w:PV_temporary_directory = #{path: getcwd(), command: haslocaldir() == 1 ? 'lcd' : haslocaldir() == 2 ? 'tcd' : 'cd',
-        \ windows: map(getwininfo(), {_, win -> win.winid}), temporary: substitute(fnamemodify(l:directory, ':p'), '[/\\]\+$', '', '')}
+        \ windows: map(getwininfo(), {_, win -> win.winid}), temporary: s:PathKey(l:directory)}
   execute 'lcd ' .. fnameescape(l:directory)
   augroup PlanetVimTemporaryDirectory
     autocmd!

@@ -20,6 +20,9 @@ call assert_equal(s:nav, g:PlanetVim_menus_nav)
 call assert_equal(0, g:PlanetVim_menus_settings)
 emenu 🌐P.Settings\ Menus
 call assert_equal(1, g:PlanetVim_menus_settings)
+for s:label in ['QF/LL', 'Terminal', 'Output']
+  call assert_match('^<Cmd>call planet#winbar#Preset', get(menu_info('⌨️|.WinBar.Set for ' .. s:label, 'n'), 'rhs', ''))
+endfor
 new
 call setline(1, ['Hello hex', 'second line'])
 let s:text = getline(1, '$')

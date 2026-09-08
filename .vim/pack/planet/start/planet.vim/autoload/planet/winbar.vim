@@ -1,16 +1,35 @@
 scriptversion 4
 
 func! planet#winbar#Preset(kind) abort
+  silent! aunmenu WinBar
   if a:kind ==# 'terminal'
     call PlanetVim_WinBarTerminalInit()
-  elseif get(getwininfo(win_getid()), 0, {}).loclist
-    nnoremenu WinBar.⏪ <Cmd>lolder<CR>
-    nnoremenu WinBar.📙 <Cmd>lhistory<CR>
-    nnoremenu WinBar.⏩ <Cmd>lnewer<CR>
-    nnoremenu WinBar.❌ <Cmd>close<CR>
   else
     call PlanetVim_WinBarQfInit()
+    if get(getwininfo(win_getid()), 0, {}).loclist
+      nnoremenu WinBar.⏪ <Cmd>lolder<CR>
+      nnoremenu WinBar.📙 <Cmd>lhistory<CR>
+      nnoremenu WinBar.⏩ <Cmd>lnewer<CR>
+    endif
   endif
+endfunc
+
+func! planet#winbar#Filter(exclude, pattern = v:null) abort
+  let l:pattern = a:pattern is v:null ? inputdialog('Filter list (Vim pattern): ', expand('<cword>')) : a:pattern
+  if empty(l:pattern)
+    return 0
+  endif
+  let l:local = get(getwininfo(win_getid()), 0, {}).loclist
+  let l:details = l:local ? getloclist(0, #{items: 0, title: 0}) : getqflist(#{items: 0, title: 0})
+  let l:items = filter(copy(l:details.items), {_, item -> a:exclude
+        \ ? item.text !~# l:pattern : item.text =~# l:pattern})
+  let l:next = #{items: l:items, title: l:details.title .. ' | ' .. (a:exclude ? 'exclude ' : 'keep ') .. l:pattern}
+  if l:local
+    call setloclist(0, [], ' ', l:next)
+  else
+    call setqflist([], ' ', l:next)
+  endif
+  return 1
 endfunc
 
 func! planet#winbar#Refresh() abort
