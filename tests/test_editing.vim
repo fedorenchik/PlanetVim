@@ -28,6 +28,11 @@ call planet#editing#SubstituteSelection('selected', '')
 call assert_equal('prefix  suffix', getline(1), 'empty replacement is supported')
 call setline(3, 'three')
 normal! 3G0v4l
+if !has('gui_running')
+  " Ex mode reports command-line mode even after :normal v. Publish the marks
+  " here; the GUI run exercises the live Visual selection used by <Cmd> menus.
+  execute "normal! \<Esc>"
+endif
 call planet#editing#SubstituteSelection('three', 'THREE')
 call assert_equal('THREE', getline(3), 'the active selection replaces stale marks')
 
