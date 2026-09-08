@@ -220,6 +220,10 @@ class Installer:
             if not regular_or_absent(source):
                 raise InstallError("Distribution source is missing " + relative)
             incoming[relative] = source
+        for relative in ("LICENSE", "VERSION", "CHANGELOG.md", "README.md", "CONTRIBUTING.md"):
+            source = self.source / relative
+            if regular_or_absent(source):
+                incoming[relative] = source
         runtime = self.source / ".vim"
         if runtime.is_symlink() or not runtime.is_dir():
             raise InstallError("Distribution source is missing an ordinary .vim directory.")
@@ -229,10 +233,31 @@ class Installer:
                 child = directory / name
                 if child.is_symlink():
                     raise InstallError("Symlink in distribution source: " + str(child))
-                if name == ".git" or (directory == runtime and name in STATE_NAMES):
+                if name in (".git", "__pycache__") or (directory == runtime and name in STATE_NAMES):
                     dirs.remove(name)
             for name in files:
+                if name.endswith((".pyc", ".pyo")):
+                    continue
                 if directory == runtime and name in USER_FILES:
+                    continue
+                path = directory / name
+                regular_or_absent(path)
+                incoming[path.relative_to(self.source).as_posix()] = path
+        documentation = self.source / "docs"
+        if documentation.is_symlink():
+            raise InstallError("Symlink in distribution source: " + str(documentation))
+        if documentation.exists() and not documentation.is_dir():
+            raise InstallError("Documentation path is not a directory: " + str(documentation))
+        for directory, dirs, files in os.walk(documentation, followlinks=False):
+            directory = Path(directory)
+            for name in list(dirs):
+                child = directory / name
+                if child.is_symlink():
+                    raise InstallError("Symlink in distribution source: " + str(child))
+                if name in (".git", "__pycache__"):
+                    dirs.remove(name)
+            for name in files:
+                if name.endswith((".pyc", ".pyo")):
                     continue
                 path = directory / name
                 regular_or_absent(path)

@@ -49,6 +49,18 @@ class InstallerTests(unittest.TestCase):
         self.assertFalse(self.prefix.exists())
         self.assertTrue(any(message.startswith("CREATE ") for message in self.messages))
 
+    def test_optional_metadata_and_documentation_exclude_bytecode(self):
+        for name in ("LICENSE", "VERSION", "CHANGELOG.md", "README.md", "CONTRIBUTING.md", "docs/guide.md"):
+            self.write(self.source / name, "document " + name)
+        for name in (".vim/plugin/__pycache__/cache.pyc", "docs/__pycache__/cache.pyc", ".vim/plugin/cache.pyo"):
+            self.write(self.source / name, "bytecode")
+        self.installer().run("install")
+        for name in ("LICENSE", "VERSION", "CHANGELOG.md", "README.md", "CONTRIBUTING.md", "docs/guide.md"):
+            self.assertEqual((self.prefix / name).read_text(), "document " + name)
+        self.assertFalse((self.prefix / ".vim/plugin/__pycache__").exists())
+        self.assertFalse((self.prefix / "docs/__pycache__").exists())
+        self.assertFalse((self.prefix / ".vim/plugin/cache.pyo").exists())
+
     def test_collision_refuses_overwrite_even_when_contents_match(self):
         self.write(self.prefix / ".vimrc", 'let g:distribution = 1\n')
         with self.assertRaisesRegex(install.InstallError, "Unmanaged file collision"):
