@@ -8,6 +8,7 @@ command! PlanetHover call planet#intelligence#Action('LspHover')
 command! PlanetRename call planet#intelligence#Action('LspRename')
 command! PlanetFormat call planet#intelligence#Action('LspDocumentFormatSync')
 command! PlanetDiagnostics call planet#intelligence#Action('LspDocumentDiagnostics')
+command! PlanetSemanticScopes call planet#semantic#Show()
 
 augroup PlanetVimIntelligence
   autocmd!

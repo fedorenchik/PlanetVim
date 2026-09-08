@@ -15,7 +15,7 @@ func! planet#menu#dev#Update() abort
     an 300.10  ❇️&[.Type\ &Hierarchy                        <Cmd>LspTypeHierarchy<CR>
     an 300.10  ❇️&[.&Incoming\ Call\ Hierarchy              <Cmd>LspCallHierarchyIncoming<CR>
     an 300.10  ❇️&[.&Outgoing\ Call\ Hierarchy              <Cmd>LspCallHierarchyOutgoing<CR>
-    an 300.10  ❇️&[.Document\ Semantic\ Scopes              <Cmd>LspSemanticScopes<CR>
+    an 300.10  ❇️&[.Document\ Semantic\ Scopes              <Cmd>PlanetSemanticScopes<CR>
     an 300.10  ❇️&[.--2-- <Nop>
     an 300.10  ❇️&[.Preview.Hover                           <Cmd>LspHover<CR>
     an 300.10  ❇️&[.Preview.Hover\ in\ Popup                <Cmd>LspHover --ui=float<CR>
@@ -599,7 +599,7 @@ func! planet#menu#dev#Update() abort
     " Analyze
     an 540.10  🔬&y.Analyze <Nop>
     an disable 🔬&y.Analyze
-    an 540.10  🔬&y.Check  <Cmd>ALELint<CR>
+    an 540.10  🔬&y.Check  <Cmd>PlanetDiagnostics<CR>
     an 540.10  🔬&y.Clang-Tidy  <Cmd>call planet#integrations#Run('clang-tidy')<CR>
     an 540.10  🔬&y.Clazy  <Cmd>call planet#integrations#Run('clazy')<CR>
     an 540.10  🔬&y.Cppcheck  <Cmd>call planet#integrations#Run('cppcheck')<CR>
