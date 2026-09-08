@@ -1,0 +1,2422 @@
+{
+  "description": "Bundled package inventory; license pointers are evidence, not legal classifications.",
+  "plugins": [
+    {
+      "group": "apps",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/apps/opt/vimspector/LICENCE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "opt",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vimspector",
+      "path": ".vim/pack/apps/opt/vimspector",
+      "provenance": {
+        "branch": "master",
+        "commit": "c95ad4c8fb54adb75ceb0397ef6ace1c4eec3790",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/puremourning/vimspector.git"
+      },
+      "snapshot_sha256": "3910d71370afb755c7ac61e05618d8a12b8b770b3aa791c33331fe66d2fe3f66"
+    },
+    {
+      "group": "apps",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/apps/start/calculator.vim/COPYING"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "calculator.vim",
+      "path": ".vim/pack/apps/start/calculator.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "7725539706f60960365c7b1861c9bda28ed48f3e",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/fedorenchik/calculator.vim.git"
+      },
+      "snapshot_sha256": "1bd9f6655fa8271c66fa5e6a031f86fc7cd343300589d71cdb6b6531456ed09b"
+    },
+    {
+      "group": "apps",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/apps/start/calendar.vim/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "calendar.vim",
+      "path": ".vim/pack/apps/start/calendar.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "fe13024cc3575d83f158339562f0e2d97fb44375",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/itchyny/calendar.vim.git"
+      },
+      "snapshot_sha256": "5d295865f69aaa4a886c1f7b70fe45dd12b1273a86a9fb9324534dee580ae835"
+    },
+    {
+      "group": "apps",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/apps/start/codi.vim/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "codi.vim",
+      "path": ".vim/pack/apps/start/codi.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "28983696f59f47221380b4f7d78237dc04f9c62f",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/metakirby5/codi.vim.git"
+      },
+      "snapshot_sha256": "002d4abe26c7ea1f6de6c440a0a42339d70c6241afdd0973d33c1a3836e5be52"
+    },
+    {
+      "group": "apps",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/apps/start/csv.vim/doc/ft-csv.txt"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "csv.vim",
+      "path": ".vim/pack/apps/start/csv.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "2fcac7660734223f6cc57a3c5ec5d87e5a52d2e2",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/chrisbra/csv.vim.git"
+      },
+      "snapshot_sha256": "6f2112c0ce02e576a0f30acd751631d36c253de001b2c83c4d4a8bdc43b3167f"
+    },
+    {
+      "group": "apps",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/apps/start/libview.vim/doc/libview.txt"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "libview.vim",
+      "path": ".vim/pack/apps/start/libview.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "5c56a2071c30648a6b5dd60669df7a547f0bc9f3",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/fedorenchik/libview.vim.git"
+      },
+      "snapshot_sha256": "966cc957d5d27bc8cc51af8628a44fa458d861ed12910b14bb4eb454215de9b9"
+    },
+    {
+      "group": "apps",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/apps/start/presenting.vim/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "presenting.vim",
+      "path": ".vim/pack/apps/start/presenting.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "e960e204d8e4526d2650c23eaea908317c6becb9",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/sotte/presenting.vim.git"
+      },
+      "snapshot_sha256": "4db9922a022d023cfa8f18aaddfa56b278f663fa1a94eb98e76074057ddf566b"
+    },
+    {
+      "group": "apps",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/apps/start/vim-dirdiff/README.md",
+          ".vim/pack/apps/start/vim-dirdiff/doc/dirdiff.txt"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-dirdiff",
+      "path": ".vim/pack/apps/start/vim-dirdiff",
+      "provenance": {
+        "branch": "master",
+        "commit": "84bc8999fde4b3c2d8b228b560278ab30c7ea4c9",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/will133/vim-dirdiff.git"
+      },
+      "snapshot_sha256": "5387f7183016a946ac1d37a999cb999dfcb325bfb2ba2917b9c12115ebc97bd8"
+    },
+    {
+      "group": "apps",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/apps/start/vinarise.vim/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vinarise.vim",
+      "path": ".vim/pack/apps/start/vinarise.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "84dd647932fbd029310cca31f417c42f56d60547",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/Shougo/vinarise.vim.git"
+      },
+      "snapshot_sha256": "a30e898cd3f4d5f78690faf4a2128441df4772c7bd778438aa19af350360b68c"
+    },
+    {
+      "group": "apps",
+      "license_evidence": {
+        "paths": [],
+        "status": "not_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "w3m.vim",
+      "path": ".vim/pack/apps/start/w3m.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "228a852b188f1a62ecea55fa48b0ec892fa6bad7",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/yuratomo/w3m.vim.git"
+      },
+      "snapshot_sha256": "c587396866573c32ef6b6f9ac8e583d0ca1490548268b4824ba5bdfb3a554845"
+    },
+    {
+      "group": "arduino",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/arduino/start/vim-arduino/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-arduino",
+      "path": ".vim/pack/arduino/start/vim-arduino",
+      "provenance": {
+        "branch": "master",
+        "commit": "bf371b96905958cfa7929ef40fd35a0d6a412d86",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/stevearc/vim-arduino.git"
+      },
+      "snapshot_sha256": "58a85cfa89e041fc839484e5a4a4f8041669bb8e5e1faf556eef5b339783f27e"
+    },
+    {
+      "group": "asm",
+      "license_evidence": {
+        "paths": [],
+        "status": "not_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "fasm.vim",
+      "path": ".vim/pack/asm/start/fasm.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "6eabe66b8527cc8fae6671ec61056cbc81a5fa95",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/fedorenchik/fasm.vim.git"
+      },
+      "snapshot_sha256": "11bfcddbe64ee12248200bb6c2a0dbc6ddb15c94146e0576cfc2948f8bd281e0"
+    },
+    {
+      "group": "basic",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/basic/start/Colorizer/README.md",
+          ".vim/pack/basic/start/Colorizer/doc/Colorizer.txt",
+          ".vim/pack/basic/start/Colorizer/doc/license.txt"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "Colorizer",
+      "path": ".vim/pack/basic/start/Colorizer",
+      "provenance": {
+        "branch": "master",
+        "commit": "715c91303f0f7a59b21af39c9d168d975ca2c831",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/chrisbra/Colorizer.git"
+      },
+      "snapshot_sha256": "d40fce54ad532c3d0b100975f63bff16bfa107515a1af54bd1e3c3bbedf3277d"
+    },
+    {
+      "group": "basic",
+      "license_evidence": {
+        "paths": [],
+        "status": "not_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "FastFold",
+      "path": ".vim/pack/basic/start/FastFold",
+      "provenance": {
+        "branch": "master",
+        "commit": "542683b0cce738be22b6fdadb08302faed68e7b4",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/Konfekt/FastFold.git"
+      },
+      "snapshot_sha256": "8b474390c58486fe6a41f942fee48a4074b4bcb109d773375cb4dbbe61175529"
+    },
+    {
+      "group": "basic",
+      "license_evidence": {
+        "paths": [],
+        "status": "not_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "FoldText",
+      "path": ".vim/pack/basic/start/FoldText",
+      "provenance": {
+        "branch": "master",
+        "commit": "d5aca5af6eae07ed825504ac2943d5d40c349c5f",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/Konfekt/FoldText.git"
+      },
+      "snapshot_sha256": "6e56343a651eb9418438a68b67938860679102072828b87619708b04c746e584"
+    },
+    {
+      "group": "basic",
+      "license_evidence": {
+        "paths": [],
+        "status": "not_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "QFEnter",
+      "path": ".vim/pack/basic/start/QFEnter",
+      "provenance": {
+        "branch": "master",
+        "commit": "df0a75b287c210f98ae353a12bbfdaf73d858beb",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/yssl/QFEnter"
+      },
+      "snapshot_sha256": "adf34e41f8517314bf413f06dfb4037df7d572e58423437504612520351d1071"
+    },
+    {
+      "group": "basic",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/basic/start/caw.vim/doc/caw.txt"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "caw.vim",
+      "path": ".vim/pack/basic/start/caw.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "3aefcb5a752a599a9200dd801d6bcb0b7606bf29",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/tyru/caw.vim.git"
+      },
+      "snapshot_sha256": "ed8c161581bfd583af190bdc50ed5a1347cae8de6e59ab2948df4ca46ae3d8a4"
+    },
+    {
+      "group": "basic",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/basic/start/editorconfig-vim/LICENSE",
+          ".vim/pack/basic/start/editorconfig-vim/LICENSE.PSF"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "editorconfig-vim",
+      "path": ".vim/pack/basic/start/editorconfig-vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "d354117b72b3b43b75a29b8e816c0f91af10efe9",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/editorconfig/editorconfig-vim.git"
+      },
+      "snapshot_sha256": "659b9b6e4c90c24c4371462af074c66cdeb89956bb51e93bcb6148410b7afbff"
+    },
+    {
+      "group": "basic",
+      "license_evidence": {
+        "paths": [],
+        "status": "not_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "tabman.vim",
+      "path": ".vim/pack/basic/start/tabman.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "8f2ca9268a2ec1bcb29231b5b3f872101d169901",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/kien/tabman.vim.git"
+      },
+      "snapshot_sha256": "0b2157519a52e7e6720710609216d7aae7474d93e5ffdbc133d54df73a16317a"
+    },
+    {
+      "group": "basic",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/basic/start/undotree/README.md",
+          ".vim/pack/basic/start/undotree/doc/undotree.txt"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "undotree",
+      "path": ".vim/pack/basic/start/undotree",
+      "provenance": {
+        "branch": "master",
+        "commit": "bf76bf2d1a097cda024699738286fa81fb6529ac",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/mbbill/undotree.git"
+      },
+      "snapshot_sha256": "70835a7d52a8858eb3615870046531c9b52ff696d328b4ee154f7632db156b33"
+    },
+    {
+      "group": "basic",
+      "license_evidence": {
+        "paths": [],
+        "status": "not_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-buffest",
+      "path": ".vim/pack/basic/start/vim-buffest",
+      "provenance": {
+        "branch": "master",
+        "commit": "900b1aadb6bc3e33e7cb1fd230c47f0134a28b4f",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/rbong/vim-buffest.git"
+      },
+      "snapshot_sha256": "db54c0ab0c0a2feb1386de631b2d684460e93ee2de521e8979756299dc5ede6c"
+    },
+    {
+      "group": "basic",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/basic/start/vim-capslock/README.markdown",
+          ".vim/pack/basic/start/vim-capslock/doc/capslock.txt"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-capslock",
+      "path": ".vim/pack/basic/start/vim-capslock",
+      "provenance": {
+        "branch": "master",
+        "commit": "529b32877e144f7c1a6fabe357317c4b7d94a98e",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/tpope/vim-capslock.git"
+      },
+      "snapshot_sha256": "54e60abbb4df1c0c0a2e555a482579ab13348df322c79ed1fcc7f558ca63ff87"
+    },
+    {
+      "group": "basic",
+      "license_evidence": {
+        "paths": [],
+        "status": "not_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-choosewin",
+      "path": ".vim/pack/basic/start/vim-choosewin",
+      "provenance": {
+        "branch": "master",
+        "commit": "839da609d9b811370216bdd9d4512ec2d0ac8644",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/t9md/vim-choosewin.git"
+      },
+      "snapshot_sha256": "c80bb1b8a99d026ad91ec76afea11c6fe9de866cfb7506c44d83194952eba216"
+    },
+    {
+      "group": "basic",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/basic/start/vim-clap/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-clap",
+      "path": ".vim/pack/basic/start/vim-clap",
+      "provenance": {
+        "branch": "master",
+        "commit": "dc7089bef1e9759a219dc7df7efe39053f20fad3",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/liuchengxu/vim-clap.git"
+      },
+      "snapshot_sha256": "82d24698e404964bdc6daf2157f2b1d9ffdb43003728a56da6e4000c4f3cbb79"
+    },
+    {
+      "group": "basic",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/basic/start/vim-crystalline/doc/crystalline.txt"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-crystalline",
+      "path": ".vim/pack/basic/start/vim-crystalline",
+      "provenance": {
+        "branch": "master",
+        "commit": "dd1a59e5103c358292e4e113f479aae8f435b138",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/rbong/vim-crystalline.git"
+      },
+      "snapshot_sha256": "c16d147f43da8a13c31ce05568b0797c13c3b2163b610fa25448f0e7f3792d49"
+    },
+    {
+      "group": "basic",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/basic/start/vim-eunuch/README.markdown",
+          ".vim/pack/basic/start/vim-eunuch/doc/eunuch.txt"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-eunuch",
+      "path": ".vim/pack/basic/start/vim-eunuch",
+      "provenance": {
+        "branch": "master",
+        "commit": "cc564695076d89b3d1e06b2693fca788cfbc5910",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/tpope/vim-eunuch.git"
+      },
+      "snapshot_sha256": "ee8f9334bef397ca41f9df4c9c9815fbbc8767ee702bda5b8e3d986a2dddbb43"
+    },
+    {
+      "group": "basic",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/basic/start/vim-grepper/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-grepper",
+      "path": ".vim/pack/basic/start/vim-grepper",
+      "provenance": {
+        "branch": "master",
+        "commit": "2b93535752ffcb312f9fab73d90e80dc9f2e60fc",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/mhinz/vim-grepper.git"
+      },
+      "snapshot_sha256": "8df852f142729d665e9b54b08787067ff32987ab4b009544062766e149a2b57e"
+    },
+    {
+      "group": "basic",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/basic/start/vim-log-highlighting/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-log-highlighting",
+      "path": ".vim/pack/basic/start/vim-log-highlighting",
+      "provenance": {
+        "branch": "master",
+        "commit": "1037e26f3120e6a6a2c0c33b14a84336dee2a78f",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/MTDL9/vim-log-highlighting.git"
+      },
+      "snapshot_sha256": "c21c5fdfe835b851e2e1f70a3d3367446eeb27906af70203a57a754de1b61f44"
+    },
+    {
+      "group": "basic",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/basic/start/vim-mark/README.md",
+          ".vim/pack/basic/start/vim-mark/doc/mark.txt"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-mark",
+      "path": ".vim/pack/basic/start/vim-mark",
+      "provenance": {
+        "branch": "master",
+        "commit": "89274036663c3322c669ff499a128583018604d3",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/inkarkat/vim-mark.git"
+      },
+      "snapshot_sha256": "648fe45b44aec1c68e1c9a8a5596448193cab7de7591fe5020878a2d81be232b"
+    },
+    {
+      "group": "basic",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/basic/start/vim-qf/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-qf",
+      "path": ".vim/pack/basic/start/vim-qf",
+      "provenance": {
+        "branch": "master",
+        "commit": "65f115c350934517382ae45198a74232a9069c2a",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/romainl/vim-qf.git"
+      },
+      "snapshot_sha256": "95c0911f9fbba752fb858cab95d6e5e2f57bfa0e8265f34c424b51a9632ce4a4"
+    },
+    {
+      "group": "basic",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/basic/start/vim-qf-preview/README.md",
+          ".vim/pack/basic/start/vim-qf-preview/doc/qfpreview.txt"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-qf-preview",
+      "path": ".vim/pack/basic/start/vim-qf-preview",
+      "provenance": {
+        "branch": "master",
+        "commit": "f70f760122814f2a8a6c6eade9bd7bd68e206f26",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/bfrg/vim-qf-preview.git"
+      },
+      "snapshot_sha256": "34049539a0a84675d6a966072e63296a1b17a799be03b9edb152ef6415cd9072"
+    },
+    {
+      "group": "basic",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/basic/start/vim-signature/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-signature",
+      "path": ".vim/pack/basic/start/vim-signature",
+      "provenance": {
+        "branch": "master",
+        "commit": "6bc3dd1294a22e897f0dcf8dd72b85f350e306bc",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/kshenoy/vim-signature.git"
+      },
+      "snapshot_sha256": "296d82b3d61f4fe863c2fea32b1766804a6c6907edbd1e553e535f1ec920bc08"
+    },
+    {
+      "group": "basic",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/basic/start/vim-sleuth/README.markdown",
+          ".vim/pack/basic/start/vim-sleuth/doc/sleuth.txt"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-sleuth",
+      "path": ".vim/pack/basic/start/vim-sleuth",
+      "provenance": {
+        "branch": "master",
+        "commit": "1d25e8e5dc4062e38cab1a461934ee5e9d59e5a8",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/tpope/vim-sleuth.git"
+      },
+      "snapshot_sha256": "c9f25d78c9cfa60d81047c86cbc317c2f21de08d962a197900632cc8f7fc8607"
+    },
+    {
+      "group": "basic",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/basic/start/vim-startify/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-startify",
+      "path": ".vim/pack/basic/start/vim-startify",
+      "provenance": {
+        "branch": "master",
+        "commit": "81e36c352a8deea54df5ec1e2f4348685569bed2",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/mhinz/vim-startify.git"
+      },
+      "snapshot_sha256": "1c44245617aa239c8a594f251e10304831166433430abf023fd128dc98e7bf0c"
+    },
+    {
+      "group": "basic",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/basic/start/vim-surround/README.markdown",
+          ".vim/pack/basic/start/vim-surround/doc/surround.txt"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-surround",
+      "path": ".vim/pack/basic/start/vim-surround",
+      "provenance": {
+        "branch": "master",
+        "commit": "bf3480dc9ae7bea34c78fbba4c65b4548b5b1fea",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/tpope/vim-surround.git"
+      },
+      "snapshot_sha256": "4bad878512a2f1d024f72380d7e39c1bf416201ecab5bb475f3ecdcc0d7a8fb9"
+    },
+    {
+      "group": "basic",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/basic/start/vim-test/README.md",
+          ".vim/pack/basic/start/vim-test/doc/test.txt"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-test",
+      "path": ".vim/pack/basic/start/vim-test",
+      "provenance": {
+        "branch": "master",
+        "commit": "e7150de777ef0c81a015972e4feb56c4b3137efd",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/janko/vim-test.git"
+      },
+      "snapshot_sha256": "b004d5c86b09cddfb5401bbbf22e2c9afcf7388c102028d7535611f17eca2603"
+    },
+    {
+      "group": "basic",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/basic/start/vim-unimpaired/README.markdown",
+          ".vim/pack/basic/start/vim-unimpaired/doc/unimpaired.txt"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-unimpaired",
+      "path": ".vim/pack/basic/start/vim-unimpaired",
+      "provenance": {
+        "branch": "master",
+        "commit": "efdc6475f7ea789346716dabf9900ac04ee8604a",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/tpope/vim-unimpaired.git"
+      },
+      "snapshot_sha256": "f731ce882657cd8afa84e7f4c7775fc0b0d38614ef5f9f609485c21d2d0d59fe"
+    },
+    {
+      "group": "basic",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/basic/start/vim-verbosity/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-verbosity",
+      "path": ".vim/pack/basic/start/vim-verbosity",
+      "provenance": {
+        "branch": "master",
+        "commit": "7993c12a7fe36cb60e1d89872d895273485b2626",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/MTDL9/vim-verbosity.git"
+      },
+      "snapshot_sha256": "ddccff7c157c29425dbefbe6c14ece74642767c3091c1c44b70f2efbac609ccb"
+    },
+    {
+      "group": "basic",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/basic/start/vim-visualrepeat/README.md",
+          ".vim/pack/basic/start/vim-visualrepeat/doc/visualrepeat.txt"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-visualrepeat",
+      "path": ".vim/pack/basic/start/vim-visualrepeat",
+      "provenance": {
+        "branch": "master",
+        "commit": "9488f66b80c6f9583cac25b03651725e2dcd7437",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/inkarkat/vim-visualrepeat.git"
+      },
+      "snapshot_sha256": "41ff34ec93d942398558384568be07a109181343c393a53d68a1c30a673a9a43"
+    },
+    {
+      "group": "basic",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/basic/start/vim-window-mode/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-window-mode",
+      "path": ".vim/pack/basic/start/vim-window-mode",
+      "provenance": {
+        "branch": "master",
+        "commit": "dd621d166bc726d22014696f54ba3f6e3230b851",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/MTDL9/vim-window-mode.git"
+      },
+      "snapshot_sha256": "f2e80c573ac8213d6c29d68ccf8fa409bf3ac790f483a860e85f6f233c32acb1"
+    },
+    {
+      "group": "basic",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/basic/start/vista.vim/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vista.vim",
+      "path": ".vim/pack/basic/start/vista.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "9c3e31f67653a1d25147a8dd2a0b2724853d9923",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/liuchengxu/vista.vim.git"
+      },
+      "snapshot_sha256": "e5abff2ed33ee6f72bdb7779f45c0691bdd534e12d44cdd201733ef23a9d02cd"
+    },
+    {
+      "group": "ccpp",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/ccpp/start/DoxygenToolkit.vim/README"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "DoxygenToolkit.vim",
+      "path": ".vim/pack/ccpp/start/DoxygenToolkit.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "db70eb843f26e210f1854505fecb36a8f60d674c",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/babaybus/DoxygenToolkit.vim.git"
+      },
+      "snapshot_sha256": "c1de00f702d6d1217d747bae3eeddd74994a590ed3b122e764fcbd8dee3a632c"
+    },
+    {
+      "group": "ccpp",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/ccpp/start/vim-c-posix-syntax/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-c-posix-syntax",
+      "path": ".vim/pack/ccpp/start/vim-c-posix-syntax",
+      "provenance": {
+        "branch": "master",
+        "commit": "4a09bafaf0453d267424ee1a213474519d5b08ac",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/t6tn4k/vim-c-posix-syntax.git"
+      },
+      "snapshot_sha256": "f6606a3b8a9465d6ec752a7938fbcb610def91be0c8769d27d0d123f206c792d"
+    },
+    {
+      "group": "ccpp",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/ccpp/start/vim-cpp-modern/README.md"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-cpp-modern",
+      "path": ".vim/pack/ccpp/start/vim-cpp-modern",
+      "provenance": {
+        "branch": "master",
+        "commit": "0f0529bf2a336a4e824a26b733220548d32697a6",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/bfrg/vim-cpp-modern.git"
+      },
+      "snapshot_sha256": "fe36bc1333a7fa375469129970dcfdd2fdbe7fafeb5600585a723b88f6d2701a"
+    },
+    {
+      "group": "colors",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/colors/start/dracula/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "dracula",
+      "path": ".vim/pack/colors/start/dracula",
+      "provenance": {
+        "branch": "master",
+        "commit": "d7723a842a6cfa2f62cf85530ab66eb418521dc2",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/dracula/vim.git"
+      },
+      "snapshot_sha256": "772fdec875d6b38500a685b022fb9ad9140c4912eeba626b8e67d495d8457221"
+    },
+    {
+      "group": "colors",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/colors/start/gruvbox/README.md"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "gruvbox",
+      "path": ".vim/pack/colors/start/gruvbox",
+      "provenance": {
+        "branch": "master",
+        "commit": "bf2885a95efdad7bd5e4794dd0213917770d79b7",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/morhetz/gruvbox.git"
+      },
+      "snapshot_sha256": "7c405489dda0c76e029611efdfcaff447ce65ecc73b0096a339607db60a79769"
+    },
+    {
+      "group": "colors",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/colors/start/molokai/LICENSE.md"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "molokai",
+      "path": ".vim/pack/colors/start/molokai",
+      "provenance": {
+        "branch": "master",
+        "commit": "c67bdfcdb31415aa0ade7f8c003261700a885476",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/tomasr/molokai.git"
+      },
+      "snapshot_sha256": "8bd9c9b26524d818c36176eaa46cddc41fcd185c7f1102ec365e84fba32b252b"
+    },
+    {
+      "group": "colors",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/colors/start/papercolor-theme/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "papercolor-theme",
+      "path": ".vim/pack/colors/start/papercolor-theme",
+      "provenance": {
+        "branch": "master",
+        "commit": "9051480ad9129ff4ab4fffb38b44779b9081626f",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/NLKNguyen/papercolor-theme.git"
+      },
+      "snapshot_sha256": "fec21bddbc4bde838a21ecdb3d7fa38906a421b206c8b6b319bbc82bfe513918"
+    },
+    {
+      "group": "colors",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/colors/start/vim-colors-solarized/README.mkd"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-colors-solarized",
+      "path": ".vim/pack/colors/start/vim-colors-solarized",
+      "provenance": {
+        "branch": "master",
+        "commit": "528a59f26d12278698bb946f8fb82a63711eec21",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/altercation/vim-colors-solarized.git"
+      },
+      "snapshot_sha256": "dbe0253d9e3d48d5b46366a3b5e2b6159a138c4798bd493693767b0bf7902d4f"
+    },
+    {
+      "group": "colors",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/colors/start/vim-one/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-one",
+      "path": ".vim/pack/colors/start/vim-one",
+      "provenance": {
+        "branch": "master",
+        "commit": "187f5c85b682c1933f8780d4d419c55d26a82e24",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/rakr/vim-one.git"
+      },
+      "snapshot_sha256": "c6e9bfbd36c9b30da1366c7c5c2537f7e310e8bda62817ea77862b3cac4118a7"
+    },
+    {
+      "group": "dev",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/dev/start/Jenkinsfile-vim-syntax/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "Jenkinsfile-vim-syntax",
+      "path": ".vim/pack/dev/start/Jenkinsfile-vim-syntax",
+      "provenance": {
+        "branch": "master",
+        "commit": "0d05729168ea44d60862f17cffa80024ab30bcc9",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/martinda/Jenkinsfile-vim-syntax.git"
+      },
+      "snapshot_sha256": "072296d0d471e0d531006b96520694b81669ccbf5b4af333a3874e6f01ae1aca"
+    },
+    {
+      "group": "dev",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/dev/start/direnv.vim/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "direnv.vim",
+      "path": ".vim/pack/dev/start/direnv.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "4c858b8cd8cbfac998534096e6ffb710d7a07358",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/direnv/direnv.vim.git"
+      },
+      "snapshot_sha256": "0c263ae41565861d58c64fb3d1f6f027c91cf90ff3061f9b124de40f234924c8"
+    },
+    {
+      "group": "dev",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/dev/start/vim-dotenv/README.markdown",
+          ".vim/pack/dev/start/vim-dotenv/doc/dotenv.txt"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-dotenv",
+      "path": ".vim/pack/dev/start/vim-dotenv",
+      "provenance": {
+        "branch": "master",
+        "commit": "5c51cfcf8d87280d6414e03cd6b253eb70ecb800",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/tpope/vim-dotenv.git"
+      },
+      "snapshot_sha256": "67d4e1d94317e7bb1e19db74b3663ccef13daba0eed429d4ca82f14920732634"
+    },
+    {
+      "group": "dev",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/dev/start/vim-glsl/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-glsl",
+      "path": ".vim/pack/dev/start/vim-glsl",
+      "provenance": {
+        "branch": "master",
+        "commit": "bfd330a271933c3372fcfa8ce052970746c8e9dd",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/tikhomirov/vim-glsl.git"
+      },
+      "snapshot_sha256": "47ee807326e52af815ed08baaf25b35a9a7d79160bd9d4f831a3b627f334828f"
+    },
+    {
+      "group": "dev",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/dev/start/vim-unityengine/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-unityengine",
+      "path": ".vim/pack/dev/start/vim-unityengine",
+      "provenance": {
+        "branch": "master",
+        "commit": "074c80b0dc8ede7a5e98446ca8f83a17d020f3ce",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/idbrii/vim-unityengine.git"
+      },
+      "snapshot_sha256": "a2d1915926a6d32a6426fff5ec9cd084279ba42c65153d4b8c4908e01ccc4538"
+    },
+    {
+      "group": "dev",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/dev/start/vim-unreal/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-unreal",
+      "path": ".vim/pack/dev/start/vim-unreal",
+      "provenance": {
+        "branch": "main",
+        "commit": "0885fa2e87aa3b3d70aa20e903acf57c2ed5802d",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/drichardson/vim-unreal.git"
+      },
+      "snapshot_sha256": "28a0a653d0581f545b8103fba98d2fa58435a4e496f8b2f86f7b9a5fc903e484"
+    },
+    {
+      "group": "doc",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/doc/start/vim-cmake-help/README.md",
+          ".vim/pack/doc/start/vim-cmake-help/doc/cmakehelp.txt"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-cmake-help",
+      "path": ".vim/pack/doc/start/vim-cmake-help",
+      "provenance": {
+        "branch": "master",
+        "commit": "e3bca6977a710fed6bcf40137cb84cdf5fc975ec",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/bfrg/vim-cmake-help.git"
+      },
+      "snapshot_sha256": "5c63572e432ccd85f2f50fe996053faddaad26847881778008532af3d4934088"
+    },
+    {
+      "group": "file-manager",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/file-manager/start/fern-bookmark.vim/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "fern-bookmark.vim",
+      "path": ".vim/pack/file-manager/start/fern-bookmark.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "34692709e034548c7be37ed417807c1d76a27600",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/lambdalisue/fern-bookmark.vim.git"
+      },
+      "snapshot_sha256": "9568482edf1aa38b68694f8f40b6cc6fe37abe9e79f12de037b2784b54ee055f"
+    },
+    {
+      "group": "file-manager",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/file-manager/start/fern-git-status.vim/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "fern-git-status.vim",
+      "path": ".vim/pack/file-manager/start/fern-git-status.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "151336335d3b6975153dad77e60049ca7111da8e",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/lambdalisue/fern-git-status.vim.git"
+      },
+      "snapshot_sha256": "c1b65d0461b74419064e10acaa6ef5002c6bb7fb81193f1470afee5b74e80eab"
+    },
+    {
+      "group": "file-manager",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/file-manager/start/fern-hijack.vim/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "fern-hijack.vim",
+      "path": ".vim/pack/file-manager/start/fern-hijack.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "5989a1ac6ddffd0fe49631826b6743b129992b32",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/lambdalisue/fern-hijack.vim.git"
+      },
+      "snapshot_sha256": "cbb2cbae385dfd23543fae900c9c1dad974e6edfaa768c7088e4d0661b221fa3"
+    },
+    {
+      "group": "file-manager",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/file-manager/start/fern-mapping-git.vim/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "fern-mapping-git.vim",
+      "path": ".vim/pack/file-manager/start/fern-mapping-git.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "df5e7466df8596c95dd355d49a72893018919cf1",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/lambdalisue/fern-mapping-git.vim.git"
+      },
+      "snapshot_sha256": "042a0a19dfe13cf26db9e8514b6858fcd714581651e1bce9a9115ed291590c4f"
+    },
+    {
+      "group": "file-manager",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/file-manager/start/fern-renderer-nerdfont.vim/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "fern-renderer-nerdfont.vim",
+      "path": ".vim/pack/file-manager/start/fern-renderer-nerdfont.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "1a3719f226edc27e7241da7cda4bc4d4c7db889c",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/lambdalisue/fern-renderer-nerdfont.vim.git"
+      },
+      "snapshot_sha256": "1d4bededc8360cf1ca7e1e1558941121f2c37ef1892ad788f87772b37390b4a1"
+    },
+    {
+      "group": "file-manager",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/file-manager/start/fern-ssh.vim/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "fern-ssh.vim",
+      "path": ".vim/pack/file-manager/start/fern-ssh.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "87e563c8200e9dd4f85174c784028214cbfdd3e4",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/lambdalisue/fern-ssh.git"
+      },
+      "snapshot_sha256": "4fd17e86a314bc73e1cedd1530c2f0ce3e9b5a19b10479e55abd126055644b6b"
+    },
+    {
+      "group": "file-manager",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/file-manager/start/fern.vim/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "fern.vim",
+      "path": ".vim/pack/file-manager/start/fern.vim",
+      "provenance": {
+        "branch": "main",
+        "commit": "d134808916cb7ccd0800830032d07a0757ed68ee",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/lambdalisue/fern.vim.git"
+      },
+      "snapshot_sha256": "c19f837b5fa34c229e9fad4339a88eaee786b3a6d1ce558ff8253b73bc0ce976"
+    },
+    {
+      "group": "file-manager",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/file-manager/start/glyph-palette.vim/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "glyph-palette.vim",
+      "path": ".vim/pack/file-manager/start/glyph-palette.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "c9b21e745b4fc11c410afbf4aa9dbe938c3d09c0",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/lambdalisue/glyph-palette.vim.git"
+      },
+      "snapshot_sha256": "8e5e04a30809ad400398ce668edc407f4c199b313e2fc6b03ab956c4462922f8"
+    },
+    {
+      "group": "file-manager",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/file-manager/start/nerdfont.vim/LICENSE",
+          ".vim/pack/file-manager/start/nerdfont.vim/LICENSE.vim-devicon"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "nerdfont.vim",
+      "path": ".vim/pack/file-manager/start/nerdfont.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "ee07f3ea815ca038542d6b6081ebb7ccd9abc389",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/lambdalisue/nerdfont.vim.git"
+      },
+      "snapshot_sha256": "c30186560a41d2cd89773a935505a3236380c6dd9dbbcd44ddf8484f2ef20f8c"
+    },
+    {
+      "group": "git",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/git/start/auto-git-diff/README.md"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "auto-git-diff",
+      "path": ".vim/pack/git/start/auto-git-diff",
+      "provenance": {
+        "branch": "master",
+        "commit": "a14d52b7ed7e7fb69bf1de9d363f3abdd3410b3a",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/hotwatermorning/auto-git-diff.git"
+      },
+      "snapshot_sha256": "cf2e6377fb82a9f8c0f7e455d0465445c2f420cac358e830d954b01bd066e9f7"
+    },
+    {
+      "group": "git",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/git/start/committia.vim/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "committia.vim",
+      "path": ".vim/pack/git/start/committia.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "0b4df1a7f48ffbc23b009bd14d58ee1be541917c",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/rhysd/committia.vim.git"
+      },
+      "snapshot_sha256": "bbdf26fc1add27d2a9763d58904e569f39441830e976fa9cff262f9a159e3d5c"
+    },
+    {
+      "group": "git",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/git/start/vim-flog/doc/flog.txt"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-flog",
+      "path": ".vim/pack/git/start/vim-flog",
+      "provenance": {
+        "branch": "master",
+        "commit": "c880254c0d56a9dba0bfe7bc3a5f99cd15273363",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/rbong/vim-flog.git"
+      },
+      "snapshot_sha256": "5a4078a985c84e0c95e62444585a7e239fa081a06a53e548f48890bd69e4706b"
+    },
+    {
+      "group": "git",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/git/start/vim-fugitive/README.markdown",
+          ".vim/pack/git/start/vim-fugitive/doc/fugitive.txt"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-fugitive",
+      "path": ".vim/pack/git/start/vim-fugitive",
+      "provenance": {
+        "branch": "master",
+        "commit": "dd8107cabf5fe85df94d5eedcae52415e543f208",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/tpope/vim-fugitive.git"
+      },
+      "snapshot_sha256": "07414355a5a6482acba6565e1ff4082c843d1f512751a02290894a64e605811d"
+    },
+    {
+      "group": "git",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/git/start/vim-gitgutter/LICENCE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-gitgutter",
+      "path": ".vim/pack/git/start/vim-gitgutter",
+      "provenance": {
+        "branch": "master",
+        "commit": "f19b6203191d69de955d91467a5707959572119b",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/airblade/vim-gitgutter.git"
+      },
+      "snapshot_sha256": "6598a62ee83bffad72b57e22e970618390e0361b41399ce28a2dc4fbad4e6e56"
+    },
+    {
+      "group": "git",
+      "license_evidence": {
+        "paths": [],
+        "status": "not_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-twiggy",
+      "path": ".vim/pack/git/start/vim-twiggy",
+      "provenance": {
+        "branch": "master",
+        "commit": "7a2161991722a811c4ff06b3ce0119dd180729fd",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/sodapopcan/vim-twiggy.git"
+      },
+      "snapshot_sha256": "54d8ccd48ef66d11df76e1bd65ea874a6c292ee3ff427ae31b22be7a55c12d91"
+    },
+    {
+      "group": "go",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/go/start/vim-go/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-go",
+      "path": ".vim/pack/go/start/vim-go",
+      "provenance": {
+        "branch": "master",
+        "commit": "22b2273cfe562ac1c1af976ce77f18a3b1776f3c",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/fatih/vim-go.git"
+      },
+      "snapshot_sha256": "215531f05b8112f5b675477da20c4f1f54febf9585787904a4db3df800fcbbd3"
+    },
+    {
+      "group": "godot",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/godot/start/vim-godot/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-godot",
+      "path": ".vim/pack/godot/start/vim-godot",
+      "provenance": {
+        "branch": "master",
+        "commit": "d1cde72d9ba5b8e811df7bb28b2606685453f375",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/habamax/vim-godot.git"
+      },
+      "snapshot_sha256": "58e3034664b5c6979766b4bccc031df6f7c7f298e7612f909c1ef8e363bb1c77"
+    },
+    {
+      "group": "lib",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/lib/start/context_filetype.vim/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "context_filetype.vim",
+      "path": ".vim/pack/lib/start/context_filetype.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "e276626e441eee2c624b9192113f1484bc2bc0f3",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/Shougo/context_filetype.vim.git"
+      },
+      "snapshot_sha256": "45653e4f52c3d5272e3da43178afb8ce7fe0402bd015cf2ede85c44815775be9"
+    },
+    {
+      "group": "lib",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/lib/start/vim-ingo-library/README.md",
+          ".vim/pack/lib/start/vim-ingo-library/doc/ingo-library.txt"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-ingo-library",
+      "path": ".vim/pack/lib/start/vim-ingo-library",
+      "provenance": {
+        "branch": "master",
+        "commit": "733339b699824f0a3c90910c26d8fd949f13783c",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/inkarkat/vim-ingo-library.git"
+      },
+      "snapshot_sha256": "bc706820b971de5436e15e011a545cbcb9bc7ef6dc3baf33e3e15bb2fabf836b"
+    },
+    {
+      "group": "lib",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/lib/start/vim-quickui/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-quickui",
+      "path": ".vim/pack/lib/start/vim-quickui",
+      "provenance": {
+        "branch": "master",
+        "commit": "2fd05c8ba71aa54f7f225f5e87cca8c2868e1976",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/skywind3000/vim-quickui.git"
+      },
+      "snapshot_sha256": "49d0b1b4d4db9cbf0a88ef6b305dce32a8b1f5af9b52fe16914f8c098a0b1e2c"
+    },
+    {
+      "group": "lib",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/lib/start/vim-repeat/README.markdown"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-repeat",
+      "path": ".vim/pack/lib/start/vim-repeat",
+      "provenance": {
+        "branch": "master",
+        "commit": "24afe922e6a05891756ecf331f39a1f6743d3d5a",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/tpope/vim-repeat.git"
+      },
+      "snapshot_sha256": "c2bab01dd3e8d56806abe0dbef608b9094dbabcc044f11259a79d5a59d1dad73"
+    },
+    {
+      "group": "lsp",
+      "license_evidence": {
+        "paths": [],
+        "status": "not_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "asyncomplete-buffer.vim",
+      "path": ".vim/pack/lsp/start/asyncomplete-buffer.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "018bcf0f712ce0fde3f1f2eaabd7004fccb2d34a",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/prabirshrestha/asyncomplete-buffer.vim.git"
+      },
+      "snapshot_sha256": "9bf64510eded16e54424217fbae9d0dcb96614ce35c327b2ffe6adc3734cefe3"
+    },
+    {
+      "group": "lsp",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/lsp/start/asyncomplete-emmet.vim/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "asyncomplete-emmet.vim",
+      "path": ".vim/pack/lsp/start/asyncomplete-emmet.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "5c65b7693a1fc75f1b596e2763d27ca95a749da9",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/prabirshrestha/asyncomplete-emmet.vim.git"
+      },
+      "snapshot_sha256": "aa33757ea406f0dd391b54dd33fcfd2ed96e23d49c9a9f62cf1455f89cb024f1"
+    },
+    {
+      "group": "lsp",
+      "license_evidence": {
+        "paths": [],
+        "status": "not_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "asyncomplete-emoji.vim",
+      "path": ".vim/pack/lsp/start/asyncomplete-emoji.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "a2856274cc719c61f09884ab1eeafffb487c67ea",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/prabirshrestha/asyncomplete-emoji.vim.git"
+      },
+      "snapshot_sha256": "a849f3616248bafa074bc8d80e513a5af35e9c42b09b409dc5fd82c95fef3b38"
+    },
+    {
+      "group": "lsp",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/lsp/start/asyncomplete-file.vim/LICENCE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "asyncomplete-file.vim",
+      "path": ".vim/pack/lsp/start/asyncomplete-file.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "770772daf1ff6ae29193bed02f8a7907913415d3",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/prabirshrestha/asyncomplete-file.vim.git"
+      },
+      "snapshot_sha256": "e06507dada82d38b1e9099d7501a5ab694d9c21ab6db9698829d2573956e9f25"
+    },
+    {
+      "group": "lsp",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/lsp/start/asyncomplete-gitcommit/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "asyncomplete-gitcommit",
+      "path": ".vim/pack/lsp/start/asyncomplete-gitcommit",
+      "provenance": {
+        "branch": "master",
+        "commit": "68b35a7537326d5b21bb61c7cf5d981d425d2f5f",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/laixintao/asyncomplete-gitcommit.git"
+      },
+      "snapshot_sha256": "b6ab76dd9710c623b9355ca0ea460c413009eef7e3a93f6922f93f9b217361a9"
+    },
+    {
+      "group": "lsp",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/lsp/start/asyncomplete-look/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "asyncomplete-look",
+      "path": ".vim/pack/lsp/start/asyncomplete-look",
+      "provenance": {
+        "branch": "master",
+        "commit": "61a3f69bd67f808fbfa6f1e96cb2886eb0977955",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/htlsne/asyncomplete-look.git"
+      },
+      "snapshot_sha256": "cc8dd08573f4e160e4f128047f60d326372244df3909ea8713923997f65f4153"
+    },
+    {
+      "group": "lsp",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/lsp/start/asyncomplete-lsp.vim/README.md"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "asyncomplete-lsp.vim",
+      "path": ".vim/pack/lsp/start/asyncomplete-lsp.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "f6d6a6354ff279ba707c20292aef0dfaadc436a3",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/prabirshrestha/asyncomplete-lsp.vim.git"
+      },
+      "snapshot_sha256": "2d48c04e5e4efc30b7b9456e9053a7bfd579ef4d6bd876be48c0f818a2808237"
+    },
+    {
+      "group": "lsp",
+      "license_evidence": {
+        "paths": [],
+        "status": "not_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "asyncomplete-necosyntax.vim",
+      "path": ".vim/pack/lsp/start/asyncomplete-necosyntax.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "1bd7345ec5408b2c7d926b85148dc96e207eaf8c",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/prabirshrestha/asyncomplete-necosyntax.vim.git"
+      },
+      "snapshot_sha256": "ed8c1d8a2188c75ea170f259afd8f5531ee0a04ee3e3e4b8a5855d3dae1119dd"
+    },
+    {
+      "group": "lsp",
+      "license_evidence": {
+        "paths": [],
+        "status": "not_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "asyncomplete-necovim.vim",
+      "path": ".vim/pack/lsp/start/asyncomplete-necovim.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "e45d58673100b5653d9c2dc823f914190c64aaa0",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/prabirshrestha/asyncomplete-necovim.vim.git"
+      },
+      "snapshot_sha256": "0d23823fdd219418f8f3306bed8d04cb3f5e916cc2a5917875c47b31d243b701"
+    },
+    {
+      "group": "lsp",
+      "license_evidence": {
+        "paths": [],
+        "status": "not_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "asyncomplete-neoinclude.vim",
+      "path": ".vim/pack/lsp/start/asyncomplete-neoinclude.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "26c676711087e3bd80e398a49f9cb6692b2799e8",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/kyouryuukunn/asyncomplete-neoinclude.vim.git"
+      },
+      "snapshot_sha256": "b156875c7c3c36b266e4cfa2ba25107e9d42ba5f171216828d8a6ac20e9e9396"
+    },
+    {
+      "group": "lsp",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/lsp/start/asyncomplete-omni.vim/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "asyncomplete-omni.vim",
+      "path": ".vim/pack/lsp/start/asyncomplete-omni.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "f13986b671a37d6320476af6bc066697e71463c1",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/yami-beta/asyncomplete-omni.vim.git"
+      },
+      "snapshot_sha256": "891858134506a3bda06092c49697b297a89ac90583235f99ab3483ebd21999de"
+    },
+    {
+      "group": "lsp",
+      "license_evidence": {
+        "paths": [],
+        "status": "not_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "asyncomplete-tabnine.vim",
+      "path": ".vim/pack/lsp/start/asyncomplete-tabnine.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "a2c09959f9f9fd23a3475cd4756c68cd7a29ae80",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/kitagry/asyncomplete-tabnine.vim.git"
+      },
+      "snapshot_sha256": "a2344e6b05864e34937b5be8704b1d5ff80100cb896048d18cdbf3b547618dd6"
+    },
+    {
+      "group": "lsp",
+      "license_evidence": {
+        "paths": [],
+        "status": "not_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "asyncomplete-tags.vim",
+      "path": ".vim/pack/lsp/start/asyncomplete-tags.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "041af0565f2c16634277cd29d2429c573af1dac4",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/prabirshrestha/asyncomplete-tags.vim.git"
+      },
+      "snapshot_sha256": "443cdb3e6a850f28194c187df282b08b4e3b5546b92b6589711bf5a065b3dfb2"
+    },
+    {
+      "group": "lsp",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/lsp/start/asyncomplete-user.vim/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "asyncomplete-user.vim",
+      "path": ".vim/pack/lsp/start/asyncomplete-user.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "960496266b1dd8218efd83785dd22b3221c1ddd7",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/jsit/asyncomplete-user.vim.git"
+      },
+      "snapshot_sha256": "f9278ffc64f51e705c5a2659bd997230bd43f24bfedc0f29e0eb0835dbaf4146"
+    },
+    {
+      "group": "lsp",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/lsp/start/asyncomplete.vim/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "asyncomplete.vim",
+      "path": ".vim/pack/lsp/start/asyncomplete.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "9c7651894c2c6d656c0dc71e87cfabbbb71b9c78",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/prabirshrestha/asyncomplete.vim.git"
+      },
+      "snapshot_sha256": "476b1a83c6437336fd8db15ecedd81b8a549ca9ba849a8e8ba3f192e7f7c7089"
+    },
+    {
+      "group": "lsp",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/lsp/start/neco-syntax/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "neco-syntax",
+      "path": ".vim/pack/lsp/start/neco-syntax",
+      "provenance": {
+        "branch": "master",
+        "commit": "f8d7b748b022aac8ce73458574da5616f1c5fb65",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/Shougo/neco-syntax.git"
+      },
+      "snapshot_sha256": "0f9340e6311496d55ae0f1566b47d54a6ac6d95a6b5a55f11e2764d38e7e2409"
+    },
+    {
+      "group": "lsp",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/lsp/start/neco-vim/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "neco-vim",
+      "path": ".vim/pack/lsp/start/neco-vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "facc3db7c5836fe2424936e8dd06f227e20f96db",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/Shougo/neco-vim.git"
+      },
+      "snapshot_sha256": "7638d31d643e4b86549cde9f06c3e1152be74b4016e9824bb1fe94edf0e4228f"
+    },
+    {
+      "group": "lsp",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/lsp/start/neoinclude.vim/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "neoinclude.vim",
+      "path": ".vim/pack/lsp/start/neoinclude.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "954cfc9dfdb303f2c2fa867b9cf949dd74512628",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/Shougo/neoinclude.vim.git"
+      },
+      "snapshot_sha256": "26f042bd7f2e29f987710523bcdf9bd159f8afc8618f1fea5546b9449fc66b74"
+    },
+    {
+      "group": "lsp",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/lsp/start/vim-lsp/LICENSE",
+          ".vim/pack/lsp/start/vim-lsp/LICENSE-THIRD-PARTY"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-lsp",
+      "path": ".vim/pack/lsp/start/vim-lsp",
+      "provenance": {
+        "branch": "master",
+        "commit": "8fdaf4f78c94c6abba06a907520a5de157c5803b",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/prabirshrestha/vim-lsp.git"
+      },
+      "snapshot_sha256": "35a2d1eada98b95ef3441931a6b25a1a6f72bccd01551f16156760aae5e9168b"
+    },
+    {
+      "group": "lsp",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/lsp/start/vim-lsp-settings/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-lsp-settings",
+      "path": ".vim/pack/lsp/start/vim-lsp-settings",
+      "provenance": {
+        "branch": "master",
+        "commit": "83b3a099a60273f429df20741bede3268fb6d3f1",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/mattn/vim-lsp-settings.git"
+      },
+      "snapshot_sha256": "c9aa49b532ea0bbe090f7f901f1f83ef14262654fe0867d02c367c40897f361c"
+    },
+    {
+      "group": "planet",
+      "license_evidence": {
+        "paths": [],
+        "status": "not_found"
+      },
+      "load": "start",
+      "local_patches": "part_of_distribution_checkout",
+      "name": "guitablabel.vim",
+      "path": ".vim/pack/planet/start/guitablabel.vim",
+      "provenance": {
+        "branch": null,
+        "commit": null,
+        "kind": "local",
+        "remote": null
+      }
+    },
+    {
+      "group": "planet",
+      "license_evidence": {
+        "paths": [],
+        "status": "not_found"
+      },
+      "load": "start",
+      "local_patches": "part_of_distribution_checkout",
+      "name": "guitabtooltip.vim",
+      "path": ".vim/pack/planet/start/guitabtooltip.vim",
+      "provenance": {
+        "branch": null,
+        "commit": null,
+        "kind": "local",
+        "remote": null
+      }
+    },
+    {
+      "group": "planet",
+      "license_evidence": {
+        "paths": [],
+        "status": "not_found"
+      },
+      "load": "start",
+      "local_patches": "part_of_distribution_checkout",
+      "name": "planet.vim",
+      "path": ".vim/pack/planet/start/planet.vim",
+      "provenance": {
+        "branch": null,
+        "commit": null,
+        "kind": "local",
+        "remote": null
+      }
+    },
+    {
+      "group": "planet",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/planet/start/title.vim/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "part_of_distribution_checkout",
+      "name": "title.vim",
+      "path": ".vim/pack/planet/start/title.vim",
+      "provenance": {
+        "branch": null,
+        "commit": null,
+        "kind": "local",
+        "remote": null
+      }
+    },
+    {
+      "group": "python",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/python/start/python-syntax/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "python-syntax",
+      "path": ".vim/pack/python/start/python-syntax",
+      "provenance": {
+        "branch": "master",
+        "commit": "2cc00ba72929ea5f9456a26782db57fb4cc56a65",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/vim-python/python-syntax.git"
+      },
+      "snapshot_sha256": "a600c746d0b04fb06ef13c581424032694fc3af14543babda64257672c93b02c"
+    },
+    {
+      "group": "qt",
+      "license_evidence": {
+        "paths": [],
+        "status": "not_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "qt-support.vim",
+      "path": ".vim/pack/qt/start/qt-support.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "c353804b35a006531990191ae975b793d2836092",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/fedorenchik/qt-support.vim.git"
+      },
+      "snapshot_sha256": "14a8e8870100f6dfc55ff7093904ad061594d77ffb4083833b7daa875b5021ac"
+    },
+    {
+      "group": "tex",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/tex/start/vimtex/LICENSE.md"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vimtex",
+      "path": ".vim/pack/tex/start/vimtex",
+      "provenance": {
+        "branch": "master",
+        "commit": "54fd9f5ba70ba907e683a42e2b1903133a98dd60",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/lervag/vimtex.git"
+      },
+      "snapshot_sha256": "b3b58af318f037f56b0e57b60f5f38615a8a2b2a92080374add16c4232e1516b"
+    },
+    {
+      "group": "viml",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/viml/start/vim-scriptease/README.markdown",
+          ".vim/pack/viml/start/vim-scriptease/doc/scriptease.txt"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-scriptease",
+      "path": ".vim/pack/viml/start/vim-scriptease",
+      "provenance": {
+        "branch": "master",
+        "commit": "18511d389675d773994215ddb572ccdc2b72f52b",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/tpope/vim-scriptease.git"
+      },
+      "snapshot_sha256": "cc2c2f89d4a3055d9ad4e92edaf81745619ed3a5b925edfb0a93612980557b8e"
+    },
+    {
+      "group": "web",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/web/start/dart-vim-plugin/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "dart-vim-plugin",
+      "path": ".vim/pack/web/start/dart-vim-plugin",
+      "provenance": {
+        "branch": "master",
+        "commit": "81e50e80329e5eac2c115f45585b1838a614d07a",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/dart-lang/dart-vim-plugin.git"
+      },
+      "snapshot_sha256": "2b6301e42c83b49a31a66f92e8628a4a868ce59e0858d9f349050560180ca4dc"
+    },
+    {
+      "group": "web",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/web/start/emmet-vim/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "emmet-vim",
+      "path": ".vim/pack/web/start/emmet-vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "def5d57a1ae5afb1b96ebe83c4652d1c03640f4d",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/mattn/emmet-vim.git"
+      },
+      "snapshot_sha256": "3539a62e052504a1ffe827024f49ad11806fcceab18ee24bd484442a412faff3"
+    },
+    {
+      "group": "web",
+      "license_evidence": {
+        "paths": [],
+        "status": "not_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "typescript-vim",
+      "path": ".vim/pack/web/start/typescript-vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "52f3ca3474d51f5021696ffb7297d989e49121ac",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/leafgarland/typescript-vim.git"
+      },
+      "snapshot_sha256": "bc1da3ca8aad124593139a377675c7c6ec94467ac54c748c8fd3f197841bfb98"
+    },
+    {
+      "group": "web",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/web/start/vim-flutter/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-flutter",
+      "path": ".vim/pack/web/start/vim-flutter",
+      "provenance": {
+        "branch": "master",
+        "commit": "32b9fa0126a4a4994c296c69ad038dc78aa83d68",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/thosakwe/vim-flutter.git"
+      },
+      "snapshot_sha256": "985c0edc1e5249f0ace6a7f2db62669e3ade3485ffcadfd0e1cfcbb8d60a9bd1"
+    },
+    {
+      "group": "web",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/web/start/vim-json/license.md"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-json",
+      "path": ".vim/pack/web/start/vim-json",
+      "provenance": {
+        "branch": "master",
+        "commit": "3727f089410e23ae113be6222e8a08dd2613ecf2",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/elzr/vim-json.git"
+      },
+      "snapshot_sha256": "6c1cea35e147244bc052f52dfe1ee9e52c1a14564e73beb884c0409854cd4c30"
+    },
+    {
+      "group": "writing",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/writing/start/goyo.vim/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "goyo.vim",
+      "path": ".vim/pack/writing/start/goyo.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "7f5d35a65510083ea5c2d0941797244b9963d4a9",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/junegunn/goyo.vim.git"
+      },
+      "snapshot_sha256": "9af5f74cf72e326ac43631220932b4da558762e147be5ecc04b77d4a5f806ca1"
+    },
+    {
+      "group": "writing",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/writing/start/spelunker.vim/LICENSE.txt"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "spelunker.vim",
+      "path": ".vim/pack/writing/start/spelunker.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "a0bc530f62798bbe053905555a4aa9ed713485eb",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/kamykn/spelunker.vim.git"
+      },
+      "snapshot_sha256": "9f5f42c0bb411f3f90235eca30ef93458560b9a8c6bf64d6899ff0b6fd3e13af"
+    },
+    {
+      "group": "writing",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/writing/start/vim-SpellCheck/README.md",
+          ".vim/pack/writing/start/vim-SpellCheck/doc/SpellCheck.txt"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-SpellCheck",
+      "path": ".vim/pack/writing/start/vim-SpellCheck",
+      "provenance": {
+        "branch": "master",
+        "commit": "fe5c9488d3082c246f73bfca137052930b13424f",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/inkarkat/vim-SpellCheck.git"
+      },
+      "snapshot_sha256": "0babf2a67936c53ce351ad6c5c277ed7580745bbbb5b90651d025122dd8770b3"
+    },
+    {
+      "group": "writing",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/writing/start/vim-abolish/README.markdown",
+          ".vim/pack/writing/start/vim-abolish/doc/abolish.txt"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-abolish",
+      "path": ".vim/pack/writing/start/vim-abolish",
+      "provenance": {
+        "branch": "master",
+        "commit": "3f0c8faadf0c5b68bcf40785c1c42e3731bfa522",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/tpope/vim-abolish.git"
+      },
+      "snapshot_sha256": "b1d332f8f6c22164f83e8549703cba2b4a9d4fb625567b10029213464fa0d6e7"
+    },
+    {
+      "group": "writing",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/writing/start/vim-autocorrect/README.markdown"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-autocorrect",
+      "path": ".vim/pack/writing/start/vim-autocorrect",
+      "provenance": {
+        "branch": "master",
+        "commit": "28ef54d5cdd2d1021d54c90d80eb1a7d02fb58bc",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/panozzaj/vim-autocorrect.git"
+      },
+      "snapshot_sha256": "bc256b75d422f5bd8e1471676e1f50609e1cabcfbed06b775922d5d512ee2304"
+    },
+    {
+      "group": "writing",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/writing/start/vim-grammarous/README.md",
+          ".vim/pack/writing/start/vim-grammarous/doc/grammarous.txt"
+        ],
+        "status": "documentation_mentions"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-grammarous",
+      "path": ".vim/pack/writing/start/vim-grammarous",
+      "provenance": {
+        "branch": "master",
+        "commit": "db46357465ce587d5325e816235b5e92415f8c05",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/rhysd/vim-grammarous.git"
+      },
+      "snapshot_sha256": "880b7ce89d4e17eecf59d85c520cc372a8078ab144285e6d88749438d715c785"
+    },
+    {
+      "group": "writing",
+      "license_evidence": {
+        "paths": [],
+        "status": "not_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-markdown-preview",
+      "path": ".vim/pack/writing/start/vim-markdown-preview",
+      "provenance": {
+        "branch": "master",
+        "commit": "9b3ec41fb6f0f49d9bb7ca81fa1c62a8a54b1214",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/JamshedVesuna/vim-markdown-preview.git"
+      },
+      "snapshot_sha256": "151d36f315136fc03ece6a8ed05074a0b96f3ca29b6739a18e668909b2e0acc2"
+    },
+    {
+      "group": "writing",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/writing/start/vim-translator/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-translator",
+      "path": ".vim/pack/writing/start/vim-translator",
+      "provenance": {
+        "branch": "master",
+        "commit": "91b9bf71ce0ca6e85009fa6aa14eb0c6820574f6",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/voldikss/vim-translator.git"
+      },
+      "snapshot_sha256": "2f9baaf8219a6d86df5f7a326c3bfe53ec88809f6d8d0e071ce19d052b154a77"
+    },
+    {
+      "group": "writing",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/writing/start/vim-wordy/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-wordy",
+      "path": ".vim/pack/writing/start/vim-wordy",
+      "provenance": {
+        "branch": "master",
+        "commit": "590927f57277666e032702b26e4e0c82717cc3cb",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/reedes/vim-wordy.git"
+      },
+      "snapshot_sha256": "f149e45409372333e600e148c7d65604659e56567ca45bb75c75dba78a0b269d"
+    },
+    {
+      "group": "yocto",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/yocto/start/vim-bitbake/LICENSE.txt"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "vim-bitbake",
+      "path": ".vim/pack/yocto/start/vim-bitbake",
+      "provenance": {
+        "branch": "master",
+        "commit": "0a229746e4a8e9c5b3b4666e9452dec2cbe69c9b",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/kergoth/vim-bitbake.git"
+      },
+      "snapshot_sha256": "4e541fbb5189bd2d3300ab15e568cd8718bb62faad7cc39572bd29c1f753b5f4"
+    },
+    {
+      "group": "yocto",
+      "license_evidence": {
+        "paths": [
+          ".vim/pack/yocto/start/yoctolog.vim/LICENSE"
+        ],
+        "status": "notice_files_found"
+      },
+      "load": "start",
+      "local_patches": "not_compared_with_upstream",
+      "name": "yoctolog.vim",
+      "path": ".vim/pack/yocto/start/yoctolog.vim",
+      "provenance": {
+        "branch": "master",
+        "commit": "614be65c1c0bc93643e618da6aa26961cad0fe00",
+        "kind": "git-subrepo",
+        "remote": "https://github.com/arnstein/yoctolog.vim.git"
+      },
+      "snapshot_sha256": "05c8d90b99973bd0e06250f46a802e4ba106c1c6090ff527add53d5588491e4a"
+    }
+  ],
+  "schema": 1
+}

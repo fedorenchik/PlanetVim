@@ -1,0 +1,99 @@
+name: PlanetVim tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  linux:
+    name: Linux GVim ${{ matrix.version }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - version: 9.1.0000
+            commit: b4ddc6c11e95cef4b372e239871fae1c8d4f72b6
+          - version: 9.2.1046
+            commit: 4e5ac0d68a3e35602b63fba7b334baa9dc7cc22e
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4, verified 2026-09-08
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - name: Install build and display dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libgtk-3-dev libncurses-dev libxt-dev libx11-dev libxpm-dev python3-dev xvfb xauth
+      - name: Check out pinned official Vim source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: vim/vim
+          ref: ${{ matrix.commit }}
+          path: build/vim
+      - name: Build GVim
+        working-directory: build/vim
+        run: |
+          ./configure --with-features=huge --enable-gui=gtk3 --enable-multibyte --enable-python3interp=dynamic --enable-terminal --prefix="$RUNNER_TEMP/gvim"
+          make -j2
+          make install
+          echo "$RUNNER_TEMP/gvim/bin" >> "$GITHUB_PATH"
+      - name: Check plugin inventory
+        run: python scripts/plugins.py inventory --check
+      - name: Run Python and GVim engine tests
+        run: make test
+      - name: Run actual GUI checks in a private display
+        run: xvfb-run -a python scripts/test.py --gui
+
+  windows:
+    name: Windows GVim ${{ matrix.version }}
+    runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - version: 9.1.0
+            directory: vim91
+            sha256: 8e7676fe62d94f23199c8b238e06896d19c6d9bc7728afad3297324b4fb2d144
+          - version: 9.2.1046
+            directory: vim92
+            sha256: a1030dc9a270befed19c8327b1b86ee938e673444d4d9e6aadc512666f27c046
+    steps:
+      - name: Preserve vendored snapshot bytes
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+          architecture: x64
+      - name: Download and verify official GVim archive
+        shell: pwsh
+        env:
+          VIM_VERSION: ${{ matrix.version }}
+          VIM_DIRECTORY: ${{ matrix.directory }}
+          VIM_SHA256: ${{ matrix.sha256 }}
+        run: |
+          $archive = Join-Path $env:RUNNER_TEMP 'gvim.zip'
+          $directory = Join-Path $env:RUNNER_TEMP 'gvim'
+          $url = "https://github.com/vim/vim-win32-installer/releases/download/v$env:VIM_VERSION/gvim_$($env:VIM_VERSION)_x64.zip"
+          Invoke-WebRequest -Uri $url -OutFile $archive
+          $actual = (Get-FileHash -Algorithm SHA256 -Path $archive).Hash.ToLowerInvariant()
+          if ($actual -ne $env:VIM_SHA256) { throw 'GVim archive checksum mismatch' }
+          Expand-Archive -Path $archive -DestinationPath $directory
+          $binaryDirectory = Join-Path $directory "vim/$env:VIM_DIRECTORY"
+          if (!(Test-Path (Join-Path $binaryDirectory 'gvim.exe'))) { throw 'GVim executable missing from verified archive' }
+          $registration = Start-Process -FilePath (Join-Path $binaryDirectory 'gvim.exe') -ArgumentList '-register' -Wait -PassThru
+          if ($registration.ExitCode -ne 0) { throw 'GVim type-library registration failed' }
+          $binaryDirectory | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      - name: Run Python checks
+        run: python -m unittest discover -s tests -p "test_*.py"
+      - name: Check plugin inventory
+        run: python scripts/plugins.py inventory --check
+      - name: Run GVim engine checks
+        run: python scripts/test.py
+      - name: Run Windows GUI checks
+        run: python scripts/test.py --gui
