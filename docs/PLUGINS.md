@@ -98,5 +98,13 @@ before extraction. Action revisions are pinned to the official
 [checkout](https://github.com/actions/checkout) and
 [setup-python](https://github.com/actions/setup-python) repositories.
 
+Both platforms install [debugpy 1.8.21](https://github.com/microsoft/debugpy/releases/tag/v1.8.21).
+Linux also installs GDB and requires the real C++ and Python debugger GUI tests
+to run. Windows requires the Python debugger GUI tests; C++ debugger tests report
+an explicit skip when a DAP-capable GDB and compiler are absent. Both official
+Windows GVim packages use Python's stable ABI (`python3.dll`), paired with the
+workflow's Python 3.12 installation. The archive registration step uses
+`gvim -silent -register` to avoid the first-start type-library dialog.
+
 A checked-in workflow is not a claim that hosted CI has passed. Windows runtime
 behavior must be confirmed by a successful Windows job and a recorded GUI run.

@@ -28,7 +28,9 @@ jobs:
       - name: Install build and display dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential libgtk-3-dev libncurses-dev libxt-dev libx11-dev libxpm-dev python3-dev xvfb xauth
+          sudo apt-get install -y build-essential gdb libgtk-3-dev libncurses-dev libxt-dev libx11-dev libxpm-dev python3-dev xvfb xauth
+      - name: Install pinned Python debugger
+        run: python -m pip install debugpy==1.8.21
       - name: Check out pinned official Vim source
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
@@ -38,7 +40,7 @@ jobs:
       - name: Build GVim
         working-directory: build/vim
         run: |
-          ./configure --with-features=huge --enable-gui=gtk3 --enable-multibyte --enable-python3interp=dynamic --enable-terminal --prefix="$RUNNER_TEMP/gvim"
+          ./configure --enable-fail-if-missing --with-features=huge --enable-gui=gtk3 --enable-multibyte --enable-python3interp=dynamic --enable-terminal --prefix="$RUNNER_TEMP/gvim"
           make -j2
           make install
           echo "$RUNNER_TEMP/gvim/bin" >> "$GITHUB_PATH"
@@ -47,6 +49,8 @@ jobs:
       - name: Run Python and GVim engine tests
         run: make test
       - name: Run actual GUI checks in a private display
+        env:
+          PLANETVIM_REQUIRE_DEBUG_TESTS: '1'
         run: xvfb-run -a python scripts/test.py --gui
 
   windows:
@@ -86,14 +90,18 @@ jobs:
           Expand-Archive -Path $archive -DestinationPath $directory
           $binaryDirectory = Join-Path $directory "vim/$env:VIM_DIRECTORY"
           if (!(Test-Path (Join-Path $binaryDirectory 'gvim.exe'))) { throw 'GVim executable missing from verified archive' }
-          $registration = Start-Process -FilePath (Join-Path $binaryDirectory 'gvim.exe') -ArgumentList '-register' -Wait -PassThru
+          $registration = Start-Process -FilePath (Join-Path $binaryDirectory 'gvim.exe') -ArgumentList '-silent', '-register' -Wait -PassThru
           if ($registration.ExitCode -ne 0) { throw 'GVim type-library registration failed' }
           $binaryDirectory | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
       - name: Run Python checks
         run: python -m unittest discover -s tests -p "test_*.py"
+      - name: Install pinned Python debugger
+        run: python -m pip install debugpy==1.8.21
       - name: Check plugin inventory
         run: python scripts/plugins.py inventory --check
       - name: Run GVim engine checks
         run: python scripts/test.py
       - name: Run Windows GUI checks
+        env:
+          PLANETVIM_REQUIRE_DEBUG_PYTHON: '1'
         run: python scripts/test.py --gui

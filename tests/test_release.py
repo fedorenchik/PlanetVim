@@ -1,8 +1,6 @@
 """Release tests build and install disposable Git sources, never the checkout."""
 import hashlib
 import importlib.util
-import json
-import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -17,9 +15,6 @@ ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location('planetvim_release', ROOT / 'scripts/release.py')
 release = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(release)
-install_spec = importlib.util.spec_from_file_location('planetvim_release_install', ROOT / 'scripts/install.py')
-installer = importlib.util.module_from_spec(install_spec)
-install_spec.loader.exec_module(installer)
 
 
 class ReleaseTests(unittest.TestCase):

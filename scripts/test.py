@@ -55,7 +55,7 @@ def run(path, executable, gui, display=None):
         runtime = ROOT / ".vim/pack/planet/start/planet.vim"
         script = temp / "run.vim"
         lines = [
-            "set nocompatible nomore nomodeline noswapfile noundofile",
+            "set nocompatible encoding=utf-8 nomore nomodeline noswapfile noundofile",
             "set viminfofile=NONE",
             "set guioptions+=c",
             "if !has('win32') | set shell=/bin/sh | endif",
@@ -64,6 +64,10 @@ def run(path, executable, gui, display=None):
             f"let g:PV_config_dir = {vim_string(temp / 'config')}",
             f"let g:PV_state_dir = {vim_string(temp / 'state')}",
             f"let g:PV_cache_dir = {vim_string(temp / 'cache')}",
+            "for s:pathkey in ['PV_root', 'PV_test_dir', 'PV_config_dir', 'PV_state_dir', 'PV_cache_dir']",
+            "  let g:[s:pathkey] = substitute(fnamemodify(g:[s:pathkey], ':p'), '[/\\\\]\\+$', '', '')",
+            "endfor",
+            "if !empty($PLANETVIM_TEST_PYTHON) | let g:PV_python = [$PLANETVIM_TEST_PYTHON] | endif",
             "let g:PV_config = g:PV_config_dir .. '/planetvimrc.vim'",
             f"let &runtimepath = {vim_string(runtime)} .. ',' .. $VIMRUNTIME",
             "let &packpath = $VIMRUNTIME",
@@ -74,7 +78,7 @@ def run(path, executable, gui, display=None):
             "catch",
             "  call add(v:errors, v:exception .. ' at ' .. v:throwpoint)",
             "endtry",
-            f"call writefile([json_encode(v:errors)], {vim_string(result)})",
+            f"call writefile([json_encode({{'errors': v:errors, 'skip': get(g:, 'PV_test_skip', '')}})], {vim_string(result)})",
             "execute 'cquit ' .. (empty(v:errors) ? 0 : 1)",
         ]
         script.write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -91,14 +95,15 @@ def run(path, executable, gui, display=None):
             process = subprocess.run(command, cwd=temp, env=environment,
                                      capture_output=True, text=True, timeout=60)
         except subprocess.TimeoutExpired:
-            return ["GVim timed out after 60 seconds"]
+            return ["GVim timed out after 60 seconds"], ''
         if not result.exists():
             return [f"GVim exited {process.returncode} without a result: "
-                    + process.stderr[-2000:]]
-        errors = json.loads(result.read_text(encoding="utf-8"))
+                    + process.stderr[-2000:]], ''
+        recorded = json.loads(result.read_text(encoding="utf-8"))
+        errors = recorded['errors']
         if process.returncode and not errors:
             errors.append(f"GVim exited {process.returncode}: {process.stderr[-2000:]}")
-        return errors
+        return errors, recorded['skip'] if not errors else ''
 
 
 def main():
@@ -115,14 +120,18 @@ def main():
     if not tests:
         parser.error("No Vimscript tests found")
     failed = 0
+    skipped = 0
     with virtual_display(args.xvfb) as display:
         for test in tests:
-            errors = run(test, executable, args.gui, display)
-            print(f"{'FAIL' if errors else 'PASS'} {test.name}", flush=True)
+            errors, skip = run(test, executable, args.gui, display)
+            print(f"{'FAIL' if errors else 'SKIP' if skip else 'PASS'} {test.name}", flush=True)
+            if skip:
+                print('  ' + skip, flush=True)
+                skipped += 1
             for error in errors:
                 print("  " + error, flush=True)
             failed += bool(errors)
-    print(f"{len(tests) - failed}/{len(tests)} files passed ({'GUI' if args.gui else 'GVim engine'} checks)")
+    print(f"{len(tests) - failed - skipped}/{len(tests)} files passed; {skipped} skipped ({'GUI' if args.gui else 'GVim engine'} checks)")
     return bool(failed)
 
 

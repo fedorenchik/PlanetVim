@@ -1986,8 +1986,10 @@
     {
       "group": "planet",
       "license_evidence": {
-        "paths": [],
-        "status": "not_found"
+        "paths": [
+          ".vim/pack/planet/start/planet.vim/doc/planetvim.txt"
+        ],
+        "status": "documentation_mentions"
       },
       "load": "start",
       "local_patches": "part_of_distribution_checkout",
