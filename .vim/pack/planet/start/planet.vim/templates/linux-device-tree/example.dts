@@ -1,0 +1,11 @@
+/dts-v1/;
+/ {
+    compatible = "planet,example-board";
+    #address-cells = <1>;
+    #size-cells = <1>;
+    example@0 {
+        compatible = "planet,example";
+        reg = <0x0 0x1000>;
+        status = "disabled";
+    };
+};

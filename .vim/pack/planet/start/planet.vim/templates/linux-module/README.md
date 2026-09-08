@@ -1,0 +1,1 @@
+Build only: make KDIR=/path/to/kernel/build with matching Linux5.6+ headers. To test deliberately on a disposable test kernel, load planet_example.ko with value=42, read /proc/planet_example and /sys/kernel/debug/planet_example/value, then unload.

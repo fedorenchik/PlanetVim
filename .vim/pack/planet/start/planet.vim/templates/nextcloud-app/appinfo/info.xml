@@ -1,0 +1,2 @@
+<?xml version="1.0"?>
+<info><id>planetapp</id><name>Planet App</name><summary>A minimal Nextcloud app</summary><description>A minimal page controller.</description><version>0.1.0</version><licence>mit</licence><author>Your name</author><namespace>PlanetApp</namespace><category>tools</category><dependencies><nextcloud min-version="30" max-version="33"/></dependencies><navigations><navigation><name>Planet App</name><route>planetapp.page.index</route><order>10</order></navigation></navigations></info>

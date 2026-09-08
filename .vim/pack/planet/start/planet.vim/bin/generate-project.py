@@ -80,6 +80,14 @@ def copy_template(source, destination, directory=True):
             shutil.copytree(source, staged)
         else:
             shutil.copy2(source, staged)
+        # Qt model identifiers must be distinct in every generated document.
+        models = list(staged.rglob('*.qmodel')) if staged.is_dir() else ([staged] if source.suffix == '.qmodel' else [])
+        for model in models:
+            text = model.read_text(encoding='utf-8')
+            for token in ('%{UUID1}', '%{UUID2}', '%{UUID3}'):
+                text = text.replace(token, '{' + str(uuid.uuid4()) + '}')
+            model.write_text(text, encoding='utf-8')
+
         # Keep an existing destination outside the disposable staging tree so
         # even a concurrent writer cannot make cleanup remove original data.
         previous = destination.parent / ('.planetvim-previous-' + uuid.uuid4().hex)

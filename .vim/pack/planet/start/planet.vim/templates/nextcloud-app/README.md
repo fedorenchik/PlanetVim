@@ -1,0 +1,1 @@
+Place this directory at Nextcloud apps/planetapp, then run `php occ app:enable planetapp` in a Nextcloud30–33 instance. Rename planetapp/PlanetApp consistently before publishing. See https://docs.nextcloud.com/server/latest/developer_manual/basics/routing.html .

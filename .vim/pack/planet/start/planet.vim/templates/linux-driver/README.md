@@ -1,0 +1,1 @@
+Build with matching Linux headers using make KDIR=/path/to/kernel/build. The driver binds to an enabled planet,example device-tree node. It does not map registers or operate hardware; add board-specific resources through devm APIs and validate on a test target.

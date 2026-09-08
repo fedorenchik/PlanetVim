@@ -1,0 +1,1 @@
+ROS1/catkin starter. Put it in a sourced ROS1 workspace src/planet_example, run catkin_make, source devel/setup.bash, then rosrun planet_example hello. ROS1 requires an existing supported distribution/environment; use the ROS2 menu for newer workspaces.

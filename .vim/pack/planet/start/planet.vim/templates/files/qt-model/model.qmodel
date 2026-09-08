@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<qmt><project><uid>%{UUID1}</uid><root-package><instance><MPackage><base-MObject><MObject><base-MElement><MElement><uid>%{UUID2}</uid></MElement></base-MElement><name>Model</name></MObject></base-MObject></MPackage></instance></root-package></project></qmt>

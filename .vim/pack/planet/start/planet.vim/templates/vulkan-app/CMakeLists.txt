@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.16)
+project(planet_vulkan LANGUAGES CXX)
+find_package(Vulkan REQUIRED)
+add_executable(planet_vulkan main.cpp)
+target_link_libraries(planet_vulkan PRIVATE Vulkan::Vulkan)

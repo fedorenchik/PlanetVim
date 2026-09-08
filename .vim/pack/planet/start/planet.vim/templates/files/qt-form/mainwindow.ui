@@ -1,0 +1,2 @@
+<?xml version="1.0"?>
+<ui version="4.0"><class>MainWindow</class><widget class="QMainWindow" name="MainWindow"><property name="windowTitle"><string>PlanetVim</string></property><widget class="QWidget" name="centralwidget"><layout class="QVBoxLayout" name="verticalLayout"><item><widget class="QLabel" name="label"><property name="text"><string>Hello from PlanetVim</string></property></widget></item></layout></widget></widget><resources/><connections/></ui>

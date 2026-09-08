@@ -1,0 +1,182 @@
+{
+  "blender-addon": {
+    "kind": "directory",
+    "path": "blender-addon"
+  },
+  "nextcloud-app": {
+    "kind": "directory",
+    "path": "nextcloud-app"
+  },
+  "wordpress-plugin": {
+    "kind": "directory",
+    "path": "wordpress-plugin"
+  },
+  "wordpress-theme": {
+    "kind": "directory",
+    "path": "wordpress-theme"
+  },
+  "latex-book": {
+    "kind": "directory",
+    "path": "latex-book"
+  },
+  "python-dsl": {
+    "kind": "directory",
+    "path": "python-dsl"
+  },
+  "cpp-dsl": {
+    "kind": "directory",
+    "path": "cpp-dsl"
+  },
+  "linux-device-tree": {
+    "kind": "directory",
+    "path": "linux-device-tree"
+  },
+  "ros-package": {
+    "kind": "directory",
+    "path": "ros-package"
+  },
+  "vulkan-app": {
+    "kind": "directory",
+    "path": "vulkan-app"
+  },
+  "yocto-system": {
+    "kind": "directory",
+    "path": "yocto-system"
+  },
+  "linux-module": {
+    "kind": "directory",
+    "path": "linux-module"
+  },
+  "linux-driver": {
+    "kind": "directory",
+    "path": "linux-driver"
+  },
+  "makefile": {
+    "kind": "file",
+    "path": "files/makefile/Makefile"
+  },
+  "cpp-class": {
+    "kind": "file",
+    "path": "files/cpp-class/Example.hpp"
+  },
+  "cpp-enum": {
+    "kind": "file",
+    "path": "files/cpp-enum/Status.hpp"
+  },
+  "cpp-module": {
+    "kind": "file",
+    "path": "files/cpp-module/planet.cppm"
+  },
+  "python-app": {
+    "kind": "file",
+    "path": "files/python-app/app.py"
+  },
+  "python-class": {
+    "kind": "file",
+    "path": "files/python-class/example.py"
+  },
+  "qt-form-class": {
+    "kind": "directory",
+    "path": "qt-form-class"
+  },
+  "qt-scxml": {
+    "kind": "file",
+    "path": "files/qt-scxml/machine.scxml"
+  },
+  "qt-item-model": {
+    "kind": "file",
+    "path": "files/qt-item-model/ExampleModel.hpp"
+  },
+  "qt-form": {
+    "kind": "file",
+    "path": "files/qt-form/mainwindow.ui"
+  },
+  "qt-resource": {
+    "kind": "file",
+    "path": "files/qt-resource/resources.qrc"
+  },
+  "qt-qml": {
+    "kind": "file",
+    "path": "files/qt-qml/main.qml"
+  },
+  "qt-quick-ui": {
+    "kind": "file",
+    "path": "files/qt-quick-ui/Form.ui.qml"
+  },
+  "glsl-vertex": {
+    "kind": "file",
+    "path": "files/glsl-vertex/shader.vert"
+  },
+  "glsl-fragment": {
+    "kind": "file",
+    "path": "files/glsl-fragment/shader.frag"
+  },
+  "glsl-geometry": {
+    "kind": "file",
+    "path": "files/glsl-geometry/shader.geom"
+  },
+  "glsl-compute": {
+    "kind": "file",
+    "path": "files/glsl-compute/shader.comp"
+  },
+  "glsl-tess-control": {
+    "kind": "file",
+    "path": "files/glsl-tess-control/shader.tesc"
+  },
+  "glsl-tess-evaluation": {
+    "kind": "file",
+    "path": "files/glsl-tess-evaluation/shader.tese"
+  },
+  "web-html": {
+    "kind": "file",
+    "path": "files/web-html/index.html"
+  },
+  "web-css": {
+    "kind": "file",
+    "path": "files/web-css/style.css"
+  },
+  "web-javascript": {
+    "kind": "file",
+    "path": "files/web-javascript/main.js"
+  },
+  "web-typescript": {
+    "kind": "file",
+    "path": "files/web-typescript/main.ts"
+  },
+  "web-php": {
+    "kind": "file",
+    "path": "files/web-php/index.php"
+  },
+  "web-django": {
+    "kind": "file",
+    "path": "files/web-django/app.py"
+  },
+  "web-flask": {
+    "kind": "file",
+    "path": "files/web-flask/app.py"
+  },
+  "web-vue": {
+    "kind": "file",
+    "path": "files/web-vue/HelloWorld.vue"
+  },
+  "web-htaccess": {
+    "kind": "file",
+    "path": "files/web-htaccess/.htaccess"
+  },
+  "web-robots": {
+    "kind": "file",
+    "path": "files/web-robots/robots.txt"
+  },
+  "latex-article": {
+    "kind": "file",
+    "path": "files/latex-article/article.tex"
+  },
+  "latex-chapter": {
+    "kind": "file",
+    "path": "files/latex-chapter/chapter.tex"
+  },
+  "qt-model": {
+    "kind": "file",
+    "path": "files/qt-model/model.qmodel"
+  }
+}
