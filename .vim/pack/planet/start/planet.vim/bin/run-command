@@ -1,15 +1,44 @@
 #!/usr/bin/env bash
 
-if [ "$1" == "cd" ]; then
-	shift
-	cd "$1"
-	shift
-	shift
+# Standalone helper. GVim uses native jobs instead, including on Windows.
+# Usage: run-command [--cwd DIR] -- COMMAND [ARG ...]
+#        run-command [--cwd DIR] --shell 'an intentional shell script'
+# Older callers may still use: run-command cd DIR ';' COMMAND [ARG ...]
+if [[ ${1-} == --cwd ]]; then
+	if [[ $# -lt 2 ]] || ! cd -- "$2"; then
+		printf 'Cannot use the requested working directory.\n' >&2
+		exit 2
+	fi
+	shift 2
+elif [[ ${1-} == cd ]]; then
+	if [[ $# -lt 3 || $3 != ';' ]] || ! cd -- "$2"; then
+		printf 'Expected: cd DIRECTORY ; COMMAND [ARG ...]\n' >&2
+		exit 2
+	fi
+	shift 3
 fi
 
-echo "PWD=$PWD"
-echo "Start command: $@"
-eval "$@"
+if [[ ${1-} == -- ]]; then
+	shift
+fi
+if [[ $# -eq 0 ]]; then
+	printf 'No command specified.\n' >&2
+	exit 2
+fi
 
+printf 'PWD=%s\n' "$PWD"
+printf 'Start command:'
+printf ' %q' "$@"
+printf '\n'
+if [[ $1 == --shell ]]; then
+	if [[ $# -ne 2 ]]; then
+		printf -- '--shell requires exactly one script argument.\n' >&2
+		exit 2
+	fi
+	"${SHELL:-/bin/sh}" -c "$2"
+else
+	"$@"
+fi
 exit_status=$?
-echo "Exit status: $exit_status"
+printf 'Exit status: %s\n' "$exit_status"
+exit "$exit_status"
