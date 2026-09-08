@@ -271,46 +271,7 @@ au CmdWinEnter / noremap <buffer> <S-CR> <CR>q/
 au CmdWinEnter ? noremap <buffer> <S-CR> <CR>q?
 au CursorHold * if win_gettype() == "" | checktime | end
 au CursorHoldI * if win_gettype() == "" | checktime | end
-au FileType cmake setlocal keywordprg=:CMakeHelpPopup
-au FileType cmake nmap <buffer> <leader>k <plug>(cmake-help-online)
-au FileType cmake nmap <buffer> <leader>K <plug>(cmake-help)
-au FileType cmake setlocal ballooneval
-au FileType cmake setlocal balloonevalterm
-au FileType cmake setlocal balloonexpr=cmakehelp#balloonexpr()
-au FileType c,cpp setlocal foldmethod=syntax
-au FileType c,cpp inoreabbrev #e #endif 
-au FileType c,cpp inoreabbrev #d #define 
-au FileType c,cpp inoreabbrev #i #include 
-au FileType c,cpp inoreabbrev #n #ifndef 
-au FileType c,cpp inoreabbrev ,, <<
-au FileType c,cpp inoreabbrev ;b std::begin
-au FileType c,cpp inoreabbrev ;c std::cout
-au FileType c,cpp inoreabbrev ;e std::end
-au FileType c,cpp inoreabbrev ;m std::map
-au FileType c,cpp inoreabbrev ;s std::string
-au FileType c,cpp inoreabbrev ;v std::vector
-au FileType c,cpp inoremap ;; ::
-au FileType c setlocal colorcolumn=80
-au FileType cpp setlocal path+=/usr/include/c++/7
-au FileType cpp setlocal define=^\\(#\\s*define\\|[a-z]*\\s*const\\s*[a-z]*\\)
-au FileType cpp setlocal colorcolumn=120
-au FileType dockerfile,python,qmake setlocal expandtab
-au FileType dockerfile,python,qmake setlocal tabstop=4
-au FileType dockerfile,python,qmake setlocal shiftwidth=4
-au FileType help,markdown,text setlocal colorcolumn=+0
-au FileType markdown setlocal foldmethod=expr
-au FileType python setlocal makeprg=pylint3\ --reports=n\ --msg-template=\"{path}:{line}:\ {msg_id}\ {symbol},\ {obj}\ {msg}\"\ %:p
-au FileType python setlocal errorformat=%f:%l:\ %m
-au FileType sh setlocal formatoptions+=croql
-au FileType sh setlocal include=^\\s*\\%(\\.\\\|source\\)\\s
-au FileType sh setlocal define=\\<\\%(\\i\\+\\s*()\\)\\@=
-au FileType text setlocal textwidth=72 linebreak breakindent
-au FileType text setlocal complete+=k,s
-au FileType text setlocal spell
-au FileType text,markdown setlocal formatoptions+=t
-au FileType vim setlocal foldmethod=marker foldlevelstart=0 foldlevel=0
-au FileType * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | end
-au FileType * if &completefunc == "" | setlocal completefunc=syntaxcomplete#Complete | end
+" Filetype-specific behavior lives in planet.vim/plugin/filetypes.vim.
 au GUIEnter * set t_vb=
 au InsertLeave * if empty(&buftype) | pclose | end
 au SessionLoadPost * call planet#planet#SetPerSessionOptions()
@@ -1100,7 +1061,6 @@ let g:vista_stay_on_open = 1
 nnoremap <silent> ST :Vista<CR>
 nnoremap <silent> ZT :Vista!<CR>
 nnoremap <silent> <A-t> :Vista!! vim_lsp<CR>
-autocmd FileType markdown nnoremap <silent> <A-t> :Vista!! toc<CR>
 autocmd VimEnter * call vista#RunForNearestMethodOrFunction()
 " }}}
 " }}}
