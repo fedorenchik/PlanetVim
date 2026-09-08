@@ -29,7 +29,7 @@ func! planet#menu#dev#Update() abort
     an 300.10  ❇️&[.Code\ Action\ (LSP\ Quick\ &Fix)        <Cmd>LspCodeAction<CR>
     an 300.10  ❇️&[.Code\ &Lens                             <Cmd>LspCodeLens<CR>
     an 300.10  ❇️&[.Format\ Document                        <Cmd>LspDocumentFormat<CR>
-    an 300.10  ❇️&[.Format\ Document\ Selection             <Cmd>LspDocumentRangeFormat<CR>
+    an 300.10  ❇️&[.Format\ Document\ Selection             <Cmd>call planet#editing#FormatSelection()<CR>
     an 300.10  ❇️&[.Update\ Document\ Folds                 <Cmd>LspDocumentFold<CR>
     an 300.10  ❇️&[.--4-- <Nop>
     an 300.10  ❇️&[.Document\ Symbols                       <Cmd>LspDocumentSymbol<CR>
@@ -442,7 +442,7 @@ func! planet#menu#dev#Update() abort
     an 500.10  🔨&b.Ar&duino.Upload                          <Cmd>ArduinoUpload<CR>
     an 500.10  🔨&b.Ar&duino.Upload\ and\ Serial             <Cmd>ArduinoUploadAndSerial<CR>
     an 500.10  🔨&b.Ar&duino.Serial                          <Cmd>ArduinoSerial<CR>
-    an 500.10  🔨&b.Ar&duino.Set\ Baud                       <Cmd>ArduinoSetBaud<CR>
+    an 500.10  🔨&b.Ar&duino.Set\ Baud                       <Cmd>call planet#arduino#Baud()<CR>
     an 500.10  🔨&b.Ar&duino.--2-- <Nop>
     an 500.10  🔨&b.Ar&duino.Choose\ Board                   <Cmd>ArduinoChooseBoard<CR>
     an 500.10  🔨&b.Ar&duino.Choose\ Programmer              <Cmd>ArduinoChooseProgrammer<CR>

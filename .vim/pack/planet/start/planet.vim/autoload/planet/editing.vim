@@ -1,6 +1,72 @@
 scriptversion 4
 let s:left_directory = {}
 
+func! planet#editing#FormatSelection() abort
+  if mode() =~# '^[sS\x13]'
+    execute "normal! \<C-G>"
+  endif
+  if mode() =~# '^[vV\x16]'
+    execute "normal! \<Esc>"
+  endif
+  if line("'<") == 0 || line("'>") == 0
+    echom 'PlanetVim: select text before requesting range formatting.'
+    return 0
+  endif
+  execute "'<,'>LspDocumentRangeFormat"
+  return 1
+endfunc
+
+func! planet#editing#ExportHTML(selected = v:false) abort
+  if exists(':TOhtml') != 2 | runtime plugin/tohtml.vim | endif
+  if mode() =~# '^[sS\x13]'
+    execute "normal! \<C-G>"
+  endif
+  if !a:selected
+    TOhtml
+    setlocal filetype=html
+    return bufnr()
+  endif
+  let l:source_window = win_getid()
+  let l:syntax = &syntax
+  let l:directory = tempname()
+  let l:scratch = 0
+  let l:scratch_window = 0
+  try
+    let l:selection = planet#selection#Current()
+    call mkdir(l:directory, 'p', 0o700)
+    let l:path = l:directory .. '/selection'
+    call planet#selection#Export(l:path, l:selection)
+    execute 'noautocmd keepalt tabnew ' .. fnameescape(l:path)
+    let l:scratch = bufnr()
+    let l:scratch_window = win_getid()
+    setlocal noswapfile nobuflisted bufhidden=wipe
+    let &syntax = l:syntax
+    TOhtml
+    " The private input disappears below. Leave an unnamed HTML result so Save
+    " offers a destination instead of writing into a deleted temporary folder.
+    let l:generated_name = bufname()
+    noautocmd keepalt 0file
+    let l:old_name_buffer = bufnr(l:generated_name)
+    if l:old_name_buffer > 0 && l:old_name_buffer != bufnr()
+      execute 'noautocmd silent! bwipeout! ' .. l:old_name_buffer
+    endif
+    setlocal filetype=html
+    return bufnr()
+  catch
+    echohl ErrorMsg | echom 'PlanetVim HTML export: ' .. v:exception | echohl None
+    noautocmd call win_gotoid(l:source_window)
+    return 0
+  finally
+    if l:scratch_window > 0 && win_id2win(l:scratch_window) > 0
+      call win_execute(l:scratch_window, 'noautocmd close!')
+    endif
+    if l:scratch > 0 && bufexists(l:scratch)
+      execute 'noautocmd silent! bwipeout! ' .. l:scratch
+    endif
+    call delete(l:directory, 'rf')
+  endtry
+endfunc
+
 func! s:PathKey(path) abort
   let l:path = substitute(fnamemodify(resolve(a:path), ':p'), '\\', '/', 'g')
   let l:path = substitute(l:path, '/\+$', '', '')

@@ -94,7 +94,8 @@ func! planet#menu#basic#Update() abort
     an 110.170 📁&f.--3-- <Nop>
     an 110.170 📁&f.Toggle\ AutoSave <Cmd>call planet#editing#AutoSaveToggle()<CR>
     an 110.170 📁&f.--4-- <Nop>
-    an 110.180 📁&f.Export\ (Selected)\ as\ HTML               <Cmd>TOhtml<CR>
+    an 110.180 📁&f.Export\ (Selected)\ as\ HTML               <Cmd>call planet#editing#ExportHTML()<CR>
+    vnoremenu 110.180 📁&f.Export\ (Selected)\ as\ HTML         <Esc><Cmd>call planet#editing#ExportHTML(v:true)<CR>
     an 110.180 📁&f.Convert\ to\ HTML                          <Cmd>runtime syntax/2html.vim<CR>
     an 110.190 📁&f.--5-- <Nop>
     am 110.200 📁&f.&Previous\ in\ Folder<Tab>[f               [f
