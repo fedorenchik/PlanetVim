@@ -1,50 +1,32 @@
-help:
+PYTHON ?= python3
+PREFIX ?=
+export PLANETVIM_PREFIX = $(PREFIX)
 
-SHELL := /bin/bash
-
+.DEFAULT_GOAL := help
 .NOTPARALLEL:
 
-FILES := .vim/ .vimrc
-RSYNC := rsync
-
-RSYNC_OPTIONS := -aHAX --delete-missing-args --delete-after \
-	--exclude='/session/*' \
-	--exclude='/undo/*' \
-	--exclude='/view/*' \
-	--exclude='/viminfo/*' \
-	--exclude='/planetvimrc.vim'
-
 help:
-	@echo push      -- push changes to remote
-	@echo pull      -- pull changes from remote to local
-	@echo install   -- update files now
-	@echo uninstall -- TODO
-	@echo help      -- this help
+	@echo 'install    Install in a private directory (PREFIX=path optional)'
+	@echo 'update     Update the private installation, retaining backups'
+	@echo 'preview    Show installation changes without writing destination files'
+	@echo 'uninstall  Remove owned files; preserve local modifications'
+	@echo 'restore    Undo the most recent install, update, or uninstall'
+	@echo 'test       Run the distribution tests'
+	@echo 'test-gui   Run Vimscript checks in GVim (requires a display)'
 
-install:
-	for file in $(FILES); do $(RSYNC) $(RSYNC_OPTIONS) $$file $(HOME)/$$file; done
-	vim -c 'helptags ALL' -c 'q'
-	#vim -c 'runtime spell/cleanadd.vim' -c 'q'
-	#cd $(HOME)/.vim/pack/basic/start/vim-clap && cargo build --release
+install update uninstall restore:
+	$(PYTHON) scripts/install.py $@
 
-commit:
-	git add $(FILES) Makefile README.md
-	git add .vim/pack/
-ifneq "$(DELETED_FILES)" ""
-	git rm --ignore-unmatch -- $(DELETED_FILES)
-endif
-	git commit -a -m 'Automatic commit at $(shell LC_ALL=C date)' || echo "Nothing to commit"
+preview:
+	$(PYTHON) scripts/install.py install --dry-run
 
-push:
-	-git push
+test:
+	$(PYTHON) -m unittest discover -s tests -p 'test_*.py'
+	$(PYTHON) scripts/test.py
 
-pull:
-	git pull --ff-only
+test-gui:
+	$(PYTHON) scripts/test.py --gui
 
-uninstall:
-	@echo "TODO: Not implemented."
+all: install
 
-all: commit pull push install
-	notify-send --urgency=low --icon=terminal "homerc" "Updated"
-
-.PHONY: all help commit push pull install uninstall
+.PHONY: all help install update preview uninstall restore test test-gui
