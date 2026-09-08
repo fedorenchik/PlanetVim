@@ -198,7 +198,7 @@ endfunc
 " @on_exit optional Funcref(result, bufnr); result.status must be checked before
 "          starting success-only followups. Callback errors do not change the
 "          original process status.
-func! planet#term#RunCmd(cmd, this_window = v:false, close_on_exit = v:false, start_hidden = v:false, cd = '', on_exit = v:null) abort
+func! planet#term#RunCmd(cmd, this_window = v:false, close_on_exit = v:false, start_hidden = v:false, cd = '', on_exit = v:null, input_file = '') abort
   if index([v:t_string, v:t_list], type(a:cmd)) < 0 || empty(a:cmd)
     return s:Error('command must be a nonempty String or argv List')
   endif
@@ -212,6 +212,9 @@ func! planet#term#RunCmd(cmd, this_window = v:false, close_on_exit = v:false, st
   let l:cwd = empty(a:cd) ? getcwd() : fnamemodify(a:cd, ':p')
   if ! isdirectory(l:cwd)
     return s:Error('working directory does not exist: ' .. l:cwd)
+  endif
+  if !empty(a:input_file) && !filereadable(a:input_file)
+    return s:Error('input file is not readable: ' .. a:input_file)
   endif
   try
     let l:command = type(a:cmd) == v:t_list
@@ -235,8 +238,14 @@ func! planet#term#RunCmd(cmd, this_window = v:false, close_on_exit = v:false, st
         \ on_exit: a:on_exit,
         \ result: #{status: 'running', exit_code: v:null, signal: '',
         \ cwd: l:cwd, command: s:Label(a:cmd)}}
-  let l:term_opts = #{cwd: l:cwd, term_finish: 'noclose',
+  " Omitting term_finish retains the terminal on all supported Vim 9.1 builds;
+  " early 9.1 rejects the later explicit 'noclose' option value.
+  let l:term_opts = #{cwd: l:cwd,
         \ exit_cb: function('s:Exited', [l:context])}
+  if !empty(a:input_file)
+    let l:term_opts.in_io = 'file'
+    let l:term_opts.in_name = fnamemodify(a:input_file, ':p')
+  endif
   let l:term_opts.term_name = '[Output - ' .. s:Label(a:cmd) .. ']'
   if ! a:this_window
     let l:term_opts.term_rows = 10
@@ -277,6 +286,10 @@ func! planet#term#RunCmd(cmd, this_window = v:false, close_on_exit = v:false, st
     call win_gotoid(l:origin)
   endif
   return l:ret
+endfunc
+
+func! planet#term#RunInput(argv, input_file, cd = '') abort
+  return planet#term#RunCmd(a:argv, v:false, v:false, v:false, a:cd, v:null, a:input_file)
 endfunc
 
 func! planet#term#RunArgv(argv, ...) abort
