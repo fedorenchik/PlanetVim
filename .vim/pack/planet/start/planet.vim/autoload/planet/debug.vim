@@ -217,15 +217,19 @@ func! planet#debug#Detach() abort
   if !planet#debug#Init()
     return 0
   endif
+  let l:bridge_path = planet#paths#Root() .. '/.vim/pack/planet/start/planet.vim/python3'
   try
     py3 << EOF
 _pv_detach_bytecode = sys.dont_write_bytecode
+_pv_detach_path = sys.path[:]
 try:
     sys.dont_write_bytecode = True
+    sys.path.insert(0, vim.eval('l:bridge_path'))
     import planetvim_debug
 finally:
     sys.dont_write_bytecode = _pv_detach_bytecode
-    del _pv_detach_bytecode
+    sys.path[:] = _pv_detach_path
+    del _pv_detach_bytecode, _pv_detach_path
 def _pv_detach_report(result):
     vim.vars['PV_debug_detach_result'] = result
     if result['status'] == 'failed':

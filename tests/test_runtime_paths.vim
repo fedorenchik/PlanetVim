@@ -14,7 +14,7 @@ endfunc
 let s:root = g:PV_root
 let s:quoted = g:PV_test_dir .. "/installed prefix, 'quoted' 工作"
 let s:packages = {
-      \ 'planet/start/planet.vim': ['autoload', 'plugin', 'data'],
+      \ 'planet/start/planet.vim': ['autoload', 'plugin', 'data', 'python3'],
       \ 'writing/start/vim-autocorrect': ['plugin'],
       \ 'writing/start/vim-wordy': ['autoload', 'plugin', 'data'],
       \ 'basic/start/vim-test': ['autoload', 'plugin'],
@@ -26,6 +26,7 @@ for [s:package, s:directories] in items(s:packages)
     call s:CopyTree(s:root .. s:relative, s:quoted .. s:relative)
   endfor
 endfor
+call s:CopyTree(s:root .. '/tests/helpers', s:quoted .. '/tests/helpers')
 let s:entry = planet#paths#Runtime(s:quoted .. '/.vim/pack/planet/start/planet.vim')
 let &runtimepath = s:entry .. ',' .. planet#paths#Runtime($VIMRUNTIME)
 let &packpath = planet#paths#Runtime($VIMRUNTIME)
@@ -56,7 +57,28 @@ if has('python3')
   call assert_equal(1, s:debug_ready, execute('messages'))
   call assert_true(exists(':VimspectorReset') == 2)
   call assert_true(py3eval('sys.path == _pv_runtime_test_path'), 'debug initialization restores Python import paths')
-  py3 del _pv_runtime_test_path
+  py3 import builtins
+  py3 _pv_runtime_test_bytecode = sys.dont_write_bytecode
+  py3 _pv_runtime_test_import = builtins.__import__
+  py3 << EOF
+def _pv_runtime_failed_bridge(name, *args, **kwargs):
+    if name == 'planetvim_debug':
+        raise ImportError('isolated quoted-path bridge fixture failure')
+    return _pv_runtime_test_import(name, *args, **kwargs)
+builtins.__import__ = _pv_runtime_failed_bridge
+EOF
+  try
+    call assert_equal(0, planet#debug#Detach(), 'failed bridge import is reported')
+  finally
+    py3 builtins.__import__ = _pv_runtime_test_import
+    py3 del _pv_runtime_failed_bridge, _pv_runtime_test_import
+  endtry
+  call assert_true(py3eval('sys.path == _pv_runtime_test_path and sys.dont_write_bytecode == _pv_runtime_test_bytecode'), 'failed bridge import restores Python settings')
+  call assert_equal(0, planet#debug#Detach(), 'bridge rejects detach without an active session')
+  call assert_equal(substitute(s:quoted .. '/.vim/pack/planet/start/planet.vim/python3/planetvim_debug.py', '\\', '/', 'g'),
+        \ substitute(py3eval('planetvim_debug.__file__'), '\\', '/', 'g'), 'first-party detach bridge loads from the copied quoted installation')
+  call assert_true(py3eval('sys.path == _pv_runtime_test_path and sys.dont_write_bytecode == _pv_runtime_test_bytecode'), 'successful bridge import restores Python settings')
+  py3 del _pv_runtime_test_path, _pv_runtime_test_bytecode
 endif
 " A literal launch site visible only by scanning the copied autoload tree.
 call writefile(["call planet#term#RunArgv(['planetvim-inventory-fixture'])"],
