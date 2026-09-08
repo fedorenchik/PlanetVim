@@ -20,17 +20,29 @@ fun! planet#settings#SetTags()
   endif
 endfun
 
-fun! planet#settings#SetTextWidth()
+fun! planet#settings#SetTextWidth(...) abort
   if !exists("g:menutrans_textwidth_dialog")
     let g:menutrans_textwidth_dialog = "Enter new text width (0 to disable formatting): "
   endif
-  let n = inputdialog(g:menutrans_textwidth_dialog, &tw)
+  let n = a:0 ? a:1 : inputdialog(g:menutrans_textwidth_dialog, &tw)
   if n != ""
-    " Remove leading zeros to avoid it being used as an octal number.
-    " But keep a zero by itself.
-    let tw = substitute(n, "^0*", "", "")
-    let &tw = tw == '' ? 0 : tw
+    if n !~# '^\d\+$'
+      throw 'PlanetVim: text width must be a non-negative integer'
+    endif
+    let &l:textwidth = str2nr(n, 10)
   endif
+endfun
+
+fun! planet#settings#EditOption(option, ...) abort
+  let l:allowed = ['makeprg', 'grepprg', 'formatprg', 'equalprg', 'keywordprg',
+        \ 'path', 'tags', 'dictionary', 'thesaurus', 'include', 'define', 'suffixesadd']
+  if index(l:allowed, a:option) < 0
+    throw 'PlanetVim: unsupported option editor'
+  endif
+  let l:value = a:0 ? a:1 : inputdialog('Set buffer option ' .. a:option .. ':', eval('&l:' .. a:option), "\n")
+  if l:value ==# "\n" | return 0 | endif
+  execute 'let &l:' .. a:option .. ' = l:value'
+  return 1
 endfun
 
 fun! planet#settings#SetLineEndings()
@@ -38,7 +50,7 @@ fun! planet#settings#SetLineEndings()
     let g:menutrans_fileformat_dialog = "Select line endings for file"
   endif
   if !exists("g:menutrans_fileformat_choices")
-    let g:menutrans_fileformat_choices = "&Linux/Mac/Unix/Windows\nOld &Windows/Dos\nOld &Mac\n&Cancel"
+    let g:menutrans_fileformat_choices = "&Unix (LF)\n&Windows (CRLF)\nLegacy &Mac (CR)\n&Cancel"
   endif
   if &ff == "dos"
     let def = 2

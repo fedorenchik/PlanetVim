@@ -31,13 +31,15 @@ func! planet#menu#settings#Update() abort
     an 970.10  ⚙️&\\.--5-- <Nop>
     an 970.10  ⚙️&\\.Set\ 'path'                            :call planet#settings#SetPath()<CR>
     an 970.10  ⚙️&\\.Set\ 'tags'                            :call planet#settings#SetTags()<CR>
-    "TODO: add set *prg
-    "TODO: add set *path
+    for l:option in ['makeprg', 'grepprg', 'formatprg', 'equalprg', 'keywordprg', 'dictionary', 'thesaurus', 'include', 'define', 'suffixesadd']
+      execute 'an 970.10 ⚙️&\\.Buffer\ Options.' .. l:option
+            \ .. ' <Cmd>call planet#settings#EditOption(' .. string(l:option) .. ')<CR>'
+    endfor
     an 970.10  ⚙️&\\.--6-- <Nop>
     an 970.10  ⚙️&\\.Set\ GUI\ Dialogs                      :call planet#planet#SetGuiDialogs()<CR>
     an 970.10  ⚙️&\\.Set\ Text\ Dialogs                     :call planet#planet#SetTextDialogs()<CR>
     an 970.10  ⚙️&\\.--7-- <Nop>
-    if has("win32") || has("gui_gtk") || has("gui_mac")
+    if has("win32") || has("gui_gtk")
       an 970.10 ⚙️&\\.Select\ Fo&nt\.\.\.                   :set guifont=*<CR>
     endif
     an 970.10  ⚙️&\\.--8-- <Nop>
@@ -64,7 +66,7 @@ func! planet#menu#settings#Update() abort
     an 980.10  ⌨️&\|.List\ QF\ Lists                        :chistory<CR>
     an 980.10  ⌨️&\|.List\ LL\ Lists                        :lhistory<CR>
     an 980.10  ⌨️&\|.Current\ Colorscheme                   :colorscheme<CR>
-    an 980.10  ⌨️&\|.Syntax.Clear\ Buffer\ Syntax<Tab>:syn\ clear :syn clear<Tab>
+    an 980.10  ⌨️&\|.Syntax.Clear\ Buffer\ Syntax<Tab>:syn\ clear :syn clear<CR>
     an 980.10  ⌨️&\|.Syntax.On\ (Reset\ Highlight)<Tab>:syn\ on :syn on<CR>
     an 980.10  ⌨️&\|.Syntax.Enable\ (Keep\ Highlight)<Tab>:syn\ enable :syn enable<CR>
     an 980.10  ⌨️&\|.Syntax.Toggle                       :if exists("g:syntax_on") \| syntax off \| else \| syntax enable \| endif<CR>
@@ -109,18 +111,18 @@ func! planet#menu#settings#Update() abort
     an disable ❔&?.Help
     an 990.10  ❔&?.Help\ Contents                             <Cmd>h<CR>
     an 990.10  ❔&?.&Lookup\ Word\ under\ Cursor<Tab>K         K
-    an 990.10  ❔&?.&TLDR\ Word\ under\ Cursor                 <Cmd>call planet#term#RunCmd('tldr ' .. expand('<cword>'))<CR>
+    an 990.10  ❔&?.&TLDR\ Word\ under\ Cursor                 <Cmd>call planet#term#RunArgv(['tldr', expand('<cword>')])<CR>
     an 990.20  ❔&?.Inde&x                                     <Cmd>h index<CR>
     an 990.30  ❔&?.&QuickRef                                  <Cmd>h quickref<CR>
     an 990.40  ❔&?.&Plugins\ Documentation                    <Cmd>h local-additions<CR>
     an 990.50  ❔&?.View\ Log\ Messages<Tab>:messages          <Cmd>messages<CR>
     an 990.60  ❔&?.--1-- <Nop>
-    an 990.70  ❔&?.View\ &PlanetVim\ Community                <Cmd>silent !xdg-open https://matrix.to/\#/+planetvim:matrix.org<CR>
-    an 990.70  ❔&?.&Join\ PlanetVim\ Chat                     <Cmd>silent !xdg-open https://matrix.to/\#/\#planetvim_discussion:matrix.org?via=matrix.org<CR>
+    an 990.70  ❔&?.View\ &PlanetVim\ Community                <Cmd>call planet#gui#OpenUrl('https://matrix.to/#/+planetvim:matrix.org')<CR>
+    an 990.70  ❔&?.&Join\ PlanetVim\ Chat                     <Cmd>call planet#gui#OpenUrl('https://matrix.to/#/#planetvim_discussion:matrix.org?via=matrix.org')<CR>
     an 990.80  ❔&?.--2-- <Nop>
-    an 990.90  ❔&?.Check\ for\ &Updates                       <Cmd>silent !xdg-open https://github.com/fedorenchik/PlanetVim/releases<CR>
-    an 990.100 ❔&?.Add\ Feature\ Request                      <Cmd>silent !xdg-open 'https://github.com/fedorenchik/PlanetVim/issues/new?assignees=&labels=enhancement&template=feature_request.md&title='<CR>
-    an 990.100 ❔&?.Report\ PlanetVim\ &Issue                  <Cmd>silent !xdg-open 'https://github.com/fedorenchik/PlanetVim/issues/new?assignees=&labels=&template=bug_report.md&title'=<CR>
+    an 990.90  ❔&?.Check\ for\ &Updates                       <Cmd>call planet#gui#OpenUrl('https://github.com/fedorenchik/PlanetVim/releases')<CR>
+    an 990.100 ❔&?.Add\ Feature\ Request                      <Cmd>call planet#gui#OpenUrl('https://github.com/fedorenchik/PlanetVim/issues/new?labels=enhancement&template=feature_request.md')<CR>
+    an 990.100 ❔&?.Report\ PlanetVim\ &Issue                  <Cmd>call planet#gui#OpenUrl('https://github.com/fedorenchik/PlanetVim/issues/new?template=bug_report.md')<CR>
     an 990.110 ❔&?.--3-- <Nop>
     an 990.110 ❔&?.Others.Emergency\ Exit                     <Cmd>call planet#planet#EmergencyExit()<CR>
     an 990.110 ❔&?.Others.Restore\ PlanetVim\ Menu            <Cmd>call planet#planet#PlanetToggle()<CR>

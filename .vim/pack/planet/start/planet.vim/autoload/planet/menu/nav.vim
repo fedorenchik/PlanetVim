@@ -72,7 +72,7 @@ func! planet#menu#nav#Update() abort
     an 810.10  🗃️&a.Set\ Local                                 :argl<CR>
     an 810.10  🗃️&a.Set\ Global                                :argg<CR>
     an 810.10  🗃️&a.--2-- <Nop>
-    an 810.10  🗃️&a.Run\ Each                                  :argdo<CR>
+    an 810.10  🗃️&a.Run\ Each                                  :argdo<Space>
     an 810.10  🗃️&a.--3-- <Nop>
     an 810.10  🗃️&a.Args\ List <Nop>
     an disable 🗃️&a.Args\ List
@@ -98,9 +98,9 @@ func! planet#menu#nav#Update() abort
     an 820.10  🪟&w.&Move.To\ T&op<Tab>+K                   <C-w>K
     an 820.10  🪟&w.&Move.To\ &Bottom<Tab>+J                <C-w>J
     an 820.10  🪟&w.&Move.To\ New\ &Tab<Tab>+T              <C-w>T
-    an 820.10  🪟&w.&Move.To\ New\ &GUI\ Window             :TODO
+    an 820.10  🪟&w.&Move.To\ New\ &GUI\ Window             <Cmd>call planet#gui#Transfer(v:true)<CR>
     an 820.10  🪟&w.&Move.&Copy\ To\ New\ Tab<Tab>+s+T      <C-w>s<C-w>T
-    an 820.10  🪟&w.&Move.Copy\ To\ New\ &GUI\ Window       :TODO
+    an 820.10  🪟&w.&Move.Copy\ To\ New\ &GUI\ Window       <Cmd>call planet#gui#Transfer(v:false)<CR>
     an 820.10  🪟&w.--4-- <Nop>
     an 820.10  🪟&w.&Equal\ Size<Tab>+=                     <C-w>=
     an 820.10  🪟&w.Ma&ximize<Tab>+_+\|                     <Cmd>call planet#window#Maximize()<CR>
@@ -125,31 +125,31 @@ func! planet#menu#nav#Update() abort
     an 820.10  🪟&w.--7-- <Nop>
     an 820.10  🪟&w.Set\ Fixed\ Size                        <Cmd>set winfixheight winfixwidth<CR>
     an 820.10  🪟&w.--8-- <Nop>
-    an 820.10  🪟&w.V&iew.Save                              <Cmd>mkview<CR>
-    an 820.10  🪟&w.V&iew.Save\ 1                           <Cmd>mkview 1<CR>
-    an 820.10  🪟&w.V&iew.Save\ 2                           <Cmd>mkview 2<CR>
-    an 820.10  🪟&w.V&iew.Save\ 3                           <Cmd>mkview 3<CR>
-    an 820.10  🪟&w.V&iew.Save\ 4                           <Cmd>mkview 4<CR>
-    an 820.10  🪟&w.V&iew.Save\ 5                           <Cmd>mkview 5<CR>
-    an 820.10  🪟&w.V&iew.Save\ 6                           <Cmd>mkview 6<CR>
-    an 820.10  🪟&w.V&iew.Save\ 7                           <Cmd>mkview 7<CR>
-    an 820.10  🪟&w.V&iew.Save\ 8                           <Cmd>mkview 8<CR>
-    an 820.10  🪟&w.V&iew.Save\ 9\ (AutoSave)               <Cmd>mkview 9<CR>
+    an 820.10  🪟&w.V&iew.Save                              <Cmd>call planet#windowview#Save()<CR>
+    an 820.10  🪟&w.V&iew.Save\ 1                           <Cmd>call planet#windowview#Save(1)<CR>
+    an 820.10  🪟&w.V&iew.Save\ 2                           <Cmd>call planet#windowview#Save(2)<CR>
+    an 820.10  🪟&w.V&iew.Save\ 3                           <Cmd>call planet#windowview#Save(3)<CR>
+    an 820.10  🪟&w.V&iew.Save\ 4                           <Cmd>call planet#windowview#Save(4)<CR>
+    an 820.10  🪟&w.V&iew.Save\ 5                           <Cmd>call planet#windowview#Save(5)<CR>
+    an 820.10  🪟&w.V&iew.Save\ 6                           <Cmd>call planet#windowview#Save(6)<CR>
+    an 820.10  🪟&w.V&iew.Save\ 7                           <Cmd>call planet#windowview#Save(7)<CR>
+    an 820.10  🪟&w.V&iew.Save\ 8                           <Cmd>call planet#windowview#Save(8)<CR>
+    an 820.10  🪟&w.V&iew.Save\ 9\ (AutoSave)               <Cmd>call planet#windowview#Save(9)<CR>
     an 820.10  🪟&w.V&iew.--1-- <Nop>
-    an 820.10  🪟&w.V&iew.Load                              <Cmd>loadview<CR>
-    an 820.10  🪟&w.V&iew.Load\ 1                           <Cmd>loadview 1<CR>
-    an 820.10  🪟&w.V&iew.Load\ 2                           <Cmd>loadview 2<CR>
-    an 820.10  🪟&w.V&iew.Load\ 3                           <Cmd>loadview 3<CR>
-    an 820.10  🪟&w.V&iew.Load\ 4                           <Cmd>loadview 4<CR>
-    an 820.10  🪟&w.V&iew.Load\ 5                           <Cmd>loadview 5<CR>
-    an 820.10  🪟&w.V&iew.Load\ 6                           <Cmd>loadview 6<CR>
-    an 820.10  🪟&w.V&iew.Load\ 7                           <Cmd>loadview 7<CR>
-    an 820.10  🪟&w.V&iew.Load\ 8                           <Cmd>loadview 8<CR>
-    an 820.10  🪟&w.V&iew.Load\ 9\ (AutoSave)               <Cmd>loadview 9<CR>
+    an 820.10  🪟&w.V&iew.Load                              <Cmd>call planet#windowview#Load()<CR>
+    an 820.10  🪟&w.V&iew.Load\ 1                           <Cmd>call planet#windowview#Load(1)<CR>
+    an 820.10  🪟&w.V&iew.Load\ 2                           <Cmd>call planet#windowview#Load(2)<CR>
+    an 820.10  🪟&w.V&iew.Load\ 3                           <Cmd>call planet#windowview#Load(3)<CR>
+    an 820.10  🪟&w.V&iew.Load\ 4                           <Cmd>call planet#windowview#Load(4)<CR>
+    an 820.10  🪟&w.V&iew.Load\ 5                           <Cmd>call planet#windowview#Load(5)<CR>
+    an 820.10  🪟&w.V&iew.Load\ 6                           <Cmd>call planet#windowview#Load(6)<CR>
+    an 820.10  🪟&w.V&iew.Load\ 7                           <Cmd>call planet#windowview#Load(7)<CR>
+    an 820.10  🪟&w.V&iew.Load\ 8                           <Cmd>call planet#windowview#Load(8)<CR>
+    an 820.10  🪟&w.V&iew.Load\ 9\ (AutoSave)               <Cmd>call planet#windowview#Load(9)<CR>
     an 820.10  🪟&w.V&iew.--2-- <Nop>
     an 820.10  🪟&w.V&iew.Toggle\ AutoSave\ Views           <Cmd>call planet#windowview#ToggleAutoSave()<CR>
     an 820.10  🪟&w.V&iew.--3-- <Nop>
-    an 820.10  🪟&w.V&iew.Toggle\ Save\ Local\ Options      :TODO
+    an 820.10  🪟&w.V&iew.Toggle\ Save\ Local\ Options      <Cmd>call planet#windowview#ToggleLocalOptions()<CR>
     an 820.10  🪟&w.&Layout.Save                            <Cmd>let g:PV_layout = winrestcmd()<CR>
     an 820.10  🪟&w.&Layout.Save\ 1                         <Cmd>let g:PV_layout_1 = winrestcmd()<CR>
     an 820.10  🪟&w.&Layout.Save\ 2                         <Cmd>let g:PV_layout_2 = winrestcmd()<CR>
@@ -204,9 +204,9 @@ func! planet#menu#nav#Update() abort
     an 830.10  🗂️&t.--5-- <Nop>
     an 830.10  🗂️&t.E&xecute\ in\ each\ Tab<Tab>:tabdo     :tabdo 
     an 830.10  🗂️&t.--6-- <Nop>
-    an 830.10  🗂️&t.&Close<Tab>:tabclose                   <Cmd>tabclose<CR>
+    an 830.10  🗂️&t.&Close<Tab>:tabclose                   <Cmd>call planet#tab#Close()<CR>
     an 830.10  🗂️&t.Reopen\ Closed\ Tab                    <Cmd>call planet#tab#Reopen()<CR>
-    an 830.10  🗂️&t.Close\ &Other\ Tabs<Tab>:tabonly       <Cmd>tabonly<CR>
+    an 830.10  🗂️&t.Close\ &Other\ Tabs<Tab>:tabonly       <Cmd>call planet#tab#CloseOthers()<CR>
 
     " Sessions
     an 840.10  📚&s.Sessions <Nop>
@@ -214,17 +214,17 @@ func! planet#menu#nav#Update() abort
     an 840.20  📚&s.--1-- <Nop>
     an 840.30  📚&s.&Save                                   <Cmd>call planet#session#Save()<CR>
     an 840.40  📚&s.Save\ &As\.\.\.                         <Cmd>SSave<CR>
-    an 840.60  📚&s.Ad&vanced\ Save.Save\ with\ Relative\ Paths :TODO"set sessionoptions-=sesdir,+=curdir,v:this_session=dirname
-    an 840.70  📚&s.Ad&vanced\ Save.Save\ with\ Local\ Options :TODO"set sessionoptions+=localoptions
-    an 840.80  📚&s.Ad&vanced\ Save.Save\ with\ All\ Options :TODO"set sessionoptions+=localoptions,options
-    an 840.90  📚&s.Ad&vanced\ Save.Save\ without\ Global\ Vars :TODO"set sessionoptions-=globals
+    an 840.60  📚&s.Ad&vanced\ Save.Save\ with\ Relative\ Paths <Cmd>call planet#session#SaveVariant('relative')<CR>
+    an 840.70  📚&s.Ad&vanced\ Save.Save\ with\ Local\ Options <Cmd>call planet#session#SaveVariant('local')<CR>
+    an 840.80  📚&s.Ad&vanced\ Save.Save\ with\ All\ Options <Cmd>call planet#session#SaveVariant('all')<CR>
+    an 840.90  📚&s.Ad&vanced\ Save.Save\ without\ Global\ Vars <Cmd>call planet#session#SaveVariant('no-globals')<CR>
     an 840.100 📚&s.--2-- <Nop>
     an 840.100 📚&s.Add\ &Menu\ Entry                       <Cmd>call planet#session#ManageDesktopFile(0, 0)<CR>
     an 840.100 📚&s.Add\ Des&ktop\ Entry                    <Cmd>call planet#session#ManageDesktopFile(0, 1)<CR>
     an 840.100 📚&s.--3-- <Nop>
-    an 840.110 📚&s.&Open                                   <Cmd>SLoad<CR>
-    an 840.120 📚&s.Open\ &Last\ Session                    <Cmd>SLoad!<CR>
-    an 840.130 📚&s.&Reopen                                 <Cmd>exe 'SLoad ' .. fnamemodify(v:this_session, ":t")<CR>
+    an 840.110 📚&s.&Open                                   <Cmd>call planet#session#Load('')<CR>
+    an 840.120 📚&s.Open\ &Last\ Session                    <Cmd>call planet#session#LoadLast()<CR>
+    an 840.130 📚&s.&Reopen                                 <Cmd>call planet#session#OpenPath(v:this_session)<CR>
     an 840.140 📚&s.--4-- <Nop>
     an 840.150 📚&s.&Close                                  <Cmd>SClose<CR>
     an 840.160 📚&s.--5-- <Nop>
@@ -236,33 +236,31 @@ func! planet#menu#nav#Update() abort
     " Vim Apps: Open in new GUI window
     an 850.10  🗄️&x.GUI <Nop>
     an disable 🗄️&x.GUI
-    an 850.10  🗄️&x.&Maximize                               <Cmd>silent call system('wmctrl -i -b toggle,maximized_vert,maximized_horz -r' . v:windowid)<CR>
-    an 850.10  🗄️&x.&Full\ Screen                           <Cmd>silent call system('wmctrl -i -b toggle,fullscreen -r' . v:windowid)<CR>
+    an 850.10  🗄️&x.&Maximize                               <Cmd>call planet#gui#Window('maximize')<CR>
+    an 850.10  🗄️&x.&Full\ Screen                           <Cmd>call planet#gui#Window('fullscreen')<CR>
     an 850.10  🗄️&x.Minimi&ze<Tab>:suspend<Tab><C-z>        <C-z>
     an 850.10  🗄️&x.--1-- <Nop>
-    an 850.10  🗄️&x.&Start\ Vim\ Server                     <Cmd>call planet#gui#VimServerStart<CR>
+    an 850.10  🗄️&x.&Start\ Vim\ Server                     <Cmd>call planet#gui#VimServerStart()<CR>
     an 850.100 🗄️&x.--2-- <Nop>
 
     " Control GUI window with wmctrl & vim servers
-    "TODO: Email
-    "TODO: difdiff
     an 860.10  🎛️&@.Apps <Nop>
     an disable 🎛️&@.Apps
-    an 860.10  🎛️&@.Calendar            <Cmd>silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +Calendar<CR>
-    an 860.10  🎛️&@.&Web\ Browser       <Cmd>silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'W3m https://google.com/'<CR>
-    an 860.10  🎛️&@.Calculator          <Cmd>silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +Calculator<CR>
-    an 860.10  🎛️&@.&Htop               <Cmd>call planet#term#RunCmdTab('htop')<CR>
-    an 860.10  🎛️&@.&Terminal           <Cmd>silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'terminal ++curwin ++kill=kill'<CR>
-    an 860.10  🎛️&@.&File\ Manager      <Cmd>silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'Fern .'<CR>
-    an 860.10  🎛️&@.&Python\ Notebook   <Cmd>silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'Codi python'<CR>
-    an 860.10  🎛️&@.C&++\ Notebook      <Cmd>silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' -c 'Codi cpp'<CR>
+    an 860.10  🎛️&@.Calendar            <Cmd>call planet#apps#Open('Calendar')<CR>
+    an 860.10  🎛️&@.&Web\ Browser       <Cmd>call planet#apps#Open('W3m https://google.com/', 'w3m')<CR>
+    an 860.10  🎛️&@.Calculator          <Cmd>call planet#apps#Open('Calculator')<CR>
+    an 860.10  🎛️&@.&Htop               <Cmd>call planet#term#RunArgv(['htop'])<CR>
+    an 860.10  🎛️&@.&Terminal           <Cmd>call planet#apps#Open('terminal ++curwin ++kill=kill')<CR>
+    an 860.10  🎛️&@.&File\ Manager      <Cmd>call planet#apps#Open('Fern .')<CR>
+    an 860.10  🎛️&@.&Python\ Notebook   <Cmd>call planet#apps#Open('Codi python')<CR>
+    an 860.10  🎛️&@.C&++\ Notebook      <Cmd>call planet#apps#Open('Codi cpp')<CR>
     an 860.300 🎛️&@.--1-- <Nop>
     an 850.500 🗄️&x.--2-- <Nop>
     an 860.600 🎛️&@.Workspaces <Nop>
     an disable 🎛️&@.Workspaces
 
   else
-    silent! aunmenu 📖&b
+    silent! aunmenu 📖&u
     silent! aunmenu 🗃️&a
     silent! aunmenu 🪟&w
     silent! aunmenu 🗂️&t
