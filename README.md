@@ -1,167 +1,92 @@
 # PlanetVim
 
-Vim for the Planet.
+PlanetVim is a **GVim distribution for Linux and Windows**, with discoverable menus for editing, projects, Git, SDK tools, testing, debugging, and writing. Linux is the primary platform. macOS, terminal Vim, and Neovim are outside this release's scope.
 
-Easy and powerful Vim Distribution.
+The current version is **0.1.0-rc.1**. See [the acceptance record](docs/ACCEPTANCE.md) for what has actually been exercised and what still needs platform or SDK validation. Menu actions are implemented and enabled; optional tools report their prerequisites when selected.
 
-Release version v0.0.1 (not ready for testing)
+![PlanetVim running in Linux GVim](docs/images/gvim-linux.png)
 
-# What is PlanetVim
+## Start from a checkout
 
-PlanetVim is GVim Distribution that aims to make development easier. PlanetVim
-focuses on ease of use and making the power of vim accessible by a few clicks
-or keystrokes.
+Install GVim **9.1 or newer** with GUI, menus, terminal, jobs, channels, timers, and persistent undo, plus Python 3.10 or newer for the installer and project generators. Debugging additionally requires a working GVim `+python3` provider. You can inspect a build with `gvim --version`.
 
-PlanetVim supports GVim only (GUI version) and makes it easy to use many development tools.
+```sh
+git clone https://github.com/fedorenchik/PlanetVim.git
+cd PlanetVim
+gvim -u scripts/planetvim.vim
+```
 
-It focuses on developers and writers alike.
+On Windows, run the same GVim command from PowerShell or use the full path to `gvim.exe`. Use the private launcher below for normal use. Start with `:PlanetDoctor` and `:help planetvim`. `:PlanetPlainMenus` provides text menu labels if emoji rendering is poor.
 
-Developers:
+## Install, update, and remove
 
-* Anaconda
-* Arduino
-* Autotools
-* C++
-* CMake
-* Docker
-* Electron
-* Flutter
-* Gtk
-* KBuild
-* Make
-* Meson
-* Ninja
-* Node
-* Nuxt
-* PlatformIO
-* Python
-* Qt
-* Vim
-* Vue
-* WebAssembly
+Linux:
 
-Writers:
+```sh
+python3 scripts/install.py install --dry-run
+python3 scripts/install.py install
+~/.local/share/planetvim/bin/planetvim
+```
 
-* LaTeX
-* MarkDown
+Windows PowerShell:
 
-## Few screenshots
+```powershell
+py -3 scripts/install.py install --dry-run
+py -3 scripts/install.py install
+& "$env:LOCALAPPDATA\PlanetVim\bin\planetvim.cmd"
+```
 
+The installer owns a private directory. It leaves your normal `.vimrc` and `.vim` alone. Use `--prefix "/path with spaces/PlanetVim"` to choose another location; pass the same prefix to later operations. Put its `bin` directory on PATH if you want a `planetvim` command. `PLANETVIM_GVIM` may name a particular GVim executable.
 
-## PlanetVim Behavior
+From a newer checkout or extracted release:
 
-PlanetVim can be used in 3 operation styles:
+```sh
+python3 scripts/install.py update --dry-run
+python3 scripts/install.py update
+python3 scripts/install.py uninstall --dry-run
+python3 scripts/install.py uninstall
+python3 scripts/install.py restore
+```
 
-1. Easy Mode - Makes PlanetVim modeless, like most editors.
-2. Standard Mode - Standard Vim Mode.
-3. Supercharged Mode - remaps few vim's antipattern keys:
+`restore` rolls back the latest transaction. The installer reports the backup directory, preserves locally modified files during uninstall, and retains backups for recovery. An update backs up replaced content. Keep customization in the private config directory rather than editing installed files. Windows uses `py -3` in place of `python3` in these examples.
 
-A picture is worth 1000 words, here is recording of what PlanetVim will be able to do in v1.0 release:
+## Everyday use
 
-![recording-menu-gif](https://user-images.githubusercontent.com/391735/119239792-f293a300-bb7d-11eb-9ac0-1e7e8c3d86f7.gif)
+The PlanetVim menu selects **Easy**, **Standard**, or **Supercharged** mode. Standard is the default. Easy starts in Insert mode and uses shifted arrow keys for selection. Supercharged remaps navigation keys; read [the mode guide](docs/GUIDE.md#editing-modes) before choosing it. Mode changes and menu preferences persist.
 
-As you can see it is GUI oriented and tries to help you accomplish your tasks in most efficient way.
+- **File** creates projects/files, saves, exports exact selections, and changes directories.
+- **View** opens the Fern file browser, LSP/tags views, quickfix, and window-bar controls.
+- **Build / Run / Debug / Test / Analyze** operate on the current tab's project. Use `:tcd /path/to/project` to select it.
+- **Git** operates on the saved file's repository. Network, commit, deployment, and installation actions run only when selected.
+- **Writing / Spell Check** provide Markdown/LaTeX builds, prose tools, translation, spelling, and grammar checking.
+- **Sessions** saves and reopens layouts; closing and reopening a tab restores its own snapshot.
 
-At least it can build CMake projects, Vim, Linux Kernel, Godot Engine now:
+Commands show output, working directory, and exit status in a GVim terminal buffer. `:PlanetCommandResult` describes the current output and `:PlanetCommandCancel` stops its job. Failed commands remain available for inspection.
 
-## How to build CMake projects:
+## First projects
 
-1. Clone source code:
+For C++: select **File → New Project → CMake**, choose a new directory, then select **Build → CMake → Create In-Tree Build Dir**, **Configure**, and **Build**. The generated project includes a CTest test. **Test → CTest** runs it. Generate `compile_commands.json` from the CMake menu for clangd. Add a Run profile with native arguments, for example:
 
-   🔀g- > New -> Clone, and then type URL (and other parameters) for git clone
+```json
+{"name":"hello","argv":["./build/hello"],"cwd":"."}
+```
 
-2. `:cd` into cloned project
+On Windows, use the actual `.exe` output path, including the configuration subdirectory for a multi-configuration generator. Run profiles belong to the tab's project and are stored in private state.
 
-3. Create build directory:
+For Python: select **File → New Project → Python**, then open `test_main.py` and run `:PlanetTest file`. Install `python-lsp-server[all]` in your chosen Python environment for completion, diagnostics, and formatting; point `g:PV_pylsp_argv` to its executable. `:PlanetDebugSetup python` creates a reviewable `.vimspector.json`; install debugpy into the configured adapter's Python environment before launching.
 
-   🔨u -> CMake -> Create In-Tree Build Dir or
+For writing: save a Markdown document and run `:PlanetMarkdownPreview` with Pandoc installed. Save a LaTeX document and use `:PlanetLatexBuild` with latexmk and a TeX distribution. `:PlanetWritingErrors` opens source diagnostics. Personal spell words and generated previews live outside the project.
 
-   🔨u -> CMake -> Create OOT Build Dir (OOT stands for Out Of Tree) or
+See [the complete guide](docs/GUIDE.md) for configuration, language intelligence, debugging, writing, sessions, recovery, and troubleshooting. [Development integrations](docs/INTEGRATIONS.md) describes SDK activation, packaging, analyzers, and their external prerequisites. The integration catalog includes the original Linux/Windows ecosystem: Anaconda/Conda, Arduino, Autotools, C++/CMake, Docker, Electron, Flutter, Godot/SCons, GTK, Make/Kbuild, Meson, Ninja, Node/Nuxt/Vue, PlatformIO, Python, Qt, ROS, Vim, WebAssembly, Yocto, and kernel tooling.
 
-   🔨u -> CMake -> Select Build Dir and then choose which build dir to use
+## Contributing and validation
 
-4. Configure CMake:
+```sh
+make test
+python3 scripts/test.py --gui
+python3 scripts/plugins.py inventory --check
+```
 
-   🔨u -> CMake -> Configure
+The GUI suite needs a display; `--xvfb /path/to/Xvfb` creates a private Linux display. Tests use disposable config, state, repositories, and project files. [CONTRIBUTING.md](CONTRIBUTING.md) explains the code layout, integration contracts, and tests. [Plugin maintenance](docs/PLUGINS.md) records bundled sources and revisions. Third-party plugin source is not patched by this implementation.
 
-5. Build Project:
-
-   🔨u -> CMake -> Build
-
-### How to build KiCad (based on CMake):
-
-1. Clone source code:
-
-   🔀g -> New -> Clone
-
-   Type: https://gitlab.com/kicad/code/kicad.git
-
-   `:cd kicad`
-
-2. Create build directory:
-
-   🔨u -> CMake -> Create In-Tree Build Dir
-
-3. Configure:
-
-   🔨u -> CMake -> Configure
-
-4. Make sure all build dependencies are installed.
-
-   If there's any issue, you can set custom settings in PlanetVim:
-
-   🔨u -> CMake -> Configure Tui
-
-   Or run cmake-gui:
-
-   🔨u -> CMake -> Configure Gui
-
-4. Build:
-
-   🔨u -> CMake -> Build
-
-5. Run built KiCad:
-
-   💻t -> New
-
-   In the terminal:
-
-   ```
-   cd build
-   ./kicad/kicad
-   ```
-
-6. Generate compile_commands.json for development:
-
-   🔨u -> CMake -> Generate compile_commands.json
-
-## How to build Vim:
-
-## How to build Linux Kernel:
-
-## How to build Godot Engine:
-
-## If you want please consider joining PlanetVim chat at:
-
-<A-?> -> Join PlanetVim Chat
-
-## Guidelines
-
-* Make Vim Discoverable
-* User-Friendly
-* Easy to Use
-* Solve Real-World Problems
-* Tested with real projects (Linux Kernel, Vim, etc.)
-
-* Supports only recent Vim version (this makes code **MUCH** simpler, faster and
-robust)
-* Will not clutter your dirs with *~ .*.sw[p-z] and other files
-
-## Which version to use
-
-Branches:
-* dev - main development branch (unstable)
-
-PlanetVim does not hide tools that it uses, just makes them easy to use and
-discoverable, e.g. generally it will show which command it runs and print
-command's output, working directory of process and exit status.
+PlanetVim's first-party code is licensed under [MIT](LICENSE). Bundled plugins keep their own licenses and notices; see [the plugin inventory](docs/plugins.json). [CHANGELOG.md](CHANGELOG.md) records release changes, and [TASKS.md](TASKS.md) tracks the original review work and acceptance limits.

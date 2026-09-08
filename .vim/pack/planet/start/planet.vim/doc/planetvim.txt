@@ -1,0 +1,255 @@
+*planetvim.txt*       PlanetVim: Linux and Windows GVim              *planetvim*
+
+PlanetVim is a menu-oriented GVim distribution. Linux is primary; Windows is
+secondary. GVim 9.1+ is required. Terminal Vim, Neovim, and macOS are excluded.
+Run :PlanetVersion for the distribution version and :version for the editor.
+
+Getting started ......................................... |planetvim-start|
+Modes and customization ................................. |planetvim-config|
+Projects, build, run, and tests .......................... |planetvim-projects|
+Language intelligence ................................... |planetvim-lsp|
+Debugging ............................................... |planetvim-debug|
+Writing ................................................. |planetvim-writing|
+State, sessions, and recovery ............................ |planetvim-recovery|
+Commands and troubleshooting ............................ |planetvim-commands|
+
+==============================================================================
+STARTING                                                     *planetvim-start*
+
+From a checkout: >
+    gvim -u scripts/planetvim.vim
+<
+For a private installation, run the Python installer from the checkout: >
+    python3 scripts/install.py install --dry-run
+    python3 scripts/install.py install
+<
+Use `py -3` on Windows. Linux installs into ~/.local/share/planetvim; Windows
+uses %LOCALAPPDATA%\PlanetVim. Use --prefix to choose a different private path.
+Start bin/planetvim (Linux) or bin/planetvim.cmd (Windows) in that directory.
+The installer does not replace your ordinary .vimrc or .vim.
+
+Update/uninstall/restore use the same installer and prefix. Backups and the
+ownership manifest allow rollback of the latest transaction. Uninstall preserves
+locally modified installed files. Keep user customization outside the payload.
+
+Run :PlanetDoctor for requirements and :PlanetPlainMenus for plain menu labels.
+Doctor checks configured executables and writable paths without starting tools;
+a found executable is not proof that its adapter/SDK setup has been validated.
+
+==============================================================================
+MODES AND CUSTOMIZATION                                     *planetvim-config*
+
+The PlanetVim menu chooses Easy, Standard, or Supercharged mode. Standard is the
+default. Easy uses 'insertmode', mouse/shift selection, and selection replacement.
+Ctrl-O executes a single Normal command; Ctrl-L leaves Insert mode.
+
+Supercharged changes Normal keys:
+    f/F       search a character forward/backward
+    t/T       search a two-character sequence forward/backward
+    w/b       repeat the character search
+    l/h       repeat the sequence search
+    j/k       navigate location-list files
+    W/B       next/previous buffer
+    e/E       older/newer change
+    ge/gE     first/last tab
+
+Modes and menu preferences are stored in preferences.json. Defaults are applied
+before mode selection and your planetvimrc.vim. Your script is read once; it is
+never rewritten to save generated preferences. During later mode switches,
+mappings changed by the user are preserved instead of blindly overwritten.
+
+Linux configuration uses $XDG_CONFIG_HOME/planetvim or ~/.config/planetvim.
+Windows configuration uses %LOCALAPPDATA%\PlanetVim\config. Open planetvimrc.vim
+from the PlanetVim menu. Example: >
+    set expandtab shiftwidth=4
+    nnoremap <leader>w <Cmd>write<CR>
+    let g:PV_clangd_argv = ['clangd', '--background-index']
+    let g:PV_pylsp_argv = ['/path/to/venv/bin/pylsp']
+<
+The environment variables PLANETVIM_CONFIG_DIR, PLANETVIM_STATE_DIR, and
+PLANETVIM_CACHE_DIR select private directories before launch. Explicit early
+Vimscript globals g:PV_config_dir, g:PV_state_dir, g:PV_cache_dir take precedence.
+
+==============================================================================
+PROJECTS, BUILD, RUN, TEST                                  *planetvim-projects*
+
+A tab's working directory identifies its project. Set it with :tcd. A window's
+:lcd does not select a different build/run profile. Build → CMake creates/selects
+a build directory, configures, builds, and exports compile_commands.json.
+
+File → New Project creates projects in a new or empty destination. Existing
+nonempty files/directories are preserved; cancellation creates nothing. File
+→ New File includes native C++, Python, Qt, shader, web, and LaTeX templates.
+Follow the generated project's README for its SDK dependencies.
+
+Run → Add Configuration accepts a JSON object: >
+    {"name":"hello","argv":["./build/hello","a,b"],"cwd":"."}
+<
+Use an argv List for native execution. A `command` String is an alternative for
+an intentional shell script. Supply one, not both. Windows users should select
+the actual .exe path, including its configuration directory when applicable.
+
+:PlanetTest nearest|file|class|suite|last|visit uses vim-test with retained output.
+Framework-specific menu entries, including CTest, run their named tools.
+
+The command buffer retains cwd, output, and real exit status. Use
+:PlanetCommandResult and :PlanetCommandCancel in that buffer. The Terminal menu
+lists output buffers. A failed prerequisite does not start dependent steps.
+
+SDK/deployment/analyzer prerequisites and command contracts are documented in
+docs/INTEGRATIONS.md. Missing tools give guidance; actions remain available.
+Install, upload, package, network, and deployment operations run when selected,
+never simply because the editor starts.
+
+==============================================================================
+LANGUAGE INTELLIGENCE                                          *planetvim-lsp*
+
+C/C++ use clangd; Python uses pylsp. Install the servers separately. Configure
+g:PV_clangd_argv and g:PV_pylsp_argv as executable/argument Lists. Use [] to opt out.
+Restart after changing an already registered server command. Pylsp diagnostics
+and formatting need its corresponding plugins; python-lsp-server[all] includes
+the defaults used by the acceptance fixture.
+
+C++ projects need compile_commands.json. For an out-of-tree database, include
+--compile-commands-dir=/absolute/build/path in the clangd argv. Server roots are
+found from language/build markers and Git directories.
+
+:PlanetLspStatus describes configured servers. Actions:
+    :PlanetDefinition    :PlanetReferences    :PlanetHover
+    :PlanetRename        :PlanetFormat        :PlanetDiagnostics
+
+C/C++/Python buffers receive local gd, gr, gi, gy, K, <leader>rn, <leader>f, [d,
+and ]d mappings. Filetype cleanup restores previous local mappings. Asyncomplete
+also provides buffer/file completion without a server.
+
+:PlanetSemanticScopes opens a navigable location list of semantic token types,
+modifiers, and symbols. It requires a server supporting full semantic tokens,
+such as clangd. Analyze → Check uses the current document's LSP diagnostics.
+
+Modify → Snippets prompts for fields before insertion. Custom snippets are JSON
+objects whose values are arrays of lines, stored under config/snippets/FILETYPE
+.json. ${field} prompts once; ${cursor} selects the final cursor position. Custom
+names override built-ins. Emmet expands an abbreviation through its bundled API.
+
+HEX editing                                                   *planetvim-hex*
+
+Modify → HEX Mode uses xxd and preserves bytes, encoding, BOM, and line endings.
+Edit the hexadecimal byte columns; the ASCII column is informational. Malformed
+or overlapping rows and failed conversions retain the HEX buffer. The decoded
+size limit is 64 MiB; set g:PV_hex_max_bytes explicitly for larger files.
+
+==============================================================================
+DEBUGGING                                                    *planetvim-debug*
+
+The core debugger is Vimspector, loaded on demand. GVim needs +python3 and a
+compatible Python library. Test the provider with :py3 print('ready'). The DAP
+adapter can use a different Python executable.
+
+Python: install debugpy into the adapter environment. Optionally set: >
+    let g:PV_debugpy_command = ['/path/to/python', '-m', 'debugpy.adapter']
+<
+Then :PlanetDebugSetup python creates .vimspector.json in the current project.
+Review it before launching. Existing files are not overwritten.
+
+C++: compile with debug symbols, then :PlanetDebugSetup cpp. Change `program` to
+your executable. The default GDB command uses --interpreter=dap and requires a
+DAP-capable GDB build. Configure g:PV_gdb_command or use a custom Vimspector
+adapter when your platform's GDB lacks DAP support.
+
+Core actions: >
+    :PlanetDebug launch
+    :PlanetDebug breakpoint
+    :PlanetDebug continue
+    :PlanetDebug step-over
+    :PlanetDebug step-into
+    :PlanetDebug step-out
+    :PlanetDebug restart
+    :PlanetDebug stop
+    :PlanetDebug detach
+    :PlanetDebug reset
+<
+The debugger displays stack and variables through Vimspector. Errors report
+missing providers, adapters, or programs. Logs use private state rather than
+~/.vimspector.log or vendored source. Additional debug tools and kernel actions
+ask for their installed tools and selected targets separately.
+
+==============================================================================
+WRITING                                                      *planetvim-writing*
+
+Save a Markdown document, install Pandoc 2.19+, and run :PlanetMarkdownPreview.
+It writes HTML and resources to private cache, then opens a desktop viewer after
+success. :PlanetLatexBuild uses latexmk plus a TeX distribution and retains errors.
+:PlanetWritingOpen reopens output; :PlanetWritingErrors opens source diagnostics.
+
+Executable overrides are argv Lists:
+    g:PV_pandoc_argv             default ['pandoc']
+    g:PV_latexmk_argv            default ['latexmk']
+    g:PV_document_viewer_argv    desktop opener by platform
+    g:PV_writing_auto_open      1; use 0 for explicit opening
+
+Writing buffers enable spelling. g:PV_spell_language defaults to en_us;
+g:PV_personal_spell_file overrides the private dictionary. zg adds a word; z=
+offers corrections. :PlanetGrammarCheck requires local LanguageTool and Java;
+g:PV_languagetool_command selects the executable. For a local JAR use: >
+    let g:PV_languagetool_argv = ['java', '-jar', '/path/to/languagetool-commandline.jar']
+<
+The first-party adapter handles the JSON CLI used by LanguageTool 6.6 and retains
+Grammarous highlighting, navigation, and fixes. No cloud service is required.
+
+Writing menus include adjacent-word swapping, thesaurus completion, sample
+paragraphs, reversible focus mode, and translation. Translation occurs only
+when requested and uses the chosen engines. History/logs are private state;
+asynchronous replacement checks the buffer has not changed before replacing it.
+
+==============================================================================
+STATE, SESSIONS, RECOVERY                                  *planetvim-recovery*
+
+Linux state uses $XDG_STATE_HOME/planetvim or ~/.local/state/planetvim; cache uses
+$XDG_CACHE_HOME/planetvim or ~/.cache/planetvim. Windows uses state/cache under
+%LOCALAPPDATA%\PlanetVim. Editor backup/swap/undo/view/session files do not clutter
+projects. Writing spelling defaults to state/spell; ordinary spelling defaults
+to config/spell. Both survive installation updates.
+
+Sessions saves layouts/file references. Save edits before opening another
+session; modified buffers block session loading. Save variants control relative
+paths and local/global option capture. Session files are executable Vim scripts:
+load sessions you created or trust. Reopen Closed Tab restores its own per-process
+snapshot, including windows and cwd.
+
+After a crash, start PlanetVim and use :recover /absolute/path/to/file. Inspect
+recovered content and write it separately first. Never remove swap files owned
+by another running editor. Persistent undo is loaded when an unchanged saved file
+is reopened. Installer backups allow rollback of the latest transaction.
+
+Copy/Move to New GUI transfers unsaved text and waits for acknowledgement before
+closing the source view. The original buffer remains hidden for recovery. Failure
+or timeout preserves the source. Slow transfers retain their cache snapshot.
+
+==============================================================================
+COMMANDS AND TROUBLESHOOTING                               *planetvim-commands*
+
+:PlanetDoctor            Core and optional tool requirements
+:PlanetVersion           Distribution version
+:PlanetHelp              This guide
+:PlanetPlainMenus        Readable menu-label fallback
+:PlanetCommandResult     Current output buffer's job result
+:PlanetCommandCancel     Cancel its running job
+:PlanetLspStatus         Language-server configuration/status
+:PlanetMarkdownPreview   Build Markdown preview
+:PlanetLatexBuild        Build LaTeX output
+:PlanetWritingErrors     Open writing diagnostics
+:PlanetGrammarCheck      Local grammar checker
+
+Use :messages for startup failures and the retained Output buffer for child
+errors. Check actual cwd and argv. Verify GVim's Python provider separately from
+its debug adapter. Review resolved config/state/cache paths and permissions for
+write failures. Select an installed font with :set guifont=*.
+
+Report bugs with PlanetVim/GVim versions, OS, exact action, minimal reproduction,
+and relevant Doctor/output lines. Remove private paths, repository names,
+usernames, credentials, and environment values before sharing reports.
+
+Detailed guide: docs/GUIDE.md. Test/platform evidence: docs/ACCEPTANCE.md.
+First-party license: MIT. Bundled plugins retain their own licenses/notices.
+
+ vim:tw=78:ts=8:ft=help:norl:

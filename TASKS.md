@@ -25,8 +25,9 @@ These behaviors are covered by automated checks and a recorded GUI acceptance ru
 The README's full ecosystem list remains the product scope to reconcile. Suggested
 first acceptance fixtures are C++/CMake, Python, Markdown, and LaTeX; testing those
 first does not establish that the other advertised integrations work. For a full
-release, implement and test every feature retained as supported. Deferring a
-feature requires an explicit status change in the menus and documentation.
+release, implement and test every feature retained as supported. All existing Linux and Windows menu actions must be implemented and enabled;
+missing tools require setup guidance rather than hiding unfinished actions. This
+was explicitly confirmed by the owner during implementation.
 
 P1 means a safety, core workflow, or public-release blocker. P2 means required
 completion/polish for a feature retained in the supported release. The milestones
@@ -37,7 +38,7 @@ Keep changes in focused commits and include a regression check with each bug fix
 
 ### PV-001 · P1 · Preserve edits when Save & Exit cannot save
 
-- [ ] Replace unconditional forced exit after `confirm wall` with a flow that
+- [x] Replace unconditional forced exit after `confirm wall` with a flow that
   respects refusal, cancellation, and write errors. See review **R1**.
 
 Done when: successful saves exit normally; read-only refusal, cancelled unnamed
@@ -46,7 +47,7 @@ all unsaved edits available. Tests assert both disk and buffer contents.
 
 ### PV-002 · P1 · Make install, update, and uninstall preserve user files
 
-- [ ] Replace unrestricted mirroring into the user's `.vim` with explicit
+- [x] Replace unrestricted mirroring into the user's `.vim` with explicit
   ownership of installed paths. Back up replaced configuration, support a
   selectable destination and preview, implement uninstall/restore, and propagate
   every failed copy/setup step. Separate user installation from the maintainer
@@ -60,7 +61,7 @@ or pushes. Preview proves exactly which files change.
 
 ### PV-003 · P1 · Preserve command arguments and use an explicit working directory
 
-- [ ] Refactor the common runner and its build/Git/helper callers to preserve
+- [x] Refactor the common runner and its build/Git/helper callers to preserve
   argument boundaries, distinguish argv commands from intentional shell scripts,
   and use a validated job working directory. See **R3**.
 
@@ -71,7 +72,7 @@ intentional pipelines still work through the explicit shell interface.
 
 ### PV-004 · P1 · Preserve process failure and cancellation results
 
-- [ ] Return the child exit code from `run-command`; propagate results to output
+- [x] Return the child exit code from `run-command`; propagate results to output
   handling and dependent steps. Define stop/cancel and output-retention behavior.
   See **R4**. Coordinate the runner interface with **PV-003**.
 
@@ -82,7 +83,7 @@ output retains the command, working directory, and actual status.
 
 ### PV-005 · P1 · Make defaults, editing modes, and user overrides deterministic
 
-- [ ] Move defaults before mode selection and user overrides; define what happens
+- [x] Move defaults before mode selection and user overrides; define what happens
   to custom mappings during a mode change. Avoid resetting user preferences on
   restart or repeated initialization. See **R5**.
 
@@ -93,7 +94,7 @@ config enabled/absent/error cases.
 
 ### PV-006 · P1 · Add distribution-level tests and continuous integration
 
-- [ ] Establish isolated Vimscript/shell fixtures and one repeatable test command;
+- [x] Establish isolated Vimscript/shell fixtures and one repeatable test command;
   add root CI. Start with **PV-001–005** reproductions and add regression coverage
   as the following tasks land. Use a private fixture environment/state tree.
 
@@ -107,7 +108,7 @@ change real user configuration, repositories, or network accounts.
 
 ### PV-007 · P1 · Connect test menus to an available runner
 
-- [ ] Select vim-test's supported built-in terminal strategy or deliberately
+- [x] Select vim-test's supported built-in terminal strategy or deliberately
   bundle/configure Dispatch. Wire Nearest/File/Suite/Last/Visit to their intended
   behavior. See **R6**; validate against **PV-004** result handling.
 
@@ -117,7 +118,7 @@ without E492 or an undeclared plugin dependency.
 
 ### PV-008 · P1 · Complete debugger setup and core actions
 
-- [ ] Load Vimspector deliberately, provide adapter setup, and connect Start,
+- [x] Load Vimspector deliberately, provide adapter setup, and connect Start,
   Stop, Detach, Continue, Breakpoint, and Step actions to the bundled APIs.
   Include sample configurations for initially supported languages. See **R7**.
 
@@ -127,20 +128,18 @@ give setup guidance. Debugger availability is checked by **PV-010**.
 
 ### PV-009 · P1 · Audit every advertised menu action and feature claim
 
-- [ ] Inventory actions and label them implemented, incomplete, or planned.
-  Replace wrong-command placeholders with the named tool's workflow; disable and
-  explain unimplemented actions until they are complete. Reconcile the README's
+- [x] Inventory actions and record implementation and validation status.
+  Replace wrong-command placeholders with the named tool's workflow; implement and enable every unfinished Linux/Windows action. Reconcile the README's
   ecosystem list with actual supported workflows. See **R7**.
 
 Done when: no enabled action calls `TODO`, an empty helper, or an unrelated command
 such as `make` for deployment or `TestVisit` for CTest. Every retained supported
 integration has a fixture/manual acceptance recipe covering prerequisites,
-normal operation, failure, and cancellation. Deferred features have visible
-status and are excluded from supported-feature claims.
+normal operation, failure, and cancellation. No unfinished action is hidden or replaced by an unrelated command.
 
 ### PV-010 · P1 · Define support requirements and add a first-run health check
 
-- [ ] Declare supported OS/GUI builds and an exact tested minimum Vim version and
+- [x] Declare supported OS/GUI builds and an exact tested minimum Vim version and
   feature set. Implement a health command for core tools, optional integrations,
   fonts, language servers, adapters, and writable state paths. Surface setup
   guidance at first run and when an unavailable action is invoked.
@@ -154,7 +153,7 @@ actual enabled workflows, not merely the current short `detect.vim` list.
 
 ### PV-011 · P2 · Preserve the exact selection during export and move
 
-- [ ] Support characterwise, linewise, and blockwise selection export/move;
+- [x] Support characterwise, linewise, and blockwise selection export/move;
   preserve unselected text and only remove source text after a successful write.
   Make append/overwrite behavior explicit. See **R15**.
 
@@ -165,7 +164,7 @@ existing destination follows the user's explicit choice.
 
 ### PV-012 · P2 · Keep filetype behavior local to its buffer
 
-- [ ] Add buffer scope to Markdown outline mappings and C/C++ mappings and
+- [x] Add buffer scope to Markdown outline mappings and C/C++ mappings and
   abbreviations; audit all FileType hooks for similar leaks. See **R8**.
 
 Done when: opening Markdown, C++, Python, and text in any order does not change
@@ -174,7 +173,7 @@ mapping residue. Tests inspect mappings and exercise actual keystrokes.
 
 ### PV-013 · P2 · Repair core menu wiring and output navigation
 
-- [ ] Fix HEX function scope, VimServerStart parentheses, Settings toggle target,
+- [x] Fix HEX function scope, VimServerStart parentheses, Settings toggle target,
   menu names used for removal, output-buffer selection, and `SenEnvVar` typos.
   Audit remaining core menu callbacks and buffer-list updates. See **R9**.
 
@@ -186,7 +185,7 @@ before wiring it into refresh behavior.
 
 ### PV-014 · P2 · Store preferences without rewriting arbitrary shell text
 
-- [ ] Separate generated preferences from hand-authored customization, serialize
+- [x] Separate generated preferences from hand-authored customization, serialize
   values safely, and use native file I/O with atomic replacement and visible
   errors. Preserve existing user content and define concurrent-instance behavior.
   See **R14**; depends on the configuration order from **PV-005**.
@@ -197,7 +196,7 @@ storage errors do not destroy the last valid configuration.
 
 ### PV-015 · P2 · Correct session and closed-tab restoration
 
-- [ ] Capture the actual closing tab and prevent restoration events from
+- [x] Capture the actual closing tab and prevent restoration events from
   overwriting its snapshot. Isolate state between GVim processes, preserve
   session options with cleanup on errors/cancellation, and escape session names.
   See **R10**; coordinate state locations with **PV-021**.
@@ -208,7 +207,7 @@ work; cancelling save/open leaves the prior session and options intact.
 
 ### PV-016 · P1 · Make build directories and run configurations dependable
 
-- [ ] Use structured run profiles with command/arguments/cwd instead of comma
+- [x] Use structured run profiles with command/arguments/cwd instead of comma
   splitting and embedded Vim expressions. Validate build-directory selection,
   cancellation, and project switching; persist profiles at the documented scope.
   See **R11**, `autoload/planet/build.vim`, and **PV-003–005**.
@@ -221,7 +220,7 @@ Errors are navigable from output or quickfix.
 
 ### PV-017 · P2 · Finish and test project creation helpers
 
-- [ ] Correct Electron success/fallback flow, make cp/rsync layouts equivalent,
+- [x] Correct Electron success/fallback flow, make cp/rsync layouts equivalent,
   and implement advertised CopyFile/CopyDir operations. Validate destinations and
   propagate clone/install/copy failures. Audit the other template helpers using
   the same checks. See **R7, R12**.
@@ -234,7 +233,7 @@ Stub external installers in unit tests; perform separate supported-tool smoke te
 
 ### PV-018 · P2 · Correct Git event handling and command semantics
 
-- [ ] Use the correct write event for opt-in auto-commit, bind commands to the
+- [x] Use the correct write event for opt-in auto-commit, bind commands to the
   actual file/repository, preserve filenames/messages, and separate commit,
   status, and optional push results. Respect cancelled prompts and failed writes.
   See **R13** and the shared runner tasks.
@@ -246,7 +245,7 @@ repositories with network operations stubbed.
 
 ### PV-019 · P1 · Complete language intelligence and completion defaults
 
-- [ ] Choose and register the intended completion sources; preserve the existing
+- [x] Choose and register the intended completion sources; preserve the existing
   LSP source-registration bridge and verify it end to end; provide reproducible
   language-server setup and project-root detection.
   Integrate definition, references, hover, diagnostics, rename, and formatting
@@ -259,7 +258,7 @@ External/cloud-backed completion is a documented optional choice.
 
 ### PV-020 · P2 · Verify the advertised writing workflows
 
-- [ ] Complete Markdown and LaTeX edit/preview/build/error-navigation flows;
+- [x] Complete Markdown and LaTeX edit/preview/build/error-navigation flows;
   configure spell/grammar tools and dictionaries portably; document their optional
   prerequisites and chosen defaults. Coordinate with **PV-010, PV-021**.
 
@@ -269,7 +268,7 @@ or LanguageTool give actionable messages; personal spelling survives updates.
 
 ### PV-021 · P2 · Centralize state paths and define recovery behavior
 
-- [ ] Replace personal paths such as `$HOME/src/homerc` with configurable
+- [x] Replace personal paths such as `$HOME/src/homerc` with configurable
   configuration/state/cache directories. Create required directories safely and
   define private backup/swap/undo/session storage plus crash-recovery behavior.
   Preserve the README promise not to clutter project directories.
@@ -283,7 +282,7 @@ Project trees receive no unexpected editor-state files.
 
 ### PV-022 · P2 · Establish plugin maintenance and measure startup
 
-- [ ] Build a documented inventory from the existing `.gitrepo` pins, including
+- [x] Build a documented inventory from the existing `.gitrepo` pins, including
   source, revision, license, local patches, and optional native dependencies.
   Define an update/retest process. Profile startup/file-open behavior before
   selecting candidates for optional/lazy loading.
@@ -295,21 +294,28 @@ on documented hardware; optimization must preserve menu availability and behavio
 
 ### PV-023 · P1 · Finish onboarding, built-in help, and contributor guidance
 
-- [ ] Write installation/update/uninstall/recovery instructions, quickstart,
+- [x] Write installation/update/uninstall/recovery instructions, quickstart,
   editing-mode/keybinding guide, customization precedence, prerequisites, and
   troubleshooting. Add `:help planetvim`, current screenshots, and working project
   walkthroughs. Document tests, architecture, and how to add an integration.
 
 Done when: a new user can complete the definition-of-complete journey using only
-the docs. README menu names match the actual UI. Empty Vim/Kernel/Godot sections
-are completed or clearly identified as pending scope under **PV-009**. Bug reports
+the docs. README menu names match the actual UI. Vim/Kernel/Godot workflows have
+instructions and prerequisites matching their enabled actions under **PV-009**. Bug reports
 can include a sanitized health report and exact distribution version.
 
 ### PV-024 · P1 · Validate and publish a defined release
 
-- [ ] Have the project owner choose the first-party license; retain third-party
+- [x] Have the project owner choose the first-party license; retain third-party
   attribution. Establish version/tag/changelog conventions and release packaging.
-  Run the supported-workflow acceptance matrix after preceding tasks are complete.
+- [ ] Complete the supported-workflow acceptance matrix and publish the defined
+  release after preceding tasks and public-release gates are complete.
+
+Implemented: the owner selected MIT, version `0.1.0-rc.1` and changelog conventions
+are established, and reproducible archives include upstream notices and an exact
+source/checksum manifest. Local installation and GUI checks are recorded in
+[ACCEPTANCE.md](docs/ACCEPTANCE.md). Publication, hosted CI, native Windows desktop
+acceptance, and the remaining upstream attribution review have not been completed.
 
 Done when: a release candidate installs from its published artifact, passes CI and
 a recorded real-GVim GUI run, supports every feature it claims, and has no open
@@ -317,17 +323,15 @@ P1 defects. Installation, upgrade from the previous candidate, and uninstall are
 verified. Release notes list tested platforms, dependencies, known limitations,
 and changes; the tagged version matches the artifact and visible version.
 
-## Scope to decide before expanding the release
+## Implementation and acceptance policy
 
-Do not automatically turn every historical TODO into a launch requirement.
-Decide which advanced kernel analyzers, deployment/packaging targets, desktop
-automation tools, cloud completion sources, and snippets belong in the supported
-release. Preserve their planned status explicitly until they pass **PV-009**.
-Linux GVim comes first, then Windows GVim. macOS, terminal Vim, and Neovim are
-excluded. Linux-only tools must be identified and unavailable actions explained
-on Windows rather than silently invoking Linux commands.
+The owner confirmed that every original Linux/Windows action must be completed
+and enabled. Advanced SDK, kernel, deployment, and analyzer actions remain in
+scope. Missing optional tools provide setup guidance. Only macOS, terminal Vim,
+and Neovim are excluded.
 
-Suggested first implementation sequence: **PV-001 → PV-002 → PV-003 → PV-004 →
-PV-005**, with **PV-006** capturing their regressions and **PV-010** defining the
-environment. Then complete one C++/CMake and one Python workflow through
-**PV-007, PV-008, PV-016, PV-019** before expanding the acceptance matrix.
+See [the acceptance record](docs/ACCEPTANCE.md) for the exact tested versions,
+real GUI/tool checks, recorder fixtures, and outstanding native-platform and
+external-target acceptance. A dispatch fixture does not establish that a remote
+service, commercial SDK, or physical target works. Public release remains gated
+on the recorded acceptance requirements; the source is labelled as a candidate.
