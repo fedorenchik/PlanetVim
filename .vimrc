@@ -672,7 +672,7 @@ augroup planetvim-fern
 augroup END
 " }}}
 " Plugin: fern-bookmark.vim {{{
-let g:fern#scheme#bookmark#store#file = "~/.vim/fern-bookmark.json"
+let g:fern#scheme#bookmark#store#file = planet#paths#State() .. '/fern-bookmark.json'
 " }}}
 " Plugin: fern-renderer-nerdfont.vim {{{
 let g:fern#renderer = "nerdfont"
@@ -708,7 +708,7 @@ let g:arduino_dir = '/usr/share/arduino'
 " }}}
 " Plugin: vim-clap {{{
 let g:clap_disable_bottom_top = 1
-let g:clap_provider_yanks_history = "~/.vim/clap_yanks.history"
+let g:clap_provider_yanks_history = planet#paths#State() .. '/clap_yanks.history'
 let g:clap_provider_colors_ignore_default = v:true
 let g:clap_preview_direction = 'UD'
 nnoremap <silent> <Space><Space> :Clap providers<CR>
@@ -1034,7 +1034,8 @@ let g:startify_commands = [
       \ ]
 let g:startify_change_to_vcs_root = 1
 let g:startify_fortune_use_unicode = 1
-let g:startify_enable_unsafe = 1
+let g:startify_enable_unsafe = 0
+let g:startify_session_dir = planet#paths#State('sessions')
 let g:startify_session_sort = 1
 let g:startify_custom_indices = ['d', 'g', 'h', 'l', 'm', 'n', 'p', 'r', 'u', 'w', 'x', 'y', 'z']
 let g:startify_use_env = 1

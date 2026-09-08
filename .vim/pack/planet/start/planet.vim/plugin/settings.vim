@@ -6,11 +6,11 @@ let g:loaded_planet_vim_settings = 1
 
 set autoindent
 set autoread
-set autowrite
-set autowriteall
+set noautowrite
+set noautowriteall
 set bs=start
-set nobackup
-set backupdir=/tmp
+set backup
+let &backupdir = escape(planet#paths#State('backup'), ',') .. '//'
 "TODO: set & show baloons
 set ballooneval
 set balloonevalterm
@@ -41,7 +41,7 @@ set nodelcombine
 set dictionary+=/usr/share/dict/words
 set dictionary+=/usr/share/dict/web2
 set diffopt=filler,context:12,iwhite,vertical,foldcolumn:2,internal,indent-heuristic,algorithm:histogram,closeoff,hiddenoff
-set directory=~/.vim/swap//,~/tmp//,.//,~//,/var/tmp//,/tmp//
+let &directory = escape(planet#paths#State('swap'), ',') .. '//'
 set display=lastline,uhex
 set noedcompatible
 set emoji
@@ -50,7 +50,7 @@ set noequalalways
 set noerrorbells
 set esckeys
 set noexpandtab
-set exrc
+set noexrc
 set fileformats=unix,dos,mac
 set nofileignorecase
 set fillchars=stl:\ ,stlnc:\ ,vert:\ ,fold:\ ,diff:\ 
@@ -64,7 +64,7 @@ set foldnestmax=5
 set foldopen=quickfix,tag,undo
 set formatoptions-=t
 set formatoptions+=1jMmn
-set nofsync
+set fsync
 set nogdefault
 set grepprg=grep\ -nH\ $*
 "TODO: Colorize cursor in different modes.
@@ -92,7 +92,7 @@ if has('reltime')
   set incsearch
 endif
 set infercase
-set isfname+=@-@
+set isfname+=@-@,39,128-255
 set joinspaces
 set keymodel=
 set keywordprg=:Man
@@ -126,7 +126,7 @@ set mouseshape+=o:question,c:pencil,e:hand2
 set nrformats+=alpha
 set nonumber
 set numberwidth=3
-set patchmode=".orig"
+set patchmode=
 set path+=.,,./include,../include,../*/include,*/include,*,../*,/usr/include,**
 set nopreserveindent
 set previewheight=6
@@ -167,7 +167,7 @@ set smartindent
 set smarttab
 set softtabstop=8
 "TODO: spellfile: 1 - per session, 2 - global, 3 - tmp cache
-set spellfile=$HOME/src/homerc/.vim/spell/personal.utf-8.add,/tmp/tmp.utf-8.add
+let &spellfile = escape(planet#paths#Config('spell') .. '/personal.utf-8.add', ',')
 set spelllang+=cjk
 set spelloptions=camel
 set spellsuggest=best,10
@@ -175,7 +175,7 @@ set nosplitbelow
 set nosplitright
 set nostartofline
 set suffixes-=.h
-set noswapfile
+set swapfile
 set swapsync=
 set switchbuf=uselast
 set synmaxcol=1000
@@ -191,7 +191,10 @@ set tagrelative
 set tags=tags;
 set tagstack
 set termguicolors
-set thesaurus+=$HOME/.vim/thes/mobythes.txt
+let s:thesaurus = planet#paths#Config('thesaurus') .. '/words.txt'
+if filereadable(s:thesaurus)
+  let &thesaurus = escape(s:thesaurus, ',')
+endif
 set notildeop
 set notimeout
 set timeoutlen=400
@@ -202,7 +205,7 @@ set ttimeout
 set ttimeoutlen=10
 set ttyfast
 if has('persistent_undo')
-  set undodir=$HOME/.vim/undo,.
+  let &undodir = escape(planet#paths#State('undo'), ',') .. '//'
   set undofile
 endif
 set undolevels=1000
@@ -224,4 +227,7 @@ set winminwidth=0
 set winwidth=1
 set nowrap
 set nowrapscan
-set nowritebackup
+set writebackup
+
+let &viewdir = planet#paths#State('views')
+let &viminfofile = planet#paths#State() .. '/viminfo'

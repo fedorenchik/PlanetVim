@@ -276,8 +276,7 @@ func! planet#planet#SettingsToggle() abort
 endfunc
 
 func! planet#planet#SetPerSessionOptions()
-  "TODO: undofile, undodir, spellfile, viminfo, viewdir
-  exe "set viminfofile=~/.vim/viminfo/" .. fnamemodify(v:this_session, ":t") .. ".viminfo"
+  call planet#session#SetCwdSession()
   silent! rviminfo!
 endfunc
 
