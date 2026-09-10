@@ -1,28 +1,33 @@
-scriptversion 4
-
-func! planet#view#Panel(key, value = v:null) abort
+vim9script
+export def Panel(key: any, arg_value: any = v:null): any
   if !exists('+showtabpanel') || !exists('+tabpanelopt')
     return planet#prompt#Unavailable('native tab panel', 'tabpanel')
   endif
-  if a:key ==# 'show' | return planet#preferences#Set('showtabpanel', a:value) | endif
-  let l:value = a:value
-  if a:key ==# 'columns'
-    if l:value is v:null | let l:value = planet#prompt#Ask('Tab panel width in columns: ', '20') | endif
-    if l:value is v:null || empty(l:value) | return 0 | endif
-    if string(l:value) !~# "^'\\?\\d\\+'\\?$" || str2nr(l:value) < 1
+  if key ==# 'show'
+    return planet#preferences#Set('showtabpanel', arg_value)
+  endif
+  var value: any = arg_value
+  if key ==# 'columns'
+    if value == null
+      value = planet#prompt#Ask('Tab panel width in columns: ', '20')
+    endif
+    if value == null || empty(value)
+      return 0
+    endif
+    if string(value) !~# "^'\\?\\d\\+'\\?$" || str2nr(value) < 1
       echomsg 'PlanetVim: enter a positive panel width'
       return 0
     endif
-  elseif a:key !=# 'align' || index(['left', 'right'], l:value) < 0
+  elseif key !=# 'align' || index(['left', 'right'], value) < 0
     throw 'PlanetVim: invalid tab panel setting'
   endif
-  let l:parts = filter(split(&tabpanelopt, ','), {_, v -> stridx(v, a:key .. ':') != 0})
-  call add(l:parts, a:key .. ':' .. l:value)
-  return planet#preferences#Set('tabpanelopt', join(l:parts, ','))
-endfunc
+  var parts: any = filter(split(eval('&tabpanelopt'), ','), (_, lambda_v) => stridx(lambda_v, key .. ':') != 0)
+  add(parts, key .. ':' .. value)
+  return planet#preferences#Set('tabpanelopt', join(parts, ','))
+enddef
 
-func! planet#view#Menus(group) abort
-  if a:group ==# 'basic'
+export def Menus(group: any): any
+  if group ==# 'basic'
     PlanetMenu an 150.50 📺&v.Scrolling.Toggle\ Smooth\ Wrapped-line\ Scrolling <Cmd>call planet#preferences#Toggle('smoothscroll', 1)<CR>
     PlanetMenu an 150.50 📺&v.Scrolling.Scroll\ Up\ One\ Line<Tab>CTRL-E <C-e>
     PlanetMenu an 150.50 📺&v.Scrolling.Scroll\ Down\ One\ Line<Tab>CTRL-Y <C-y>
@@ -38,17 +43,19 @@ func! planet#view#Menus(group) abort
     PlanetMenu an 150.51 📺&v.Tab\ Panel.Toggle\ Scrollbar <Cmd>call planet#preferences#Flag('tabpanelopt', 'scrollbar')<CR>
     PlanetMenu an 150.51 📺&v.Tab\ Panel.Help <Cmd>help tabpanel<CR>
     PlanetMenu an 170.50 🧭&n.Toggle\ Jump-list\ Stack <Cmd>call planet#preferences#Flag('jumpoptions', 'stack')<CR>
-  elseif a:group ==# 'nav'
-    for l:value in ['cursor', 'screen', 'topline']
-      execute 'PlanetMenu anoremenu 820.55 🪟&w.Split\ Behavior.Keep\ ' .. l:value .. " <Cmd>call planet#preferences#Set('splitkeep', '" .. l:value .. "')<CR>"
+  elseif group ==# 'nav'
+    for value in ['cursor', 'screen', 'topline']
+      execute 'PlanetMenu anoremenu 820.55 🪟&w.Split\ Behavior.Keep\ ' .. value .. " <Cmd>call planet#preferences#Set('splitkeep', '" .. value .. "')<CR>"
     endfor
     PlanetMenu an 820.55 🪟&w.Release\ Fixed\ Size <Cmd>setlocal nowinfixheight nowinfixwidth<CR>
     PlanetMenu an 820.56 🪟&w.Pin\ Buffer <Cmd>call planet#preferences#Set('winfixbuf', 1, 1)<CR>
     PlanetMenu an 820.56 🪟&w.Unpin\ Buffer <Cmd>call planet#preferences#Set('winfixbuf', 0, 1)<CR>
     PlanetMenu an 820.56 🪟&w.Current\ Pin\ and\ Split\ State <Cmd>call planet#view#WindowState()<CR>
   endif
-endfunc
+  return 0
+enddef
 
-func! planet#view#WindowState() abort
-  echomsg 'PlanetVim: splitkeep=' .. &splitkeep .. ', fixed height=' .. &l:winfixheight .. ', fixed width=' .. &l:winfixwidth .. ', pinned buffer=' .. (exists('+winfixbuf') ? &l:winfixbuf : 'unavailable in this Vim')
-endfunc
+export def WindowState(): any
+  echomsg 'PlanetVim: splitkeep=' .. &splitkeep .. ', fixed height=' .. &l:winfixheight .. ', fixed width=' .. &l:winfixwidth .. ', pinned buffer=' .. (exists('+winfixbuf') ? eval('&l:winfixbuf') :  'unavailable in this Vim')
+  return 0
+enddef

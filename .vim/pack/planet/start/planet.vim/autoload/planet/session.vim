@@ -1,214 +1,238 @@
-scriptversion 4
+vim9script
 
-let s:menu_sessions = []
+var script_menu_sessions = []
 
-func! planet#session#Save() abort
+export def Save(): any
   if ! empty(v:this_session)
     if fnamemodify(v:this_session, ':p:h') ==# fnamemodify(get(g:, 'startify_session_dir', planet#paths#State('sessions')), ':p:h')
-      call startify#session_save(1, fnamemodify(v:this_session, ':t'))
+      startify#session_save(1, fnamemodify(v:this_session, ':t'))
     else
       execute 'mksession! ' .. fnameescape(v:this_session)
     endif
   else
-    call startify#session_save(0, fnamemodify(getcwd(-1), ':t'))
-  end
-  call planet#session#SetCurrent()
-  call planet#session#MenuList()
-endfunc
+    startify#session_save(0, fnamemodify(getcwd(-1), ':t'))
+  endif
+  planet#session#SetCurrent()
+  planet#session#MenuList()
+  return 0
+enddef
 
-func! planet#session#Load(name) abort
+export def Load(name: any): any
   if !empty(getbufinfo({'bufmodified': 1}))
     throw 'PlanetVim: save or discard modified buffers before opening a session'
   endif
-  if empty(a:name)
-    call startify#session_load(0)
+  if empty(name)
+    startify#session_load(0)
   else
-    call startify#session_load(0, a:name)
+    startify#session_load(0, name)
   endif
-  call planet#session#SetCurrent()
-endfunc
+  planet#session#SetCurrent()
+  return 0
+enddef
 
-func! planet#session#LoadByIndex(index) abort
-  if a:index >= 0 && a:index < len(s:menu_sessions)
-    call planet#session#Load(s:menu_sessions[a:index])
+export def LoadByIndex(index: any): any
+  if index >= 0 && index < len(script_menu_sessions)
+    planet#session#Load(script_menu_sessions[index])
   endif
-endfunc
+  return 0
+enddef
 
-func! planet#session#SetCurrent() abort
+export def SetCurrent(): any
   if exists('g:last_session')
     exe 'silent! aun 📚&s.Current:\ ' .. planet#menu#MenuifyName(g:last_session)
     unlet g:last_session
   endif
   if ! empty(v:this_session)
-    call writefile([fnamemodify(v:this_session, ':p')], planet#paths#State() .. '/last-session')
+    writefile([fnamemodify(v:this_session, ':p')], planet#paths#State() .. '/last-session')
     if planet#menu#Visible('nav')
       exe 'PlanetMenu an 840.20  📚&s.Current:\ ' .. planet#menu#MenuifyName(fnamemodify(v:this_session, ':t')) .. ' <Nop>'
     endif
-    let g:last_session = fnamemodify(v:this_session, ":t")
+    g:last_session = fnamemodify(v:this_session, ":t")
   endif
-endfunc
+  return 0
+enddef
 
-func! planet#session#MenuList() abort
-  if !planet#menu#Visible('nav') | return | endif
+export def MenuList(): any
+  if !planet#menu#Visible('nav')
+    return 0
+  endif
   silent! aun 📚&s.Ope&n\ Session
-  let s:menu_sessions = startify#session_list('')
-  for l:index in range(len(s:menu_sessions))
-    exe 'PlanetMenu an 840.125 📚&s.Ope&n\ Session.' .. planet#menu#MenuifyName(s:menu_sessions[l:index])
-          \ .. ' <Cmd>call planet#session#LoadByIndex(' .. l:index .. ')<CR>'
+  script_menu_sessions = startify#session_list('')
+  for index in range(len(script_menu_sessions))
+    exe 'PlanetMenu an 840.125 📚&s.Ope&n\ Session.' .. planet#menu#MenuifyName(script_menu_sessions[index]) .. ' <Cmd>call planet#session#LoadByIndex(' .. index .. ')<CR>'
   endfor
-endfunc
+  return 0
+enddef
 
-func! planet#session#SetCwdSession() abort
-  let l:project = 'projects/' .. sha256(fnamemodify(getcwd(), ':p'))[:15]
-  let &undodir = escape(planet#paths#State(l:project .. '/undo'), ',')
-  let &viminfofile = planet#paths#State(l:project) .. '/viminfo'
-  let &viewdir = planet#paths#State(l:project .. '/views')
-endfunc
+export def SetCwdSession(): any
+  var project: any = 'projects/' .. sha256(fnamemodify(getcwd(), ':p'))[ : 15]
+  &undodir = escape(planet#paths#State(project .. '/undo'), ',')
+  &viminfofile = planet#paths#State(project) .. '/viminfo'
+  &viewdir = planet#paths#State(project .. '/views')
+  return 0
+enddef
 
-func! planet#session#SaveVariant(variant, ...) abort
-  if index(['relative', 'local', 'all', 'no-globals'], a:variant) < 0
+export def SaveVariant(variant: any, ...args: list<any>): any
+  var local: any
+  if index(['relative', 'local', 'all', 'no-globals'], variant) < 0
     throw 'PlanetVim: unknown session save variant'
   endif
-  let l:path = a:0 ? a:1 : browse(1, 'Save session (' .. a:variant .. ')', getcwd(), 'Session.vim')
-  if empty(l:path) | return 0 | endif
-  let l:path = fnamemodify(l:path, ':p')
-  let l:overwrite = a:0 > 1 ? a:2 : !filereadable(l:path)
-        \ || confirm('Replace session ' .. l:path .. '?', "&Replace\n&Cancel", 2) == 1
-  if filereadable(l:path) && !l:overwrite | return 0 | endif
-  let l:options = &sessionoptions
-  let l:cwd = getcwd()
-  let l:local = haslocaldir()
+  var path: any = !empty(args) ? args[0] : browse(1, 'Save session (' .. variant .. ')', getcwd(), 'Session.vim')
+  if empty(path)
+    return 0
+  endif
+  path = fnamemodify(path, ':p')
+  var overwrite: any = len(args) > 1 ? args[1] : !filereadable(path) || confirm('Replace session ' .. path .. '?', "&Replace\n&Cancel", 2) == 1
+  if filereadable(path) && !overwrite
+    return 0
+  endif
+  var options: any = &sessionoptions
+  var cwd: any = getcwd()
+  local = haslocaldir()
   try
-    if a:variant ==# 'relative'
+    if variant ==# 'relative'
       set sessionoptions-=curdir sessionoptions+=sesdir
-      execute 'lcd ' .. fnameescape(fnamemodify(l:path, ':h'))
-    elseif a:variant ==# 'local'
+      execute 'lcd ' .. fnameescape(fnamemodify(path, ':h'))
+    elseif variant ==# 'local'
       set sessionoptions-=options sessionoptions+=localoptions
-    elseif a:variant ==# 'all'
+    elseif variant ==# 'all'
       set sessionoptions+=localoptions sessionoptions+=options
     else
       set sessionoptions-=globals
     endif
-    execute 'mksession' .. (l:overwrite ? '! ' : ' ') .. fnameescape(l:path)
+    execute 'mksession' .. (overwrite ? '! ' : ' ') .. fnameescape(path)
   finally
-    let &sessionoptions = l:options
-    execute (l:local == 1 ? 'lcd ' : l:local == 2 ? 'tcd ' : 'cd ') .. fnameescape(l:cwd)
+    &sessionoptions = options
+    execute (local == 1 ? 'lcd ' : local == 2 ? 'tcd ' : 'cd ') .. fnameescape(cwd)
   endtry
-  call planet#session#SetCurrent()
+  planet#session#SetCurrent()
   return 1
-endfunc
+enddef
 
-func! planet#session#OpenPath(path) abort
+export def OpenPath(path: any): any
   if !empty(getbufinfo({'bufmodified': 1}))
     throw 'PlanetVim: save or discard modified buffers before opening a session'
   endif
-  if !filereadable(a:path)
-    throw 'PlanetVim: session file not found: ' .. a:path
+  if !filereadable(path)
+    throw 'PlanetVim: session file not found: ' .. path
   endif
-  execute 'source ' .. fnameescape(a:path)
-  call planet#session#SetCurrent()
-endfunc
+  execute 'source ' .. fnameescape(path)
+  planet#session#SetCurrent()
+  return 0
+enddef
 
-" action: 0 - add
-"         1 - remove
-" where: 0 - application menu; 1 - desktop (XDG/Windows known folders).
-func! planet#session#ManageDesktopFile(action, where) abort
+# action: 0 - add
+#         1 - remove
+# where: 0 - application menu; 1 - desktop (XDG/Windows known folders).
+export def ManageDesktopFile(action: any, where: any): any
   if empty(v:this_session) || !filereadable(v:this_session)
     echom 'PlanetVim: save a session before creating its launcher.'
     return 0
   endif
-  return planet#session#DesktopEntry(a:action, a:where, v:this_session)
-endfunc
+  return planet#session#DesktopEntry(action, where, v:this_session)
+enddef
 
-func! s:DesktopDirectory(where) abort
-  let l:override = a:where == 0 ? 'PV_applications_dir' : 'PV_desktop_dir'
-  if has_key(g:, l:override) | return g:[l:override] | endif
+def LocalDesktopDirectory(where: any): any
+  var folder: any
+  var result: any
+  var directory: any
+  var override: any = where == 0 ? 'PV_applications_dir' : 'PV_desktop_dir'
+  if has_key(g:, override)
+    return g:[override]
+  endif
   if has('win32') && executable('powershell.exe')
-    let l:folder = a:where == 0 ? 'Programs' : 'Desktop'
-    let l:result = systemlist('powershell.exe -NoProfile -NonInteractive -Command "[Environment]::GetFolderPath(''' .. l:folder .. ''')"')
-    if v:shell_error == 0 && !empty(l:result) && !empty(l:result[0])
-      return l:result[0]
+    folder = where == 0 ? 'Programs' : 'Desktop'
+    result = systemlist('powershell.exe -NoProfile -NonInteractive -Command "[Environment]::GetFolderPath(''' .. folder .. ''')"')
+    if v:shell_error == 0 && !empty(result) && !empty(result[0])
+      return result[0]
     endif
   endif
-  if a:where == 0
-    return get(g:, 'PV_applications_dir', has('win32') ? $APPDATA .. '/Microsoft/Windows/Start Menu/Programs'
-          \ : (empty($XDG_DATA_HOME) ? expand('~/.local/share') : $XDG_DATA_HOME) .. '/applications')
+  if where == 0
+    return get(g:, 'PV_applications_dir', has('win32') ? $APPDATA .. '/Microsoft/Windows/Start Menu/Programs' : (empty($XDG_DATA_HOME) ? expand('~/.local/share') : $XDG_DATA_HOME) .. '/applications')
   endif
-  if exists('g:PV_desktop_dir') | return g:PV_desktop_dir | endif
-  if has('win32') | return expand('~/Desktop') | endif
-  let l:config = (empty($XDG_CONFIG_HOME) ? expand('~/.config') : $XDG_CONFIG_HOME) .. '/user-dirs.dirs'
-  if filereadable(l:config)
-    for l:line in readfile(l:config)
-      let l:directory = matchstr(l:line, '^XDG_DESKTOP_DIR="\zs.*\ze"$')
-      if !empty(l:directory)
-        return substitute(l:directory, '\$HOME', '\=expand("~")', 'g')
+  if exists('g:PV_desktop_dir')
+    return g:PV_desktop_dir
+  endif
+  if has('win32')
+    return expand('~/Desktop')
+  endif
+  var config: any = (empty($XDG_CONFIG_HOME) ? expand('~/.config') : $XDG_CONFIG_HOME) .. '/user-dirs.dirs'
+  if filereadable(config)
+    for line in readfile(config)
+      directory = matchstr(line, '^XDG_DESKTOP_DIR="\zs.*\ze"$')
+      if !empty(directory)
+        return substitute(directory, '\$HOME', '\=expand("~")', 'g')
       endif
     endfor
   endif
   return expand('~/Desktop')
-endfunc
+enddef
 
-func! planet#session#DesktopExec(argv) abort
-  let l:words = []
-  for l:argument in a:argv
-    if l:argument =~# '[\r\n]'
+export def DesktopExec(argv: any): any
+  var word: any
+  var words: any = []
+  for argument in argv
+    if argument =~# '[\r\n]'
       throw 'PlanetVim: launcher arguments cannot contain line breaks'
     endif
-    let l:word = escape(l:argument, '\"`$')
-    let l:word = substitute(l:word, '\\', '\\\\', 'g')
-    let l:word = substitute(l:word, '%', '%%', 'g')
-    call add(l:words, '"' .. l:word .. '"')
+    word = escape(argument, '\"`$')
+    word = substitute(word, '\\', '\\\\', 'g')
+    word = substitute(word, '%', '%%', 'g')
+    add(words, '"' .. word .. '"')
   endfor
-  return join(l:words, ' ')
-endfunc
+  return join(words, ' ')
+enddef
 
-func! planet#session#DesktopEntry(action, where, session) abort
-  if index([0, 1], a:action) < 0 || index([0, 1], a:where) < 0
+export def DesktopEntry(action: any, where: any, arg_session: any): any
+  var request: any
+  var name: any
+  if index([0, 1], action) < 0 || index([0, 1], where) < 0
     throw 'PlanetVim: invalid launcher action'
   endif
-  let l:session = fnamemodify(a:session, ':p')
-  let l:directory = s:DesktopDirectory(a:where)
-  let l:file = l:directory .. '/PlanetVim-' .. sha256(l:session)[:19] .. (has('win32') ? '.lnk' : '.desktop')
-  if a:action == 1
-    if filereadable(l:file) && delete(l:file) != 0
-      throw 'PlanetVim: could not remove launcher ' .. l:file
+  var session: any = fnamemodify(arg_session, ':p')
+  var directory: any = LocalDesktopDirectory(where)
+  var file: any = directory .. '/PlanetVim-' .. sha256(session)[ : 19] .. (has('win32') ? '.lnk' : '.desktop')
+  if action == 1
+    if filereadable(file) && delete(file) != 0
+      throw 'PlanetVim: could not remove launcher ' .. file
     endif
-    return l:file
+    return file
   endif
-  if !filereadable(l:session) | throw 'PlanetVim: session file not found' | endif
-  call mkdir(l:directory, 'p')
-  let l:argv = planet#gui#Command() + ['--cmd', 'let g:startify_disable_at_vimenter = 1',
-        \ '-c', 'call planet#session#OpenPath(' .. string(l:session) .. ')']
+  if !filereadable(session)
+    throw 'PlanetVim: session file not found'
+  endif
+  mkdir(directory, 'p')
+  var argv: any = planet#gui#Command() + ['--cmd', 'let g:startify_disable_at_vimenter = 1', '-c', 'call planet#session#OpenPath(' .. string(session) .. ')']
   if has('win32')
     if !executable('powershell.exe')
       throw 'PlanetVim: Windows PowerShell is required to create a session shortcut'
     endif
-    let l:request = planet#paths#Cache('launchers') .. '/' .. sha256(l:file)[:19] .. '.json'
-    call writefile([json_encode({'path': l:file, 'argv': l:argv, 'cwd': fnamemodify(l:session, ':h')})], l:request)
-    call planet#term#RunGuiApp(['powershell.exe', '-NoProfile', '-NonInteractive', '-File',
-          \ planet#paths#Root() .. '/.vim/pack/planet/start/planet.vim/bin/session-shortcut.ps1', l:request])
+    request = planet#paths#Cache('launchers') .. '/' .. sha256(file)[ : 19] .. '.json'
+    writefile([json_encode({'path': file, 'argv': argv, 'cwd': fnamemodify(session, ':h')})], request)
+    planet#term#RunGuiApp(['powershell.exe', '-NoProfile', '-NonInteractive', '-File',  planet#paths#Root() .. '/.vim/pack/planet/start/planet.vim/bin/session-shortcut.ps1', request])
   else
-    let l:name = substitute(fnamemodify(l:session, ':t'), '[\r\n]', ' ', 'g')
-    call writefile(['[Desktop Entry]', 'Version=1.0', 'Type=Application',
-          \ 'Name=PlanetVim - ' .. l:name, 'Comment=Open this PlanetVim session',
-          \ 'Exec=' .. planet#session#DesktopExec(l:argv), 'Terminal=false',
-          \ 'Icon=gvim', 'Categories=Development;TextEditor;', 'StartupNotify=true'], l:file)
-    call setfperm(l:file, 'rwx------')
+    name = substitute(fnamemodify(session, ':t'), '[\r\n]', ' ', 'g')
+    writefile(['[Desktop Entry]', 'Version=1.0', 'Type=Application', 'Name=PlanetVim - ' .. name, 'Comment=Open this PlanetVim session',
+         'Exec=' .. planet#session#DesktopExec(argv), 'Terminal=false', 'Icon=gvim', 'Categories=Development;TextEditor;',
+         'StartupNotify=true'], file)
+    setfperm(file, 'rwx------')
   endif
-  return l:file
-endfunc
+  return file
+enddef
 
-func! planet#session#LoadLast() abort
-  let l:file = planet#paths#State() .. '/last-session'
-  let l:last = filereadable(l:file) ? get(readfile(l:file), 0, '') : ''
-  if empty(l:last)
+export def LoadLast(): any
+  var last: any
+  var file: any = planet#paths#State() .. '/last-session'
+  last = filereadable(file) ? get(readfile(file), 0, '') : ''
+  if empty(last)
     echomsg 'PlanetVim: no previous session is available.'
-    return
+    return 0
   endif
-  if filereadable(l:last)
-    call planet#session#OpenPath(l:last)
+  if filereadable(last)
+    planet#session#OpenPath(last)
   else
-    " Read the earlier format, which stored only a Startify session name.
-    call planet#session#Load(l:last)
+    # Read the earlier format, which stored only a Startify session name.
+    planet#session#Load(last)
   endif
-endfunc
+  return 0
+enddef

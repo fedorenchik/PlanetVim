@@ -1,49 +1,50 @@
-scriptversion 4
-
-func! planet#windowview#Save(slot = 0) abort
+vim9script
+export def Save(slot: any = 0): any
   if empty(expand('%:p')) || !empty(&buftype)
     return 0
   endif
-  execute 'mkview! ' .. (a:slot ? a:slot : '')
+  execute 'mkview! ' .. (slot != 0 ? slot : '')
   return 1
-endfunc
+enddef
 
-func! planet#windowview#Load(slot = 0) abort
+export def Load(slot: any = 0): any
   if empty(expand('%:p')) || !empty(&buftype)
     return 0
   endif
-  execute 'silent! loadview ' .. (a:slot ? a:slot : '')
+  execute 'silent! loadview ' .. (slot != 0 ? slot : '')
   return 1
-endfunc
+enddef
 
-func! planet#windowview#ToggleLocalOptions() abort
-  let l:options = split(&viewoptions, ',')
-  if index(l:options, 'localoptions') >= 0
-    call filter(l:options, 'v:val !=# "localoptions"')
+export def ToggleLocalOptions(): any
+  var options: any = split(&viewoptions, ',')
+  if index(options, 'localoptions') >= 0
+    filter(options, (_, option) => option !=# 'localoptions')
   else
-    call add(l:options, 'localoptions')
+    add(options, 'localoptions')
   endif
-  let &viewoptions = join(l:options, ',')
-  echo 'View local options: ' .. (index(l:options, 'localoptions') >= 0 ? 'on' : 'off')
-endfunc
+  &viewoptions = join(options, ',')
+  echo 'View local options: ' .. (index(options, 'localoptions') >= 0 ? 'on' :  'off')
+  return 0
+enddef
 
-func! planet#windowview#ToggleAutoSave() abort
+export def ToggleAutoSave(): any
   if exists('g:PV_view_autosave')
-    let g:PV_view_autosave = ! g:PV_view_autosave
+    g:PV_view_autosave = ! g:PV_view_autosave
   else
-    let g:PV_view_autosave = v:true
+    g:PV_view_autosave = v:true
   endif
   if g:PV_view_autosave
     aug AugPv_View_AutoSave
-      au!
-      au BufWinLeave * call planet#windowview#Save(9)
-      au BufWinEnter * call planet#windowview#Load(9)
+    au!
+    au BufWinLeave * call planet#windowview#Save(9)
+    au BufWinEnter * call planet#windowview#Load(9)
     aug END
     echo "AutoSave Views"
   else
     aug AugPv_View_AutoSave
-      au!
+    au!
     aug END
     echo "Do not AutoSave Views"
   endif
-endfunc
+  return 0
+enddef

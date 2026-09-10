@@ -1,72 +1,75 @@
-scriptversion 4
-
-func! planet#winbar#Preset(kind) abort
+vim9script
+export def Preset(kind: any): any
   silent! aunmenu WinBar
-  if a:kind ==# 'terminal'
-    call PlanetVim_WinBarTerminalInit()
+  if kind ==# 'terminal'
+    g:PlanetVim_WinBarTerminalInit()
   else
-    call PlanetVim_WinBarQfInit()
+    g:PlanetVim_WinBarQfInit()
     if get(getwininfo(win_getid()), 0, {}).loclist
       PlanetMenu nnoremenu WinBar.⏪ <Cmd>lolder<CR>
       PlanetMenu nnoremenu WinBar.📙 <Cmd>lhistory<CR>
       PlanetMenu nnoremenu WinBar.⏩ <Cmd>lnewer<CR>
     endif
   endif
-endfunc
+  return 0
+enddef
 
-func! planet#winbar#Filter(exclude, pattern = v:null) abort
-  let l:pattern = a:pattern is v:null ? inputdialog('Filter list (Vim pattern): ', expand('<cword>')) : a:pattern
-  if empty(l:pattern)
+export def Filter(exclude: any, arg_pattern: any = v:null): any
+  var items: any
+  var pattern: any = arg_pattern == null ? inputdialog('Filter list (Vim pattern): ', expand('<cword>')) : arg_pattern
+  if empty(pattern)
     return 0
   endif
-  let l:local = get(getwininfo(win_getid()), 0, {}).loclist
-  let l:details = l:local ? getloclist(0, #{items: 0, title: 0}) : getqflist(#{items: 0, title: 0})
-  let l:items = filter(copy(l:details.items), {_, item -> a:exclude
-        \ ? item.text !~# l:pattern : item.text =~# l:pattern})
-  let l:next = #{items: l:items, title: l:details.title .. ' | ' .. (a:exclude ? 'exclude ' : 'keep ') .. l:pattern}
-  if l:local
-    call setloclist(0, [], ' ', l:next)
+  var local: any = get(getwininfo(win_getid()), 0, {}).loclist
+  var details: any = local ? getloclist(0, {items: 0, title: 0}) : getqflist({items: 0, title: 0})
+  items = filter(copy(details.items), (_, lambda_item) => exclude ? lambda_item.text !~# pattern : lambda_item.text =~# pattern)
+  var next: any = {items: items, title: details.title .. ' | ' .. (exclude ? 'exclude ' : 'keep ') .. pattern}
+  if local
+    setloclist(0, [], ' ', next)
   else
-    call setqflist([], ' ', l:next)
+    setqflist([], ' ', next)
   endif
   return 1
-endfunc
+enddef
 
-func! planet#winbar#Refresh() abort
+export def Refresh(): any
+  var name: any
   silent! aunmenu WinBar
-  let w:PV_winbar_buffers = filter(get(w:, 'PV_winbar_buffers', []), {_, number -> bufexists(number)})
-  for l:number in w:PV_winbar_buffers
-    let l:name = '[' .. l:number .. '] ' .. (empty(bufname(l:number)) ? '[No Name]' : fnamemodify(bufname(l:number), ':t'))
-    execute 'PlanetMenu anoremenu WinBar.' .. planet#menu#MenuifyName(l:name) .. ' <Cmd>confirm buffer ' .. l:number .. '<CR>'
+  w:PV_winbar_buffers = filter(get(w:, 'PV_winbar_buffers', []), (_, lambda_number) => bufexists(lambda_number))
+  for number in w:PV_winbar_buffers
+    name = '[' .. number .. '] ' .. (empty(bufname(number)) ? '[No Name]' : fnamemodify(bufname(number), ':t'))
+    execute 'PlanetMenu anoremenu WinBar.' .. planet#menu#MenuifyName(name) .. ' <Cmd>confirm buffer ' .. number .. '<CR>'
   endfor
-endfunc
+  return 0
+enddef
 
-func! planet#winbar#Change(action) abort
-  let l:buffers = get(w:, 'PV_winbar_buffers', [])
-  if a:action ==# 'add'
-    if index(l:buffers, bufnr()) < 0
-      call add(l:buffers, bufnr())
+export def Change(action: any): any
+  var buffers: any = get(w:, 'PV_winbar_buffers', [])
+  if action ==# 'add'
+    if index(buffers, bufnr()) < 0
+      add(buffers, bufnr())
     endif
-  elseif a:action ==# 'remove'
-    call filter(l:buffers, {_, number -> number != bufnr()})
-  elseif a:action ==# 'others'
-    let l:buffers = index(l:buffers, bufnr()) < 0 ? [] : [bufnr()]
-  elseif a:action ==# 'clear'
-    let l:buffers = []
+  elseif action ==# 'remove'
+    filter(buffers, (_, lambda_number) => lambda_number != bufnr())
+  elseif action ==# 'others'
+    buffers = index(buffers, bufnr()) < 0 ? [] : [bufnr()]
+  elseif action ==# 'clear'
+    buffers = []
   else
     throw 'PlanetVim: unknown window bar action'
   endif
-  let w:PV_winbar_buffers = l:buffers
-  call planet#winbar#Refresh()
-endfunc
+  w:PV_winbar_buffers = buffers
+  planet#winbar#Refresh()
+  return 0
+enddef
 
-func! planet#winbar#Terminal(direction) abort
-  let l:terminals = sort(term_list(), 'n')
-  if empty(l:terminals)
+export def Terminal(direction: any): any
+  var terminals: any = sort(term_list(), 'n')
+  if empty(terminals)
     return 0
   endif
-  let l:index = index(l:terminals, bufnr())
-  let l:next = (l:index + a:direction + len(l:terminals)) % len(l:terminals)
-  execute 'confirm buffer ' .. l:terminals[l:next]
+  var index: any = index(terminals, bufnr())
+  var next: any = (index + direction + len(terminals)) % len(terminals)
+  execute 'confirm buffer ' .. terminals[next]
   return bufnr()
-endfunc
+enddef

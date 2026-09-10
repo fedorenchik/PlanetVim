@@ -1,213 +1,224 @@
-scriptversion 4
+vim9script
 
-let s:directory = ''
-let s:sequence = 0
-let s:order = []
-let s:snapshots = {}
-let s:closed = ''
-let s:restoring = v:false
-let s:closing = v:false
+var script_directory = ''
+var script_sequence = 0
+var script_order = []
+var script_snapshots = {}
+var script_closed = ''
+var script_restoring = v:false
+var script_closing = v:false
 
-func! s:Directory() abort
-  if empty(s:directory)
-    let s:directory = planet#paths#State('tabs') .. '/' .. getpid() .. '-' .. sha256(tempname())[:15]
-    call mkdir(s:directory, 'p')
+def LocalDirectory(): any
+  if empty(script_directory)
+    script_directory = planet#paths#State('tabs') .. '/' .. getpid() .. '-' .. sha256(tempname())[ : 15]
+    mkdir(script_directory, 'p')
   endif
-  return s:directory
-endfunc
+  return script_directory
+enddef
 
-func! planet#tab#Track() abort
-  if s:restoring
-    return
-  endif
-  let s:order = []
-  for l:tab in range(1, tabpagenr('$'))
-    let l:id = gettabvar(l:tab, 'PV_tab_id', '')
-    if empty(l:id)
-      let s:sequence += 1
-      let l:id = string(s:sequence)
-      call settabvar(l:tab, 'PV_tab_id', l:id)
-    endif
-    call add(s:order, l:id)
-  endfor
-endfunc
-
-" Save only this tab, without changing the active full-session identity/options.
-func! planet#tab#SaveTo(path, overwrite = v:false) abort
-  if empty(a:path)
+export def Track(): any
+  var id: any
+  if script_restoring
     return 0
   endif
-  let l:ssop = &sessionoptions
-  let l:session = v:this_session
+  script_order = []
+  for tab in range(1, tabpagenr('$'))
+    id = gettabvar(tab, 'PV_tab_id', '')
+    if empty(id)
+      script_sequence += 1
+      id = string(script_sequence)
+      settabvar(tab, 'PV_tab_id', id)
+    endif
+    add(script_order, id)
+  endfor
+  return 0
+enddef
+
+# Save only this tab, without changing the active full-session identity/options.
+export def SaveTo(path: any, overwrite: any = v:false): any
+  var lines: any
+  if empty(path)
+    return 0
+  endif
+  var ssop: any = &sessionoptions
+  var session: any = v:this_session
   try
-    let &sessionoptions = join(filter(split(l:ssop, ','),
-          \ {_, option -> index(['tabpages', 'winpos', 'globals', 'options', 'buffers'], option) < 0}), ',')
-    execute (a:overwrite ? 'mksession! ' : 'mksession ') .. fnameescape(a:path)
-    " A restored tab must not change the working directory of other tabs.
-    let l:lines = readfile(a:path)
-    call map(l:lines, {_, line -> substitute(line, '^cd ', 'tcd ', '')})
-    if writefile(l:lines, a:path) != 0
+    &sessionoptions = join(filter(split(ssop, ','),  (_, lambda_option) => index(['tabpages', 'winpos', 'globals', 'options', 'buffers'], lambda_option) < 0), ',')
+    execute (overwrite ? 'mksession! ' : 'mksession ') .. fnameescape(path)
+    # A restored tab must not change the working directory of other tabs.
+    lines = readfile(path)
+    map(lines, (_, lambda_line) => substitute(lambda_line, '^cd ', 'tcd ', ''))
+    if writefile(lines, path) != 0
       throw 'PlanetVim: could not save the tab'
     endif
   finally
-    let &sessionoptions = l:ssop
-    let v:this_session = l:session
+    &sessionoptions = ssop
+    v:this_session = session
   endtry
   return 1
-endfunc
+enddef
 
-func! planet#tab#Save() abort
-  let l:path = browse(v:true, 'Save current tab', getcwd(), fnamemodify(bufname(), ':t:r') .. '.tab.vim')
-  if empty(l:path)
+export def Save(): any
+  var path: any = browse(v:true, 'Save current tab', getcwd(), fnamemodify(bufname(), ':t:r') .. '.tab.vim')
+  if empty(path)
     return 0
   endif
-  let l:overwrite = getftype(l:path) !=# ''
-  if l:overwrite && confirm('Overwrite ' .. l:path .. '?', "&Overwrite\n&Cancel", 2) != 1
+  var overwrite: any = getftype(path) !=# ''
+  if overwrite && confirm('Overwrite ' .. path .. '?', "&Overwrite\n&Cancel", 2) != 1
     return 0
   endif
-  return planet#tab#SaveTo(l:path, l:overwrite)
-endfunc
+  return planet#tab#SaveTo(path, overwrite)
+enddef
 
-func! planet#tab#Open() abort
-  let l:path = browse(v:false, 'Open saved tab', getcwd(), '')
-  return empty(l:path) ? 0 : planet#tab#OpenFrom(l:path)
-endfunc
+export def Open(): any
+  var path: any = browse(v:false, 'Open saved tab', getcwd(), '')
+  return empty(path) ? 0 : planet#tab#OpenFrom(path)
+enddef
 
-func! planet#tab#SaveTmp() abort
-  if s:restoring || s:closing
-    return
+export def SaveTmp(): any
+  var path: any
+  if script_restoring || script_closing
+    return 0
   endif
-  call planet#tab#Track()
-  let l:id = gettabvar(tabpagenr(), 'PV_tab_id')
+  planet#tab#Track()
+  var id: any = gettabvar(tabpagenr(), 'PV_tab_id')
   try
-    let l:path = s:Directory() .. '/' .. l:id .. '.tab.vim'
-    call planet#tab#SaveTo(l:path, v:true)
-    let s:snapshots[l:id] = l:path
+    path = LocalDirectory() .. '/' .. id .. '.tab.vim'
+    planet#tab#SaveTo(path, v:true)
+    script_snapshots[id] = path
   catch
-    " Snapshot failure must not prevent switching or closing a tab.
+    # Snapshot failure must not prevent switching or closing a tab.
     echohl WarningMsg
     echom 'PlanetVim: could not save closed-tab recovery: ' .. v:exception
     echohl None
   endtry
-endfunc
+  return 0
+enddef
 
-func! planet#tab#BeforeClose() abort
-  if s:restoring
-    return
+export def BeforeClose(): any
+  if script_restoring
+    return 0
   endif
-  " A TabLeave event is too late: tabclose may already have removed splits.
-  let s:closing = v:false
-  call planet#tab#SaveTmp()
-  let s:closing = v:true
-endfunc
+  # A TabLeave event is too late: tabclose may already have removed splits.
+  script_closing = v:false
+  planet#tab#SaveTmp()
+  script_closing = v:true
+  return 0
+enddef
 
-" The wrappers provide pre-close capture on Vim builds without TabClosedPre.
-func! planet#tab#Close() abort
-  call planet#tab#BeforeClose()
+# The wrappers provide pre-close capture on Vim builds without TabClosedPre.
+export def Close(): any
+  planet#tab#BeforeClose()
   try
     confirm tabclose
   finally
-    let s:closing = v:false
+    script_closing = v:false
   endtry
-endfunc
+  return 0
+enddef
 
-func! planet#tab#CloseOthers() abort
-  call planet#tab#BeforeClose()
+export def CloseOthers(): any
+  planet#tab#BeforeClose()
   try
     confirm tabonly
   finally
-    let s:closing = v:false
+    script_closing = v:false
   endtry
-endfunc
+  return 0
+enddef
 
-func! planet#tab#Closed() abort
-  if s:restoring
-    return
+export def Closed(): any
+  if script_restoring
+    return 0
   endif
-  " Vim's TabClosed does not identify the removed tab. Compare stable IDs,
-  " which also handles closing a non-current tab and tab-number renumbering.
-  let l:remaining = map(gettabinfo(), {_, tab -> gettabvar(tab.tabnr, 'PV_tab_id', '')})
-  for l:id in filter(copy(s:order), {_, id -> index(l:remaining, id) < 0})
-    if has_key(s:snapshots, l:id)
-      if !empty(s:closed) && s:closed !=# s:snapshots[l:id]
-        call delete(s:closed)
+  # Vim's TabClosed does not identify the removed tab. Compare stable IDs,
+  # which also handles closing a non-current tab and tab-number renumbering.
+  var remaining: any = map(gettabinfo(), (_, lambda_tab) => gettabvar(lambda_tab.tabnr, 'PV_tab_id', ''))
+  for id in filter(copy(script_order), (_, lambda_id) => index(remaining, lambda_id) < 0)
+    if has_key(script_snapshots, id)
+      if !empty(script_closed) && script_closed !=# script_snapshots[id]
+        delete(script_closed)
       endif
-      let s:closed = remove(s:snapshots, l:id)
+      script_closed = remove(script_snapshots, id)
     endif
   endfor
-  let s:order = l:remaining
-  let s:closing = v:false
-endfunc
+  script_order = remaining
+  script_closing = v:false
+  return 0
+enddef
 
-" Restore global cwd without losing the restored tab's per-window directories.
-func! s:RestoreCwd(global) abort
-  let l:tabdir = getcwd(-1, 0)
-  let l:locals = []
-  for l:win in gettabinfo(tabpagenr())[0].windows
-    if haslocaldir(win_id2win(l:win)) == 1
-      call add(l:locals, [l:win, getcwd(win_id2win(l:win))])
+# Restore global cwd without losing the restored tab's per-window directories.
+def LocalRestoreCwd(global: any): any
+  var tabdir: any = getcwd(-1, 0)
+  var locals: any = []
+  for win in gettabinfo(tabpagenr())[0].windows
+    if haslocaldir(win_id2win(win)) == 1
+      add(locals, [win, getcwd(win_id2win(win))])
     endif
   endfor
-  execute 'noautocmd cd ' .. fnameescape(a:global)
-  execute 'noautocmd tcd ' .. fnameescape(l:tabdir)
-  for l:item in l:locals
-    call win_execute(l:item[0], 'noautocmd lcd ' .. fnameescape(l:item[1]))
+  execute 'noautocmd cd ' .. fnameescape(global)
+  execute 'noautocmd tcd ' .. fnameescape(tabdir)
+  for item in locals
+    win_execute(item[0], 'noautocmd lcd ' .. fnameescape(item[1]))
   endfor
-endfunc
+  return 0
+enddef
 
-func! planet#tab#OpenFrom(path) abort
-  if !filereadable(a:path)
-    throw 'PlanetVim: saved tab does not exist: ' .. a:path
+export def OpenFrom(arg_path: any): any
+  var error: any
+  if !filereadable(arg_path)
+    throw 'PlanetVim: saved tab does not exist: ' .. arg_path
   endif
-  let l:path = fnamemodify(a:path, ':p')
-  let l:ssop = &sessionoptions
-  let l:session = v:this_session
-  let l:events = &eventignore
-  let l:old_window = win_getid()
-  let l:cwd = getcwd(-1)
-  let l:new_window = 0
-  let s:restoring = v:true
+  var path: any = fnamemodify(arg_path, ':p')
+  var ssop: any = &sessionoptions
+  var session: any = v:this_session
+  var events: any = &eventignore
+  var old_window: any = win_getid()
+  var cwd: any = getcwd(-1)
+  var new_window: any = 0
+  script_restoring = v:true
   try
     set eventignore+=SessionLoadPost
     tabnew
-    let l:new_window = win_getid()
-    execute 'source ' .. fnameescape(l:path)
-    call s:RestoreCwd(l:cwd)
+    new_window = win_getid()
+    execute 'source ' .. fnameescape(path)
+    LocalRestoreCwd(cwd)
   catch
-    let l:error = v:exception
-    if l:new_window != 0 && win_id2tabwin(l:new_window)[0] != 0
-      execute 'noautocmd tabclose! ' .. win_id2tabwin(l:new_window)[0]
+    error = v:exception
+    if new_window != 0 && win_id2tabwin(new_window)[0] != 0
+      execute 'noautocmd tabclose! ' .. win_id2tabwin(new_window)[0]
     endif
-    call win_gotoid(l:old_window)
-    if getcwd(-1) !=# l:cwd
-      call s:RestoreCwd(l:cwd)
+    win_gotoid(old_window)
+    if getcwd(-1) !=# cwd
+      LocalRestoreCwd(cwd)
     endif
-    throw 'PlanetVim: could not restore tab: ' .. l:error
+    throw 'PlanetVim: could not restore tab: ' .. error
   finally
-    let &sessionoptions = l:ssop
-    let v:this_session = l:session
-    let &eventignore = l:events
-    let s:restoring = v:false
-    call planet#tab#Track()
+    &sessionoptions = ssop
+    v:this_session = session
+    &eventignore = events
+    script_restoring = v:false
+    planet#tab#Track()
   endtry
   return 1
-endfunc
+enddef
 
-func! planet#tab#Reopen() abort
-  if empty(s:closed) || !filereadable(s:closed)
+export def Reopen(): any
+  if empty(script_closed) || !filereadable(script_closed)
     echo 'PlanetVim: no closed tab to reopen'
     return 0
   endif
-  " The closed snapshot is distinct from every still-open tab's snapshot.
-  return planet#tab#OpenFrom(s:closed)
-endfunc
+  # The closed snapshot is distinct from every still-open tab's snapshot.
+  return planet#tab#OpenFrom(script_closed)
+enddef
 
-func! planet#tab#Cleanup() abort
-  if !empty(s:directory)
-    call delete(s:directory, 'rf')
+export def Cleanup(): any
+  if !empty(script_directory)
+    delete(script_directory, 'rf')
   endif
-  let s:directory = ''
-  let s:snapshots = {}
-  let s:closed = ''
-  let s:closing = v:false
-endfunc
+  script_directory = ''
+  script_snapshots = {}
+  script_closed = ''
+  script_closing = v:false
+  return 0
+enddef
