@@ -183,6 +183,48 @@ GUI transfer copies the complete buffer, including unsaved text, to a new GVim p
 
 Environment → Edit Environment uses the current process environment, and applies edited `NAME=value` lines when its scratch buffer closes. Removing a line does not unset a variable; set an empty value explicitly if desired. SDK activation affects only this GVim and its future children. See [INTEGRATIONS.md](INTEGRATIONS.md) for compiler, SDK, kernel, deployment, and analyzer workflows.
 
+## Startup and plugin loading
+
+To run plain GVim with no plugins, personal vimrc/gvimrc, or saved Vim state:
+
+```sh
+/usr/bin/gvim -u NONE -U NONE -i NONE
+```
+
+PlanetVim still loads most plugin entry scripts at startup. It is not a general
+lazy-loading plugin manager. The expensive integrations now start when needed:
+
+- The action finder builds its search index on first use. All selected menubar
+  groups and their hints are available immediately; hidden groups remain searchable.
+- Fixed menu declarations use direct compiled calls. Derived shortcuts and tips
+  are cached as JSON in the PlanetVim cache directory (`menu-hints.json`). They
+  are recomputed when mappings, leaders, relevant display settings or hint code
+  change. The cache is saved on exit, so the first launch after an update costs
+  more. Missing or damaged caches fall back to live computation.
+- LSP initialization waits for the first normal buffer with a filetype. The
+  client commands remain available, including `:LspEnable`. An explicit
+  `g:lsp_auto_enable` setting is respected.
+- Vista's automatic nearest-symbol check waits for an idle pause in a named
+  buffer with a filetype and an available provider. `:Vista` remains available.
+- The older Markdown preview plugin loads on its first public preview function
+  call. PlanetVim's Markdown Preview menu uses the existing Pandoc integration.
+
+On Linux, an inherited Fish shell with default `-c` flags uses
+`--no-config -c` for noninteractive shell commands. Interactive `:terminal`
+sessions still load Fish configuration. This means Fish functions and aliases
+defined only in your configuration are unavailable to `:!` and shell-string
+tasks unless you opt out. Put `let g:PV_fast_shell = 0` in `planetvimrc.vim` to
+retain the original behavior; explicit nondefault shell flags are preserved.
+Use `let g:PV_menu_cache = 0` there to disable the hint cache.
+
+Measure startup with `python3 scripts/benchmark.py --runs 5 --xvfb /path/to/Xvfb`.
+Each sample starts a fresh GVim process, with a cache populated by one excluded
+warmup. `--cold-cache` measures with an empty PlanetVim cache each time; it does
+not flush the operating system's filesystem cache. The report includes both
+the historical pre-vimrc-to-event-loop interval and GVim's first-screen time
+from `--startuptime`. The current optimization target is a **1.0-second median
+to the first screen** on the Linux reference setup, with all default menus.
+
 ## Troubleshooting
 
 - Startup: run `:messages` and `:PlanetDoctor`. Verify the launcher uses the intended GVim, not a console-only build. A missing optional tool should affect its action, not startup.
