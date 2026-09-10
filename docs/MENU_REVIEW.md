@@ -478,7 +478,7 @@ were not exercised.
 
 ### MD-22 · P3 · Evaluate later 9.2 display features
 
-- [ ] Prototype **View → Image Preview**, completion-popup appearance controls,
+- [x] Prototype **View → Image Preview**, completion-popup appearance controls,
   and advanced cursor-padding/status-line settings.
 
 Upstream now offers image popups, opacity, `scrolloffpad`, multiline status lines
@@ -491,6 +491,17 @@ Acceptance: pin minimum patches/backends first; explain unsupported capabilities
 Check preview close/resize/memory behavior and retain a simple default status
 line. Later GTK4/Pango printing can extend MD-21 after platform validation.
 
+Implemented an on-demand GTK image preview with an optional Python/Pillow
+decoder. Input is limited to 32 MiB and 16 million pixels; the decoder has a
+384 MiB address-space limit and produces at most 1024×768 RGBA pixels. Closing
+cancels pending work; resize rebuilds one thumbnail. No decoder starts at login.
+Added completion borders/opacity, window-local cursor padding, and opt-in
+multiline/clickable status lines with restoration. Runtime feature checks gate
+`+image` plus the GTK renderer, `pumopt`, `scrolloffpad`, `statuslineopt`, and
+`statusline_click`; these were exercised on 9.2.0849, with guidance on 9.1.0000.
+`test_display_features.vim` checks options, popup visibility, resize and cleanup;
+`test_image_preview.py` rejects invalid/oversized images before pixel allocation.
+
 ## Implementation rules and recommended order
 
 1. **Repair and trust:** MD-01, then MD-02/03. Accurate labels, searchable actions
@@ -499,7 +510,7 @@ line. Later GTK4/Pango printing can extend MD-21 after platform validation.
 3. **Complete the controls:** MD-10 through MD-15 and MD-18 through MD-20.
 4. **Optional advanced coverage:** MD-21/22.
 
-Use small focused commits with Linux GVim checks first and Windows second. Prefer
+Use small focused commits with Linux GVim checks; Windows is deferred. Prefer
 first-party menus/adapters and configuration. Native EditorConfig, comment,
 yank-highlight and help packages are possible consolidation candidates, but a
 new native equivalent alone does not justify replacing a working plugin.
@@ -528,5 +539,6 @@ and menu tree where practical.
   overwritten scroll entries from live callbacks.
 - `python3 -m unittest discover -s tests -p test_menu_contract.py`: **2 passed**.
   These static checks do not cover the runtime findings above.
-- No application or third-party source changed. This is a backlog, not an
-  implementation or certification of Windows GUI behavior.
+- The original review was read-only. The completed checklist above now records
+  first-party implementation and its test boundaries; third-party source remains
+  unchanged. Windows GUI behavior remains outside this pass.

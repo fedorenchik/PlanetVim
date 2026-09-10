@@ -414,6 +414,7 @@ func! planet#menu#basic#Update() abort
     call planet#view#Menus('basic')
     call planet#search#Menus('basic')
     call planet#fileextras#Menus()
+    call planet#display#Menus('basic')
   else
     silent! aunmenu 📁&f
     silent! aunmenu 📝&e

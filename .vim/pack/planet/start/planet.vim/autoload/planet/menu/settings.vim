@@ -2,6 +2,7 @@ scriptversion 4
 
 func! planet#menu#settings#Update() abort
   if planet#menu#Visible('settings')
+    call planet#display#Menus('settings')
     " Settings (Options) (unimpaired settings)
     an 970.10  ⚙️&\\.Settings <Nop>
     an disable ⚙️&\\.Settings
