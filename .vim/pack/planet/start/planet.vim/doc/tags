@@ -4,6 +4,7 @@ planetvim-config	planetvim.txt	/*planetvim-config*
 planetvim-debug	planetvim.txt	/*planetvim-debug*
 planetvim-hex	planetvim.txt	/*planetvim-hex*
 planetvim-lsp	planetvim.txt	/*planetvim-lsp*
+planetvim-menus	planetvim.txt	/*planetvim-menus*
 planetvim-projects	planetvim.txt	/*planetvim-projects*
 planetvim-recovery	planetvim.txt	/*planetvim-recovery*
 planetvim-start	planetvim.txt	/*planetvim-start*

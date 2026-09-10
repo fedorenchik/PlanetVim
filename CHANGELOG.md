@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased — Linux GVim menu coverage
+
+- Add persistent Emoji, compact Plain, and single-group Descriptive menu styles;
+  keep PlanetVim visible in every style.
+- Search actual menu actions across groups, preserve editing context, and open
+  action help with F1. Add clean GVim tutoring and a Vim9 scratch lesson.
+- Complete native completion, diff, text-object, block, number, recovery,
+  encoding, input-language, macro, search and batch-editing workflows.
+- Expose GVim inlay hints and diagnostic presentation without vendor changes.
+- Add window pinning, tab-panel, font, appearance, printing, encryption and
+  remote-file controls, with capability guidance on older builds.
+- Add bounded local image previews and optional newer display controls.
+
+This pass targets Linux GVim; Windows work remains deferred. See
+[the completed menu checklist](docs/MENU_REVIEW.md) for validation boundaries.
+
 ## 0.1.0-rc.1 — 2026-09-08
 
 First GVim-only release candidate, with Linux as the primary platform and Windows as the secondary platform.

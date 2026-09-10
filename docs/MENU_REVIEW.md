@@ -531,6 +531,13 @@ and menu tree where practical.
 
 ## Validation recorded
 
+Implementation summary: the full GUI suite passed 59/61 files on both Linux
+GVim 9.1.0000 and 9.2.0849; two existing debugpy-dependent files were skipped.
+The Python suite passed 102/103 tests with one missing-SFML skip. Final index,
+Select-mode and help fixes passed focused checks on both versions. Startup is
+1.541 seconds median after compiling the index traversal, below the existing
+2-second local budget. See [acceptance details](ACCEPTANCE.md) for boundaries.
+
 - Inspected all seven modules and relevant startup/adapters; checked current
   official Vim releases/reference documentation on 2026-09-10.
 - Captured live menus/options with `getcompletion('', 'menu')` and `menu_info()`

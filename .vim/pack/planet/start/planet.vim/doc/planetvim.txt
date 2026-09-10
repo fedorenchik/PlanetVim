@@ -6,6 +6,7 @@ Run :PlanetVersion for the distribution version and :version for the editor.
 
 Getting started ......................................... |planetvim-start|
 Modes and customization ................................. |planetvim-config|
+Menus and learning ...................................... |planetvim-menus|
 Projects, build, run, and tests .......................... |planetvim-projects|
 Language intelligence ................................... |planetvim-lsp|
 Debugging ............................................... |planetvim-debug|
@@ -87,6 +88,35 @@ from the PlanetVim menu. Example: >
 The environment variables PLANETVIM_CONFIG_DIR, PLANETVIM_STATE_DIR, and
 PLANETVIM_CACHE_DIR select private directories before launch. Explicit early
 Vimscript globals g:PV_config_dir, g:PV_state_dir, g:PV_cache_dir take precedence.
+
+==============================================================================
+MENUS AND LEARNING                                           *planetvim-menus*
+
+PlanetVim -> Menu Style chooses Emoji (default), Plain (compact keyboard
+letters), or Descriptive. Descriptive shows one group at a time; the PlanetVim
+root is always visible. Select Basic, Editing, Development, Tools, Navigation,
+or Settings there. Compact styles let these groups be toggled independently.
+Style and selected group are saved across restarts.
+
+Find Menu Action searches the actual menu tree, including hidden groups. Type
+words to filter, arrows to choose, Enter to run, F1 for help, or Esc to cancel.
+The action runs in the original editing window with its insertion point or
+selection. Dynamic entries are refreshed when the finder opens.
+
+Help -> Interactive Tutor starts a separate clean GVim with standard keys and
+scratch exercises. User Manual, Search Help and What's New in This Vim use the
+installed runtime documentation. PlanetVim Guide opens docs/GUIDE.md, including
+completion, recovery, diff, macros, remote files and Linux GUI workflows.
+
+Settings -> Completion chooses the automatic engine and native completion
+presets. Edit -> Complete exposes individual native sources. LSP -> Display
+offers hints and diagnostic presentation. Missing capabilities explain their
+prerequisites while keeping the actions discoverable.
+
+Optional local image previews require GTK GVim image support, Python and Pillow.
+The decoder runs only on request with bounded input, pixels and memory; closing
+the preview cancels pending decoding. Advanced Display contains optional newer
+popup/status-line controls. Status-line changes are window-local and reversible.
 
 ==============================================================================
 PROJECTS, BUILD, RUN, TEST                                  *planetvim-projects*

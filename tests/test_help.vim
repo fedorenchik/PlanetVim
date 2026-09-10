@@ -8,3 +8,5 @@ call assert_equal('help', &filetype)
 call assert_equal('planetvim.txt', expand('%:t'))
 help planetvim-debug
 call assert_match('DEBUGGING', getline('.'))
+help planetvim-menus
+call assert_match('MENUS AND LEARNING', getline('.'))

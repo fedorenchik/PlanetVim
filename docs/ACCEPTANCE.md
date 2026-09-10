@@ -2,6 +2,39 @@
 
 This record covers PlanetVim **0.1.0-rc.1**, implemented on **2026-09-08** from baseline `f75c805a`. The source is a release candidate. Native Windows hosted CI and external SDK/target acceptance remain release gates; checked-in automation is not evidence that those jobs ran.
 
+## Linux menu coverage update — 2026-09-10
+
+The [menu checklist](MENU_REVIEW.md) is implemented for Linux GVim. The owner
+replaced the original MD-03 with Emoji/Plain/Descriptive style selection and
+one visible group in Descriptive mode; PlanetVim stays visible. Windows is
+deferred for these additions. Historical Windows results below do not certify
+the new menus. No third-party plugin source changed.
+
+- Python suite: **102 passed, 1 skipped** out of 103. The skipped native-template
+  build lacks SFML development packages. All installer, release, menu-contract
+  and bounded-image-decoder checks passed.
+- Full Linux GTK3 GUI suite on **9.1.0000** and **9.2.0849**: **59 passed,
+  2 skipped** out of 61 on each. The skips are existing Python debugger lifecycle
+  and detach fixtures because debugpy is unavailable in this environment.
+- Subsequent fixes for Select-mode action execution, old-version popup help and
+  compiled indexing passed their focused checks on both versions. Style tests
+  cover all six groups, persistent preferences and dynamic-menu visibility.
+- LSP display uses an isolated protocol fixture, including non-ASCII hint
+  positioning. Printing checks PostScript output; remote reads use a local HTTP
+  fixture. These do not establish live-server LSP compatibility, authenticated
+  SSH transfers, or physical-printer behavior. Real window-manager fullscreen,
+  native Wayland and GTK4 rendering were not exercised.
+- Plugin inventory: **122 records match**, with vendor revisions unchanged.
+
+Menu indexing initially raised startup to a **2.470-second median**. Profiling
+identified the traversal; compiling it with Vim9 reduced startup to **1.541
+seconds** (five measured samples, range 1.485–1.548, after one warmup) at runtime
+commit `0e35f320`. Only documentation was modified during the final measurement.
+The local artifact is `dist/startup-linux-menu-coverage.json`. This meets the
+existing 2-second local budget without removing menu entries or plugins.
+
+The remaining sections record the earlier release-candidate acceptance.
+
 All original Linux/Windows menu actions remain in scope and enabled. Missing optional tools produce setup guidance. Third-party plugin source is unchanged; first-party adapters contain the compatibility fixes. The menu contract scan checks executable TODOs and unresolved first-party, legacy global, and vendor callbacks, including window bars in `.vimrc`.
 
 ## Platforms actually exercised

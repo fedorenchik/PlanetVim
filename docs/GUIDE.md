@@ -14,7 +14,8 @@ always visible, and both your style and selected group survive a restart.
 In compact styles the same group entries toggle groups independently.
 
 **PlanetVim → Find Menu Action** (also in View) searches actions in every group.
-Type words to filter, use the arrow keys to choose, Enter to run, or Esc to cancel.
+Type words to filter, use the arrow keys to choose, Enter to run, F1 for the
+selected action's help and mapping, or Esc to cancel.
 The picker keeps your insertion point or current selection and opens a hidden
 group when needed. The existing Clap providers and command picker remain available.
 
@@ -214,3 +215,78 @@ in Visual/Select mode it replaces the selection. Canceling inserts nothing.
 Settings → Input Language chooses an installed Vim keymap or the operating
 system keyboard. Spelling → Choose Spelling Language lists installed dictionaries.
 See the [completion guide](COMPLETION.md) for native completion examples.
+
+## Editing and comparison menus
+
+Selection → Inside / Around exposes Vim text objects, including words, quotes,
+brackets, tags and folds. Selection → Text Objects combines these with delete,
+change, yank and format. Visual block actions insert/append/change across the
+block; use the block-selection mode first. Number actions support counts and
+sequences, and the number-format menu controls the current buffer's `nrformats`.
+
+Search → Find Literal Text treats punctuation literally; Find Pattern uses Vim
+regular expressions. Find Selection uses the exact selected text. Replace with
+Scope distinguishes the whole buffer from the selected region and offers
+confirmation for each match. Modify → Run on Lines shows the matching or
+nonmatching line scope before running the Ex command. Sort Options uses the
+selected lines when a selection is active, otherwise the whole buffer. Native
+undo applies to these operations.
+
+Registers → Guided Macros prompts for a register, records, stops, previews and
+replays it. Apply to Selected Lines shows the register contents, repeat count
+and line range before running. Original register and macro shortcuts remain.
+
+Diff/Patch offers source/target selection when more than two diff buffers are
+open, transfers for selected lines, refresh and stop controls. Rendering choices
+preserve unrelated settings: choose whitespace policy, algorithm, context,
+inline granularity, similar-line alignment or anchors. Unsupported options keep
+the previous value and explain the required Vim feature.
+
+LSP → Display controls inlay hints, inline diagnostics, signs and underlines.
+Hints need an attached server with inlay-hint support. The display choices are
+saved. Turning off one presentation keeps the other presentations available;
+the existing diagnostic master switch still controls diagnostic collection.
+
+## Linux GUI and learning
+
+The Windows menu provides native scroll/split choices, fixed-size release and buffer
+pinning. View → Tab Panel exposes the installed Vim's native vertical panel;
+Tabman remains available. Settings → Appearance offers font zoom/reset,
+ligatures, colors/widget preferences and fullscreen exit. Native GTK fullscreen
+requires Vim 9.2.0534; older builds use `wmctrl`.
+
+Help → Interactive Tutor opens a separate clean GVim with standard Vim keys.
+It uses the installed interactive tutor when available, otherwise a scratch
+copy of the traditional lesson. Help also exposes the User Manual, searchable
+help, the installed Vim's release notes and this guide. The Vim9 scratch example
+runs only when Compile/Run Scratch Example is explicitly selected.
+
+File → Print prints the buffer; Selected Lines prints the selected line range.
+Print Settings configures Vim's printer, font and layout options. The print
+action uses the printer/device you configured. File → Encryption uses Vim's
+protected key input; the method/key affects the next explicit save. Removing
+the key means the next save writes plaintext. Keys are never saved in PlanetVim
+preferences; encrypted files use Vim's file format rather than ordinary text.
+
+File → Open Remote File accepts `sftp://`, `scp://`, `http://` and `https://`
+URLs. It uses the installed netrw transfer library and its SSH/HTTP tools;
+configure SSH authentication normally. SFTP/SCP buffers write through netrw,
+while HTTP(S) buffers are read-only. Fern remains the local directory browser.
+
+## Optional newer display features
+
+View → Image Preview opens one local image on demand. It requires GTK GVim with
+`+image` and `+image_cairo` or `+image_gdk`, plus Python 3 and Pillow. Install
+Pillow for the interpreter selected by `g:PV_python` (or `python3` by default).
+Esc, Enter, `q`, the close button or the Close menu closes the preview. Resizing
+the GUI rebuilds the thumbnail. Previewing never replaces the editing buffer.
+The decoder rejects files over 32 MiB or 16 million pixels, limits its process
+address space to 384 MiB, and returns at most 1024×768 pixels. These limits are
+fixed to keep previews bounded; animated images show their first frame.
+
+Settings → Advanced Display offers supported completion-popup borders and
+opacity, cursor padding at file boundaries, and optional two-line or clickable
+status lines. Status-line presets affect the current window and Restore returns
+its previous settings. The simple existing status line remains the default.
+These later 9.2 features use runtime capability checks; an older GVim still
+shows their menu entries and explains the missing prerequisite when selected.
