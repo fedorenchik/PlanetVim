@@ -131,6 +131,8 @@ func! planet#menu#settings#Update() abort
     an 990.110 ❔&?.--5-- <Nop>
     an 990.120 ❔&?.&About                                     <Cmd>version<CR>
     call planet#completion#Menus('settings')
+    call planet#buffer_options#Menus('settings')
+    call planet#input#Menus('settings')
   else
     silent! aunmenu ⚙️&\\
     silent! aunmenu ⌨️&\|

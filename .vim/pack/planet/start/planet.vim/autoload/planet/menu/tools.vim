@@ -448,6 +448,7 @@ func! planet#menu#tools#Update() abort
     an 730.10  🔧&o.WebSocket\ Client  <Cmd>call planet#systemtools#Websocat()<CR>
 
     call planet#diff#Menus()
+    call planet#input#Menus('tools')
   else
     silent! aunmenu 🔀&g
     silent! aunmenu ⛏️&;

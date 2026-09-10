@@ -271,7 +271,7 @@ native operations where possible.
 
 ### MD-11 · P2 · Add encoding, filetype and whitespace controls
 
-- [ ] Add **File → Encoding → Reopen As… / Save As… / BOM**, and **Settings →
+- [x] Add **File → Encoding → Reopen As… / Save As… / BOM**, and **Settings →
   Buffer → Filetype / End-of-file Newline / Show Whitespace / Indentation**.
 
 Line-ending selection and HEX conversion exist. They do not expose decoding or
@@ -286,7 +286,7 @@ preserves text, and local options do not silently change other files.
 
 ### MD-12 · P2 · Expose special characters and input language
 
-- [ ] Add **Edit → Insert Special Character → Digraph / Unicode Code Point /
+- [x] Add **Edit → Insert Special Character → Digraph / Unicode Code Point /
   Literal Character / Expression Result**, plus **Settings → Input Language**.
 
 Character inspection exists; insertion does not. Startup hard-codes
@@ -297,7 +297,11 @@ only an English language shortcut; add a spelling-language picker alongside it.
 [Vim insertion reference](https://github.com/vim/vim/blob/master/runtime/doc/insert.txt)
 
 Acceptance: original cursor/selection, cancellation, non-ASCII input, and accurate
-Linux/Windows shortcuts.
+Linux shortcuts (Windows is deferred).
+
+Validation: `test_buffer_options.vim` checks exact Latin-1, UTF-16LE/BOM and
+UTF-8 output bytes, local-option isolation, canceled/invalid values, Unicode,
+digraph and expression insertion, and installed keymap/spell choices.
 
 ### MD-13 · P2 · Add scrolling and split-behavior choices
 

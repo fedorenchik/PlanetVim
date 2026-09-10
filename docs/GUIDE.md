@@ -193,3 +193,24 @@ Environment → Edit Environment uses the current process environment, and appli
 - Git SSH: the HTTPS clone URL in the README avoids SSH setup. If using SSH, verify the client actually offers the fingerprint registered in GitHub. A connection closing before authentication and `Permission denied (publickey)` are different failures.
 
 For a bug report, include `:PlanetVersion`, GVim's `:version`, OS, the selected action, minimal reproduction, and relevant Doctor/output lines. Remove usernames, private paths, repository URLs, tokens, and environment values before sharing a report.
+
+## File recovery and buffer settings
+
+File → Recovery finds swap files in Vim's `directory` setting. Recover opens a
+separate tab and refuses swaps owned by a running local Vim. Compare with Disk
+shows the saved file beside the recovered text. Save Recovered Copy requires a
+new filename. Recovery retains the swap; remove it yourself only after checking
+and saving the recovered text. Reload from Disk uses Vim's save/discard/cancel
+prompt for unsaved changes.
+
+File → Encoding separates **Reopen As** (decode the existing file again) from
+**Encoding for Next Save** (encode the current text on the next explicit write).
+BOM and Settings → Buffer newline/indentation/filetype controls affect the current
+buffer. Show Whitespace and scrolling controls affect the current window.
+
+Edit → Insert Special Character offers digraphs, Unicode code points, literal
+keys, and expression results. In Insert mode it retains the insertion point;
+in Visual/Select mode it replaces the selection. Canceling inserts nothing.
+Settings → Input Language chooses an installed Vim keymap or the operating
+system keyboard. Spelling → Choose Spelling Language lists installed dictionaries.
+See the [completion guide](COMPLETION.md) for native completion examples.
