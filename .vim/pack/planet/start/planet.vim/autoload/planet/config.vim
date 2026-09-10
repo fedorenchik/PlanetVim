@@ -6,6 +6,7 @@ func! s:Valid(key, value) abort
   if a:key ==# 'PV_gui_theme'
     return type(a:value) == v:t_string && index(['light', 'dark', 'system'], a:value) >= 0
   endif
+  if a:key ==# 'PV_lsp_display' | return planet#lsp_display#Valid(a:value) | endif
   if a:key ==# 'PV_editor_options' | return planet#preferences#Valid(a:value) | endif
   if a:key ==# 'PV_completion_engine'
     return type(a:value) == v:t_string && index(['asyncomplete', 'native', 'off'], a:value) >= 0

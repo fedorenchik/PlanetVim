@@ -657,6 +657,7 @@ func! planet#menu#dev#Update() abort
     an disable 💻&c.Terminal\ List
     an 550.10  💻&c.Output\ List <Nop>
     an disable 💻&c.Output\ List
+    call planet#lsp_display#Menus()
   else
     silent! aunmenu ❇️&[
     silent! aunmenu 🪧&]

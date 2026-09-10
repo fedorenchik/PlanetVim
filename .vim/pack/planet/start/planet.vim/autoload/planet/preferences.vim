@@ -44,6 +44,7 @@ func! planet#preferences#Flag(name, flag, local = 0) abort
 endfunc
 
 func! planet#preferences#Apply() abort
+  call planet#lsp_display#Restore()
   for [l:name, l:value] in items(get(g:, 'PV_editor_options', {}))
     call planet#preferences#Set(l:name, l:value, 0, 0)
   endfor

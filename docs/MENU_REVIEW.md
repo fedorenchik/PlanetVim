@@ -345,7 +345,7 @@ changes to the user's other sidebars.
 
 ### MD-16 · P1 · Expose inlay hints and diagnostic presentation
 
-- [ ] Add **LSP → Display → Inlay Hints / Inline Diagnostics / Signs / Underlines**
+- [x] Add **LSP → Display → Inlay Hints / Inline Diagnostics / Signs / Underlines**
   with enable/disable, status and explanations of missing server capabilities.
 
 Bundled vim-lsp already implements inlay hints using Vim text properties. Its
@@ -358,6 +358,14 @@ diagnostics master enable/disable pair is not a presentation selector.
 Acceptance: capable-server hints appear and disappear on request; unsupported
 servers explain why. Use first-party adaptation or upstream updates, not vendor
 source edits.
+
+Implemented a first-party display adapter over vim-lsp's existing transport and
+diagnostic cache. Its pinned inline renderer is Neovim-only, and its inlay
+renderer treats protocol offsets as byte columns. The adapter provides GVim
+text properties, UTF-16/UTF-8/UTF-32 hint positioning, stale-response rejection,
+and complete disable cleanup without vendor edits. `test_lsp_display.vim` uses a
+local protocol fixture to verify hints after emoji/non-ASCII text, inline
+messages, signs, and presentation toggles on GVim 9.1 and 9.2.
 
 ### MD-17 · P1 · Add guided learning and “what is new” entries
 
