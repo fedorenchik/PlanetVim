@@ -1,15 +1,16 @@
-scriptversion 4
-
-func! planet#fold#EnableAuto() abort
+vim9script
+export def EnableAuto(): any
   set foldclose=all
   set foldopen=all
   set foldlevel=0
   set foldlevelstart=0
-endfunc
+  return 0
+enddef
 
-func! planet#fold#DisableAuto() abort
+export def DisableAuto(): any
   set foldclose=
   set foldopen=quickfix,tag,undo
   set foldlevel=20
   set foldlevelstart=20
-endfunc
+  return 0
+enddef

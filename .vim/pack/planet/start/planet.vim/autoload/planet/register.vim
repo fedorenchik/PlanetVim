@@ -1,13 +1,13 @@
-scriptversion 4
-
-func! planet#register#ChooseEdit() abort
+vim9script
+export def ChooseEdit(): any
   echohl Question
   echo "Register: " buffest#reg_complete()
-  let l:reg_to_edit = nr2char(getchar())
-  if l:reg_to_edit == "\<Esc>"
-    return
+  var reg_to_edit: any = nr2char(getchar())
+  if reg_to_edit == "\<Esc>"
+    return 0
   endif
   echohl None
-  execute("silent Regpedit " .. l:reg_to_edit)
+  execute("silent Regpedit " .. reg_to_edit)
   execute("silent normal \<C-w>P")
-endfunc
+  return 0
+enddef

@@ -1,5 +1,5 @@
-scriptversion 4
-
-func! planet#edit#SelectAll() abort
+vim9script
+export def SelectAll(): any
   exe "norm! gg" .. (&slm == "" ? "VG" : "gH\<C-O>G")
-endfunc
+  return 0
+enddef

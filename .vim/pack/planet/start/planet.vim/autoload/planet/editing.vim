@@ -1,7 +1,7 @@
-scriptversion 4
-let s:left_directory = {}
+vim9script
+var script_left_directory = {}
 
-func! planet#editing#FormatSelection() abort
+export def FormatSelection(): any
   if mode() =~# '^[sS\x13]'
     execute "normal! \<C-G>"
   endif
@@ -12,227 +12,243 @@ func! planet#editing#FormatSelection() abort
     echom 'PlanetVim: select text before requesting range formatting.'
     return 0
   endif
-  execute "'<,'>LspDocumentRangeFormat"
+  execute ":'<,'>LspDocumentRangeFormat"
   return 1
-endfunc
+enddef
 
-func! planet#editing#ExportHTML(selected = v:false) abort
-  if exists(':TOhtml') != 2 | runtime plugin/tohtml.vim | endif
+export def ExportHTML(selected: any = v:false): any
+  var selection: any
+  var path: any
+  var generated_name: any
+  var old_name_buffer: any
+  if exists(':TOhtml') != 2
+    runtime plugin/tohtml.vim
+  endif
   if mode() =~# '^[sS\x13]'
     execute "normal! \<C-G>"
   endif
-  if !a:selected
-    TOhtml
+  if !selected
+    execute 'TOhtml'
     setlocal filetype=html
     return bufnr()
   endif
-  let l:source_window = win_getid()
-  let l:syntax = &syntax
-  let l:directory = tempname()
-  let l:scratch = 0
-  let l:scratch_window = 0
+  var source_window: any = win_getid()
+  var syntax: any = &syntax
+  var directory: any = tempname()
+  var scratch: any = 0
+  var scratch_window: any = 0
   try
-    let l:selection = planet#selection#Current()
-    call mkdir(l:directory, 'p', 0o700)
-    let l:path = l:directory .. '/selection'
-    call planet#selection#Export(l:path, l:selection)
-    execute 'noautocmd keepalt tabnew ' .. fnameescape(l:path)
-    let l:scratch = bufnr()
-    let l:scratch_window = win_getid()
+    selection = planet#selection#Current()
+    mkdir(directory, 'p', 0o700)
+    path = directory .. '/selection'
+    planet#selection#Export(path, selection)
+    execute 'noautocmd keepalt tabnew ' .. fnameescape(path)
+    scratch = bufnr()
+    scratch_window = win_getid()
     setlocal noswapfile nobuflisted bufhidden=wipe
-    let &syntax = l:syntax
-    TOhtml
-    " The private input disappears below. Leave an unnamed HTML result so Save
-    " offers a destination instead of writing into a deleted temporary folder.
-    let l:generated_name = bufname()
-    noautocmd keepalt 0file
-    let l:old_name_buffer = bufnr(l:generated_name)
-    if l:old_name_buffer > 0 && l:old_name_buffer != bufnr()
-      execute 'noautocmd silent! bwipeout! ' .. l:old_name_buffer
+    &syntax = syntax
+    execute 'TOhtml'
+    # The private input disappears below. Leave an unnamed HTML result so Save
+    # offers a destination instead of writing into a deleted temporary folder.
+    generated_name = bufname()
+    noautocmd keepalt :0file
+    old_name_buffer = bufnr(generated_name)
+    if old_name_buffer > 0 && old_name_buffer != bufnr()
+      execute 'noautocmd silent! bwipeout! ' .. old_name_buffer
     endif
     setlocal filetype=html
     return bufnr()
   catch
-    echohl ErrorMsg | echom 'PlanetVim HTML export: ' .. v:exception | echohl None
-    noautocmd call win_gotoid(l:source_window)
+    echohl ErrorMsg
+    echom 'PlanetVim HTML export: ' .. v:exception
+    echohl None
+    noautocmd win_gotoid(source_window)
     return 0
   finally
-    if l:scratch_window > 0 && win_id2win(l:scratch_window) > 0
-      call win_execute(l:scratch_window, 'noautocmd close!')
+    if scratch_window > 0 && win_id2win(scratch_window) > 0
+      win_execute(scratch_window, 'noautocmd close!')
     endif
-    if l:scratch > 0 && bufexists(l:scratch)
-      execute 'noautocmd silent! bwipeout! ' .. l:scratch
+    if scratch > 0 && bufexists(scratch)
+      execute 'noautocmd silent! bwipeout! ' .. scratch
     endif
-    call delete(l:directory, 'rf')
+    delete(directory, 'rf')
   endtry
-endfunc
+  return 0
+enddef
 
-func! s:PathKey(path) abort
-  let l:path = substitute(fnamemodify(resolve(a:path), ':p'), '\\', '/', 'g')
-  let l:path = substitute(l:path, '/\+$', '', '')
-  return has('win32') ? tolower(l:path) : l:path
-endfunc
+def LocalPathKey(arg_path: any): any
+  var path: any = substitute(fnamemodify(resolve(arg_path), ':p'), '\\', '/', 'g')
+  path = substitute(path, '/\+$', '', '')
+  return has('win32') ? tolower(path) : path
+enddef
 
-func! planet#editing#Order(action) abort
-  let l:first = 1
-  let l:last = line('$')
+export def Order(action: any): any
+  var first: any = 1
+  var last: any = line('$')
   if mode() =~# '^[vV\x16]'
-    let l:first = min([line('v'), line('.')])
-    let l:last = max([line('v'), line('.')])
+    first = min([line('v'), line('.')])
+    last = max([line('v'), line('.')])
   endif
-  let l:lines = getline(l:first, l:last)
-  if a:action ==# 'sort'
-    call sort(l:lines)
-  elseif a:action ==# 'reverse'
-    call reverse(l:lines)
-  elseif a:action ==# 'uniq'
-    call uniq(l:lines)
+  var lines: any = getline(first, last)
+  if action ==# 'sort'
+    sort(lines)
+  elseif action ==# 'reverse'
+    reverse(lines)
+  elseif action ==# 'uniq'
+    uniq(lines)
   else
     throw 'PlanetVim: unknown line ordering action'
   endif
-  call setline(l:first, l:lines)
-  if len(l:lines) < l:last - l:first + 1
-    call deletebufline(bufnr(), l:first + len(l:lines), l:last)
+  setline(first, lines)
+  if len(lines) < last - first + 1
+    deletebufline(bufnr(), first + len(lines), last)
   endif
-endfunc
+  return 0
+enddef
 
-func! planet#editing#TrimWhitespace() abort
-  let l:view = winsaveview()
+export def TrimWhitespace(): any
+  var view: any = winsaveview()
   try
-    keeppatterns %s/\s\+$//e
+    keeppatterns :%s/\s\+$//e
   finally
-    call winrestview(l:view)
+    winrestview(view)
   endtry
-endfunc
+  return 0
+enddef
 
-func! planet#editing#Percentage(value = v:null) abort
-  let l:value = a:value is v:null ? inputdialog('Percentage (0-100): ', '50')
-        \ : type(a:value) == v:t_string ? a:value : string(a:value)
-  if empty(l:value)
+export def Percentage(arg_value: any = v:null): any
+  var value: any = arg_value == null ? inputdialog('Percentage (0-100): ', '50') : type(arg_value) == v:t_string ? arg_value : string(arg_value)
+  if empty(value)
     return 0
   endif
-  if l:value !~# '^\d\+$' || str2nr(l:value) > 100
+  if value !~# '^\d\+$' || str2nr(value) > 100
     echomsg 'PlanetVim: percentage must be between 0 and 100.'
     return 0
   endif
-  call cursor(max([1, float2nr(ceil(line('$') * str2nr(l:value) / 100.0))]), 1)
+  cursor(max([1, float2nr(ceil(line('$') * str2nr(value) / 100.0))]), 1)
   return 1
-endfunc
+enddef
 
-func! planet#editing#SubstituteSelection(pattern = v:null, replacement = v:null) abort
-  " <Cmd> menus retain Visual/Select mode; publish this selection's marks
-  " before reading a range, rather than reusing an older selection.
+export def SubstituteSelection(arg_pattern: any = v:null, arg_replacement: any = v:null): any
+  # <Cmd> menus retain Visual/Select mode; publish this selection's marks
+  # before reading a range, rather than reusing an older selection.
   if mode() =~# '^[vV\x16sS\x13]'
     execute "normal! \<Esc>"
   endif
-  let l:pattern = a:pattern is v:null ? inputdialog('Pattern in the last visual selection: ') : a:pattern
-  if empty(l:pattern)
+  var pattern: any = arg_pattern == null ? inputdialog('Pattern in the last visual selection: ') : arg_pattern
+  if empty(pattern)
     return 0
   endif
-  let l:replacement = a:replacement is v:null ? inputdialog('Replacement: ', '', '\CANCEL') : a:replacement
-  if l:replacement ==# '\CANCEL'
+  var replacement: any = arg_replacement == null ? inputdialog('Replacement: ', '', '\CANCEL') : arg_replacement
+  if replacement ==# '\CANCEL'
     return 0
   endif
   if line("'<") == 0 || line("'>") == 0
     echomsg 'PlanetVim: make a visual selection first.'
     return 0
   endif
-  " Restrict matches with Vim's exact last-Visual-area atom (including blocks).
-  execute "keeppatterns '<,'>s/\\%V\\%(" .. escape(l:pattern, '/') .. '\)\%(\%V\_.\)\@<=/' .. escape(l:replacement, '/') .. '/ge'
+  # Restrict matches with Vim's exact last-Visual-area atom (including blocks).
+  execute "keeppatterns :'<,'>s/\\%V\\%(" .. escape(pattern, '/') .. '\)\%(\%V\_.\)\@<=/' .. escape(replacement, '/') .. '/ge'
   return 1
-endfunc
+enddef
 
-func! planet#editing#AutoSave() abort
-  if get(g:, 'PV_autosave', 0) && &modified && &modifiable && !&readonly
-        \ && &buftype ==# '' && !empty(expand('%:p')) && filereadable(expand('%:p'))
+export def AutoSave(): any
+  if get(g:, 'PV_autosave', 0) && &modified && &modifiable && !&readonly && &buftype ==# '' && !empty(expand('%:p')) && filereadable(expand('%:p'))
     try
       silent update
     catch
-      echohl WarningMsg | echomsg 'PlanetVim autosave: ' .. v:exception | echohl None
+      echohl WarningMsg
+      echomsg 'PlanetVim autosave: ' .. v:exception
+      echohl None
     endtry
   endif
-endfunc
+  return 0
+enddef
 
-func! planet#editing#AutoSaveToggle() abort
-  let g:PV_autosave = !get(g:, 'PV_autosave', 0)
+export def AutoSaveToggle(): any
+  g:PV_autosave = get(g:, 'PV_autosave', 0) ? 0 : 1
   augroup PlanetVimAutoSave
-    autocmd!
-    if g:PV_autosave
-      autocmd InsertLeave,FocusLost,BufLeave * call planet#editing#AutoSave()
-    endif
+  autocmd!
+  if g:PV_autosave
+    autocmd InsertLeave,FocusLost,BufLeave * call planet#editing#AutoSave()
+  endif
   augroup END
-  echomsg 'PlanetVim autosave ' .. (g:PV_autosave ? 'enabled for existing writable files.' : 'disabled.')
+  echomsg 'PlanetVim autosave ' .. (g:PV_autosave ? 'enabled for existing writable files.' :  'disabled.')
   return g:PV_autosave
-endfunc
+enddef
 
-func! planet#editing#RestoreDirectory(winid) abort
-  if win_id2win(a:winid) > 0
-    let l:saved = getwinvar(a:winid, 'PV_temporary_directory', {})
-    if !empty(l:saved)
-      let s:left_directory = l:saved
-      call win_execute(a:winid, 'noautocmd ' .. l:saved.command .. ' ' .. fnameescape(l:saved.path))
-      call setwinvar(a:winid, 'PV_temporary_directory', {})
+export def RestoreDirectory(winid: any): any
+  var saved: any
+  if win_id2win(winid) > 0
+    saved = getwinvar(winid, 'PV_temporary_directory', {})
+    if !empty(saved)
+      script_left_directory = saved
+      win_execute(winid, 'noautocmd ' .. saved.command .. ' ' .. fnameescape(saved.path))
+      setwinvar(winid, 'PV_temporary_directory', {})
     endif
   endif
-endfunc
+  return 0
+enddef
 
-func! planet#editing#RestoreInheritedDirectory() abort
-  if !empty(s:left_directory) && index(s:left_directory.windows, win_getid()) < 0
-        \ && s:PathKey(getcwd()) ==# s:left_directory.temporary
-    execute 'noautocmd ' .. s:left_directory.command .. ' ' .. fnameescape(s:left_directory.path)
+export def RestoreInheritedDirectory(): any
+  if !empty(script_left_directory) && index(script_left_directory.windows, win_getid()) < 0 && LocalPathKey(getcwd()) ==# script_left_directory.temporary
+    execute 'noautocmd ' .. script_left_directory.command .. ' ' .. fnameescape(script_left_directory.path)
   endif
-  let s:left_directory = {}
-endfunc
+  script_left_directory = {}
+  return 0
+enddef
 
-func! planet#editing#TemporaryDirectory(project, directory = v:null) abort
-  let l:directory = a:directory
-  if l:directory is v:null
-    let l:directory = a:project ? planet#git#Repository(expand('%:p:h')) : inputdialog('Temporary window directory: ', getcwd())
+export def TemporaryDirectory(project: any, arg_directory: any = v:null): any
+  var directory: any = arg_directory
+  if directory == null
+    directory = project ? planet#git#Repository(expand('%:p:h')) : inputdialog('Temporary window directory: ', getcwd())
   endif
-  if empty(l:directory)
+  if empty(directory)
     return 0
   endif
-  if !isdirectory(l:directory)
-    echomsg 'PlanetVim: directory does not exist: ' .. l:directory
+  if !isdirectory(directory)
+    echomsg 'PlanetVim: directory does not exist: ' .. directory
     return 0
   endif
-  call planet#editing#RestoreDirectory(win_getid())
-  let w:PV_temporary_directory = #{path: getcwd(), command: haslocaldir() == 1 ? 'lcd' : haslocaldir() == 2 ? 'tcd' : 'cd',
-        \ windows: map(getwininfo(), {_, win -> win.winid}), temporary: s:PathKey(l:directory)}
-  execute 'lcd ' .. fnameescape(l:directory)
+  planet#editing#RestoreDirectory(win_getid())
+  w:PV_temporary_directory = {path:  getcwd(), command:  haslocaldir() == 1 ? 'lcd' :  haslocaldir() == 2 ? 'tcd' :  'cd',
+        windows:  map(getwininfo(), (_, lambda_win) => lambda_win.winid), temporary:  LocalPathKey(directory)}
+  execute 'lcd ' .. fnameescape(directory)
   augroup PlanetVimTemporaryDirectory
-    autocmd!
-    autocmd WinLeave * call planet#editing#RestoreDirectory(win_getid())
-    " :split copies local options before WinLeave; restore the inherited scope
-    " when the new window is entered as well.
-    autocmd WinEnter * call planet#editing#RestoreInheritedDirectory()
+  autocmd!
+  autocmd WinLeave * call planet#editing#RestoreDirectory(win_getid())
+  # :split copies local options before WinLeave; restore the inherited scope
+  # when the new window is entered as well.
+  autocmd WinEnter * call planet#editing#RestoreInheritedDirectory()
   augroup END
   return 1
-endfunc
+enddef
 
-func! planet#editing#ToggleComment(first, last) abort
-  " Use the filetype's comment format; no external comment plugin is required.
-  let l:format = &l:commentstring
-  if l:format !~# '%s' || l:format ==# '%s'
+export def ToggleComment(first: any, last: any): any
+  var match: any
+  var indent: any
+  # Use the filetype's comment format; no external comment plugin is required.
+  var format: any = &l:commentstring
+  if format !~# '%s' || format ==# '%s'
     echom 'PlanetVim: set commentstring for this filetype before commenting.'
     return 0
   endif
-  let l:parts = split(l:format, '%s', 1)
-  let l:prefix = l:parts[0]
-  let l:suffix = l:parts[1]
-  let l:lines = getline(a:first, a:last)
-  let l:pattern = '^\(\s*\)\V' .. escape(l:prefix, '\') .. '\m\(.*\)\V' .. escape(l:suffix, '\') .. '\m$'
-  let l:uncomment = !empty(l:lines) && empty(filter(copy(l:lines), 'v:val !~# l:pattern'))
-  let l:result = []
-  for l:line in l:lines
-    if l:uncomment
-      let l:match = matchlist(l:line, l:pattern)
-      call add(l:result, l:match[1] .. l:match[2])
+  var parts: any = split(format, '%s', 1)
+  var prefix: any = parts[0]
+  var suffix: any = parts[1]
+  var lines: any = getline(first, last)
+  var pattern: any = '^\(\s*\)\V' .. escape(prefix, '\') .. '\m\(.*\)\V' .. escape(suffix, '\') .. '\m$'
+  var uncomment: any = !empty(lines) && empty(filter(copy(lines), (_, text) => text !~# pattern))
+  var result: any = []
+  for line in lines
+    if uncomment
+      match = matchlist(line, pattern)
+      add(result, match[1] .. match[2])
     else
-      let l:indent = matchstr(l:line, '^\s*')
-      call add(l:result, l:indent .. l:prefix .. strpart(l:line, strlen(l:indent)) .. l:suffix)
+      indent = matchstr(line, '^\s*')
+      add(result, indent .. prefix .. strpart(line, strlen(indent)) .. suffix)
     endif
   endfor
-  call setline(a:first, l:result)
+  setline(first, result)
   return 1
-endfunc
+enddef

@@ -1,17 +1,18 @@
-scriptversion 4
-
-func! planet#modify#Filter() abort
-  let l:pattern = input("Filter: ")
-  if empty(l:pattern)
-    return
+vim9script
+export def Filter(): any
+  var pattern: any = input("Filter: ")
+  if empty(pattern)
+    return 0
   endif
-  exe "g!/" .. l:pattern .. "/d"
-endfunc
+  exe "g!/" .. pattern .. "/d"
+  return 0
+enddef
 
-func! planet#modify#FilterOut() abort
-  let l:pattern = input("Filter Out: ")
-  if empty(l:pattern)
-    return
+export def FilterOut(): any
+  var pattern: any = input("Filter Out: ")
+  if empty(pattern)
+    return 0
   endif
-  exe "g/" .. l:pattern .. "/d"
-endfunc
+  exe "g/" .. pattern .. "/d"
+  return 0
+enddef

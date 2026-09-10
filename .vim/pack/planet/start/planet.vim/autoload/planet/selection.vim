@@ -1,131 +1,140 @@
-scriptversion 4
-
-" Capture the anchor and cursor before a menu or dialog ends Visual mode.
-func! planet#selection#Current() abort
-  let l:type = mode()
-  let l:select = index(['s', 'S', "\<C-s>"], l:type)
-  if l:select >= 0 | let l:type = ['v', 'V', "\<C-v>"][l:select] | endif
-  if index(['v', 'V', "\<C-v>"], l:type) >= 0
-    let l:start = getpos('v')
-    let l:end = getpos('.')
-  else
-    let l:type = visualmode()
-    let l:start = getpos("'<")
-    let l:end = getpos("'>")
+vim9script
+# Capture the anchor and cursor before a menu or dialog ends Visual mode.
+export def Current(): any
+  var start: any
+  var end: any
+  var type: any = mode()
+  var select: any = index(['s', 'S', "\<C-s>"], type)
+  if select >= 0
+    type = ['v', 'V', "\<C-v>"][select]
   endif
-  if l:start[1] == 0 || l:end[1] == 0
+  if index(['v', 'V', "\<C-v>"], type) >= 0
+    start = getpos('v')
+    end = getpos('.')
+  else
+    type = visualmode()
+    start = getpos("'<")
+    end = getpos("'>")
+  endif
+  if start[1] == 0 || end[1] == 0
     throw 'PlanetVim: select text before exporting it'
   endif
-  return {'start': l:start, 'end': l:end, 'type': l:type,
-        \ 'exclusive': &selection ==# 'exclusive', 'buffer': bufnr()}
-endfunc
+  return {'start': start, 'end': end, 'type': type, 'exclusive': &selection ==# 'exclusive', 'buffer': bufnr()}
+enddef
 
-func! s:Validate(selection) abort
-  if get(a:selection, 'buffer', bufnr()) != bufnr()
+def LocalValidate(selection: any): any
+  var pos: any
+  if get(selection, 'buffer', bufnr()) != bufnr()
     throw 'PlanetVim: the selected buffer is no longer current'
   endif
-  if index(['v', 'V', "\<C-v>"], get(a:selection, 'type', '')) < 0
+  if index(['v', 'V', "\<C-v>"], get(selection, 'type', '')) < 0
     throw 'PlanetVim: invalid selection type'
   endif
-  for l:key in ['start', 'end']
-    let l:pos = get(a:selection, l:key, [])
-    if len(l:pos) != 4 || (l:pos[0] != 0 && l:pos[0] != bufnr())
-          \ || l:pos[1] < 1 || l:pos[1] > line('$') || l:pos[2] < 1
+  for key in ['start', 'end']
+    pos = get(selection, key, [])
+    if len(pos) != 4 || (pos[0] != 0 && pos[0] != bufnr()) || pos[1] < 1 || pos[1] > line('$') || pos[2] < 1
       throw 'PlanetVim: invalid selection position'
     endif
   endfor
-endfunc
+  return 0
+enddef
 
-" Let Vim handle tabs, virtual columns, multibyte text and exclusive endpoints.
-func! s:Select(selection) abort
+# Let Vim handle tabs, virtual columns, multibyte text and exclusive endpoints.
+def LocalSelect(selection: any): any
   execute "normal! \<Esc>"
-  call setpos('.', a:selection.start)
-  execute 'normal! ' .. a:selection.type
-  call setpos('.', a:selection.end)
-endfunc
+  setpos('.', selection.start)
+  execute 'normal! ' .. selection.type
+  setpos('.', selection.end)
+  return 0
+enddef
 
-" Noninteractive export. Existing destinations require explicit overwrite=true;
-" append uses flags='a'. A failed write always leaves the source intact.
-func! planet#selection#Export(path, selection, to_delete = v:false, flags = '', overwrite = v:false) abort
-  if empty(a:path)
+# Noninteractive export. Existing destinations require explicit overwrite=true;
+# append uses flags='a'. A failed write always leaves the source intact.
+export def Export(arg_path: any, arg_selection: any, to_delete: any = v:false, arg_flags: any = '', overwrite: any = v:false): any
+  var contents: any
+  var flags: any
+  if empty(arg_path)
     return 0
   endif
-  call s:Validate(a:selection)
-  if a:flags !=# '' && a:flags !=# 'a'
+  LocalValidate(arg_selection)
+  if arg_flags !=# '' && arg_flags !=# 'a'
     throw 'PlanetVim: unsupported export flags'
   endif
-  let l:path = fnamemodify(a:path, ':p')
-  if isdirectory(l:path)
+  var path: any = fnamemodify(arg_path, ':p')
+  if isdirectory(path)
     throw 'PlanetVim: the export destination is a directory'
   endif
-  if a:flags !=# 'a' && !a:overwrite && getftype(l:path) !=# ''
+  if arg_flags !=# 'a' && !overwrite && getftype(path) !=# ''
     throw 'PlanetVim: the export destination already exists'
   endif
-  if a:to_delete && !&modifiable
+  if to_delete && !&modifiable
     throw 'PlanetVim: the selected buffer is not modifiable'
   endif
 
-  let l:view = winsaveview()
-  let l:selection = &selection
-  let l:virtualedit = &virtualedit
-  let l:clipboard = &clipboard
-  let l:registers = {'z': getreginfo('z'), '0': getreginfo('0'), '"': getreginfo('"')}
-  let l:marks = [getpos("'<"), getpos("'>")]
+  var view: any = winsaveview()
+  var selection: any = &selection
+  var virtualedit: any = &virtualedit
+  var clipboard: any = &clipboard
+  var registers: any = {'z': getreginfo('z'), '0': getreginfo('0'), '"': getreginfo('"')}
+  var marks: any = [getpos("'<"), getpos("'>")]
   try
-    let &selection = get(a:selection, 'exclusive', v:false) ? 'exclusive' : 'inclusive'
+    &selection = get(arg_selection, 'exclusive', v:false) ? 'exclusive' :  'inclusive'
     set virtualedit=all clipboard=
-    call s:Select(a:selection)
+    LocalSelect(arg_selection)
     keepjumps normal! "zy
-    let l:contents = getreg('z', 1, 1)
-    let l:flags = a:flags .. (getregtype('z') ==# 'v' ? 'b' : '')
-    call mkdir(fnamemodify(l:path, ':h'), 'p')
-    if writefile(l:contents, l:path, l:flags) != 0
+    contents = getreg('z', 1, 1)
+    flags = arg_flags .. (getregtype('z') ==# 'v' ? 'b' : '')
+    mkdir(fnamemodify(path, ':h'), 'p')
+    if writefile(contents, path, flags) != 0
       throw 'PlanetVim: could not write the selection'
     endif
-    if a:to_delete
-      call s:Select(a:selection)
+    if to_delete
+      LocalSelect(arg_selection)
       keepjumps normal! "_d
     endif
   finally
     execute "normal! \<Esc>"
-    let &selection = l:selection
-    let &virtualedit = l:virtualedit
-    let &clipboard = l:clipboard
-    for l:reg in ['0', 'z', '"']
-      call setreg(l:reg, l:registers[l:reg])
+    &selection = selection
+    &virtualedit = virtualedit
+    &clipboard = clipboard
+    for reg in ['0', 'z', '"']
+      setreg(reg, registers[reg])
     endfor
-    call setpos("'<", l:marks[0])
-    call setpos("'>", l:marks[1])
-    call winrestview(l:view)
+    setpos("'<", marks[0])
+    setpos("'>", marks[1])
+    winrestview(view)
   endtry
   return 1
-endfunc
+enddef
 
-func! planet#selection#CopySelectionToFile(to_delete = v:false, flags = '') abort
+export def CopySelectionToFile(to_delete: any = v:false, flags: any = ''): any
+  var selection: any
+  var path: any
+  var overwrite: any
   try
-    let l:selection = planet#selection#Current()
+    selection = planet#selection#Current()
     if has('browse') && planet#planet#IsGuiDialogs()
-      let l:path = browse(v:true, 'Export selection', '', '')
+      path = browse(v:true, 'Export selection', '', '')
     else
-      call inputsave()
+      inputsave()
       try
-        let l:path = input('Export selection to: ', '', 'file')
+        path = input('Export selection to: ', '', 'file')
       finally
-        call inputrestore()
+        inputrestore()
       endtry
     endif
-    if empty(l:path)
+    if empty(path)
       return 0
     endif
-    let l:overwrite = v:false
-    if a:flags !=# 'a' && getftype(l:path) !=# ''
-      if confirm('Overwrite ' .. l:path .. '?', "&Overwrite\n&Cancel", 2) != 1
+    overwrite = v:false
+    if flags !=# 'a' && getftype(path) !=# ''
+      if confirm('Overwrite ' .. path .. '?', "&Overwrite\n&Cancel", 2) != 1
         return 0
       endif
-      let l:overwrite = v:true
+      overwrite = v:true
     endif
-    call planet#selection#Export(l:path, l:selection, a:to_delete, a:flags, l:overwrite)
-    echom 'Saved selection to ' .. fnamemodify(l:path, ':p')
+    planet#selection#Export(path, selection, to_delete, flags, overwrite)
+    echom 'Saved selection to ' .. fnamemodify(path, ':p')
     return 1
   catch
     echohl ErrorMsg
@@ -133,26 +142,30 @@ func! planet#selection#CopySelectionToFile(to_delete = v:false, flags = '') abor
     echohl None
     return 0
   endtry
-endfunc
+enddef
 
-func! planet#selection#Restore(selection) abort
-  call s:Validate(a:selection)
-  call s:Select(a:selection)
-endfunc
+export def Restore(selection: any): any
+  LocalValidate(selection)
+  LocalSelect(selection)
+  return 0
+enddef
 
-func! planet#selection#Text(selection) abort
-  call s:Validate(a:selection)
-  let l:registers = {'z': getreginfo('z'), '0': getreginfo('0'), '"': getreginfo('"')}
-  let l:clipboard = &clipboard
-  let l:view = winsaveview()
+export def Text(selection: any): any
+  LocalValidate(selection)
+  var registers: any = {'z': getreginfo('z'), '0': getreginfo('0'), '"': getreginfo('"')}
+  var clipboard: any = &clipboard
+  var view: any = winsaveview()
   try
     set clipboard=
-    call s:Select(a:selection)
+    LocalSelect(selection)
     normal! "zy
     return getreg('z')
   finally
-    for [l:name, l:contents] in items(l:registers) | call setreg(l:name, l:contents) | endfor
-    let &clipboard = l:clipboard
-    call winrestview(l:view)
+    for [name, contents] in items(registers)
+      setreg(name, contents)
+    endfor
+    &clipboard = clipboard
+    winrestview(view)
   endtry
-endfunc
+  return 0
+enddef
