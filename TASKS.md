@@ -4,6 +4,11 @@ Based on the [2026-09-07 code review](REVIEW.md), commit `f75c805a`.
 Implementation started on 2026-09-08. Checkboxes record implemented work;
 acceptance limitations are recorded beside the relevant task.
 
+The separate [2026-09-10 menu coverage review](docs/MENU_REVIEW.md) records 22 open
+follow-up tasks (MD-01 through MD-22) for discoverability, missing core actions and
+recent Vim features. Those tasks are proposals; the completed milestones below do
+not imply that menu coverage is exhaustive.
+
 ## Agreed platform and dependency policy
 
 - GVim only. Terminal Vim and Neovim are outside the product scope.
