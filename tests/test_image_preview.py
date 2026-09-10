@@ -11,7 +11,7 @@ import zlib
 DECODER = Path(__file__).resolve().parents[1] / ".vim/pack/planet/start/planet.vim/bin/image_preview.py"
 
 
-@unittest.skipUnless(importlib.util.find_spec("PIL"), "optional Pillow decoder dependency")
+@unittest.skipUnless(sys.platform.startswith("linux") and importlib.util.find_spec("PIL"), "Linux and optional Pillow decoder dependency")
 class ImagePreviewTests(unittest.TestCase):
     def run_decoder(self, data):
         with tempfile.TemporaryDirectory() as directory:

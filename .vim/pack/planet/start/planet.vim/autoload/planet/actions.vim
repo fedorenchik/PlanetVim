@@ -68,6 +68,7 @@ func! planet#actions#Execute(item, context) abort
   if !planet#menu#Visible(a:item.group) | call planet#menu#Group(a:item.group) | endif
   if has_key(a:context, 'selection')
     call planet#selection#Restore(a:context.selection)
+    if a:context.mode ==# 's' | execute "normal! \<C-g>" | endif
   else
     call setpos('.', a:context.cursor)
   endif

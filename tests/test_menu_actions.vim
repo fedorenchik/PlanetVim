@@ -59,3 +59,13 @@ call popup_clear()
 close
 call assert_equal(s:before, getline(1, '$'))
 nunmap <F12>
+" A Select mapping expects Select mode, not the Visual mode used internally
+" to restore the range. Otherwise CTRL-G flips the wrong way and edits text.
+call planet#menu#Group('basic')
+call setline(1, 'select this word')
+call cursor(1, 9)
+snoremap <F12> <Cmd>call planet#actions#Open()<CR>
+call feedkeys("gh\<F12>selection inside word\<CR>y", 'xt')
+call assert_equal('this', getreg('"'))
+call assert_equal('select this word', getline(1))
+sunmap <F12>
