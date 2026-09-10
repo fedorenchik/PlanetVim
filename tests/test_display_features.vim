@@ -42,6 +42,10 @@ call assert_equal(s:original, &l:statusline)
 
 if !planet#image#Supported()
   call assert_equal(0, planet#image#Open('/does/not/exist.png'))
+  call planet#display#Menus('basic')
+  emenu 📺v.Image\ Preview.Help
+  call assert_equal('help', &buftype)
+  close
   finish
 endif
 func! s:Wait() abort

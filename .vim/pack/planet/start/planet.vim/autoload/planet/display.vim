@@ -51,7 +51,7 @@ func! planet#display#Menus(group) abort
   if a:group ==# 'basic'
     an 170.18 📺&v.Image\ Preview.Open\ Local\ Image <Cmd>call planet#image#Open()<CR>
     an 170.18 📺&v.Image\ Preview.Close <Cmd>call planet#image#Close()<CR>
-    an 170.18 📺&v.Image\ Preview.Help <Cmd>help popup-image<CR>
+    an 170.18 📺&v.Image\ Preview.Help <Cmd>call planet#learn#Help(planet#image#Supported() ? 'popup-image' : 'popup')<CR>
   else
     an 970.65 ⚙️&\\.Advanced\ Display.Completion\ Popup.Rounded\ Border <Cmd>call planet#display#Popup('border', 'round')<CR>
     an 970.65 ⚙️&\\.Advanced\ Display.Completion\ Popup.No\ Border <Cmd>call planet#display#Popup('border', '')<CR>
