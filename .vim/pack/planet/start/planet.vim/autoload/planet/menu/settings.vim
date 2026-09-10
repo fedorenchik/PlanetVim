@@ -1,9 +1,9 @@
-scriptversion 4
+vim9script
 
-func! planet#menu#settings#Update() abort
+export def Update(): number
   if planet#menu#Visible('settings')
-    call planet#display#Menus('settings')
-    " Settings (Options) (unimpaired settings)
+    planet#display#Menus('settings')
+    # Settings (Options) (unimpaired settings)
     PlanetMenu an 970.10  ⚙️&\\.Settings <Nop>
     an disable ⚙️&\\.Settings
     PlanetMenu an 970.10  ⚙️&\\.Tabs:\ &2<Tab>:set\ et\ ts=2\ sw=2           :set et ts=2 sw=2<CR>
@@ -32,9 +32,9 @@ func! planet#menu#settings#Update() abort
     PlanetMenu an 970.10  ⚙️&\\.--5-- <Nop>
     PlanetMenu an 970.10  ⚙️&\\.Set\ 'path'                            :call planet#settings#SetPath()<CR>
     PlanetMenu an 970.10  ⚙️&\\.Set\ 'tags'                            :call planet#settings#SetTags()<CR>
-    for l:option in ['makeprg', 'grepprg', 'formatprg', 'equalprg', 'keywordprg', 'dictionary', 'thesaurus', 'include', 'define', 'suffixesadd']
-      execute 'PlanetMenu an 970.10 ⚙️&\\.Buffer\ Options.' .. l:option
-            \ .. ' <Cmd>call planet#settings#EditOption(' .. string(l:option) .. ')<CR>'
+    for option in ['makeprg', 'grepprg', 'formatprg', 'equalprg', 'keywordprg', 'dictionary', 'thesaurus', 'include', 'define', 'suffixesadd']
+      execute 'PlanetMenu an 970.10 ⚙️&\\.Buffer\ Options.' .. option
+            \ .. ' <Cmd>call planet#settings#EditOption(' .. string(option) .. ')<CR>'
     endfor
     PlanetMenu an 970.10  ⚙️&\\.--6-- <Nop>
     PlanetMenu an 970.10  ⚙️&\\.Set\ GUI\ Dialogs                      :call planet#planet#SetGuiDialogs()<CR>
@@ -51,7 +51,7 @@ func! planet#menu#settings#Update() abort
     PlanetMenu an 970.10  ⚙️&\\.--10-- <Nop>
     PlanetMenu an 970.10  ⚙️&\\.Settings\ Buffer<Tab>:options          :options<CR>
 
-    " Show current maps (nnoremap, etc.)
+    # Show current maps (nnoremap, etc.)
     PlanetMenu an 980.10  ⌨️&\|.Maps <Nop>
     an disable ⌨️&\|.Maps
     PlanetMenu an 980.10  ⌨️&\|.C&hoose\.\.\.                          :Clap maps<CR>
@@ -107,7 +107,7 @@ func! planet#menu#settings#Update() abort
     PlanetMenu an 980.10  ⌨️&\|.WinBar.Set\ for\ Output                 <Cmd>call planet#winbar#Preset('terminal')<CR>
     PlanetMenu an 980.10  ⌨️&\|.WinBar.Clear                           <Cmd>call planet#winbar#Change('clear')<CR>
 
-    " Help
+    # Help
     PlanetMenu an 990.10  ❔&?.Help <Nop>
     an disable ❔&?.Help
     PlanetMenu an 990.10  ❔&?.Help\ Contents                             <Cmd>h<CR>
@@ -131,14 +131,15 @@ func! planet#menu#settings#Update() abort
     PlanetMenu an 990.110 ❔&?.&Close\ Help\ Window                       <Cmd>helpclose<CR>
     PlanetMenu an 990.110 ❔&?.--5-- <Nop>
     PlanetMenu an 990.120 ❔&?.&About                                     <Cmd>version<CR>
-    call planet#completion#Menus('settings')
-    call planet#buffer_options#Menus('settings')
-    call planet#input#Menus('settings')
-    call planet#appearance#Menus()
-    call planet#learn#Menus()
+    planet#completion#Menus('settings')
+    planet#buffer_options#Menus('settings')
+    planet#input#Menus('settings')
+    planet#appearance#Menus()
+    planet#learn#Menus()
   else
     silent! aunmenu ⚙️&\\
     silent! aunmenu ⌨️&\|
     silent! aunmenu ❔&?
   endif
-endfunc
+  return 0
+enddef

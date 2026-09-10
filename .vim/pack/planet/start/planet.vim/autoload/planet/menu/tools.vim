@@ -1,9 +1,9 @@
-scriptversion 4
+vim9script
 
-func! planet#menu#tools#Update() abort
+export def Update(): number
   if planet#menu#Visible('tools')
-    " Git
-    " Open Log in new window
+    # Git
+    # Open Log in new window
     PlanetMenu an 700.10  🔀&g.Git <Nop>
     an disable 🔀&g.Git
     PlanetMenu an 700.10  🔀&g.&Status                                       <Cmd>call planet#gittools#Run(['status', '--short', '--branch', '--show-stash', '--untracked-files=all'])<CR>
@@ -55,8 +55,8 @@ func! planet#menu#tools#Update() abort
     PlanetMenu an 700.10  🔀&g.&Log.&File\ (LL)                              :0Gllog!<CR>
     PlanetMenu an 700.10  🔀&g.&Log.Log\ (GUI)                               <Cmd>call planet#term#RunCmdGui('Flog -max-count=1000')<CR>
     PlanetMenu an 700.10  🔀&g.&Log.Log\ All\ (GUI)                          <Cmd>call planet#term#RunCmdGui('Flog -max-count=1000 -all')<CR>
-    " an 700.10  🔀&g.&Log.Log\ (GUI)                               :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +'Flog -max-count=1000' +tabo<CR>
-    " an 700.10  🔀&g.&Log.Log\ All\ (GUI)                          :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +'Flog -max-count=1000 -all' +tabo<CR>
+    # an 700.10  🔀&g.&Log.Log\ (GUI)                               :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +'Flog -max-count=1000' +tabo<CR>
+    # an 700.10  🔀&g.&Log.Log\ All\ (GUI)                          :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +'Flog -max-count=1000 -all' +tabo<CR>
     PlanetMenu an 700.10  🔀&g.&Tag.List                                     <Cmd>call planet#gittools#Run(['tag', '-l'])<CR>
     PlanetMenu an 700.10  🔀&g.&Tag.Add  <Cmd>call planet#gittools#Named('tag', 'Tag name:', [])<CR>
     PlanetMenu an 700.10  🔀&g.&Tag.Delete  <Cmd>call planet#gittools#Named('tag', 'Tag name:', ['-d'])<CR>
@@ -300,7 +300,7 @@ func! planet#menu#tools#Update() abort
     PlanetMenu an 700.10  🔀&g.Flow.Command  <Cmd>call planet#gittools#Command('flow', [], 'feature', v:null, v:false, 'git-flow')<CR>
     PlanetMenu an 700.10  🔀&g.Extra\ Commands.Run  <Cmd>call planet#gittools#Extra()<CR>
 
-    " Diff/Patch
+    # Diff/Patch
     PlanetMenu an 710.10  ⛏️&;.Diff/Patch <Nop>
     an disable ⛏️&;.Diff/Patch
     PlanetMenu an 710.10  ⛏️&;.DiffOrig                          :DiffOrig<CR>
@@ -324,7 +324,7 @@ func! planet#menu#tools#Update() abort
     PlanetMenu an 710.40  ⛏️&;.--6-- <Nop>
     PlanetMenu an 710.40  ⛏️&;.Set\ Context\ Lines               <Cmd>call planet#diff#Context()<CR>
 
-    " Writing
+    # Writing
     PlanetMenu an 715.10  🔤&\..Writing <Nop>
     an disable 🔤&\..Writing
     PlanetMenu an 715.10  🔤&\..Swap\ Words                   <Cmd>call planet#prose#Swap(-1)<CR>
@@ -374,7 +374,7 @@ func! planet#menu#tools#Update() abort
     PlanetMenu vnoremenu 715.10 🔤&\..Translation.Replace\ with\ Translation <Cmd>call planet#translation#Translate('replace', v:null, planet#selection#Current())<CR>
     PlanetMenu vnoremenu 715.10 🔤&\..Translation.Echo\ Translation <Cmd>call planet#translation#Translate('echo', v:null, planet#selection#Current())<CR>
 
-    " Spelling (& Dictionary & Thesaurus)
+    # Spelling (& Dictionary & Thesaurus)
     PlanetMenu an 720.10  🔠&-.Spell\ Check <Nop>
     an disable 🔠&-.Spell\ Check
     PlanetMenu an 720.10  🔠&-.Previous\ Misspelled<Tab>[S         [S
@@ -416,7 +416,7 @@ func! planet#menu#tools#Update() abort
     PlanetMenu am 720.10  🔠&-.Grammar\ Check\ Reset<Tab>:GrammarousReset <Cmd>call planet#prose#Grammar('reset')<CR>
     PlanetMenu am 720.10  🔠&-.Grammar\ Check\ Status                  <Cmd>call planet#prose#Grammar('status')<CR>
 
-    " Tools
+    # Tools
     PlanetMenu an 730.10  🔧&o.External\ Programs.equalprg <Cmd>call planet#systemtools#Program('equalprg')<CR>
     PlanetMenu an 730.10  🔧&o.External\ Programs.formatprg <Cmd>call planet#systemtools#Program('formatprg')<CR>
     PlanetMenu an 730.10  🔧&o.External\ Programs.keywordprg <Cmd>call planet#systemtools#Program('keywordprg')<CR>
@@ -447,8 +447,8 @@ func! planet#menu#tools#Update() abort
     PlanetMenu an 730.10  🔧&o.Run\ System\ Command                    <Cmd>call planet#term#RunCmdAsk('Command: ')<CR>
     PlanetMenu an 730.10  🔧&o.WebSocket\ Client  <Cmd>call planet#systemtools#Websocat()<CR>
 
-    call planet#diff#Menus()
-    call planet#input#Menus('tools')
+    planet#diff#Menus()
+    planet#input#Menus('tools')
   else
     silent! aunmenu 🔀&g
     silent! aunmenu ⛏️&;
@@ -456,4 +456,5 @@ func! planet#menu#tools#Update() abort
     silent! aunmenu 🔠&-
     silent! aunmenu 🔧&o
   endif
-endfunc
+  return 0
+enddef

@@ -1,8 +1,8 @@
-scriptversion 4
+vim9script
 
-func! planet#menu#edit#Update() abort
+export def Update(): number
   if planet#menu#Visible('editing')
-    " Vim Registers
+    # Vim Registers
     PlanetMenu an 200.10  📋&".Registers <Nop>
     an disable 📋&".Registers
     PlanetMenu an 200.10  📋&".C&hoose\ to\ Paste\.\.\.              :Clap registers<CR>
@@ -13,9 +13,9 @@ func! planet#menu#edit#Update() abort
     PlanetMenu an 200.10  📋&".Start/Stop\ Record<Tab>q{0-9a-z"}     q
     PlanetMenu an 200.10  📋&".Execute<Tab>@{a-z}                    @
     PlanetMenu an 200.10  📋&".Repeat\ Execute<Tab>@@                @@
-    "TODO: Add all non-empty registers to this menu
+    #TODO: Add all non-empty registers to this menu
 
-    " signature.vim (marks)
+    # signature.vim (marks)
     PlanetMenu an 210.10  🔖&'.Marks <Nop>
     an disable 🔖&'.Marks
     PlanetMenu an 210.10  🔖&'.C&hoose<Tab>:Clap\ marks                  :Clap marks<CR>
@@ -37,8 +37,8 @@ func! planet#menu#edit#Update() abort
     PlanetMenu an 210.120 🔖&'.--3-- <Nop>
     PlanetMenu an 210.110 🔖&'.Set\ Mark<Tab>m{a-z}                      m
 
-    " markers
-    "TODO: maybe change to subsubmenus for groups: add, delete, next, prev
+    # markers
+    #TODO: maybe change to subsubmenus for groups: add, delete, next, prev
     PlanetMenu am 220.10  🏷️&=.Markers <Nop>
     am disable 🏷️&=.Markers
     PlanetMenu am 220.10  🏷️&=.Previous.Group\ &1\ (!)<Tab>[1         <Cmd>call signature#marker#Goto('prev', 1, v:count)<CR>
@@ -115,7 +115,7 @@ func! planet#menu#edit#Update() abort
     PlanetMenu am 220.720 🏷️&=.--4-- <Nop>
     PlanetMenu am 220.730 🏷️&=.Clea&r\ All<Tab>m<BS>                   m<BS>
 
-    " Cololr highlight words with mark.vim plugin
+    # Cololr highlight words with mark.vim plugin
     PlanetMenu an 230.10  🖌️&h.CMarks <Nop>
     an disable 🖌️&h.CMarks
     PlanetMenu am 230.10  🖌️&h.CMark\ &Current<Tab>,m                   <Leader>m
@@ -127,19 +127,19 @@ func! planet#menu#edit#Update() abort
     PlanetMenu an 230.10  🖌️&h.Matches <Nop>
     an disable 🖌️&h.Matches
     PlanetMenu an 230.10  🖌️&h.Add\ Match\ Regex                        <Cmd>call planet#matches#Add()<CR>
-    " Add Match Position is useful when editing binary/hex files
+    # Add Match Position is useful when editing binary/hex files
     PlanetMenu an 230.10  🖌️&h.Add\ Match\ Position                     <Cmd>call planet#matches#Position()<CR>
     PlanetMenu an 230.10  🖌️&h.Delete\ Match                            <Cmd>call planet#matches#Delete()<CR>
     PlanetMenu an 230.10  🖌️&h.Clear\ All\ Matches                      :call clearmatches()<CR>
     PlanetMenu an 230.10  🖌️&h.TextProp <Nop>
     an disable 🖌️&h.TextProp
 
-    " Bookmarks: Upper-case marks (mA-mZ)
+    # Bookmarks: Upper-case marks (mA-mZ)
     PlanetMenu an 240.10  📎&k.Bookmarks <Nop>
     an disable 📎&k.Bookmarks
     PlanetMenu an 240.10  📎&k.Open\ LocList                         :SignatureListGlobalMarks<CR>
 
-    " Folds
+    # Folds
     PlanetMenu an 250.10  📜&z.Folds <Nop>
     an disable 📜&z.Folds
     PlanetMenu an 250.20  📜&z.Fold\ by\ &Syntax<Tab><A-z>s            <Cmd>setlocal foldmethod=syntax<CR>
@@ -192,11 +192,11 @@ func! planet#menu#edit#Update() abort
     PlanetMenu an 250.410 📜&z.Decrease\ '&foldlevel'                  :setlocal foldlevel-=1<CR>
     PlanetMenu an 250.410 📜&z.Disable\ A&utoFold                      :call planet#fold#DisableAuto()<CR>
 
-    " quickfix
-    " TODO: set 'errorfile' 'makeef' 'errorformat' 'makeprg' 'grepprg'
-    " TODO: 'grepformat'
-    " TODO: Add copy to LL, merge with previous, choose list, delete current,
-    " TODO: delete all
+    # quickfix
+    # TODO: set 'errorfile' 'makeef' 'errorformat' 'makeprg' 'grepprg'
+    # TODO: 'grepformat'
+    # TODO: Add copy to LL, merge with previous, choose list, delete current,
+    # TODO: delete all
     PlanetMenu an 260.10  &QF.QuickFix <Nop>
     an disable &QF.QuickFix
     PlanetMenu an 260.20  &QF.Sea&rch                                      :Grepper -tool rg -quickfix<CR>
@@ -239,7 +239,7 @@ func! planet#menu#edit#Update() abort
     PlanetMenu an 260.390 &QF.List\ QuickFixes\ (&q)<Tab>:chistory         :chistory<CR>
     PlanetMenu an 260.390 &QF.Delete\ All\ QuickFixes                      :call setqflist([], 'f')<CR>
 
-    " loclist
+    # loclist
     PlanetMenu an 270.10  &LL.LocList <Nop>
     an disable &LL.LocList
     PlanetMenu an 270.20  &LL.Sea&rch                                      :Grepper -tool rg -noquickfix<CR>
@@ -283,7 +283,7 @@ func! planet#menu#edit#Update() abort
     PlanetMenu an 270.390 &LL.Delete\ All\ LocLists\ in\ Window            :call setloclist(0, [], 'f')<CR>
     PlanetMenu an 270.390 &LL.Delete\ All\ LocLists\ in\ Tab               :windo call setloclist(0, [], 'f')<CR>
     PlanetMenu an 270.390 &LL.Delete\ All\ LocLists\ in\ All\ Tabs         :tabdo windo call setloclist(0, [], 'f')<CR>
-    call planet#macros#Menus()
+    planet#macros#Menus()
   else
     silent! aunmenu 📋&"
     silent! aunmenu 🔖&'
@@ -294,4 +294,5 @@ func! planet#menu#edit#Update() abort
     silent! aunmenu &QF
     silent! aunmenu &LL
   endif
-endfunc
+  return 0
+enddef

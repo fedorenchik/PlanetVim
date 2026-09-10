@@ -1,8 +1,8 @@
-scriptversion 4
+vim9script
 
-func! planet#menu#dev#Update() abort
+export def Update(): number
   if planet#menu#Visible('dev')
-    " LSP
+    # LSP
     PlanetMenu an 300.10  ❇️&[.LSP <Nop>
     an disable ❇️&[.LSP
     PlanetMenu an 300.10  ❇️&[.Choose\ Symbol<Tab>:Clap\ tags\ vim_lsp :Clap tags vim_lsp<CR>
@@ -62,7 +62,7 @@ func! planet#menu#dev#Update() abort
     PlanetMenu an 300.10  ❇️&[.Status.Enable\ Diagnostics              <Cmd>call lsp#enable_diagnostics_for_buffer()<CR>
     PlanetMenu an 300.10  ❇️&[.Status.Disable\ Diagnostics             <Cmd>call lsp#disable_diagnostics_for_buffer()<CR>
 
-    " Tags
+    # Tags
     PlanetMenu an 310.10  🪧&].Tags <Nop>
     an disable 🪧&].Tags
     PlanetMenu an 310.10  🪧&].C&hoose<Tab>:Clap\ tags\ ctags          <Cmd>Clap tags ctags<CR>
@@ -542,14 +542,14 @@ func! planet#menu#dev#Update() abort
     an disable 🔨&b.Installer
     PlanetMenu an 500.10  🔨&b.Qt\ Installer\ Framework.Build  <Cmd>call planet#integrations#Run('qt-installer')<CR>
 
-    " Run
+    # Run
     PlanetMenu an 510.10  ▶️&r.Run <Nop>
     an disable ▶️&r.Run
     PlanetMenu an 510.500 ▶️&r.--1-- <Nop>
     PlanetMenu an 510.500 ▶️&r.Add\ Run\ Configuration                 <Cmd>call planet#run#AddConfig()<CR>
     PlanetMenu an 510.500 ▶️&r.Edit\ Run\ Configurations               <Cmd>call planet#run#EditConfig()<CR>
 
-    " Debug
+    # Debug
     PlanetMenu an 520.10  🐞&d.Debug <Nop>
     an disable 🐞&d.Debug
     PlanetMenu an 520.10  🐞&d.Start\ &Debug  <Cmd>PlanetDebug launch<CR>
@@ -574,7 +574,7 @@ func! planet#menu#dev#Update() abort
     PlanetMenu an 520.10  🐞&d.kdb  <Cmd>call planet#debugtools#Run('kdb')<CR>
     PlanetMenu an 520.10  🐞&d.debugfs  <Cmd>call planet#debugtools#Run('debugfs')<CR>
 
-    " Test
+    # Test
     PlanetMenu an 530.10  🧪&j.Test <Nop>
     an disable 🧪&j.Test
     PlanetMenu an 530.10  🧪&j.Nearest  <Cmd>PlanetTest nearest<CR>
@@ -596,7 +596,7 @@ func! planet#menu#dev#Update() abort
     PlanetMenu an 530.10  🧪&j.KUnit  <Cmd>call planet#testtools#Run('kunit')<CR>
     PlanetMenu an 530.10  🧪&j.kselftest  <Cmd>call planet#testtools#Run('kselftest')<CR>
 
-    " Analyze
+    # Analyze
     PlanetMenu an 540.10  🔬&y.Analyze <Nop>
     an disable 🔬&y.Analyze
     PlanetMenu an 540.10  🔬&y.Check  <Cmd>PlanetDiagnostics<CR>
@@ -634,7 +634,7 @@ func! planet#menu#dev#Update() abort
     PlanetMenu an 540.10  🔬&y.ftrace  <Cmd>call planet#integrations#Run('ftrace')<CR>
     PlanetMenu an 540.10  🔬&y.tracefs  <Cmd>call planet#integrations#Browse('/sys/kernel/tracing')<CR>
 
-    " Terminal
+    # Terminal
     PlanetMenu an 550.10  💻&c.Terminal <Nop>
     an disable 💻&c.Terminal
     PlanetMenu an 550.10  💻&c.N&ew                                    <Cmd>botright terminal ++kill=kill ++rows=10<CR>
@@ -657,7 +657,7 @@ func! planet#menu#dev#Update() abort
     an disable 💻&c.Terminal\ List
     PlanetMenu an 550.10  💻&c.Output\ List <Nop>
     an disable 💻&c.Output\ List
-    call planet#lsp_display#Menus()
+    planet#lsp_display#Menus()
   else
     silent! aunmenu ❇️&[
     silent! aunmenu 🪧&]
@@ -670,4 +670,5 @@ func! planet#menu#dev#Update() abort
     silent! aunmenu 🔬&y
     silent! aunmenu 💻&c
   endif
-endfunc
+  return 0
+enddef

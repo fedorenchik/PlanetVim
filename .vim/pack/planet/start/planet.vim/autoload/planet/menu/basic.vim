@@ -1,11 +1,11 @@
-scriptversion 4
+vim9script
 
-func! planet#menu#basic#Update() abort
+export def Update(): number
   if planet#menu#Visible('basic')
     PlanetMenu an 160.15 📺&v.Find\ Menu\ Action <Cmd>call planet#actions#Open()<CR>
     PlanetMenu vnoremenu 160.15 📺&v.Find\ Menu\ Action <Cmd>call planet#actions#Open()<CR>
     PlanetMenu inoremenu 160.15 📺&v.Find\ Menu\ Action <Cmd>call planet#actions#Open()<CR>
-    " File
+    # File
     PlanetMenu an 110.10  📁&f.File <Nop>
     an disable 📁&f.File
     PlanetMenu an 110.20  📁&f.N&ew<Tab>:enew                             <Cmd>confirm enew<CR>
@@ -141,7 +141,7 @@ func! planet#menu#basic#Update() abort
     PlanetMenu an 110.330 📁&f.C&d.Clear\ Local\ cd\ Globally             <Cmd>call planet#file#ClearLocalCwd('tabdo windo')<CR>
     PlanetMenu an 110.360 📁&f.&Close<Tab>:bdelete                        <Cmd>bdelete<CR>
 
-    " Edit
+    # Edit
     PlanetMenu an 120.10  📝&e.Edit <Nop>
     an disable 📝&e.Edit
     PlanetMenu an 120.20  📝&e.&Undo<Tab>u                         u
@@ -191,7 +191,7 @@ func! planet#menu#basic#Update() abort
     PlanetMenu an 120.430 📝&e.Replace\ Mode<Tab>R                        R
     PlanetMenu an 120.440 📝&e.Virtual\ Replace\ Mode<Tab>gR              gR
 
-    " Modify
+    # Modify
     PlanetMenu an 125.10  ✏️&m.Modify <Nop>
     an disable ✏️&m.Modify
     PlanetMenu an 125.310 ✏️&m.--8-- <Nop>
@@ -234,7 +234,7 @@ func! planet#menu#basic#Update() abort
     PlanetMenu an 125.670 ✏️&m.Snippets.Edit\ Custom\ Snippets <Cmd>call planet#snippets#Edit()<CR>
     PlanetMenu an 125.680 ✏️&m.Emmet <Cmd>call emmet#expandAbbr(3, '')<CR>
 
-    " Search
+    # Search
     PlanetMenu an 130.10  🔎&/.Search <Nop>
     an disable 🔎&/.Search
     PlanetMenu an 130.20  🔎&/.C&hoose\ Line<Tab>:Clap\ blines     :Clap blines<CR>
@@ -277,7 +277,7 @@ func! planet#menu#basic#Update() abort
     PlanetMenu an 130.280 🔎&/.--10-- <Nop>
     PlanetMenu an 130.340 🔎&/.Substitute\ Dialog<Tab>:promptrepl       <Cmd>promptrepl<CR>
 
-    " Selection
+    # Selection
     PlanetMenu an 140.10  🖍️&i.Selection <Nop>
     an disable 🖍️&i.Selection
     PlanetMenu an 140.10  🖍️&i.Select\ All                             <Cmd>call planet#edit#SelectAll()<CR>
@@ -297,7 +297,7 @@ func! planet#menu#basic#Update() abort
     PlanetMenu an 140.10  🖍️&i.Select\ Line\ Mode<Tab>gH               gH
     PlanetMenu an 140.10  🖍️&i.Select\ Block\ Mode<Tab>g<C-h>          g<C-H>
 
-    " View
+    # View
     PlanetMenu an 150.10  📺&v.View <Nop>
     an disable 📺&v.View
     PlanetMenu an 150.10  📺&v.&Command\ Palette                          <Cmd>Clap<CR>
@@ -338,7 +338,7 @@ func! planet#menu#basic#Update() abort
     PlanetMenu an 150.70  📺&v.GUI\ Highlight.Scrollbar                :h hl-Scrollbar
     PlanetMenu an 150.70  📺&v.GUI\ Highlight.Tooltip                  :h hl-Tooltip
 
-    " Go
+    # Go
     PlanetMenu an 160.10  ↕️&,.Go <Nop>
     an disable ↕️&,.Go
     PlanetMenu an 160.10  ↕️&,.C&hoose\ Jump<Tab>:Clap\ jumps               :Clap jumps<CR>
@@ -385,7 +385,7 @@ func! planet#menu#basic#Update() abort
     PlanetMenu an 160.10  ↕️&,.Scroll\ Right\ to\ Cursor<Tab>zs             zs
     PlanetMenu an 160.10  ↕️&,.Scroll\ Left\ to\ Cursor<Tab>ze              ze
 
-    " Navigation
+    # Navigation
     PlanetMenu an 165.10  🧭&n.Navigation <Nop>
     an disable 🧭&n.Navigation
     PlanetMenu an 160.10  🧭&n.Definition\ in\ Scope<Tab>gd                 gd
@@ -408,15 +408,15 @@ func! planet#menu#basic#Update() abort
     PlanetMenu an 160.10  🧭&n.Next\ End\ of\ Function<Tab>]M               ]M
     PlanetMenu an 160.10  🧭&n.Previous\ comment<Tab>[*<Tab>[/              [/
     PlanetMenu an 160.10  🧭&n.Next\ comment<Tab>]*<Tab>]/                  ]/
-    call planet#completion#Menus('basic')
-    call planet#objects#Menus()
-    call planet#recovery#Menus()
-    call planet#buffer_options#Menus('basic')
-    call planet#input#Menus('basic')
-    call planet#view#Menus('basic')
-    call planet#search#Menus('basic')
-    call planet#fileextras#Menus()
-    call planet#display#Menus('basic')
+    planet#completion#Menus('basic')
+    planet#objects#Menus()
+    planet#recovery#Menus()
+    planet#buffer_options#Menus('basic')
+    planet#input#Menus('basic')
+    planet#view#Menus('basic')
+    planet#search#Menus('basic')
+    planet#fileextras#Menus()
+    planet#display#Menus('basic')
   else
     silent! aunmenu 📁&f
     silent! aunmenu 📝&e
@@ -427,4 +427,5 @@ func! planet#menu#basic#Update() abort
     silent! aunmenu ↕️&,
     silent! aunmenu 🧭&n
   endif
-endfunc
+  return 0
+enddef

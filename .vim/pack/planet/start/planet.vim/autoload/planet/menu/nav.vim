@@ -1,8 +1,8 @@
-scriptversion 4
+vim9script
 
-func! planet#menu#nav#Update() abort
+export def Update(): number
   if planet#menu#Visible('nav')
-    " Buffers
+    # Buffers
     PlanetMenu an 800.10  📖&u.Buffers <Nop>
     an disable 📖&u.Buffers
     PlanetMenu an 800.10  📖&u.C&hoose\.\.\.                           :Clap buffers<CR>
@@ -46,7 +46,7 @@ func! planet#menu#nav#Update() abort
     PlanetMenu an 800.40  📖&u.Execute\ in\ Each\ Buffer<Tab>:bufdo    :bufdo<Space>
     PlanetMenu an 800.40  📖&u.--6-- <Nop>
 
-    " Arg List
+    # Arg List
     PlanetMenu an 810.10  🗃️&a.Args <Nop>
     an disable 🗃️&a.Args
     PlanetMenu an 810.10  🗃️&a.Drop<Tab>:drop                             :drop %<CR>
@@ -77,7 +77,7 @@ func! planet#menu#nav#Update() abort
     PlanetMenu an 810.10  🗃️&a.Args\ List <Nop>
     an disable 🗃️&a.Args\ List
 
-    " Vim Windows
+    # Vim Windows
     PlanetMenu an 820.10  🪟&w.Windows <Nop>
     an disable 🪟&w.Windows
     PlanetMenu an 820.10  🪟&w.&Window\ Mode                           <Cmd>WindowMode<CR>
@@ -180,7 +180,7 @@ func! planet#menu#nav#Update() abort
     PlanetMenu an 820.10  🪟&w.&Close<Tab>:close<Tab>+c                <C-w>c
     PlanetMenu an 820.10  🪟&w.Close\ &Other\ Windows<Tab>:only<Tab>+o <C-w>o
 
-    " Tabs
+    # Tabs
     PlanetMenu an 830.10  🗂️&t.Tabs <Nop>
     an disable 🗂️&t.Tabs
     PlanetMenu an 830.10  🗂️&t.Tab\ Manager<Tab>:TMToggle             <Cmd>TMToggle<CR>
@@ -208,7 +208,7 @@ func! planet#menu#nav#Update() abort
     PlanetMenu an 830.10  🗂️&t.Reopen\ Closed\ Tab                    <Cmd>call planet#tab#Reopen()<CR>
     PlanetMenu an 830.10  🗂️&t.Close\ &Other\ Tabs<Tab>:tabonly       <Cmd>call planet#tab#CloseOthers()<CR>
 
-    " Sessions
+    # Sessions
     PlanetMenu an 840.10  📚&s.Sessions <Nop>
     an disable 📚&s.Sessions
     PlanetMenu an 840.20  📚&s.--1-- <Nop>
@@ -233,7 +233,7 @@ func! planet#menu#nav#Update() abort
     PlanetMenu an 840.160 📚&s.--6-- <Nop>
     PlanetMenu an 840.170 📚&s.&Delete                                 <Cmd>SDelete<CR>
 
-    " Vim Apps: Open in new GUI window
+    # Vim Apps: Open in new GUI window
     PlanetMenu an 850.10  🗄️&x.GUI <Nop>
     an disable 🗄️&x.GUI
     PlanetMenu an 850.10  🗄️&x.&Maximize                               <Cmd>call planet#gui#Window('maximize')<CR>
@@ -243,7 +243,7 @@ func! planet#menu#nav#Update() abort
     PlanetMenu an 850.10  🗄️&x.&Start\ Vim\ Server                     <Cmd>call planet#gui#VimServerStart()<CR>
     PlanetMenu an 850.100 🗄️&x.--2-- <Nop>
 
-    " Control GUI window with wmctrl & vim servers
+    # Control GUI window with wmctrl & vim servers
     PlanetMenu an 860.10  🎛️&@.Apps <Nop>
     an disable 🎛️&@.Apps
     PlanetMenu an 860.10  🎛️&@.Calendar            <Cmd>call planet#apps#Open('Calendar')<CR>
@@ -259,8 +259,8 @@ func! planet#menu#nav#Update() abort
     PlanetMenu an 860.600 🎛️&@.Workspaces <Nop>
     an disable 🎛️&@.Workspaces
 
-    call planet#view#Menus('nav')
-    call planet#search#Menus('nav')
+    planet#view#Menus('nav')
+    planet#search#Menus('nav')
   else
     silent! aunmenu 📖&u
     silent! aunmenu 🗃️&a
@@ -270,4 +270,5 @@ func! planet#menu#nav#Update() abort
     silent! aunmenu 🗄️&x
     silent! aunmenu 🎛️&@
   endif
-endfunc
+  return 0
+enddef

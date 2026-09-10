@@ -1,11 +1,11 @@
-scriptversion 4
+vim9script
 
-"TODO: add setting to run commands in terminal buffer: open window (++noclose),
-"TODO:    do not open TODO: (++close), close when finish (++close), open after
-"TODO:    finish (++open)
-"TODO: change icon based on IP (Americas: 🌎, Europe, Africa, Middle-East: 🌍,
-"TODO:    SEA, Pacific: 🌏, ISS: 🛰️, Interplanetary: 🪐) or use country flag
-function! planet#menu#planet#Update() abort
+#TODO: add setting to run commands in terminal buffer: open window (++noclose),
+#TODO:    do not open TODO: (++close), close when finish (++close), open after
+#TODO:    finish (++open)
+#TODO: change icon based on IP (Americas: 🌎, Europe, Africa, Middle-East: 🌍,
+#TODO:    SEA, Pacific: 🌏, ISS: 🛰️, Interplanetary: 🪐) or use country flag
+export def Update(): number
   if planet#menu#Visible('planet')
     PlanetMenu an 100.15 🌐&P.Find\ Menu\ Action <Cmd>call planet#actions#Open()<CR>
     PlanetMenu vnoremenu 100.15 🌐&P.Find\ Menu\ Action <Cmd>call planet#actions#Open()<CR>
@@ -38,4 +38,5 @@ function! planet#menu#planet#Update() abort
   else
     silent! aunmenu 🌐&P
   endif
-endfunction
+  return 0
+enddef
