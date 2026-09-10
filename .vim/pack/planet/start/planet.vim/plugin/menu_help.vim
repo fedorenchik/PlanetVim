@@ -9,4 +9,5 @@ command! -nargs=+ -keepscript PlanetMenu execute planet#menu_help#Definition(<q-
 augroup PlanetMenuHelp
   autocmd!
   autocmd VimEnter * call planet#menu_help#RefreshTips()
+  autocmd VimLeavePre * call planet#menu_help#SaveCache()
 augroup END

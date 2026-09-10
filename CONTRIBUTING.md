@@ -55,10 +55,19 @@ JSON argv input uses arrays such as `["--flag", "value with spaces"]`. A blank c
 
 ## Menu teaching metadata
 
-Define first-party actions with `PlanetMenu` followed by the native menu
-command, flags, priority, path, and unchanged RHS. This adds native `:tmenu`
-tips and compact accelerator text while preserving remapping, mode overrides,
-and `<SID>` context. Use ordinary `aunmenu` and enable/disable commands.
+Define fixed first-party actions with a direct compiled call:
+
+```vim
+execute planet#menu_help#Entry('an 110.20 ', 'File.New', '<Cmd>enew<CR>')
+```
+
+Its three fields are the native command/flags/priority (with trailing space),
+escaped menu path, and unchanged RHS. This avoids reparsing fixed declarations
+at startup. For dynamic definitions, `PlanetMenu` accepts the original native
+menu command syntax. Both paths add native `:tmenu` tips and compact accelerator
+text while preserving remapping, mode overrides, and `<SID>` context. Execute
+the returned definition in the defining script. Use ordinary `aunmenu` and
+enable/disable commands.
 Third-party menu definitions stay in their upstream sources.
 
 Use `<Tab>` before a hint and escape spaces/periods in menu paths. Keep at most
@@ -73,7 +82,9 @@ The helper follows global Normal-mode mappings after plugins load. A shared
 menubar tip teaches the Normal action; popup tips follow the editing mode.
 Buffer-local mappings are not advertised
 as universal shortcuts. Run `test_menu_help.vim` and `test_menu_teaching.vim`
-after adding or changing entries, including dynamic menu builders.
+after adding or changing entries, including dynamic menu builders. Also run
+`test_menu_cache.vim` when changing hint resolution: persistent entries are
+presentation data, never cached menu actions or executable scripts.
 Vim's `menu_info(path, 't')` reads tooltip metadata; use `'tl'` for terminal
 actions. Tooltip text must never enter the executable action index.
 

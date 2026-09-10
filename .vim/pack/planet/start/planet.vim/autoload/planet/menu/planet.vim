@@ -7,34 +7,34 @@ vim9script
 #TODO:    SEA, Pacific: 🌏, ISS: 🛰️, Interplanetary: 🪐) or use country flag
 export def Update(): number
   if planet#menu#Visible('planet')
-    PlanetMenu an 100.15 🌐&P.Find\ Menu\ Action <Cmd>call planet#actions#Open()<CR>
-    PlanetMenu vnoremenu 100.15 🌐&P.Find\ Menu\ Action <Cmd>call planet#actions#Open()<CR>
-    PlanetMenu inoremenu 100.15 🌐&P.Find\ Menu\ Action <Cmd>call planet#actions#Open()<CR>
-    PlanetMenu an 100.10  🌐&P.PlanetVim <Nop>
+    execute planet#menu_help#Entry('an 100.15 ', '🌐&P.Find\ Menu\ Action', '<Cmd>call planet#actions#Open()<CR>')
+    execute planet#menu_help#Entry('vnoremenu 100.15 ', '🌐&P.Find\ Menu\ Action', '<Cmd>call planet#actions#Open()<CR>')
+    execute planet#menu_help#Entry('inoremenu 100.15 ', '🌐&P.Find\ Menu\ Action', '<Cmd>call planet#actions#Open()<CR>')
+    execute planet#menu_help#Entry('an 100.10  ', '🌐&P.PlanetVim', '<Nop>')
     an disable 🌐&P.PlanetVim
-    PlanetMenu an 100.10  🌐&P.&Open\ Welcome\ Screen                  <Cmd>tabnew<CR><Cmd>Startify<CR>
-    PlanetMenu an 100.10  🌐&P.New\ &PlanetVim                         <Cmd>call planet#term#RunGuiApp(planet#gui#Command())<CR>
-    PlanetMenu an 100.10  🌐&P.--1-- <Nop>
-    PlanetMenu an 100.10  🌐&P.Set\ E&asy\ Mode                        <Cmd>call planet#planet#SetEasyMode()<CR>
-    PlanetMenu an 100.10  🌐&P.Set\ Standa&rd\ Mode                    <Cmd>call planet#planet#SetStandardMode()<CR>
-    PlanetMenu an 100.10  🌐&P.Set\ S&uper-Charged\ Mode               <Cmd>call planet#planet#SetSuperChargedMode()<CR>
-    PlanetMenu an 100.10  🌐&P.--2-- <Nop>
-    PlanetMenu an 100.20 🌐&P.Menu\ Style.Emoji\ (default) <Cmd>call planet#menu#Style('emoji')<CR>
-    PlanetMenu an 100.20 🌐&P.Menu\ Style.Plain <Cmd>call planet#menu#Style('plain')<CR>
-    PlanetMenu an 100.20 🌐&P.Menu\ Style.Descriptive\ (one\ group) <Cmd>call planet#menu#Style('descriptive')<CR>
-    PlanetMenu an 100.20  🌐&P.--3-- <Nop>
-    PlanetMenu an 100.30  🌐&P.&Basic\ Menus                           <Cmd>call planet#planet#BasicToggle()<CR>
-    PlanetMenu an 100.40  🌐&P.&Editing\ Menus                         <Cmd>call planet#planet#EditingToggle()<CR>
-    PlanetMenu an 100.50  🌐&P.&Development\ Menus                     <Cmd>call planet#planet#DevelopmentToggle()<CR>
-    PlanetMenu an 100.60  🌐&P.&Tools\ Menus                           <Cmd>call planet#planet#ToolsToggle()<CR>
-    PlanetMenu an 100.70  🌐&P.&Navigation\ Menus                      <Cmd>call planet#planet#NavigationToggle()<CR>
-    PlanetMenu an 100.70  🌐&P.&Settings\ Menus                        <Cmd>call planet#planet#SettingsToggle()<CR>
-    PlanetMenu an 100.80  🌐&P.--4-- <Nop>
-    PlanetMenu an 100.90  🌐&P.Ed&it\ Settings                         <Cmd>execute 'tabedit ' .. fnameescape(g:PV_config)<CR>
-    PlanetMenu an 100.100 🌐&P.--5-- <Nop>
-    PlanetMenu an 100.110 🌐&P.&Close\ Everything                      <Cmd>cd<CR><Cmd>SClose<CR>
-    PlanetMenu an 100.120 🌐&P.--6-- <Nop>
-    PlanetMenu an 100.130 🌐&P.Save\ &&\ E&xit\ PlanetVim              <Cmd>call planet#planet#SaveExit()<CR>
+    execute planet#menu_help#Entry('an 100.10  ', '🌐&P.&Open\ Welcome\ Screen', '<Cmd>tabnew<CR><Cmd>Startify<CR>')
+    execute planet#menu_help#Entry('an 100.10  ', '🌐&P.New\ &PlanetVim', '<Cmd>call planet#term#RunGuiApp(planet#gui#Command())<CR>')
+    execute planet#menu_help#Entry('an 100.10  ', '🌐&P.--1--', '<Nop>')
+    execute planet#menu_help#Entry('an 100.10  ', '🌐&P.Set\ E&asy\ Mode', '<Cmd>call planet#planet#SetEasyMode()<CR>')
+    execute planet#menu_help#Entry('an 100.10  ', '🌐&P.Set\ Standa&rd\ Mode', '<Cmd>call planet#planet#SetStandardMode()<CR>')
+    execute planet#menu_help#Entry('an 100.10  ', '🌐&P.Set\ S&uper-Charged\ Mode', '<Cmd>call planet#planet#SetSuperChargedMode()<CR>')
+    execute planet#menu_help#Entry('an 100.10  ', '🌐&P.--2--', '<Nop>')
+    execute planet#menu_help#Entry('an 100.20 ', '🌐&P.Menu\ Style.Emoji\ (default)', '<Cmd>call planet#menu#Style(''emoji'')<CR>')
+    execute planet#menu_help#Entry('an 100.20 ', '🌐&P.Menu\ Style.Plain', '<Cmd>call planet#menu#Style(''plain'')<CR>')
+    execute planet#menu_help#Entry('an 100.20 ', '🌐&P.Menu\ Style.Descriptive\ (one\ group)', '<Cmd>call planet#menu#Style(''descriptive'')<CR>')
+    execute planet#menu_help#Entry('an 100.20  ', '🌐&P.--3--', '<Nop>')
+    execute planet#menu_help#Entry('an 100.30  ', '🌐&P.&Basic\ Menus', '<Cmd>call planet#planet#BasicToggle()<CR>')
+    execute planet#menu_help#Entry('an 100.40  ', '🌐&P.&Editing\ Menus', '<Cmd>call planet#planet#EditingToggle()<CR>')
+    execute planet#menu_help#Entry('an 100.50  ', '🌐&P.&Development\ Menus', '<Cmd>call planet#planet#DevelopmentToggle()<CR>')
+    execute planet#menu_help#Entry('an 100.60  ', '🌐&P.&Tools\ Menus', '<Cmd>call planet#planet#ToolsToggle()<CR>')
+    execute planet#menu_help#Entry('an 100.70  ', '🌐&P.&Navigation\ Menus', '<Cmd>call planet#planet#NavigationToggle()<CR>')
+    execute planet#menu_help#Entry('an 100.70  ', '🌐&P.&Settings\ Menus', '<Cmd>call planet#planet#SettingsToggle()<CR>')
+    execute planet#menu_help#Entry('an 100.80  ', '🌐&P.--4--', '<Nop>')
+    execute planet#menu_help#Entry('an 100.90  ', '🌐&P.Ed&it\ Settings', '<Cmd>execute ''tabedit '' .. fnameescape(g:PV_config)<CR>')
+    execute planet#menu_help#Entry('an 100.100 ', '🌐&P.--5--', '<Nop>')
+    execute planet#menu_help#Entry('an 100.110 ', '🌐&P.&Close\ Everything', '<Cmd>cd<CR><Cmd>SClose<CR>')
+    execute planet#menu_help#Entry('an 100.120 ', '🌐&P.--6--', '<Nop>')
+    execute planet#menu_help#Entry('an 100.130 ', '🌐&P.Save\ &&\ E&xit\ PlanetVim', '<Cmd>call planet#planet#SaveExit()<CR>')
   else
     silent! aunmenu 🌐&P
   endif

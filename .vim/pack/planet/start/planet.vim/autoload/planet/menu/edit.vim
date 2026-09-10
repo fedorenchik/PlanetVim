@@ -3,286 +3,286 @@ vim9script
 export def Update(): number
   if planet#menu#Visible('editing')
     # Vim Registers
-    PlanetMenu an 200.10  📋&".Registers <Nop>
+    execute planet#menu_help#Entry('an 200.10  ', '📋&".Registers', '<Nop>')
     an disable 📋&".Registers
-    PlanetMenu an 200.10  📋&".C&hoose\ to\ Paste\.\.\.              :Clap registers<CR>
-    PlanetMenu an 200.10  📋&".Select\ to\ Edit\.\.\.                :call planet#register#ChooseEdit()<CR>
-    PlanetMenu an 200.10  📋&".Select\ for\ Operator<Tab>"<a-z>      "
-    PlanetMenu an 200.10  📋&".Macros <Nop>
+    execute planet#menu_help#Entry('an 200.10  ', '📋&".C&hoose\ to\ Paste\.\.\.', ':Clap registers<CR>')
+    execute planet#menu_help#Entry('an 200.10  ', '📋&".Select\ to\ Edit\.\.\.', ':call planet#register#ChooseEdit()<CR>')
+    execute planet#menu_help#Entry('an 200.10  ', '📋&".Select\ for\ Operator<Tab>"<a-z>', '"')
+    execute planet#menu_help#Entry('an 200.10  ', '📋&".Macros', '<Nop>')
     an disable 📋&".Macros
-    PlanetMenu an 200.10  📋&".Start/Stop\ Record<Tab>q{0-9a-z"}     q
-    PlanetMenu an 200.10  📋&".Execute<Tab>@{a-z}                    @
-    PlanetMenu an 200.10  📋&".Repeat\ Execute<Tab>@@                @@
+    execute planet#menu_help#Entry('an 200.10  ', '📋&".Start/Stop\ Record<Tab>q{0-9a-z"}', 'q')
+    execute planet#menu_help#Entry('an 200.10  ', '📋&".Execute<Tab>@{a-z}', '@')
+    execute planet#menu_help#Entry('an 200.10  ', '📋&".Repeat\ Execute<Tab>@@', '@@')
     #TODO: Add all non-empty registers to this menu
 
     # signature.vim (marks)
-    PlanetMenu an 210.10  🔖&'.Marks <Nop>
+    execute planet#menu_help#Entry('an 210.10  ', '🔖&''.Marks', '<Nop>')
     an disable 🔖&'.Marks
-    PlanetMenu an 210.10  🔖&'.C&hoose<Tab>:Clap\ marks                  :Clap marks<CR>
-    PlanetMenu an 210.10  🔖&'.Select<Tab>'{a-z}                         '
-    PlanetMenu am 210.10  🔖&'.Open\ LocList<Tab>m/                      m/
-    PlanetMenu an 210.20  🔖&'.--1-- <Nop>
-    PlanetMenu am 210.30  🔖&'.Add<Tab>m,                                m,
-    PlanetMenu am 210.40  🔖&'.Toggle<Tab>m\.                            m.
-    PlanetMenu am 210.50  🔖&'.Delete<Tab>m-                             m-
-    PlanetMenu am 210.60  🔖&'.Delete\ All<Tab>m<Space>                  m<Space>
-    PlanetMenu an 210.70  🔖&'.--2-- <Nop>
-    PlanetMenu an 210.90  🔖&'.Previous<Tab>['                           [`
-    PlanetMenu an 210.80  🔖&'.Next<Tab>]'                               ]`
-    PlanetMenu an 210.100 🔖&'.Next\ Alphabetically<Tab>`]               `]
-    PlanetMenu an 210.110 🔖&'.Previous\ Alphabetically<Tab>`]           `[
-    PlanetMenu an 210.120 🔖&'.--3-- <Nop>
-    PlanetMenu an 210.110 🔖&'.Previous\ Jump<Tab>''                     ``
-    PlanetMenu an 210.110 🔖&'.Go\ to\ Mark<Tab>'{a-z}                   `
-    PlanetMenu an 210.120 🔖&'.--3-- <Nop>
-    PlanetMenu an 210.110 🔖&'.Set\ Mark<Tab>m{a-z}                      m
+    execute planet#menu_help#Entry('an 210.10  ', '🔖&''.C&hoose<Tab>:Clap\ marks', ':Clap marks<CR>')
+    execute planet#menu_help#Entry('an 210.10  ', '🔖&''.Select<Tab>''{a-z}', '''')
+    execute planet#menu_help#Entry('am 210.10  ', '🔖&''.Open\ LocList<Tab>m/', 'm/')
+    execute planet#menu_help#Entry('an 210.20  ', '🔖&''.--1--', '<Nop>')
+    execute planet#menu_help#Entry('am 210.30  ', '🔖&''.Add<Tab>m,', 'm,')
+    execute planet#menu_help#Entry('am 210.40  ', '🔖&''.Toggle<Tab>m\.', 'm.')
+    execute planet#menu_help#Entry('am 210.50  ', '🔖&''.Delete<Tab>m-', 'm-')
+    execute planet#menu_help#Entry('am 210.60  ', '🔖&''.Delete\ All<Tab>m<Space>', 'm<Space>')
+    execute planet#menu_help#Entry('an 210.70  ', '🔖&''.--2--', '<Nop>')
+    execute planet#menu_help#Entry('an 210.90  ', '🔖&''.Previous<Tab>[''', '[`')
+    execute planet#menu_help#Entry('an 210.80  ', '🔖&''.Next<Tab>]''', ']`')
+    execute planet#menu_help#Entry('an 210.100 ', '🔖&''.Next\ Alphabetically<Tab>`]', '`]')
+    execute planet#menu_help#Entry('an 210.110 ', '🔖&''.Previous\ Alphabetically<Tab>`]', '`[')
+    execute planet#menu_help#Entry('an 210.120 ', '🔖&''.--3--', '<Nop>')
+    execute planet#menu_help#Entry('an 210.110 ', '🔖&''.Previous\ Jump<Tab>''''', '``')
+    execute planet#menu_help#Entry('an 210.110 ', '🔖&''.Go\ to\ Mark<Tab>''{a-z}', '`')
+    execute planet#menu_help#Entry('an 210.120 ', '🔖&''.--3--', '<Nop>')
+    execute planet#menu_help#Entry('an 210.110 ', '🔖&''.Set\ Mark<Tab>m{a-z}', 'm')
 
     # markers
     #TODO: maybe change to subsubmenus for groups: add, delete, next, prev
-    PlanetMenu am 220.10  🏷️&=.Markers <Nop>
+    execute planet#menu_help#Entry('am 220.10  ', '🏷️&=.Markers', '<Nop>')
     am disable 🏷️&=.Markers
-    PlanetMenu am 220.10  🏷️&=.Previous.Group\ &1\ (!)<Tab>[1         <Cmd>call signature#marker#Goto('prev', 1, v:count)<CR>
-    PlanetMenu am 220.20  🏷️&=.Previous.Group\ &2\ (@)<Tab>[2         <Cmd>call signature#marker#Goto('prev', 2, v:count)<CR>
-    PlanetMenu am 220.30  🏷️&=.Previous.Group\ &3\ (#)<Tab>[3         <Cmd>call signature#marker#Goto('prev', 3, v:count)<CR>
-    PlanetMenu am 220.40  🏷️&=.Previous.Group\ &4\ ($)<Tab>[4         <Cmd>call signature#marker#Goto('prev', 4, v:count)<CR>
-    PlanetMenu am 220.50  🏷️&=.Previous.Group\ &5\ (%)<Tab>[5         <Cmd>call signature#marker#Goto('prev', 5, v:count)<CR>
-    PlanetMenu am 220.60  🏷️&=.Previous.Group\ &6\ (^)<Tab>[6         <Cmd>call signature#marker#Goto('prev', 6, v:count)<CR>
-    PlanetMenu am 220.70  🏷️&=.Previous.Group\ &7\ (&)<Tab>[7         <Cmd>call signature#marker#Goto('prev', 7, v:count)<CR>
-    PlanetMenu am 220.80  🏷️&=.Previous.Group\ &8\ (*)<Tab>[8         <Cmd>call signature#marker#Goto('prev', 8, v:count)<CR>
-    PlanetMenu am 220.90  🏷️&=.Previous.Group\ &9\ (-)<Tab>[9         <Cmd>call signature#marker#Goto('prev', 9, v:count)<CR>
-    PlanetMenu am 220.100 🏷️&=.Previous.Group\ &0\ (=)<Tab>[0         <Cmd>call signature#marker#Goto('prev', 0, v:count)<CR>
-    PlanetMenu am 220.110 🏷️&=.Next.Group\ &1\ (!)<Tab>]1             <Cmd>call signature#marker#Goto('next', 1, v:count)<CR>
-    PlanetMenu am 220.120 🏷️&=.Next.Group\ &2\ (@)<Tab>]2             <Cmd>call signature#marker#Goto('next', 2, v:count)<CR>
-    PlanetMenu am 220.130 🏷️&=.Next.Group\ &3\ (#)<Tab>]3             <Cmd>call signature#marker#Goto('next', 3, v:count)<CR>
-    PlanetMenu am 220.140 🏷️&=.Next.Group\ &4\ ($)<Tab>]4             <Cmd>call signature#marker#Goto('next', 4, v:count)<CR>
-    PlanetMenu am 220.150 🏷️&=.Next.Group\ &5\ (%)<Tab>]5             <Cmd>call signature#marker#Goto('next', 5, v:count)<CR>
-    PlanetMenu am 220.160 🏷️&=.Next.Group\ &6\ (^)<Tab>]6             <Cmd>call signature#marker#Goto('next', 6, v:count)<CR>
-    PlanetMenu am 220.170 🏷️&=.Next.Group\ &7\ (&)<Tab>]7             <Cmd>call signature#marker#Goto('next', 7, v:count)<CR>
-    PlanetMenu am 220.180 🏷️&=.Next.Group\ &8\ (*)<Tab>]8             <Cmd>call signature#marker#Goto('next', 8, v:count)<CR>
-    PlanetMenu am 220.190 🏷️&=.Next.Group\ &9\ (-)<Tab>]9             <Cmd>call signature#marker#Goto('next', 9, v:count)<CR>
-    PlanetMenu am 220.200 🏷️&=.Next.Group\ &0\ (=)<Tab>]0             <Cmd>call signature#marker#Goto('next', 0, v:count)<CR>
-    PlanetMenu am 220.210 🏷️&=.&List\ (LL).Group\ &1\ (!)              <Cmd>SignatureListMarkers 1<CR>
-    PlanetMenu am 220.220 🏷️&=.&List\ (LL).Group\ &2\ (@)              <Cmd>SignatureListMarkers 2<CR>
-    PlanetMenu am 220.230 🏷️&=.&List\ (LL).Group\ &3\ (#)              <Cmd>SignatureListMarkers 3<CR>
-    PlanetMenu am 220.240 🏷️&=.&List\ (LL).Group\ &4\ ($)              <Cmd>SignatureListMarkers 4<CR>
-    PlanetMenu am 220.250 🏷️&=.&List\ (LL).Group\ &5\ (%)              <Cmd>SignatureListMarkers 5<CR>
-    PlanetMenu am 220.260 🏷️&=.&List\ (LL).Group\ &6\ (^)              <Cmd>SignatureListMarkers 6<CR>
-    PlanetMenu am 220.270 🏷️&=.&List\ (LL).Group\ &7\ (&)              <Cmd>SignatureListMarkers 7<CR>
-    PlanetMenu am 220.280 🏷️&=.&List\ (LL).Group\ &8\ (*)              <Cmd>SignatureListMarkers 8<CR>
-    PlanetMenu am 220.290 🏷️&=.&List\ (LL).Group\ &9\ (-)              <Cmd>SignatureListMarkers 9<CR>
-    PlanetMenu am 220.300 🏷️&=.&List\ (LL).Group\ &0\ (=)              <Cmd>SignatureListMarkers 0<CR>
-    PlanetMenu am 220.310 🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &1\ (!) <Cmd>SignatureListMarkers 1, 2<CR>
-    PlanetMenu am 220.320 🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &2\ (@) <Cmd>SignatureListMarkers 2, 2<CR>
-    PlanetMenu am 220.330 🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &3\ (#) <Cmd>SignatureListMarkers 3, 2<CR>
-    PlanetMenu am 220.340 🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &4\ ($) <Cmd>SignatureListMarkers 4, 2<CR>
-    PlanetMenu am 220.350 🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &5\ (%) <Cmd>SignatureListMarkers 5, 2<CR>
-    PlanetMenu am 220.360 🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &6\ (^) <Cmd>SignatureListMarkers 6, 2<CR>
-    PlanetMenu am 220.370 🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &7\ (&) <Cmd>SignatureListMarkers 7, 2<CR>
-    PlanetMenu am 220.380 🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &8\ (*) <Cmd>SignatureListMarkers 8, 2<CR>
-    PlanetMenu am 220.390 🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &9\ (-) <Cmd>SignatureListMarkers 9, 2<CR>
-    PlanetMenu am 220.400 🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &0\ (=) <Cmd>SignatureListMarkers 0, 2<CR>
-    PlanetMenu am 220.410 🏷️&=.&Add.Group\ &1\ (!)                     m1
-    PlanetMenu am 220.420 🏷️&=.&Add.Group\ &2\ (@)                     m2
-    PlanetMenu am 220.430 🏷️&=.&Add.Group\ &3\ (#)                     m3
-    PlanetMenu am 220.440 🏷️&=.&Add.Group\ &4\ ($)                     m4
-    PlanetMenu am 220.450 🏷️&=.&Add.Group\ &5\ (%)                     m5
-    PlanetMenu am 220.460 🏷️&=.&Add.Group\ &6\ (^)                     m6
-    PlanetMenu am 220.470 🏷️&=.&Add.Group\ &7\ (&)                     m7
-    PlanetMenu am 220.480 🏷️&=.&Add.Group\ &8\ (*)                     m8
-    PlanetMenu am 220.490 🏷️&=.&Add.Group\ &9\ (-)                     m9
-    PlanetMenu am 220.500 🏷️&=.&Add.Group\ &0\ (=)                     m0
-    PlanetMenu am 220.510 🏷️&=.Clea&r.Group\ &1\ (!)                   m!
-    PlanetMenu am 220.520 🏷️&=.Clea&r.Group\ &2\ (@)                   m@
-    PlanetMenu am 220.530 🏷️&=.Clea&r.Group\ &3\ (#)                   m#
-    PlanetMenu am 220.540 🏷️&=.Clea&r.Group\ &4\ ($)                   m$
-    PlanetMenu am 220.550 🏷️&=.Clea&r.Group\ &5\ (%)                   m%
-    PlanetMenu am 220.560 🏷️&=.Clea&r.Group\ &6\ (^)                   m^
-    PlanetMenu am 220.570 🏷️&=.Clea&r.Group\ &7\ (&)                   m&
-    PlanetMenu am 220.580 🏷️&=.Clea&r.Group\ &8\ (*)                   m*
-    PlanetMenu am 220.590 🏷️&=.Clea&r.Group\ &9\ (-)                   m(
-    PlanetMenu am 220.600 🏷️&=.Clea&r.Group\ &0\ (=)                   m)
-    PlanetMenu am 220.610 🏷️&=.--2-- <Nop>
-    PlanetMenu am 220.620 🏷️&=.Previou&s\ of\ Any\ Group<Tab>[=        [=
-    PlanetMenu am 220.630 🏷️&=.&Previous\ of\ Same\ Group<Tab>[-       [-
-    PlanetMenu am 220.640 🏷️&=.&Next\ of\ Same\ Group<Tab>]-           ]-
-    PlanetMenu am 220.650 🏷️&=.N&ext\ of\ Any\ Group<Tab>]=            ]=
-    PlanetMenu am 220.660 🏷️&=.--3-- <Nop>
-    PlanetMenu am 220.670 🏷️&=.List\ from\ Buffer<Tab>m?               m?
-    PlanetMenu am 220.680 🏷️&=.List\ All                               <Cmd>SignatureListMarkers<CR>
-    PlanetMenu am 220.690 🏷️&=.List\ All\ with\ 2\ Context\ Lines      <Cmd>SignatureListMarkers '', 2<CR>
-    PlanetMenu am 220.700 🏷️&=.--4-- <Nop>
-    PlanetMenu am 220.710 🏷️&=.Toggle\ All                             <Cmd>SignatureToggleSigns<CR>
-    PlanetMenu am 220.720 🏷️&=.--4-- <Nop>
-    PlanetMenu am 220.730 🏷️&=.Clea&r\ All<Tab>m<BS>                   m<BS>
+    execute planet#menu_help#Entry('am 220.10  ', '🏷️&=.Previous.Group\ &1\ (!)<Tab>[1', '<Cmd>call signature#marker#Goto(''prev'', 1, v:count)<CR>')
+    execute planet#menu_help#Entry('am 220.20  ', '🏷️&=.Previous.Group\ &2\ (@)<Tab>[2', '<Cmd>call signature#marker#Goto(''prev'', 2, v:count)<CR>')
+    execute planet#menu_help#Entry('am 220.30  ', '🏷️&=.Previous.Group\ &3\ (#)<Tab>[3', '<Cmd>call signature#marker#Goto(''prev'', 3, v:count)<CR>')
+    execute planet#menu_help#Entry('am 220.40  ', '🏷️&=.Previous.Group\ &4\ ($)<Tab>[4', '<Cmd>call signature#marker#Goto(''prev'', 4, v:count)<CR>')
+    execute planet#menu_help#Entry('am 220.50  ', '🏷️&=.Previous.Group\ &5\ (%)<Tab>[5', '<Cmd>call signature#marker#Goto(''prev'', 5, v:count)<CR>')
+    execute planet#menu_help#Entry('am 220.60  ', '🏷️&=.Previous.Group\ &6\ (^)<Tab>[6', '<Cmd>call signature#marker#Goto(''prev'', 6, v:count)<CR>')
+    execute planet#menu_help#Entry('am 220.70  ', '🏷️&=.Previous.Group\ &7\ (&)<Tab>[7', '<Cmd>call signature#marker#Goto(''prev'', 7, v:count)<CR>')
+    execute planet#menu_help#Entry('am 220.80  ', '🏷️&=.Previous.Group\ &8\ (*)<Tab>[8', '<Cmd>call signature#marker#Goto(''prev'', 8, v:count)<CR>')
+    execute planet#menu_help#Entry('am 220.90  ', '🏷️&=.Previous.Group\ &9\ (-)<Tab>[9', '<Cmd>call signature#marker#Goto(''prev'', 9, v:count)<CR>')
+    execute planet#menu_help#Entry('am 220.100 ', '🏷️&=.Previous.Group\ &0\ (=)<Tab>[0', '<Cmd>call signature#marker#Goto(''prev'', 0, v:count)<CR>')
+    execute planet#menu_help#Entry('am 220.110 ', '🏷️&=.Next.Group\ &1\ (!)<Tab>]1', '<Cmd>call signature#marker#Goto(''next'', 1, v:count)<CR>')
+    execute planet#menu_help#Entry('am 220.120 ', '🏷️&=.Next.Group\ &2\ (@)<Tab>]2', '<Cmd>call signature#marker#Goto(''next'', 2, v:count)<CR>')
+    execute planet#menu_help#Entry('am 220.130 ', '🏷️&=.Next.Group\ &3\ (#)<Tab>]3', '<Cmd>call signature#marker#Goto(''next'', 3, v:count)<CR>')
+    execute planet#menu_help#Entry('am 220.140 ', '🏷️&=.Next.Group\ &4\ ($)<Tab>]4', '<Cmd>call signature#marker#Goto(''next'', 4, v:count)<CR>')
+    execute planet#menu_help#Entry('am 220.150 ', '🏷️&=.Next.Group\ &5\ (%)<Tab>]5', '<Cmd>call signature#marker#Goto(''next'', 5, v:count)<CR>')
+    execute planet#menu_help#Entry('am 220.160 ', '🏷️&=.Next.Group\ &6\ (^)<Tab>]6', '<Cmd>call signature#marker#Goto(''next'', 6, v:count)<CR>')
+    execute planet#menu_help#Entry('am 220.170 ', '🏷️&=.Next.Group\ &7\ (&)<Tab>]7', '<Cmd>call signature#marker#Goto(''next'', 7, v:count)<CR>')
+    execute planet#menu_help#Entry('am 220.180 ', '🏷️&=.Next.Group\ &8\ (*)<Tab>]8', '<Cmd>call signature#marker#Goto(''next'', 8, v:count)<CR>')
+    execute planet#menu_help#Entry('am 220.190 ', '🏷️&=.Next.Group\ &9\ (-)<Tab>]9', '<Cmd>call signature#marker#Goto(''next'', 9, v:count)<CR>')
+    execute planet#menu_help#Entry('am 220.200 ', '🏷️&=.Next.Group\ &0\ (=)<Tab>]0', '<Cmd>call signature#marker#Goto(''next'', 0, v:count)<CR>')
+    execute planet#menu_help#Entry('am 220.210 ', '🏷️&=.&List\ (LL).Group\ &1\ (!)', '<Cmd>SignatureListMarkers 1<CR>')
+    execute planet#menu_help#Entry('am 220.220 ', '🏷️&=.&List\ (LL).Group\ &2\ (@)', '<Cmd>SignatureListMarkers 2<CR>')
+    execute planet#menu_help#Entry('am 220.230 ', '🏷️&=.&List\ (LL).Group\ &3\ (#)', '<Cmd>SignatureListMarkers 3<CR>')
+    execute planet#menu_help#Entry('am 220.240 ', '🏷️&=.&List\ (LL).Group\ &4\ ($)', '<Cmd>SignatureListMarkers 4<CR>')
+    execute planet#menu_help#Entry('am 220.250 ', '🏷️&=.&List\ (LL).Group\ &5\ (%)', '<Cmd>SignatureListMarkers 5<CR>')
+    execute planet#menu_help#Entry('am 220.260 ', '🏷️&=.&List\ (LL).Group\ &6\ (^)', '<Cmd>SignatureListMarkers 6<CR>')
+    execute planet#menu_help#Entry('am 220.270 ', '🏷️&=.&List\ (LL).Group\ &7\ (&)', '<Cmd>SignatureListMarkers 7<CR>')
+    execute planet#menu_help#Entry('am 220.280 ', '🏷️&=.&List\ (LL).Group\ &8\ (*)', '<Cmd>SignatureListMarkers 8<CR>')
+    execute planet#menu_help#Entry('am 220.290 ', '🏷️&=.&List\ (LL).Group\ &9\ (-)', '<Cmd>SignatureListMarkers 9<CR>')
+    execute planet#menu_help#Entry('am 220.300 ', '🏷️&=.&List\ (LL).Group\ &0\ (=)', '<Cmd>SignatureListMarkers 0<CR>')
+    execute planet#menu_help#Entry('am 220.310 ', '🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &1\ (!)', '<Cmd>SignatureListMarkers 1, 2<CR>')
+    execute planet#menu_help#Entry('am 220.320 ', '🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &2\ (@)', '<Cmd>SignatureListMarkers 2, 2<CR>')
+    execute planet#menu_help#Entry('am 220.330 ', '🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &3\ (#)', '<Cmd>SignatureListMarkers 3, 2<CR>')
+    execute planet#menu_help#Entry('am 220.340 ', '🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &4\ ($)', '<Cmd>SignatureListMarkers 4, 2<CR>')
+    execute planet#menu_help#Entry('am 220.350 ', '🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &5\ (%)', '<Cmd>SignatureListMarkers 5, 2<CR>')
+    execute planet#menu_help#Entry('am 220.360 ', '🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &6\ (^)', '<Cmd>SignatureListMarkers 6, 2<CR>')
+    execute planet#menu_help#Entry('am 220.370 ', '🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &7\ (&)', '<Cmd>SignatureListMarkers 7, 2<CR>')
+    execute planet#menu_help#Entry('am 220.380 ', '🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &8\ (*)', '<Cmd>SignatureListMarkers 8, 2<CR>')
+    execute planet#menu_help#Entry('am 220.390 ', '🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &9\ (-)', '<Cmd>SignatureListMarkers 9, 2<CR>')
+    execute planet#menu_help#Entry('am 220.400 ', '🏷️&=.&List\ (LL)\ with\ 2\ Context\ Lines.Group\ &0\ (=)', '<Cmd>SignatureListMarkers 0, 2<CR>')
+    execute planet#menu_help#Entry('am 220.410 ', '🏷️&=.&Add.Group\ &1\ (!)', 'm1')
+    execute planet#menu_help#Entry('am 220.420 ', '🏷️&=.&Add.Group\ &2\ (@)', 'm2')
+    execute planet#menu_help#Entry('am 220.430 ', '🏷️&=.&Add.Group\ &3\ (#)', 'm3')
+    execute planet#menu_help#Entry('am 220.440 ', '🏷️&=.&Add.Group\ &4\ ($)', 'm4')
+    execute planet#menu_help#Entry('am 220.450 ', '🏷️&=.&Add.Group\ &5\ (%)', 'm5')
+    execute planet#menu_help#Entry('am 220.460 ', '🏷️&=.&Add.Group\ &6\ (^)', 'm6')
+    execute planet#menu_help#Entry('am 220.470 ', '🏷️&=.&Add.Group\ &7\ (&)', 'm7')
+    execute planet#menu_help#Entry('am 220.480 ', '🏷️&=.&Add.Group\ &8\ (*)', 'm8')
+    execute planet#menu_help#Entry('am 220.490 ', '🏷️&=.&Add.Group\ &9\ (-)', 'm9')
+    execute planet#menu_help#Entry('am 220.500 ', '🏷️&=.&Add.Group\ &0\ (=)', 'm0')
+    execute planet#menu_help#Entry('am 220.510 ', '🏷️&=.Clea&r.Group\ &1\ (!)', 'm!')
+    execute planet#menu_help#Entry('am 220.520 ', '🏷️&=.Clea&r.Group\ &2\ (@)', 'm@')
+    execute planet#menu_help#Entry('am 220.530 ', '🏷️&=.Clea&r.Group\ &3\ (#)', 'm#')
+    execute planet#menu_help#Entry('am 220.540 ', '🏷️&=.Clea&r.Group\ &4\ ($)', 'm$')
+    execute planet#menu_help#Entry('am 220.550 ', '🏷️&=.Clea&r.Group\ &5\ (%)', 'm%')
+    execute planet#menu_help#Entry('am 220.560 ', '🏷️&=.Clea&r.Group\ &6\ (^)', 'm^')
+    execute planet#menu_help#Entry('am 220.570 ', '🏷️&=.Clea&r.Group\ &7\ (&)', 'm&')
+    execute planet#menu_help#Entry('am 220.580 ', '🏷️&=.Clea&r.Group\ &8\ (*)', 'm*')
+    execute planet#menu_help#Entry('am 220.590 ', '🏷️&=.Clea&r.Group\ &9\ (-)', 'm(')
+    execute planet#menu_help#Entry('am 220.600 ', '🏷️&=.Clea&r.Group\ &0\ (=)', 'm)')
+    execute planet#menu_help#Entry('am 220.610 ', '🏷️&=.--2--', '<Nop>')
+    execute planet#menu_help#Entry('am 220.620 ', '🏷️&=.Previou&s\ of\ Any\ Group<Tab>[=', '[=')
+    execute planet#menu_help#Entry('am 220.630 ', '🏷️&=.&Previous\ of\ Same\ Group<Tab>[-', '[-')
+    execute planet#menu_help#Entry('am 220.640 ', '🏷️&=.&Next\ of\ Same\ Group<Tab>]-', ']-')
+    execute planet#menu_help#Entry('am 220.650 ', '🏷️&=.N&ext\ of\ Any\ Group<Tab>]=', ']=')
+    execute planet#menu_help#Entry('am 220.660 ', '🏷️&=.--3--', '<Nop>')
+    execute planet#menu_help#Entry('am 220.670 ', '🏷️&=.List\ from\ Buffer<Tab>m?', 'm?')
+    execute planet#menu_help#Entry('am 220.680 ', '🏷️&=.List\ All', '<Cmd>SignatureListMarkers<CR>')
+    execute planet#menu_help#Entry('am 220.690 ', '🏷️&=.List\ All\ with\ 2\ Context\ Lines', '<Cmd>SignatureListMarkers '''', 2<CR>')
+    execute planet#menu_help#Entry('am 220.700 ', '🏷️&=.--4--', '<Nop>')
+    execute planet#menu_help#Entry('am 220.710 ', '🏷️&=.Toggle\ All', '<Cmd>SignatureToggleSigns<CR>')
+    execute planet#menu_help#Entry('am 220.720 ', '🏷️&=.--4--', '<Nop>')
+    execute planet#menu_help#Entry('am 220.730 ', '🏷️&=.Clea&r\ All<Tab>m<BS>', 'm<BS>')
 
     # Cololr highlight words with mark.vim plugin
-    PlanetMenu an 230.10  🖌️&h.CMarks <Nop>
+    execute planet#menu_help#Entry('an 230.10  ', '🖌️&h.CMarks', '<Nop>')
     an disable 🖌️&h.CMarks
-    PlanetMenu am 230.10  🖌️&h.CMark\ &Current<Tab>,m                   <Leader>m
-    PlanetMenu am 230.10  🖌️&h.CMark\ &Regex<Tab>,r                     <Leader>r
-    PlanetMenu an 230.10  🖌️&h.List\ All                                :Marks<CR>
-    PlanetMenu am 230.10  🖌️&h.Toggle\ All<Tab>,M                       <Leader>M
-    PlanetMenu an 230.10  🖌️&h.Delete\ All<Tab>,N                       :MarkClear<CR>
-    PlanetMenu an 230.10  🖌️&h.--1-- <Nop>
-    PlanetMenu an 230.10  🖌️&h.Matches <Nop>
+    execute planet#menu_help#Entry('am 230.10  ', '🖌️&h.CMark\ &Current<Tab>,m', '<Leader>m')
+    execute planet#menu_help#Entry('am 230.10  ', '🖌️&h.CMark\ &Regex<Tab>,r', '<Leader>r')
+    execute planet#menu_help#Entry('an 230.10  ', '🖌️&h.List\ All', ':Marks<CR>')
+    execute planet#menu_help#Entry('am 230.10  ', '🖌️&h.Toggle\ All<Tab>,M', '<Leader>M')
+    execute planet#menu_help#Entry('an 230.10  ', '🖌️&h.Delete\ All<Tab>,N', ':MarkClear<CR>')
+    execute planet#menu_help#Entry('an 230.10  ', '🖌️&h.--1--', '<Nop>')
+    execute planet#menu_help#Entry('an 230.10  ', '🖌️&h.Matches', '<Nop>')
     an disable 🖌️&h.Matches
-    PlanetMenu an 230.10  🖌️&h.Add\ Match\ Regex                        <Cmd>call planet#matches#Add()<CR>
+    execute planet#menu_help#Entry('an 230.10  ', '🖌️&h.Add\ Match\ Regex', '<Cmd>call planet#matches#Add()<CR>')
     # Add Match Position is useful when editing binary/hex files
-    PlanetMenu an 230.10  🖌️&h.Add\ Match\ Position                     <Cmd>call planet#matches#Position()<CR>
-    PlanetMenu an 230.10  🖌️&h.Delete\ Match                            <Cmd>call planet#matches#Delete()<CR>
-    PlanetMenu an 230.10  🖌️&h.Clear\ All\ Matches                      :call clearmatches()<CR>
-    PlanetMenu an 230.10  🖌️&h.TextProp <Nop>
+    execute planet#menu_help#Entry('an 230.10  ', '🖌️&h.Add\ Match\ Position', '<Cmd>call planet#matches#Position()<CR>')
+    execute planet#menu_help#Entry('an 230.10  ', '🖌️&h.Delete\ Match', '<Cmd>call planet#matches#Delete()<CR>')
+    execute planet#menu_help#Entry('an 230.10  ', '🖌️&h.Clear\ All\ Matches', ':call clearmatches()<CR>')
+    execute planet#menu_help#Entry('an 230.10  ', '🖌️&h.TextProp', '<Nop>')
     an disable 🖌️&h.TextProp
 
     # Bookmarks: Upper-case marks (mA-mZ)
-    PlanetMenu an 240.10  📎&k.Bookmarks <Nop>
+    execute planet#menu_help#Entry('an 240.10  ', '📎&k.Bookmarks', '<Nop>')
     an disable 📎&k.Bookmarks
-    PlanetMenu an 240.10  📎&k.Open\ LocList                         :SignatureListGlobalMarks<CR>
+    execute planet#menu_help#Entry('an 240.10  ', '📎&k.Open\ LocList', ':SignatureListGlobalMarks<CR>')
 
     # Folds
-    PlanetMenu an 250.10  📜&z.Folds <Nop>
+    execute planet#menu_help#Entry('an 250.10  ', '📜&z.Folds', '<Nop>')
     an disable 📜&z.Folds
-    PlanetMenu an 250.20  📜&z.Fold\ by\ &Syntax<Tab><A-z>s            <Cmd>setlocal foldmethod=syntax<CR>
-    PlanetMenu an 250.30  📜&z.Fold\ by\ LSP                           <Cmd>setlocal foldmethod=expr foldexpr=lsp#ui#vim#folding#foldexpr() foldtext=lsp#ui#vim#folding#foldtext()<CR>
-    PlanetMenu an 250.40  📜&z.Fold\ by\ &Indent<Tab><A-z>i            <Cmd>setlocal foldmethod=indent<CR>
-    PlanetMenu an 250.50  📜&z.Fold\ by\ Mar&kers<Tab><A-z>k           <Cmd>setlocal foldmethod=marker<CR>
-    PlanetMenu an 250.60  📜&z.Fold\ by\ E&xpr<Tab><A-z>x              <Cmd>setlocal foldmethod=expr<CR>
-    PlanetMenu an 250.100 📜&z.Manua&l<Tab><A-z>l                      <Cmd>setlocal foldmethod=manual<CR>
-    PlanetMenu an 250.110 📜&z.--1-- <Nop>
-    PlanetMenu an 250.120 📜&z.&Open<Tab>zo                            zo
-    PlanetMenu an 250.130 📜&z.&Close<Tab>zc                           zc
-    PlanetMenu an 250.140 📜&z.Toggle\ (&a)<Tab>za                     za
-    PlanetMenu an 250.150 📜&z.Open\ One\ Level\ (&w)<Tab>zr           zr
-    PlanetMenu an 250.160 📜&z.Close\ One\ Level\ (&b)<Tab>zm          zm
-    PlanetMenu an 250.170 📜&z.Open\ All\ (&r)<Tab>zR                  zR
-    PlanetMenu an 250.180 📜&z.Close\ All\ (&m)<Tab>zM                 zM
-    PlanetMenu an 250.190 📜&z.--2-- <Nop>
-    PlanetMenu an 250.200 📜&z.Open\ till\ Cursor\ &Visible<Tab>zv     zv
-    PlanetMenu an 250.200 📜&z.Open\ only\ Cursor\ Line<Tab>zMzx       zMzx
-    PlanetMenu an 250.210 📜&z.Open\ All\ at\ Cursor\ (&g)<Tab>zO      zO
-    PlanetMenu an 250.220 📜&z.Close\ All\ at\ Cursor\ (&h)<Tab>zC     zC
-    PlanetMenu an 250.230 📜&z.Toggle\ All\ at\ Cursor\ (&z)<Tab>zA    zA
-    PlanetMenu an 250.240 📜&z.Apply\ 'foldlevel'\ &&\ Open\ at\ Cursor\ (&j)<Tab>zx zx
-    PlanetMenu an 250.250 📜&z.Apply\ 'foldlevel'\ (&q)<Tab>zX         zX
-    PlanetMenu an 250.260 📜&z.--3-- <Nop>
-    PlanetMenu an 250.270 📜&z.&Previous<Tab>zk                        zk
-    PlanetMenu an 250.280 📜&z.&Next<Tab>zj                            zj
-    PlanetMenu an 250.290 📜&z.--4-- <Nop>
-    PlanetMenu an 250.300 📜&z.Cr&eate<Tab>zf                          zf
-    PlanetMenu an 250.320 📜&z.--5-- <Nop>
-    PlanetMenu an 250.330 📜&z.&Delete<Tab>zd                          zd
-    PlanetMenu an 250.340 📜&z.Delete\ All\ at\ Cursor\ (&@)<Tab>zD    zD
-    PlanetMenu an 250.350 📜&z.Delete\ All\ (&\\)<Tab>zE               zE
-    PlanetMenu an 250.360 📜&z.--6-- <Nop>
-    PlanetMenu am 250.370 📜&z.Update\ All\ Folds\ (&')<Tab>zuz        zuz
-    PlanetMenu an 250.380 📜&z.--7-- <Nop>
-    PlanetMenu an 250.390 📜&z.Advanced\ (&\.).&Enable<Tab>zN          zN
-    PlanetMenu an 250.400 📜&z.Advanced\ (&\.).&Disable<Tab>zn         zn
-    PlanetMenu an 250.410 📜&z.Advanced\ (&\.).&Toggle\ Enable<Tab>zi  zi
-    PlanetMenu an 250.410 📜&z.Advanced\ (&\.).--8-- <Nop>
-    PlanetMenu an 250.410 📜&z.Advanced\ (&\.).&Increase\ 'foldcolumn' :set foldcolumn+=1<CR>
-    PlanetMenu an 250.410 📜&z.Advanced\ (&\.).Dec&rease\ 'foldcolumn' :set foldcolumn-=1<CR>
-    PlanetMenu an 250.410 📜&z.Advanced\ (&\.).--9-- <Nop>
-    PlanetMenu an 250.410 📜&z.Advanced\ (&\.).Run\ Command\ on\ &Visible\ Lines :folddoopen<Space>
-    PlanetMenu an 250.410 📜&z.Advanced\ (&\.).Run\ Command\ on\ &Folded\ Lines  :folddoclosed<Space>
-    PlanetMenu an 250.410 📜&z.AutoFold <Nop>
+    execute planet#menu_help#Entry('an 250.20  ', '📜&z.Fold\ by\ &Syntax<Tab><A-z>s', '<Cmd>setlocal foldmethod=syntax<CR>')
+    execute planet#menu_help#Entry('an 250.30  ', '📜&z.Fold\ by\ LSP', '<Cmd>setlocal foldmethod=expr foldexpr=lsp#ui#vim#folding#foldexpr() foldtext=lsp#ui#vim#folding#foldtext()<CR>')
+    execute planet#menu_help#Entry('an 250.40  ', '📜&z.Fold\ by\ &Indent<Tab><A-z>i', '<Cmd>setlocal foldmethod=indent<CR>')
+    execute planet#menu_help#Entry('an 250.50  ', '📜&z.Fold\ by\ Mar&kers<Tab><A-z>k', '<Cmd>setlocal foldmethod=marker<CR>')
+    execute planet#menu_help#Entry('an 250.60  ', '📜&z.Fold\ by\ E&xpr<Tab><A-z>x', '<Cmd>setlocal foldmethod=expr<CR>')
+    execute planet#menu_help#Entry('an 250.100 ', '📜&z.Manua&l<Tab><A-z>l', '<Cmd>setlocal foldmethod=manual<CR>')
+    execute planet#menu_help#Entry('an 250.110 ', '📜&z.--1--', '<Nop>')
+    execute planet#menu_help#Entry('an 250.120 ', '📜&z.&Open<Tab>zo', 'zo')
+    execute planet#menu_help#Entry('an 250.130 ', '📜&z.&Close<Tab>zc', 'zc')
+    execute planet#menu_help#Entry('an 250.140 ', '📜&z.Toggle\ (&a)<Tab>za', 'za')
+    execute planet#menu_help#Entry('an 250.150 ', '📜&z.Open\ One\ Level\ (&w)<Tab>zr', 'zr')
+    execute planet#menu_help#Entry('an 250.160 ', '📜&z.Close\ One\ Level\ (&b)<Tab>zm', 'zm')
+    execute planet#menu_help#Entry('an 250.170 ', '📜&z.Open\ All\ (&r)<Tab>zR', 'zR')
+    execute planet#menu_help#Entry('an 250.180 ', '📜&z.Close\ All\ (&m)<Tab>zM', 'zM')
+    execute planet#menu_help#Entry('an 250.190 ', '📜&z.--2--', '<Nop>')
+    execute planet#menu_help#Entry('an 250.200 ', '📜&z.Open\ till\ Cursor\ &Visible<Tab>zv', 'zv')
+    execute planet#menu_help#Entry('an 250.200 ', '📜&z.Open\ only\ Cursor\ Line<Tab>zMzx', 'zMzx')
+    execute planet#menu_help#Entry('an 250.210 ', '📜&z.Open\ All\ at\ Cursor\ (&g)<Tab>zO', 'zO')
+    execute planet#menu_help#Entry('an 250.220 ', '📜&z.Close\ All\ at\ Cursor\ (&h)<Tab>zC', 'zC')
+    execute planet#menu_help#Entry('an 250.230 ', '📜&z.Toggle\ All\ at\ Cursor\ (&z)<Tab>zA', 'zA')
+    execute planet#menu_help#Entry('an 250.240 ', '📜&z.Apply\ ''foldlevel''\ &&\ Open\ at\ Cursor\ (&j)<Tab>zx', 'zx')
+    execute planet#menu_help#Entry('an 250.250 ', '📜&z.Apply\ ''foldlevel''\ (&q)<Tab>zX', 'zX')
+    execute planet#menu_help#Entry('an 250.260 ', '📜&z.--3--', '<Nop>')
+    execute planet#menu_help#Entry('an 250.270 ', '📜&z.&Previous<Tab>zk', 'zk')
+    execute planet#menu_help#Entry('an 250.280 ', '📜&z.&Next<Tab>zj', 'zj')
+    execute planet#menu_help#Entry('an 250.290 ', '📜&z.--4--', '<Nop>')
+    execute planet#menu_help#Entry('an 250.300 ', '📜&z.Cr&eate<Tab>zf', 'zf')
+    execute planet#menu_help#Entry('an 250.320 ', '📜&z.--5--', '<Nop>')
+    execute planet#menu_help#Entry('an 250.330 ', '📜&z.&Delete<Tab>zd', 'zd')
+    execute planet#menu_help#Entry('an 250.340 ', '📜&z.Delete\ All\ at\ Cursor\ (&@)<Tab>zD', 'zD')
+    execute planet#menu_help#Entry('an 250.350 ', '📜&z.Delete\ All\ (&\\)<Tab>zE', 'zE')
+    execute planet#menu_help#Entry('an 250.360 ', '📜&z.--6--', '<Nop>')
+    execute planet#menu_help#Entry('am 250.370 ', '📜&z.Update\ All\ Folds\ (&'')<Tab>zuz', 'zuz')
+    execute planet#menu_help#Entry('an 250.380 ', '📜&z.--7--', '<Nop>')
+    execute planet#menu_help#Entry('an 250.390 ', '📜&z.Advanced\ (&\.).&Enable<Tab>zN', 'zN')
+    execute planet#menu_help#Entry('an 250.400 ', '📜&z.Advanced\ (&\.).&Disable<Tab>zn', 'zn')
+    execute planet#menu_help#Entry('an 250.410 ', '📜&z.Advanced\ (&\.).&Toggle\ Enable<Tab>zi', 'zi')
+    execute planet#menu_help#Entry('an 250.410 ', '📜&z.Advanced\ (&\.).--8--', '<Nop>')
+    execute planet#menu_help#Entry('an 250.410 ', '📜&z.Advanced\ (&\.).&Increase\ ''foldcolumn''', ':set foldcolumn+=1<CR>')
+    execute planet#menu_help#Entry('an 250.410 ', '📜&z.Advanced\ (&\.).Dec&rease\ ''foldcolumn''', ':set foldcolumn-=1<CR>')
+    execute planet#menu_help#Entry('an 250.410 ', '📜&z.Advanced\ (&\.).--9--', '<Nop>')
+    execute planet#menu_help#Entry('an 250.410 ', '📜&z.Advanced\ (&\.).Run\ Command\ on\ &Visible\ Lines', ':folddoopen<Space>')
+    execute planet#menu_help#Entry('an 250.410 ', '📜&z.Advanced\ (&\.).Run\ Command\ on\ &Folded\ Lines', ':folddoclosed<Space>')
+    execute planet#menu_help#Entry('an 250.410 ', '📜&z.AutoFold', '<Nop>')
     an disable 📜&z.AutoFold
-    PlanetMenu an 250.410 📜&z.Enable\ Au&toFold                       :call planet#fold#EnableAuto()<CR>
-    PlanetMenu an 250.410 📜&z.Increase\ 'foldlevel'\ (&y)             :setlocal foldlevel+=1<CR>
-    PlanetMenu an 250.410 📜&z.Decrease\ '&foldlevel'                  :setlocal foldlevel-=1<CR>
-    PlanetMenu an 250.410 📜&z.Disable\ A&utoFold                      :call planet#fold#DisableAuto()<CR>
+    execute planet#menu_help#Entry('an 250.410 ', '📜&z.Enable\ Au&toFold', ':call planet#fold#EnableAuto()<CR>')
+    execute planet#menu_help#Entry('an 250.410 ', '📜&z.Increase\ ''foldlevel''\ (&y)', ':setlocal foldlevel+=1<CR>')
+    execute planet#menu_help#Entry('an 250.410 ', '📜&z.Decrease\ ''&foldlevel''', ':setlocal foldlevel-=1<CR>')
+    execute planet#menu_help#Entry('an 250.410 ', '📜&z.Disable\ A&utoFold', ':call planet#fold#DisableAuto()<CR>')
 
     # quickfix
     # TODO: set 'errorfile' 'makeef' 'errorformat' 'makeprg' 'grepprg'
     # TODO: 'grepformat'
     # TODO: Add copy to LL, merge with previous, choose list, delete current,
     # TODO: delete all
-    PlanetMenu an 260.10  &QF.QuickFix <Nop>
+    execute planet#menu_help#Entry('an 260.10  ', '&QF.QuickFix', '<Nop>')
     an disable &QF.QuickFix
-    PlanetMenu an 260.20  &QF.Sea&rch                                      :Grepper -tool rg -quickfix<CR>
-    PlanetMenu an 260.30  &QF.Search\ Add                                  :Grepper -tool rg -quickfix -append<CR>
-    PlanetMenu an 260.40  &QF.Search\ Side                                 :Grepper -tool rg -quickfix -side<CR>
-    PlanetMenu an 260.50  &QF.F&ind<Tab>:Cfind!                            :Cfind!<Space>
-    PlanetMenu an 260.60  &QF.Loc&ate<Tab>:Clocate!                        :Clocate!<Space>
-    PlanetMenu an 260.70  &QF.&Grep<Tab>:grep                              :grep<Space>
-    PlanetMenu an 260.80  &QF.GrepAdd\ (&b)<Tab>:grepadd                   :grepadd<Space>
-    PlanetMenu an 260.90  &QF.&VimGrep<Tab>:vimgrep                        :vimgrep<Space>
-    PlanetMenu an 260.100 &QF.Vi&mGrepAdd<Tab>:vimgrepadd                  :vimgrepadd<Space>
-    PlanetMenu an 260.110 &QF.TODO                                         <Cmd>Grepper -quickfix -noprompt -tool rg -query 'TODO\|FIXME\|XXX\|NOTE\|BUG\|WARNING'<CR>
-    PlanetMenu an 260.120 &QF.--1-- <Nop>
-    PlanetMenu an 260.130 &QF.C&hoose<Tab>:Clap\ quickfix                  :Clap quickfix<CR>
-    PlanetMenu an 260.140 &QF.--2-- <Nop>
-    PlanetMenu am 260.150 &QF.&First<Tab>:cfirst<Tab>[Q                    [Q
-    PlanetMenu an 260.160 &QF.Previou&s\ File<Tab>:cpfile<Tab>[<C-q>       :cpfile<CR>
-    PlanetMenu am 260.170 &QF.&Previous<Tab>[q                             [q
-    PlanetMenu am 260.180 &QF.&Next<Tab>]q                                 ]q
-    PlanetMenu an 260.190 &QF.N&ext\ File<Tab>:cnfile<Tab>]<C-q>           :cnfile<CR>
-    PlanetMenu am 260.200 &QF.&Last<Tab>:clast<Tab>]Q                      ]Q
-    PlanetMenu an 260.210 &QF.--3-- <Nop>
-    PlanetMenu an 260.220 &QF.E&xecute\ for\ each<Tab>:cdo                 :cdo<Space>
-    PlanetMenu an 260.230 &QF.Execute\ for\ each\ File\ (&z)<Tab>:cfdo     :cfdo<Space>
-    PlanetMenu an 260.240 &QF.--4-- <Nop>
-    PlanetMenu an 260.250 &QF.&Open<Tab>:copen                             :copen<CR>
-    PlanetMenu an 260.260 &QF.Fil&ter<Tab>:Cfilter                         :Cfilter<Space>
-    PlanetMenu an 260.270 &QF.Filter\ O&ut<Tab>:Cfilter!                   :Cfilter!<Space>
-    PlanetMenu an 260.280 &QF.E&dit<Tab>:Qflistsplit<Tab>c\\q              :Qflistsplit<CR>
-    PlanetMenu an 260.290 &QF.Read\ from\ File\ (&w)<Tab>:cgetfile         :cgetfile!<Space>
-    PlanetMenu an 260.300 &QF.Add\ from\ File\ (&y)<Tab>:caddfile          :caddfile!<Space>
-    PlanetMenu an 260.310 &QF.Read\ from\ Buffer\ (&,)<Tab>:cgetbuffer     :cgetbuffer!<Space>
-    PlanetMenu an 260.320 &QF.Add\ from\ Buffer\ (&\.)<Tab>:caddbuffer     :caddbuffer!<Space>
-    PlanetMenu an 260.330 &QF.Read\ from\ Expr\ (&;)<Tab>:cgetexpr         :cgetexpr!<Space>
-    PlanetMenu an 260.340 &QF.Add\ from\ Expr\ (&')<Tab>:caddexpr          :caddexpr!<Space>
-    PlanetMenu an 260.350 &QF.&Close<Tab>:cclose<Tab>                      :cclose<CR>
-    PlanetMenu an 260.360 &QF.--5-- <Nop>
-    PlanetMenu an 260.370 &QF.Previous\ QuickFix\ (&k)<Tab>:colder         :colder<CR>
-    PlanetMenu an 260.380 &QF.Next\ QuickFix\ (&j)<Tab>:cnewer             :cnewer<CR>
-    PlanetMenu an 260.390 &QF.List\ QuickFixes\ (&q)<Tab>:chistory         :chistory<CR>
-    PlanetMenu an 260.390 &QF.Delete\ All\ QuickFixes                      :call setqflist([], 'f')<CR>
+    execute planet#menu_help#Entry('an 260.20  ', '&QF.Sea&rch', ':Grepper -tool rg -quickfix<CR>')
+    execute planet#menu_help#Entry('an 260.30  ', '&QF.Search\ Add', ':Grepper -tool rg -quickfix -append<CR>')
+    execute planet#menu_help#Entry('an 260.40  ', '&QF.Search\ Side', ':Grepper -tool rg -quickfix -side<CR>')
+    execute planet#menu_help#Entry('an 260.50  ', '&QF.F&ind<Tab>:Cfind!', ':Cfind!<Space>')
+    execute planet#menu_help#Entry('an 260.60  ', '&QF.Loc&ate<Tab>:Clocate!', ':Clocate!<Space>')
+    execute planet#menu_help#Entry('an 260.70  ', '&QF.&Grep<Tab>:grep', ':grep<Space>')
+    execute planet#menu_help#Entry('an 260.80  ', '&QF.GrepAdd\ (&b)<Tab>:grepadd', ':grepadd<Space>')
+    execute planet#menu_help#Entry('an 260.90  ', '&QF.&VimGrep<Tab>:vimgrep', ':vimgrep<Space>')
+    execute planet#menu_help#Entry('an 260.100 ', '&QF.Vi&mGrepAdd<Tab>:vimgrepadd', ':vimgrepadd<Space>')
+    execute planet#menu_help#Entry('an 260.110 ', '&QF.TODO', '<Cmd>Grepper -quickfix -noprompt -tool rg -query ''TODO\|FIXME\|XXX\|NOTE\|BUG\|WARNING''<CR>')
+    execute planet#menu_help#Entry('an 260.120 ', '&QF.--1--', '<Nop>')
+    execute planet#menu_help#Entry('an 260.130 ', '&QF.C&hoose<Tab>:Clap\ quickfix', ':Clap quickfix<CR>')
+    execute planet#menu_help#Entry('an 260.140 ', '&QF.--2--', '<Nop>')
+    execute planet#menu_help#Entry('am 260.150 ', '&QF.&First<Tab>:cfirst<Tab>[Q', '[Q')
+    execute planet#menu_help#Entry('an 260.160 ', '&QF.Previou&s\ File<Tab>:cpfile<Tab>[<C-q>', ':cpfile<CR>')
+    execute planet#menu_help#Entry('am 260.170 ', '&QF.&Previous<Tab>[q', '[q')
+    execute planet#menu_help#Entry('am 260.180 ', '&QF.&Next<Tab>]q', ']q')
+    execute planet#menu_help#Entry('an 260.190 ', '&QF.N&ext\ File<Tab>:cnfile<Tab>]<C-q>', ':cnfile<CR>')
+    execute planet#menu_help#Entry('am 260.200 ', '&QF.&Last<Tab>:clast<Tab>]Q', ']Q')
+    execute planet#menu_help#Entry('an 260.210 ', '&QF.--3--', '<Nop>')
+    execute planet#menu_help#Entry('an 260.220 ', '&QF.E&xecute\ for\ each<Tab>:cdo', ':cdo<Space>')
+    execute planet#menu_help#Entry('an 260.230 ', '&QF.Execute\ for\ each\ File\ (&z)<Tab>:cfdo', ':cfdo<Space>')
+    execute planet#menu_help#Entry('an 260.240 ', '&QF.--4--', '<Nop>')
+    execute planet#menu_help#Entry('an 260.250 ', '&QF.&Open<Tab>:copen', ':copen<CR>')
+    execute planet#menu_help#Entry('an 260.260 ', '&QF.Fil&ter<Tab>:Cfilter', ':Cfilter<Space>')
+    execute planet#menu_help#Entry('an 260.270 ', '&QF.Filter\ O&ut<Tab>:Cfilter!', ':Cfilter!<Space>')
+    execute planet#menu_help#Entry('an 260.280 ', '&QF.E&dit<Tab>:Qflistsplit<Tab>c\\q', ':Qflistsplit<CR>')
+    execute planet#menu_help#Entry('an 260.290 ', '&QF.Read\ from\ File\ (&w)<Tab>:cgetfile', ':cgetfile!<Space>')
+    execute planet#menu_help#Entry('an 260.300 ', '&QF.Add\ from\ File\ (&y)<Tab>:caddfile', ':caddfile!<Space>')
+    execute planet#menu_help#Entry('an 260.310 ', '&QF.Read\ from\ Buffer\ (&,)<Tab>:cgetbuffer', ':cgetbuffer!<Space>')
+    execute planet#menu_help#Entry('an 260.320 ', '&QF.Add\ from\ Buffer\ (&\.)<Tab>:caddbuffer', ':caddbuffer!<Space>')
+    execute planet#menu_help#Entry('an 260.330 ', '&QF.Read\ from\ Expr\ (&;)<Tab>:cgetexpr', ':cgetexpr!<Space>')
+    execute planet#menu_help#Entry('an 260.340 ', '&QF.Add\ from\ Expr\ (&'')<Tab>:caddexpr', ':caddexpr!<Space>')
+    execute planet#menu_help#Entry('an 260.350 ', '&QF.&Close<Tab>:cclose<Tab>', ':cclose<CR>')
+    execute planet#menu_help#Entry('an 260.360 ', '&QF.--5--', '<Nop>')
+    execute planet#menu_help#Entry('an 260.370 ', '&QF.Previous\ QuickFix\ (&k)<Tab>:colder', ':colder<CR>')
+    execute planet#menu_help#Entry('an 260.380 ', '&QF.Next\ QuickFix\ (&j)<Tab>:cnewer', ':cnewer<CR>')
+    execute planet#menu_help#Entry('an 260.390 ', '&QF.List\ QuickFixes\ (&q)<Tab>:chistory', ':chistory<CR>')
+    execute planet#menu_help#Entry('an 260.390 ', '&QF.Delete\ All\ QuickFixes', ':call setqflist([], ''f'')<CR>')
 
     # loclist
-    PlanetMenu an 270.10  &LL.LocList <Nop>
+    execute planet#menu_help#Entry('an 270.10  ', '&LL.LocList', '<Nop>')
     an disable &LL.LocList
-    PlanetMenu an 270.20  &LL.Sea&rch                                      :Grepper -tool rg -noquickfix<CR>
-    PlanetMenu an 270.30  &LL.Search\ Add                                  :Grepper -tool rg -noquickfix -append<CR>
-    PlanetMenu an 270.40  &LL.Search\ Side                                 :Grepper -tool rg -noquickfix -side<CR>
-    PlanetMenu an 270.50  &LL.F&ind<Tab>:Lfind!                            :Lfind!<Space>
-    PlanetMenu an 270.60  &LL.Loc&ate<Tab>:Llocate!                        :Llocate!<Space>
-    PlanetMenu an 270.70  &LL.&Grep<Tab>:lgrep                             :lgrep<Space>
-    PlanetMenu an 270.80  &LL.GrepAdd\ (&b)<Tab>:lgrepadd                  :lgrepadd<Space>
-    PlanetMenu an 270.90  &LL.&VimGrep<Tab>:lvimgrep                       :lvimgrep<Space>
-    PlanetMenu an 270.100 &LL.Vi&mGrepAdd<Tab>:lvimgrepadd                 :lvimgrepadd<Space>
-    PlanetMenu an 270.110 &LL.TODO                                         <Cmd>Grepper -noquickfix -noprompt -tool rg -query 'TODO\|FIXME\|XXX\|NOTE\|BUG\|WARNING'<CR>
-    PlanetMenu an 270.120 &LL.--1-- <Nop>
-    PlanetMenu an 270.130 &LL.C&hoose<Tab>:Clap\ loclist                   :Clap loclist<CR>
-    PlanetMenu an 270.140 &LL.--2-- <Nop>
-    PlanetMenu am 270.150 &LL.&First<Tab>:lfirst<Tab>[L                    [L
-    PlanetMenu an 270.160 &LL.Previou&s\ File<Tab>:lpfile<Tab>[<C-l>       :lpfile<CR>
-    PlanetMenu am 270.170 &LL.&Previous<Tab>[l                             [l
-    PlanetMenu am 270.180 &LL.&Next<Tab>]l                                 ]l
-    PlanetMenu an 270.190 &LL.N&ext\ File<Tab>:lnfile<Tab>]<C-l>           :lnfile<CR>
-    PlanetMenu am 270.200 &LL.&Last<Tab>:llast<Tab>]L                      ]L
-    PlanetMenu an 270.210 &LL.--3-- <Nop>
-    PlanetMenu an 270.220 &LL.E&xecute\ for\ each<Tab>:ldo                 :ldo<Space>
-    PlanetMenu an 270.230 &LL.Execute\ for\ each\ File\ (&z)<Tab>:lfdo     :lfdo<Space>
-    PlanetMenu an 270.240 &LL.--4-- <Nop>
-    PlanetMenu an 270.250 &LL.&Open<Tab>:lopen                             :lopen<CR>
-    PlanetMenu an 270.260 &LL.Fil&ter<Tab>:Lfilter                         :Lfilter<Space>
-    PlanetMenu an 270.270 &LL.Filter\ O&ut<Tab>:Lfilter!                   :Lfilter!<Space>
-    PlanetMenu an 270.280 &LL.E&dit<Tab>:Loclistsplit<Tab>c\\l             :Loclistsplit<CR>
-    PlanetMenu an 270.290 &LL.Read\ from\ File\ (&w)<Tab>:lgetfile         :lgetfile!<Space>
-    PlanetMenu an 270.300 &LL.Add\ from\ File\ (&y)<Tab>:laddfile          :laddfile!<Space>
-    PlanetMenu an 270.310 &LL.Read\ from\ Buffer\ (&,)<Tab>:lgetbuffer     :lgetbuffer!<Space>
-    PlanetMenu an 270.320 &LL.Add\ from\ Buffer\ (&\.)<Tab>:laddbuffer     :laddbuffer!<Space>
-    PlanetMenu an 270.330 &LL.Read\ from\ Expr\ (&;)<Tab>:lgetexpr         :lgetexpr!<Space>
-    PlanetMenu an 270.340 &LL.Add\ from\ Expr\ (&')<Tab>:laddexpr          :laddexpr!<Space>
-    PlanetMenu an 270.350 &LL.&Close<Tab>:lclose<Tab>                      :lclose<CR>
-    PlanetMenu an 270.360 &LL.--5-- <Nop>
-    PlanetMenu an 270.370 &LL.Previous\ LocList\ (&k)<Tab>:lolder          :lolder<CR>
-    PlanetMenu an 270.380 &LL.Next\ LocList\ (&j)<Tab>:lnewer              :lnewer<CR>
-    PlanetMenu an 270.390 &LL.List\ LocLists\ (&q)<Tab>:lhistory           :lhistory<CR>
-    PlanetMenu an 270.390 &LL.Delete\ All\ LocLists\ in\ Window            :call setloclist(0, [], 'f')<CR>
-    PlanetMenu an 270.390 &LL.Delete\ All\ LocLists\ in\ Tab               :windo call setloclist(0, [], 'f')<CR>
-    PlanetMenu an 270.390 &LL.Delete\ All\ LocLists\ in\ All\ Tabs         :tabdo windo call setloclist(0, [], 'f')<CR>
+    execute planet#menu_help#Entry('an 270.20  ', '&LL.Sea&rch', ':Grepper -tool rg -noquickfix<CR>')
+    execute planet#menu_help#Entry('an 270.30  ', '&LL.Search\ Add', ':Grepper -tool rg -noquickfix -append<CR>')
+    execute planet#menu_help#Entry('an 270.40  ', '&LL.Search\ Side', ':Grepper -tool rg -noquickfix -side<CR>')
+    execute planet#menu_help#Entry('an 270.50  ', '&LL.F&ind<Tab>:Lfind!', ':Lfind!<Space>')
+    execute planet#menu_help#Entry('an 270.60  ', '&LL.Loc&ate<Tab>:Llocate!', ':Llocate!<Space>')
+    execute planet#menu_help#Entry('an 270.70  ', '&LL.&Grep<Tab>:lgrep', ':lgrep<Space>')
+    execute planet#menu_help#Entry('an 270.80  ', '&LL.GrepAdd\ (&b)<Tab>:lgrepadd', ':lgrepadd<Space>')
+    execute planet#menu_help#Entry('an 270.90  ', '&LL.&VimGrep<Tab>:lvimgrep', ':lvimgrep<Space>')
+    execute planet#menu_help#Entry('an 270.100 ', '&LL.Vi&mGrepAdd<Tab>:lvimgrepadd', ':lvimgrepadd<Space>')
+    execute planet#menu_help#Entry('an 270.110 ', '&LL.TODO', '<Cmd>Grepper -noquickfix -noprompt -tool rg -query ''TODO\|FIXME\|XXX\|NOTE\|BUG\|WARNING''<CR>')
+    execute planet#menu_help#Entry('an 270.120 ', '&LL.--1--', '<Nop>')
+    execute planet#menu_help#Entry('an 270.130 ', '&LL.C&hoose<Tab>:Clap\ loclist', ':Clap loclist<CR>')
+    execute planet#menu_help#Entry('an 270.140 ', '&LL.--2--', '<Nop>')
+    execute planet#menu_help#Entry('am 270.150 ', '&LL.&First<Tab>:lfirst<Tab>[L', '[L')
+    execute planet#menu_help#Entry('an 270.160 ', '&LL.Previou&s\ File<Tab>:lpfile<Tab>[<C-l>', ':lpfile<CR>')
+    execute planet#menu_help#Entry('am 270.170 ', '&LL.&Previous<Tab>[l', '[l')
+    execute planet#menu_help#Entry('am 270.180 ', '&LL.&Next<Tab>]l', ']l')
+    execute planet#menu_help#Entry('an 270.190 ', '&LL.N&ext\ File<Tab>:lnfile<Tab>]<C-l>', ':lnfile<CR>')
+    execute planet#menu_help#Entry('am 270.200 ', '&LL.&Last<Tab>:llast<Tab>]L', ']L')
+    execute planet#menu_help#Entry('an 270.210 ', '&LL.--3--', '<Nop>')
+    execute planet#menu_help#Entry('an 270.220 ', '&LL.E&xecute\ for\ each<Tab>:ldo', ':ldo<Space>')
+    execute planet#menu_help#Entry('an 270.230 ', '&LL.Execute\ for\ each\ File\ (&z)<Tab>:lfdo', ':lfdo<Space>')
+    execute planet#menu_help#Entry('an 270.240 ', '&LL.--4--', '<Nop>')
+    execute planet#menu_help#Entry('an 270.250 ', '&LL.&Open<Tab>:lopen', ':lopen<CR>')
+    execute planet#menu_help#Entry('an 270.260 ', '&LL.Fil&ter<Tab>:Lfilter', ':Lfilter<Space>')
+    execute planet#menu_help#Entry('an 270.270 ', '&LL.Filter\ O&ut<Tab>:Lfilter!', ':Lfilter!<Space>')
+    execute planet#menu_help#Entry('an 270.280 ', '&LL.E&dit<Tab>:Loclistsplit<Tab>c\\l', ':Loclistsplit<CR>')
+    execute planet#menu_help#Entry('an 270.290 ', '&LL.Read\ from\ File\ (&w)<Tab>:lgetfile', ':lgetfile!<Space>')
+    execute planet#menu_help#Entry('an 270.300 ', '&LL.Add\ from\ File\ (&y)<Tab>:laddfile', ':laddfile!<Space>')
+    execute planet#menu_help#Entry('an 270.310 ', '&LL.Read\ from\ Buffer\ (&,)<Tab>:lgetbuffer', ':lgetbuffer!<Space>')
+    execute planet#menu_help#Entry('an 270.320 ', '&LL.Add\ from\ Buffer\ (&\.)<Tab>:laddbuffer', ':laddbuffer!<Space>')
+    execute planet#menu_help#Entry('an 270.330 ', '&LL.Read\ from\ Expr\ (&;)<Tab>:lgetexpr', ':lgetexpr!<Space>')
+    execute planet#menu_help#Entry('an 270.340 ', '&LL.Add\ from\ Expr\ (&'')<Tab>:laddexpr', ':laddexpr!<Space>')
+    execute planet#menu_help#Entry('an 270.350 ', '&LL.&Close<Tab>:lclose<Tab>', ':lclose<CR>')
+    execute planet#menu_help#Entry('an 270.360 ', '&LL.--5--', '<Nop>')
+    execute planet#menu_help#Entry('an 270.370 ', '&LL.Previous\ LocList\ (&k)<Tab>:lolder', ':lolder<CR>')
+    execute planet#menu_help#Entry('an 270.380 ', '&LL.Next\ LocList\ (&j)<Tab>:lnewer', ':lnewer<CR>')
+    execute planet#menu_help#Entry('an 270.390 ', '&LL.List\ LocLists\ (&q)<Tab>:lhistory', ':lhistory<CR>')
+    execute planet#menu_help#Entry('an 270.390 ', '&LL.Delete\ All\ LocLists\ in\ Window', ':call setloclist(0, [], ''f'')<CR>')
+    execute planet#menu_help#Entry('an 270.390 ', '&LL.Delete\ All\ LocLists\ in\ Tab', ':windo call setloclist(0, [], ''f'')<CR>')
+    execute planet#menu_help#Entry('an 270.390 ', '&LL.Delete\ All\ LocLists\ in\ All\ Tabs', ':tabdo windo call setloclist(0, [], ''f'')<CR>')
     planet#macros#Menus()
   else
     silent! aunmenu 📋&"

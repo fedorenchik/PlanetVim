@@ -2,412 +2,412 @@ vim9script
 
 export def Update(): number
   if planet#menu#Visible('basic')
-    PlanetMenu an 160.15 📺&v.Find\ Menu\ Action <Cmd>call planet#actions#Open()<CR>
-    PlanetMenu vnoremenu 160.15 📺&v.Find\ Menu\ Action <Cmd>call planet#actions#Open()<CR>
-    PlanetMenu inoremenu 160.15 📺&v.Find\ Menu\ Action <Cmd>call planet#actions#Open()<CR>
+    execute planet#menu_help#Entry('an 160.15 ', '📺&v.Find\ Menu\ Action', '<Cmd>call planet#actions#Open()<CR>')
+    execute planet#menu_help#Entry('vnoremenu 160.15 ', '📺&v.Find\ Menu\ Action', '<Cmd>call planet#actions#Open()<CR>')
+    execute planet#menu_help#Entry('inoremenu 160.15 ', '📺&v.Find\ Menu\ Action', '<Cmd>call planet#actions#Open()<CR>')
     # File
-    PlanetMenu an 110.10  📁&f.File <Nop>
+    execute planet#menu_help#Entry('an 110.10  ', '📁&f.File', '<Nop>')
     an disable 📁&f.File
-    PlanetMenu an 110.20  📁&f.N&ew<Tab>:enew                             <Cmd>confirm enew<CR>
-    PlanetMenu an 110.30  📁&f.New\ Split<Tab>:new<Tab>+n                 <C-w>n
-    PlanetMenu an 110.40  📁&f.New\ &VSplit<Tab>:vnew                     <Cmd>vnew<CR>
-    PlanetMenu an 110.50  📁&f.New\ &Tab                                  <Cmd>tabnew<CR>
-    PlanetMenu an 110.60  📁&f.New\ GUI\ &Window                          <Cmd>call planet#term#RunGuiApp(planet#gui#Command())<CR>
-    PlanetMenu an 110.60 📁&f.New\ Pro&ject.CMake <Cmd>call planet#scaffold#New('cmake')<CR>
-    PlanetMenu an 110.60 📁&f.New\ Pro&ject.Python <Cmd>call planet#scaffold#New('python')<CR>
-    PlanetMenu an 110.60  📁&f.New\ Pro&ject.Vim\ Plugin                  <Cmd>call planet#file#NewProject('vim-plugin')<CR>
-    PlanetMenu an 110.60  📁&f.New\ Pro&ject.Gtk\ 3\ Builder\ App         <Cmd>call planet#file#NewProject('Gtk3BuilderApp')<CR>
-    PlanetMenu an 110.60  📁&f.New\ Pro&ject.Vue\ 3\ App                  <Cmd>call planet#file#NewProjectFromScript('vue3')<CR>
-    PlanetMenu an 110.60  📁&f.New\ Pro&ject.Nuxt\ App                    <Cmd>call planet#file#NewProjectFromScript('nuxt')<CR>
-    PlanetMenu an 110.60  📁&f.New\ Pro&ject.Electron\ App                <Cmd>call planet#file#NewProjectFromScript('electron')<CR>
-    PlanetMenu an 110.60  📁&f.New\ Pro&ject.Platformio\ espidf\ Firmware <Cmd>call planet#file#NewProject('pio_idf_fw')<CR>
-    PlanetMenu an 110.60 📁&f.New\ Pro&ject.Blender\ Addon <Cmd>call planet#scaffold#New('blender-addon')<CR>
-    PlanetMenu an 110.60 📁&f.New\ Pro&ject.Nextcloud\ App <Cmd>call planet#scaffold#New('nextcloud-app')<CR>
-    PlanetMenu an 110.60 📁&f.New\ Pro&ject.Linux\ OOT\ Kernel\ Module <Cmd>call planet#scaffold#New('linux-module')<CR>
-    PlanetMenu an 110.60 📁&f.New\ Pro&ject.Linux\ OOT\ Device\ Driver <Cmd>call planet#scaffold#New('linux-driver')<CR>
-    PlanetMenu an 110.60 📁&f.New\ Pro&ject.Linux\ Device\ Tree <Cmd>call planet#scaffold#New('linux-device-tree')<CR>
-    PlanetMenu an 110.60 📁&f.New\ Pro&ject.Wordpress\ Plugin <Cmd>call planet#scaffold#New('wordpress-plugin')<CR>
-    PlanetMenu an 110.60 📁&f.New\ Pro&ject.Wordpress\ Theme <Cmd>call planet#scaffold#New('wordpress-theme')<CR>
-    PlanetMenu an 110.60 📁&f.New\ Pro&ject.Yocto\ System <Cmd>call planet#scaffold#New('yocto-system')<CR>
-    PlanetMenu an 110.60 📁&f.New\ Pro&ject.ROS\ Package <Cmd>call planet#scaffold#New('ros-package')<CR>
-    PlanetMenu an 110.60 📁&f.New\ Pro&ject.C++\ DSL <Cmd>call planet#scaffold#New('cpp-dsl')<CR>
-    PlanetMenu an 110.60 📁&f.New\ Pro&ject.Python\ DSL <Cmd>call planet#scaffold#New('python-dsl')<CR>
-    PlanetMenu an 110.60 📁&f.New\ Pro&ject.LaTex\ Book <Cmd>call planet#scaffold#New('latex-book')<CR>
-    PlanetMenu an 110.60  📁&f.New\ Pro&ject.OpenGL.GLFW\ (GLEW,\ C++,\ OpenGL\ 3\.2)\ App <Cmd>call planet#file#NewProject('glfw-app')<CR>
-    PlanetMenu an 110.60  📁&f.New\ Pro&ject.OpenGL.SDL\ (GLEW,\ C++,\ OpenGL\ 3\.2)\ App <Cmd>call planet#file#NewProject('sdl-app')<CR>
-    PlanetMenu an 110.60  📁&f.New\ Pro&ject.OpenGL.SFML\ (GLEW,\ C++,\ OpenGL\ 3\.2)\ App <Cmd>call planet#file#NewProject('sfml-app')<CR>
-    PlanetMenu an 110.60 📁&f.New\ Pro&ject.Basic\ Vulkan <Cmd>call planet#scaffold#New('vulkan-app')<CR>
-    PlanetMenu an 110.60  📁&f.New\ Pro&ject.Git\ Clone\.\.\.             <Cmd>call planet#term#RunCmdAskArgs('git clone --recurse-submodules ', 'Repo: ', 'https://github.com/')<CR>
-    PlanetMenu an 110.60  📁&f.New\ Pro&ject.Git\ Init                    <Cmd>call planet#term#RunArgv(['git', 'init'], v:false, v:false, v:false, getcwd())<CR>
-    PlanetMenu an 110.60 📁&f.New\ File.Makefile <Cmd>call planet#scaffold#New('makefile')<CR>
-    PlanetMenu an 110.60 📁&f.New\ File.C++\ Class <Cmd>call planet#scaffold#New('cpp-class')<CR>
-    PlanetMenu an 110.60 📁&f.New\ File.C++\ Class\ Enum <Cmd>call planet#scaffold#New('cpp-enum')<CR>
-    PlanetMenu an 110.60 📁&f.New\ File.C++\ Module <Cmd>call planet#scaffold#New('cpp-module')<CR>
-    PlanetMenu an 110.60 📁&f.New\ File.Python\ App <Cmd>call planet#scaffold#New('python-app')<CR>
-    PlanetMenu an 110.60 📁&f.New\ File.Python\ Class <Cmd>call planet#scaffold#New('python-class')<CR>
-    PlanetMenu an 110.60 📁&f.New\ File.Qt.Qt\ Designer\ Form\ Class <Cmd>call planet#scaffold#New('qt-form-class')<CR>
-    PlanetMenu an 110.60 📁&f.New\ File.Qt.SCXML <Cmd>call planet#scaffold#New('qt-scxml')<CR>
-    PlanetMenu an 110.60 📁&f.New\ File.Qt.qmodel <Cmd>call planet#scaffold#New('qt-model')<CR>
-    PlanetMenu an 110.60 📁&f.New\ File.Qt.Qt\ Item\ Model <Cmd>call planet#scaffold#New('qt-item-model')<CR>
-    PlanetMenu an 110.60 📁&f.New\ File.Qt.Qt\ Designer\ Form <Cmd>call planet#scaffold#New('qt-form')<CR>
-    PlanetMenu an 110.60 📁&f.New\ File.Qt.Qt\ Resource\ File <Cmd>call planet#scaffold#New('qt-resource')<CR>
-    PlanetMenu an 110.60 📁&f.New\ File.Qt.QML <Cmd>call planet#scaffold#New('qt-qml')<CR>
-    PlanetMenu an 110.60 📁&f.New\ File.Qt.QtQuick\ UI\ (\.ui\.qml) <Cmd>call planet#scaffold#New('qt-quick-ui')<CR>
-    PlanetMenu an 110.60 📁&f.New\ File.GLSL.Vertex\ Shader\ (\.vert) <Cmd>call planet#scaffold#New('glsl-vertex')<CR>
-    PlanetMenu an 110.60 📁&f.New\ File.GLSL.Fragment\ Shader\ (\.frag) <Cmd>call planet#scaffold#New('glsl-fragment')<CR>
-    PlanetMenu an 110.60 📁&f.New\ File.GLSL.Geometry\ Shader\ (\.geom) <Cmd>call planet#scaffold#New('glsl-geometry')<CR>
-    PlanetMenu an 110.60 📁&f.New\ File.GLSL.Compute\ Shader\ (\.comp) <Cmd>call planet#scaffold#New('glsl-compute')<CR>
-    PlanetMenu an 110.60 📁&f.New\ File.GLSL.Tesselation\ Control\ Shader\ (\.tesc) <Cmd>call planet#scaffold#New('glsl-tess-control')<CR>
-    PlanetMenu an 110.60 📁&f.New\ File.GLSL.Tesselation\ Evaluation\ Shader\ (\.tese) <Cmd>call planet#scaffold#New('glsl-tess-evaluation')<CR>
-    PlanetMenu an 110.60 📁&f.New\ File.Web.HTML <Cmd>call planet#scaffold#New('web-html')<CR>
-    PlanetMenu an 110.60 📁&f.New\ File.Web.CSS <Cmd>call planet#scaffold#New('web-css')<CR>
-    PlanetMenu an 110.60 📁&f.New\ File.Web.JavaScript <Cmd>call planet#scaffold#New('web-javascript')<CR>
-    PlanetMenu an 110.60 📁&f.New\ File.Web.TypeScript <Cmd>call planet#scaffold#New('web-typescript')<CR>
-    PlanetMenu an 110.60 📁&f.New\ File.Web.PHP <Cmd>call planet#scaffold#New('web-php')<CR>
-    PlanetMenu an 110.60 📁&f.New\ File.Web.Python\ Django <Cmd>call planet#scaffold#New('web-django')<CR>
-    PlanetMenu an 110.60 📁&f.New\ File.Web.Python\ Flask <Cmd>call planet#scaffold#New('web-flask')<CR>
-    PlanetMenu an 110.60 📁&f.New\ File.Web.Vue\ Component <Cmd>call planet#scaffold#New('web-vue')<CR>
-    PlanetMenu an 110.60  📁&f.New\ File.Web.--1-- <Nop>
-    PlanetMenu an 110.60 📁&f.New\ File.Web.\.htaccess <Cmd>call planet#scaffold#New('web-htaccess')<CR>
-    PlanetMenu an 110.60 📁&f.New\ File.Web.robots\.txt <Cmd>call planet#scaffold#New('web-robots')<CR>
-    PlanetMenu an 110.60 📁&f.New\ File.LaTex.Article <Cmd>call planet#scaffold#New('latex-article')<CR>
-    PlanetMenu an 110.60 📁&f.New\ File.LaTex.Chapter <Cmd>call planet#scaffold#New('latex-chapter')<CR>
-    PlanetMenu an 110.70  📁&f.--1-- <Nop>
-    PlanetMenu an 110.80  📁&f.Choose\ File                               <Cmd>Clap files<CR>
-    PlanetMenu an 110.80  📁&f.Open\ File\ Dialog                         <Cmd>browse confirm e<CR>
-    PlanetMenu an 110.90  📁&f.Open\ &File\ Manager<Tab>-                 <Cmd>Fern . -reveal=%<CR>
-    PlanetMenu an 110.100 📁&f.File\ &Manager\ Side\ Bar                  <Cmd>Fern . -reveal=% -drawer -toggle<CR>
-    PlanetMenu an 110.110 📁&f.Choose\ &Recent                            <Cmd>Clap history<CR>
-    PlanetMenu an 110.110 📁&f.QF\ &Recent                                <Cmd>call planet#file#OldFilesQF()<CR>
-    PlanetMenu an 110.120 📁&f.F&ind<Tab>:find                            :find<Space>
-    PlanetMenu an 110.230 📁&f.Advanced.New\ Temp\ File                   <Cmd>exe "e " .. tempname()<CR>
-    PlanetMenu an 110.230 📁&f.Advanced.Open\ File\ under\ Cursor<Tab>gF           gF
-    PlanetMenu an 110.240 📁&f.Advanced.Split\ Open\ File\ under\ Cursor<Tab>+F    <C-w>F
-    PlanetMenu an 110.250 📁&f.Advanced.Tab\ Open\ File\ under\ Cursor<Tab>+gF     <C-w>gF
-    PlanetMenu an 110.110 📁&f.Advanced.Open\ Read\ Only                  <Cmd>browse view<CR>
-    PlanetMenu an 110.110 📁&f.Advanced.Split\ Read\ Only                 <Cmd>browse sview<CR>
-    PlanetMenu an 110.110 📁&f.Advanced.VSplit\ Read\ Only                <Cmd>browse vertical sview<CR>
-    PlanetMenu an 110.110 📁&f.Advanced.Tab\ Read\ Only                   <Cmd>browse tab view<CR>
-    PlanetMenu an 110.110 📁&f.Advanced.Split\ Find                       :sfind<Space>
-    PlanetMenu an 110.120 📁&f.Advanced.F&ind\ in\ Tab<Tab>:tabfind       :tabfind<Space>
-    PlanetMenu an 110.130 📁&f.--2-- <Nop>
-    PlanetMenu an 110.140 📁&f.&Save<Tab>:w                               <Cmd>if expand("%") == ""<Bar>browse confirm w<Bar>else<Bar>confirm up<Bar>endif<CR>
-    PlanetMenu an 110.150 📁&f.Save\ &As\.\.\.<Tab>:saveas                <Cmd>browse confirm saveas<CR>
-    PlanetMenu an <silent> 110.160 📁&f.Save\ A&ll<Tab>:wall              <Cmd>silent confirm wall<Bar>echohl Directory<Bar>echo "All Saved"<Bar>echohl None<CR>
-    PlanetMenu an 110.170 📁&f.--3-- <Nop>
-    PlanetMenu an 110.170 📁&f.Toggle\ AutoSave <Cmd>call planet#editing#AutoSaveToggle()<CR>
-    PlanetMenu an 110.170 📁&f.--4-- <Nop>
-    PlanetMenu an 110.180 📁&f.Export\ (Selected)\ as\ HTML               <Cmd>call planet#editing#ExportHTML()<CR>
-    PlanetMenu vnoremenu 110.180 📁&f.Export\ (Selected)\ as\ HTML         <Esc><Cmd>call planet#editing#ExportHTML(v:true)<CR>
-    PlanetMenu an 110.180 📁&f.Convert\ to\ HTML                          <Cmd>runtime syntax/2html.vim<CR>
-    PlanetMenu an 110.190 📁&f.--5-- <Nop>
-    PlanetMenu am 110.200 📁&f.&Previous\ in\ Folder<Tab>[f               [f
-    PlanetMenu am 110.210 📁&f.&Next\ in\ Folder<Tab>]f                   ]f
-    PlanetMenu an 110.220 📁&f.--6-- <Nop>
-    PlanetMenu an 110.270 📁&f.SudoSave                                   <Cmd>SudoWrite<CR>
-    PlanetMenu an 110.280 📁&f.Rename                                     <Cmd>browse confirm Rename<CR>
-    PlanetMenu an 110.290 📁&f.Change\ File\ Permissions                  :Chmod 0755
-    PlanetMenu an 110.300 📁&f.Delete\ From\ Disk                         <Cmd>Delete!<CR>
-    PlanetMenu an 110.310 📁&f.Mkdir                                      :Mkdir! <C-z>
-    PlanetMenu an 110.330 📁&f.C&d.Cd<Tab>:cd\ ->                         :cd <C-z>
-    PlanetMenu an 110.330 📁&f.C&d.Tab\ Cd<Tab>:tcd\ ->                   :tcd <C-z>
-    PlanetMenu an 110.340 📁&f.C&d.Local\ Cd<Tab>:lcd\ ->                 :lcd <C-z>
-    PlanetMenu an 110.340 📁&f.C&d.Pwd<Tab>:pwd                           <Cmd>verbose pwd<CR>
-    PlanetMenu an 110.330 📁&f.C&d.--1-- <Nop>
-    PlanetMenu an 110.330 📁&f.C&d.Cd\ to\ File\ Directory                <Cmd>cd %:h<CR>
-    PlanetMenu an 110.330 📁&f.C&d.Tcd\ to\ File\ Directory               <Cmd>tcd %:h<CR>
-    PlanetMenu an 110.330 📁&f.C&d.Lcd\ to\ File\ Directory               <Cmd>lcd %:h<CR>
-    PlanetMenu an 110.330 📁&f.C&d.--2-- <Nop>
-    PlanetMenu an 110.330 📁&f.C&d.Temp\ Cd\ to\ Project\ Root\ in\ Window <Cmd>call planet#editing#TemporaryDirectory(v:true)<CR>
-    PlanetMenu an 110.330 📁&f.C&d.Temp\ Cd\ in\ Window <Cmd>call planet#editing#TemporaryDirectory(v:false)<CR>
-    PlanetMenu an 110.330 📁&f.C&d.--3-- <Nop>
-    PlanetMenu an 110.320 📁&f.C&d.Cd\ to\ Previous\ Directory<Tab>:cd\ - <Cmd>cd -<CR>
-    PlanetMenu an 110.330 📁&f.C&d.Tab\ Cd\ to\ Previous\ Directory<Tab>:tcd\ - <Cmd>tcd -<CR>
-    PlanetMenu an 110.340 📁&f.C&d.Local\ Cd\ to\ Previous\ Directory<Tab>:lcd\ - <Cmd>lcd -<CR>
-    PlanetMenu an 110.330 📁&f.C&d.--4-- <Nop>
-    PlanetMenu an 110.330 📁&f.C&d.Cd\ Windows\ in\ Tab<Tab>:windo\ cd    :windo cd <C-z>
-    PlanetMenu an 110.330 📁&f.C&d.Cd\ All\ Tabs<Tab>:tabdo\ cd           :tabdo cd <C-z>
-    PlanetMenu an 110.330 📁&f.C&d.Cd\ All\ Windows<Tab>:tabdo\ windo\ cd :tabdo windo cd <C-z>
-    PlanetMenu an 110.330 📁&f.C&d.--5-- <Nop>
-    PlanetMenu an 110.330 📁&f.C&d.cd\ \.\.                               <Cmd>cd ..<CR>
-    PlanetMenu an 110.330 📁&f.C&d.tcd\ \.\.                              <Cmd>tcd ..<CR>
-    PlanetMenu an 110.330 📁&f.C&d.lcd\ \.\.                              <Cmd>lcd ..<CR>
-    PlanetMenu an 110.330 📁&f.C&d.--6-- <Nop>
-    PlanetMenu an 110.330 📁&f.C&d.tcd\ ->\ cd                            <Cmd>call planet#file#TcdToCd()<CR>
-    PlanetMenu an 110.330 📁&f.C&d.lcd\ ->\ cd                            <Cmd>call planet#file#LcdToCd()<CR>
-    PlanetMenu an 110.330 📁&f.C&d.--7-- <Nop>
-    PlanetMenu an 110.330 📁&f.C&d.Clear\ Local\ cd                       <Cmd>call planet#file#ClearLocalCwd('')<CR>
-    PlanetMenu an 110.330 📁&f.C&d.Clear\ Local\ cd\ in\ Tab              <Cmd>call planet#file#ClearLocalCwd('windo')<CR>
-    PlanetMenu an 110.330 📁&f.C&d.Clear\ Local\ cd\ Globally             <Cmd>call planet#file#ClearLocalCwd('tabdo windo')<CR>
-    PlanetMenu an 110.360 📁&f.&Close<Tab>:bdelete                        <Cmd>bdelete<CR>
+    execute planet#menu_help#Entry('an 110.20  ', '📁&f.N&ew<Tab>:enew', '<Cmd>confirm enew<CR>')
+    execute planet#menu_help#Entry('an 110.30  ', '📁&f.New\ Split<Tab>:new<Tab>+n', '<C-w>n')
+    execute planet#menu_help#Entry('an 110.40  ', '📁&f.New\ &VSplit<Tab>:vnew', '<Cmd>vnew<CR>')
+    execute planet#menu_help#Entry('an 110.50  ', '📁&f.New\ &Tab', '<Cmd>tabnew<CR>')
+    execute planet#menu_help#Entry('an 110.60  ', '📁&f.New\ GUI\ &Window', '<Cmd>call planet#term#RunGuiApp(planet#gui#Command())<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ Pro&ject.CMake', '<Cmd>call planet#scaffold#New(''cmake'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ Pro&ject.Python', '<Cmd>call planet#scaffold#New(''python'')<CR>')
+    execute planet#menu_help#Entry('an 110.60  ', '📁&f.New\ Pro&ject.Vim\ Plugin', '<Cmd>call planet#file#NewProject(''vim-plugin'')<CR>')
+    execute planet#menu_help#Entry('an 110.60  ', '📁&f.New\ Pro&ject.Gtk\ 3\ Builder\ App', '<Cmd>call planet#file#NewProject(''Gtk3BuilderApp'')<CR>')
+    execute planet#menu_help#Entry('an 110.60  ', '📁&f.New\ Pro&ject.Vue\ 3\ App', '<Cmd>call planet#file#NewProjectFromScript(''vue3'')<CR>')
+    execute planet#menu_help#Entry('an 110.60  ', '📁&f.New\ Pro&ject.Nuxt\ App', '<Cmd>call planet#file#NewProjectFromScript(''nuxt'')<CR>')
+    execute planet#menu_help#Entry('an 110.60  ', '📁&f.New\ Pro&ject.Electron\ App', '<Cmd>call planet#file#NewProjectFromScript(''electron'')<CR>')
+    execute planet#menu_help#Entry('an 110.60  ', '📁&f.New\ Pro&ject.Platformio\ espidf\ Firmware', '<Cmd>call planet#file#NewProject(''pio_idf_fw'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ Pro&ject.Blender\ Addon', '<Cmd>call planet#scaffold#New(''blender-addon'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ Pro&ject.Nextcloud\ App', '<Cmd>call planet#scaffold#New(''nextcloud-app'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ Pro&ject.Linux\ OOT\ Kernel\ Module', '<Cmd>call planet#scaffold#New(''linux-module'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ Pro&ject.Linux\ OOT\ Device\ Driver', '<Cmd>call planet#scaffold#New(''linux-driver'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ Pro&ject.Linux\ Device\ Tree', '<Cmd>call planet#scaffold#New(''linux-device-tree'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ Pro&ject.Wordpress\ Plugin', '<Cmd>call planet#scaffold#New(''wordpress-plugin'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ Pro&ject.Wordpress\ Theme', '<Cmd>call planet#scaffold#New(''wordpress-theme'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ Pro&ject.Yocto\ System', '<Cmd>call planet#scaffold#New(''yocto-system'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ Pro&ject.ROS\ Package', '<Cmd>call planet#scaffold#New(''ros-package'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ Pro&ject.C++\ DSL', '<Cmd>call planet#scaffold#New(''cpp-dsl'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ Pro&ject.Python\ DSL', '<Cmd>call planet#scaffold#New(''python-dsl'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ Pro&ject.LaTex\ Book', '<Cmd>call planet#scaffold#New(''latex-book'')<CR>')
+    execute planet#menu_help#Entry('an 110.60  ', '📁&f.New\ Pro&ject.OpenGL.GLFW\ (GLEW,\ C++,\ OpenGL\ 3\.2)\ App', '<Cmd>call planet#file#NewProject(''glfw-app'')<CR>')
+    execute planet#menu_help#Entry('an 110.60  ', '📁&f.New\ Pro&ject.OpenGL.SDL\ (GLEW,\ C++,\ OpenGL\ 3\.2)\ App', '<Cmd>call planet#file#NewProject(''sdl-app'')<CR>')
+    execute planet#menu_help#Entry('an 110.60  ', '📁&f.New\ Pro&ject.OpenGL.SFML\ (GLEW,\ C++,\ OpenGL\ 3\.2)\ App', '<Cmd>call planet#file#NewProject(''sfml-app'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ Pro&ject.Basic\ Vulkan', '<Cmd>call planet#scaffold#New(''vulkan-app'')<CR>')
+    execute planet#menu_help#Entry('an 110.60  ', '📁&f.New\ Pro&ject.Git\ Clone\.\.\.', '<Cmd>call planet#term#RunCmdAskArgs(''git clone --recurse-submodules '', ''Repo: '', ''https://github.com/'')<CR>')
+    execute planet#menu_help#Entry('an 110.60  ', '📁&f.New\ Pro&ject.Git\ Init', '<Cmd>call planet#term#RunArgv([''git'', ''init''], v:false, v:false, v:false, getcwd())<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.Makefile', '<Cmd>call planet#scaffold#New(''makefile'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.C++\ Class', '<Cmd>call planet#scaffold#New(''cpp-class'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.C++\ Class\ Enum', '<Cmd>call planet#scaffold#New(''cpp-enum'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.C++\ Module', '<Cmd>call planet#scaffold#New(''cpp-module'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.Python\ App', '<Cmd>call planet#scaffold#New(''python-app'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.Python\ Class', '<Cmd>call planet#scaffold#New(''python-class'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.Qt.Qt\ Designer\ Form\ Class', '<Cmd>call planet#scaffold#New(''qt-form-class'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.Qt.SCXML', '<Cmd>call planet#scaffold#New(''qt-scxml'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.Qt.qmodel', '<Cmd>call planet#scaffold#New(''qt-model'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.Qt.Qt\ Item\ Model', '<Cmd>call planet#scaffold#New(''qt-item-model'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.Qt.Qt\ Designer\ Form', '<Cmd>call planet#scaffold#New(''qt-form'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.Qt.Qt\ Resource\ File', '<Cmd>call planet#scaffold#New(''qt-resource'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.Qt.QML', '<Cmd>call planet#scaffold#New(''qt-qml'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.Qt.QtQuick\ UI\ (\.ui\.qml)', '<Cmd>call planet#scaffold#New(''qt-quick-ui'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.GLSL.Vertex\ Shader\ (\.vert)', '<Cmd>call planet#scaffold#New(''glsl-vertex'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.GLSL.Fragment\ Shader\ (\.frag)', '<Cmd>call planet#scaffold#New(''glsl-fragment'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.GLSL.Geometry\ Shader\ (\.geom)', '<Cmd>call planet#scaffold#New(''glsl-geometry'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.GLSL.Compute\ Shader\ (\.comp)', '<Cmd>call planet#scaffold#New(''glsl-compute'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.GLSL.Tesselation\ Control\ Shader\ (\.tesc)', '<Cmd>call planet#scaffold#New(''glsl-tess-control'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.GLSL.Tesselation\ Evaluation\ Shader\ (\.tese)', '<Cmd>call planet#scaffold#New(''glsl-tess-evaluation'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.Web.HTML', '<Cmd>call planet#scaffold#New(''web-html'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.Web.CSS', '<Cmd>call planet#scaffold#New(''web-css'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.Web.JavaScript', '<Cmd>call planet#scaffold#New(''web-javascript'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.Web.TypeScript', '<Cmd>call planet#scaffold#New(''web-typescript'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.Web.PHP', '<Cmd>call planet#scaffold#New(''web-php'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.Web.Python\ Django', '<Cmd>call planet#scaffold#New(''web-django'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.Web.Python\ Flask', '<Cmd>call planet#scaffold#New(''web-flask'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.Web.Vue\ Component', '<Cmd>call planet#scaffold#New(''web-vue'')<CR>')
+    execute planet#menu_help#Entry('an 110.60  ', '📁&f.New\ File.Web.--1--', '<Nop>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.Web.\.htaccess', '<Cmd>call planet#scaffold#New(''web-htaccess'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.Web.robots\.txt', '<Cmd>call planet#scaffold#New(''web-robots'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.LaTex.Article', '<Cmd>call planet#scaffold#New(''latex-article'')<CR>')
+    execute planet#menu_help#Entry('an 110.60 ', '📁&f.New\ File.LaTex.Chapter', '<Cmd>call planet#scaffold#New(''latex-chapter'')<CR>')
+    execute planet#menu_help#Entry('an 110.70  ', '📁&f.--1--', '<Nop>')
+    execute planet#menu_help#Entry('an 110.80  ', '📁&f.Choose\ File', '<Cmd>Clap files<CR>')
+    execute planet#menu_help#Entry('an 110.80  ', '📁&f.Open\ File\ Dialog', '<Cmd>browse confirm e<CR>')
+    execute planet#menu_help#Entry('an 110.90  ', '📁&f.Open\ &File\ Manager<Tab>-', '<Cmd>Fern . -reveal=%<CR>')
+    execute planet#menu_help#Entry('an 110.100 ', '📁&f.File\ &Manager\ Side\ Bar', '<Cmd>Fern . -reveal=% -drawer -toggle<CR>')
+    execute planet#menu_help#Entry('an 110.110 ', '📁&f.Choose\ &Recent', '<Cmd>Clap history<CR>')
+    execute planet#menu_help#Entry('an 110.110 ', '📁&f.QF\ &Recent', '<Cmd>call planet#file#OldFilesQF()<CR>')
+    execute planet#menu_help#Entry('an 110.120 ', '📁&f.F&ind<Tab>:find', ':find<Space>')
+    execute planet#menu_help#Entry('an 110.230 ', '📁&f.Advanced.New\ Temp\ File', '<Cmd>exe "e " .. tempname()<CR>')
+    execute planet#menu_help#Entry('an 110.230 ', '📁&f.Advanced.Open\ File\ under\ Cursor<Tab>gF', 'gF')
+    execute planet#menu_help#Entry('an 110.240 ', '📁&f.Advanced.Split\ Open\ File\ under\ Cursor<Tab>+F', '<C-w>F')
+    execute planet#menu_help#Entry('an 110.250 ', '📁&f.Advanced.Tab\ Open\ File\ under\ Cursor<Tab>+gF', '<C-w>gF')
+    execute planet#menu_help#Entry('an 110.110 ', '📁&f.Advanced.Open\ Read\ Only', '<Cmd>browse view<CR>')
+    execute planet#menu_help#Entry('an 110.110 ', '📁&f.Advanced.Split\ Read\ Only', '<Cmd>browse sview<CR>')
+    execute planet#menu_help#Entry('an 110.110 ', '📁&f.Advanced.VSplit\ Read\ Only', '<Cmd>browse vertical sview<CR>')
+    execute planet#menu_help#Entry('an 110.110 ', '📁&f.Advanced.Tab\ Read\ Only', '<Cmd>browse tab view<CR>')
+    execute planet#menu_help#Entry('an 110.110 ', '📁&f.Advanced.Split\ Find', ':sfind<Space>')
+    execute planet#menu_help#Entry('an 110.120 ', '📁&f.Advanced.F&ind\ in\ Tab<Tab>:tabfind', ':tabfind<Space>')
+    execute planet#menu_help#Entry('an 110.130 ', '📁&f.--2--', '<Nop>')
+    execute planet#menu_help#Entry('an 110.140 ', '📁&f.&Save<Tab>:w', '<Cmd>if expand("%") == ""<Bar>browse confirm w<Bar>else<Bar>confirm up<Bar>endif<CR>')
+    execute planet#menu_help#Entry('an 110.150 ', '📁&f.Save\ &As\.\.\.<Tab>:saveas', '<Cmd>browse confirm saveas<CR>')
+    execute planet#menu_help#Entry('an <silent> 110.160 ', '📁&f.Save\ A&ll<Tab>:wall', '<Cmd>silent confirm wall<Bar>echohl Directory<Bar>echo "All Saved"<Bar>echohl None<CR>')
+    execute planet#menu_help#Entry('an 110.170 ', '📁&f.--3--', '<Nop>')
+    execute planet#menu_help#Entry('an 110.170 ', '📁&f.Toggle\ AutoSave', '<Cmd>call planet#editing#AutoSaveToggle()<CR>')
+    execute planet#menu_help#Entry('an 110.170 ', '📁&f.--4--', '<Nop>')
+    execute planet#menu_help#Entry('an 110.180 ', '📁&f.Export\ (Selected)\ as\ HTML', '<Cmd>call planet#editing#ExportHTML()<CR>')
+    execute planet#menu_help#Entry('vnoremenu 110.180 ', '📁&f.Export\ (Selected)\ as\ HTML', '<Esc><Cmd>call planet#editing#ExportHTML(v:true)<CR>')
+    execute planet#menu_help#Entry('an 110.180 ', '📁&f.Convert\ to\ HTML', '<Cmd>runtime syntax/2html.vim<CR>')
+    execute planet#menu_help#Entry('an 110.190 ', '📁&f.--5--', '<Nop>')
+    execute planet#menu_help#Entry('am 110.200 ', '📁&f.&Previous\ in\ Folder<Tab>[f', '[f')
+    execute planet#menu_help#Entry('am 110.210 ', '📁&f.&Next\ in\ Folder<Tab>]f', ']f')
+    execute planet#menu_help#Entry('an 110.220 ', '📁&f.--6--', '<Nop>')
+    execute planet#menu_help#Entry('an 110.270 ', '📁&f.SudoSave', '<Cmd>SudoWrite<CR>')
+    execute planet#menu_help#Entry('an 110.280 ', '📁&f.Rename', '<Cmd>browse confirm Rename<CR>')
+    execute planet#menu_help#Entry('an 110.290 ', '📁&f.Change\ File\ Permissions', ':Chmod 0755')
+    execute planet#menu_help#Entry('an 110.300 ', '📁&f.Delete\ From\ Disk', '<Cmd>Delete!<CR>')
+    execute planet#menu_help#Entry('an 110.310 ', '📁&f.Mkdir', ':Mkdir! <C-z>')
+    execute planet#menu_help#Entry('an 110.330 ', '📁&f.C&d.Cd<Tab>:cd\ ->', ':cd <C-z>')
+    execute planet#menu_help#Entry('an 110.330 ', '📁&f.C&d.Tab\ Cd<Tab>:tcd\ ->', ':tcd <C-z>')
+    execute planet#menu_help#Entry('an 110.340 ', '📁&f.C&d.Local\ Cd<Tab>:lcd\ ->', ':lcd <C-z>')
+    execute planet#menu_help#Entry('an 110.340 ', '📁&f.C&d.Pwd<Tab>:pwd', '<Cmd>verbose pwd<CR>')
+    execute planet#menu_help#Entry('an 110.330 ', '📁&f.C&d.--1--', '<Nop>')
+    execute planet#menu_help#Entry('an 110.330 ', '📁&f.C&d.Cd\ to\ File\ Directory', '<Cmd>cd %:h<CR>')
+    execute planet#menu_help#Entry('an 110.330 ', '📁&f.C&d.Tcd\ to\ File\ Directory', '<Cmd>tcd %:h<CR>')
+    execute planet#menu_help#Entry('an 110.330 ', '📁&f.C&d.Lcd\ to\ File\ Directory', '<Cmd>lcd %:h<CR>')
+    execute planet#menu_help#Entry('an 110.330 ', '📁&f.C&d.--2--', '<Nop>')
+    execute planet#menu_help#Entry('an 110.330 ', '📁&f.C&d.Temp\ Cd\ to\ Project\ Root\ in\ Window', '<Cmd>call planet#editing#TemporaryDirectory(v:true)<CR>')
+    execute planet#menu_help#Entry('an 110.330 ', '📁&f.C&d.Temp\ Cd\ in\ Window', '<Cmd>call planet#editing#TemporaryDirectory(v:false)<CR>')
+    execute planet#menu_help#Entry('an 110.330 ', '📁&f.C&d.--3--', '<Nop>')
+    execute planet#menu_help#Entry('an 110.320 ', '📁&f.C&d.Cd\ to\ Previous\ Directory<Tab>:cd\ -', '<Cmd>cd -<CR>')
+    execute planet#menu_help#Entry('an 110.330 ', '📁&f.C&d.Tab\ Cd\ to\ Previous\ Directory<Tab>:tcd\ -', '<Cmd>tcd -<CR>')
+    execute planet#menu_help#Entry('an 110.340 ', '📁&f.C&d.Local\ Cd\ to\ Previous\ Directory<Tab>:lcd\ -', '<Cmd>lcd -<CR>')
+    execute planet#menu_help#Entry('an 110.330 ', '📁&f.C&d.--4--', '<Nop>')
+    execute planet#menu_help#Entry('an 110.330 ', '📁&f.C&d.Cd\ Windows\ in\ Tab<Tab>:windo\ cd', ':windo cd <C-z>')
+    execute planet#menu_help#Entry('an 110.330 ', '📁&f.C&d.Cd\ All\ Tabs<Tab>:tabdo\ cd', ':tabdo cd <C-z>')
+    execute planet#menu_help#Entry('an 110.330 ', '📁&f.C&d.Cd\ All\ Windows<Tab>:tabdo\ windo\ cd', ':tabdo windo cd <C-z>')
+    execute planet#menu_help#Entry('an 110.330 ', '📁&f.C&d.--5--', '<Nop>')
+    execute planet#menu_help#Entry('an 110.330 ', '📁&f.C&d.cd\ \.\.', '<Cmd>cd ..<CR>')
+    execute planet#menu_help#Entry('an 110.330 ', '📁&f.C&d.tcd\ \.\.', '<Cmd>tcd ..<CR>')
+    execute planet#menu_help#Entry('an 110.330 ', '📁&f.C&d.lcd\ \.\.', '<Cmd>lcd ..<CR>')
+    execute planet#menu_help#Entry('an 110.330 ', '📁&f.C&d.--6--', '<Nop>')
+    execute planet#menu_help#Entry('an 110.330 ', '📁&f.C&d.tcd\ ->\ cd', '<Cmd>call planet#file#TcdToCd()<CR>')
+    execute planet#menu_help#Entry('an 110.330 ', '📁&f.C&d.lcd\ ->\ cd', '<Cmd>call planet#file#LcdToCd()<CR>')
+    execute planet#menu_help#Entry('an 110.330 ', '📁&f.C&d.--7--', '<Nop>')
+    execute planet#menu_help#Entry('an 110.330 ', '📁&f.C&d.Clear\ Local\ cd', '<Cmd>call planet#file#ClearLocalCwd('''')<CR>')
+    execute planet#menu_help#Entry('an 110.330 ', '📁&f.C&d.Clear\ Local\ cd\ in\ Tab', '<Cmd>call planet#file#ClearLocalCwd(''windo'')<CR>')
+    execute planet#menu_help#Entry('an 110.330 ', '📁&f.C&d.Clear\ Local\ cd\ Globally', '<Cmd>call planet#file#ClearLocalCwd(''tabdo windo'')<CR>')
+    execute planet#menu_help#Entry('an 110.360 ', '📁&f.&Close<Tab>:bdelete', '<Cmd>bdelete<CR>')
 
     # Edit
-    PlanetMenu an 120.10  📝&e.Edit <Nop>
+    execute planet#menu_help#Entry('an 120.10  ', '📝&e.Edit', '<Nop>')
     an disable 📝&e.Edit
-    PlanetMenu an 120.20  📝&e.&Undo<Tab>u                         u
-    PlanetMenu an 120.30  📝&e.&Redo<Tab><C-r>                     <C-r>
-    PlanetMenu an 120.31  📝&e.Earlier\ Change<Tab>g- g-
-    PlanetMenu an 120.32  📝&e.Later\ Change<Tab>g+ g+
-    PlanetMenu an 120.40  📝&e.--1-- <Nop>
-    PlanetMenu an 120.50  📝&e.Repeat\ Edit<Tab>\.                        .
-    PlanetMenu an 120.60  📝&e.Repeat\ Command<Tab>@:                     @:
-    PlanetMenu an 120.70  📝&e.Repeat\ Macro<Tab>@@                       @@
-    PlanetMenu an 120.80  📝&e.--2-- <Nop>
-    PlanetMenu an 120.90  📝&e.Undo\ &History                             <Cmd>UndotreeToggle<CR>
-    PlanetMenu an 120.100 📝&e.--3-- <Nop>
-    PlanetMenu an 120.110 📝&e.Cu&t<Tab>"+d                               <Cmd>d +<CR>
-    PlanetMenu an 120.120 📝&e.&Copy<Tab>"+y                              <Cmd>y +<CR>
-    PlanetMenu an 120.130 📝&e.&Paste<Tab>"+p                             "+p
-    PlanetMenu an 120.140 📝&e.--4-- <Nop>
-    PlanetMenu an 120.150 📝&e.Paste\ Before<Tab>"+P                      "+P
-    PlanetMenu an 120.160 📝&e.Paste\ Before,\ Cursor\ After<Tab>"+gP     "+gP
-    PlanetMenu an 120.170 📝&e.Paste,\ Cursor\ After<Tab>"+gp             "+gp
-    PlanetMenu an 120.180 📝&e.Indent\ Paste<Tab>"+]p                     "+]p
-    PlanetMenu an 120.190 📝&e.Indent\ Paste\ Before<Tab>"+[P             "+[P
-    PlanetMenu an 120.200 📝&e.--5-- <Nop>
-    PlanetMenu an 120.210 📝&e.Choose\ Yank\ History<Tab>:Clap\ yanks     <Cmd>Clap yanks<CR>
-    PlanetMenu an 120.220 📝&e.--6-- <Nop>
-    PlanetMenu am 120.230 📝&e.Swap\ Preious\ Line<Tab>[e                 [e
-    PlanetMenu am 120.240 📝&e.Swap\ Next\ Line<Tab>]e                    ]e
-    PlanetMenu an 120.250 📝&e.--7-- <Nop>
-    PlanetMenu an 120.260 📝&e.Unindent<Tab><                             <Cmd><<CR>
-    PlanetMenu an 120.270 📝&e.Indent<Tab>>                               <Cmd>><CR>
-    PlanetMenu an 120.280 📝&e.Auto\ Indent<Tab>=                         =
-    PlanetMenu an 120.290 📝&e.Auto\ Indent\ File<Tab>gg=G                gg=G
-    PlanetMenu an 120.290 📝&e.Retab\ File<Tab>:retab!                    <Cmd>retab!<CR>
-    PlanetMenu an 120.300 📝&e.Auto\ Format\ File                         <Cmd>!clang-format<CR>
-    PlanetMenu an 120.310 📝&e.--8-- <Nop>
-    PlanetMenu an 120.320 📝&e.Insert<Tab>i                               i
-    PlanetMenu an 120.330 📝&e.Continue\ Insert<Tab>gi                    gi
-    PlanetMenu an 120.340 📝&e.Insert\ at\ First\ Non-blank<Tab>I         I
-    PlanetMenu an 120.350 📝&e.Insert\ at\ Beginning\ of\ Line<Tab>gI     gI
-    PlanetMenu an 120.360 📝&e.Insert\ New\ Line\ Before<Tab>O            O
-    PlanetMenu an 120.370 📝&e.Insert\ New\ Line\ After<Tab>o             o
-    PlanetMenu an 120.380 📝&e.Append<Tab>a                               a
-    PlanetMenu an 120.390 📝&e.Append\ at\ End\ of\ Line<Tab>A            A
-    PlanetMenu an 120.400 📝&e.Replace\ Line<Tab>cc                       cc
-    PlanetMenu an 120.410 📝&e.Replace\ to\ the\ End\ of\ Line<Tab>C      C
-    PlanetMenu an 120.420 📝&e.--9-- <Nop>
-    PlanetMenu an 120.430 📝&e.Replace\ Mode<Tab>R                        R
-    PlanetMenu an 120.440 📝&e.Virtual\ Replace\ Mode<Tab>gR              gR
+    execute planet#menu_help#Entry('an 120.20  ', '📝&e.&Undo<Tab>u', 'u')
+    execute planet#menu_help#Entry('an 120.30  ', '📝&e.&Redo<Tab><C-r>', '<C-r>')
+    execute planet#menu_help#Entry('an 120.31  ', '📝&e.Earlier\ Change<Tab>g-', 'g-')
+    execute planet#menu_help#Entry('an 120.32  ', '📝&e.Later\ Change<Tab>g+', 'g+')
+    execute planet#menu_help#Entry('an 120.40  ', '📝&e.--1--', '<Nop>')
+    execute planet#menu_help#Entry('an 120.50  ', '📝&e.Repeat\ Edit<Tab>\.', '.')
+    execute planet#menu_help#Entry('an 120.60  ', '📝&e.Repeat\ Command<Tab>@:', '@:')
+    execute planet#menu_help#Entry('an 120.70  ', '📝&e.Repeat\ Macro<Tab>@@', '@@')
+    execute planet#menu_help#Entry('an 120.80  ', '📝&e.--2--', '<Nop>')
+    execute planet#menu_help#Entry('an 120.90  ', '📝&e.Undo\ &History', '<Cmd>UndotreeToggle<CR>')
+    execute planet#menu_help#Entry('an 120.100 ', '📝&e.--3--', '<Nop>')
+    execute planet#menu_help#Entry('an 120.110 ', '📝&e.Cu&t<Tab>"+d', '<Cmd>d +<CR>')
+    execute planet#menu_help#Entry('an 120.120 ', '📝&e.&Copy<Tab>"+y', '<Cmd>y +<CR>')
+    execute planet#menu_help#Entry('an 120.130 ', '📝&e.&Paste<Tab>"+p', '"+p')
+    execute planet#menu_help#Entry('an 120.140 ', '📝&e.--4--', '<Nop>')
+    execute planet#menu_help#Entry('an 120.150 ', '📝&e.Paste\ Before<Tab>"+P', '"+P')
+    execute planet#menu_help#Entry('an 120.160 ', '📝&e.Paste\ Before,\ Cursor\ After<Tab>"+gP', '"+gP')
+    execute planet#menu_help#Entry('an 120.170 ', '📝&e.Paste,\ Cursor\ After<Tab>"+gp', '"+gp')
+    execute planet#menu_help#Entry('an 120.180 ', '📝&e.Indent\ Paste<Tab>"+]p', '"+]p')
+    execute planet#menu_help#Entry('an 120.190 ', '📝&e.Indent\ Paste\ Before<Tab>"+[P', '"+[P')
+    execute planet#menu_help#Entry('an 120.200 ', '📝&e.--5--', '<Nop>')
+    execute planet#menu_help#Entry('an 120.210 ', '📝&e.Choose\ Yank\ History<Tab>:Clap\ yanks', '<Cmd>Clap yanks<CR>')
+    execute planet#menu_help#Entry('an 120.220 ', '📝&e.--6--', '<Nop>')
+    execute planet#menu_help#Entry('am 120.230 ', '📝&e.Swap\ Preious\ Line<Tab>[e', '[e')
+    execute planet#menu_help#Entry('am 120.240 ', '📝&e.Swap\ Next\ Line<Tab>]e', ']e')
+    execute planet#menu_help#Entry('an 120.250 ', '📝&e.--7--', '<Nop>')
+    execute planet#menu_help#Entry('an 120.260 ', '📝&e.Unindent<Tab><', '<Cmd><<CR>')
+    execute planet#menu_help#Entry('an 120.270 ', '📝&e.Indent<Tab>>', '<Cmd>><CR>')
+    execute planet#menu_help#Entry('an 120.280 ', '📝&e.Auto\ Indent<Tab>=', '=')
+    execute planet#menu_help#Entry('an 120.290 ', '📝&e.Auto\ Indent\ File<Tab>gg=G', 'gg=G')
+    execute planet#menu_help#Entry('an 120.290 ', '📝&e.Retab\ File<Tab>:retab!', '<Cmd>retab!<CR>')
+    execute planet#menu_help#Entry('an 120.300 ', '📝&e.Auto\ Format\ File', '<Cmd>!clang-format<CR>')
+    execute planet#menu_help#Entry('an 120.310 ', '📝&e.--8--', '<Nop>')
+    execute planet#menu_help#Entry('an 120.320 ', '📝&e.Insert<Tab>i', 'i')
+    execute planet#menu_help#Entry('an 120.330 ', '📝&e.Continue\ Insert<Tab>gi', 'gi')
+    execute planet#menu_help#Entry('an 120.340 ', '📝&e.Insert\ at\ First\ Non-blank<Tab>I', 'I')
+    execute planet#menu_help#Entry('an 120.350 ', '📝&e.Insert\ at\ Beginning\ of\ Line<Tab>gI', 'gI')
+    execute planet#menu_help#Entry('an 120.360 ', '📝&e.Insert\ New\ Line\ Before<Tab>O', 'O')
+    execute planet#menu_help#Entry('an 120.370 ', '📝&e.Insert\ New\ Line\ After<Tab>o', 'o')
+    execute planet#menu_help#Entry('an 120.380 ', '📝&e.Append<Tab>a', 'a')
+    execute planet#menu_help#Entry('an 120.390 ', '📝&e.Append\ at\ End\ of\ Line<Tab>A', 'A')
+    execute planet#menu_help#Entry('an 120.400 ', '📝&e.Replace\ Line<Tab>cc', 'cc')
+    execute planet#menu_help#Entry('an 120.410 ', '📝&e.Replace\ to\ the\ End\ of\ Line<Tab>C', 'C')
+    execute planet#menu_help#Entry('an 120.420 ', '📝&e.--9--', '<Nop>')
+    execute planet#menu_help#Entry('an 120.430 ', '📝&e.Replace\ Mode<Tab>R', 'R')
+    execute planet#menu_help#Entry('an 120.440 ', '📝&e.Virtual\ Replace\ Mode<Tab>gR', 'gR')
 
     # Modify
-    PlanetMenu an 125.10  ✏️&m.Modify <Nop>
+    execute planet#menu_help#Entry('an 125.10  ', '✏️&m.Modify', '<Nop>')
     an disable ✏️&m.Modify
-    PlanetMenu an 125.310 ✏️&m.--8-- <Nop>
-    PlanetMenu an 125.320 ✏️&m.Format\ Text<Tab>gq                       gq
-    PlanetMenu an 125.330 ✏️&m.Format\ Text\ Keep\ Cursor<Tab>gw         gw
-    PlanetMenu an 125.340 ✏️&m.--9-- <Nop>
-    PlanetMenu am 125.350 ✏️&m.Toggle\ Comment<Tab>gcc                    gcc
-    PlanetMenu am 125.360 ✏️&m.Toggle\ Caps\ Lock<Tab>gC<Tab>i_<C-g>c     gC
-    PlanetMenu an 125.370 ✏️&m.To\ lower<Tab>gu                           gu
-    PlanetMenu an 125.380 ✏️&m.To\ UPPER<Tab>gU                           gU
-    PlanetMenu an 125.390 ✏️&m.Swap\ Case<Tab>g~                          g~
-    PlanetMenu an 125.400 ✏️&m.--10-- <Nop>
-    PlanetMenu an 125.410 ✏️&m.Join\ Lines<Tab>J                          J
-    PlanetMenu an 125.420 ✏️&m.Join\ Lines\ without\ Whitespace<Tab>gJ    gJ
-    PlanetMenu an 125.570 ✏️&m.--13-- <Nop>
-    PlanetMenu an 125.580 ✏️&m.Remove\ Trailing\ Whitespace <Cmd>call planet#editing#TrimWhitespace()<CR>
-    PlanetMenu an 125.590 ✏️&m.--14-- <Nop>
-    PlanetMenu an 125.600 ✏️&m.Call\ 'operatorfunc'<Tab>g@                g@
-    PlanetMenu an 125.600 ✏️&m.Read-in\ File\.\.\.<Tab>:r                 :r <C-z>
-    PlanetMenu an 125.610 ✏️&m.Filter<Tab>:g!/re/d                        <Cmd>call planet#modify#Filter()<CR>
-    PlanetMenu an 125.620 ✏️&m.Filter\ Out<Tab>:g/re/d                    <Cmd>call planet#modify#FilterOut()<CR>
-    PlanetMenu an 125.630 ✏️&m.Sort<Tab>!sort                             <Cmd>call planet#editing#Order('sort')<CR>
-    PlanetMenu an 125.640 ✏️&m.Reverse<Tab>!tac                           <Cmd>call planet#editing#Order('reverse')<CR>
-    PlanetMenu an 125.650 ✏️&m.Uniq<Tab>!uniq                             <Cmd>call planet#editing#Order('uniq')<CR>
-    PlanetMenu an 125.660 ✏️&m.Filter\ by\ Program<Tab>!<cmd>             !
-    PlanetMenu an 125.660 ✏️&m.--2-- <Nop>
-    PlanetMenu am 125.660 ✏️&m.XML\ Encode<Tab>[x{motion}                [x
-    PlanetMenu am 125.660 ✏️&m.XML\ Decode<Tab>]x{motion}                ]x
-    PlanetMenu am 125.660 ✏️&m.URL\ Encode<Tab>[u{motion}                [u
-    PlanetMenu am 125.660 ✏️&m.URL\ Decode<Tab>]u{motion}                ]u
-    PlanetMenu am 125.660 ✏️&m.C\ String\ Encode<Tab>[y{motion}          [y
-    PlanetMenu am 125.660 ✏️&m.C\ String\ Decode<Tab>]y{motion}          ]y
-    PlanetMenu an 125.660 ✏️&m.--4-- <Nop>
-    PlanetMenu an 125.660 ✏️&m.Rot13\ Operator<Tab>g?                    g?
-    PlanetMenu an 125.660 ✏️&m.Rot13\ Line<Tab>g??<Tab>g?g?              g??
-    PlanetMenu an 125.660 ✏️&m.--4-- <Nop>
-    PlanetMenu am 125.660 ✏️&m.Empty\ Line\ Before<Tab>[<Space>          [<Space>
-    PlanetMenu am 125.660 ✏️&m.Empty\ Line\ After<Tab>]<Space>           ]<Space>
-    PlanetMenu an 125.670 ✏️&m.Snippets.Insert <Cmd>call planet#snippets#Insert()<CR>
-    PlanetMenu an 125.670 ✏️&m.Snippets.Edit\ Custom\ Snippets <Cmd>call planet#snippets#Edit()<CR>
-    PlanetMenu an 125.680 ✏️&m.Emmet <Cmd>call emmet#expandAbbr(3, '')<CR>
+    execute planet#menu_help#Entry('an 125.310 ', '✏️&m.--8--', '<Nop>')
+    execute planet#menu_help#Entry('an 125.320 ', '✏️&m.Format\ Text<Tab>gq', 'gq')
+    execute planet#menu_help#Entry('an 125.330 ', '✏️&m.Format\ Text\ Keep\ Cursor<Tab>gw', 'gw')
+    execute planet#menu_help#Entry('an 125.340 ', '✏️&m.--9--', '<Nop>')
+    execute planet#menu_help#Entry('am 125.350 ', '✏️&m.Toggle\ Comment<Tab>gcc', 'gcc')
+    execute planet#menu_help#Entry('am 125.360 ', '✏️&m.Toggle\ Caps\ Lock<Tab>gC<Tab>i_<C-g>c', 'gC')
+    execute planet#menu_help#Entry('an 125.370 ', '✏️&m.To\ lower<Tab>gu', 'gu')
+    execute planet#menu_help#Entry('an 125.380 ', '✏️&m.To\ UPPER<Tab>gU', 'gU')
+    execute planet#menu_help#Entry('an 125.390 ', '✏️&m.Swap\ Case<Tab>g~', 'g~')
+    execute planet#menu_help#Entry('an 125.400 ', '✏️&m.--10--', '<Nop>')
+    execute planet#menu_help#Entry('an 125.410 ', '✏️&m.Join\ Lines<Tab>J', 'J')
+    execute planet#menu_help#Entry('an 125.420 ', '✏️&m.Join\ Lines\ without\ Whitespace<Tab>gJ', 'gJ')
+    execute planet#menu_help#Entry('an 125.570 ', '✏️&m.--13--', '<Nop>')
+    execute planet#menu_help#Entry('an 125.580 ', '✏️&m.Remove\ Trailing\ Whitespace', '<Cmd>call planet#editing#TrimWhitespace()<CR>')
+    execute planet#menu_help#Entry('an 125.590 ', '✏️&m.--14--', '<Nop>')
+    execute planet#menu_help#Entry('an 125.600 ', '✏️&m.Call\ ''operatorfunc''<Tab>g@', 'g@')
+    execute planet#menu_help#Entry('an 125.600 ', '✏️&m.Read-in\ File\.\.\.<Tab>:r', ':r <C-z>')
+    execute planet#menu_help#Entry('an 125.610 ', '✏️&m.Filter<Tab>:g!/re/d', '<Cmd>call planet#modify#Filter()<CR>')
+    execute planet#menu_help#Entry('an 125.620 ', '✏️&m.Filter\ Out<Tab>:g/re/d', '<Cmd>call planet#modify#FilterOut()<CR>')
+    execute planet#menu_help#Entry('an 125.630 ', '✏️&m.Sort<Tab>!sort', '<Cmd>call planet#editing#Order(''sort'')<CR>')
+    execute planet#menu_help#Entry('an 125.640 ', '✏️&m.Reverse<Tab>!tac', '<Cmd>call planet#editing#Order(''reverse'')<CR>')
+    execute planet#menu_help#Entry('an 125.650 ', '✏️&m.Uniq<Tab>!uniq', '<Cmd>call planet#editing#Order(''uniq'')<CR>')
+    execute planet#menu_help#Entry('an 125.660 ', '✏️&m.Filter\ by\ Program<Tab>!<cmd>', '!')
+    execute planet#menu_help#Entry('an 125.660 ', '✏️&m.--2--', '<Nop>')
+    execute planet#menu_help#Entry('am 125.660 ', '✏️&m.XML\ Encode<Tab>[x{motion}', '[x')
+    execute planet#menu_help#Entry('am 125.660 ', '✏️&m.XML\ Decode<Tab>]x{motion}', ']x')
+    execute planet#menu_help#Entry('am 125.660 ', '✏️&m.URL\ Encode<Tab>[u{motion}', '[u')
+    execute planet#menu_help#Entry('am 125.660 ', '✏️&m.URL\ Decode<Tab>]u{motion}', ']u')
+    execute planet#menu_help#Entry('am 125.660 ', '✏️&m.C\ String\ Encode<Tab>[y{motion}', '[y')
+    execute planet#menu_help#Entry('am 125.660 ', '✏️&m.C\ String\ Decode<Tab>]y{motion}', ']y')
+    execute planet#menu_help#Entry('an 125.660 ', '✏️&m.--4--', '<Nop>')
+    execute planet#menu_help#Entry('an 125.660 ', '✏️&m.Rot13\ Operator<Tab>g?', 'g?')
+    execute planet#menu_help#Entry('an 125.660 ', '✏️&m.Rot13\ Line<Tab>g??<Tab>g?g?', 'g??')
+    execute planet#menu_help#Entry('an 125.660 ', '✏️&m.--4--', '<Nop>')
+    execute planet#menu_help#Entry('am 125.660 ', '✏️&m.Empty\ Line\ Before<Tab>[<Space>', '[<Space>')
+    execute planet#menu_help#Entry('am 125.660 ', '✏️&m.Empty\ Line\ After<Tab>]<Space>', ']<Space>')
+    execute planet#menu_help#Entry('an 125.670 ', '✏️&m.Snippets.Insert', '<Cmd>call planet#snippets#Insert()<CR>')
+    execute planet#menu_help#Entry('an 125.670 ', '✏️&m.Snippets.Edit\ Custom\ Snippets', '<Cmd>call planet#snippets#Edit()<CR>')
+    execute planet#menu_help#Entry('an 125.680 ', '✏️&m.Emmet', '<Cmd>call emmet#expandAbbr(3, '''')<CR>')
 
     # Search
-    PlanetMenu an 130.10  🔎&/.Search <Nop>
+    execute planet#menu_help#Entry('an 130.10  ', '🔎&/.Search', '<Nop>')
     an disable 🔎&/.Search
-    PlanetMenu an 130.20  🔎&/.C&hoose\ Line<Tab>:Clap\ blines     :Clap blines<CR>
-    PlanetMenu an 130.30  🔎&/.--1-- <Nop>
-    PlanetMenu an 130.40  🔎&/.Choose\ from\ Hi&story<Tab>:Clap\ search_history :Clap search_history<CR>
-    PlanetMenu an 130.50  🔎&/.--2-- <Nop>
-    PlanetMenu an 130.60  🔎&/.Previous<Tab>N                           N
-    PlanetMenu an 130.70  🔎&/.Next<Tab>n                               n
-    PlanetMenu an 130.80  🔎&/.--3-- <Nop>
-    PlanetMenu an 130.90  🔎&/.Select\ Previous<Tab>gN                  gN
-    PlanetMenu an 130.100 🔎&/.Select\ Next<Tab>gn                      gn
-    PlanetMenu an 130.110 🔎&/.--4-- <Nop>
-    PlanetMenu an 130.120 🔎&/.Repeat\ Search<Tab>/<CR>                   /<CR>
-    PlanetMenu an 130.130 🔎&/.Repeat\ Search\ Backwards<Tab>?<CR>        ?<CR>
-    PlanetMenu an 130.140 🔎&/.--5-- <Nop>
-    PlanetMenu an 130.150 🔎&/.First\ Identifier<Tab>[<C-i>              [<C-i>
-    PlanetMenu an 130.160 🔎&/.Next\ Identifier<Tab>]<C-i>               ]<C-i>
-    PlanetMenu an 130.170 🔎&/.List\ All\ Identifier<Tab>[I              [I
-    PlanetMenu an 130.180 🔎&/.List\ Next\ Identifier<Tab>]I             ]I
-    PlanetMenu an 130.190 🔎&/.Show\ First\ Identifier<Tab>[i            [i
-    PlanetMenu an 130.200 🔎&/.Show\ Next\ Identifier<Tab>]i             ]i
-    PlanetMenu an 130.210 🔎&/.Previous\ #if/#else/#endif<Tab>[#         [#
-    PlanetMenu an 130.220 🔎&/.Next\ #if/#else/#endif<Tab>]#             ]#
-    PlanetMenu an 130.230 🔎&/.--6-- <Nop>
-    PlanetMenu an 130.240 🔎&/.Whole\ Word<Tab>*                      *
-    PlanetMenu an 130.250 🔎&/.Whole\ Word\ Backwards<Tab>#           #
-    PlanetMenu an 130.260 🔎&/.Partial\ Word<Tab>g*                 g*
-    PlanetMenu an 130.270 🔎&/.Partial\ Word\ Backwards<Tab>g#      g#
-    PlanetMenu an 130.280 🔎&/.--7-- <Nop>
-    PlanetMenu an 130.300 🔎&/.Search\ Dialog<Tab>:promptfind           <Cmd>promptfind<CR>
-    PlanetMenu an 130.320 🔎&/.Substitute :%s/
-    PlanetMenu an 130.330 🔎&/.Substitute\ Selection <Cmd>call planet#editing#SubstituteSelection()<CR>
-    PlanetMenu an 130.280 🔎&/.--8-- <Nop>
-    PlanetMenu an 130.330 🔎&/.Repeat\ on\ Line<Tab>&                   &
-    PlanetMenu an 130.330 🔎&/.Repeat\ on\ Line\ keep\ Flags<Tab>:&&    <Cmd>&&<CR>
-    PlanetMenu an 130.340 🔎&/.Repeat\ on\ File<Tab>g&                  g&
-    PlanetMenu an 130.280 🔎&/.--9-- <Nop>
-    PlanetMenu an 130.340 🔎&/.Repeat\ with\ Search\ Pattern<Tab>:~     <Cmd>~<CR>
-    PlanetMenu an 130.340 🔎&/.Repeat\ with\ Search\ Pattern\ keep\ Flags<Tab>:~& <Cmd>~&<CR>
-    PlanetMenu an 130.280 🔎&/.--10-- <Nop>
-    PlanetMenu an 130.340 🔎&/.Substitute\ Dialog<Tab>:promptrepl       <Cmd>promptrepl<CR>
+    execute planet#menu_help#Entry('an 130.20  ', '🔎&/.C&hoose\ Line<Tab>:Clap\ blines', ':Clap blines<CR>')
+    execute planet#menu_help#Entry('an 130.30  ', '🔎&/.--1--', '<Nop>')
+    execute planet#menu_help#Entry('an 130.40  ', '🔎&/.Choose\ from\ Hi&story<Tab>:Clap\ search_history', ':Clap search_history<CR>')
+    execute planet#menu_help#Entry('an 130.50  ', '🔎&/.--2--', '<Nop>')
+    execute planet#menu_help#Entry('an 130.60  ', '🔎&/.Previous<Tab>N', 'N')
+    execute planet#menu_help#Entry('an 130.70  ', '🔎&/.Next<Tab>n', 'n')
+    execute planet#menu_help#Entry('an 130.80  ', '🔎&/.--3--', '<Nop>')
+    execute planet#menu_help#Entry('an 130.90  ', '🔎&/.Select\ Previous<Tab>gN', 'gN')
+    execute planet#menu_help#Entry('an 130.100 ', '🔎&/.Select\ Next<Tab>gn', 'gn')
+    execute planet#menu_help#Entry('an 130.110 ', '🔎&/.--4--', '<Nop>')
+    execute planet#menu_help#Entry('an 130.120 ', '🔎&/.Repeat\ Search<Tab>/<CR>', '/<CR>')
+    execute planet#menu_help#Entry('an 130.130 ', '🔎&/.Repeat\ Search\ Backwards<Tab>?<CR>', '?<CR>')
+    execute planet#menu_help#Entry('an 130.140 ', '🔎&/.--5--', '<Nop>')
+    execute planet#menu_help#Entry('an 130.150 ', '🔎&/.First\ Identifier<Tab>[<C-i>', '[<C-i>')
+    execute planet#menu_help#Entry('an 130.160 ', '🔎&/.Next\ Identifier<Tab>]<C-i>', ']<C-i>')
+    execute planet#menu_help#Entry('an 130.170 ', '🔎&/.List\ All\ Identifier<Tab>[I', '[I')
+    execute planet#menu_help#Entry('an 130.180 ', '🔎&/.List\ Next\ Identifier<Tab>]I', ']I')
+    execute planet#menu_help#Entry('an 130.190 ', '🔎&/.Show\ First\ Identifier<Tab>[i', '[i')
+    execute planet#menu_help#Entry('an 130.200 ', '🔎&/.Show\ Next\ Identifier<Tab>]i', ']i')
+    execute planet#menu_help#Entry('an 130.210 ', '🔎&/.Previous\ #if/#else/#endif<Tab>[#', '[#')
+    execute planet#menu_help#Entry('an 130.220 ', '🔎&/.Next\ #if/#else/#endif<Tab>]#', ']#')
+    execute planet#menu_help#Entry('an 130.230 ', '🔎&/.--6--', '<Nop>')
+    execute planet#menu_help#Entry('an 130.240 ', '🔎&/.Whole\ Word<Tab>*', '*')
+    execute planet#menu_help#Entry('an 130.250 ', '🔎&/.Whole\ Word\ Backwards<Tab>#', '#')
+    execute planet#menu_help#Entry('an 130.260 ', '🔎&/.Partial\ Word<Tab>g*', 'g*')
+    execute planet#menu_help#Entry('an 130.270 ', '🔎&/.Partial\ Word\ Backwards<Tab>g#', 'g#')
+    execute planet#menu_help#Entry('an 130.280 ', '🔎&/.--7--', '<Nop>')
+    execute planet#menu_help#Entry('an 130.300 ', '🔎&/.Search\ Dialog<Tab>:promptfind', '<Cmd>promptfind<CR>')
+    execute planet#menu_help#Entry('an 130.320 ', '🔎&/.Substitute', ':%s/')
+    execute planet#menu_help#Entry('an 130.330 ', '🔎&/.Substitute\ Selection', '<Cmd>call planet#editing#SubstituteSelection()<CR>')
+    execute planet#menu_help#Entry('an 130.280 ', '🔎&/.--8--', '<Nop>')
+    execute planet#menu_help#Entry('an 130.330 ', '🔎&/.Repeat\ on\ Line<Tab>&', '&')
+    execute planet#menu_help#Entry('an 130.330 ', '🔎&/.Repeat\ on\ Line\ keep\ Flags<Tab>:&&', '<Cmd>&&<CR>')
+    execute planet#menu_help#Entry('an 130.340 ', '🔎&/.Repeat\ on\ File<Tab>g&', 'g&')
+    execute planet#menu_help#Entry('an 130.280 ', '🔎&/.--9--', '<Nop>')
+    execute planet#menu_help#Entry('an 130.340 ', '🔎&/.Repeat\ with\ Search\ Pattern<Tab>:~', '<Cmd>~<CR>')
+    execute planet#menu_help#Entry('an 130.340 ', '🔎&/.Repeat\ with\ Search\ Pattern\ keep\ Flags<Tab>:~&', '<Cmd>~&<CR>')
+    execute planet#menu_help#Entry('an 130.280 ', '🔎&/.--10--', '<Nop>')
+    execute planet#menu_help#Entry('an 130.340 ', '🔎&/.Substitute\ Dialog<Tab>:promptrepl', '<Cmd>promptrepl<CR>')
 
     # Selection
-    PlanetMenu an 140.10  🖍️&i.Selection <Nop>
+    execute planet#menu_help#Entry('an 140.10  ', '🖍️&i.Selection', '<Nop>')
     an disable 🖍️&i.Selection
-    PlanetMenu an 140.10  🖍️&i.Select\ All                             <Cmd>call planet#edit#SelectAll()<CR>
-    PlanetMenu inoremenu 140.10 🖍️&i.Select\ All                       <Esc><Cmd>call planet#edit#SelectAll()<CR>
-    PlanetMenu an 140.10  🖍️&i.Reselect\ Previous\ Area                gv
-    PlanetMenu an 140.10  🖍️&i.--1-- <Nop>
-    PlanetMenu an 140.10  🖍️&i.Write\ Selection\ to\ File              <Cmd>call planet#selection#CopySelectionToFile()<CR>
-    PlanetMenu an 140.10  🖍️&i.Append\ Selection\ to\ File             <Cmd>call planet#selection#CopySelectionToFile(v:false, "a")<CR>
-    PlanetMenu an 140.10  🖍️&i.Move\ Selection\ and\ Overwrite\ File   <Cmd>call planet#selection#CopySelectionToFile(v:true)<CR>
-    PlanetMenu an 140.10  🖍️&i.Move\ Selection\ and\ Append\ to\ File  <Cmd>call planet#selection#CopySelectionToFile(v:true, "a")<CR>
-    PlanetMenu an 140.10  🖍️&i.--2-- <Nop>
-    PlanetMenu an 140.10  🖍️&i.Visual\ Mode<Tab>v                      v
-    PlanetMenu an 130.10  🖍️&i.Visual\ Line\ Mode<Tab>V                V
-    PlanetMenu an 140.10  🖍️&i.Visual\ Block\ Mode<Tab><C-v>           <C-v>
-    PlanetMenu an 140.10  🖍️&i.--3-- <Nop>
-    PlanetMenu an 140.10  🖍️&i.Select\ Mode<Tab>gh                     gh
-    PlanetMenu an 140.10  🖍️&i.Select\ Line\ Mode<Tab>gH               gH
-    PlanetMenu an 140.10  🖍️&i.Select\ Block\ Mode<Tab>g<C-h>          g<C-H>
+    execute planet#menu_help#Entry('an 140.10  ', '🖍️&i.Select\ All', '<Cmd>call planet#edit#SelectAll()<CR>')
+    execute planet#menu_help#Entry('inoremenu 140.10 ', '🖍️&i.Select\ All', '<Esc><Cmd>call planet#edit#SelectAll()<CR>')
+    execute planet#menu_help#Entry('an 140.10  ', '🖍️&i.Reselect\ Previous\ Area', 'gv')
+    execute planet#menu_help#Entry('an 140.10  ', '🖍️&i.--1--', '<Nop>')
+    execute planet#menu_help#Entry('an 140.10  ', '🖍️&i.Write\ Selection\ to\ File', '<Cmd>call planet#selection#CopySelectionToFile()<CR>')
+    execute planet#menu_help#Entry('an 140.10  ', '🖍️&i.Append\ Selection\ to\ File', '<Cmd>call planet#selection#CopySelectionToFile(v:false, "a")<CR>')
+    execute planet#menu_help#Entry('an 140.10  ', '🖍️&i.Move\ Selection\ and\ Overwrite\ File', '<Cmd>call planet#selection#CopySelectionToFile(v:true)<CR>')
+    execute planet#menu_help#Entry('an 140.10  ', '🖍️&i.Move\ Selection\ and\ Append\ to\ File', '<Cmd>call planet#selection#CopySelectionToFile(v:true, "a")<CR>')
+    execute planet#menu_help#Entry('an 140.10  ', '🖍️&i.--2--', '<Nop>')
+    execute planet#menu_help#Entry('an 140.10  ', '🖍️&i.Visual\ Mode<Tab>v', 'v')
+    execute planet#menu_help#Entry('an 130.10  ', '🖍️&i.Visual\ Line\ Mode<Tab>V', 'V')
+    execute planet#menu_help#Entry('an 140.10  ', '🖍️&i.Visual\ Block\ Mode<Tab><C-v>', '<C-v>')
+    execute planet#menu_help#Entry('an 140.10  ', '🖍️&i.--3--', '<Nop>')
+    execute planet#menu_help#Entry('an 140.10  ', '🖍️&i.Select\ Mode<Tab>gh', 'gh')
+    execute planet#menu_help#Entry('an 140.10  ', '🖍️&i.Select\ Line\ Mode<Tab>gH', 'gH')
+    execute planet#menu_help#Entry('an 140.10  ', '🖍️&i.Select\ Block\ Mode<Tab>g<C-h>', 'g<C-H>')
 
     # View
-    PlanetMenu an 150.10  📺&v.View <Nop>
+    execute planet#menu_help#Entry('an 150.10  ', '📺&v.View', '<Nop>')
     an disable 📺&v.View
-    PlanetMenu an 150.10  📺&v.&Command\ Palette                          <Cmd>Clap<CR>
-    PlanetMenu an 150.20  📺&v.&Files\ Side\ Bar                          <Cmd>Fern . -drawer -reveal=% -toggle<CR>
-    PlanetMenu an 150.30  📺&v.&LSP\ Side\ Bar<Tab>:Vista\ vim_lsp        <Cmd>Vista vim_lsp<CR>
-    PlanetMenu an 150.40  📺&v.&Tags\ Side\ Bar<Tab>:Vista\ ctags         <Cmd>Vista ctags<CR>
-    PlanetMenu an 150.40  📺&v.QuickFix                                   <Cmd>botright copen<CR>
-    PlanetMenu an 150.40  📺&v.LocList                                    <Cmd>lopen<CR>
-    PlanetMenu an 150.50  📺&v.--1-- <Nop>
-    PlanetMenu an 150.60  📺&v.WinBar <Nop>
+    execute planet#menu_help#Entry('an 150.10  ', '📺&v.&Command\ Palette', '<Cmd>Clap<CR>')
+    execute planet#menu_help#Entry('an 150.20  ', '📺&v.&Files\ Side\ Bar', '<Cmd>Fern . -drawer -reveal=% -toggle<CR>')
+    execute planet#menu_help#Entry('an 150.30  ', '📺&v.&LSP\ Side\ Bar<Tab>:Vista\ vim_lsp', '<Cmd>Vista vim_lsp<CR>')
+    execute planet#menu_help#Entry('an 150.40  ', '📺&v.&Tags\ Side\ Bar<Tab>:Vista\ ctags', '<Cmd>Vista ctags<CR>')
+    execute planet#menu_help#Entry('an 150.40  ', '📺&v.QuickFix', '<Cmd>botright copen<CR>')
+    execute planet#menu_help#Entry('an 150.40  ', '📺&v.LocList', '<Cmd>lopen<CR>')
+    execute planet#menu_help#Entry('an 150.50  ', '📺&v.--1--', '<Nop>')
+    execute planet#menu_help#Entry('an 150.60  ', '📺&v.WinBar', '<Nop>')
     an disable 📺&v.WinBar
-    PlanetMenu an 150.70  📺&v.Add\ Current                               <Cmd>call planet#winbar#Change('add')<CR>
-    PlanetMenu an 150.70  📺&v.Remove\ Current                            <Cmd>call planet#winbar#Change('remove')<CR>
-    PlanetMenu an 150.70  📺&v.Remove\ Others                             <Cmd>call planet#winbar#Change('others')<CR>
-    PlanetMenu an 150.70  📺&v.--1-- <Nop>
-    PlanetMenu an 150.70  📺&v.Clear                                      <Cmd>call planet#winbar#Change('clear')<CR>
-    PlanetMenu an 150.70  📺&v.--1-- <Nop>
-    PlanetMenu an 150.70  📺&v.Colorscheme <Nop>
+    execute planet#menu_help#Entry('an 150.70  ', '📺&v.Add\ Current', '<Cmd>call planet#winbar#Change(''add'')<CR>')
+    execute planet#menu_help#Entry('an 150.70  ', '📺&v.Remove\ Current', '<Cmd>call planet#winbar#Change(''remove'')<CR>')
+    execute planet#menu_help#Entry('an 150.70  ', '📺&v.Remove\ Others', '<Cmd>call planet#winbar#Change(''others'')<CR>')
+    execute planet#menu_help#Entry('an 150.70  ', '📺&v.--1--', '<Nop>')
+    execute planet#menu_help#Entry('an 150.70  ', '📺&v.Clear', '<Cmd>call planet#winbar#Change(''clear'')<CR>')
+    execute planet#menu_help#Entry('an 150.70  ', '📺&v.--1--', '<Nop>')
+    execute planet#menu_help#Entry('an 150.70  ', '📺&v.Colorscheme', '<Nop>')
     an disable 📺&v.Colorscheme
-    PlanetMenu an 150.70.10  📺&v.Set\ Colorscheme.Dark <Nop>
+    execute planet#menu_help#Entry('an 150.70.10  ', '📺&v.Set\ Colorscheme.Dark', '<Nop>')
     an disable    📺&v.Set\ Colorscheme.Dark
-    PlanetMenu an 150.70.10  📺&v.Set\ Colorscheme.Dracula             <Cmd>set bg=dark<CR><Cmd>colorscheme dracula<CR>
-    PlanetMenu an 150.70.10  📺&v.Set\ Colorscheme.Gruvbox\ Dark       <Cmd>set bg=dark<CR><Cmd>colorscheme gruvbox<CR>
-    PlanetMenu an 150.70.10  📺&v.Set\ Colorscheme.Molokai             <Cmd>set bg=dark<CR><Cmd>colorscheme molokai<CR>
-    PlanetMenu an 150.70.10  📺&v.Set\ Colorscheme.One\ Dark           <Cmd>set bg=dark<CR><Cmd>colorscheme one<CR>
-    PlanetMenu an 150.70.10  📺&v.Set\ Colorscheme.PaperColor\ Dark    <Cmd>set bg=dark<CR><Cmd>colorscheme PaperColor<CR>
-    PlanetMenu an 150.70.10  📺&v.Set\ Colorscheme.Solarized\ Dark     <Cmd>set bg=dark<CR><Cmd>colorscheme solarized<CR>
-    PlanetMenu an 150.70.500 📺&v.Set\ Colorscheme.Light <Nop>
+    execute planet#menu_help#Entry('an 150.70.10  ', '📺&v.Set\ Colorscheme.Dracula', '<Cmd>set bg=dark<CR><Cmd>colorscheme dracula<CR>')
+    execute planet#menu_help#Entry('an 150.70.10  ', '📺&v.Set\ Colorscheme.Gruvbox\ Dark', '<Cmd>set bg=dark<CR><Cmd>colorscheme gruvbox<CR>')
+    execute planet#menu_help#Entry('an 150.70.10  ', '📺&v.Set\ Colorscheme.Molokai', '<Cmd>set bg=dark<CR><Cmd>colorscheme molokai<CR>')
+    execute planet#menu_help#Entry('an 150.70.10  ', '📺&v.Set\ Colorscheme.One\ Dark', '<Cmd>set bg=dark<CR><Cmd>colorscheme one<CR>')
+    execute planet#menu_help#Entry('an 150.70.10  ', '📺&v.Set\ Colorscheme.PaperColor\ Dark', '<Cmd>set bg=dark<CR><Cmd>colorscheme PaperColor<CR>')
+    execute planet#menu_help#Entry('an 150.70.10  ', '📺&v.Set\ Colorscheme.Solarized\ Dark', '<Cmd>set bg=dark<CR><Cmd>colorscheme solarized<CR>')
+    execute planet#menu_help#Entry('an 150.70.500 ', '📺&v.Set\ Colorscheme.Light', '<Nop>')
     an disable    📺&v.Set\ Colorscheme.Light
-    PlanetMenu an 150.70.500 📺&v.Set\ Colorscheme.Gruvbox\ Light      <Cmd>set bg=light<CR><Cmd>colorscheme gruvbox<CR>
-    PlanetMenu an 150.70.500 📺&v.Set\ Colorscheme.One\ Light          <Cmd>set bg=light<CR><Cmd>colorscheme one<CR>
-    PlanetMenu an 150.70.500 📺&v.Set\ Colorscheme.PaperColor\ Light   <Cmd>set bg=light<CR><Cmd>colorscheme PaperColor<CR>
-    PlanetMenu an 150.70.500 📺&v.Set\ Colorscheme.Solarized\ Light    <Cmd>set bg=light<CR><Cmd>colorscheme solarized<CR>
-    PlanetMenu an 150.70  📺&v.Set\ Dark\ Background<Tab>:set\ bg=dark  <Cmd>set bg=dark<CR>
-    PlanetMenu an 150.70  📺&v.Set\ Light\ Background<Tab>:set\ bg=light <Cmd>set bg=light<CR>
-    PlanetMenu an 150.70  📺&v.Choose\ Colorscheme<Tab>:Clap\ colors   <Cmd>Clap colors<CR>
-    PlanetMenu an 150.70  📺&v.GUI\ Highlight.Menu                     :h hl-Menu
-    PlanetMenu an 150.70  📺&v.GUI\ Highlight.Scrollbar                :h hl-Scrollbar
-    PlanetMenu an 150.70  📺&v.GUI\ Highlight.Tooltip                  :h hl-Tooltip
+    execute planet#menu_help#Entry('an 150.70.500 ', '📺&v.Set\ Colorscheme.Gruvbox\ Light', '<Cmd>set bg=light<CR><Cmd>colorscheme gruvbox<CR>')
+    execute planet#menu_help#Entry('an 150.70.500 ', '📺&v.Set\ Colorscheme.One\ Light', '<Cmd>set bg=light<CR><Cmd>colorscheme one<CR>')
+    execute planet#menu_help#Entry('an 150.70.500 ', '📺&v.Set\ Colorscheme.PaperColor\ Light', '<Cmd>set bg=light<CR><Cmd>colorscheme PaperColor<CR>')
+    execute planet#menu_help#Entry('an 150.70.500 ', '📺&v.Set\ Colorscheme.Solarized\ Light', '<Cmd>set bg=light<CR><Cmd>colorscheme solarized<CR>')
+    execute planet#menu_help#Entry('an 150.70  ', '📺&v.Set\ Dark\ Background<Tab>:set\ bg=dark', '<Cmd>set bg=dark<CR>')
+    execute planet#menu_help#Entry('an 150.70  ', '📺&v.Set\ Light\ Background<Tab>:set\ bg=light', '<Cmd>set bg=light<CR>')
+    execute planet#menu_help#Entry('an 150.70  ', '📺&v.Choose\ Colorscheme<Tab>:Clap\ colors', '<Cmd>Clap colors<CR>')
+    execute planet#menu_help#Entry('an 150.70  ', '📺&v.GUI\ Highlight.Menu', ':h hl-Menu')
+    execute planet#menu_help#Entry('an 150.70  ', '📺&v.GUI\ Highlight.Scrollbar', ':h hl-Scrollbar')
+    execute planet#menu_help#Entry('an 150.70  ', '📺&v.GUI\ Highlight.Tooltip', ':h hl-Tooltip')
 
     # Go
-    PlanetMenu an 160.10  ↕️&,.Go <Nop>
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.Go', '<Nop>')
     an disable ↕️&,.Go
-    PlanetMenu an 160.10  ↕️&,.C&hoose\ Jump<Tab>:Clap\ jumps               :Clap jumps<CR>
-    PlanetMenu an 160.10  ↕️&,.--1-- <Nop>
-    PlanetMenu an 160.10  ↕️&,.Back<Tab><C-o>                               <C-o>
-    PlanetMenu an 160.10  ↕️&,.Forward<Tab><C-i>                            <C-i>
-    PlanetMenu an 160.10  ↕️&,.--2-- <Nop>
-    PlanetMenu an 160.10  ↕️&,.Previous\ section<Tab>[[                     [[
-    PlanetMenu an 160.10  ↕️&,.Next\ section<Tab>][                         ][
-    PlanetMenu an 160.10  ↕️&,.Previous\ SECTION<Tab>[]                     []
-    PlanetMenu an 160.10  ↕️&,.Next\ SECTION<Tab>]]                         ]]
-    PlanetMenu an 160.10  ↕️&,.--2-- <Nop>
-    PlanetMenu an 160.10  ↕️&,.Previous\ Change\ Position<Tab>g;            g;
-    PlanetMenu an 160.10  ↕️&,.Next\ Change\ Position<Tab>g,                g,
-    PlanetMenu an 160.10  ↕️&,.--3-- <Nop>
-    PlanetMenu an 160.10  ↕️&,.Start\ of\ File<Tab>gg                       gg
-    PlanetMenu an 160.10 ↕️&,.Percentage\ in\ File<Tab>{count}% <Cmd>call planet#editing#Percentage()<CR>
-    PlanetMenu an 160.10  ↕️&,.End\ of\ File<Tab>G                          G
-    PlanetMenu an 160.10  ↕️&,.--4-- <Nop>
-    PlanetMenu an 160.10  ↕️&,.Middle\ of\ Text\ Line<Tab>gM                gM
-    PlanetMenu an 160.10  ↕️&,.Middle\ of\ Screen\ Line<Tab>gm              gm
-    PlanetMenu an 160.10  ↕️&,.--4-- <Nop>
-    PlanetMenu an 160.10  ↕️&,.Sentence\ Backward<Tab>(                     (
-    PlanetMenu an 160.10  ↕️&,.Sentence\ Forward<Tab>)                      )
-    PlanetMenu an 160.10  ↕️&,.ftFT\ Backward<Tab>,                         ,
-    PlanetMenu an 160.10  ↕️&,.ftFT\ Forward<Tab>;                          ;
-    PlanetMenu an 160.10  ↕️&,.Start\ of\ Selected\ Area<Tab>'<             `<
-    PlanetMenu an 160.10  ↕️&,.End\ of\ Selected\ Area<Tab>'>               `>
-    PlanetMenu an 160.10  ↕️&,.Start\ of\ Changed\ Text<Tab>'[              `[
-    PlanetMenu an 160.10  ↕️&,.End\ of\ Changed\ Text<Tab>']                `]
-    PlanetMenu an 160.10  ↕️&,.Previous\ Empty\ Line<Tab>{                  {
-    PlanetMenu an 160.10  ↕️&,.Next\ Empty\ Line<Tab>}                      }
-    PlanetMenu an 160.10  ↕️&,.Previous\ Enclosing\ {<Tab>[{                [{
-    PlanetMenu an 160.10  ↕️&,.Next\ Enclosing\ }<Tab>]}                    ]}
-    PlanetMenu an 160.10  ↕️&,.Next\ MatchIt<Tab>%                          %
-    PlanetMenu an 160.10  ↕️&,.--4-- <Nop>
-    PlanetMenu an 160.10  ↕️&,.Previous\ Enclosing\ (<Tab>[(                [(
-    PlanetMenu an 160.10  ↕️&,.Next\ Enclosing\ (<Tab>])                    ])
-    PlanetMenu an 160.10  ↕️&,.--4-- <Nop>
-    PlanetMenu an 160.10  ↕️&,.Scroll\ Half\ Screen\ Left<Tab>zH                          zH
-    PlanetMenu an 160.10  ↕️&,.Scroll\ Half\ Screen\ Right<Tab>zL                         zL
-    PlanetMenu an 160.10  ↕️&,.Scroll\ Left<Tab>zh                          zh
-    PlanetMenu an 160.10  ↕️&,.Scroll\ Right<Tab>zl                         zl
-    PlanetMenu an 160.10  ↕️&,.Scroll\ Right\ to\ Cursor<Tab>zs             zs
-    PlanetMenu an 160.10  ↕️&,.Scroll\ Left\ to\ Cursor<Tab>ze              ze
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.C&hoose\ Jump<Tab>:Clap\ jumps', ':Clap jumps<CR>')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.--1--', '<Nop>')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.Back<Tab><C-o>', '<C-o>')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.Forward<Tab><C-i>', '<C-i>')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.--2--', '<Nop>')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.Previous\ section<Tab>[[', '[[')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.Next\ section<Tab>][', '][')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.Previous\ SECTION<Tab>[]', '[]')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.Next\ SECTION<Tab>]]', ']]')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.--2--', '<Nop>')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.Previous\ Change\ Position<Tab>g;', 'g;')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.Next\ Change\ Position<Tab>g,', 'g,')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.--3--', '<Nop>')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.Start\ of\ File<Tab>gg', 'gg')
+    execute planet#menu_help#Entry('an 160.10 ', '↕️&,.Percentage\ in\ File<Tab>{count}%', '<Cmd>call planet#editing#Percentage()<CR>')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.End\ of\ File<Tab>G', 'G')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.--4--', '<Nop>')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.Middle\ of\ Text\ Line<Tab>gM', 'gM')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.Middle\ of\ Screen\ Line<Tab>gm', 'gm')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.--4--', '<Nop>')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.Sentence\ Backward<Tab>(', '(')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.Sentence\ Forward<Tab>)', ')')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.ftFT\ Backward<Tab>,', ',')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.ftFT\ Forward<Tab>;', ';')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.Start\ of\ Selected\ Area<Tab>''<', '`<')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.End\ of\ Selected\ Area<Tab>''>', '`>')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.Start\ of\ Changed\ Text<Tab>''[', '`[')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.End\ of\ Changed\ Text<Tab>'']', '`]')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.Previous\ Empty\ Line<Tab>{', '{')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.Next\ Empty\ Line<Tab>}', '}')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.Previous\ Enclosing\ {<Tab>[{', '[{')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.Next\ Enclosing\ }<Tab>]}', ']}')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.Next\ MatchIt<Tab>%', '%')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.--4--', '<Nop>')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.Previous\ Enclosing\ (<Tab>[(', '[(')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.Next\ Enclosing\ (<Tab>])', '])')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.--4--', '<Nop>')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.Scroll\ Half\ Screen\ Left<Tab>zH', 'zH')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.Scroll\ Half\ Screen\ Right<Tab>zL', 'zL')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.Scroll\ Left<Tab>zh', 'zh')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.Scroll\ Right<Tab>zl', 'zl')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.Scroll\ Right\ to\ Cursor<Tab>zs', 'zs')
+    execute planet#menu_help#Entry('an 160.10  ', '↕️&,.Scroll\ Left\ to\ Cursor<Tab>ze', 'ze')
 
     # Navigation
-    PlanetMenu an 165.10  🧭&n.Navigation <Nop>
+    execute planet#menu_help#Entry('an 165.10  ', '🧭&n.Navigation', '<Nop>')
     an disable 🧭&n.Navigation
-    PlanetMenu an 160.10  🧭&n.Definition\ in\ Scope<Tab>gd                 gd
-    PlanetMenu an 160.10  🧭&n.Definition\ in\ File<Tab>gD                  gD
-    PlanetMenu an 160.10  🧭&n.Definition\ Split<Tab>+d                     <C-w>d
-    PlanetMenu an 160.10  🧭&n.Declaration\ Split<Tab>+i                    <C-w>i
-    PlanetMenu an 160.10  🧭&n.First\ #define<Tab>[<C-d>                    [<C-d>
-    PlanetMenu an 160.10  🧭&n.Next\ #define<Tab>]<C-d>                     ]<C-d>
-    PlanetMenu an 160.10  🧭&n.List\ All\ #define<Tab>[D                    [D
-    PlanetMenu an 160.10  🧭&n.List\ Next\ #define<Tab>]D                   ]D
-    PlanetMenu an 160.10  🧭&n.Show\ First\ #define<Tab>[d                  [d
-    PlanetMenu an 160.10  🧭&n.Show\ Next\ #define<Tab>]d                   ]d
-    PlanetMenu an 160.10  🧭&n.First\ keyword<Tab>[<C-i>                    [<C-i>
-    PlanetMenu an 160.10  🧭&n.Next\ keyword<Tab>]<C-i>                     ]<C-i>
-    PlanetMenu an 160.10  🧭&n.--4-- <Nop>
-    PlanetMenu an 160.10  🧭&n.File\ under\ Cursor\ in\ Tab<Tab><C-w>gF     <C-w>gF
-    PlanetMenu an 160.10  🧭&n.Previous\ Start\ of\ Function<Tab>[m         [m
-    PlanetMenu an 160.10  🧭&n.Next\ Start\ of\ Function<Tab>]m             ]m
-    PlanetMenu an 160.10  🧭&n.Previous\ End\ of\ Function<Tab>[M           [M
-    PlanetMenu an 160.10  🧭&n.Next\ End\ of\ Function<Tab>]M               ]M
-    PlanetMenu an 160.10  🧭&n.Previous\ comment<Tab>[*<Tab>[/              [/
-    PlanetMenu an 160.10  🧭&n.Next\ comment<Tab>]*<Tab>]/                  ]/
+    execute planet#menu_help#Entry('an 160.10  ', '🧭&n.Definition\ in\ Scope<Tab>gd', 'gd')
+    execute planet#menu_help#Entry('an 160.10  ', '🧭&n.Definition\ in\ File<Tab>gD', 'gD')
+    execute planet#menu_help#Entry('an 160.10  ', '🧭&n.Definition\ Split<Tab>+d', '<C-w>d')
+    execute planet#menu_help#Entry('an 160.10  ', '🧭&n.Declaration\ Split<Tab>+i', '<C-w>i')
+    execute planet#menu_help#Entry('an 160.10  ', '🧭&n.First\ #define<Tab>[<C-d>', '[<C-d>')
+    execute planet#menu_help#Entry('an 160.10  ', '🧭&n.Next\ #define<Tab>]<C-d>', ']<C-d>')
+    execute planet#menu_help#Entry('an 160.10  ', '🧭&n.List\ All\ #define<Tab>[D', '[D')
+    execute planet#menu_help#Entry('an 160.10  ', '🧭&n.List\ Next\ #define<Tab>]D', ']D')
+    execute planet#menu_help#Entry('an 160.10  ', '🧭&n.Show\ First\ #define<Tab>[d', '[d')
+    execute planet#menu_help#Entry('an 160.10  ', '🧭&n.Show\ Next\ #define<Tab>]d', ']d')
+    execute planet#menu_help#Entry('an 160.10  ', '🧭&n.First\ keyword<Tab>[<C-i>', '[<C-i>')
+    execute planet#menu_help#Entry('an 160.10  ', '🧭&n.Next\ keyword<Tab>]<C-i>', ']<C-i>')
+    execute planet#menu_help#Entry('an 160.10  ', '🧭&n.--4--', '<Nop>')
+    execute planet#menu_help#Entry('an 160.10  ', '🧭&n.File\ under\ Cursor\ in\ Tab<Tab><C-w>gF', '<C-w>gF')
+    execute planet#menu_help#Entry('an 160.10  ', '🧭&n.Previous\ Start\ of\ Function<Tab>[m', '[m')
+    execute planet#menu_help#Entry('an 160.10  ', '🧭&n.Next\ Start\ of\ Function<Tab>]m', ']m')
+    execute planet#menu_help#Entry('an 160.10  ', '🧭&n.Previous\ End\ of\ Function<Tab>[M', '[M')
+    execute planet#menu_help#Entry('an 160.10  ', '🧭&n.Next\ End\ of\ Function<Tab>]M', ']M')
+    execute planet#menu_help#Entry('an 160.10  ', '🧭&n.Previous\ comment<Tab>[*<Tab>[/', '[/')
+    execute planet#menu_help#Entry('an 160.10  ', '🧭&n.Next\ comment<Tab>]*<Tab>]/', ']/')
     planet#completion#Menus('basic')
     planet#objects#Menus()
     planet#recovery#Menus()

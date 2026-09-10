@@ -74,7 +74,8 @@ class MenuContracts(unittest.TestCase):
                     r'(?m)^\s*export\s+def\s+(\w+)\s*\(', source))
         for path in [*(PLUGIN / 'autoload/planet/menu').glob('*.vim'), ROOT / '.vimrc']:
             for number, line in enumerate(path.read_text().splitlines(), 1):
-                if not re.match(r'\s*(?:PlanetMenu\s+)?(?:an|am|[a-z]*menu)\s+(?:<[^>]+>\s+)*\d', line):
+                if not (re.match(r'\s*(?:PlanetMenu\s+)?(?:an|am|[a-z]*menu)\s+(?:<[^>]+>\s+)*\d', line)
+                        or 'execute planet#menu_help#Entry(' in line):
                     continue
                 location = f'{path.name}:{number}'
                 self.assertNotRegex(line, r'(?i)(?:<Cmd>|:)TODO(?:\b|<)', location)

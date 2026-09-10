@@ -33,7 +33,7 @@ class Scaffolds(unittest.TestCase):
             parent = Path(temporary)
             for name, entry in catalog.items():
                 with self.subTest(name=name), contextlib.redirect_stdout(io.StringIO()):
-                    self.assertIn("planet#scaffold#New('" + name + "')", menu)
+                    self.assertIn("planet#scaffold#New(''" + name + "'')", menu)
                     source = TEMPLATES / entry['path']
                     destination = parent / (name + source.suffix if source.is_file() else name)
                     operation = 'file' if entry['kind'] == 'file' else 'template'

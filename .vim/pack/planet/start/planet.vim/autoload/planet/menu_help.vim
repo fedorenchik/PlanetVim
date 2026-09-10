@@ -5,6 +5,76 @@ vim9script
 var registry: dict<any> = {}
 var reverse_maps: dict<string> = {}
 var alternate_maps: dict<string> = {}
+var hint_cache: dict<any> = {}
+var cache_key = ''
+var cache_loaded = false
+var cache_changed = false
+var cache_hits = 0
+var cache_misses = 0
+const cache_source = expand('<script>:p')
+var cache_version = ''
+
+def CacheReset(mappings: list<dict<any>>)
+  if !get(g:, 'PV_menu_cache', 1)
+    cache_key = ''
+    return
+  endif
+  if !cache_loaded
+    cache_loaded = true
+    try
+      var path = planet#paths#Cache() .. '/menu-hints.json'
+      if filereadable(path) && getfsize(path) < 8 * 1024 * 1024
+        var data = json_decode(join(readfile(path), "\n"))
+        if type(data) == v:t_dict
+          hint_cache = data
+        endif
+      endif
+    catch
+      # An absent, obsolete or damaged cache never prevents menu creation.
+      hint_cache = {}
+    endtry
+  endif
+  var maps = map(copy(mappings), (_, m) => [m.lhs, m.rhs, m.mode, m.noremap, m.expr, m.buffer, m.sid])
+  # Cache data contains text only. Invalidate on implementation, mappings,
+  # leader or display-width changes; never persist script IDs or menu actions.
+  if empty(cache_version)
+    cache_version = sha256(join(readfile(cache_source), "\n")
+        .. join(readfile(fnamemodify(cache_source, ':h') .. '/menu_descriptions.vim'), "\n"))
+  endif
+  cache_key = sha256(cache_version .. string(maps) .. string([get(g:, 'mapleader', '\'), &ambiwidth, &tabstop, &encoding]))
+  if !has_key(hint_cache, cache_key) || type(hint_cache[cache_key]) != v:t_dict
+    if len(hint_cache) >= 4
+      hint_cache = {}
+    endif
+    hint_cache[cache_key] = {}
+  endif
+enddef
+
+export def SaveCache()
+  if !cache_changed || empty(cache_key)
+    return
+  endif
+  var temporary = ''
+  try
+    var path = planet#paths#Cache() .. '/menu-hints.json'
+    temporary = path .. '.' .. getpid()
+    writefile([json_encode(hint_cache)], temporary)
+    setfperm(temporary, 'rw-------')
+    if rename(temporary, path) == 0
+      cache_changed = false
+    endif
+  catch
+    # Read-only caches are supported; the live computation remains available.
+  finally
+    if !empty(temporary)
+      delete(temporary)
+    endif
+  endtry
+enddef
+
+export def CacheStats(): dict<number>
+  return {hits: cache_hits, misses: cache_misses}
+enddef
 
 def CanonicalKeys(value: string): string
   if stridx(value, '<') < 0
@@ -54,7 +124,9 @@ enddef
 export def Reset()
   reverse_maps = {}
   alternate_maps = {}
-  for mapping in maplist()
+  var mappings = maplist()
+  CacheReset(mappings)
+  for mapping in mappings
     if get(mapping, 'expr', 0) || get(mapping, 'buffer', 0) || mapping.lhs =~? '<Plug>\|<SNR>' || mapping.mode !~# '[n ]'
       continue
     endif
@@ -217,16 +289,15 @@ def Accelerator(rhs: string, annotations: list<string>, command: string): string
     return ''
   endif
   if !empty(secondary) && secondary !=# primary && strdisplaywidth(secondary .. '  ' .. primary) <= 36
-    return EscapeLabel(secondary) .. '<Tab>' .. EscapeLabel(primary)
+    return secondary .. "\t" .. primary
   endif
-  return EscapeLabel(primary)
+  return primary
 enddef
 
 export def Definition(spec: string): string
   if strpart(spec, strlen(spec) - 5) ==? '<Nop>'
     return spec
   endif
-  var sid = ''
   var head = matchstr(spec, '\%#=1^\s*\S\+\s\+\%(<[^>]\+>\s\+\)*\%(\d\+\%(\.\d\+\)*\s\+\)\?')
   if empty(head)
     return spec
@@ -237,28 +308,54 @@ export def Definition(spec: string): string
   endif
   var path = matchstr(tail, '\%#=1^\%(\\.\|[^[:space:]]\)\+')
   var rhs = trim(strpart(tail, strlen(path)), ' ', 1)
+  return Entry(head, path, rhs)
+enddef
+
+# Fixed menu declarations pass their fields directly from compiled Vim9 code.
+# Dynamic/user declarations retain the PlanetMenu parser and caller context.
+export def Entry(head: string, original: string, rhs: string): string
+  var spec = head .. original .. ' ' .. rhs
+  var path = original
+  var sid = ''
   if empty(rhs) || rhs ==? '<Nop>' || path =~# '\.-[^.]*-$'
     return spec
   endif
-  var name = split(head)[0]
+  var name = strpart(head, 0, stridx(head, ' '))
   var remap = index(['am', 'amenu', 'menu', 'nmenu', 'vmenu', 'xmenu', 'smenu', 'omenu', 'imenu', 'cmenu', 'tlmenu'], name) >= 0
-  var original = path
   var parts = stridx(path, '<Tab>') < 0 && stridx(path, "\t") < 0 ? [path] : split(path, '\\\@<!<Tab>\|\t', true)
   path = parts[0]
   var key = (stridx(path, 'WinBar.') == 0 ? win_getid() .. ':' : '') .. path
   # A native item has one accelerator and one tip shared by all editing modes.
-  var preferred = name =~# '^\%(an\|am\|n\)'
+  var preferred = name[0] ==# 'n' || stridx(name, 'an') == 0 || stridx(name, 'am') == 0
   if !preferred && has_key(registry, key) && registry[key].normal
     return spec .. PopupRefresh(original)
   endif
-  var info = Explain(rhs, path, remap)
-  var accelerator = Accelerator(rhs, parts[1 :], info.command)
-  if !empty(accelerator) && stridx(path, 'WinBar.') != 0
-    path ..= '<Tab>' .. accelerator
+  var cacheable = !empty(cache_key) && rhs !~? '<SID>\|<SNR>'
+      && path !~# '^\%(WinBar\|PopUp\)\.'
+  var cached: any = cacheable ? get(hint_cache[cache_key], spec, {}) : {}
+  var tip: string
+  var accelerator: string
+  if type(cached) == v:t_list && len(cached) == 2
+      && type(cached[0]) == v:t_string && type(cached[1]) == v:t_string
+    tip = cached[0]
+    accelerator = cached[1]
+    cache_hits += 1
+  else
+    var info = Explain(rhs, path, remap)
+    tip = info.tip
+    accelerator = Accelerator(rhs, parts[1 :], info.command)
+    if cacheable && tip !~? '<SNR>'
+      hint_cache[cache_key][spec] = [tip, accelerator]
+      cache_changed = true
+      cache_misses += 1
+    endif
   endif
-  registry[key] = {path: original, rhs: rhs, remap: remap, sid: sid, normal: preferred}
-  var tip = substitute(info.tip, '\c<SID>', sid, 'g')
-  tip = TipText(tip)
+  if !empty(accelerator) && stridx(path, 'WinBar.') != 0
+    # Cached strings are presentation data, never executable Ex fragments.
+    path ..= '<Tab>' .. join(map(split(tr(accelerator, "\r\n", '  '), "\t", true), (_, label) => EscapeLabel(label)), '<Tab>')
+  endif
+  registry[key] = {path: original, rhs: rhs, remap: remap && stridx(rhs, '<Cmd>') < 0 && stridx(rhs, ':') < 0, sid: sid, normal: preferred}
+  tip = TipText(substitute(tip, '\c<SID>', sid, 'g'))
   return head .. path .. ' ' .. rhs .. "\ntmenu " .. original .. ' ' .. tip
     .. (rhs =~? '\c<SID>' ? "\ncall planet#menu_help#ScriptTip(" .. string(key) .. ')' : '') .. PopupRefresh(original)
 enddef
