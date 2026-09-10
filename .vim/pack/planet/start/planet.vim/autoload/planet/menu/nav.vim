@@ -260,6 +260,7 @@ func! planet#menu#nav#Update() abort
     an disable 🎛️&@.Workspaces
 
     call planet#view#Menus('nav')
+    call planet#search#Menus('nav')
   else
     silent! aunmenu 📖&u
     silent! aunmenu 🗃️&a

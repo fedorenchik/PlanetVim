@@ -434,7 +434,7 @@ selected-line scope and cancellation on GVim 9.1 and 9.2.
 
 ### MD-20 · P2 · Complete search and batch-edit discovery
 
-- [ ] Add **Search → Literal / Pattern / Selection / Clear Highlight / Case and
+- [x] Add **Search → Literal / Pattern / Selection / Clear Highlight / Case and
   Wrap Options**, guided matching/nonmatching-line commands, sorting choices and
   **Args → Remove Duplicates**.
 
@@ -447,6 +447,11 @@ and `:argdedupe` (available by 9.0). Avoid a second independent search engine.
 
 Acceptance: explicit scope, optional confirmation per substitution, cancellation
 without text/search changes, and predictable batch-operation undo.
+
+Implemented native search, explicit replacement scope, confirmed matching and
+nonmatching-line commands, seven sorting choices, and argument deduplication.
+`test_search_workflow.vim` verifies literal matching, cancellation, selected-word
+replacement, batch filtering and numeric/unique sorting on GVim 9.1 and 9.2.
 
 ### MD-21 · P3 · Fill remaining file-workflow gaps
 

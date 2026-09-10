@@ -139,3 +139,20 @@ func! planet#selection#Restore(selection) abort
   call s:Validate(a:selection)
   call s:Select(a:selection)
 endfunc
+
+func! planet#selection#Text(selection) abort
+  call s:Validate(a:selection)
+  let l:registers = {'z': getreginfo('z'), '0': getreginfo('0'), '"': getreginfo('"')}
+  let l:clipboard = &clipboard
+  let l:view = winsaveview()
+  try
+    set clipboard=
+    call s:Select(a:selection)
+    normal! "zy
+    return getreg('z')
+  finally
+    for [l:name, l:contents] in items(l:registers) | call setreg(l:name, l:contents) | endfor
+    let &clipboard = l:clipboard
+    call winrestview(l:view)
+  endtry
+endfunc
