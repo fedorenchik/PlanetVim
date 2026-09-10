@@ -26,6 +26,12 @@ def! s:Configure()
     endif
     for name in sort(readdir(start))
       if isdirectory(start .. '/' .. name)
+        if name ==# 'vim-markdown-preview'
+          # The main Markdown action uses PlanetVim's Pandoc integration.
+          # Keep the old public preview functions available on first use.
+          g:PV_markdown_preview_package = start .. '/' .. name
+          continue
+        endif
         add(packages, start .. '/' .. name)
       endif
     endfor
@@ -46,5 +52,9 @@ def! s:Configure()
   if !executable(get(g:, 'w3m#command', 'w3m'))
     g:loaded_w3m = 1
   endif
+  augroup PlanetDeferredPreview
+    autocmd!
+    autocmd FuncUndefined Vim_Markdown_Preview,Vim_Markdown_Preview_Local call planet#startup#MarkdownPreview()
+  augroup END
 enddef
 call s:Configure()

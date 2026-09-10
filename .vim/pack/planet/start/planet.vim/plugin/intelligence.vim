@@ -20,5 +20,6 @@ augroup PlanetVimIntelligence
   autocmd User lsp_setup call planet#intelligence#Register()
   autocmd User asyncomplete_setup call planet#intelligence#CompletionSources()
   autocmd User lsp_buffer_enabled call planet#intelligence#Attach()
+  autocmd FileType * call planet#startup#Language()
   autocmd FileType c,cpp,python call planet#intelligence#SetupBuffer()
 augroup END

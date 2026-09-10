@@ -42,6 +42,8 @@ vim9script noclear
 #TODO:    package is 'pvim'
 
 planet#config#Initialize()
+planet#startup#ConfigureShell()
+planet#startup#DeferLanguage()
 
 # Git is optional for editor startup. Apply this after the user's config and
 # before bundled GitGutter loads; explicit preferences remain authoritative.

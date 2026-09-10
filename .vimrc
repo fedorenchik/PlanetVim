@@ -1049,6 +1049,8 @@ g:vista_stay_on_open = 1
 nnoremap <silent> ST :Vista<CR>
 nnoremap <silent> ZT :Vista!<CR>
 nnoremap <silent> <A-t> :Vista!! vim_lsp<CR>
-autocmd VimEnter * call vista#RunForNearestMethodOrFunction()
+# Nearest-symbol status is useful for a file after the user pauses, not for
+# an empty startup buffer. Explicit :Vista actions remain immediately usable.
+autocmd CursorHold * call planet#startup#NearestSymbol()
 # }}}
 # }}}
