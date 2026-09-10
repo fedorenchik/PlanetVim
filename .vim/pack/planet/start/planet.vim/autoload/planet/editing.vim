@@ -209,3 +209,30 @@ func! planet#editing#TemporaryDirectory(project, directory = v:null) abort
   augroup END
   return 1
 endfunc
+
+func! planet#editing#ToggleComment(first, last) abort
+  " Use the filetype's comment format; no external comment plugin is required.
+  let l:format = &l:commentstring
+  if l:format !~# '%s' || l:format ==# '%s'
+    echom 'PlanetVim: set commentstring for this filetype before commenting.'
+    return 0
+  endif
+  let l:parts = split(l:format, '%s', 1)
+  let l:prefix = l:parts[0]
+  let l:suffix = l:parts[1]
+  let l:lines = getline(a:first, a:last)
+  let l:pattern = '^\(\s*\)\V' .. escape(l:prefix, '\') .. '\m\(.*\)\V' .. escape(l:suffix, '\') .. '\m$'
+  let l:uncomment = !empty(l:lines) && empty(filter(copy(l:lines), 'v:val !~# l:pattern'))
+  let l:result = []
+  for l:line in l:lines
+    if l:uncomment
+      let l:match = matchlist(l:line, l:pattern)
+      call add(l:result, l:match[1] .. l:match[2])
+    else
+      let l:indent = matchstr(l:line, '^\s*')
+      call add(l:result, l:indent .. l:prefix .. strpart(l:line, strlen(l:indent)) .. l:suffix)
+    endif
+  endfor
+  call setline(a:first, l:result)
+  return 1
+endfunc
