@@ -2,6 +2,60 @@
 
 This record covers PlanetVim **0.1.0-rc.1**, implemented on **2026-09-08** from baseline `f75c805a`. The source is a release candidate. Native Windows hosted CI and external SDK/target acceptance remain release gates; checked-in automation is not evidence that those jobs ran.
 
+## Linux startup optimization — 2026-09-10
+
+Validated runtime and benchmark commit `edaf1eb`. Fixed menu declarations call
+compiled Vim9 helpers directly, derived hint text is cached, and action search
+indexes on first use. All selected menus remain available immediately, and
+hidden groups remain searchable. Vista's nearest-symbol initialization waits
+for a useful idle buffer; the legacy Markdown preview entry points load on
+first use. LSP initialization waits for a normal buffer with a filetype. Linux
+Fish uses `--no-config -c` for noninteractive commands, with an opt-out and no
+change to interactive terminals. Vendor plugin code is unchanged.
+
+Clean-tree measurements on **GVim 9.2.0849**, using private Xvfb and five fresh
+processes after one excluded warmup, met the **1.0-second first-screen target**:
+
+- Populated PlanetVim hint cache: **0.690 seconds median**, range **0.572–0.712**.
+  Historical pre-vimrc-to-event-loop interval: **0.648 seconds median**.
+- Empty PlanetVim cache for every process: **0.749 seconds median**, range
+  **0.706–0.873**. Historical interval: **0.696 seconds median**.
+- A subsequent five-pair alternating comparison measured **1.069 seconds**
+  before these optimizations (`09c4c807`) and **0.598 seconds** afterward,
+  approximately **44% less time** under the same conditions. The old snapshot
+  used the identical vendor sources.
+
+Timing varied substantially during the session: earlier development runs were
+around 1.2 seconds after optimization. The alternating comparison controls
+for that variation better than comparing unrelated earlier medians. These are
+local results, not a speed guarantee on other machines or under load. Tests
+use an empty buffer and suppress Startify; opening a source file can add its
+filetype and language-provider work. Empty PlanetVim cache does not mean an
+empty operating-system filesystem cache. The first-screen measurement includes
+GVim initialization before the vimrc, unlike the historical interval.
+
+Local records: `dist/startup-optimized-warm.json`,
+`dist/startup-optimized-cold.json`, and
+`dist/startup-optimized-comparison.json`. Reproduce populated-cache and
+empty-cache measurements with `scripts/benchmark.py`, adding `--cold-cache`
+for the latter. No tests or compilers ran concurrently with these measurements.
+
+Validation:
+
+- Full GUI suites: **65 passed, 2 debugpy-dependent skips** out of 67 on both
+  **9.1.0000** and **9.2.0849**. Final focused checks also exercise actual Fish
+  configuration in an interactive terminal, script-local compiled menu
+  callbacks, and the first-buffer LSP initialization guard.
+- Python: **104 passed, 1 optional SFML skip** out of 105.
+- All **2,088 common menu actions** matched the preceding implementation,
+  including every executable mode, shortcut and native tip. The only snapshot
+  difference was a dynamic running-GVim entry.
+- Cache tests cover reload, mapping invalidation, damaged JSON, opt-out and
+  treating cached labels/tips as data. A real fixture language server verifies
+  that the first file receives diagnostics after deferred initialization.
+- Home/private installed startup and the complete Vim9 compile fixture passed.
+  All **122 package inventory records match**; only first-party code changed.
+
 ## First-party Vim9 migration — 2026-09-10
 
 Validated runtime commit `551c799f` on Linux GTK3 GVim. First-party

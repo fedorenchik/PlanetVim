@@ -219,7 +219,8 @@ Use `let g:PV_menu_cache = 0` there to disable the hint cache.
 
 Measure startup with `python3 scripts/benchmark.py --runs 5 --xvfb /path/to/Xvfb`.
 Each sample starts a fresh GVim process, with a cache populated by one excluded
-warmup. `--cold-cache` measures with an empty PlanetVim cache each time; it does
+warmup, an empty buffer and the Startify dashboard suppressed. `--cold-cache`
+measures with an empty PlanetVim cache each time; it does
 not flush the operating system's filesystem cache. The report includes both
 the historical pre-vimrc-to-event-loop interval and GVim's first-screen time
 from `--startuptime`. The current optimization target is a **1.0-second median
