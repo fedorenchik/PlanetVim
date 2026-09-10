@@ -1,605 +1,649 @@
-scriptversion 4
+vim9script
 
-let s:runtime = expand('<sfile>:p:h:h:h')
-let s:specs = json_decode(join(readfile(s:runtime .. '/data/integrations.json'), "\n"))
-let s:display_jobs = {}
-let s:environment_stack = []
-let s:initial_display = $DISPLAY
+var script_runtime = expand('<script>:p:h:h:h')
+var script_specs = json_decode(join(readfile(script_runtime .. '/data/integrations.json'), "\n"))
+var script_display_jobs = {}
+var script_environment_stack = []
+var script_initial_display = $DISPLAY
 
-func! s:Error(message) abort
+def LocalError(message: any): any
   echohl ErrorMsg
-  echomsg 'PlanetVim: ' .. a:message
+  echomsg 'PlanetVim: ' .. message
   echohl None
   return 0
-endfunc
+enddef
 
-func! planet#integrations#Specs() abort
-  return deepcopy(s:specs)
-endfunc
+export def Specs(): any
+  return deepcopy(script_specs)
+enddef
 
-func! s:Context() abort
-  let l:root = planet#run#Project().root
-  let l:build = planet#build#GetBuildDir()
-  return #{root: l:root, build: empty(l:build) ? l:root .. '/build' : l:build,
-        \ file: expand('%:p'), stem: expand('%:p:r'), cwd: getcwd(), display: $DISPLAY}
-endfunc
+def LocalContext(): any
+  var root: any = planet#run#Project().root
+  var build: any = planet#build#GetBuildDir()
+  return {root: root, build: empty(build) ? root .. '/build' : build, file: expand('%:p'), stem: expand('%:p:r'), cwd: getcwd(), display: $DISPLAY}
+enddef
 
-func! s:Expand(value, context) abort
-  if type(a:value) == v:t_list
-    return map(copy(a:value), {_, item -> s:Expand(item, a:context)})
+def LocalExpand(value: any, context: any): any
+  if type(value) == v:t_list
+    return map(copy(value), (_, lambda_item) => LocalExpand(lambda_item, context))
   endif
-  return substitute(a:value, '%\(root\|build\|file\|stem\|cwd\|display\)%',
-        \ {m -> get(a:context, m[1], '')}, 'g')
-endfunc
+  return substitute(value, '%\(root\|build\|file\|stem\|cwd\|display\)%', (lambda_m) => get(context, lambda_m[1], ''), 'g')
+enddef
 
-" Executable overrides are argv Lists; Qt SDK tools are found through QTDIR
-" before system installations. No shell parses filenames or entered arguments.
-func! planet#integrations#Tool(name, qt = v:false) abort
-  let l:override = get(get(g:, 'PV_integration_tools', {}), a:name, a:name)
-  let l:argv = type(l:override) == v:t_list ? copy(l:override) : [l:override]
-  if empty(l:argv) || ! empty(filter(copy(l:argv), {_, v -> type(v) != v:t_string}))
-    throw 'invalid executable override for ' .. a:name
+# Executable overrides are argv Lists; Qt SDK tools are found through QTDIR
+# before system installations. No shell parses filenames or entered arguments.
+export def Tool(name: any, qt: any = v:false): any
+  var sdk: any
+  var found: any
+  var override: any = get(get(g:, 'PV_integration_tools', {}), name, name)
+  var argv: any = type(override) == v:t_list ? copy(override) : [override]
+  if empty(argv) || ! empty(filter(copy(argv), (_, lambda_v) => type(lambda_v) != v:t_string))
+    throw 'invalid executable override for ' .. name
   endif
-  let l:candidates = []
-  if l:argv[0] ==# a:name
-    let l:candidates += [planet#run#Project().root .. '/node_modules/.bin/' .. l:argv[0]]
+  var candidates: any = []
+  if argv[0] ==# name
+    candidates += [planet#run#Project().root .. '/node_modules/.bin/' .. argv[0]]
   endif
-  if a:qt && ! empty($QTDIR)
-    let l:candidates += [$QTDIR .. '/bin/' .. l:argv[0], $QTDIR .. '/libexec/' .. l:argv[0]]
+  if qt && ! empty($QTDIR)
+    candidates += [$QTDIR .. '/bin/' .. argv[0], $QTDIR .. '/libexec/' .. argv[0]]
   endif
-  call add(l:candidates, l:argv[0])
-  if index(['sdkmanager', 'avdmanager'], a:name) >= 0
-    let l:sdk = ! empty($ANDROID_HOME) ? $ANDROID_HOME : $ANDROID_SDK_ROOT
-    if ! empty(l:sdk)
-      let l:candidates += [l:sdk .. '/cmdline-tools/latest/bin/' .. a:name]
+  add(candidates, argv[0])
+  if index(['sdkmanager', 'avdmanager'], name) >= 0
+    sdk = ! empty($ANDROID_HOME) ? $ANDROID_HOME : $ANDROID_SDK_ROOT
+    if ! empty(sdk)
+      candidates += [sdk .. '/cmdline-tools/latest/bin/' .. name]
     endif
   endif
-  if a:qt && ! has('win32')
-    let l:candidates += ['/usr/lib/qt6/bin/' .. l:argv[0], '/usr/lib/qt6/' .. l:argv[0],
-          \ '/usr/lib/qt6/libexec/' .. l:argv[0]]
+  if qt && ! has('win32')
+    candidates += ['/usr/lib/qt6/bin/' .. argv[0], '/usr/lib/qt6/' .. argv[0],  '/usr/lib/qt6/libexec/' .. argv[0]]
   endif
-  for l:entry in l:candidates
-    let l:found = exepath(l:entry)
-    if ! empty(l:found)
-      let l:argv[0] = l:found
-      if has('win32') && l:found =~? '\.\%(cmd\|bat\)$'
-        return s:Helper() + ['native'] + l:argv
+  for entry in candidates
+    found = exepath(entry)
+    if ! empty(found)
+      argv[0] = found
+      if has('win32') && found =~? '\.\%(cmd\|bat\)$'
+        return LocalHelper() + ['native'] + argv
       endif
-      return l:argv
+      return argv
     endif
   endfor
-  throw 'required tool ' .. a:name .. ' is missing. Install its SDK/CLI and add it to PATH'
-        \ .. (a:qt ? ' or set QTDIR to its Qt prefix' : '')
-        \ .. '; g:PV_integration_tools[' .. string(a:name) .. '] may select an executable/argv List.'
-endfunc
+  throw 'required tool ' .. name .. ' is missing. Install its SDK/CLI and add it to PATH'  .. (qt ? ' or set QTDIR to its Qt prefix' :  '')  .. '; g:PV_integration_tools[' .. string(name) .. '] may select an executable/argv List.'
+enddef
 
-func! s:Values(spec, supplied, context) abort
-  let l:values = {}
-  for l:field in a:spec.fields
-    let l:default = s:Expand(l:field.default, a:context)
-    if has_key(a:supplied, l:field.name)
-      let l:value = a:supplied[l:field.name]
+def LocalValues(spec: any, supplied: any, context: any): any
+  var default: any
+  var value: any
+  var values: any = {}
+  for field in spec.fields
+    default = LocalExpand(field.default, context)
+    if has_key(supplied, field.name)
+      value = supplied[field.name]
     else
-      let l:default = type(l:default) == v:t_list ? json_encode(l:default) : l:default
-      let l:value = inputdialog(l:field.label .. ': ', l:default, "\x01")
+      default = type(default) == v:t_list ? json_encode(default) : default
+      value = inputdialog(field.label .. ': ', default, "\x01")
     endif
-    if l:value is v:null || (type(l:value) == v:t_string && (l:value ==# "\x01" || empty(l:value)))
+    if value == null || (type(value) == v:t_string && (value ==# "\x01" || empty(value)))
       throw 'cancelled'
     endif
-    if l:field.kind =~# 'args$'
-      let l:value = type(l:value) == v:t_list ? l:value : json_decode(l:value)
-      if type(l:value) != v:t_list || ! empty(filter(copy(l:value), {_, item -> type(item) != v:t_string}))
-        throw l:field.label .. ' must be a JSON array of Strings'
+    if field.kind =~# 'args$'
+      value = type(value) == v:t_list ? value : json_decode(value)
+      if type(value) != v:t_list || ! empty(filter(copy(value), (_, lambda_item) => type(lambda_item) != v:t_string))
+        throw field.label .. ' must be a JSON array of Strings'
       endif
-      if l:field.kind ==# 'required_args' && empty(l:value)
-        throw l:field.label .. ' must include at least one argument'
+      if field.kind ==# 'required_args' && empty(value)
+        throw field.label .. ' must include at least one argument'
       endif
-    elseif type(l:value) != v:t_string || l:value =~# '[\r\n]'
-      throw l:field.label .. ' must be a single-line String'
-    elseif l:field.kind ==# 'pid' && (l:value !~# '^\d\+$' || str2nr(l:value) <= 0)
-      throw l:field.label .. ' must be a positive integer'
-    elseif index(['file', 'dir', 'output'], l:field.kind) >= 0
-      let l:value = planet#run#Path(l:value, a:context.root)
-      if l:field.kind ==# 'file' && ! filereadable(l:value)
-        throw 'input file does not exist: ' .. l:value
-      elseif l:field.kind ==# 'dir' && ! isdirectory(l:value)
-        throw 'directory does not exist: ' .. l:value
+    elseif type(value) != v:t_string || value =~# '[\r\n]'
+      throw field.label .. ' must be a single-line String'
+    elseif field.kind ==# 'pid' && (value !~# '^\d\+$' || str2nr(value) <= 0)
+      throw field.label .. ' must be a positive integer'
+    elseif index(['file', 'dir', 'output'], field.kind) >= 0
+      value = planet#run#Path(value, context.root)
+      if field.kind ==# 'file' && ! filereadable(value)
+        throw 'input file does not exist: ' .. value
+      elseif field.kind ==# 'dir' && ! isdirectory(value)
+        throw 'directory does not exist: ' .. value
       endif
     endif
-    let l:values[l:field.name] = l:value
+    values[field.name] = value
   endfor
-  return l:values
-endfunc
+  return values
+enddef
 
-" Plan resolves literal arguments and inputs, without starting a command.
-func! planet#integrations#Plan(id, values = {}) abort
-  if ! has_key(s:specs, a:id)
-    throw 'unknown integration: ' .. a:id
+# Plan resolves literal arguments and inputs, without starting a command.
+export def Plan(id: any, arg_values: any = {}): any
+  var part: any
+  var key: any
+  if ! has_key(script_specs, id)
+    throw 'unknown integration: ' .. id
   endif
-  let l:spec = s:specs[a:id]
-  if get(l:spec, 'linux', v:false) && has('win32')
-    throw a:id .. ' requires a Linux host and its native toolchain'
+  var spec: any = script_specs[id]
+  if get(spec, 'linux', v:false) && has('win32')
+    throw id .. ' requires a Linux host and its native toolchain'
   endif
-  let l:context = s:Context()
-  let l:values = s:Values(l:spec, a:values, l:context)
-  let l:argv = []
-  for l:part in l:spec.argv
-    let l:part = s:Expand(l:part, l:context)
-    let l:key = matchstr(l:part, '^{\zs[^}]*\ze}$')
-    if has_key(l:values, l:key) && type(l:values[l:key]) == v:t_list
-      let l:argv += l:values[l:key]
+  var context: any = LocalContext()
+  var values: any = LocalValues(spec, arg_values, context)
+  var argv: any = []
+  for item_part in spec.argv
+    part = item_part
+    part = LocalExpand(part, context)
+    key = matchstr(part, '^{\zs[^}]*\ze}$')
+    if has_key(values, key) && type(values[key]) == v:t_list
+      argv += values[key]
     else
-      call add(l:argv, substitute(l:part, '{\([^}]*\)}', {m -> get(l:values, m[1], m[0])}, 'g'))
+      add(argv, substitute(part, '{\([^}]*\)}', (lambda_m) => get(values, lambda_m[1], lambda_m[0]), 'g'))
     endif
   endfor
-  let l:argv = planet#integrations#Tool(l:argv[0], get(l:spec, 'qt', v:false)) + l:argv[1:]
-  return #{argv: l:argv, cwd: l:context.root, values: l:values,
-        \ note: get(l:spec, 'note', ''), then_build: get(l:spec, 'then_build', v:false)}
-endfunc
+  argv = planet#integrations#Tool(argv[0], get(spec, 'qt', v:false)) + argv[1 : ]
+  return {argv: argv, cwd: context.root, values: values, note: get(spec, 'note', ''), then_build: get(spec, 'then_build', v:false)}
+enddef
 
-func! s:Configured(plan, options, result, buffer) abort
-  if a:result.status ==# 'success'
-    call planet#term#RunArgv(planet#integrations#Tool('cmake') + ['--build', a:plan.values.directory],
-          \ v:false, v:false, get(a:options, 'hidden', v:false), a:plan.cwd,
-          \ get(a:options, 'on_exit', v:null))
-  elseif type(get(a:options, 'on_exit', v:null)) == v:t_func
-    call call(a:options.on_exit, [a:result, a:buffer])
+def LocalConfigured(plan: any, options: any, result: any, buffer: any): any
+  if result.status ==# 'success'
+    planet#term#RunArgv(planet#integrations#Tool('cmake') + ['--build', plan.values.directory],  v:false, v:false, get(options, 'hidden', v:false), plan.cwd,  get(options, 'on_exit', v:null))
+  elseif type(get(options, 'on_exit', v:null)) == v:t_func
+    call(options.on_exit, [result, buffer])
   endif
-endfunc
+  return 0
+enddef
 
-func! planet#integrations#Run(id, values = {}, options = {}) abort
+export def Run(id: any, values: any = {}, options: any = {}): any
+  var plan: any
+  var Callback: any
   try
-    let l:plan = planet#integrations#Plan(a:id, a:values)
-    if ! empty(l:plan.note)
-      echomsg 'PlanetVim: ' .. l:plan.note
+    plan = planet#integrations#Plan(id, values)
+    if ! empty(plan.note)
+      echomsg 'PlanetVim: ' .. plan.note
     endif
-    let l:Callback = l:plan.then_build ? function('s:Configured', [l:plan, a:options])
-          \ : get(a:options, 'on_exit', v:null)
-    if a:id ==# 'xvfb-view'
-      call planet#integrations#Tool('vncviewer')
-      let l:plan.argv = s:Helper() + ['view-display', l:plan.values.display,
-            \ l:plan.values.password, l:plan.values.port, s:initial_display]
+    Callback = plan.then_build ? function(LocalConfigured, [plan, options]) : get(options, 'on_exit', v:null)
+    if id ==# 'xvfb-view'
+      planet#integrations#Tool('vncviewer')
+      plan.argv = LocalHelper() + ['view-display', plan.values.display,  plan.values.password, plan.values.port, script_initial_display]
     endif
-    return planet#term#RunArgv(l:plan.argv, v:false, v:false, get(a:options, 'hidden', v:false), l:plan.cwd, l:Callback)
+    return planet#term#RunArgv(plan.argv, v:false, v:false, get(options, 'hidden', v:false), plan.cwd, Callback)
   catch
-    return v:exception ==# 'cancelled' ? 0 : s:Error(v:exception)
+    return v:exception ==# 'cancelled' ? 0 : LocalError(v:exception)
   endtry
-endfunc
+enddef
 
-func! planet#integrations#Command(argv, options = {}) abort
+export def Command(arg_argv: any, options: any = {}): any
+  var argv: any
   try
-    if empty(a:argv)
-      return s:Error('a command must include an executable')
+    if empty(arg_argv)
+      return LocalError('a command must include an executable')
     endif
-    let l:argv = planet#integrations#Tool(a:argv[0], get(a:options, 'qt', v:false)) + a:argv[1:]
-    return planet#term#RunArgv(l:argv, v:false, v:false, get(a:options, 'hidden', v:false),
-          \ get(a:options, 'cwd', planet#run#Project().root), get(a:options, 'on_exit', v:null))
+    argv = planet#integrations#Tool(arg_argv[0], get(options, 'qt', v:false)) + arg_argv[1 : ]
+    return planet#term#RunArgv(argv, v:false, v:false, get(options, 'hidden', v:false), get(options, 'cwd',
+         planet#run#Project().root), get(options, 'on_exit', v:null))
   catch
-    return s:Error(v:exception)
+    return LocalError(v:exception)
   endtry
-endfunc
+enddef
 
-func! planet#integrations#Ask(argv, label, default = []) abort
+export def Ask(argv: any, label: any, default: any = []): any
+  var args: any
   try
-    let l:args = inputdialog(a:label .. ' (JSON array): ', json_encode(a:default), '')
-    if empty(l:args)
+    args = inputdialog(label .. ' (JSON array): ', json_encode(default), '')
+    if empty(args)
       return 0
     endif
-    let l:args = json_decode(l:args)
-    if type(l:args) != v:t_list || ! empty(filter(copy(l:args), {_, item -> type(item) != v:t_string}))
-      return s:Error('arguments must be a JSON array of Strings')
+    args = json_decode(args)
+    if type(args) != v:t_list || ! empty(filter(copy(args), (_, lambda_item) => type(lambda_item) != v:t_string))
+      return LocalError('arguments must be a JSON array of Strings')
     endif
-    if empty(l:args)
+    if empty(args)
       return 0
     endif
-    return planet#integrations#Command(a:argv + l:args)
+    return planet#integrations#Command(argv + args)
   catch
-    return s:Error(v:exception)
+    return LocalError(v:exception)
   endtry
-endfunc
+enddef
 
-func! planet#integrations#Set(name, value = v:null, global = v:false) abort
-  let l:previous = a:global ? get(g:, a:name, '') : getenv(a:name)
-  let l:value = a:value is v:null ? inputdialog(a:name .. ': ', l:previous is v:null ? '' : string(l:previous)->substitute("^'\|'$", '', 'g'), "\x01") : a:value
-  if l:value ==# "\x01" || empty(l:value)
+export def Set(name: any, arg_value: any = v:null, global: any = v:false): any
+  var previous: any = global ? get(g:, name, '') : getenv(name)
+  var value: any = arg_value == null ? inputdialog(name .. ': ', previous == null ? '' : string(previous)->substitute("^'\|'$", '', 'g'), "\x01") : arg_value
+  if value ==# "\x01" || empty(value)
     return 0
   endif
-  if a:global
-    let g:[a:name] = l:value
+  if global
+    g:[name] = value
   else
-    call setenv(a:name, l:value)
+    setenv(name, value)
   endif
-  echomsg a:name .. '=' .. l:value
+  echomsg name .. '=' .. value
   return 1
-endfunc
+enddef
 
-func! planet#integrations#Compiler(name, prefix = v:null) abort
-  let l:pair = get(#{gcc: ['gcc', 'g++'], clang: ['clang', 'clang++'], emcc: ['emcc', 'em++']}, a:name, [])
-  let l:defaults = #{raspberry: 'aarch64-linux-gnu-', esp32: 'xtensa-esp32-elf-', arduino: 'avr-',
-        \ jetson: 'aarch64-linux-gnu-', beaglebone: 'arm-linux-gnueabihf-', coral: 'aarch64-linux-gnu-',
-        \ hikey: 'aarch64-linux-gnu-', mingw: 'x86_64-w64-mingw32-', arm: 'arm-none-eabi-',
-        \ aarch64: 'aarch64-linux-gnu-', avr: 'avr-'}
-  if empty(l:pair)
-    let l:prefix = a:prefix is v:null ? inputdialog('Cross compiler prefix (including path if needed): ', get(l:defaults, a:name, ''), '') : a:prefix
-    if empty(l:prefix)
+export def Compiler(name: any, arg_prefix: any = v:null): any
+  var prefix: any
+  var cc: any
+  var cxx: any
+  var pair: any = get({gcc: ['gcc', 'g++'], clang: ['clang', 'clang++'], emcc: ['emcc', 'em++']}, name, [])
+  var defaults: any = {raspberry: 'aarch64-linux-gnu-', esp32: 'xtensa-esp32-elf-', arduino: 'avr-', jetson: 'aarch64-linux-gnu-',
+       beaglebone: 'arm-linux-gnueabihf-', coral: 'aarch64-linux-gnu-', hikey: 'aarch64-linux-gnu-', mingw: 'x86_64-w64-mingw32-',
+       arm: 'arm-none-eabi-', aarch64: 'aarch64-linux-gnu-', avr: 'avr-'}
+  if empty(pair)
+    prefix = arg_prefix == null ? inputdialog('Cross compiler prefix (including path if needed): ', get(defaults, name, ''), '') : arg_prefix
+    if empty(prefix)
       return 0
     endif
-    let l:pair = [l:prefix .. 'gcc', l:prefix .. 'g++']
+    pair = [prefix .. 'gcc', prefix .. 'g++']
   endif
   try
-    let l:cc = planet#integrations#Tool(l:pair[0])
-    let l:cxx = planet#integrations#Tool(l:pair[1])
-    if len(l:cc) != 1 || len(l:cxx) != 1
-      return s:Error('compiler environment values must be single executable paths')
+    cc = planet#integrations#Tool(pair[0])
+    cxx = planet#integrations#Tool(pair[1])
+    if len(cc) != 1 || len(cxx) != 1
+      return LocalError('compiler environment values must be single executable paths')
     endif
-    let $CC = l:cc[0]
-    let $CXX = l:cxx[0]
-    if exists('l:prefix')
-      let $CROSS_COMPILE = l:prefix
+    $CC = cc[0]
+    $CXX = cxx[0]
+    if !empty(prefix)
+      $CROSS_COMPILE = prefix
     endif
     echomsg 'Compiler selected for new build configurations: CC=' .. $CC .. ', CXX=' .. $CXX
     return 1
   catch
-    return s:Error(v:exception)
+    return LocalError(v:exception)
   endtry
-endfunc
+enddef
 
-func! planet#integrations#Write(kind, filename = v:null, value = v:null) abort
-  let l:root = planet#run#Project().root
-  let l:default = l:root .. '/' .. (a:kind ==# 'qt-conf' ? 'qt.conf' : 'autogen.sh')
-  let l:file = a:filename is v:null ? inputdialog('New configuration file: ', l:default, '') : a:filename
-  if empty(l:file)
+export def Write(kind: any, filename: any = v:null, value: any = v:null): any
+  var prefix: any
+  var lines: any
+  var root: any = planet#run#Project().root
+  var default: any = root .. '/' .. (kind ==# 'qt-conf' ? 'qt.conf' : 'autogen.sh')
+  var file: any = filename == null ? inputdialog('New configuration file: ', default, '') : filename
+  if empty(file)
     return 0
   endif
-  let l:file = planet#run#Path(l:file, l:root)
-  if getftype(l:file) !=# ''
-    return s:Error('file already exists; open it to edit: ' .. l:file)
+  file = planet#run#Path(file, root)
+  if getftype(file) !=# ''
+    return LocalError('file already exists; open it to edit: ' .. file)
   endif
-  if a:kind ==# 'qt-conf'
-    let l:prefix = a:value is v:null ? inputdialog('Qt installation prefix (relative to executable or absolute): ', $QTDIR, '') : a:value
-    if empty(l:prefix)
+  if kind ==# 'qt-conf'
+    prefix = value == null ? inputdialog('Qt installation prefix (relative to executable or absolute): ', $QTDIR, '') : value
+    if empty(prefix)
       return 0
     endif
-    let l:lines = ['[Paths]', 'Prefix=' .. l:prefix]
-  elseif a:kind ==# 'autogen'
-    let l:lines = ['#!/bin/sh', 'set -eu', 'cd -- "$(dirname -- "$0")"', 'exec autoreconf --force --install "$@"']
+    lines = ['[Paths]', 'Prefix=' .. prefix]
+  elseif kind ==# 'autogen'
+    lines = ['#!/bin/sh', 'set -eu', 'cd -- "$(dirname -- "$0")"', 'exec autoreconf --force --install "$@"']
   else
-    return s:Error('unknown configuration kind: ' .. a:kind)
+    return LocalError('unknown configuration kind: ' .. kind)
   endif
-  call writefile(l:lines, l:file)
-  if a:kind ==# 'autogen' && ! has('win32')
-    call setfperm(l:file, 'rwxr-xr-x')
+  writefile(lines, file)
+  if kind ==# 'autogen' && ! has('win32')
+    setfperm(file, 'rwxr-xr-x')
   endif
-  execute 'edit ' .. fnameescape(l:file)
+  execute 'edit ' .. fnameescape(file)
   return 1
-endfunc
+enddef
 
-func! planet#integrations#Browse(path) abort
-  let l:path = a:path
-  if a:path ==# '/proc/PID'
-    let l:pid = inputdialog('Process ID: ', '', '')
-    if l:pid !~# '^\d\+$'
+export def Browse(arg_path: any): any
+  var pid: any
+  var path: any = arg_path
+  if arg_path ==# '/proc/PID'
+    pid = inputdialog('Process ID: ', '', '')
+    if pid !~# '^\d\+$'
       return 0
     endif
-    let l:path = '/proc/' .. l:pid
+    path = '/proc/' .. pid
   endif
-  if ! isdirectory(l:path)
-    return s:Error('directory unavailable: ' .. l:path)
+  if ! isdirectory(path)
+    return LocalError('directory unavailable: ' .. path)
   endif
-  execute 'Fern ' .. fnameescape(l:path)
+  execute 'Fern ' .. fnameescape(path)
   return 1
-endfunc
+enddef
 
-func! planet#integrations#XDisplay(action, value = v:null) abort
+export def XDisplay(action: any, value: any = v:null): any
+  var buffer: any
   if has('win32')
-    return s:Error('Xvfb actions require a Linux X server host')
+    return LocalError('Xvfb actions require a Linux X server host')
   endif
-  let l:display = a:value is v:null ? inputdialog('X display: ', empty($DISPLAY) ? ':80' : $DISPLAY, '') : a:value
-  if l:display !~# '^:\d\+\%(\.\d\+\)\?$'
-    return empty(l:display) ? 0 : s:Error('use a local display such as :80')
+  var display: any = value == null ? inputdialog('X display: ', empty($DISPLAY) ? ':80' : $DISPLAY, '') : value
+  if display !~# '^:\d\+\%(\.\d\+\)\?$'
+    return empty(display) ? 0 : LocalError('use a local display such as :80')
   endif
-  if a:action ==# 'set'
-    let $DISPLAY = l:display
+  if action ==# 'set'
+    $DISPLAY = display
     return 1
-  elseif a:action ==# 'stop'
-    if ! has_key(s:display_jobs, l:display)
-      return s:Error('no PlanetVim-owned Xvfb job for ' .. l:display)
+  elseif action ==# 'stop'
+    if ! has_key(script_display_jobs, display)
+      return LocalError('no PlanetVim-owned Xvfb job for ' .. display)
     endif
-    return planet#term#Cancel(s:display_jobs[l:display])
-  elseif a:action ==# 'start'
-    if has_key(s:display_jobs, l:display) && get(planet#term#Result(s:display_jobs[l:display]), 'status', '') ==# 'running'
-      return s:Error('PlanetVim already started ' .. l:display)
+    return planet#term#Cancel(script_display_jobs[display])
+  elseif action ==# 'start'
+    if has_key(script_display_jobs, display) && get(planet#term#Result(script_display_jobs[display]), 'status', '') ==# 'running'
+      return LocalError('PlanetVim already started ' .. display)
     endif
-    let l:buffer = planet#integrations#Command(['Xvfb', l:display, '-screen', '0', '1280x900x24', '-nolisten', 'tcp'],
-          \ #{hidden: v:true, on_exit: function('s:DisplayExited', [l:display])})
-    if l:buffer > 0
-      let s:display_jobs[l:display] = l:buffer
+    buffer = planet#integrations#Command(['Xvfb', display, '-screen', '0', '1280x900x24', '-nolisten', 'tcp'], {hidden: v:true, on_exit: function(LocalDisplayExited, [display])})
+    if buffer > 0
+      script_display_jobs[display] = buffer
     endif
-    return l:buffer
+    return buffer
   endif
-  return s:Error('unknown X display action')
-endfunc
+  return LocalError('unknown X display action')
+enddef
 
-func! s:DisplayExited(display, result, buffer) abort
-  if get(s:display_jobs, a:display, 0) == a:buffer
-    call remove(s:display_jobs, a:display)
+def LocalDisplayExited(display: any, result: any, buffer: any): any
+  if get(script_display_jobs, display, 0) == buffer
+    remove(script_display_jobs, display)
   endif
-endfunc
+  return 0
+enddef
 
-func! s:Helper() abort
-  return planet#generate#Python() + [s:runtime .. '/bin/integration-tool.py']
-endfunc
+def LocalHelper(): any
+  return planet#generate#Python() + [script_runtime .. '/bin/integration-tool.py']
+enddef
 
-func! s:EnvironmentReady(filename, result, buffer) abort
+def LocalEnvironmentReady(filename: any, result: any, buffer: any): any
+  var new: any
+  var previous: any
+  var applied: any
+  var value: any
   try
-    if a:result.status !=# 'success' || ! filereadable(a:filename)
-      return
+    if result.status !=# 'success' || ! filereadable(filename)
+      return 0
     endif
-    let l:new = json_decode(join(readfile(a:filename), "\n"))
-    let l:previous = {}
-    let l:applied = {}
-    for l:key in uniq(sort(keys(environ()) + keys(l:new)))
-      let l:value = get(l:new, l:key, v:null)
-      if l:key =~# '^\h\w*$' && (type(l:value) == v:t_string || l:value is v:null)
-            \ && index(['HOME', 'CODEX_HOME', 'USERPROFILE', 'PWD', 'OLDPWD', 'SHLVL', '_'], l:key) < 0
-            \ && getenv(l:key) !=# l:value
-        let l:previous[l:key] = getenv(l:key)
-        let l:applied[l:key] = l:value
-        call setenv(l:key, l:value)
+    new = json_decode(join(readfile(filename), "\n"))
+    previous = {}
+    applied = {}
+    for key in uniq(sort(keys(environ()) + keys(new)))
+      value = get(new, key, v:null)
+      if key =~# '^\h\w*$' && (type(value) == v:t_string || value == null) && index(['HOME', 'CODEX_HOME',
+           'USERPROFILE', 'PWD', 'OLDPWD', 'SHLVL', '_'], key) < 0 && getenv(key) !=# value
+        previous[key] = getenv(key)
+        applied[key] = value
+        setenv(key, value)
       endif
     endfor
-    call add(s:environment_stack, #{previous: l:previous, applied: l:applied})
+    add(script_environment_stack, {previous: previous, applied: applied})
     echomsg 'PlanetVim: SDK environment applied to this GVim and subsequent tool jobs.'
   finally
-    call delete(a:filename)
+    delete(filename)
   endtry
-endfunc
+  return 0
+enddef
 
-func! planet#integrations#RestoreEnvironment() abort
-  if empty(s:environment_stack)
-    return s:Error('no SDK environment activated by PlanetVim in this GVim')
+export def RestoreEnvironment(): any
+  if empty(script_environment_stack)
+    return LocalError('no SDK environment activated by PlanetVim in this GVim')
   endif
-  let l:entry = remove(s:environment_stack, -1)
-  for [l:key, l:previous] in items(l:entry.previous)
-    " Keep values the user changed after activation.
-    if getenv(l:key) ==# l:entry.applied[l:key]
-      call setenv(l:key, l:previous)
+  var entry: any = remove(script_environment_stack, -1)
+  for [key, previous] in items(entry.previous)
+    # Keep values the user changed after activation.
+    if getenv(key) ==# entry.applied[key]
+      setenv(key, previous)
     endif
   endfor
   return 1
-endfunc
+enddef
 
-func! planet#integrations#Environment(kind, filename = v:null, arguments = [], options = {}) abort
-  let l:defaults = #{ros2: planet#run#Project().root .. '/install/setup.' .. (has('win32') ? 'bat' : 'bash'),
-        \ yocto: planet#run#Project().root .. '/oe-init-build-env',
-        \ emsdk: $EMSDK .. '/emsdk_env.' .. (has('win32') ? 'bat' : 'sh'),
-        \ platformio: expand('~/.platformio/penv/') .. (has('win32') ? 'Scripts/activate.bat' : 'bin/activate')}
-  let l:file = a:filename is v:null ? inputdialog('SDK setup script to execute: ', get(l:defaults, a:kind, ''), '') : a:filename
-  if empty(l:file)
+export def Environment(kind: any, filename: any = v:null, arguments: any = [], options: any = {}): any
+  var defaults: any = {ros2: planet#run#Project().root .. '/install/setup.' .. (has('win32') ? 'bat' : 'bash'),
+       yocto: planet#run#Project().root .. '/oe-init-build-env', emsdk: $EMSDK .. '/emsdk_env.' .. (has('win32') ? 'bat' : 'sh'),
+       platformio: expand('~/.platformio/penv/') .. (has('win32') ? 'Scripts/activate.bat' : 'bin/activate')}
+  var file: any = filename == null ? inputdialog('SDK setup script to execute: ', get(defaults, kind, ''), '') : filename
+  if empty(file)
     return 0
   endif
-  if ! filereadable(l:file)
-    return s:Error('SDK setup script not found: ' .. l:file .. '. Install/select the SDK first.')
+  if ! filereadable(file)
+    return LocalError('SDK setup script not found: ' .. file .. '. Install/select the SDK first.')
   endif
-  let l:result = tempname() .. '.json'
-  return planet#term#RunArgv(s:Helper() + ['source-env', l:result, fnamemodify(l:file, ':p')] + a:arguments,
-        \ v:false, v:false, get(a:options, 'hidden', v:false), planet#run#Project().root,
-        \ function('s:EnvironmentReady', [l:result]))
-endfunc
+  var result: any = tempname() .. '.json'
+  return planet#term#RunArgv(LocalHelper() + ['source-env', result, fnamemodify(file, ':p')] + arguments,
+       v:false, v:false, get(options, 'hidden', v:false), planet#run#Project().root, function(LocalEnvironmentReady,
+       [result]))
+enddef
 
-func! planet#integrations#Conda(name = v:null) abort
-  let l:name = a:name is v:null ? inputdialog('Conda environment name: ', 'base', '') : a:name
-  if empty(l:name)
+export def Conda(arg_name: any = v:null): any
+  var conda: any
+  var result: any
+  var name: any = arg_name == null ? inputdialog('Conda environment name: ', 'base', '') : arg_name
+  if empty(name)
     return 0
   endif
   try
-    let l:conda = planet#integrations#Tool('conda')
-    if len(l:conda) != 1
-      return s:Error('Conda activation requires a single native conda executable')
+    conda = planet#integrations#Tool('conda')
+    if len(conda) != 1
+      return LocalError('Conda activation requires a single native conda executable')
     endif
-    let l:result = tempname() .. '.json'
-    return planet#term#RunArgv(s:Helper() + ['conda-env', l:result, l:conda[0], l:name],
-          \ v:false, v:false, v:false, planet#run#Project().root,
-          \ function('s:EnvironmentReady', [l:result]))
+    result = tempname() .. '.json'
+    return planet#term#RunArgv(LocalHelper() + ['conda-env', result, conda[0], name], v:false, v:false,
+         v:false, planet#run#Project().root, function(LocalEnvironmentReady, [result]))
   catch
-    return s:Error(v:exception)
+    return LocalError(v:exception)
   endtry
-endfunc
+enddef
 
-func! planet#integrations#ExportRequirements(dev = v:false, filename = v:null) abort
-  let l:default = planet#run#Project().root .. '/' .. (a:dev ? 'dev-requirements.txt' : 'requirements.txt')
-  let l:file = a:filename is v:null ? inputdialog('New requirements file: ', l:default, '') : a:filename
-  if empty(l:file)
+export def ExportRequirements(dev: any = v:false, filename: any = v:null): any
+  var command: any
+  var default: any = planet#run#Project().root .. '/' .. (dev ? 'dev-requirements.txt' : 'requirements.txt')
+  var file: any = filename == null ? inputdialog('New requirements file: ', default, '') : filename
+  if empty(file)
     return 0
   endif
   try
-    let l:command = planet#integrations#Tool('pipenv') + ['requirements'] + (a:dev ? ['--dev-only'] : [])
-    return planet#term#RunArgv(s:Helper() + ['capture', l:file] + l:command,
-          \ v:false, v:false, v:false, planet#run#Project().root)
+    command = planet#integrations#Tool('pipenv') + ['requirements'] + (dev ? ['--dev-only'] : [])
+    return planet#term#RunArgv(LocalHelper() + ['capture', file] + command, v:false, v:false, v:false, planet#run#Project().root)
   catch
-    return s:Error(v:exception)
+    return LocalError(v:exception)
   endtry
-endfunc
+enddef
 
-func! planet#integrations#ConfigureValue(name, value = v:null) abort
-  let l:values = get(t:, 'PV_configure_values', {})
-  let l:value = a:value is v:null ? inputdialog('Configure ' .. a:name .. ': ', get(l:values, a:name, ''), '') : a:value
-  if empty(l:value)
+export def ConfigureValue(name: any, arg_value: any = v:null): any
+  var values: any = get(t:, 'PV_configure_values', {})
+  var value: any = arg_value == null ? inputdialog('Configure ' .. name .. ': ', get(values, name, ''), '') : arg_value
+  if empty(value)
     return 0
   endif
-  if a:name ==# 'sysroot' && ! isdirectory(l:value)
-    return s:Error('sysroot directory does not exist')
+  if name ==# 'sysroot' && ! isdirectory(value)
+    return LocalError('sysroot directory does not exist')
   endif
-  let l:values[a:name] = l:value
-  let t:PV_configure_values = l:values
-  if a:name ==# 'sysroot'
-    let $SYSROOT = fnamemodify(l:value, ':p')
+  values[name] = value
+  t:PV_configure_values = values
+  if name ==# 'sysroot'
+    $SYSROOT = fnamemodify(value, ':p')
   endif
-  echomsg 'PlanetVim: saved for this project configure action: ' .. a:name .. '=' .. l:value
+  echomsg 'PlanetVim: saved for this project configure action: ' .. name .. '=' .. value
   return 1
-endfunc
+enddef
 
-func! planet#integrations#Configure(arguments = v:null) abort
-  let l:args = copy(a:arguments is v:null ? get(t:, 'PV_configure_arguments', []) : a:arguments)
-  let l:values = get(t:, 'PV_configure_values', {})
-  for l:key in ['build', 'host', 'target']
-    if has_key(l:values, l:key)
-      let l:args += ['--' .. l:key .. '=' .. l:values[l:key]]
+export def Configure(arguments: any = v:null): any
+  var flag: any
+  var args: any = copy(arguments == null ? get(t:, 'PV_configure_arguments', []) : arguments)
+  var values: any = get(t:, 'PV_configure_values', {})
+  for key in ['build', 'host', 'target']
+    if has_key(values, key)
+      args += ['--' .. key .. '=' .. values[key]]
     endif
   endfor
-  if has_key(l:values, 'sysroot')
-    let l:flag = shellescape('--sysroot=' .. l:values.sysroot)
-    let l:args += ['CFLAGS=' .. $CFLAGS .. ' ' .. l:flag, 'CXXFLAGS=' .. $CXXFLAGS .. ' ' .. l:flag]
+  if has_key(values, 'sysroot')
+    flag = shellescape('--sysroot=' .. values.sysroot)
+    args += ['CFLAGS=' .. $CFLAGS .. ' ' .. flag, 'CXXFLAGS=' .. $CXXFLAGS .. ' ' .. flag]
   endif
-  return planet#integrations#Command([planet#run#Project().root .. '/configure'] + l:args)
-endfunc
+  return planet#integrations#Command([planet#run#Project().root .. '/configure'] + args)
+enddef
 
-func! planet#integrations#CmakeConfigure(export_compile_commands = v:false) abort
-  let l:sysroot = get(get(t:, 'PV_configure_values', {}), 'sysroot', '')
-  if empty(l:sysroot)
-    return planet#build#Configure(a:export_compile_commands)
+export def CmakeConfigure(export_compile_commands: any = v:false): any
+  var build: any
+  var sysroot: any = get(get(t:, 'PV_configure_values', {}), 'sysroot', '')
+  if empty(sysroot)
+    return planet#build#Configure(export_compile_commands)
   endif
-  let l:build = planet#build#GetBuildDir(v:true)
-  if empty(l:build) | return 0 | endif
-  let l:argv = ['cmake', '-S', planet#run#Project().root, '-B', l:build, '-DCMAKE_SYSROOT=' .. l:sysroot]
-  if a:export_compile_commands | call add(l:argv, '-DCMAKE_EXPORT_COMPILE_COMMANDS=ON') | endif
-  return planet#integrations#Command(l:argv)
-endfunc
+  build = planet#build#GetBuildDir(v:true)
+  if empty(build)
+    return 0
+  endif
+  var argv: any = ['cmake', '-S', planet#run#Project().root, '-B', build, '-DCMAKE_SYSROOT=' .. sysroot]
+  if export_compile_commands
+    add(argv, '-DCMAKE_EXPORT_COMPILE_COMMANDS=ON')
+  endif
+  return planet#integrations#Command(argv)
+enddef
 
-func! planet#integrations#ConfigureOptions(value = v:null) abort
-  let l:value = a:value is v:null ? inputdialog('Configure arguments (JSON array): ', json_encode(get(t:, 'PV_configure_arguments', [])), '') : a:value
-  if empty(l:value)
+export def ConfigureOptions(arg_value: any = v:null): any
+  var args: any
+  var value: any = arg_value == null ? inputdialog('Configure arguments (JSON array): ', json_encode(get(t:, 'PV_configure_arguments', [])), '') : arg_value
+  if empty(value)
     return 0
   endif
   try
-    let l:args = type(l:value) == v:t_list ? l:value : json_decode(l:value)
-    if type(l:args) != v:t_list || ! empty(filter(copy(l:args), {_, arg -> type(arg) != v:t_string}))
-      return s:Error('configure arguments must be a JSON array of Strings')
+    args = type(value) == v:t_list ? value : json_decode(value)
+    if type(args) != v:t_list || ! empty(filter(copy(args), (_, lambda_arg) => type(lambda_arg) != v:t_string))
+      return LocalError('configure arguments must be a JSON array of Strings')
     endif
-    let t:PV_configure_arguments = l:args
+    t:PV_configure_arguments = args
     return 1
   catch
-    return s:Error(v:exception)
+    return LocalError(v:exception)
   endtry
-endfunc
+enddef
 
-func! planet#integrations#Flutter(kind, value = v:null) abort
-  let l:value = a:value is v:null ? inputdialog(a:kind ==# 'sdk' ? 'Android SDK directory: ' : 'New Flutter project directory: ', '', '') : a:value
-  if empty(l:value)
+export def Flutter(kind: any, arg_value: any = v:null): any
+  var value: any = arg_value == null ? inputdialog(kind ==# 'sdk' ? 'Android SDK directory: ' : 'New Flutter project directory: ', '', '') : arg_value
+  if empty(value)
     return 0
   endif
-  let l:path = planet#run#Path(l:value, planet#run#Project().root)
-  if a:kind ==# 'sdk' && ! isdirectory(l:path)
-    return s:Error('Android SDK directory does not exist: ' .. l:path)
-  elseif a:kind ==# 'create' && getftype(l:path) !=# ''
-    return s:Error('choose a new Flutter project directory')
+  var path: any = planet#run#Path(value, planet#run#Project().root)
+  if kind ==# 'sdk' && ! isdirectory(path)
+    return LocalError('Android SDK directory does not exist: ' .. path)
+  elseif kind ==# 'create' && getftype(path) !=# ''
+    return LocalError('choose a new Flutter project directory')
   endif
-  return planet#integrations#Command(a:kind ==# 'sdk' ? ['flutter', 'config', '--android-sdk', l:path] : ['flutter', 'create', l:path])
-endfunc
+  return planet#integrations#Command(kind ==# 'sdk' ? ['flutter', 'config', '--android-sdk', path] : ['flutter', 'create', path])
+enddef
 
-func! planet#integrations#Emsdk(action, directory = v:null, version = v:null) abort
-  let l:dir = a:directory is v:null ? inputdialog('Existing emsdk checkout directory: ', $EMSDK, '') : a:directory
-  if empty(l:dir)
+export def Emsdk(action: any, directory: any = v:null, arg_version: any = v:null): any
+  var dir: any = directory == null ? inputdialog('Existing emsdk checkout directory: ', $EMSDK, '') : directory
+  if empty(dir)
     return 0
   endif
-  let l:script = l:dir .. '/emsdk.py'
-  if ! filereadable(l:script)
-    return s:Error('emsdk.py was not found; clone https://github.com/emscripten-core/emsdk and select its directory')
+  var script: any = dir .. '/emsdk.py'
+  if ! filereadable(script)
+    return LocalError('emsdk.py was not found; clone https://github.com/emscripten-core/emsdk and select its directory')
   endif
-  if a:action ==# 'update'
-    return planet#integrations#Command(['git', '-C', l:dir, 'pull', '--ff-only'])
+  if action ==# 'update'
+    return planet#integrations#Command(['git', '-C', dir, 'pull', '--ff-only'])
   endif
-  let l:version = a:version is v:null ? inputdialog('Emscripten SDK version: ', 'latest', '') : a:version
-  if empty(l:version)
+  var version: any = arg_version == null ? inputdialog('Emscripten SDK version: ', 'latest', '') : arg_version
+  if empty(version)
     return 0
   endif
-  let l:Callback = a:action ==# 'activate' ? function('s:EmsdkActivated', [l:dir]) : v:null
-  return planet#term#RunArgv(planet#generate#Python() + [l:script, a:action, l:version],
-        \ v:false, v:false, v:false, l:dir, l:Callback)
-endfunc
+  var Callback: any = action ==# 'activate' ? function(LocalEmsdkActivated, [dir]) : v:null
+  return planet#term#RunArgv(planet#generate#Python() + [script, action, version], v:false, v:false, v:false, dir, Callback)
+enddef
 
-func! s:EmsdkActivated(directory, result, buffer) abort
-  if a:result.status ==# 'success'
-    call planet#integrations#Environment('emsdk', a:directory .. '/emsdk_env.' .. (has('win32') ? 'bat' : 'sh'))
+def LocalEmsdkActivated(directory: any, result: any, buffer: any): any
+  if result.status ==# 'success'
+    planet#integrations#Environment('emsdk', directory .. '/emsdk_env.' .. (has('win32') ? 'bat' :  'sh'))
   endif
-endfunc
+  return 0
+enddef
 
-func! planet#integrations#Trace() abort
+export def Trace(): any
   echomsg 'PlanetVim: choose Open trace file in Perfetto to view a local Chrome Trace JSON file.'
   return planet#gui#OpenUrl('https://ui.perfetto.dev/')
-endfunc
+enddef
 
-func! planet#integrations#Tags(kind, filename = v:null) abort
-  let l:root = planet#run#Project().root
-  let l:tags = l:root .. '/tags'
-  if ! filereadable(l:tags)
-    return s:Error('build the project tags file first')
+export def Tags(kind: any, filename: any = v:null): any
+  var file: any
+  var fields: any
+  var root: any = planet#run#Project().root
+  var tags: any = root .. '/tags'
+  if ! filereadable(tags)
+    return LocalError('build the project tags file first')
   endif
-  let l:file = a:filename is v:null ? inputdialog('New syntax file: ', l:root .. '/' .. a:kind .. '.vim', '') : a:filename
-  if empty(l:file) | return 0 | endif
-  if getftype(l:file) !=# '' | return s:Error('syntax file already exists: ' .. l:file) | endif
-  let l:words = []
-  for l:line in readfile(l:tags)
-    let l:fields = split(l:line, "\t")
-    if len(l:fields) < 2 || l:fields[0] !~# '^\h\w*$' | continue | endif
-    if a:kind ==# 'types' && empty(filter(copy(l:fields[3:]), {_, v -> v =~# '^\%(kind:\)\?\%(c\|g\|s\|t\|u\|class\|enum\|struct\|typedef\|union\)$'}))
+  file = filename == null ? inputdialog('New syntax file: ', root .. '/' .. kind .. '.vim', '') : filename
+  if empty(file)
+    return 0
+  endif
+  if getftype(file) !=# ''
+    return LocalError('syntax file already exists: ' .. file)
+  endif
+  var words: any = []
+  for line in readfile(tags)
+    fields = split(line, "\t")
+    if len(fields) < 2 || fields[0] !~# '^\h\w*$'
       continue
     endif
-    call add(l:words, l:fields[0])
+    if kind ==# 'types' && empty(filter(copy(fields[3 : ]), (_, lambda_v) => lambda_v =~# '^\%(kind:\)\?\%(c\|g\|s\|t\|u\|class\|enum\|struct\|typedef\|union\)$'))
+      continue
+    endif
+    add(words, fields[0])
   endfor
-  let l:words = uniq(sort(l:words))
-  let l:lines = ['" Generated from the project tags file by PlanetVim.']
-  while ! empty(l:words)
-    call add(l:lines, 'syntax keyword ' .. (a:kind ==# 'types' ? 'Type ' : 'Tag ') .. join(remove(l:words, 0, min([49, len(l:words) - 1])), ' '))
+  words = uniq(sort(words))
+  var lines: any = ['" Generated from the project tags file by PlanetVim.']
+  while ! empty(words)
+    add(lines, 'syntax keyword ' .. (kind ==# 'types' ? 'Type ' : 'Tag ') .. join(remove(words, 0, min([49, len(words) - 1])), ' '))
   endwhile
-  call writefile(l:lines, l:file)
-  execute 'edit ' .. fnameescape(l:file)
+  writefile(lines, file)
+  execute 'edit ' .. fnameescape(file)
   return 1
-endfunc
+enddef
 
-func! planet#integrations#QtInstall(target, modules = v:false) abort
-  let l:version = inputdialog('Qt version: ', '6.2.3', '')
-  if empty(l:version) | return 0 | endif
-  let l:host = has('win32') ? 'windows' : 'linux'
-  let l:architecture = inputdialog('Qt architecture: ', a:target ==# 'android' ? 'android_arm64_v8a'
-        \ : a:target ==# 'wasm' ? 'wasm_32' : has('win32') ? 'win64_msvc2019_64' : 'gcc_64', '')
-  if empty(l:architecture) | return 0 | endif
-  let l:directory = inputdialog('Qt installation directory: ', empty($QTDIR) ? expand('~/Qt') : fnamemodify($QTDIR, ':h:h'), '')
-  if empty(l:directory) | return 0 | endif
-  let l:argv = ['aqt', 'install-qt', l:host, a:target ==# 'android' ? 'android' : 'desktop',
-        \ l:version, l:architecture, '--outputdir', l:directory]
-  if a:modules | let l:argv += ['--modules', 'all'] | endif
-  return planet#integrations#Command(l:argv)
-endfunc
+export def QtInstall(target: any, modules: any = v:false): any
+  var version: any = inputdialog('Qt version: ', '6.2.3', '')
+  if empty(version)
+    return 0
+  endif
+  var host: any = has('win32') ? 'windows' : 'linux'
+  var architecture: any = inputdialog('Qt architecture: ', target ==# 'android' ? 'android_arm64_v8a' : target ==# 'wasm' ? 'wasm_32' : has('win32') ? 'win64_msvc2019_64' : 'gcc_64',
+       '')
+  if empty(architecture)
+    return 0
+  endif
+  var directory: any = inputdialog('Qt installation directory: ', empty($QTDIR) ? expand('~/Qt') : fnamemodify($QTDIR, ':h:h'), '')
+  if empty(directory)
+    return 0
+  endif
+  var argv: any = ['aqt', 'install-qt', host, target ==# 'android' ? 'android' : 'desktop', version, architecture, '--outputdir', directory]
+  if modules
+    argv += ['--modules', 'all']
+  endif
+  return planet#integrations#Command(argv)
+enddef
 
-func! planet#integrations#QmakeDestdir(value = v:null) abort
-  let l:value = a:value is v:null ? inputdialog('QMake DESTDIR: ', planet#run#Project().root .. '/bin', '') : a:value
-  if empty(l:value) | return 0 | endif
-  return planet#integrations#Command(['qmake', 'DESTDIR=' .. planet#run#Path(l:value, planet#run#Project().root)], #{qt:v:true})
-endfunc
+export def QmakeDestdir(arg_value: any = v:null): any
+  var value: any = arg_value == null ? inputdialog('QMake DESTDIR: ', planet#run#Project().root .. '/bin', '') : arg_value
+  if empty(value)
+    return 0
+  endif
+  return planet#integrations#Command(['qmake', 'DESTDIR=' .. planet#run#Path(value, planet#run#Project().root)], {qt: v:true})
+enddef
 
-func! planet#integrations#AndroidCmake(abi, ndk = v:null, api = v:null) abort
-  let l:ndk = a:ndk is v:null ? inputdialog('Android NDK directory: ', empty($ANDROID_NDK_HOME) ? $ANDROID_NDK : $ANDROID_NDK_HOME, '') : a:ndk
-  if empty(l:ndk) | return 0 | endif
-  let l:toolchain = l:ndk .. '/build/cmake/android.toolchain.cmake'
-  if ! filereadable(l:toolchain) | return s:Error('NDK toolchain was not found: ' .. l:toolchain) | endif
-  let l:api = a:api is v:null ? inputdialog('Android API level: ', '23', '') : a:api
-  if l:api !~# '^\d\+$' | return empty(l:api) ? 0 : s:Error('API level must be numeric') | endif
-  let l:build = planet#build#GetBuildDir(v:true)
-  if empty(l:build) | return 0 | endif
-  return planet#integrations#Command(['cmake', '-S', planet#run#Project().root, '-B', l:build,
-        \ '-DCMAKE_TOOLCHAIN_FILE=' .. l:toolchain, '-DANDROID_ABI=' .. a:abi,
-        \ '-DANDROID_PLATFORM=android-' .. l:api, '-DCMAKE_BUILD_TYPE=Release'])
-endfunc
+export def AndroidCmake(abi: any, arg_ndk: any = v:null, arg_api: any = v:null): any
+  var build: any
+  var ndk: any = arg_ndk == null ? inputdialog('Android NDK directory: ', empty($ANDROID_NDK_HOME) ? $ANDROID_NDK : $ANDROID_NDK_HOME, '') : arg_ndk
+  if empty(ndk)
+    return 0
+  endif
+  var toolchain: any = ndk .. '/build/cmake/android.toolchain.cmake'
+  if ! filereadable(toolchain)
+    return LocalError('NDK toolchain was not found: ' .. toolchain)
+  endif
+  var api: any = arg_api == null ? inputdialog('Android API level: ', '23', '') : arg_api
+  if api !~# '^\d\+$'
+    return empty(api) ? 0 : LocalError('API level must be numeric')
+  endif
+  build = planet#build#GetBuildDir(v:true)
+  if empty(build)
+    return 0
+  endif
+  return planet#integrations#Command(['cmake', '-S', planet#run#Project().root, '-B', build, '-DCMAKE_TOOLCHAIN_FILE=' .. toolchain,
+       '-DANDROID_ABI=' .. abi, '-DANDROID_PLATFORM=android-' .. api, '-DCMAKE_BUILD_TYPE=Release'])
+enddef
 
-func! planet#integrations#AutotoolsStatus() abort
-  let l:lines = ['Autotools executables available to this GVim:']
-  for l:name in ['autoconf', 'automake', 'autoreconf', 'autoheader', 'libtool', 'libtoolize']
-    call add(l:lines, l:name .. ': ' .. (executable(l:name) ? exepath(l:name) : 'missing; install the corresponding Autotools package'))
+export def AutotoolsStatus(): any
+  var lines: any = ['Autotools executables available to this GVim:']
+  for name in ['autoconf', 'automake', 'autoreconf', 'autoheader', 'libtool', 'libtoolize']
+    add(lines, name .. ': ' .. (executable(name) ? exepath(name) : 'missing; install the corresponding Autotools package'))
   endfor
   new
   setlocal buftype=nofile bufhidden=wipe noswapfile
-  call setline(1, l:lines)
+  setline(1, lines)
   setlocal nomodifiable
   return 1
-endfunc
+enddef
