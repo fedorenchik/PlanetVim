@@ -89,3 +89,9 @@ PlanetMenu cnoremenu PopUp.TestCopy <C-Y>
 call assert_match(":echo 'normal'", execute('tmenu PopUpn.TestCopy'))
 call assert_match('Copy the selected text', execute('tmenu PopUpv.TestCopy'))
 call assert_match('Accept the selected command-line completion', execute('tmenu PopUpc.TestCopy'))
+
+" Accelerator text is after the mnemonic portion: literal & must not double.
+PlanetMenu an 170 Teaching.Repeat &
+PlanetMenu an 180 Teaching.KeepFlags <Cmd>&&<CR>
+call assert_equal(":&\t&", menu_info('Teaching.Repeat').accel)
+call assert_equal(':&&', menu_info('Teaching.KeepFlags').accel)

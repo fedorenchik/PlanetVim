@@ -75,7 +75,7 @@ const commands = {
   '<C-W>o': ':only', '<C-W>s<C-W>T': ':split | wincmd T', '<C-W>z': ':pclose', 'gt': ':tabnext', 'gT': ':tabprevious',
   'zo': ':foldopen', 'zO': ':foldopen!', 'zc': ':foldclose', 'zC': ':foldclose!',
   '<C-T>': ':pop', '<C-Z>': ':suspend', '<C-^>': ':buffer #',
-  'do': ':diffget', 'dp': ':diffput', 'g-': ':earlier', 'g+': ':later',
+  '&': ':&', 'do': ':diffget', 'dp': ':diffput', 'g-': ':earlier', 'g+': ':later',
   'zn': ':set nofoldenable', 'zN': ':set foldenable', 'zi': ':set foldenable!',
 }
 
@@ -141,7 +141,7 @@ enddef
 
 def EscapeLabel(text: string): string
   # Menu paths interpret only <Tab>; other angle-bracket keys stay literal.
-  return substitute(escape(substitute(text, '&', '&&', 'g'), " .\\|\t"), '\c<Tab>', '\\<Tab>', 'g')
+  return substitute(escape(text, " .\\|\t"), '\c<Tab>', '\\<Tab>', 'g')
 enddef
 
 def PlainPath(path: string): string
