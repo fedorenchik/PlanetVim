@@ -407,6 +407,7 @@ func! planet#menu#basic#Update() abort
     an 160.10  🧭&n.Previous\ comment<Tab>[*<Tab>[/              [/
     an 160.10  🧭&n.Next\ comment<Tab>]*<Tab>]/                  ]/
     call planet#completion#Menus('basic')
+    call planet#objects#Menus()
   else
     silent! aunmenu 📁&f
     silent! aunmenu 📝&e

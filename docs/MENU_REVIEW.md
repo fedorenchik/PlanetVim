@@ -221,7 +221,7 @@ anchor validation, and window/tab stop actions.
 
 ### MD-08 · P1 · Teach text objects and block editing
 
-- [ ] Add **Selection → Inside / Around** for word/WORD, sentence, paragraph,
+- [x] Add **Selection → Inside / Around** for word/WORD, sentence, paragraph,
   quotes, parentheses, brackets, braces and tag blocks; include bundled fold
   objects. Add block insert/append/change and move-to-other-corner actions.
 
@@ -233,6 +233,11 @@ yank/format and show examples such as `ci"`.
 
 Acceptance: correct regions in Normal/Visual/Select/operator-pending modes; block
 operations handle tabs, short lines and Unicode without stale marks.
+
+Validation for text objects and number changes: `test_text_objects.vim` covers
+operator-pending and Visual objects, Unicode block insertion, hexadecimal and
+negative values, and counted sequences. Native Visual case/format/join actions
+now consume the selection instead of dropping it.
 
 ### MD-09 · P1 · Make file recovery discoverable
 
@@ -250,7 +255,7 @@ the existing save/cancel flow for unsaved edits.
 
 ### MD-10 · P2 · Add number changes and sequences
 
-- [ ] Add **Modify → Numbers → Increment / Decrement / Increase Each Line /
+- [x] Add **Modify → Numbers → Increment / Decrement / Increase Each Line /
   Decrease Each Line**, with count and number-format choices.
 
 `CTRL-A`, `CTRL-X`, `g CTRL-A` and `g CTRL-X` have no menu entries. Show how a
