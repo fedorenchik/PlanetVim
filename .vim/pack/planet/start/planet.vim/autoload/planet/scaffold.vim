@@ -1,18 +1,15 @@
-scriptversion 4
-
-func! planet#scaffold#Catalog() abort
+vim9script
+export def Catalog(): any
   return json_decode(join(readfile(planet#paths#Root() .. '/.vim/pack/planet/start/planet.vim/templates/catalog.json'), "\n"))
-endfunc
+enddef
 
-func! planet#scaffold#New(name, destination = v:null, options = {}) abort
-  let l:catalog = planet#scaffold#Catalog()
-  if !has_key(l:catalog, a:name)
-    echomsg 'PlanetVim: unknown template: ' .. a:name
+export def New(name: any, destination: any = v:null, arg_options: any = {}): any
+  var catalog: any = planet#scaffold#Catalog()
+  if !has_key(catalog, name)
+    echomsg 'PlanetVim: unknown template: ' .. name
     return 0
   endif
-  let l:entry = l:catalog[a:name]
-  let l:options = extend(copy(a:options), #{open: v:true}, 'keep')
-  return l:entry.kind ==# 'file'
-        \ ? planet#generate#CopyFile(l:entry.path, a:destination, l:options)
-        \ : planet#generate#Template(l:entry.path, a:destination, l:options)
-endfunc
+  var entry: any = catalog[name]
+  var options: any = extend(copy(arg_options), {open: v:true}, 'keep')
+  return entry.kind ==# 'file' ? planet#generate#CopyFile(entry.path, destination, options) : planet#generate#Template(entry.path, destination, options)
+enddef

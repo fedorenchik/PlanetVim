@@ -1,150 +1,151 @@
-scriptversion 4
-
-func! s:Error(message) abort
+vim9script
+def LocalError(message: any): any
   echohl ErrorMsg
-  echomsg 'PlanetVim: ' .. a:message
+  echomsg 'PlanetVim: ' .. message
   echohl None
   return 0
-endfunc
+enddef
 
-func! planet#build#BuildDirs() abort
-  let l:root = planet#run#Project().root
-  let l:basename = fnamemodify(l:root, ':t')
-  let l:parent = fnamemodify(l:root, ':h')
-  let l:dirs = []
-  for l:name in readdir(l:root)
-    if stridx(l:name, 'build') == 0 && isdirectory(l:root .. '/' .. l:name)
-      call add(l:dirs, l:root .. '/' .. l:name)
+export def BuildDirs(): any
+  var name: any
+  var root: any = planet#run#Project().root
+  var basename: any = fnamemodify(root, ':t')
+  var parent: any = fnamemodify(root, ':h')
+  var dirs: any = []
+  for item_name in readdir(root)
+    name = item_name
+    if stridx(name, 'build') == 0 && isdirectory(root .. '/' .. name)
+      add(dirs, root .. '/' .. name)
     endif
   endfor
-  for l:name in readdir(l:parent)
-    if stridx(l:name, 'build') == 0 && stridx(l:name, l:basename) >= 0
-          \ && isdirectory(l:parent .. '/' .. l:name)
-      call add(l:dirs, l:parent .. '/' .. l:name)
+  for item_name in readdir(parent)
+    name = item_name
+    if stridx(name, 'build') == 0 && stridx(name, basename) >= 0 && isdirectory(parent .. '/' .. name)
+      add(dirs, parent .. '/' .. name)
     endif
   endfor
-  return uniq(sort(l:dirs))
-endfunc
+  return uniq(sort(dirs))
+enddef
 
-" Optional explicit selections make the same validation usable without UI.
-func! planet#build#SelectBuildDir(selection = v:null, new_name = v:null) abort
-  let l:dirs = planet#build#BuildDirs()
-  let l:labels = ['Select Build Directory:']
-  for l:index in range(len(l:dirs))
-    call add(l:labels, '[' .. (l:index + 1) .. '] ' .. l:dirs[l:index])
+# Optional explicit selections make the same validation usable without UI.
+export def SelectBuildDir(arg_selection: any = v:null, new_name: any = v:null): any
+  var name: any
+  var dirs: any = planet#build#BuildDirs()
+  var labels: any = ['Select Build Directory:']
+  for index in range(len(dirs))
+    add(labels, '[' .. (index + 1) .. '] ' .. dirs[index])
   endfor
-  call add(l:labels, '[' .. (len(l:dirs) + 1) .. '] Create New Build Directory')
-  let l:selection = a:selection is v:null ? inputlist(l:labels) : a:selection
-  if type(l:selection) != v:t_number || l:selection <= 0
-        \ || l:selection > len(l:dirs) + 1
+  add(labels, '[' .. (len(dirs) + 1) .. '] Create New Build Directory')
+  var selection: any = arg_selection == null ? inputlist(labels) : arg_selection
+  if type(selection) != v:t_number || selection <= 0 || selection > len(dirs) + 1
     return 0
   endif
-  if l:selection == len(l:dirs) + 1
-    let l:name = a:new_name is v:null ? input('New Build Directory Name: ', 'build', 'dir') : a:new_name
-    return planet#build#NewBuildDir(l:name)
+  if selection == len(dirs) + 1
+    name = new_name == null ? input('New Build Directory Name: ', 'build', 'dir') : new_name
+    return planet#build#NewBuildDir(name)
   endif
-  return planet#build#NewBuildDir(l:dirs[l:selection - 1])
-endfunc
+  return planet#build#NewBuildDir(dirs[selection - 1])
+enddef
 
-func! planet#build#NewInTreeBuildDir() abort
+export def NewInTreeBuildDir(): any
   return planet#build#NewBuildDir('build')
-endfunc
+enddef
 
-func! planet#build#NewOOTBuildDir() abort
+export def NewOOTBuildDir(): any
   return planet#build#NewBuildDir('../build-' .. fnamemodify(planet#run#Project().root, ':t'))
-endfunc
+enddef
 
-func! planet#build#NewBuildDir(build_dir) abort
-  if type(a:build_dir) != v:t_string || empty(a:build_dir)
+export def NewBuildDir(build_dir: any): any
+  if type(build_dir) != v:t_string || empty(build_dir)
     return 0
   endif
-  let l:project = planet#run#Project()
-  let l:directory = planet#run#Path(a:build_dir, l:project.root)
+  var project: any = planet#run#Project()
+  var directory: any = planet#run#Path(build_dir, project.root)
   try
-    if ! isdirectory(l:directory)
-      call mkdir(l:directory, 'p')
+    if ! isdirectory(directory)
+      mkdir(directory, 'p')
     endif
-    if ! isdirectory(l:directory)
+    if ! isdirectory(directory)
       throw 'directory was not created'
     endif
   catch
-    return s:Error('cannot use build directory: ' .. v:exception)
+    return LocalError('cannot use build directory: ' .. v:exception)
   endtry
-  let l:previous = l:project.build_dir
-  let l:project.build_dir = l:directory
+  var previous: any = project.build_dir
+  project.build_dir = directory
   if ! planet#run#Save()
-    let l:project.build_dir = l:previous
-    let g:PV_build_dir = l:previous
+    project.build_dir = previous
+    g:PV_build_dir = previous
     return 0
   endif
-  echo 'Build Directory: ' .. l:directory
+  echo 'Build Directory: ' .. directory
   return 1
-endfunc
+enddef
 
-func! planet#build#GetBuildDir(create_default = v:false) abort
-  let l:project = planet#run#Project()
-  if empty(l:project.build_dir) && a:create_default
+export def GetBuildDir(create_default: any = v:false): any
+  var project: any = planet#run#Project()
+  if empty(project.build_dir) && create_default
     if ! planet#build#NewInTreeBuildDir()
       return ''
     endif
   endif
-  return l:project.build_dir
-endfunc
+  return project.build_dir
+enddef
 
-func! planet#build#Configure(export_compile_commands = v:false, on_exit = v:null) abort
-  let l:directory = planet#build#GetBuildDir(v:true)
-  if empty(l:directory)
+export def Configure(export_compile_commands: any = v:false, on_exit: any = v:null): any
+  var directory: any = planet#build#GetBuildDir(v:true)
+  if empty(directory)
     return 0
   endif
-  let l:project = planet#run#Project()
-  let l:argv = ['cmake', '-S', l:project.root, '-B', l:directory]
-  if a:export_compile_commands
-    call add(l:argv, '-DCMAKE_EXPORT_COMPILE_COMMANDS=ON')
+  var project: any = planet#run#Project()
+  var argv: any = ['cmake', '-S', project.root, '-B', directory]
+  if export_compile_commands
+    add(argv, '-DCMAKE_EXPORT_COMPILE_COMMANDS=ON')
   endif
-  return planet#term#RunArgv(l:argv, v:false, v:false, v:false, l:directory, a:on_exit)
-endfunc
+  return planet#term#RunArgv(argv, v:false, v:false, v:false, directory, on_exit)
+enddef
 
-func! planet#build#Build(target = '', on_exit = v:null) abort
-  let l:directory = planet#build#GetBuildDir()
-  if empty(l:directory)
-    return s:Error('configure or select this project build directory first')
+export def Build(target: any = '', on_exit: any = v:null): any
+  var directory: any = planet#build#GetBuildDir()
+  if empty(directory)
+    return LocalError('configure or select this project build directory first')
   endif
-  let l:argv = ['cmake', '--build', l:directory]
-  if ! empty(a:target)
-    let l:argv += ['--target', a:target]
+  var argv: any = ['cmake', '--build', directory]
+  if ! empty(target)
+    argv += ['--target', target]
   endif
-  return planet#term#RunArgv(l:argv, v:false, v:false, v:false, l:directory, a:on_exit)
-endfunc
+  return planet#term#RunArgv(argv, v:false, v:false, v:false, directory, on_exit)
+enddef
 
-func! planet#build#Rebuild() abort
-  let l:directory = planet#build#GetBuildDir()
-  if empty(l:directory)
-    return s:Error('configure or select this project build directory first')
+export def Rebuild(): any
+  var directory: any = planet#build#GetBuildDir()
+  if empty(directory)
+    return LocalError('configure or select this project build directory first')
   endif
-  return planet#term#RunArgv(['cmake', '--build', l:directory, '--clean-first'],
-        \ v:false, v:false, v:false, l:directory)
-endfunc
+  return planet#term#RunArgv(['cmake', '--build', directory, '--clean-first'], v:false, v:false, v:false, directory)
+enddef
 
-func! planet#build#Browse() abort
-  let l:directory = planet#build#GetBuildDir()
-  if empty(l:directory) || ! isdirectory(l:directory)
-    return s:Error('select an existing build directory first')
+export def Browse(): any
+  var directory: any = planet#build#GetBuildDir()
+  if empty(directory) || ! isdirectory(directory)
+    return LocalError('select an existing build directory first')
   endif
-  execute 'Fern ' .. fnameescape(l:directory)
-endfunc
+  execute 'Fern ' .. fnameescape(directory)
+  return 0
+enddef
 
-func! planet#build#ConfigureTui() abort
-  let l:directory = planet#build#GetBuildDir(v:true)
-  if ! empty(l:directory)
-    return planet#term#RunCmdTab(['ccmake', '-S', planet#run#Project().root, '-B', l:directory], l:directory)
+export def ConfigureTui(): any
+  var directory: any = planet#build#GetBuildDir(v:true)
+  if ! empty(directory)
+    return planet#term#RunCmdTab(['ccmake', '-S', planet#run#Project().root, '-B', directory], directory)
   endif
   return 0
-endfunc
+enddef
 
-func! planet#build#ConfigureGui() abort
-  let l:directory = planet#build#GetBuildDir(v:true)
-  if ! empty(l:directory)
-    return planet#term#RunGuiApp(['cmake-gui', '-S', planet#run#Project().root, '-B', l:directory], l:directory)
+export def ConfigureGui(): any
+  var directory: any = planet#build#GetBuildDir(v:true)
+  if ! empty(directory)
+    return planet#term#RunGuiApp(['cmake-gui', '-S', planet#run#Project().root, '-B', directory], directory)
   endif
   return 0
-endfunc
+enddef

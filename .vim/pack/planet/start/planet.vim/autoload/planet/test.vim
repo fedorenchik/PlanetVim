@@ -1,135 +1,141 @@
-scriptversion 4
+vim9script
+var script_last_buffer: any
 
-func! s:Warn(message) abort
+def LocalWarn(message: any): any
   echohl WarningMsg
-  echom 'PlanetVim tests: ' .. a:message
+  echom 'PlanetVim tests: ' .. message
   echohl None
   return 0
-endfunc
+enddef
 
-func! planet#test#Init() abort
+export def Init(): any
+  var path: any
   if !exists('g:loaded_test')
-    let l:path = planet#paths#Root() .. '/.vim/pack/basic/start/vim-test'
-    if !filereadable(l:path .. '/plugin/test.vim')
-      return s:Warn('bundled vim-test is missing.')
+    path = planet#paths#Root() .. '/.vim/pack/basic/start/vim-test'
+    if !filereadable(path .. '/plugin/test.vim')
+      return LocalWarn('bundled vim-test is missing.')
     endif
-    let &runtimepath = planet#paths#Runtime(l:path) .. ',' .. &runtimepath
-    execute 'source ' .. fnameescape(l:path .. '/plugin/test.vim')
+    &runtimepath = planet#paths#Runtime(path) .. ',' .. &runtimepath
+    execute 'source ' .. fnameescape(path .. '/plugin/test.vim')
   endif
-  let g:test#custom_strategies = get(g:, 'test#custom_strategies', {})
-  let g:test#custom_strategies.planet = function('planet#test#Strategy')
+  g:test#custom_strategies = get(g:, 'test#custom_strategies', {})
+  g:test#custom_strategies.planet = function('planet#test#Strategy')
   return 1
-endfunc
+enddef
 
-func! s:History() abort
+def LocalHistory(): any
   if !exists('t:PV_test_history')
-    let t:PV_test_history = {}
+    t:PV_test_history = {}
   endif
-  let l:root = planet#run#Project().root
-  if !has_key(t:PV_test_history, l:root)
-    let t:PV_test_history[l:root] = {}
+  var root: any = planet#run#Project().root
+  if !has_key(t:PV_test_history, root)
+    t:PV_test_history[root] = {}
   endif
-  return t:PV_test_history[l:root]
-endfunc
+  return t:PV_test_history[root]
+enddef
 
-func! s:Finished(result, buffer) abort
-  if a:result.exit_code == 127 || a:result.exit_code == 9009
-    call s:Warn('test runner was not found. Install the runner or configure its vim-test executable; see retained output.')
+def LocalFinished(result: any, buffer: any): any
+  if result.exit_code == 127 || result.exit_code == 9009
+    LocalWarn('test runner was not found. Install the runner or configure its vim-test executable; see retained output.')
   endif
-endfunc
+  return 0
+enddef
 
-" vim-test deliberately supplies a shell program; retain it byte-for-byte.
-func! planet#test#Strategy(command) abort
-  let l:history = s:History()
-  let l:history.command = a:command
-  let l:history.cwd = planet#run#Project().root
+# vim-test deliberately supplies a shell program; retain it byte-for-byte.
+export def Strategy(command: any): any
+  var history: any = LocalHistory()
+  history.command = command
+  history.cwd = planet#run#Project().root
   if exists('g:test#last_position')
-    let l:history.position = deepcopy(g:test#last_position)
-    let l:history.position.file = fnamemodify(l:history.position.file, ':p')
+    history.position = deepcopy(g:test#last_position)
+    history.position.file = fnamemodify(history.position.file, ':p')
   endif
-  let l:buffer = planet#term#RunShell(a:command, v:false, v:false, v:false,
-        \ l:history.cwd, function('s:Finished'))
-  if l:buffer > 0
-    let t:PV_test_history = {l:history.cwd: l:history}
+  var buffer: any = planet#term#RunShell(command, v:false, v:false, v:false, history.cwd, function(LocalFinished))
+  if buffer > 0
+    t:PV_test_history = {[history.cwd]:  history}
   endif
-  let s:last_buffer = l:buffer
-  return l:buffer
-endfunc
+  script_last_buffer = buffer
+  return buffer
+enddef
 
-func! planet#test#Test(action) abort
-  if index(['nearest', 'file', 'class', 'suite', 'last', 'visit'], a:action) < 0
-    return s:Warn('use nearest, file, class, suite, last, or visit.')
+export def Test(action: any): any
+  var buffer: any
+  var cwd: any
+  var name: any
+  if index(['nearest', 'file', 'class', 'suite', 'last', 'visit'], action) < 0
+    return LocalWarn('use nearest, file, class, suite, last, or visit.')
   endif
   if !planet#test#Init()
     return 0
   endif
-  let l:history = s:History()
-  if a:action ==# 'visit'
-    if !has_key(l:history, 'position')
-      return s:Warn('no test has run in this project tab.')
+  var history: any = LocalHistory()
+  if action ==# 'visit'
+    if !has_key(history, 'position')
+      return LocalWarn('no test has run in this project tab.')
     endif
-    execute 'edit ' .. fnameescape(l:history.position.file)
-    call cursor(l:history.position.line, l:history.position.col)
+    execute 'edit ' .. fnameescape(history.position.file)
+    cursor(history.position.line, history.position.col)
     return 1
   endif
-  if a:action ==# 'last'
-    if !has_key(l:history, 'command')
-      return s:Warn('no test has run in this project tab.')
+  if action ==# 'last'
+    if !has_key(history, 'command')
+      return LocalWarn('no test has run in this project tab.')
     endif
-    let l:buffer = planet#term#RunShell(l:history.command, v:false, v:false, v:false,
-          \ l:history.cwd, function('s:Finished'))
-    if l:buffer > 0
-      let t:PV_test_history = {l:history.cwd: l:history}
+    buffer = planet#term#RunShell(history.command, v:false, v:false, v:false, history.cwd, function(LocalFinished))
+    if buffer > 0
+      t:PV_test_history = {[history.cwd]:  history}
     endif
-    return l:buffer
+    return buffer
   endif
   if &buftype ==# '' && &modified
     try
       update
     catch
-      return s:Warn('cannot save the test buffer: ' .. v:exception)
+      return LocalWarn('cannot save the test buffer: ' .. v:exception)
     endtry
   endif
-  " Isolate vim-test's global history and cwd handling from other project tabs.
-  let l:saved = {}
-  for l:name in ['test#last_position', 'test#project_root', 'test#strategy']
-    if has_key(g:, l:name)
-      let l:saved[l:name] = g:[l:name]
-      unlet g:[l:name]
+  # Isolate vim-test's global history and cwd handling from other project tabs.
+  var saved: any = {}
+  for item_name in ['test#last_position', 'test#project_root', 'test#strategy']
+    name = item_name
+    if has_key(g:, name)
+      saved[name] = g:[name]
+      unlet g:[name]
     endif
   endfor
-  let l:cwd = getcwd()
-  let l:origin = win_getid()
-  let l:scope = haslocaldir()
-  let l:autowrite = &autowrite
-  let l:autowriteall = &autowriteall
-  let s:last_buffer = 0
+  cwd = getcwd()
+  var origin: any = win_getid()
+  var scope: any = haslocaldir()
+  var autowrite: any = &autowrite
+  var autowriteall: any = &autowriteall
+  script_last_buffer = 0
   try
     set noautowrite noautowriteall
     execute 'lcd ' .. fnameescape(planet#run#Project().root)
-    if has_key(l:history, 'position')
-      let g:test#last_position = deepcopy(l:history.position)
+    if has_key(history, 'position')
+      g:test#last_position = deepcopy(history.position)
     endif
-    let g:test#strategy = 'planet'
-    call test#run(a:action, [])
+    g:test#strategy = 'planet'
+    test#run(action, [])
   catch
-    call s:Warn(v:exception)
+    LocalWarn(v:exception)
   finally
-    for l:name in ['test#last_position', 'test#project_root', 'test#strategy']
-      if has_key(g:, l:name)
-        unlet g:[l:name]
+    for item_name in ['test#last_position', 'test#project_root', 'test#strategy']
+      name = item_name
+      if has_key(g:, name)
+        unlet g:[name]
       endif
-      if has_key(l:saved, l:name)
-        let g:[l:name] = l:saved[l:name]
+      if has_key(saved, name)
+        g:[name] = saved[name]
       endif
     endfor
-    let &autowrite = l:autowrite
-    let &autowriteall = l:autowriteall
-    " RunShell creates a new tab; restore the original window's local cwd.
-    " The new output tab already has the explicit project cwd in its job.
-    if exists('l:origin')
-      call win_execute(l:origin, (l:scope == 1 ? 'lcd ' : l:scope == 2 ? 'tcd ' : 'cd ') .. fnameescape(l:cwd))
+    &autowrite = autowrite
+    &autowriteall = autowriteall
+    # RunShell creates a new tab; restore the original window's local cwd.
+    # The new output tab already has the explicit project cwd in its job.
+    if origin > 0
+      win_execute(origin, (scope == 1 ? 'lcd ' : scope == 2 ? 'tcd ' : 'cd ') .. fnameescape(cwd))
     endif
   endtry
-  return s:last_buffer
-endfunc
+  return script_last_buffer
+enddef

@@ -1,36 +1,35 @@
-scriptversion 4
-
-func! planet#workflow#ProjectDirectory(directory = v:null) abort
-  let l:directory = a:directory is v:null ? inputdialog('Project directory: ', getcwd(-1, 0)) : a:directory
-  if empty(l:directory)
+vim9script
+export def ProjectDirectory(arg_directory: any = v:null): any
+  var directory: any = arg_directory == null ? inputdialog('Project directory: ', getcwd(-1, 0)) : arg_directory
+  if empty(directory)
     return 0
   endif
-  if !isdirectory(l:directory)
-    echomsg 'PlanetVim: project directory does not exist: ' .. l:directory
+  if !isdirectory(directory)
+    echomsg 'PlanetVim: project directory does not exist: ' .. directory
     return 0
   endif
-  execute 'tcd ' .. fnameescape(l:directory)
+  execute 'tcd ' .. fnameescape(directory)
   return 1
-endfunc
+enddef
 
-func! planet#workflow#CTest() abort
-  let l:directory = planet#build#GetBuildDir()
-  if empty(l:directory)
+export def CTest(): any
+  var directory: any = planet#build#GetBuildDir()
+  if empty(directory)
     echomsg 'PlanetVim: configure this CMake project before running CTest.'
     return 0
   endif
-  return planet#term#RunArgv(['ctest', '--output-on-failure'], v:false, v:false, v:false, l:directory)
-endfunc
+  return planet#term#RunArgv(['ctest', '--output-on-failure'], v:false, v:false, v:false, directory)
+enddef
 
-func! planet#workflow#Git(arguments) abort
-  let l:root = planet#git#Repository(empty(expand('%:p')) ? getcwd() : expand('%:p:h'))
-  if empty(l:root)
-    if a:arguments ==# ['init']
-      let l:root = getcwd(-1, 0)
+export def Git(arguments: any): any
+  var root: any = planet#git#Repository(empty(expand('%:p')) ? getcwd() : expand('%:p:h'))
+  if empty(root)
+    if arguments ==# ['init']
+      root = getcwd(-1, 0)
     else
       echomsg 'PlanetVim: open a Git project first.'
       return 0
     endif
   endif
-  return planet#term#RunArgv(['git'] + a:arguments, v:false, v:false, v:false, l:root)
-endfunc
+  return planet#term#RunArgv(['git'] + arguments, v:false, v:false, v:false, root)
+enddef
