@@ -198,7 +198,7 @@ leave the old settings intact and explain the required feature. Tests:
 
 ### MD-07 · P1 · Finish native diff and expose newer rendering
 
-- [ ] Extend **Diff/Patch** with Stop (window/tab), Refresh, source/target selection
+- [x] Extend **Diff/Patch** with Stop (window/tab), Refresh, source/target selection
   for three-way comparisons, whitespace/algorithm/context choices, inline
   character/word highlighting, similar-line alignment and anchors.
 
@@ -214,6 +214,10 @@ Expose the effective whitespace policy and preserve unrelated flags.
 
 Acceptance: two-/three-buffer fixtures, ranged transfers, stop/refresh and
 compatible rendering presets on 9.1.0000 and current GVim.
+
+Implemented and validated in `test_diff_workflow.vim`: explicit three-way peers,
+selected-line transfers, preserved option flags, unsupported-option rollback,
+anchor validation, and window/tab stop actions.
 
 ### MD-08 · P1 · Teach text objects and block editing
 

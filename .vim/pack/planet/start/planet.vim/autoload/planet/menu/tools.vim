@@ -447,6 +447,7 @@ func! planet#menu#tools#Update() abort
     an 730.10  🔧&o.Run\ System\ Command                    <Cmd>call planet#term#RunCmdAsk('Command: ')<CR>
     an 730.10  🔧&o.WebSocket\ Client  <Cmd>call planet#systemtools#Websocat()<CR>
 
+    call planet#diff#Menus()
   else
     silent! aunmenu 🔀&g
     silent! aunmenu ⛏️&;
