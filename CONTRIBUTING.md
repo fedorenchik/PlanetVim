@@ -42,6 +42,8 @@ menubar tip teaches the Normal action; popup tips follow the editing mode.
 Buffer-local mappings are not advertised
 as universal shortcuts. Run `test_menu_help.vim` and `test_menu_teaching.vim`
 after adding or changing entries, including dynamic menu builders.
+Vim's `menu_info(path, 't')` reads tooltip metadata; use `'tl'` for terminal
+actions. Tooltip text must never enter the executable action index.
 
 ## Running checks
 

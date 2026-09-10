@@ -15,7 +15,7 @@ var entries: list<dict<any>> = []
 
 def Walk(path: string, label: string, group: string)
   var children: list<string> = []
-  for menu_mode in ['', '!', 't']
+  for menu_mode in ['', '!', 'tl']
     for child in get(menu_info(path, menu_mode), 'submenus', [])
       if index(children, child) < 0
         add(children, child)
@@ -30,7 +30,9 @@ def Walk(path: string, label: string, group: string)
   endif
   var modes: dict<any> = {}
   for menu_mode in ['n', 'i', 'x', 's', 'o', 'c', 't']
-    var item = menu_info(path, menu_mode)
+    # menu_info uses 't' for tooltip text, but the finder uses it for
+    # Terminal mode (as mode() does). Only index executable mappings.
+    var item = menu_info(path, menu_mode ==# 't' ? 'tl' : menu_mode)
     if get(item, 'enabled', 0) && get(item, 'rhs', '<Nop>') !=# '<Nop>'
       modes[menu_mode] = item
     endif

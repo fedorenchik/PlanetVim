@@ -309,7 +309,7 @@ export def PopupTips(path: string)
   # PopUp alone does not propagate to those copies, unlike action definitions.
   for [suffix, mode] in [['n', 'n'], ['v', 'x'], ['s', 's'], ['o', 'o'], ['i', 'i'], ['c', 'c'], ['tl', 't']]
     var clone = 'PopUp' .. suffix .. strpart(path, 5)
-    var actual = menu_info(LookupPath(clone), mode)
+    var actual = menu_info(LookupPath(clone), mode ==# 't' ? 'tl' : mode)
     if empty(actual) || empty(get(actual, 'rhs', ''))
       continue
     endif

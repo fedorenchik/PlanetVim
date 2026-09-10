@@ -95,3 +95,16 @@ PlanetMenu an 170 Teaching.Repeat &
 PlanetMenu an 180 Teaching.KeepFlags <Cmd>&&<CR>
 call assert_equal(":&\t&", menu_info('Teaching.Repeat').accel)
 call assert_equal(':&&', menu_info('Teaching.KeepFlags').accel)
+
+" Tooltip mode is t; terminal mode is tl. Tips must never become actions.
+PlanetMenu tlnoremenu 190 Teaching.Terminal <Cmd>echo 'terminal action'<CR>
+tmenu Teaching.TipOnly :quit
+let s:index = planet#action_index#Build('Teaching', 'Teaching', 'basic')
+let s:undo = filter(copy(s:index), 'v:val.path ==# "Teaching.Undo"')[0]
+call assert_false(has_key(s:undo.modes, 't'))
+call assert_equal([], filter(copy(s:index), 'v:val.path ==# "Teaching.TipOnly"'))
+let s:terminal = filter(copy(s:index), 'v:val.path ==# "Teaching.Terminal"')[0]
+call assert_equal(['t'], keys(s:terminal.modes))
+call assert_equal("<Cmd>echo 'terminal action'<CR>", s:terminal.modes.t.rhs)
+PlanetMenu tlnoremenu PopUp.TerminalStop <C-W><C-C>
+call assert_match('Force the job', menu_info('PopUptl.TerminalStop', 't').rhs)
