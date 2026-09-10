@@ -1,275 +1,293 @@
-scriptversion 4
+vim9script
 
-func! s:Warn(message) abort
+var script_state: dict<any> = {}
+
+def LocalWarn(message: any): any
   echohl WarningMsg
-  echom 'PlanetVim writing: ' .. a:message
+  echom 'PlanetVim writing: ' .. message
   echohl None
   return 0
-endfunc
+enddef
 
-func! planet#prose#Swap(direction) abort
-  if !&modifiable || index([-1, 1], a:direction) < 0
+export def Swap(direction: any): any
+  var word: any
+  var left: any
+  var right: any
+  if !&modifiable || index([-1, 1], direction) < 0
     return 0
   endif
-  let l:text = join(getline(1, '$'), "\n")
-  let l:offset = col('.') - 1
+  var text: any = join(getline(1, '$'), "\n")
+  var offset: any = col('.') - 1
   if line('.') > 1
-    let l:offset += strlen(join(getline(1, line('.') - 1), "\n")) + 1
+    offset += strlen(join(getline(1, line('.') - 1), "\n")) + 1
   endif
-  let l:words = []
-  let l:at = 0
-  while l:at < strlen(l:text)
-    let l:word = matchstrpos(l:text, "\\k\\+\\%(['’]\\k\\+\\)*", l:at)
-    if l:word[1] < 0
+  var words: any = []
+  var at: any = 0
+  while at < strlen(text)
+    word = matchstrpos(text, "\\k\\+\\%(['’]\\k\\+\\)*", at)
+    if word[1] < 0
       break
     endif
-    call add(l:words, l:word)
-    let l:at = l:word[2]
+    add(words, word)
+    at = word[2]
   endwhile
-  let l:current = -1
-  for l:i in range(len(l:words))
-    if l:words[l:i][1] <= l:offset
-      let l:current = l:i
+  var current: any = -1
+  for i in range(len(words))
+    if words[i][1] <= offset
+      current = i
     endif
-    if l:words[l:i][2] > l:offset
+    if words[i][2] > offset
       break
     endif
   endfor
-  let l:other = l:current + a:direction
-  if l:current < 0 || l:other < 0 || l:other >= len(l:words)
+  var other: any = current + direction
+  if current < 0 || other < 0 || other >= len(words)
     return 0
   endif
-  let [l:left, l:right] = [l:words[min([l:current, l:other])], l:words[max([l:current, l:other])]]
-  let l:middle = strpart(l:text, l:left[2], l:right[1] - l:left[2])
-  let l:result = strpart(l:text, 0, l:left[1]) .. l:right[0] .. l:middle .. l:left[0] .. strpart(l:text, l:right[2])
-  let l:destination = a:direction < 0 ? l:left[1] : l:left[1] + strlen(l:right[0]) + strlen(l:middle)
-  let l:prefix = split(strpart(l:result, 0, l:destination), "\n", 1)
-  call setline(1, split(l:result, "\n", 1))
-  call cursor(len(l:prefix), strlen(l:prefix[-1]) + 1)
+  [left, right] = [words[min([current, other])], words[max([current, other])]]
+  var middle: any = strpart(text, left[2], right[1] - left[2])
+  var result: any = strpart(text, 0, left[1]) .. right[0] .. middle .. left[0] .. strpart(text, right[2])
+  var destination: any = direction < 0 ? left[1] : left[1] + strlen(right[0]) + strlen(middle)
+  var prefix: any = split(strpart(result, 0, destination), "\n", 1)
+  setline(1, split(result, "\n", 1))
+  cursor(len(prefix), strlen(prefix[-1]) + 1)
   return 1
-endfunc
+enddef
 
-func! planet#prose#Thesaurus(path = v:null) abort
-  if a:path is v:null && !empty(&l:thesaurus)
+export def Thesaurus(arg_path: any = v:null): any
+  if arg_path == null && !empty(&l:thesaurus)
     return 1
   endif
-  let l:path = a:path is v:null ? inputdialog('Thesaurus file (one synonym group per line):', get(g:, 'PV_thesaurus_file', ''), "\x01") : a:path
-  if empty(l:path) || l:path ==# "\x01"
+  var path: any = arg_path == null ? inputdialog('Thesaurus file (one synonym group per line):', get(g:, 'PV_thesaurus_file', ''), "\x01") : arg_path
+  if empty(path) || path ==# "\x01"
     return 0
   endif
-  if !filereadable(l:path)
-    return s:Warn('select a readable thesaurus file; each line contains a word and its synonyms.')
+  if !filereadable(path)
+    return LocalWarn('select a readable thesaurus file; each line contains a word and its synonyms.')
   endif
-  let g:PV_thesaurus_file = fnamemodify(l:path, ':p')
-  let &l:thesaurus = escape(g:PV_thesaurus_file, ',\')
+  g:PV_thesaurus_file = fnamemodify(path, ':p')
+  &l:thesaurus = escape(g:PV_thesaurus_file, ',\')
   return 1
-endfunc
+enddef
 
-func! planet#prose#Complete() abort
+export def Complete(): any
   if !planet#prose#Thesaurus()
     return 0
   endif
-  " Start Vim's native thesaurus completion at the current word.
+  # Start Vim's native thesaurus completion at the current word.
   if strpart(getline('.'), col('.')) =~# '^\k'
     normal! e
   endif
-  call feedkeys("a\<C-x>\<C-t>", 'n')
+  feedkeys("a\<C-x>\<C-t>", 'n')
   return 1
-endfunc
+enddef
 
-func! planet#prose#Sample(paragraphs = v:null) abort
-  let l:value = a:paragraphs is v:null ? inputdialog('Number of sample paragraphs (1–100):', '1', "\x01") : a:paragraphs
-  let l:text = type(l:value) == v:t_number ? string(l:value) : l:value
-  if l:text ==# "\x01" || empty(l:text)
+export def Sample(paragraphs: any = v:null): any
+  var line: any
+  var value: any = paragraphs == null ? inputdialog('Number of sample paragraphs (1–100):', '1', "\x01") : paragraphs
+  var text: any = type(value) == v:t_number ? string(value) : value
+  if text ==# "\x01" || empty(text)
     return 0
   endif
-  if l:text !~# '^\d\+$' || str2nr(l:text) < 1 || str2nr(l:text) > 100 || !&modifiable
-    return s:Warn('choose 1 through 100 paragraphs in a modifiable buffer.')
+  if text !~# '^\d\+$' || str2nr(text) < 1 || str2nr(text) > 100 || !&modifiable
+    return LocalWarn('choose 1 through 100 paragraphs in a modifiable buffer.')
   endif
-  let l:paragraph = 'A clear paragraph carries one idea from its opening sentence to its final detail. Specific words help the reader follow the thought, and varied sentences give the passage a natural rhythm. This sample provides ordinary prose for testing layout, editing, and typography.'
-  let l:lines = []
-  for l:i in range(str2nr(l:text))
-    if l:i > 0
-      call add(l:lines, '')
+  var paragraph: any = 'A clear paragraph carries one idea from its opening sentence to its final detail. Specific words help the reader follow the thought, and varied sentences give the passage a natural rhythm. This sample provides ordinary prose for testing layout, editing, and typography.'
+  var lines: any = []
+  for i in range(str2nr(text))
+    if i > 0
+      add(lines, '')
     endif
-    let l:line = ''
-    for l:word in split(l:paragraph)
-      if strlen(l:line) + strlen(l:word) + 1 > 76
-        call add(l:lines, l:line)
-        let l:line = ''
+    line = ''
+    for word in split(paragraph)
+      if strlen(line) + strlen(word) + 1 > 76
+        add(lines, line)
+        line = ''
       endif
-      let l:line ..= (empty(l:line) ? '' : ' ') .. l:word
+      line ..= (empty(line) ? '' :  ' ') .. word
     endfor
-    call add(l:lines, l:line)
+    add(lines, line)
   endfor
-  call append(line('.'), l:lines)
+  append(line('.'), lines)
   return 1
-endfunc
+enddef
 
-func! planet#prose#MarkRare(temporary) abort
-  let l:word = expand('<cword>')
-  if empty(l:word)
+export def MarkRare(temporary: any): any
+  var word: any = expand('<cword>')
+  if empty(word)
     return 0
   endif
-  if !a:temporary && empty(&l:spellfile)
-    let &l:spellfile = planet#paths#State('spell') .. '/personal.utf-8.add'
+  if !temporary && empty(&l:spellfile)
+    &l:spellfile = planet#paths#State('spell') .. '/personal.utf-8.add'
   endif
-  execute 'spellrare' .. (a:temporary ? '! ' : ' ') .. escape(l:word, ' \|"')
+  execute 'spellrare' .. (temporary ? '! ' : ' ') .. escape(word, ' \|"')
   return 1
-endfunc
+enddef
 
-func! planet#prose#Focus(enable) abort
-  if a:enable
-    if exists('s:focus')
+export def Focus(enable: any): any
+  var value: any
+  var option: any
+  if enable
+    if has_key(script_state, 'focus')
       return 1
     endif
-    if exists('s:focus_restore')
-      call timer_stop(s:focus_restore.timer)
-      unlet s:focus_restore
+    if has_key(script_state, 'focus_restore')
+      timer_stop(script_state.focus_restore.timer)
+      unlet script_state.focus_restore
     endif
-    let s:focus_generation = get(s:, 'focus_generation', 0) + 1
-    let s:focus = #{window: win_getid(), size: winrestcmd(), columns: &columns, lines: &lines, global: {}, local: {},
-          \ generation: s:focus_generation, windows: copy(gettabinfo(tabpagenr())[0].windows)}
-    for l:option in ['guioptions', 'laststatus', 'showtabline', 'ruler', 'showmode']
-      let s:focus.global[l:option] = eval('&' .. l:option)
+    script_state.focus_generation = get(script_state, 'focus_generation', 0) + 1
+    script_state.focus = {window:  win_getid(), size:  winrestcmd(), columns:  &columns, lines:  &lines, global:  {}, local:  {},  generation:  script_state.focus_generation, windows:  copy(gettabinfo(tabpagenr())[0].windows)}
+    for item_option in ['guioptions', 'laststatus', 'showtabline', 'ruler', 'showmode']
+      option = item_option
+      script_state.focus.global[option] = eval('&' .. option)
     endfor
-    for l:option in ['number', 'relativenumber', 'signcolumn', 'foldcolumn', 'colorcolumn', 'wrap', 'linebreak']
-      let s:focus.local[l:option] = eval('&l:' .. l:option)
+    for item_option in ['number', 'relativenumber', 'signcolumn', 'foldcolumn', 'colorcolumn', 'wrap', 'linebreak']
+      option = item_option
+      script_state.focus.local[option] = eval('&l:' .. option)
     endfor
     set guioptions-=m guioptions-=T guioptions-=r guioptions-=L laststatus=0 showtabline=0 noruler noshowmode
     setlocal nonumber norelativenumber signcolumn=no foldcolumn=0 colorcolumn= wrap linebreak
     wincmd _
     wincmd |
+
     return 1
   endif
-  if !exists('s:focus')
+  if !has_key(script_state, 'focus')
     return 1
   endif
-  for [l:option, l:value] in items(s:focus.global)
-    execute 'let &' .. l:option .. ' = l:value'
+  for [item_option, item_value] in items(script_state.focus.global)
+    value = item_value
+    option = item_option
+    execute '&' .. option .. ' = ' .. string(value)
   endfor
-  " GUI widgets can resize the text grid while guioptions is restored. Put
-  " the original grid back before restoring split dimensions.
-  let &columns = s:focus.columns
-  let &lines = s:focus.lines
+  # GUI widgets can resize the text grid while guioptions is restored. Put
+  # the original grid back before restoring split dimensions.
+  &columns = script_state.focus.columns
+  &lines = script_state.focus.lines
   redraw!
-  if win_id2tabwin(s:focus.window)[0] > 0
-    for [l:option, l:value] in items(s:focus.local)
-      call win_execute(s:focus.window, 'let &l:' .. l:option .. ' = ' .. string(l:value))
+  if win_id2tabwin(script_state.focus.window)[0] > 0
+    for [item_option, item_value] in items(script_state.focus.local)
+      value = item_value
+      option = item_option
+      win_execute(script_state.focus.window, '&l:' .. option .. ' = ' .. string(value))
     endfor
-    call win_execute(s:focus.window, s:focus.size)
+    win_execute(script_state.focus.window, script_state.focus.size)
   endif
   if has('gui_running')
-    let s:focus_restore = deepcopy(s:focus)
-    let s:focus_restore.attempts = 0
-    let s:focus_restore.stable = 0
-    let s:focus_restore.timer = timer_start(20, function('s:RestoreFocus'), #{repeat: -1})
+    script_state.focus_restore = deepcopy(script_state.focus)
+    script_state.focus_restore.attempts = 0
+    script_state.focus_restore.stable = 0
+    script_state.focus_restore.timer = timer_start(20, function(LocalRestoreFocus), {repeat:  -1})
   endif
-  unlet s:focus
+  unlet script_state.focus
   return 1
-endfunc
+enddef
 
-func! planet#prose#FocusPending() abort
-  return exists('s:focus_restore')
-endfunc
+export def FocusPending(): any
+  return has_key(script_state, 'focus_restore')
+enddef
 
-func! s:RestoreFocus(timer) abort
-  if !exists('s:focus_restore') || s:focus_restore.timer != a:timer
-    call timer_stop(a:timer)
-    return
+def LocalRestoreFocus(timer: any): any
+  if !has_key(script_state, 'focus_restore') || script_state.focus_restore.timer != timer
+    timer_stop(timer)
+    return 0
   endif
-  let l:restore = s:focus_restore
-  let l:tab = win_id2tabwin(l:restore.window)[0]
-  " A new focus operation or user split/close must supersede this restore.
-  if exists('s:focus') || l:restore.generation != get(s:, 'focus_generation', 0)
-        \ || l:tab == 0 || gettabinfo(l:tab)[0].windows !=# l:restore.windows
-    call timer_stop(a:timer)
-    unlet s:focus_restore
-    return
+  var restore: any = script_state.focus_restore
+  var tab: any = win_id2tabwin(restore.window)[0]
+  # A new focus operation or user split/close must supersede this restore.
+  if has_key(script_state, 'focus') || restore.generation != get(script_state, 'focus_generation', 0) || tab == 0 || gettabinfo(tab)[0].windows !=# restore.windows
+    timer_stop(timer)
+    unlet script_state.focus_restore
+    return 0
   endif
-  let l:restore.attempts += 1
-  if &columns != l:restore.columns || &lines != l:restore.lines
-    let l:restore.stable = 0
-    let &columns = l:restore.columns
-    let &lines = l:restore.lines
+  restore.attempts += 1
+  if &columns != restore.columns || &lines != restore.lines
+    restore.stable = 0
+    &columns = restore.columns
+    &lines = restore.lines
   else
-    let l:restore.stable += 1
+    restore.stable += 1
   endif
-  call win_execute(l:restore.window, l:restore.size)
-  " GTK may deliver several grid resizes after the widgets are restored.
-  " Keep applying the saved split sizes while those events settle, bounded to
-  " one second; no callback survives a subsequent focus operation.
-  if (l:restore.attempts >= 10 && l:restore.stable >= 3) || l:restore.attempts >= 50
-    call timer_stop(a:timer)
-    unlet s:focus_restore
+  win_execute(restore.window, restore.size)
+  # GTK may deliver several grid resizes after the widgets are restored.
+  # Keep applying the saved split sizes while those events settle, bounded to
+  # one second; no callback survives a subsequent focus operation.
+  if (restore.attempts >= 10 && restore.stable >= 3) || restore.attempts >= 50
+    timer_stop(timer)
+    unlet script_state.focus_restore
   endif
-endfunc
+  return 0
+enddef
 
-func! s:FocusResized() abort
-  if exists('s:focus_restore')
-    let s:focus_restore.stable = 0
+def LocalFocusResized(): any
+  if has_key(script_state, 'focus_restore')
+    script_state.focus_restore.stable = 0
   endif
-endfunc
+  return 0
+enddef
 
 augroup PlanetVimFocusRestore
   autocmd!
-  autocmd VimResized * call s:FocusResized()
+  autocmd VimResized * call LocalFocusResized()
 augroup END
 
-func! planet#prose#Load(package, plugin) abort
-  let l:path = planet#paths#Root() .. '/.vim/pack/writing/start/' .. a:package
-  if !filereadable(l:path .. '/plugin/' .. a:plugin .. '.vim')
-    return s:Warn('bundled ' .. a:package .. ' is missing.')
+export def Load(package: any, plugin: any): any
+  var path: any = planet#paths#Root() .. '/.vim/pack/writing/start/' .. package
+  if !filereadable(path .. '/plugin/' .. plugin .. '.vim')
+    return LocalWarn('bundled ' .. package .. ' is missing.')
   endif
-  let l:entry = planet#paths#Runtime(l:path)
-  if stridx(',' .. &runtimepath .. ',', ',' .. l:entry .. ',') < 0
-    let &runtimepath = l:entry .. ',' .. &runtimepath
+  var entry: any = planet#paths#Runtime(path)
+  if stridx(',' .. &runtimepath .. ',', ',' .. entry .. ',') < 0
+    &runtimepath = entry .. ',' .. &runtimepath
   endif
-  execute 'source ' .. fnameescape(l:path .. '/plugin/' .. a:plugin .. '.vim')
+  execute 'source ' .. fnameescape(path .. '/plugin/' .. plugin .. '.vim')
   return 1
-endfunc
+enddef
 
-func! planet#prose#AutoCorrect() abort
-  if !exists('*AutoCorrect') && !planet#prose#Load('vim-autocorrect', 'autocorrect')
+export def AutoCorrect(): any
+  if index(getcompletion('AutoCorrect', 'function'), 'AutoCorrect()') < 0 && !planet#prose#Load('vim-autocorrect', 'autocorrect')
     return 0
   endif
-  call AutoCorrect()
+  g:AutoCorrect()
   return 1
-endfunc
+enddef
 
-func! planet#prose#Proofread(category) abort
-  let g:wordy_spell_dir = planet#paths#Cache('wordy')
-  let l:entry = planet#paths#Runtime(g:wordy_spell_dir)
-  if stridx(',' .. &runtimepath .. ',', ',' .. l:entry .. ',') < 0
-    let &runtimepath ..= ',' .. l:entry
+export def Proofread(category: any): any
+  var source: any
+  var spell: any
+  var target: any
+  g:wordy_spell_dir = planet#paths#Cache('wordy')
+  var entry: any = planet#paths#Runtime(g:wordy_spell_dir)
+  if stridx(',' .. &runtimepath .. ',', ',' .. entry .. ',') < 0
+    &runtimepath ..= ',' .. entry
   endif
   if exists(':Wordy') != 2 && !planet#prose#Load('vim-wordy', 'wordy')
     return 0
   endif
-  if a:category ==# 'off'
-    NoWordy
-  elseif a:category =~# '^[a-z-]\+$'
-    " Upstream's mkspell command does not escape paths. Build the selected
-    " dictionary safely in the cache, so its normal public API can reuse it.
-    let l:source = g:wordy_dir .. '/data/en/' .. a:category .. '.dic'
-    if !filereadable(l:source)
-      return s:Warn('unknown proofreading dictionary: ' .. a:category)
+  if category ==# 'off'
+    execute 'NoWordy'
+  elseif category =~# '^[a-z-]\+$'
+    # Upstream's mkspell command does not escape paths. Build the selected
+    # dictionary safely in the cache, so its normal public API can reuse it.
+    source = g:wordy_dir .. '/data/en/' .. category .. '.dic'
+    if !filereadable(source)
+      return LocalWarn('unknown proofreading dictionary: ' .. category)
     endif
-    let l:spell = g:wordy_spell_dir .. '/spell'
-    call mkdir(l:spell, 'p')
-    let l:target = l:spell .. '/' .. a:category .. '.utf-8.spl'
-    if !filereadable(l:target) || getftime(l:target) < getftime(l:source)
-      execute 'mkspell! ' .. fnameescape(l:target) .. ' ' .. fnameescape(l:source)
+    spell = g:wordy_spell_dir .. '/spell'
+    mkdir(spell, 'p')
+    target = spell .. '/' .. category .. '.utf-8.spl'
+    if !filereadable(target) || getftime(target) < getftime(source)
+      execute 'mkspell! ' .. fnameescape(target) .. ' ' .. fnameescape(source)
     endif
-    execute 'Wordy ' .. a:category
+    execute 'Wordy ' .. category
   else
-    return s:Warn('invalid proofreading category.')
+    return LocalWarn('invalid proofreading category.')
   endif
   return 1
-endfunc
+enddef
 
-func! planet#prose#Grammar(action) abort
-  if a:action ==# 'status'
+export def Grammar(action: any): any
+  if action ==# 'status'
     echom 'LanguageTool: ' .. string(get(g:, 'PV_languagetool_argv', [get(g:, 'PV_languagetool_command', 'languagetool')]))
     echom 'Grammar results in this buffer: ' .. string(get(b:, 'grammarous_result', {}))
     if filereadable(get(g:, 'PV_grammar_error_file', ''))
@@ -280,17 +298,17 @@ func! planet#prose#Grammar(action) abort
   if exists(':GrammarousCheck') != 2 && !planet#prose#Load('vim-grammarous', 'grammarous')
     return 0
   endif
-  if a:action ==# 'reset'
-    GrammarousReset
+  if action ==# 'reset'
+    execute 'GrammarousReset'
     return 1
   endif
   if !planet#grammar#Configure()
     return 0
   endif
-  if a:action ==# 'comments'
-    GrammarousCheck --comments-only
+  if action ==# 'comments'
+    execute 'GrammarousCheck --comments-only'
   else
-    GrammarousCheck
+    execute 'GrammarousCheck'
   endif
   return 1
-endfunc
+enddef

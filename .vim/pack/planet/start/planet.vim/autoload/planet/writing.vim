@@ -1,37 +1,36 @@
-scriptversion 4
+vim9script
 
-let s:instance = getpid() .. '-' .. sha256(tempname())[:15]
-let s:last_error = ''
-let s:last_result = {}
-let s:last_quickfix = 0
+var script_instance = getpid() .. '-' .. sha256(tempname())[ : 15]
+var script_last_error = ''
+var script_last_result = {}
+var script_last_quickfix = 0
 
-func! s:Error(message) abort
-  let s:last_error = a:message
+def LocalError(message: any): any
+  script_last_error = message
   echohl ErrorMsg
-  echom 'PlanetVim: ' .. a:message
+  echom 'PlanetVim: ' .. message
   echohl None
   return 0
-endfunc
+enddef
 
-func! planet#writing#LastError() abort
-  return s:last_error
-endfunc
+export def LastError(): any
+  return script_last_error
+enddef
 
-func! s:Command(key, default, guidance) abort
-  let l:argv = get(g:, a:key, a:default)
-  if type(l:argv) != v:t_list || empty(l:argv)
-        \ || !empty(filter(copy(l:argv), {_, value -> type(value) != v:t_string}))
-    throw 'Configure g:' .. a:key .. ' as a nonempty executable argv List'
+def LocalCommand(key: any, default: any, guidance: any): any
+  var argv: any = get(g:, key, default)
+  if type(argv) != v:t_list || empty(argv) || !empty(filter(copy(argv), (_, lambda_value) => type(lambda_value) != v:t_string))
+    throw 'Configure g:' .. key .. ' as a nonempty executable argv List'
   endif
-  if !executable(l:argv[0])
-    throw a:guidance .. '; or configure g:' .. a:key
+  if !executable(argv[0])
+    throw guidance .. '; or configure g:' .. key
   endif
-  return copy(l:argv)
-endfunc
+  return copy(argv)
+enddef
 
-func! s:Source(types) abort
-  if index(a:types, &filetype) < 0 || !empty(&buftype) || empty(expand('%'))
-    throw 'Save a ' .. join(a:types, '/') .. ' document before running this action'
+def LocalSource(types: any): any
+  if index(types, &filetype) < 0 || !empty(&buftype) || empty(expand('%'))
+    throw 'Save a ' .. join(types, '/') .. ' document before running this action'
   endif
   if &modified
     confirm update
@@ -39,224 +38,230 @@ func! s:Source(types) abort
       throw 'Document was not saved; the writing action was cancelled'
     endif
   endif
-  let l:path = expand('%:p')
-  if !filereadable(l:path)
+  var path: any = expand('%:p')
+  if !filereadable(path)
     throw 'Save the document before running this action'
   endif
-  return l:path
-endfunc
+  return path
+enddef
 
-func! s:Cache(source) abort
-  return planet#paths#Cache('writing/' .. s:instance .. '/' .. sha256(a:source)[:15])
-endfunc
+def LocalCache(source: any): any
+  return planet#paths#Cache('writing/' .. script_instance .. '/' .. sha256(source)[ : 15])
+enddef
 
-func! s:Open(path) abort
-  if !filereadable(a:path)
-    throw 'The generated document is missing: ' .. a:path
+def LocalOpen(path: any): any
+  if !filereadable(path)
+    throw 'The generated document is missing: ' .. path
   endif
-  let l:default = has('win32') ? ['rundll32.exe', 'url.dll,FileProtocolHandler'] : ['xdg-open']
-  let l:argv = s:Command('PV_document_viewer_argv', l:default,
-        \ 'Install a desktop HTML/PDF viewer and xdg-open (Linux), or configure a document viewer')
-  let l:job = planet#term#RunGuiApp(l:argv + [a:path], fnamemodify(a:path, ':h'))
-  if type(l:job) != v:t_job || job_status(l:job) ==# 'fail'
+  var default: any = has('win32') ? ['rundll32.exe', 'url.dll,FileProtocolHandler'] : ['xdg-open']
+  var argv: any = LocalCommand('PV_document_viewer_argv', default, 'Install a desktop HTML/PDF viewer and xdg-open (Linux), or configure a document viewer')
+  var job: any = planet#term#RunGuiApp(argv + [path], fnamemodify(path, ':h'))
+  if type(job) != v:t_job || job_status(job) ==# 'fail'
     throw 'Could not start the document viewer'
   endif
   return 1
-endfunc
+enddef
 
-func! planet#writing#OpenOutput() abort
-  let l:result = get(b:, 'PV_writing_result', s:last_result)
-  if get(l:result, 'status', '') !=# 'success'
-    return s:Error('Build or preview a document successfully before opening its output')
+export def OpenOutput(): any
+  var result: any = get(b:, 'PV_writing_result', script_last_result)
+  if get(result, 'status', '') !=# 'success'
+    return LocalError('Build or preview a document successfully before opening its output')
   endif
   try
-    return s:Open(l:result.output)
+    return LocalOpen(result.output)
   catch
-    return s:Error(v:exception)
+    return LocalError(v:exception)
   endtry
-endfunc
+enddef
 
-func! s:Diagnostics(context, lines) abort
-  let l:items = []
-  for l:line in a:lines
-    let l:match = matchlist(l:line, '^\(.\{-}\):\(\d\+\):\s*\(.*\)$')
-    if !empty(l:match)
-      let l:file = l:match[1]
-      if l:file !~# '^\%(/\|[A-Za-z]:[/\\]\)'
-        let l:file = fnamemodify(a:context.source, ':h') .. '/' .. l:file
+def LocalDiagnostics(context: any, lines: any): any
+  var match: any
+  var file: any
+  var nonempty: any
+  var items: any = []
+  for line in lines
+    match = matchlist(line, '^\(.\{-}\):\(\d\+\):\s*\(.*\)$')
+    if !empty(match)
+      file = match[1]
+      if file !~# '^\%(/\|[A-Za-z]:[/\\]\)'
+        file = fnamemodify(context.source, ':h') .. '/' .. file
       endif
-      call add(l:items, {'filename': simplify(l:file), 'lnum': str2nr(l:match[2]),
-            \ 'text': l:match[3], 'type': 'E'})
+      add(items, {'filename': simplify(file), 'lnum': str2nr(match[2]), 'text': match[3], 'type': 'E'})
     endif
   endfor
-  if empty(l:items)
-    let l:nonempty = filter(copy(a:lines), {_, line -> !empty(trim(line))})
-    call add(l:items, {'filename': a:context.source, 'lnum': 1, 'type': 'E',
-          \ 'text': empty(l:nonempty) ? 'Writing command failed; inspect its Output buffer' : l:nonempty[-1]})
+  if empty(items)
+    nonempty = filter(copy(lines), (_, lambda_line) => !empty(trim(lambda_line)))
+    add(items, {'filename': context.source, 'lnum': 1, 'type': 'E', 'text': empty(nonempty) ? 'Writing command failed; inspect its Output buffer' : nonempty[-1]})
   endif
-  call setqflist([], ' ', {'title': 'PlanetVim ' .. a:context.kind .. ': ' .. a:context.source, 'items': l:items})
-  let s:last_quickfix = getqflist({'id': 0}).id
-  return s:last_quickfix
-endfunc
+  setqflist([], ' ', {'title': 'PlanetVim ' .. context.kind .. ': ' .. context.source, 'items': items})
+  script_last_quickfix = getqflist({'id': 0}).id
+  return script_last_quickfix
+enddef
 
-func! planet#writing#Errors() abort
-  let l:nr = getqflist({'id': s:last_quickfix, 'nr': 0}).nr
-  if s:last_quickfix == 0 || l:nr == 0
-    return s:Error('There are no writing errors to show')
+export def Errors(): any
+  var nr: any = getqflist({'id': script_last_quickfix, 'nr': 0}).nr
+  if script_last_quickfix == 0 || nr == 0
+    return LocalError('There are no writing errors to show')
   endif
-  let l:current = getqflist({'nr': 0}).nr
-  if l:nr != l:current
-    execute abs(l:nr - l:current) .. (l:nr < l:current ? 'colder' : 'cnewer')
+  var current: any = getqflist({'nr': 0}).nr
+  if nr != current
+    execute ':' .. abs(nr - current) .. (nr < current ? 'colder' : 'cnewer')
   endif
   copen
   return 1
-endfunc
+enddef
 
-func! s:Complete(context, result, output_buffer, timer) abort
-  if bufexists(a:output_buffer) && term_getstatus(a:output_buffer) !~# 'finished'
-    call timer_start(20, function('s:Complete', [a:context, a:result, a:output_buffer]))
-    return
+def LocalComplete(context: any, arg_result: any, output_buffer: any, timer: any): any
+  var lines: any
+  if bufexists(output_buffer) && term_getstatus(output_buffer) !~# 'finished'
+    timer_start(20, function(LocalComplete, [context, arg_result, output_buffer]))
+    return 0
   endif
-  let l:result = extend(deepcopy(a:result), {'output': a:context.output, 'source': a:context.source})
-  if l:result.status ==# 'success' && !filereadable(a:context.output)
-    let l:result.status = 'failed'
-    let l:result.message = 'The command completed without creating ' .. a:context.output
+  var result: any = extend(deepcopy(arg_result), {'output': context.output, 'source': context.source})
+  if result.status ==# 'success' && !filereadable(context.output)
+    result.status = 'failed'
+    result.message = 'The command completed without creating ' .. context.output
   endif
-  if l:result.status ==# 'failed'
-    let l:lines = filereadable(a:context.log) ? readfile(a:context.log) : getbufline(a:output_buffer, 1, '$')
-    if has_key(l:result, 'message')
-      call add(l:lines, l:result.message)
+  if result.status ==# 'failed'
+    lines = filereadable(context.log) ? readfile(context.log) : getbufline(output_buffer, 1, '$')
+    if has_key(result, 'message')
+      add(lines, result.message)
     endif
-    let l:result.quickfix = s:Diagnostics(a:context, l:lines)
-  elseif l:result.status ==# 'success' && get(a:context, 'previous_errors', 0) > 0
-    call setqflist([], 'r', {'id': a:context.previous_errors, 'items': []})
+    result.quickfix = LocalDiagnostics(context, lines)
+  elseif result.status ==# 'success' && get(context, 'previous_errors', 0) > 0
+    setqflist([], 'r', {'id': context.previous_errors, 'items': []})
   endif
-  if bufexists(a:context.buffer)
-    call setbufvar(a:context.buffer, 'PV_writing_result', l:result)
+  if bufexists(context.buffer)
+    setbufvar(context.buffer, 'PV_writing_result', result)
   endif
-  let s:last_result = l:result
-  if l:result.status ==# 'success' && a:context.open
+  script_last_result = result
+  if result.status ==# 'success' && context.open
     try
-      call s:Open(a:context.output)
+      LocalOpen(context.output)
     catch
-      let l:result.viewer_error = v:exception
-      call s:Error(v:exception)
+      result.viewer_error = v:exception
+      LocalError(v:exception)
     endtry
   endif
-endfunc
+  return 0
+enddef
 
-func! s:Exited(context, result, output_buffer) abort
-  call timer_start(0, function('s:Complete', [a:context, a:result, a:output_buffer]))
-endfunc
+def LocalExited(context: any, result: any, output_buffer: any): any
+  timer_start(0, function(LocalComplete, [context, result, output_buffer]))
+  return 0
+enddef
 
-func! s:Run(kind, source, argv, output, log) abort
-  let l:context = {'kind': a:kind, 'source': a:source, 'output': a:output,
-        \ 'log': a:log, 'buffer': bufnr(), 'open': get(g:, 'PV_writing_auto_open', 1),
-        \ 'previous_errors': get(get(b:, 'PV_writing_result', {}), 'quickfix', 0)}
-  let b:PV_writing_result = {'status': 'running', 'source': a:source, 'output': a:output}
-  let l:output_buffer = planet#term#RunArgv(a:argv, v:false, v:false, v:false,
-        \ fnamemodify(a:source, ':h'), function('s:Exited', [l:context]))
-  if l:output_buffer == 0
-    let b:PV_writing_result.status = 'failed'
-    return s:Error('Could not start the writing command')
+def LocalRun(kind: any, source: any, argv: any, output: any, log: any): any
+  var context: any = {'kind': kind, 'source': source, 'output': output, 'log': log, 'buffer': bufnr(),
+       'open': get(g:, 'PV_writing_auto_open', 1), 'previous_errors': get(get(b:, 'PV_writing_result',
+       {}), 'quickfix', 0)}
+  b:PV_writing_result = {'status':  'running', 'source':  source, 'output':  output}
+  var output_buffer: any = planet#term#RunArgv(argv, v:false, v:false, v:false, fnamemodify(source, ':h'), function(LocalExited, [context]))
+  if output_buffer == 0
+    b:PV_writing_result.status = 'failed'
+    return LocalError('Could not start the writing command')
   endif
-  let b:PV_writing_result.output_buffer = l:output_buffer
-  return l:output_buffer
-endfunc
+  b:PV_writing_result.output_buffer = output_buffer
+  return output_buffer
+enddef
 
-func! planet#writing#MarkdownPreview() abort
+export def MarkdownPreview(): any
+  var argv: any
+  var source: any
+  var output: any
   try
-    let l:argv = s:Command('PV_pandoc_argv', ['pandoc'], 'Install Pandoc 2.19 or newer for Markdown preview')
-    let l:source = s:Source(['markdown'])
-    let l:output = s:Cache(l:source) .. '/preview.html'
-    let l:argv += ['--standalone', '--from=gfm', '--to=html5', '--embed-resources',
-          \ '--resource-path=' .. fnamemodify(l:source, ':h'),
-          \ '--metadata=title:' .. fnamemodify(l:source, ':t'), '--output=' .. l:output, l:source]
-    return s:Run('Markdown', l:source, l:argv, l:output, '')
+    argv = LocalCommand('PV_pandoc_argv', ['pandoc'], 'Install Pandoc 2.19 or newer for Markdown preview')
+    source = LocalSource(['markdown'])
+    output = LocalCache(source) .. '/preview.html'
+    argv += ['--standalone', '--from=gfm', '--to=html5', '--embed-resources',  '--resource-path=' .. fnamemodify(source, ':h'),  '--metadata=title:' .. fnamemodify(source, ':t'), '--output=' .. output, source]
+    return LocalRun('Markdown', source, argv, output, '')
   catch
-    return s:Error(v:exception)
+    return LocalError(v:exception)
   endtry
-endfunc
+enddef
 
-func! planet#writing#LatexBuild() abort
+export def LatexBuild(): any
+  var argv: any
+  var source: any
+  var cache: any
+  var basename: any
   try
-    let l:argv = s:Command('PV_latexmk_argv', ['latexmk'], 'Install latexmk and a TeX distribution (TeX Live or MiKTeX)')
-    let l:source = s:Source(['tex', 'plaintex'])
-    let l:cache = s:Cache(l:source)
-    let l:basename = fnamemodify(l:source, ':t:r')
-    let l:argv += ['-pdf', '-interaction=nonstopmode', '-file-line-error', '-halt-on-error',
-          \ '-no-shell-escape', '-outdir=' .. l:cache, l:source]
-    return s:Run('LaTeX', l:source, l:argv, l:cache .. '/' .. l:basename .. '.pdf', l:cache .. '/' .. l:basename .. '.log')
+    argv = LocalCommand('PV_latexmk_argv', ['latexmk'], 'Install latexmk and a TeX distribution (TeX Live or MiKTeX)')
+    source = LocalSource(['tex', 'plaintex'])
+    cache = LocalCache(source)
+    basename = fnamemodify(source, ':t:r')
+    argv += ['-pdf', '-interaction=nonstopmode', '-file-line-error', '-halt-on-error',  '-no-shell-escape', '-outdir=' .. cache, source]
+    return LocalRun('LaTeX', source, argv, cache .. '/' .. basename .. '.pdf', cache .. '/' .. basename .. '.log')
   catch
-    return s:Error(v:exception)
+    return LocalError(v:exception)
   endtry
-endfunc
+enddef
 
-" Accept an option value (commas in a single path must already be escaped).
-" Vim 9.1 validates every byte against 'isfname', including the comma escape
-" and UTF-8 bytes. Allow those while setting it, without changing gf behavior.
-func! planet#writing#SetSpellFile(value, local = v:true) abort
-  let l:isfname = &isfname
+# Accept an option value (commas in a single path must already be escaped).
+# Vim 9.1 validates every byte against 'isfname', including the comma escape
+# and UTF-8 bytes. Allow those while setting it, without changing gf behavior.
+export def SetSpellFile(value: any, local: any = v:true): any
+  var isfname: any = &isfname
   try
     set isfname+=32,39,92,128-255
-    if a:local
-      let &l:spellfile = a:value
+    if local
+      &l:spellfile = value
     else
-      let &spellfile = a:value
+      &spellfile = value
     endif
   finally
-    let &isfname = l:isfname
+    &isfname = isfname
   endtry
-endfunc
+  return 0
+enddef
 
-func! planet#writing#Undo() abort
+export def Undo(): any
   if !exists('b:PV_writing_setup')
-    return
+    return 0
   endif
-  let l:setup = b:PV_writing_setup
-  for [l:option, l:value] in items(l:setup.options)
-    if l:option ==# 'spellfile'
-      call planet#writing#SetSpellFile(l:value)
+  var setup: any = b:PV_writing_setup
+  for [option, value] in items(setup.options)
+    if option ==# 'spellfile'
+      planet#writing#SetSpellFile(value)
     else
-      execute 'let &l:' .. l:option .. ' = l:value'
+      execute '&l:' .. option .. ' = ' .. string(value)
     endif
   endfor
-  if l:setup.mapped
+  if setup.mapped
     silent! nunmap <buffer> <A-`>
-    if !empty(l:setup.mapping)
-      call mapset('n', 0, l:setup.mapping)
+    if !empty(setup.mapping)
+      mapset('n', 0, setup.mapping)
     endif
   endif
-  let b:undo_ftplugin = l:setup.undo
+  b:undo_ftplugin = setup.undo
   unlet b:PV_writing_setup
-endfunc
+  return 0
+enddef
 
-func! planet#writing#Setup() abort
-  call planet#writing#Undo()
-  let l:mapping = maparg('<A-`>', 'n', 0, 1)
-  let b:PV_writing_setup = {'options': {}, 'undo': get(b:, 'undo_ftplugin', ''),
-        \ 'mapping': get(l:mapping, 'buffer', 0) ? l:mapping : {}, 'mapped': v:false}
+export def Setup(): any
+  planet#writing#Undo()
+  var mapping: any = maparg('<A-`>', 'n', 0, 1)
+  b:PV_writing_setup = {'options':  {}, 'undo':  get(b:, 'undo_ftplugin', ''),  'mapping':  get(mapping, 'buffer', 0) ? mapping :  {}, 'mapped':  v:false}
   if has('spell')
-    let b:PV_writing_setup.options = {'spell': &l:spell, 'spellfile': &l:spellfile, 'spelllang': &l:spelllang}
-    call planet#writing#SetSpellFile(escape(get(g:, 'PV_personal_spell_file',
-          \ planet#paths#State('spell') .. '/personal.utf-8.add'), ','))
-    let &l:spelllang = get(g:, 'PV_spell_language', 'en_us')
+    b:PV_writing_setup.options = {'spell':  &l:spell, 'spellfile':  &l:spellfile, 'spelllang':  &l:spelllang}
+    planet#writing#SetSpellFile(escape(get(g:, 'PV_personal_spell_file',  planet#paths#State('spell') .. '/personal.utf-8.add'), ','))
+    &l:spelllang = get(g:, 'PV_spell_language', 'en_us')
     setlocal spell
   endif
   if &filetype ==# 'markdown'
     nnoremap <buffer> <silent> <A-`> <Cmd>PlanetMarkdownPreview<CR>
-    let b:PV_writing_setup.mapped = v:true
+    b:PV_writing_setup.mapped = v:true
   elseif index(['tex', 'plaintex'], &filetype) >= 0
     nnoremap <buffer> <silent> <A-`> <Cmd>PlanetLatexBuild<CR>
-    let b:PV_writing_setup.mapped = v:true
+    b:PV_writing_setup.mapped = v:true
   endif
-  let b:undo_ftplugin = 'call planet#writing#Undo()'
-        \ .. (empty(b:PV_writing_setup.undo) ? '' : ' | ' .. b:PV_writing_setup.undo)
-endfunc
+  b:undo_ftplugin = 'call planet#writing#Undo()'  .. (empty(b:PV_writing_setup.undo) ? '' :  ' | ' .. b:PV_writing_setup.undo)
+  return 0
+enddef
 
-func! planet#writing#GrammarCheck() abort
+export def GrammarCheck(): any
   if !planet#grammar#Configure()
-    return s:Error('Install the local LanguageTool command and Java, or configure g:PV_languagetool_command')
+    return LocalError('Install the local LanguageTool command and Java, or configure g:PV_languagetool_command')
   endif
   return planet#prose#Grammar('check')
-endfunc
+enddef

@@ -1,365 +1,386 @@
-scriptversion 4
-let s:requests = {}
-let s:next = 0
+vim9script
 
-func! s:Warn(message) abort
+var script_state: dict<any> = {}
+var script_requests = {}
+var script_next = 0
+
+def LocalWarn(message: any): any
   echohl WarningMsg
-  echom 'PlanetVim translation: ' .. a:message
+  echom 'PlanetVim translation: ' .. message
   echohl None
   return 0
-endfunc
+enddef
 
-func! s:Settings() abort
-  if !exists('s:settings')
-    let s:settings = #{source: get(g:, 'translator_source_lang', 'auto'), target: get(g:, 'translator_target_lang', 'zh'), engines: get(g:, 'translator_default_engines', ['google'])}
-    let l:file = planet#paths#Config() .. '/translation.json'
-    if filereadable(l:file)
+def LocalSettings(): any
+  var file: any
+  if !has_key(script_state, 'settings')
+    script_state.settings = {source:  get(g:, 'translator_source_lang', 'auto'), target:  get(g:, 'translator_target_lang', 'zh'), engines:  get(g:, 'translator_default_engines', ['google'])}
+    file = planet#paths#Config() .. '/translation.json'
+    if filereadable(file)
       try
-        call extend(s:settings, json_decode(join(readfile(l:file), "\n")), 'force')
+        extend(script_state.settings, json_decode(join(readfile(file), "\n")), 'force')
       catch
-        call s:Warn('could not load saved settings: ' .. v:exception)
+        LocalWarn('could not load saved settings: ' .. v:exception)
       endtry
     endif
   endif
-  " Bundled history writes inside the installation; this wrapper owns history.
-  let g:translator_history_enable = v:false
-  return s:settings
-endfunc
+  # Bundled history writes inside the installation; this wrapper owns history.
+  g:translator_history_enable = v:false
+  return script_state.settings
+enddef
 
-func! planet#translation#Settings() abort
-  return deepcopy(s:Settings())
-endfunc
+export def Settings(): any
+  return deepcopy(LocalSettings())
+enddef
 
-func! planet#translation#Language(which, value = v:null) abort
-  if index(['source', 'target'], a:which) < 0
+export def Language(which: any, arg_value: any = v:null): any
+  if index(['source', 'target'], which) < 0
     return 0
   endif
-  let l:settings = s:Settings()
-  let l:value = a:value is v:null ? inputdialog(a:which .. ' language code:', l:settings[a:which], "\x01") : a:value
-  if empty(l:value) || l:value ==# "\x01"
+  var settings: any = LocalSettings()
+  var value: any = arg_value == null ? inputdialog(which .. ' language code:', settings[which], "\x01") : arg_value
+  if empty(value) || value ==# "\x01"
     return 0
   endif
-  if l:value !~# '^\a\{2,12}\%([-_]\a\{2,12}\)*$'
-    return s:Warn('use a language code such as en, zh-CN, or auto.')
+  if value !~# '^\a\{2,12}\%([-_]\a\{2,12}\)*$'
+    return LocalWarn('use a language code such as en, zh-CN, or auto.')
   endif
-  let l:settings[a:which] = l:value
-  let g:['translator_' .. a:which .. '_lang'] = l:value
-  call writefile([json_encode(l:settings)], planet#paths#Config() .. '/translation.json')
+  settings[which] = value
+  g:['translator_' .. which .. '_lang'] = value
+  writefile([json_encode(settings)], planet#paths#Config() .. '/translation.json')
   return 1
-endfunc
+enddef
 
-func! planet#translation#Engines(value = v:null) abort
-  let l:settings = s:Settings()
-  let l:value = a:value is v:null ? inputdialog('Translation engines (comma separated: google, bing, haici, iciba, youdao, baicizhan, trans, sdcv):', join(l:settings.engines, ', '), "\x01") : a:value
-  if type(l:value) == v:t_string && (empty(l:value) || l:value ==# "\x01")
+export def Engines(arg_value: any = v:null): any
+  var engines: any
+  var engine: any
+  var settings: any = LocalSettings()
+  var value: any = arg_value == null ? inputdialog('Translation engines (comma separated: google, bing, haici, iciba, youdao, baicizhan, trans, sdcv):',
+       join(settings.engines, ', '), "\x01") : arg_value
+  if type(value) == v:t_string && (empty(value) || value ==# "\x01")
     return 0
   endif
-  let l:engines = type(l:value) == v:t_list ? copy(l:value) : split(l:value, '\s*,\s*')
-  if empty(l:engines) || !empty(filter(copy(l:engines), {_, e -> index(['google', 'bing', 'haici', 'iciba', 'youdao', 'baicizhan', 'trans', 'sdcv'], e) < 0}))
-    return s:Warn('select at least one supported translation engine.')
+  engines = type(value) == v:t_list ? copy(value) : split(value, '\s*,\s*')
+  if empty(engines) || !empty(filter(copy(engines), (_, lambda_e) => index(['google', 'bing', 'haici',
+       'iciba', 'youdao', 'baicizhan', 'trans', 'sdcv'], lambda_e) < 0))
+    return LocalWarn('select at least one supported translation engine.')
   endif
-  let l:settings.engines = []
-  for l:engine in l:engines
-    if index(l:settings.engines, l:engine) < 0
-      call add(l:settings.engines, l:engine)
+  settings.engines = []
+  for item_engine in engines
+    engine = item_engine
+    if index(settings.engines, engine) < 0
+      add(settings.engines, engine)
     endif
   endfor
-  let g:translator_default_engines = copy(l:settings.engines)
-  call writefile([json_encode(l:settings)], planet#paths#Config() .. '/translation.json')
+  g:translator_default_engines = copy(settings.engines)
+  writefile([json_encode(settings)], planet#paths#Config() .. '/translation.json')
   return 1
-endfunc
+enddef
 
-func! s:Selection() abort
-  let l:line = getline('.')
-  let l:at = 0
-  while l:at < strlen(l:line)
-    let l:word = matchstrpos(l:line, '\k\+', l:at)
-    if l:word[1] < 0
+def LocalSelection(): any
+  var word: any
+  var line: any = getline('.')
+  var at: any = 0
+  while at < strlen(line)
+    word = matchstrpos(line, '\k\+', at)
+    if word[1] < 0
       break
     endif
-    if l:word[1] <= col('.') - 1 && l:word[2] >= col('.')
-      return #{buffer: bufnr(), type: 'v', exclusive: v:false,
-            \ start: [0, line('.'), l:word[1] + 1, 0],
-            \ end: [0, line('.'), l:word[1] + byteidx(l:word[0], strchars(l:word[0]) - 1) + 1, 0]}
+    if word[1] <= col('.') - 1 && word[2] >= col('.')
+      return {buffer: bufnr(), type: 'v', exclusive: v:false, start: [0, line('.'), word[1] + 1, 0], end: [0,
+           line('.'), word[1] + byteidx(word[0], strchars(word[0]) - 1) + 1, 0]}
     endif
-    let l:at = l:word[2]
+    at = word[2]
   endwhile
   return {}
-endfunc
+enddef
 
-func! planet#translation#Result(id) abort
-  return deepcopy(get(get(s:requests, a:id, {}), 'result', {}))
-endfunc
+export def Result(id: any): any
+  return deepcopy(get(get(script_requests, id, {}), 'result', {}))
+enddef
 
-func! planet#translation#Translate(mode = 'window', text = v:null, selection = v:null, options = {}) abort
-  if index(['window', 'echo', 'replace'], a:mode) < 0
-    return s:Warn('use window, echo, or replace.')
+export def Translate(mode: any = 'window', arg_text: any = v:null, arg_selection: any = v:null, options: any = {}): any
+  var capture: any
+  var request: any
+  if index(['window', 'echo', 'replace'], mode) < 0
+    return LocalWarn('use window, echo, or replace.')
   endif
-  if a:mode ==# 'replace' && !&modifiable
-    return s:Warn('the source buffer is not modifiable.')
+  if mode ==# 'replace' && !&modifiable
+    return LocalWarn('the source buffer is not modifiable.')
   endif
-  let l:settings = extend(deepcopy(s:Settings()), a:options, 'force')
-  let l:selection = a:selection is v:null ? s:Selection() : a:selection
-  let l:text = a:text
-  if l:text is v:null
-    if empty(l:selection)
-      return s:Warn('place the cursor on a word or select text to translate.')
+  var settings: any = extend(deepcopy(LocalSettings()), options, 'force')
+  var selection: any = arg_selection == null ? LocalSelection() : arg_selection
+  var text: any = arg_text
+  if text == null
+    if empty(selection)
+      return LocalWarn('place the cursor on a word or select text to translate.')
     endif
-    let l:capture = tempname()
+    capture = tempname()
     try
-      call planet#selection#Export(l:capture, l:selection)
-      let l:text = join(readfile(l:capture, 'b'), "\n")
+      planet#selection#Export(capture, selection)
+      text = join(readfile(capture, 'b'), "\n")
     finally
-      call delete(l:capture)
+      delete(capture)
     endtry
   endif
-  if type(l:text) != v:t_string || empty(l:text)
+  if type(text) != v:t_string || empty(text)
     return 0
   endif
-  let l:command = get(g:, 'PV_translation_command', [executable('python3') ? 'python3' : 'python', planet#paths#Root() .. '/.vim/pack/planet/start/planet.vim/bin/translate.py'])
-  if type(l:command) != v:t_list || empty(l:command) || !executable(l:command[0])
-    return s:Warn('install Python 3 or configure g:PV_translation_command as an executable argument list.')
+  var command: any = get(g:, 'PV_translation_command', [executable('python3') ? 'python3' : 'python',
+       planet#paths#Root() .. '/.vim/pack/planet/start/planet.vim/bin/translate.py'])
+  if type(command) != v:t_list || empty(command) || !executable(command[0])
+    return LocalWarn('install Python 3 or configure g:PV_translation_command as an executable argument list.')
   endif
-  let s:next += 1
-  for l:key in keys(s:requests)
-    if str2nr(l:key) < s:next - 50 && s:requests[l:key].result.status !=# 'running'
-      call remove(s:requests, l:key)
+  script_next += 1
+  for key in keys(script_requests)
+    if str2nr(key) < script_next - 50 && script_requests[key].result.status !=# 'running'
+      remove(script_requests, key)
     endif
   endfor
-  let l:context = #{id: s:next, mode: a:mode, buffer: bufnr(), tick: b:changedtick,
-        \ selection: deepcopy(l:selection), request: tempname(), output: tempname(), error: tempname(),
-        \ result: #{status: 'running', exit_code: v:null, text: l:text, results: [],
-        \ source: l:settings.source, target: l:settings.target, engines: copy(l:settings.engines)}}
-  let l:request = extend(deepcopy(l:settings), #{text: l:text,
-        \ provider: planet#paths#Root() .. '/.vim/pack/writing/start/vim-translator/script/translator.py',
-        \ proxy: get(g:, 'translator_proxy_url', ''), options: get(g:, 'translator_translate_shell_options', [])})
-  call writefile([json_encode(l:request)], l:context.request)
-  let s:requests[l:context.id] = l:context
-  let l:context.job = job_start(l:command + ['--request', l:context.request],
-        \ #{in_io: 'null', out_io: 'file', out_name: l:context.output,
-        \ err_io: 'file', err_name: l:context.error, exit_cb: function('s:Exited', [l:context])})
-  let l:context.timeout = timer_start(get(g:, 'PV_translation_timeout', 30000), function('s:Timeout', [l:context]))
-  if job_status(l:context.job) ==# 'fail'
-    call s:Exited(l:context, l:context.job, -1)
+  var context: any = {id: script_next, mode: mode, buffer: bufnr(), tick: b:changedtick, selection: deepcopy(selection),
+       request: tempname(), output: tempname(), error: tempname(), result: {status: 'running', exit_code: v:null,
+       text: text, results: [], source: settings.source, target: settings.target, engines: copy(settings.engines)}}
+  request = extend(deepcopy(settings), {text: text, provider: planet#paths#Root() .. '/.vim/pack/writing/start/vim-translator/script/translator.py', proxy: get(g:, 'translator_proxy_url', ''), options: get(g:, 'translator_translate_shell_options', [])})
+  writefile([json_encode(request)], context.request)
+  script_requests[context.id] = context
+  context.job = job_start(command + ['--request', context.request],  {in_io:  'null', out_io:  'file', out_name:  context.output,  err_io:  'file', err_name:  context.error, exit_cb:  function(LocalExited, [context])})
+  context.timeout = timer_start(get(g:, 'PV_translation_timeout', 30000), function(LocalTimeout, [context]))
+  if job_status(context.job) ==# 'fail'
+    LocalExited(context, context.job, -1)
   endif
-  return l:context.id
-endfunc
+  return context.id
+enddef
 
-func! planet#translation#Command(mode, range, first, last, text, bang = v:false) abort
-  let l:text = a:text
-  let l:options = deepcopy(s:Settings())
-  while l:text =~# '^\s*--'
-    if l:text =~# '^\s*--\s'
-      let l:text = substitute(l:text, '^\s*--\s', '', '')
+export def Command(mode: any, range: any, first: any, last: any, arg_text: any, bang: any = v:false): any
+  var match: any
+  var key: any
+  var value: any
+  var text: any = arg_text
+  var options: any = deepcopy(LocalSettings())
+  while text =~# '^\s*--'
+    if text =~# '^\s*--\s'
+      text = substitute(text, '^\s*--\s', '', '')
       break
     endif
-    let l:match = matchlist(l:text, '^\s*--\(engines\|source_lang\|target_lang\)=\([^[:space:]]\+\)\s*')
-    if empty(l:match)
-      return s:Warn('use --engines=, --source_lang=, --target_lang=, or -- before literal text.')
+    match = matchlist(text, '^\s*--\(engines\|source_lang\|target_lang\)=\([^[:space:]]\+\)\s*')
+    if empty(match)
+      return LocalWarn('use --engines=, --source_lang=, --target_lang=, or -- before literal text.')
     endif
-    let l:key = {'engines': 'engines', 'source_lang': 'source', 'target_lang': 'target'}[l:match[1]]
-    if l:key ==# 'engines'
-      let l:value = split(l:match[2], ',')
-      if empty(l:value) || !empty(filter(copy(l:value), {_, e -> index(['google', 'bing', 'haici', 'iciba', 'youdao', 'baicizhan', 'trans', 'sdcv'], e) < 0}))
-        return s:Warn('invalid engine option.')
+    key = {'engines': 'engines', 'source_lang': 'source', 'target_lang': 'target'}[match[1]]
+    if key ==# 'engines'
+      value = split(match[2], ',')
+      if empty(value) || !empty(filter(copy(value), (_, lambda_e) => index(['google', 'bing', 'haici',
+           'iciba', 'youdao', 'baicizhan', 'trans', 'sdcv'], lambda_e) < 0))
+        return LocalWarn('invalid engine option.')
       endif
     else
-      let l:value = l:match[2]
-      if l:value !~# '^\a\{2,12}\%([-_]\a\{2,12}\)*$'
-        return s:Warn('invalid language option.')
+      value = match[2]
+      if value !~# '^\a\{2,12}\%([-_]\a\{2,12}\)*$'
+        return LocalWarn('invalid language option.')
       endif
     endif
-    let l:options[l:key] = l:value
-    let l:text = strpart(l:text, strlen(l:match[0]))
+    options[key] = value
+    text = strpart(text, strlen(match[0]))
   endwhile
-  if a:bang && l:options.source !=# 'auto'
-    let [l:options.source, l:options.target] = [l:options.target, l:options.source]
+  if bang && options.source !=# 'auto'
+    [options.source, options.target] = [options.target, options.source]
   endif
-  if !empty(l:text)
-    return planet#translation#Translate(a:mode, l:text, v:null, l:options)
+  if !empty(text)
+    return planet#translation#Translate(mode, text, v:null, options)
   endif
-  if a:range
-    return planet#translation#Translate(a:mode, v:null, #{buffer: bufnr(), type: 'V', exclusive: v:false,
-          \ start: [0, a:first, 1, 0], end: [0, a:last, 1, 0]}, l:options)
+  if range != 0
+    return planet#translation#Translate(mode, v:null, {buffer: bufnr(), type: 'V', exclusive: v:false, start: [0, first, 1, 0], end: [0, last, 1, 0]}, options)
   endif
-  return planet#translation#Translate(a:mode, v:null, v:null, l:options)
-endfunc
+  return planet#translation#Translate(mode, v:null, v:null, options)
+enddef
 
-func! planet#translation#Complete(lead, command, position) abort
-  let l:choices = ['--engines=', '--source_lang=', '--target_lang=']
-  if a:lead =~# '^--engines='
-    let l:choices = map(['google', 'bing', 'haici', 'iciba', 'youdao', 'baicizhan', 'trans', 'sdcv'], '"--engines=" .. v:val')
+export def Complete(lead: any, command: any, position: any): any
+  var choices: any = ['--engines=', '--source_lang=', '--target_lang=']
+  if lead =~# '^--engines='
+    choices = map(['google', 'bing', 'haici', 'iciba', 'youdao', 'baicizhan', 'trans', 'sdcv'], (_, engine) => '--engines=' .. engine)
   endif
-  return filter(l:choices, 'stridx(v:val, a:lead) == 0')
-endfunc
+  return filter(choices, (_, choice) => stridx(choice, lead) == 0)
+enddef
 
-func! s:Timeout(context, timer) abort
-  call planet#translation#Cancel(a:context.id)
-endfunc
+def LocalTimeout(context: any, timer: any): any
+  planet#translation#Cancel(context.id)
+  return 0
+enddef
 
-func! planet#translation#Cancel(id) abort
-  let l:context = get(s:requests, a:id, {})
-  if empty(l:context) || l:context.result.status !=# 'running'
+export def Cancel(id: any): any
+  var context: any = get(script_requests, id, {})
+  if empty(context) || context.result.status !=# 'running'
     return 0
   endif
-  let l:context.cancelled = v:true
-  return job_stop(l:context.job)
-endfunc
+  context.cancelled = v:true
+  return job_stop(context.job)
+enddef
 
-func! s:Exited(context, job, status) abort
-  call timer_start(0, function('s:Finish', [a:context, a:status]))
-endfunc
+def LocalExited(context: any, job: any, status: any): any
+  timer_start(0, function(LocalFinish, [context, status]))
+  return 0
+enddef
 
-func! s:Finish(context, status, timer) abort
-  if a:context.result.status !=# 'running'
-    return
+def LocalFinish(context: any, status: any, timer: any): any
+  var result: any
+  var decoded: any
+  var stderr: any
+  var window: any
+  if context.result.status !=# 'running'
+    return 0
   endif
-  let l:result = a:context.result
-  call timer_stop(a:context.timeout)
-  let l:result.exit_code = a:status
+  result = context.result
+  timer_stop(context.timeout)
+  result.exit_code = status
   try
-    let l:decoded = json_decode(join(readfile(a:context.output), "\n"))
-    if type(l:decoded) != v:t_dict || type(get(l:decoded, 'results', 0)) != v:t_list
+    decoded = json_decode(join(readfile(context.output), "\n"))
+    if type(decoded) != v:t_dict || type(get(decoded, 'results', 0)) != v:t_list
       throw 'invalid translation response'
     endif
-    for l:entry in l:decoded.results
-      if type(l:entry) != v:t_dict || type(get(l:entry, 'paraphrase', '')) != v:t_string
-            \ || type(get(l:entry, 'engine', '')) != v:t_string || type(get(l:entry, 'explains', [])) != v:t_list
-            \ || !empty(filter(copy(get(l:entry, 'explains', [])), {_, value -> type(value) != v:t_string}))
+    for entry in decoded.results
+      if type(entry) != v:t_dict || type(get(entry, 'paraphrase', '')) != v:t_string || type(get(entry,
+           'engine', '')) != v:t_string || type(get(entry, 'explains', [])) != v:t_list || !empty(filter(copy(get(entry,
+           'explains', [])), (_, lambda_value) => type(lambda_value) != v:t_string))
         throw 'invalid translation entry'
       endif
     endfor
-    let l:result.results = l:decoded.results
-    let l:result.errors = get(l:decoded, 'errors', [])
-    let l:result.status = a:status == 0 && get(l:decoded, 'status', v:false) && !empty(l:result.results) ? 'success' : 'failed'
+    result.results = decoded.results
+    result.errors = get(decoded, 'errors', [])
+    result.status = status == 0 && get(decoded, 'status', v:false) && !empty(result.results) ? 'success' :  'failed'
   catch
-    let l:result.status = 'failed'
-    let l:result.errors = [v:exception]
+    result.status = 'failed'
+    result.errors = [v:exception]
   finally
-    let l:stderr = filereadable(a:context.error) ? readfile(a:context.error) : []
-    if !empty(l:stderr)
-      let l:result.errors = get(l:result, 'errors', []) + l:stderr
+    stderr = filereadable(context.error) ? readfile(context.error) : []
+    if !empty(stderr)
+      result.errors = get(result, 'errors', []) + stderr
     endif
-    for l:name in ['request', 'output', 'error']
-      call delete(a:context[l:name])
+    for name in ['request', 'output', 'error']
+      delete(context[name])
     endfor
   endtry
-  if get(a:context, 'cancelled', v:false)
-    let l:result.status = 'cancelled'
+  if get(context, 'cancelled', v:false)
+    result.status = 'cancelled'
   endif
-  let l:event = #{time: strftime('%Y-%m-%dT%H:%M:%S%z'), status: l:result.status, exit_code: a:status, errors: get(l:result, 'errors', [])}
-  call writefile([json_encode(l:event)], planet#paths#State('translation') .. '/events.jsonl', 'a')
-  if l:result.status !=# 'success'
-    call s:Warn('translation ' .. l:result.status .. ': ' .. join(get(l:result, 'errors', []), '; '))
-    return
-  endif
-  call writefile([json_encode(extend(copy(l:event), #{text: l:result.text, results: l:result.results,
-        \ source: l:result.source, target: l:result.target, engines: l:result.engines}))], planet#paths#State('translation') .. '/history.jsonl', 'a')
-  if a:context.mode ==# 'replace'
-    let l:window = bufwinid(a:context.buffer)
-    if l:window < 0 || getbufvar(a:context.buffer, 'changedtick') != a:context.tick || empty(a:context.selection)
-      call s:Warn('source changed or is hidden; replacement was not applied.')
-      call s:Show(l:result)
-    else
-      call win_execute(l:window, 'call planet#translation#Apply(' .. a:context.id .. ')')
-    endif
-  elseif a:context.mode ==# 'echo'
-    echom join(s:Lines(l:result), ' | ')
-  else
-    call s:Show(l:result)
-  endif
-endfunc
-
-func! s:Lines(result) abort
-  let l:lines = [a:result.text, '']
-  for l:translation in a:result.results
-    call add(l:lines, '[' .. get(l:translation, 'engine', 'translation') .. ']')
-    if !empty(get(l:translation, 'paraphrase', ''))
-      call extend(l:lines, split(l:translation.paraphrase, "\n", 1))
-    endif
-    call extend(l:lines, get(l:translation, 'explains', []))
-  endfor
-  return l:lines
-endfunc
-
-func! s:Show(result) abort
-  botright new
-  setlocal buftype=nofile bufhidden=wipe noswapfile
-  call setline(1, s:Lines(a:result))
-  setlocal nomodifiable
-endfunc
-
-func! planet#translation#Apply(id) abort
-  let l:context = get(s:requests, a:id, {})
-  if empty(l:context) || bufnr() != l:context.buffer || b:changedtick != l:context.tick || !&modifiable
+  var event: any = {time: strftime('%Y-%m-%dT%H:%M:%S%z'), status: result.status, exit_code: status, errors: get(result, 'errors', [])}
+  writefile([json_encode(event)], planet#paths#State('translation') .. '/events.jsonl', 'a')
+  if result.status !=# 'success'
+    LocalWarn('translation ' .. result.status .. ': ' .. join(get(result, 'errors', []), '; '))
     return 0
   endif
-  let l:text = ''
-  for l:result in l:context.result.results
-    if !empty(get(l:result, 'paraphrase', ''))
-      let l:text = l:result.paraphrase
+  writefile([json_encode(extend(copy(event), {text: result.text, results: result.results, source: result.source,
+       target: result.target, engines: result.engines}))], planet#paths#State('translation') .. '/history.jsonl',
+       'a')
+  if context.mode ==# 'replace'
+    window = bufwinid(context.buffer)
+    if window < 0 || getbufvar(context.buffer, 'changedtick') != context.tick || empty(context.selection)
+      LocalWarn('source changed or is hidden; replacement was not applied.')
+      LocalShow(result)
+    else
+      win_execute(window, 'call planet#translation#Apply(' .. context.id .. ')')
+    endif
+  elseif context.mode ==# 'echo'
+    echom join(LocalLines(result), ' | ')
+  else
+    LocalShow(result)
+  endif
+  return 0
+enddef
+
+def LocalLines(result: any): any
+  var lines: any = [result.text, '']
+  for translation in result.results
+    add(lines, '[' .. get(translation, 'engine', 'translation') .. ']')
+    if !empty(get(translation, 'paraphrase', ''))
+      extend(lines, split(translation.paraphrase, "\n", 1))
+    endif
+    extend(lines, get(translation, 'explains', []))
+  endfor
+  return lines
+enddef
+
+def LocalShow(result: any): any
+  botright new
+  setlocal buftype=nofile bufhidden=wipe noswapfile
+  setline(1, LocalLines(result))
+  setlocal nomodifiable
+  return 0
+enddef
+
+export def Apply(id: any): any
+  var registers: any
+  var reg: any
+  var context: any = get(script_requests, id, {})
+  if empty(context) || bufnr() != context.buffer || b:changedtick != context.tick || !&modifiable
+    return 0
+  endif
+  var text: any = ''
+  for result in context.result.results
+    if !empty(get(result, 'paraphrase', ''))
+      text = result.paraphrase
       break
     endif
   endfor
-  if empty(l:text)
-    return s:Warn('the selected engine supplied dictionary entries without a replacement phrase.')
+  if empty(text)
+    return LocalWarn('the selected engine supplied dictionary entries without a replacement phrase.')
   endif
-  let l:saved = #{selection: &selection, clipboard: &clipboard, virtualedit: &virtualedit,
-        \ registers: {}}
-  let l:registers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', 'z', '"']
-  for l:reg in l:registers
-    let l:saved.registers[l:reg] = getreginfo(l:reg)
+  var saved: any = {selection: &selection, clipboard: &clipboard, virtualedit: &virtualedit, registers: {}}
+  registers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', 'z', '"']
+  for item_reg in registers
+    reg = item_reg
+    saved.registers[reg] = getreginfo(reg)
   endfor
   try
-    let &selection = l:context.selection.exclusive ? 'exclusive' : 'inclusive'
+    &selection = context.selection.exclusive ? 'exclusive' :  'inclusive'
     set clipboard= virtualedit=all
     execute "normal! \<Esc>"
-    call setpos('.', l:context.selection.start)
-    execute 'normal! ' .. l:context.selection.type
-    call setpos('.', l:context.selection.end)
-    call setreg('z', l:text, l:context.selection.type ==# 'V' ? 'V' : 'v')
+    setpos('.', context.selection.start)
+    execute 'normal! ' .. context.selection.type
+    setpos('.', context.selection.end)
+    setreg('z', text, context.selection.type ==# 'V' ? 'V' : 'v')
     keepjumps normal! "zp
   finally
-    let &selection = l:saved.selection
-    let &clipboard = l:saved.clipboard
-    let &virtualedit = l:saved.virtualedit
-    for l:reg in l:registers
-      call setreg(l:reg, l:saved.registers[l:reg])
+    &selection = saved.selection
+    &clipboard = saved.clipboard
+    &virtualedit = saved.virtualedit
+    for item_reg in registers
+      reg = item_reg
+      setreg(reg, saved.registers[reg])
     endfor
   endtry
   return 1
-endfunc
+enddef
 
-func! planet#translation#History(path = v:null) abort
-  let l:source = planet#paths#State('translation') .. '/history.jsonl'
-  if !filereadable(l:source)
-    call writefile([], l:source)
+export def History(path: any = v:null): any
+  var source: any = planet#paths#State('translation') .. '/history.jsonl'
+  if !filereadable(source)
+    writefile([], source)
   endif
-  if a:path isnot v:null
-    if empty(a:path) || getftype(a:path) !=# ''
-      return s:Warn('choose a new history export filename.')
+  if path != null
+    if empty(path) || getftype(path) !=# ''
+      return LocalWarn('choose a new history export filename.')
     endif
-    call writefile(readfile(l:source), a:path)
+    writefile(readfile(source), path)
     return 1
   endif
-  execute 'split ' .. fnameescape(l:source)
+  execute 'split ' .. fnameescape(source)
   setlocal filetype=jsonl
   return 1
-endfunc
+enddef
 
-func! planet#translation#ExportHistory(path = v:null) abort
-  let l:path = a:path is v:null ? inputdialog('Export translation history to a new file:', getcwd() .. '/translation-history.jsonl', "\x01") : a:path
-  if empty(l:path) || l:path ==# "\x01"
+export def ExportHistory(arg_path: any = v:null): any
+  var path: any = arg_path == null ? inputdialog('Export translation history to a new file:', getcwd() .. '/translation-history.jsonl', "\x01") : arg_path
+  if empty(path) || path ==# "\x01"
     return 0
   endif
-  return planet#translation#History(l:path)
-endfunc
+  return planet#translation#History(path)
+enddef
 
-func! planet#translation#Log() abort
-  let l:path = planet#paths#State('translation') .. '/events.jsonl'
-  if !filereadable(l:path)
-    call writefile([], l:path)
+export def Log(): any
+  var path: any = planet#paths#State('translation') .. '/events.jsonl'
+  if !filereadable(path)
+    writefile([], path)
   endif
-  execute 'split ' .. fnameescape(l:path)
+  execute 'split ' .. fnameescape(path)
   return 1
-endfunc
+enddef

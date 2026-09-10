@@ -1,82 +1,100 @@
-scriptversion 4
-
-func! planet#snippets#Catalog() abort
-  let l:file = planet#paths#Root() .. '/.vim/pack/planet/start/planet.vim/data/snippets.json'
-  let l:all = json_decode(join(readfile(l:file), "\n"))
-  let l:snippets = extend(copy(get(l:all, '*', {})), get(l:all, &filetype, {}))
-  let l:custom = planet#paths#Config('snippets') .. '/' .. (empty(&filetype) ? 'text' : &filetype) .. '.json'
-  if filereadable(l:custom)
-    call extend(l:snippets, json_decode(join(readfile(l:custom), "\n")))
+vim9script
+export def Catalog(): any
+  var snippets: any
+  var file: any = planet#paths#Root() .. '/.vim/pack/planet/start/planet.vim/data/snippets.json'
+  var all: any = json_decode(join(readfile(file), "\n"))
+  snippets = extend(copy(get(all, '*', {})), get(all, &filetype, {}))
+  var custom: any = planet#paths#Config('snippets') .. '/' .. (empty(&filetype) ? 'text' : &filetype) .. '.json'
+  if filereadable(custom)
+    extend(snippets, json_decode(join(readfile(custom), "\n")))
   endif
-  return l:snippets
-endfunc
+  return snippets
+enddef
 
-func! planet#snippets#Insert(name = v:null, fields = {}) abort
+export def Insert(arg_name: any = v:null, arg_fields: any = {}): any
+  var snippets: any
+  var names: any
+  var name: any
+  var choice: any
+  var body: any
+  var text: any
+  var fields: any
+  var position: any
+  var match: any
+  var field: any
+  var lines: any
+  var indent: any
+  var start: any
+  var cursor: any
+  var column: any
   try
-    let l:snippets = planet#snippets#Catalog()
-    let l:names = sort(keys(l:snippets))
-    let l:name = a:name
-    if l:name is v:null
-      let l:choice = inputlist(['Insert snippet:'] + map(copy(l:names), {index, name -> (index + 1) .. '. ' .. name}))
-      if l:choice <= 0 || l:choice > len(l:names)
+    snippets = planet#snippets#Catalog()
+    names = sort(keys(snippets))
+    name = arg_name
+    if name == null
+      choice = inputlist(['Insert snippet:'] + map(copy(names), (lambda_index, lambda_name) => (lambda_index + 1) .. '. ' .. lambda_name))
+      if choice <= 0 || choice > len(names)
         return 0
       endif
-      let l:name = l:names[l:choice - 1]
+      name = names[choice - 1]
     endif
-    if !has_key(l:snippets, l:name)
+    if !has_key(snippets, name)
       return 0
     endif
-    let l:body = l:snippets[l:name]
-    if type(l:body) != v:t_list || !empty(filter(copy(l:body), {_, line -> type(line) != v:t_string}))
+    body = snippets[name]
+    if type(body) != v:t_list || !empty(filter(copy(body), (_, lambda_line) => type(lambda_line) != v:t_string))
       throw 'snippet body must be a List of lines'
     endif
-    let l:text = join(l:body, "\n")
-    let l:fields = copy(a:fields)
-    let l:position = 0
+    text = join(body, "\n")
+    fields = copy(arg_fields)
+    position = 0
     while 1
-      let l:match = matchstrpos(l:text, '${\h\w*}', l:position)
-      if l:match[1] < 0
+      match = matchstrpos(text, '${\h\w*}', position)
+      if match[1] < 0
         break
       endif
-      let l:field = l:match[0][2:-2]
-      if l:field !=# 'cursor' && !has_key(l:fields, l:field)
-        let l:fields[l:field] = inputdialog(l:field .. ': ', '', '\CANCEL')
-        if l:fields[l:field] ==# '\CANCEL'
+      field = match[0][2 : -2]
+      if field !=# 'cursor' && !has_key(fields, field)
+        fields[field] = inputdialog(field .. ': ', '', '\CANCEL')
+        if fields[field] ==# '\CANCEL'
           return 0
         endif
       endif
-      let l:position = l:match[2]
+      position = match[2]
     endwhile
-    let l:text = substitute(l:text, '${\(\h\w*\)}', '\=submatch(1) ==# "cursor" ? "${cursor}" : l:fields[submatch(1)]', 'g')
-    let l:lines = split(l:text, "\n", 1)
-    let l:indent = matchstr(getline('.'), '^\s*')
-    let l:start = getline('.') =~# '^\s*$' ? line('.') : line('.') + 1
-    let l:cursor = [l:start, strlen(l:indent) + 1]
-    for l:index in range(len(l:lines))
-      let l:column = stridx(l:lines[l:index], '${cursor}')
-      if l:column >= 0
-        let l:cursor = [l:start + l:index, strlen(l:indent) + l:column + 1]
+    text = substitute(text, '${\(\h\w*\)}', (parts) => parts[1] ==# 'cursor' ? '${cursor}' : fields[parts[1]], 'g')
+    lines = split(text, "\n", 1)
+    indent = matchstr(getline('.'), '^\s*')
+    start = getline('.') =~# '^\s*$' ? line('.') : line('.') + 1
+    cursor = [start, strlen(indent) + 1]
+    for index in range(len(lines))
+      column = stridx(lines[index], '${cursor}')
+      if column >= 0
+        cursor = [start + index, strlen(indent) + column + 1]
       endif
-      let l:lines[l:index] = l:indent .. substitute(l:lines[l:index], '\V${cursor}', '', 'g')
+      lines[index] = indent .. substitute(lines[index], '\V${cursor}', '', 'g')
     endfor
-    if l:start == line('.')
-      call setline(l:start, l:lines[0])
-      call append(l:start, l:lines[1:])
+    if start == line('.')
+      setline(start, lines[0])
+      append(start, lines[1 : ])
     else
-      call append(line('.'), l:lines)
+      append(line('.'), lines)
     endif
-    call cursor(l:cursor)
+    cursor(cursor)
     return 1
   catch
-    echohl ErrorMsg | echomsg 'PlanetVim snippets: ' .. v:exception | echohl None
+    echohl ErrorMsg
+    echomsg 'PlanetVim snippets: ' .. v:exception
+    echohl None
     return 0
   endtry
-endfunc
+enddef
 
-func! planet#snippets#Edit() abort
-  let l:path = planet#paths#Config('snippets') .. '/' .. (empty(&filetype) ? 'text' : &filetype) .. '.json'
-  if !filereadable(l:path)
-    call writefile(['{}'], l:path)
+export def Edit(): any
+  var path: any = planet#paths#Config('snippets') .. '/' .. (empty(&filetype) ? 'text' : &filetype) .. '.json'
+  if !filereadable(path)
+    writefile(['{}'], path)
   endif
-  execute 'tabedit ' .. fnameescape(l:path)
-endfunc
+  execute 'tabedit ' .. fnameescape(path)
+  return 0
+enddef
