@@ -3,34 +3,6 @@ let s:entries = []
 let s:query = ''
 let s:matches = []
 
-func! s:Walk(path, label, group) abort
-  let l:children = []
-  for l:mode in ['', 'i', 't']
-    for l:child in get(menu_info(a:path, l:mode), 'submenus', [])
-      if index(l:children, l:child) < 0 | call add(l:children, l:child) | endif
-    endfor
-  endfor
-  if !empty(l:children)
-    for l:child in l:children
-      call s:Walk(a:path .. '.' .. escape(l:child, '\. |'), a:label .. ' → ' .. l:child, a:group)
-    endfor
-    return
-  endif
-  let l:modes = {}
-  for l:mode in ['n', 'i', 'x', 's', 'o', 'c', 't']
-    let l:item = menu_info(a:path, l:mode)
-    if get(l:item, 'enabled', 0) && get(l:item, 'rhs', '<Nop>') !=# '<Nop>'
-      let l:modes[l:mode] = l:item
-    endif
-  endfor
-  if empty(l:modes) | return | endif
-  let l:search = tolower(substitute(a:label, '\(\l\)\(\u\)', '\1 \2', 'g'))
-  for [l:pattern, l:words] in items({'diff': ' compare merge', 'inside': ' inner text object', 'recover': ' recovery swap rescue', 'filename': ' file path', 'complete': ' completion autocomplete', 'register': ' clipboard macro'})
-    if l:search =~# l:pattern | let l:search ..= l:words | endif
-  endfor
-  call add(s:entries, #{path: a:path, label: a:label, group: a:group, modes: l:modes, search: l:search})
-endfunc
-
 func! planet#actions#Index(visible_only = 0) abort
   if !a:visible_only | let s:entries = [] | endif
   for [l:group, l:root, l:label] in planet#menu#Roots()
@@ -39,7 +11,7 @@ func! planet#actions#Index(visible_only = 0) abort
       if empty(menu_info(l:path)) && empty(menu_info(l:path, 'i')) | continue | endif
       call filter(s:entries, {_, item -> stridx(item.path, l:path .. '.') != 0})
     endif
-    call s:Walk(l:path, l:label, l:group)
+    call extend(s:entries, planet#action_index#Build(l:path, l:label, l:group))
   endfor
 endfunc
 
