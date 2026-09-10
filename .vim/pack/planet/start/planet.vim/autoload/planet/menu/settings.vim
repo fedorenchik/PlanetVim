@@ -133,6 +133,7 @@ func! planet#menu#settings#Update() abort
     call planet#completion#Menus('settings')
     call planet#buffer_options#Menus('settings')
     call planet#input#Menus('settings')
+    call planet#appearance#Menus()
   else
     silent! aunmenu ⚙️&\\
     silent! aunmenu ⌨️&\|

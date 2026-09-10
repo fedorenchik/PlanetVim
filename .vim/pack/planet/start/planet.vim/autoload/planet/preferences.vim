@@ -1,6 +1,6 @@
 scriptversion 4
 
-let s:options = ['completeopt', 'wildoptions', 'wildmode', 'wildchar', 'splitkeep', 'jumpoptions', 'showtabpanel', 'tabpanelopt', 'guifont', 'background', 'renderoptions', 'scrolloffpad', 'statuslineopt']
+let s:options = ['completeopt', 'wildoptions', 'wildmode', 'wildchar', 'splitkeep', 'jumpoptions', 'showtabpanel', 'tabpanelopt', 'guifont', 'guiligatures', 'background', 'renderoptions', 'scrolloffpad', 'statuslineopt']
 
 func! planet#preferences#Valid(values) abort
   if type(a:values) != v:t_dict | return 0 | endif
@@ -47,5 +47,6 @@ func! planet#preferences#Apply() abort
   for [l:name, l:value] in items(get(g:, 'PV_editor_options', {}))
     call planet#preferences#Set(l:name, l:value, 0, 0)
   endfor
+  if exists('g:PV_gui_theme') | call planet#appearance#Theme(g:PV_gui_theme, 0) | endif
   if exists('g:PV_completion_engine') | call planet#completion#Engine(g:PV_completion_engine, 0) | endif
 endfunc

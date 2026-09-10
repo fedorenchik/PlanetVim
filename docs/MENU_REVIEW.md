@@ -305,7 +305,7 @@ digraph and expression insertion, and installed keymap/spell choices.
 
 ### MD-13 · P2 · Add scrolling and split-behavior choices
 
-- [ ] Add **View → Scrolling → Smooth Wrapped-line Scrolling**, vertical scroll/
+- [x] Add **View → Scrolling → Smooth Wrapped-line Scrolling**, vertical scroll/
   center/top/bottom actions, and **Windows → Split Behavior → Keep Cursor / Keep
   Screen / Keep Top Line**. Expose jump-list stack behavior under navigation.
 
@@ -320,7 +320,7 @@ Also provide an undo for the existing fixed-window-size action.
 
 ### MD-14 · P2 · Expose pinning a buffer to its window
 
-- [ ] Add **Windows → Pin Buffer / Unpin Buffer** using `winfixbuf` where present.
+- [x] Add **Windows → Pin Buffer / Unpin Buffer** using `winfixbuf` where present.
 
 “Set Fixed Size” controls dimensions, not buffer replacement. Pinning is useful
 for a reference file beside quickfix navigation; it arrived in 9.1.0147, after
@@ -333,7 +333,7 @@ restores ordinary behavior.
 
 ### MD-15 · P2 · Expose the native vertical tab panel
 
-- [ ] Add **View → Tab Panel → Show / Hide / Left / Right / Width** on capable Vim.
+- [x] Add **View → Tab Panel → Show / Hide / Left / Right / Width** on capable Vim.
 
 Retain Tabman and ordinary tab workflows as alternatives. Use `showtabpanel`,
 `tabpanel` and `tabpanelopt` appropriately; panel content alone is not its
@@ -377,7 +377,7 @@ source/compile a scratch example, without a menu for each language keyword.
 
 ### MD-18 · P2 · Modernize existing GUI controls
 
-- [ ] Extend **GUI / Settings → Appearance** with native fullscreen where supported,
+- [x] Extend **GUI / Settings → Appearance** with native fullscreen where supported,
   font size increase/decrease/reset, ligatures, and visible light/dark/system
   preferences where the backend implements them.
 
@@ -389,10 +389,17 @@ coverage, not wholly missing features.
 [GUI reference](https://github.com/vim/vim/blob/master/runtime/doc/gui.txt),
 [GTK reference](https://github.com/vim/vim/blob/master/runtime/doc/gui_x11.txt)
 
-Acceptance: X11 first, then native Wayland and Windows; obvious fullscreen exit
+Validation scope: Linux GTK3/X11; native Wayland and Windows remain deferred; obvious fullscreen exit
 and correct font/backend checks. Clipboard support does not imply every desktop
 integration works on Wayland. Keep GTK4 an optional target rather than replacing
 GTK3 without validation.
+
+Implemented window-local scrolling/pinning, persisted split/panel controls, font
+zoom/reset, ligatures and appearance choices. GTK native fullscreen is gated at
+[Vim 9.2.0534](https://github.com/vim/vim/releases/tag/v9.2.0534); older GTK builds
+retain the existing wmctrl path. `test_view_options.vim` passes on GVim 9.1 and
+9.2 under Xvfb. These checks verify options and callbacks, not a real desktop
+window manager's fullscreen transition or native Wayland rendering.
 
 ### MD-19 · P2 · Turn register/macro prefixes into guided actions
 

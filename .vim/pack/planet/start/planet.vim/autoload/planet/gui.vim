@@ -15,7 +15,7 @@ func! planet#gui#VimServerStart() abort
 endfunc
 
 func! planet#gui#Command() abort
-  return [v:progpath, '-u', planet#paths#Root() .. '/scripts/planetvim.vim']
+  return [v:progpath, '-g', '-u', planet#paths#Root() .. '/scripts/planetvim.vim']
 endfunc
 
 func! planet#gui#OpenUrl(url) abort
@@ -132,6 +132,10 @@ endfunc
 func! planet#gui#Window(action) abort
   if index(['maximize', 'fullscreen'], a:action) < 0
     throw 'PlanetVim: unsupported GUI window action'
+  endif
+  if a:action ==# 'fullscreen' && planet#appearance#NativeFullscreen()
+    if &guioptions =~# 's' | set guioptions-=s | else | set guioptions+=s | endif
+    return 1
   endif
   if has('win32')
     if !executable('powershell.exe')

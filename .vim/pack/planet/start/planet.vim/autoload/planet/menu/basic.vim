@@ -411,6 +411,7 @@ func! planet#menu#basic#Update() abort
     call planet#recovery#Menus()
     call planet#buffer_options#Menus('basic')
     call planet#input#Menus('basic')
+    call planet#view#Menus('basic')
   else
     silent! aunmenu 📁&f
     silent! aunmenu 📝&e

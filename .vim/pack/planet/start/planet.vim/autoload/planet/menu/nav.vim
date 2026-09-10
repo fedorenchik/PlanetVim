@@ -259,6 +259,7 @@ func! planet#menu#nav#Update() abort
     an 860.600 🎛️&@.Workspaces <Nop>
     an disable 🎛️&@.Workspaces
 
+    call planet#view#Menus('nav')
   else
     silent! aunmenu 📖&u
     silent! aunmenu 🗃️&a
