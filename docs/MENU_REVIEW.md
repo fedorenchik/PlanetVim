@@ -1,8 +1,10 @@
 # Menu coverage and discoverability review
 
 Reviewed 2026-09-10 against PlanetVim commit `192d9f81955a755de860a458817969c37dafb1e2`.
-Scope: **GVim only; Linux first, Windows second**. This document records findings
-and proposed work. The checkboxes below are deliberately open.
+Scope: **Linux GVim only for this implementation pass** (owner update).
+Windows work is deferred. MD-03 is superseded by the requested emoji/plain/
+descriptive selector; descriptive mode shows one group plus PlanetVim.
+Implementation progress and validation are recorded beside completed tasks.
 
 ## Assessment
 
@@ -74,7 +76,8 @@ claim that every new feature blocks the existing release candidate.
 
 ### MD-01 · P1 · Repair existing entries that mislead or fail
 
-- [ ] Complete these actions and correct their labels; keep the actions available.
+- [x] Complete these actions and correct their labels; keep the actions available.
+  Implemented and verified by `tests/test_menu_repairs.vim` in Linux GUI mode.
 
 Confirmed in the isolated GUI:
 

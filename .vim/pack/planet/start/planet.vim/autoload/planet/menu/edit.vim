@@ -126,10 +126,10 @@ func! planet#menu#edit#Update() abort
     an 230.10  🖌️&h.--1-- <Nop>
     an 230.10  🖌️&h.Matches <Nop>
     an disable 🖌️&h.Matches
-    an 230.10  🖌️&h.Add\ Match\ Regex                        :call matchadd(highlight_group, pattern)<CR>
+    an 230.10  🖌️&h.Add\ Match\ Regex                        <Cmd>call planet#matches#Add()<CR>
     " Add Match Position is useful when editing binary/hex files
-    an 230.10  🖌️&h.Add\ Match\ Position                     :call matchaddpos(highlight_group, visual_position)<CR>
-    an 230.10  🖌️&h.Delete\ Match                            :call matchdelete(id)<CR>
+    an 230.10  🖌️&h.Add\ Match\ Position                     <Cmd>call planet#matches#Position()<CR>
+    an 230.10  🖌️&h.Delete\ Match                            <Cmd>call planet#matches#Delete()<CR>
     an 230.10  🖌️&h.Clear\ All\ Matches                      :call clearmatches()<CR>
     an 230.10  🖌️&h.TextProp <Nop>
     an disable 🖌️&h.TextProp

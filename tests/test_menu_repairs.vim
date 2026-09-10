@@ -1,0 +1,31 @@
+runtime plugin/globals.vim
+call planet#menu#basic#Update()
+call planet#menu#edit#Update()
+call planet#menu#tools#Update()
+new
+call setline(1, ['void one() {', '}', 'void two() {', '}'])
+call cursor(2, 1)
+emenu n 🧭n.Next\ Start\ of\ Function
+call feedkeys('', 'xt')
+call assert_equal(3, line('.'))
+call assert_equal('zH', menu_info('↕️,.Scroll Half Screen Left', 'n').rhs)
+call assert_equal('zh', menu_info('↕️,.Scroll Left', 'n').rhs)
+call assert_match('vertical sview', menu_info('📁f.Advanced.VSplit Read Only', 'n').rhs)
+call assert_match('tab view', menu_info('📁f.Advanced.Tab Read Only', 'n').rhs)
+call assert_equal('*', menu_info('🔎/.Whole Word', 'n').rhs)
+call assert_equal('g*', menu_info('🔎/.Partial Word', 'n').rhs)
+set diffopt=internal,filler,context:12
+call assert_true(planet#diff#Context('3'))
+call assert_equal('internal,filler,context:3', &diffopt)
+call assert_false(planet#diff#Context('3|quit'))
+call assert_false(planet#diff#Context(''))
+let s:id = planet#matches#Add('Search', 'void')
+call assert_equal('void', getmatches()[0].pattern)
+call planet#matches#Delete(s:id)
+call assert_equal([], getmatches())
+let s:id = planet#matches#Position('Search', [[1, 1, 4]])
+call assert_equal([1, 1, 4], getmatches()[0].pos1)
+call planet#matches#Delete(s:id)
+call assert_equal(0, planet#matches#Add('Search', ''))
+call assert_equal([], getmatches())
+set nomodified

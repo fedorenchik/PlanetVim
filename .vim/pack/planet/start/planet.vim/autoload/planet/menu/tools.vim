@@ -322,7 +322,7 @@ func! planet#menu#tools#Update() abort
     an 710.40  ⛏️&;.Htop                              <Cmd>call planet#systemtools#Run(['htop'])<CR>
     an 710.40  ⛏️&;.Nmap.List\ Up\ Hosts              <Cmd>call planet#systemtools#Nmap()<CR>
     an 710.40  ⛏️&;.--6-- <Nop>
-    an 710.40  ⛏️&;.Set\ Context\ Lines               :set diffopt+=context=12<CR>
+    an 710.40  ⛏️&;.Set\ Context\ Lines               <Cmd>call planet#diff#Context()<CR>
 
     " Writing
     an 715.10  🔤&\..Writing <Nop>

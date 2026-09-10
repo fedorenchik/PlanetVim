@@ -83,8 +83,8 @@ func! planet#menu#basic#Update() abort
     an 110.250 📁&f.Advanced.Tab\ Open\ File\ under\ Cursor<Tab>+gF     <C-w>gF
     an 110.110 📁&f.Advanced.Open\ Read\ Only                  <Cmd>browse view<CR>
     an 110.110 📁&f.Advanced.Split\ Read\ Only                 <Cmd>browse sview<CR>
-    an 110.110 📁&f.Advanced.VSplit\ Read\ Only                <Cmd>browse view<CR>
-    an 110.110 📁&f.Advanced.Tab\ Read\ Only                   <Cmd>browse view<CR>
+    an 110.110 📁&f.Advanced.VSplit\ Read\ Only                <Cmd>browse vertical sview<CR>
+    an 110.110 📁&f.Advanced.Tab\ Read\ Only                   <Cmd>browse tab view<CR>
     an 110.110 📁&f.Advanced.Split\ Find                       :sfind 
     an 110.120 📁&f.Advanced.F&ind\ in\ Tab<Tab>:tabfind       :tabfind 
     an 110.130 📁&f.--2-- <Nop>
@@ -254,10 +254,10 @@ func! planet#menu#basic#Update() abort
     an 130.210 🔎&/.Previous\ #if/#else/#endif<Tab>[#         [#
     an 130.220 🔎&/.Next\ #if/#else/#endif<Tab>]#             ]#
     an 130.230 🔎&/.--6-- <Nop>
-    an 130.240 🔎&/.Current\ Word<Tab>*                      *
-    an 130.250 🔎&/.Current\ Word\ Backwards<Tab>#           #
-    an 130.260 🔎&/.Current\ \<word\><Tab>g*                 g*
-    an 130.270 🔎&/.Current\ \<word\>\ Backwards<Tab>g#      g#
+    an 130.240 🔎&/.Whole\ Word<Tab>*                      *
+    an 130.250 🔎&/.Whole\ Word\ Backwards<Tab>#           #
+    an 130.260 🔎&/.Partial\ Word<Tab>g*                 g*
+    an 130.270 🔎&/.Partial\ Word\ Backwards<Tab>g#      g#
     an 130.280 🔎&/.--7-- <Nop>
     an 130.300 🔎&/.Search\ Dialog<Tab>:promptfind           <Cmd>promptfind<CR>
     an 130.320 🔎&/.Substitute :%s/
@@ -373,8 +373,8 @@ func! planet#menu#basic#Update() abort
     an 160.10  ↕️&,.Previous\ Enclosing\ (<Tab>[(                [(
     an 160.10  ↕️&,.Next\ Enclosing\ (<Tab>])                    ])
     an 160.10  ↕️&,.--4-- <Nop>
-    an 160.10  ↕️&,.Scroll\ Left<Tab>zH                          zH
-    an 160.10  ↕️&,.Scroll\ Right<Tab>zL                         zL
+    an 160.10  ↕️&,.Scroll\ Half\ Screen\ Left<Tab>zH                          zH
+    an 160.10  ↕️&,.Scroll\ Half\ Screen\ Right<Tab>zL                         zL
     an 160.10  ↕️&,.Scroll\ Left<Tab>zh                          zh
     an 160.10  ↕️&,.Scroll\ Right<Tab>zl                         zl
     an 160.10  ↕️&,.Scroll\ Right\ to\ Cursor<Tab>zs             zs
@@ -398,7 +398,7 @@ func! planet#menu#basic#Update() abort
     an 160.10  🧭&n.--4-- <Nop>
     an 160.10  🧭&n.File\ under\ Cursor\ in\ Tab<Tab><C-w>gF     <C-w>gF
     an 160.10  🧭&n.Previous\ Start\ of\ Function<Tab>[m         [m
-    an 160.10  🧭&n.Next\ Start\ of\ Function<Tab>[m             [m
+    an 160.10  🧭&n.Next\ Start\ of\ Function<Tab>]m             ]m
     an 160.10  🧭&n.Previous\ End\ of\ Function<Tab>[M           [M
     an 160.10  🧭&n.Next\ End\ of\ Function<Tab>]M               ]M
     an 160.10  🧭&n.Previous\ comment<Tab>[*<Tab>[/              [/
