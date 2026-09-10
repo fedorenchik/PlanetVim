@@ -46,6 +46,13 @@ call assert_true(s:info.script)
 call assert_match(':call ' .. matchstr(s:info.rhs, '<SNR>\d\+_') .. 'Action()', execute('tmenu Teaching.Local'))
 emenu Teaching.Local
 call assert_equal(1, g:PV_menu_help_local)
+unlet g:PV_menu_help_local
+execute planet#menu_help#Entry('nnoremenu <script> 105 ', 'Teaching.CompiledLocal', '<Cmd>call <SID>Action()<CR>')
+let s:info = menu_info('Teaching.CompiledLocal')
+call assert_true(s:info.script)
+call assert_match(':call ' .. matchstr(s:info.rhs, '<SNR>\d\+_') .. 'Action()', execute('tmenu Teaching.CompiledLocal'))
+emenu Teaching.CompiledLocal
+call assert_equal(1, g:PV_menu_help_local)
 
 " Mode overrides retain their actions; the shared tip teaches the Normal action.
 PlanetMenu an 110 Teaching.Modes <Cmd>echo 'normal'<CR>

@@ -50,6 +50,30 @@ if has('linux')
   set shellcmdflag=--private\ -c
   call planet#startup#ConfigureShell()
   call assert_equal('--private -c', &shellcmdflag, 'explicit flags are preserved')
+  if executable('/usr/bin/fish')
+    let s:xdg = $XDG_CONFIG_HOME
+    let $XDG_CONFIG_HOME = g:PV_test_dir .. '/fish config'
+    call mkdir($XDG_CONFIG_HOME .. '/fish', 'p')
+    let s:marker = g:PV_test_dir .. '/fish-config-ran'
+    call writefile(['echo configured >> ' .. shellescape(s:marker),
+          \ 'if status is-interactive; exit; end'], $XDG_CONFIG_HOME .. '/fish/config.fish')
+    try
+      set shellcmdflag=-c
+      call planet#startup#ConfigureShell()
+      call assert_equal('fast', system('printf fast'))
+      call assert_false(filereadable(s:marker), 'noninteractive Fish skips configuration')
+      let s:terminal = term_start(&shell, #{hidden: 1})
+      call term_wait(s:terminal, 300)
+      for s:attempt in range(100)
+        if filereadable(s:marker) | break | endif
+        sleep 10m
+      endfor
+      call assert_true(filereadable(s:marker), 'plain :terminal still initializes interactive Fish')
+      execute 'silent! bwipeout! ' .. s:terminal
+    finally
+      let $XDG_CONFIG_HOME = s:xdg
+    endtry
+  endif
   let &shell = s:shell
   let &shellcmdflag = s:flags
 endif
