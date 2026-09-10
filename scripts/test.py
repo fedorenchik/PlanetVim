@@ -76,6 +76,7 @@ def run(path, executable, gui, display=None, timeout=60):
             "let &packpath = escape($VIMRUNTIME, s:path_escapes)",
             f"execute 'cd ' .. fnameescape({vim_string(temp)})",
             "try",
+            "  runtime plugin/menu_help.vim",
             "  call assert_true(has('gui_running'))" if gui else '  " Engine-only check',
             f"  execute 'source ' .. fnameescape({vim_string(path)})",
             "catch",
