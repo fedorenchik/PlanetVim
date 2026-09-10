@@ -12,6 +12,7 @@ command! PlanetSemanticScopes call planet#semantic#Show()
 
 augroup PlanetVimIntelligence
   autocmd!
+  autocmd VimEnter,BufEnter * call planet#completion#Buffer()
   autocmd User lsp_setup call planet#intelligence#Register()
   autocmd User asyncomplete_setup call planet#intelligence#CompletionSources()
   autocmd User lsp_buffer_enabled call planet#intelligence#Attach()

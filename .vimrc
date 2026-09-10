@@ -698,7 +698,8 @@ nnoremap ZU :UndotreeHide<CR>
 let g:arduino_dir = '/usr/share/arduino'
 " }}}
 " Plugin: vim-capslock {{{
-"FIXME: cannot use <C-L> to complete lines ???
+" Edit → Complete → Whole lines sends native CTRL-X CTRL-L without remapping.
+" This avoids CapsLock's standalone CTRL-L toggle; vendor mappings stay intact.
 " }}}
 " Plugin: vim-clap {{{
 let g:clap_disable_bottom_top = 1

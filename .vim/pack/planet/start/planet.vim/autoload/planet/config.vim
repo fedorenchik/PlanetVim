@@ -3,6 +3,10 @@ scriptversion 4
 let s:menus = ['planet', 'basic', 'editing', 'dev', 'tools', 'nav', 'settings']
 
 func! s:Valid(key, value) abort
+  if a:key ==# 'PV_editor_options' | return planet#preferences#Valid(a:value) | endif
+  if a:key ==# 'PV_completion_engine'
+    return type(a:value) == v:t_string && index(['asyncomplete', 'native', 'off'], a:value) >= 0
+  endif
   if a:key ==# 'PV_menu_style'
     return type(a:value) == v:t_string && index(['emoji', 'plain', 'descriptive'], a:value) >= 0
   endif
@@ -92,6 +96,7 @@ func! planet#config#Initialize() abort
       endfor
     endif
     call planet#planet#SetMode(g:PV_mode)
+    call planet#preferences#Apply()
     let l:mode = g:PV_mode
     let l:options = {}
     for l:name in ['insertmode', 'selectmode', 'keymodel', 'backspace', 'selection', 'guioptions']

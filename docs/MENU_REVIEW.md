@@ -147,7 +147,7 @@ all six groups, dynamic updates, preference persistence, and root restoration.
 
 ### MD-04 · P1 · Expose built-in completion sources
 
-- [ ] Add **Edit → Complete**: words, whole lines, filenames, dictionary, thesaurus,
+- [x] Add **Edit → Complete**: words, whole lines, filenames, dictionary, thesaurus,
   tags, included-file keywords/definitions, Vim commands, omnifunc, user completion,
   spelling and register contents; include accept/cancel.
 
@@ -161,7 +161,7 @@ CapsLock-related whole-line completion FIXME in `.vimrc:701` as part of this wor
 
 ### MD-05 · P1 · Offer modern completion settings
 
-- [ ] Add **Settings → Completion**: automatic completion on/off, engine choice,
+- [x] Add **Settings → Completion**: automatic completion on/off, engine choice,
   fuzzy matching, documentation popup and supported ordering presets (`nearest`,
   `nosort`), plus a compatible `preinsert` preview choice.
 
@@ -177,7 +177,7 @@ for `completefuzzycollect`: current Vim documents it as deprecated and ineffecti
 
 ### MD-06 · P1 · Expose command-line and search completion
 
-- [ ] Add **Settings → Command-line Completion → Popup / Fuzzy Matching** and
+- [x] Add **Settings → Command-line Completion → Popup / Fuzzy Matching** and
   **Search → Complete Search Pattern**, with examples for `/`, `?` and Ex searches.
 
 PlanetVim sets `wildoptions=tagfile`, leaving popup/fuzzy completion undiscoverable.
@@ -189,6 +189,12 @@ helps expert users but is not action search by purpose.
 
 Acceptance: preserve unrelated option flags and key choices; explain acceptance,
 cancellation and literal input.
+
+Implementation: native Insert mappings bypass CapsLock remapping; automatic
+engine selection and completion preferences are saved. Unsupported option values
+leave the old settings intact and explain the required feature. Tests:
+`test_native_completion.vim`, `test_config.vim`; examples in
+[completion guide](COMPLETION.md).
 
 ### MD-07 · P1 · Finish native diff and expose newer rendering
 

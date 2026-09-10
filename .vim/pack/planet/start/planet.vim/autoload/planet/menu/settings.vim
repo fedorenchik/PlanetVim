@@ -130,6 +130,7 @@ func! planet#menu#settings#Update() abort
     an 990.110 ❔&?.&Close\ Help\ Window                       <Cmd>helpclose<CR>
     an 990.110 ❔&?.--5-- <Nop>
     an 990.120 ❔&?.&About                                     <Cmd>version<CR>
+    call planet#completion#Menus('settings')
   else
     silent! aunmenu ⚙️&\\
     silent! aunmenu ⌨️&\|
