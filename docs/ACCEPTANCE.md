@@ -2,6 +2,40 @@
 
 This record covers PlanetVim **0.1.0-rc.1**, implemented on **2026-09-08** from baseline `f75c805a`. The source is a release candidate. Native Windows hosted CI and external SDK/target acceptance remain release gates; checked-in automation is not evidence that those jobs ran.
 
+## First-party Vim9 migration — 2026-09-10
+
+Validated runtime commit `551c799f` on Linux GTK3 GVim. First-party
+configuration and helpers use Vim9; function bodies are compiled with `def`.
+The minimum remains **9.1.0000**. One three-line legacy function supplies native
+`:ptag` with the context needed for numeric tag-file addresses on Vim 9.1;
+its surrounding preview helper is compiled. The bootstrap version guard remains
+readable by older Vim. See [the runtime conventions](../CONTRIBUTING.md#vim9-runtime-code).
+Third-party plugin sources and the borrowed AWK syntax definitions are unchanged.
+
+- Full GUI suite on **9.1.0000** and **9.2.0849**: **63 passed, 2 skipped** out of
+  65 on each build, in complete final runs. The skips require the unavailable
+  debugpy adapter; the real C++ debugger lifecycle and detach fixtures passed.
+- Python suite: **104 passed, 1 skipped** out of 105. The optional SFML template
+  build lacks development packages. Installer backup/update/restore, release,
+  menu contract, and first-party Vim9 source checks passed.
+- The new compilation fixture checks the complete autoload tree, startup and
+  plugin helpers, lowercase compatibility APIs, generated Vim plugin, popup
+  spelling actions, and script reloads. Behavior checks also cover numeric
+  semantic-token deltas, local option restoration, and optional newer features.
+- Home and private installed GVim startup passed on both builds, including
+  quoted/Unicode paths. All **122 package inventory records match**. No Windows
+  or macOS validation was performed for this migration.
+
+A clean-tree startup measurement on **9.2.0849** at `551c799f` produced
+a **2.140-second median** over five samples after one warmup
+(range **1.992–2.154 seconds**). The local record is
+`dist/vim9-benchmark.json`. The pre-migration measurement at
+`b89023b9` was **2.008 seconds** in
+`dist/menu-help-benchmark.json`. This run shows a modest startup increase and
+does **not** meet the earlier 2-second local budget; no startup speedup is
+claimed. Vim9 functions compile on first use. Earlier measurements below refer
+to their stated historical revisions.
+
 ## Linux menu coverage update — 2026-09-10
 
 The [menu checklist](MENU_REVIEW.md) is implemented for Linux GVim. The owner
