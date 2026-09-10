@@ -1,15 +1,15 @@
-scriptversion 4
+vim9script
 
-let s:did_open_help = v:false
-func! planet#help#Curwin(subject) abort
-  let mods = 'silent noautocmd keepalt'
-  if !s:did_open_help
+var script_did_open_help = v:false
+export def Curwin(subject: any): any
+  var mods: any = 'silent noautocmd keepalt'
+  if !script_did_open_help
     execute mods .. ' help'
     execute mods .. ' helpclose'
-    let s:did_open_help = v:true
+    script_did_open_help = v:true
   endif
-  if !getcompletion(a:subject, 'help')->empty()
+  if !getcompletion(subject, 'help')->empty()
     execute mods .. ' edit ' .. &helpfile
   endif
-  return 'help ' .. a:subject
-endfunc
+  return 'help ' .. subject
+enddef

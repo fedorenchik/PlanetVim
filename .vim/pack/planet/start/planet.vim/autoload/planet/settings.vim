@@ -1,79 +1,86 @@
-scriptversion 4
-
-fun! planet#settings#SetPath()
+vim9script
+export def SetPath(): any
   if !exists("g:menutrans_path_dialog")
-    let g:menutrans_path_dialog = "Enter search path for files.\nSeparate directory names with a comma."
+    g:menutrans_path_dialog = "Enter search path for files.\nSeparate directory names with a comma."
   endif
-  let n = inputdialog(g:menutrans_path_dialog, substitute(&path, '\\ ', ' ', 'g'))
+  var n: any = inputdialog(g:menutrans_path_dialog, substitute(&path, '\\ ', ' ', 'g'))
   if n != ""
-    let &path = substitute(n, ' ', '\\ ', 'g')
+    &path = substitute(n, ' ', '\\ ', 'g')
   endif
-endfun
+  return 0
+enddef
 
-fun! planet#settings#SetTags()
+export def SetTags(): any
   if !exists("g:menutrans_tags_dialog")
-    let g:menutrans_tags_dialog = "Enter names of tag files.\nSeparate the names with a comma."
+    g:menutrans_tags_dialog = "Enter names of tag files.\nSeparate the names with a comma."
   endif
-  let n = inputdialog(g:menutrans_tags_dialog, substitute(&tags, '\\ ', ' ', 'g'))
+  var n: any = inputdialog(g:menutrans_tags_dialog, substitute(&tags, '\\ ', ' ', 'g'))
   if n != ""
-    let &tags = substitute(n, ' ', '\\ ', 'g')
+    &tags = substitute(n, ' ', '\\ ', 'g')
   endif
-endfun
+  return 0
+enddef
 
-fun! planet#settings#SetTextWidth(...) abort
+export def SetTextWidth(...args: list<any>): any
   if !exists("g:menutrans_textwidth_dialog")
-    let g:menutrans_textwidth_dialog = "Enter new text width (0 to disable formatting): "
+    g:menutrans_textwidth_dialog = "Enter new text width (0 to disable formatting): "
   endif
-  let n = a:0 ? a:1 : inputdialog(g:menutrans_textwidth_dialog, &tw)
+  var n: any = !empty(args) ? args[0] : inputdialog(g:menutrans_textwidth_dialog, string(&tw))
   if n != ""
     if n !~# '^\d\+$'
       throw 'PlanetVim: text width must be a non-negative integer'
     endif
-    let &l:textwidth = str2nr(n, 10)
+    &l:textwidth = str2nr(n, 10)
   endif
-endfun
+  return 0
+enddef
 
-fun! planet#settings#EditOption(option, ...) abort
-  let l:allowed = ['makeprg', 'grepprg', 'formatprg', 'equalprg', 'keywordprg',
-        \ 'path', 'tags', 'dictionary', 'thesaurus', 'include', 'define', 'suffixesadd']
-  if index(l:allowed, a:option) < 0
+export def EditOption(option: any, ...args: list<any>): any
+  var allowed: any = ['makeprg', 'grepprg', 'formatprg', 'equalprg', 'keywordprg', 'path', 'tags', 'dictionary',
+       'thesaurus', 'include', 'define', 'suffixesadd']
+  if index(allowed, option) < 0
     throw 'PlanetVim: unsupported option editor'
   endif
-  let l:value = a:0 ? a:1 : inputdialog('Set buffer option ' .. a:option .. ':', eval('&l:' .. a:option), "\n")
-  if l:value ==# "\n" | return 0 | endif
-  execute 'let &l:' .. a:option .. ' = l:value'
+  var value: any = !empty(args) ? args[0] : inputdialog('Set buffer option ' .. option .. ':', eval('&l:' .. option), "\n")
+  if value ==# "\n"
+    return 0
+  endif
+  execute '&l:' .. option .. ' = ' .. string(value)
   return 1
-endfun
+enddef
 
-fun! planet#settings#SetLineEndings()
+export def SetLineEndings(): any
+  var def: any
+  var n: any
   if !exists("g:menutrans_fileformat_dialog")
-    let g:menutrans_fileformat_dialog = "Select line endings for file"
+    g:menutrans_fileformat_dialog = "Select line endings for file"
   endif
   if !exists("g:menutrans_fileformat_choices")
-    let g:menutrans_fileformat_choices = "&Unix (LF)\n&Windows (CRLF)\nLegacy &Mac (CR)\n&Cancel"
+    g:menutrans_fileformat_choices = "&Unix (LF)\n&Windows (CRLF)\nLegacy &Mac (CR)\n&Cancel"
   endif
   if &ff == "dos"
-    let def = 2
+def = 2
   elseif &ff == "mac"
-    let def = 3
+def = 3
   else
-    let def = 1
+def = 1
   endif
-  let n = confirm(g:menutrans_fileformat_dialog, g:menutrans_fileformat_choices, def, "Question")
+  n = confirm(g:menutrans_fileformat_dialog, g:menutrans_fileformat_choices, def, "Question")
   if n == 1
-    set ff=unix
+  set ff=unix
   elseif n == 2
-    set ff=dos
+  set ff=dos
   elseif n == 3
-    set ff=mac
+  set ff=mac
   endif
-endfun
+  return 0
+enddef
 
-" func! planet#settings#ToggleGuiOption(option) abort
-"   " If a:option is already set in guioptions, then we want to remove it
-"   if match(&guioptions, "\\C" . a:option) > -1
-"     exec "set go-=" . a:option
-"   else
-"     exec "set go+=" . a:option
-"   endif
-" endfunc
+# func! planet#settings#ToggleGuiOption(option) abort
+#   " If a:option is already set in guioptions, then we want to remove it
+#   if match(&guioptions, "\\C" . a:option) > -1
+#     exec "set go-=" . a:option
+#   else
+#     exec "set go+=" . a:option
+#   endif
+# endfunc

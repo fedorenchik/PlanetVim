@@ -1,230 +1,260 @@
-scriptversion 4
+vim9script
 
-func! planet#planet#ConfigUpdate(conf_var) abort
+export def ConfigUpdate(conf_var: any): any
   if !get(g:, 'PV_initializing', 0)
-    call planet#config#SavePreference(a:conf_var, eval(a:conf_var))
+    planet#config#SavePreference(conf_var, eval(conf_var))
   endif
-endfunc
+  return 0
+enddef
 
-"TODO: add mod <Alt> - means search regex, e.g. '\.' when press '.'
-"TODO:    (can use getcharmod()), and change pattern
-"TODO:    '\\V' (very non magic) to '\\v' (very magic)
-let g:PV_p = '\.'
-func! planet#planet#f()
-  let l:c = getchar()
-  if l:c == 27
-    return
-  end
-  let l:c1 = nr2char(l:c)
-  let g:PV_p = l:c1
+#TODO: add mod <Alt> - means search regex, e.g. '\.' when press '.'
+#TODO:    (can use getcharmod()), and change pattern
+#TODO:    '\\V' (very non magic) to '\\v' (very magic)
+g:PV_p = '\.'
+legacy def! planet#planet#f(): any
+  var c: any = getchar()
+  if c == 27
+    return 0
+  endif
+  var c1: any = nr2char(c)
+  g:PV_p = c1
   silent! exe "keepp keepj normal /\\V" .. g:PV_p .. "\<CR>"
   normal m9
-endfunc
+  return 0
+enddef
 
-func! planet#planet#F()
-  let l:c = getchar()
-  if l:c == 27
-    return
-  end
-  let l:c1 = nr2char(l:c)
-  let g:PV_p = l:c1
+export def F(): any
+  var c: any = getchar()
+  if c == 27
+    return 0
+  endif
+  var c1: any = nr2char(c)
+  g:PV_p = c1
   silent! exe "keepp keepj normal ?\\V" .. g:PV_p .. "\<CR>"
   normal m9
-endfunc
+  return 0
+enddef
 
-func! planet#planet#semicolon()
+legacy def! planet#planet#semicolon(): any
   silent! exe "keepp keepj normal /\\V" .. g:PV_p .. "\<CR>"
   normal m9
-endfunc
+  return 0
+enddef
 
-func! planet#planet#comma()
+legacy def! planet#planet#comma(): any
   silent! exe "keepp keepj normal ?\\V" .. g:PV_p .. "\<CR>"
   normal m9
-endfunc
+  return 0
+enddef
 
-let g:PV_pp = '\.\.'
-func! planet#planet#t()
-  let l:c = getchar()
-  if l:c == 27
-    return
-  end
-  let l:c1 = nr2char(l:c)
-  let l:c = getchar()
-  if l:c == 27
-    return
-  end
-  if l:c != 13
-    let l:c2 = nr2char(l:c)
-    let g:PV_pp = l:c1 .. l:c2
+g:PV_pp = '\.\.'
+legacy def! planet#planet#t(): any
+  var c2: any
+  var c: any = getchar()
+  if c == 27
+    return 0
+  endif
+  var c1: any = nr2char(c)
+  c = getchar()
+  if c == 27
+    return 0
+  endif
+  if c != 13
+    c2 = nr2char(c)
+    g:PV_pp = c1 .. c2
     silent! exe "keepp keepj normal /\\V" .. g:PV_pp .. "\<CR>"
     normal m0
   else
-    let g:PV_p = l:c1
+    g:PV_p = c1
     silent! exe "keepp keepj normal /\\V" .. g:PV_p .. "\<CR>"
     normal m9
-  end
-endfunc
+  endif
+  return 0
+enddef
 
-func! planet#planet#T()
-  let l:c = getchar()
-  if l:c == 27
-    return
-  end
-  let l:c1 = nr2char(l:c)
-  let l:c = getchar()
-  if l:c == 27
-    return
-  end
-  if l:c != 13
-    let l:c2 = nr2char(l:c)
-    let g:PV_pp = l:c1 .. l:c2
+export def T(): any
+  var c2: any
+  var c: any = getchar()
+  if c == 27
+    return 0
+  endif
+  var c1: any = nr2char(c)
+  c = getchar()
+  if c == 27
+    return 0
+  endif
+  if c != 13
+    c2 = nr2char(c)
+    g:PV_pp = c1 .. c2
     silent! exe "keepp keepj normal ?\\V" .. g:PV_pp .. "\<CR>"
     normal m0
   else
-    let g:PV_p = l:c1
+    g:PV_p = c1
     silent! exe "keepp keepj normal ?\\V" .. g:PV_p .. "\<CR>"
     normal m9
-  end
-endfunc
+  endif
+  return 0
+enddef
 
-func! planet#planet#h()
+legacy def! planet#planet#h(): any
   silent! exe "keepp keepj normal ?\\V" .. g:PV_pp .. "\<CR>"
   normal m0
-endfunc
+  return 0
+enddef
 
-func! planet#planet#l()
+legacy def! planet#planet#l(): any
   silent! exe "keepp keepj normal /\\V" .. g:PV_pp .. "\<CR>"
   normal m0
-endfunc
+  return 0
+enddef
 
-func! planet#planet#j()
+legacy def! planet#planet#j(): any
   try
     laf
   catch
     silent! lne
   endtry
-endfunc
+  return 0
+enddef
 
-func! planet#planet#k()
+legacy def! planet#planet#k(): any
   try
     lbe
   catch
     silent! lp
   endtry
-endfunc
+  return 0
+enddef
 
-let s:mode_maps = {
-      \ 'b': ':call planet#planet#comma()<CR>', 'B': ':bp<CR>',
-      \ 'e': 'g;', 'E': 'g,', 'f': ':call planet#planet#f()<CR>',
-      \ 'F': ':call planet#planet#F()<CR>', 'ge': '1gt', 'gE': ':tabl<CR>',
-      \ 'h': ':call planet#planet#h()<CR>', 'j': ':call planet#planet#j()<CR>',
-      \ 'k': ':call planet#planet#k()<CR>', 'l': ':call planet#planet#l()<CR>',
-      \ 't': ':call planet#planet#t()<CR>', 'T': ':call planet#planet#T()<CR>',
-      \ 'w': ':call planet#planet#semicolon()<CR>', 'W': ':bn<CR>'}
-let s:saved_maps = {}
+var script_mode_maps = { 'b': ':call planet#planet#comma()<CR>', 'B': ':bp<CR>', 'e': 'g;', 'E': 'g,',
+     'f': ':call planet#planet#f()<CR>', 'F': ':call planet#planet#F()<CR>', 'ge': '1gt', 'gE': ':tabl<CR>',
+     'h': ':call planet#planet#h()<CR>', 'j': ':call planet#planet#j()<CR>', 'k': ':call planet#planet#k()<CR>',
+     'l': ':call planet#planet#l()<CR>', 't': ':call planet#planet#t()<CR>', 'T': ':call planet#planet#T()<CR>',
+     'w': ':call planet#planet#semicolon()<CR>', 'W': ':bn<CR>'}
+var script_saved_maps = {}
 
-func! planet#planet#ModeKeys() abort
-  return keys(s:mode_maps)
-endfunc
+export def ModeKeys(): any
+  return keys(script_mode_maps)
+enddef
 
-func! planet#planet#SetMode(mode) abort
-  if index(['e', 's', 'p'], a:mode) < 0
+export def SetMode(mode: any): any
+  var key: any
+  var rhs: any
+  if index(['e', 's', 'p'], mode) < 0
     throw 'PlanetVim: mode must be e, s, or p'
   endif
-  " Remove only mappings still owned by the previous mode.
-  for [l:key, l:rhs] in items(s:mode_maps)
-    if has_key(s:saved_maps, l:key)
-      if maparg(l:key, 'n') ==# l:rhs
-        execute 'nunmap ' .. l:key
-        if !empty(s:saved_maps[l:key])
-          call mapset('n', 0, s:saved_maps[l:key])
+  # Remove only mappings still owned by the previous mode.
+  for [item_key, item_rhs] in items(script_mode_maps)
+    key = item_key
+    rhs = item_rhs
+    if has_key(script_saved_maps, key)
+      if maparg(key, 'n') ==# rhs
+        execute 'nunmap ' .. key
+        if !empty(script_saved_maps[key])
+          mapset('n', 0, script_saved_maps[key])
         endif
       endif
     endif
   endfor
-  let s:saved_maps = {}
-  let &insertmode = a:mode ==# 'e'
-  let &selectmode = a:mode ==# 'e' ? 'mouse,key' : ''
-  let &keymodel = a:mode ==# 'e' ? 'startsel,stopsel' : ''
-  let &backspace = a:mode ==# 'e' ? 'indent,eol,nostop' : 'start'
-  let &selection = a:mode ==# 'e' ? 'exclusive' : 'inclusive'
-  if a:mode ==# 'e'
+  script_saved_maps = {}
+  &insertmode = mode ==# 'e'
+  &selectmode = mode ==# 'e' ? 'mouse,key' :  ''
+  &keymodel = mode ==# 'e' ? 'startsel,stopsel' :  ''
+  &backspace = mode ==# 'e' ? 'indent,eol,nostop' :  'start'
+  &selection = mode ==# 'e' ? 'exclusive' :  'inclusive'
+  if mode ==# 'e'
     set guioptions-=c
     set guioptions+=r
   else
     set guioptions+=c
     set guioptions-=r
   endif
-  if a:mode ==# 'p'
-    for [l:key, l:rhs] in items(s:mode_maps)
-      let s:saved_maps[l:key] = maparg(l:key, 'n', 0, 1)
-      execute 'nnoremap <silent> ' .. l:key .. ' ' .. l:rhs
+  if mode ==# 'p'
+    for [item_key, item_rhs] in items(script_mode_maps)
+      key = item_key
+      rhs = item_rhs
+      script_saved_maps[key] = maparg(key, 'n', 0, 1)
+      execute 'nnoremap <silent> ' .. key .. ' ' .. rhs
     endfor
   endif
-  let g:PV_mode = a:mode
+  g:PV_mode = mode
   if empty(v:this_session)
-    call planet#planet#ConfigUpdate('g:PV_mode')
+    planet#planet#ConfigUpdate('g:PV_mode')
   endif
-endfunc
+  return 0
+enddef
 
-func! planet#planet#SetEasyMode() abort
-  call planet#planet#SetMode('e')
-endfunc
+export def SetEasyMode(): any
+  planet#planet#SetMode('e')
+  return 0
+enddef
 
-func! planet#planet#SetStandardMode() abort
-  call planet#planet#SetMode('s')
-endfunc
+export def SetStandardMode(): any
+  planet#planet#SetMode('s')
+  return 0
+enddef
 
-func! planet#planet#SetSuperChargedMode() abort
-  call planet#planet#SetMode('p')
-endfunc
+export def SetSuperChargedMode(): any
+  planet#planet#SetMode('p')
+  return 0
+enddef
 
-func! planet#planet#SetGuiDialogs() abort
+export def SetGuiDialogs(): any
   set guioptions-=c
-endfunc
+  return 0
+enddef
 
-func! planet#planet#SetTextDialogs() abort
+export def SetTextDialogs(): any
   set guioptions+=c
-endfunc
+  return 0
+enddef
 
-func! planet#planet#IsGuiDialogs() abort
+export def IsGuiDialogs(): any
   return stridx(&guioptions, 'c') == -1
-endfunc
+enddef
 
-func! planet#planet#PlanetToggle() abort
-  call planet#menu#Group('planet')
-endfunc
+export def PlanetToggle(): any
+  planet#menu#Group('planet')
+  return 0
+enddef
 
-func! planet#planet#BasicToggle() abort
-  call planet#menu#Group('basic')
-endfunc
+export def BasicToggle(): any
+  planet#menu#Group('basic')
+  return 0
+enddef
 
-func! planet#planet#EditingToggle() abort
-  call planet#menu#Group('editing')
-endfunc
+export def EditingToggle(): any
+  planet#menu#Group('editing')
+  return 0
+enddef
 
-func! planet#planet#DevelopmentToggle() abort
-  call planet#menu#Group('dev')
-endfunc
+export def DevelopmentToggle(): any
+  planet#menu#Group('dev')
+  return 0
+enddef
 
-func! planet#planet#ToolsToggle() abort
-  call planet#menu#Group('tools')
-endfunc
+export def ToolsToggle(): any
+  planet#menu#Group('tools')
+  return 0
+enddef
 
-func! planet#planet#NavigationToggle() abort
-  call planet#menu#Group('nav')
-endfunc
+export def NavigationToggle(): any
+  planet#menu#Group('nav')
+  return 0
+enddef
 
-func! planet#planet#SettingsToggle() abort
-  call planet#menu#Group('settings')
-endfunc
+export def SettingsToggle(): any
+  planet#menu#Group('settings')
+  return 0
+enddef
 
-func! planet#planet#SetPerSessionOptions()
-  call planet#session#SetCwdSession()
+export def SetPerSessionOptions(): any
+  planet#session#SetCwdSession()
   silent! rviminfo!
-endfunc
+  return 0
+enddef
 
-func! planet#planet#SaveAll() abort
+export def SaveAll(): any
   try
     confirm wall
   catch
@@ -240,32 +270,36 @@ func! planet#planet#SaveAll() abort
     return v:false
   endif
   return v:true
-endfunc
+enddef
 
-func! planet#planet#SaveExit() abort
+export def SaveExit(): any
   if planet#planet#SaveAll()
     qa
   endif
-endfunc
+  return 0
+enddef
 
-func! planet#planet#EmergencyExit() abort
+export def EmergencyExit(): any
   set noautowrite
   set noautowriteall
   cquit!
-endfunc
+  return 0
+enddef
 
-func! planet#planet#CheckExitSaveSession() abort
+export def CheckExitSaveSession(): any
   if empty(v:this_session) || v:exiting != 0
-    return
-  end
-  "TODO: auto-save and auto-load quickfix/loclist files (up to 10 of each, loclists: for each window)
+    return 0
+  endif
+  #TODO: auto-save and auto-load quickfix/loclist files (up to 10 of each, loclists: for each window)
   exe 'SSave! ' .. fnamemodify(v:this_session, ":t")
-endfunc
+  return 0
+enddef
 
-func! planet#planet#EditVimVar(var_name) abort
-  let l:var_value = inputdialog(a:var_name .. '=', eval(a:var_name), 'CANCELLED')
-  if l:var_value == 'CANCELLED'
-    return
-  end
-  execute('let ' .. a:var_name .. '=' .. l:var_value)
-endfunc
+export def EditVimVar(var_name: any): any
+  var var_value: any = inputdialog(var_name .. '=', eval(var_name), 'CANCELLED')
+  if var_value == 'CANCELLED'
+    return 0
+  endif
+  execute var_name .. ' = ' .. var_value
+  return 0
+enddef
