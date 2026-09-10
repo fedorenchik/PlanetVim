@@ -384,14 +384,14 @@ func! planet#menu#tools#Update() abort
     an 720.10  🔠&-.--1-- <Nop>
     an 720.10  🔠&-.Suggest\ Spelling<Tab>z=            z=
     an 720.10  🔠&-.Apply\ First\ Suggestion<Tab>1z=    1z=
-    an 720.10  🔠&-.Repeat Correction<Tab>:spellrepall  :spellrepall<CR>
+    an 720.10  🔠&-.Repeat\ Correction<Tab>:spellrepall  :spellrepall<CR>
     an 720.10  🔠&-.--1-- <Nop>
     an 720.10  🔠&-.Mark\ as\ Correct<Tab>zg            zg
     an 720.10  🔠&-.Mark\ as\ Incorrect<Tab>zw          zw
     an 720.10  🔠&-.Mark\ as\ Rare<Tab>:spellrare       <Cmd>call planet#prose#MarkRare(v:false)<CR>
     an 720.10  🔠&-.--1-- <Nop>
     an 720.10  🔠&-.Mark\ as\ Correct\ Temp<Tab>zG      zG
-    an 720.10  🔠&-.Mark\ as\ Incorrect\ Temp<Tab>zG    zW
+    an 720.10  🔠&-.Mark\ as\ Incorrect\ Temp<Tab>zW    zW
     an 720.10  🔠&-.Mark\ as\ Rare\ Temp<Tab>:spellrare <Cmd>call planet#prose#MarkRare(v:true)<CR>
     an 720.10  🔠&-.--1-- <Nop>
     an 720.10  🔠&-.Unmark\ as\ Correct<Tab>zug         zug

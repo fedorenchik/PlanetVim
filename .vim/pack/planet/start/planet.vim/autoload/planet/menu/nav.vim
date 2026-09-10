@@ -7,43 +7,43 @@ func! planet#menu#nav#Update() abort
     an disable 📖&u.Buffers
     an 800.10  📖&u.C&hoose\.\.\.                           :Clap buffers<CR>
     an 800.10  📖&u.Manager\.\.\.                           :Bufexplorer<CR>
-    an 800.10  📖&u.Open<Tab>:b                             :b 
-    an 800.10  📖&u.Open\ VSplit<Tab>:vert sb               :vert sb 
-    an 800.10  📖&u.Open\ Tab<Tab>:tab sb                   :tab sb 
-    an 800.10  📖&u.Open\ All\ Loaded\ VSplit<Tab>:vert unh :vert unh<CR>
-    an 800.10  📖&u.Open\ All\ Loaded\ Tab<Tab>:tab unh     :tab unh<CR>
-    an 800.10  📖&u.Open\ All\ VSplit<Tab>:vert ba          :vert ba<CR>
-    an 800.10  📖&u.Open\ All\ Tab<Tab>:tab ba              :tab ba<CR>
+    an 800.10  📖&u.Open<Tab>:b                             :b<Space>
+    an 800.10  📖&u.Open\ VSplit<Tab>:vert\ sb               :vert sb<Space>
+    an 800.10  📖&u.Open\ Tab<Tab>:tab\ sb                   :tab sb<Space>
+    an 800.10  📖&u.Open\ All\ Loaded\ VSplit<Tab>:vert\ unh :vert unh<CR>
+    an 800.10  📖&u.Open\ All\ Loaded\ Tab<Tab>:tab\ unh     :tab unh<CR>
+    an 800.10  📖&u.Open\ All\ VSplit<Tab>:vert\ ba          :vert ba<CR>
+    an 800.10  📖&u.Open\ All\ Tab<Tab>:tab\ ba              :tab ba<CR>
     an 800.20  📖&u.--1-- <Nop>
     an 800.30  📖&u.&Alternate<Tab>:b\ #<Tab><C-@>          <C-^>
     an 800.30  📖&u.&Alternate\ Split<Tab>+^                <C-w>^
     an 800.40  📖&u.--2-- <Nop>
     an 800.30  📖&u.Next\ Modified<Tab>:bm                  :bm<CR>
-    an 800.30  📖&u.Next\ Modified\ VSplit<Tab>:vert sbm    :vert sbm<CR>
-    an 800.30  📖&u.Next\ Modified\ Tab<Tab>:tab sbm        :tab sbm<CR>
+    an 800.30  📖&u.Next\ Modified\ VSplit<Tab>:vert\ sbm    :vert sbm<CR>
+    an 800.30  📖&u.Next\ Modified\ Tab<Tab>:tab\ sbm        :tab sbm<CR>
     an 800.40  📖&u.--3-- <Nop>
     an 800.40  📖&u.&First<Tab>[B                           :bf<CR>
     an 800.40  📖&u.&Previous<Tab>[b                        :bp<CR>
     an 800.40  📖&u.&Next<Tab>]b                            :bn<CR>
     an 800.40  📖&u.&Last<Tab>]B                            :bl<CR>
-    an 800.40  📖&u.&First\ VSplit<Tab>:vert sbf            :vert sbf<CR>
-    an 800.40  📖&u.&Previous\ VSplit<Tab>:vert sbp         :vert sbp<CR>
-    an 800.40  📖&u.&Next\ VSplit<Tab>:vert sbn             :vert sbn<CR>
-    an 800.40  📖&u.&Last\ VSplit<Tab>:vert sbl             :vert sbl<CR>
-    an 800.40  📖&u.&First\ Tab<Tab>:tab sbf                :tab sbf<CR>
-    an 800.40  📖&u.&Previous\ Tab<Tab>:tab sbp             :tab sbp<CR>
-    an 800.40  📖&u.&Next\ Tab<Tab>:tab sbn                 :tab sbn<CR>
-    an 800.40  📖&u.&Last\ Tab<Tab>:tab sbl                 :tab sbl<CR>
+    an 800.40  📖&u.&First\ VSplit<Tab>:vert\ sbf            :vert sbf<CR>
+    an 800.40  📖&u.&Previous\ VSplit<Tab>:vert\ sbp         :vert sbp<CR>
+    an 800.40  📖&u.&Next\ VSplit<Tab>:vert\ sbn             :vert sbn<CR>
+    an 800.40  📖&u.&Last\ VSplit<Tab>:vert\ sbl             :vert sbl<CR>
+    an 800.40  📖&u.&First\ Tab<Tab>:tab\ sbf                :tab sbf<CR>
+    an 800.40  📖&u.&Previous\ Tab<Tab>:tab\ sbp             :tab sbp<CR>
+    an 800.40  📖&u.&Next\ Tab<Tab>:tab\ sbn                 :tab sbn<CR>
+    an 800.40  📖&u.&Last\ Tab<Tab>:tab\ sbl                 :tab sbl<CR>
     an 800.40  📖&u.--4-- <Nop>
-    an 800.40  📖&u.Add<Tab>:badd                           :badd 
-    an 800.40  📖&u.Add\ as\ Alternate<Tab>:balt            :balt 
+    an 800.40  📖&u.Add<Tab>:badd                           :badd<Space>
+    an 800.40  📖&u.Add\ as\ Alternate<Tab>:balt            :balt<Space>
     an 800.40  📖&u.Unload\ (Free\ Memory)                  :bun<CR>
     an 800.40  📖&u.Delete\ (Unload\ &&\ Unlist)            :bd<CR>
     an 800.40  📖&u.Wipeout\ (Delete\ &&\ Clear\ Everything) :bw<CR>
     an 800.40  📖&u.--5-- <Nop>
     an 800.40  📖&u.Delete\ Hidden                          :call planet#buffer#DeleteHidden()<CR>
     an 800.40  📖&u.Delete\ All                             :call planet#buffer#DeleteAll()<CR>
-    an 800.40  📖&u.Execute\ in\ Each\ Buffer<Tab>:bufdo    :bufdo 
+    an 800.40  📖&u.Execute\ in\ Each\ Buffer<Tab>:bufdo    :bufdo<Space>
     an 800.40  📖&u.--6-- <Nop>
 
     " Arg List
@@ -56,18 +56,18 @@ func! planet#menu#nav#Update() abort
     an 810.10  🗃️&a.&Previous<Tab>[a                           :previous<CR>
     an 810.10  🗃️&a.&Next<Tab>]a                               :next<CR>
     an 810.10  🗃️&a.&Last<Tab>]A                               :last<CR>
-    an 810.10  🗃️&a.&First\ VSplit<Tab>[A                      :vert sfirst<CR>
-    an 810.10  🗃️&a.&Previous\ VSplit<Tab>[a                   :vert sprevious<CR>
-    an 810.10  🗃️&a.&Next\ VSplit<Tab>]a                       :vert snext<CR>
-    an 810.10  🗃️&a.&Last\ VSplit<Tab>]A                       :vert slast<CR>
-    an 810.10  🗃️&a.&First\ Tab<Tab>[A                         :tab first<CR>
-    an 810.10  🗃️&a.&Previous\ Tab<Tab>[a                      :tab previous<CR>
-    an 810.10  🗃️&a.&Next\ Tab<Tab>]a                          :tab next<CR>
-    an 810.10  🗃️&a.&Last\ Tab<Tab>]A                          :tab last<CR>
+    an 810.10  🗃️&a.&First\ VSplit                      :vert sfirst<CR>
+    an 810.10  🗃️&a.&Previous\ VSplit                   :vert sprevious<CR>
+    an 810.10  🗃️&a.&Next\ VSplit                       :vert snext<CR>
+    an 810.10  🗃️&a.&Last\ VSplit                       :vert slast<CR>
+    an 810.10  🗃️&a.&First\ Tab                         :tab first<CR>
+    an 810.10  🗃️&a.&Previous\ Tab                      :tab previous<CR>
+    an 810.10  🗃️&a.&Next\ Tab                          :tab next<CR>
+    an 810.10  🗃️&a.&Last\ Tab                          :tab last<CR>
     an 810.10  🗃️&a.All\ VSplit<Tab>:vert\ all                 :tabnew<CR>:vert all<CR>
     an 810.10  🗃️&a.All\ Tab<Tab>:tab\ all                     :tab all<CR>
     an 810.10  🗃️&a.--1-- <Nop>
-    an 810.10  🗃️&a.Execute\ in\ Each\ Argument<Tab>:argdo     :argdo 
+    an 810.10  🗃️&a.Execute\ in\ Each\ Argument<Tab>:argdo     :argdo<Space>
     an 810.10  🗃️&a.--1-- <Nop>
     an 810.10  🗃️&a.Set\ Local                                 :argl<CR>
     an 810.10  🗃️&a.Set\ Global                                :argg<CR>
@@ -173,15 +173,15 @@ func! planet#menu#nav#Update() abort
     an 820.10  🪟&w.&Layout.Load\ 9                         <Cmd>exe g:PV_layout_9<CR>
     an 820.10  🪟&w.&Layout.--1-- <Nop>
     an 820.10  🪟&w.--7-- <Nop>
-    an 820.10  🪟&w.Execute\ in\ Window\ in\ This\ Tab      :windo 
-    an 820.10  🪟&w.Execute\ in\ each\ Window               :tabdo windo 
+    an 820.10  🪟&w.Execute\ in\ Window\ in\ This\ Tab      :windo<Space>
+    an 820.10  🪟&w.Execute\ in\ each\ Window               :tabdo windo<Space>
     an 820.10  🪟&w.--5-- <Nop>
     an 820.10  🪟&w.--9-- <Nop>
     an 820.10  🪟&w.&Close<Tab>:close<Tab>+c                <C-w>c
     an 820.10  🪟&w.Close\ &Other\ Windows<Tab>:only<Tab>+o <C-w>o
 
     " Tabs
-    an 830.10  🗂️&t.Tabs <Tabs>
+    an 830.10  🗂️&t.Tabs <Nop>
     an disable 🗂️&t.Tabs
     an 830.10  🗂️&t.Tab\ Manager<Tab>:TMToggle             <Cmd>TMToggle<CR>
     an 830.10  🗂️&t.N&ew<Tab>:tabnew                       <Cmd>tabnew<CR>
@@ -202,7 +202,7 @@ func! planet#menu#nav#Update() abort
     an 830.10  🗂️&t.&Save\ Current\ Tab                    <Cmd>call planet#tab#Save()<CR>
     an 830.10  🗂️&t.Open\ &Tab\.\.\.                       <Cmd>call planet#tab#Open()<CR>
     an 830.10  🗂️&t.--5-- <Nop>
-    an 830.10  🗂️&t.E&xecute\ in\ each\ Tab<Tab>:tabdo     :tabdo 
+    an 830.10  🗂️&t.E&xecute\ in\ each\ Tab<Tab>:tabdo     :tabdo<Space>
     an 830.10  🗂️&t.--6-- <Nop>
     an 830.10  🗂️&t.&Close<Tab>:tabclose                   <Cmd>call planet#tab#Close()<CR>
     an 830.10  🗂️&t.Reopen\ Closed\ Tab                    <Cmd>call planet#tab#Reopen()<CR>

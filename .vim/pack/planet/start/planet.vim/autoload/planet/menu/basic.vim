@@ -79,7 +79,7 @@ func! planet#menu#basic#Update() abort
     an 110.100 📁&f.File\ &Manager\ Side\ Bar                  <Cmd>Fern . -reveal=% -drawer -toggle<CR>
     an 110.110 📁&f.Choose\ &Recent                            <Cmd>Clap history<CR>
     an 110.110 📁&f.QF\ &Recent                                <Cmd>call planet#file#OldFilesQF()<CR>
-    an 110.120 📁&f.F&ind<Tab>:find                            :find 
+    an 110.120 📁&f.F&ind<Tab>:find                            :find<Space>
     an 110.230 📁&f.Advanced.New\ Temp\ File                   <Cmd>exe "e " .. tempname()<CR>
     an 110.230 📁&f.Advanced.Open\ File\ under\ Cursor<Tab>gF           gF
     an 110.240 📁&f.Advanced.Split\ Open\ File\ under\ Cursor<Tab>+F    <C-w>F
@@ -88,8 +88,8 @@ func! planet#menu#basic#Update() abort
     an 110.110 📁&f.Advanced.Split\ Read\ Only                 <Cmd>browse sview<CR>
     an 110.110 📁&f.Advanced.VSplit\ Read\ Only                <Cmd>browse vertical sview<CR>
     an 110.110 📁&f.Advanced.Tab\ Read\ Only                   <Cmd>browse tab view<CR>
-    an 110.110 📁&f.Advanced.Split\ Find                       :sfind 
-    an 110.120 📁&f.Advanced.F&ind\ in\ Tab<Tab>:tabfind       :tabfind 
+    an 110.110 📁&f.Advanced.Split\ Find                       :sfind<Space>
+    an 110.120 📁&f.Advanced.F&ind\ in\ Tab<Tab>:tabfind       :tabfind<Space>
     an 110.130 📁&f.--2-- <Nop>
     an 110.140 📁&f.&Save<Tab>:w                               <Cmd>if expand("%") == ""<Bar>browse confirm w<Bar>else<Bar>confirm up<Bar>endif<CR>
     an 110.150 📁&f.Save\ &As\.\.\.<Tab>:saveas                <Cmd>browse confirm saveas<CR>
@@ -144,8 +144,10 @@ func! planet#menu#basic#Update() abort
     " Edit
     an 120.10  📝&e.Edit <Nop>
     an disable 📝&e.Edit
-    an 120.20  📝&e.&Undo<Tab>u<Tab>g-                         u
-    an 120.30  📝&e.&Redo<Tab><C-r><Tab>g+                     <C-r>
+    an 120.20  📝&e.&Undo<Tab>u                         u
+    an 120.30  📝&e.&Redo<Tab><C-r>                     <C-r>
+    an 120.31  📝&e.Earlier\ Change<Tab>g- g-
+    an 120.32  📝&e.Later\ Change<Tab>g+ g+
     an 120.40  📝&e.--1-- <Nop>
     an 120.50  📝&e.Repeat\ Edit<Tab>\.                        .
     an 120.60  📝&e.Repeat\ Command<Tab>@:                     @:
@@ -196,8 +198,8 @@ func! planet#menu#basic#Update() abort
     an 125.320 ✏️&m.Format\ Text<Tab>gq                       gq
     an 125.330 ✏️&m.Format\ Text\ Keep\ Cursor<Tab>gw         gw
     an 125.340 ✏️&m.--9-- <Nop>
-    an 125.350 ✏️&m.Toggle\ Comment<Tab>gcc                    gcc
-    an 125.360 ✏️&m.Toggle\ Caps\ Lock<Tab>gC<Tab>i_<C-g>c     gC
+    am 125.350 ✏️&m.Toggle\ Comment<Tab>gcc                    gcc
+    am 125.360 ✏️&m.Toggle\ Caps\ Lock<Tab>gC<Tab>i_<C-g>c     gC
     an 125.370 ✏️&m.To\ lower<Tab>gu                           gu
     an 125.380 ✏️&m.To\ UPPER<Tab>gU                           gU
     an 125.390 ✏️&m.Swap\ Case<Tab>g~                          g~
@@ -329,8 +331,8 @@ func! planet#menu#basic#Update() abort
     an 150.70.500 📺&v.Set\ Colorscheme.One\ Light          <Cmd>set bg=light<CR><Cmd>colorscheme one<CR>
     an 150.70.500 📺&v.Set\ Colorscheme.PaperColor\ Light   <Cmd>set bg=light<CR><Cmd>colorscheme PaperColor<CR>
     an 150.70.500 📺&v.Set\ Colorscheme.Solarized\ Light    <Cmd>set bg=light<CR><Cmd>colorscheme solarized<CR>
-    an 150.70  📺&v.Set\ Dark\ Background<Tab>set\ bg=dark  <Cmd>set bg=dark<CR>
-    an 150.70  📺&v.Set\ Light\ Background<Tab>set\ bg=light <Cmd>set bg=light<CR>
+    an 150.70  📺&v.Set\ Dark\ Background<Tab>:set\ bg=dark  <Cmd>set bg=dark<CR>
+    an 150.70  📺&v.Set\ Light\ Background<Tab>:set\ bg=light <Cmd>set bg=light<CR>
     an 150.70  📺&v.Choose\ Colorscheme<Tab>:Clap\ colors   <Cmd>Clap colors<CR>
     an 150.70  📺&v.GUI\ Highlight.Menu                     :h hl-Menu
     an 150.70  📺&v.GUI\ Highlight.Scrollbar                :h hl-Scrollbar

@@ -20,12 +20,12 @@ func! planet#menu#edit#Update() abort
     an disable 🔖&'.Marks
     an 210.10  🔖&'.C&hoose<Tab>:Clap\ marks                  :Clap marks<CR>
     an 210.10  🔖&'.Select<Tab>'{a-z}                         '
-    an 210.10  🔖&'.Open\ LocList<Tab>m/                      m/
+    am 210.10  🔖&'.Open\ LocList<Tab>m/                      m/
     an 210.20  🔖&'.--1-- <Nop>
-    an 210.30  🔖&'.Add<Tab>m,                                m,
-    an 210.40  🔖&'.Toggle<Tab>m\.                            m.
-    an 210.50  🔖&'.Delete<Tab>m-                             m-
-    an 210.60  🔖&'.Delete\ All<Tab>m<Space>                  m<Space>
+    am 210.30  🔖&'.Add<Tab>m,                                m,
+    am 210.40  🔖&'.Toggle<Tab>m\.                            m.
+    am 210.50  🔖&'.Delete<Tab>m-                             m-
+    am 210.60  🔖&'.Delete\ All<Tab>m<Space>                  m<Space>
     an 210.70  🔖&'.--2-- <Nop>
     an 210.90  🔖&'.Previous<Tab>['                           [`
     an 210.80  🔖&'.Next<Tab>]'                               ]`
@@ -118,10 +118,10 @@ func! planet#menu#edit#Update() abort
     " Cololr highlight words with mark.vim plugin
     an 230.10  🖌️&h.CMarks <Nop>
     an disable 🖌️&h.CMarks
-    an 230.10  🖌️&h.CMark\ &Current<Tab>,m                   <Leader>m
-    an 230.10  🖌️&h.CMark\ &Regex<Tab>,r                     <Leader>r
+    am 230.10  🖌️&h.CMark\ &Current<Tab>,m                   <Leader>m
+    am 230.10  🖌️&h.CMark\ &Regex<Tab>,r                     <Leader>r
     an 230.10  🖌️&h.List\ All                                :Marks<CR>
-    an 230.10  🖌️&h.Toggle\ All<Tab>,M                       <Leader>M
+    am 230.10  🖌️&h.Toggle\ All<Tab>,M                       <Leader>M
     an 230.10  🖌️&h.Delete\ All<Tab>,N                       :MarkClear<CR>
     an 230.10  🖌️&h.--1-- <Nop>
     an 230.10  🖌️&h.Matches <Nop>
@@ -174,7 +174,7 @@ func! planet#menu#edit#Update() abort
     an 250.340 📜&z.Delete\ All\ at\ Cursor\ (&@)<Tab>zD    zD
     an 250.350 📜&z.Delete\ All\ (&\\)<Tab>zE               zE
     an 250.360 📜&z.--6-- <Nop>
-    an 250.370 📜&z.Update\ All\ Folds\ (&')<Tab>zuz        zuz
+    am 250.370 📜&z.Update\ All\ Folds\ (&')<Tab>zuz        zuz
     an 250.380 📜&z.--7-- <Nop>
     an 250.390 📜&z.Advanced\ (&\.).&Enable<Tab>zN          zN
     an 250.400 📜&z.Advanced\ (&\.).&Disable<Tab>zn         zn
@@ -183,8 +183,8 @@ func! planet#menu#edit#Update() abort
     an 250.410 📜&z.Advanced\ (&\.).&Increase\ 'foldcolumn' :set foldcolumn+=1<CR>
     an 250.410 📜&z.Advanced\ (&\.).Dec&rease\ 'foldcolumn' :set foldcolumn-=1<CR>
     an 250.410 📜&z.Advanced\ (&\.).--9-- <Nop>
-    an 250.410 📜&z.Advanced\ (&\.).Run\ Command\ on\ &Visible\ Lines :folddoopen 
-    an 250.410 📜&z.Advanced\ (&\.).Run\ Command\ on\ &Folded\ Lines  :folddoclosed 
+    an 250.410 📜&z.Advanced\ (&\.).Run\ Command\ on\ &Visible\ Lines :folddoopen<Space>
+    an 250.410 📜&z.Advanced\ (&\.).Run\ Command\ on\ &Folded\ Lines  :folddoclosed<Space>
     an 250.410 📜&z.AutoFold <Nop>
     an disable 📜&z.AutoFold
     an 250.410 📜&z.Enable\ Au&toFold                       :call planet#fold#EnableAuto()<CR>
@@ -202,12 +202,12 @@ func! planet#menu#edit#Update() abort
     an 260.20  &QF.Sea&rch                                      :Grepper -tool rg -quickfix<CR>
     an 260.30  &QF.Search\ Add                                  :Grepper -tool rg -quickfix -append<CR>
     an 260.40  &QF.Search\ Side                                 :Grepper -tool rg -quickfix -side<CR>
-    an 260.50  &QF.F&ind<Tab>:Cfind!                            :Cfind! 
-    an 260.60  &QF.Loc&ate<Tab>:Clocate!                        :Clocate! 
-    an 260.70  &QF.&Grep<Tab>:grep                              :grep 
-    an 260.80  &QF.GrepAdd\ (&b)<Tab>:grepadd                   :grepadd 
-    an 260.90  &QF.&VimGrep<Tab>:vimgrep                        :vimgrep 
-    an 260.100 &QF.Vi&mGrepAdd<Tab>:vimgrepadd                  :vimgrepadd 
+    an 260.50  &QF.F&ind<Tab>:Cfind!                            :Cfind!<Space>
+    an 260.60  &QF.Loc&ate<Tab>:Clocate!                        :Clocate!<Space>
+    an 260.70  &QF.&Grep<Tab>:grep                              :grep<Space>
+    an 260.80  &QF.GrepAdd\ (&b)<Tab>:grepadd                   :grepadd<Space>
+    an 260.90  &QF.&VimGrep<Tab>:vimgrep                        :vimgrep<Space>
+    an 260.100 &QF.Vi&mGrepAdd<Tab>:vimgrepadd                  :vimgrepadd<Space>
     an 260.110 &QF.TODO                                         <Cmd>Grepper -quickfix -noprompt -tool rg -query 'TODO\|FIXME\|XXX\|NOTE\|BUG\|WARNING'<CR>
     an 260.120 &QF.--1-- <Nop>
     an 260.130 &QF.C&hoose<Tab>:Clap\ quickfix                  :Clap quickfix<CR>
@@ -219,19 +219,19 @@ func! planet#menu#edit#Update() abort
     an 260.190 &QF.N&ext\ File<Tab>:cnfile<Tab>]<C-q>           :cnfile<CR>
     am 260.200 &QF.&Last<Tab>:clast<Tab>]Q                      ]Q
     an 260.210 &QF.--3-- <Nop>
-    an 260.220 &QF.E&xecute\ for\ each<Tab>:cdo                 :cdo 
-    an 260.230 &QF.Execute\ for\ each\ File\ (&z)<Tab>:cfdo     :cfdo 
+    an 260.220 &QF.E&xecute\ for\ each<Tab>:cdo                 :cdo<Space>
+    an 260.230 &QF.Execute\ for\ each\ File\ (&z)<Tab>:cfdo     :cfdo<Space>
     an 260.240 &QF.--4-- <Nop>
     an 260.250 &QF.&Open<Tab>:copen                             :copen<CR>
-    an 260.260 &QF.Fil&ter<Tab>:Cfilter                         :Cfilter 
-    an 260.270 &QF.Filter\ O&ut<Tab>:Cfilter!                   :Cfilter! 
+    an 260.260 &QF.Fil&ter<Tab>:Cfilter                         :Cfilter<Space>
+    an 260.270 &QF.Filter\ O&ut<Tab>:Cfilter!                   :Cfilter!<Space>
     an 260.280 &QF.E&dit<Tab>:Qflistsplit<Tab>c\\q              :Qflistsplit<CR>
-    an 260.290 &QF.Read\ from\ File\ (&w)<Tab>:cgetfile         :cgetfile! 
-    an 260.300 &QF.Add\ from\ File\ (&y)<Tab>:caddfile          :caddfile! 
-    an 260.310 &QF.Read\ from\ Buffer\ (&,)<Tab>:cgetbuffer     :cgetbuffer! 
-    an 260.320 &QF.Add\ from\ Buffer\ (&\.)<Tab>:caddbuffer     :caddbuffer! 
-    an 260.330 &QF.Read\ from\ Expr\ (&;)<Tab>:cgetexpr         :cgetexpr! 
-    an 260.340 &QF.Add\ from\ Expr\ (&')<Tab>:caddexpr          :caddexpr! 
+    an 260.290 &QF.Read\ from\ File\ (&w)<Tab>:cgetfile         :cgetfile!<Space>
+    an 260.300 &QF.Add\ from\ File\ (&y)<Tab>:caddfile          :caddfile!<Space>
+    an 260.310 &QF.Read\ from\ Buffer\ (&,)<Tab>:cgetbuffer     :cgetbuffer!<Space>
+    an 260.320 &QF.Add\ from\ Buffer\ (&\.)<Tab>:caddbuffer     :caddbuffer!<Space>
+    an 260.330 &QF.Read\ from\ Expr\ (&;)<Tab>:cgetexpr         :cgetexpr!<Space>
+    an 260.340 &QF.Add\ from\ Expr\ (&')<Tab>:caddexpr          :caddexpr!<Space>
     an 260.350 &QF.&Close<Tab>:cclose<Tab>                      :cclose<CR>
     an 260.360 &QF.--5-- <Nop>
     an 260.370 &QF.Previous\ QuickFix\ (&k)<Tab>:colder         :colder<CR>
@@ -245,12 +245,12 @@ func! planet#menu#edit#Update() abort
     an 270.20  &LL.Sea&rch                                      :Grepper -tool rg -noquickfix<CR>
     an 270.30  &LL.Search\ Add                                  :Grepper -tool rg -noquickfix -append<CR>
     an 270.40  &LL.Search\ Side                                 :Grepper -tool rg -noquickfix -side<CR>
-    an 270.50  &LL.F&ind<Tab>:Lfind!                            :Lfind! 
-    an 270.60  &LL.Loc&ate<Tab>:Llocate!                        :Llocate! 
-    an 270.70  &LL.&Grep<Tab>:lgrep                             :lgrep 
-    an 270.80  &LL.GrepAdd\ (&b)<Tab>:lgrepadd                  :lgrepadd 
-    an 270.90  &LL.&VimGrep<Tab>:lvimgrep                       :lvimgrep 
-    an 270.100 &LL.Vi&mGrepAdd<Tab>:lvimgrepadd                 :lvimgrepadd 
+    an 270.50  &LL.F&ind<Tab>:Lfind!                            :Lfind!<Space>
+    an 270.60  &LL.Loc&ate<Tab>:Llocate!                        :Llocate!<Space>
+    an 270.70  &LL.&Grep<Tab>:lgrep                             :lgrep<Space>
+    an 270.80  &LL.GrepAdd\ (&b)<Tab>:lgrepadd                  :lgrepadd<Space>
+    an 270.90  &LL.&VimGrep<Tab>:lvimgrep                       :lvimgrep<Space>
+    an 270.100 &LL.Vi&mGrepAdd<Tab>:lvimgrepadd                 :lvimgrepadd<Space>
     an 270.110 &LL.TODO                                         <Cmd>Grepper -noquickfix -noprompt -tool rg -query 'TODO\|FIXME\|XXX\|NOTE\|BUG\|WARNING'<CR>
     an 270.120 &LL.--1-- <Nop>
     an 270.130 &LL.C&hoose<Tab>:Clap\ loclist                   :Clap loclist<CR>
@@ -262,19 +262,19 @@ func! planet#menu#edit#Update() abort
     an 270.190 &LL.N&ext\ File<Tab>:lnfile<Tab>]<C-l>           :lnfile<CR>
     am 270.200 &LL.&Last<Tab>:llast<Tab>]L                      ]L
     an 270.210 &LL.--3-- <Nop>
-    an 270.220 &LL.E&xecute\ for\ each<Tab>:ldo                 :ldo 
-    an 270.230 &LL.Execute\ for\ each\ File\ (&z)<Tab>:lfdo     :lfdo 
+    an 270.220 &LL.E&xecute\ for\ each<Tab>:ldo                 :ldo<Space>
+    an 270.230 &LL.Execute\ for\ each\ File\ (&z)<Tab>:lfdo     :lfdo<Space>
     an 270.240 &LL.--4-- <Nop>
     an 270.250 &LL.&Open<Tab>:lopen                             :lopen<CR>
-    an 270.260 &LL.Fil&ter<Tab>:Lfilter                         :Lfilter 
-    an 270.270 &LL.Filter\ O&ut<Tab>:Lfilter!                   :Lfilter! 
+    an 270.260 &LL.Fil&ter<Tab>:Lfilter                         :Lfilter<Space>
+    an 270.270 &LL.Filter\ O&ut<Tab>:Lfilter!                   :Lfilter!<Space>
     an 270.280 &LL.E&dit<Tab>:Loclistsplit<Tab>c\\l             :Loclistsplit<CR>
-    an 270.290 &LL.Read\ from\ File\ (&w)<Tab>:lgetfile         :lgetfile! 
-    an 270.300 &LL.Add\ from\ File\ (&y)<Tab>:laddfile          :laddfile! 
-    an 270.310 &LL.Read\ from\ Buffer\ (&,)<Tab>:lgetbuffer     :lgetbuffer! 
-    an 270.320 &LL.Add\ from\ Buffer\ (&\.)<Tab>:laddbuffer     :laddbuffer! 
-    an 270.330 &LL.Read\ from\ Expr\ (&;)<Tab>:lgetexpr         :lgetexpr! 
-    an 270.340 &LL.Add\ from\ Expr\ (&')<Tab>:laddexpr          :laddexpr! 
+    an 270.290 &LL.Read\ from\ File\ (&w)<Tab>:lgetfile         :lgetfile!<Space>
+    an 270.300 &LL.Add\ from\ File\ (&y)<Tab>:laddfile          :laddfile!<Space>
+    an 270.310 &LL.Read\ from\ Buffer\ (&,)<Tab>:lgetbuffer     :lgetbuffer!<Space>
+    an 270.320 &LL.Add\ from\ Buffer\ (&\.)<Tab>:laddbuffer     :laddbuffer!<Space>
+    an 270.330 &LL.Read\ from\ Expr\ (&;)<Tab>:lgetexpr         :lgetexpr!<Space>
+    an 270.340 &LL.Add\ from\ Expr\ (&')<Tab>:laddexpr          :laddexpr!<Space>
     an 270.350 &LL.&Close<Tab>:lclose<Tab>                      :lclose<CR>
     an 270.360 &LL.--5-- <Nop>
     an 270.370 &LL.Previous\ LocList\ (&k)<Tab>:lolder          :lolder<CR>

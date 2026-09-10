@@ -6,9 +6,9 @@ func! planet#menu#settings#Update() abort
     " Settings (Options) (unimpaired settings)
     an 970.10  ⚙️&\\.Settings <Nop>
     an disable ⚙️&\\.Settings
-    an 970.10  ⚙️&\\.Tabs:\ &2<Tab>et\ ts=2\ sw=2           :set et ts=2 sw=2<CR>
-    an 970.10  ⚙️&\\.Tabs:\ &4<Tab>et\ ts=4\ sw=4           :set et ts=4 sw=4<CR>
-    an 970.10  ⚙️&\\.Tabs:\ &8<Tab>noet\ ts=8\ sw=8         :set noet ts=8 sw=8<CR>
+    an 970.10  ⚙️&\\.Tabs:\ &2<Tab>:set\ et\ ts=2\ sw=2           :set et ts=2 sw=2<CR>
+    an 970.10  ⚙️&\\.Tabs:\ &4<Tab>:set\ et\ ts=4\ sw=4           :set et ts=4 sw=4<CR>
+    an 970.10  ⚙️&\\.Tabs:\ &8<Tab>:set\ noet\ ts=8\ sw=8         :set noet ts=8 sw=8<CR>
     an 970.10  ⚙️&\\.--1-- <Nop>
     am 970.10  ⚙️&\\.Toggle\ 'cursorline'<Tab>yoc           yoc
     am 970.10  ⚙️&\\.Toggle\ 'hlsearch'<Tab>yoh             yoh

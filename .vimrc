@@ -390,9 +390,9 @@ vnoremenu 1.10 PopUp.&Delete                 "_x
 snoremenu 1.10 PopUp.Cut                     "+d
 " Insert Mode:
 inoremenu 1.10 PopUp.&Paste                  <C-o>"+gP
-inoremenu 1.10 PopUp.Close                   <C-w>c
+inoremenu 1.10 PopUp.Close                   <Cmd>close<CR>
 " Cmdline Mode: cmdline completion
-cnoremenu 1.10 PopUp.&Copy                  <C-y>
+cnoremenu 1.10 PopUp.&Copy                  <Cmd>call setreg("+", getcmdline())<CR>
 cnoremenu 1.10 PopUp.&Paste                 <C-r>+
 " Terminal Mode:
 tlnoremenu 1.10 PopUp.Close                  <C-w><C-c>
