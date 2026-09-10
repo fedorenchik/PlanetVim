@@ -1,47 +1,52 @@
-scriptversion 4
+vim9script
+export def OldFilesQF(): any
+  setqflist([], ' ', {'lines': v:oldfiles, 'efm': '%f', 'quickfixtextfunc': 'QfOldFiles'})
+  return 0
+enddef
 
-func! planet#file#OldFilesQF() abort
-  call setqflist([], ' ', {'lines' : v:oldfiles, 'efm' : '%f', 'quickfixtextfunc' : 'QfOldFiles'})
-endfunc
-
-func! QfOldFiles(info) abort
-  let items = getqflist({'id' : a:info.id, 'items' : 1}).items
-  let l = []
-  for idx in range(a:info.start_idx - 1, a:info.end_idx - 1)
-    call add(l, fnamemodify(bufname(items[idx - 1].bufnr), ':p:.'))
+def g:QfOldFiles(info: any): any
+  var items: any = getqflist({'id': info.id, 'items': 1}).items
+  var l: any = []
+  for idx in range(info.start_idx - 1, info.end_idx - 1)
+    add(l, fnamemodify(bufname(items[idx - 1].bufnr), ':p:.'))
   endfor
   return l
-endfunc
+enddef
 
-func! planet#file#NewProject(project_type) abort
-  return planet#generate#Template(a:project_type, v:null, #{open: v:true})
-endfunc
+export def NewProject(project_type: any): any
+  return planet#generate#Template(project_type, v:null, {open: v:true})
+enddef
 
-func! planet#file#NewProjectFromScript(project_type) abort
-  return planet#generate#Framework(a:project_type, v:null, #{open: v:true})
-endfunc
+export def NewProjectFromScript(project_type: any): any
+  return planet#generate#Framework(project_type, v:null, {open: v:true})
+enddef
 
-" mod can be: '', 'windo', 'tabdo windo'
-func! planet#file#ClearLocalCwd(mod) abort
-  let l:win_id = win_getid()
-  let l:global_cwd = getcwd(-1)
-  exe "noautocmd " .. a:mod .. " cd " .. fnameescape(l:global_cwd)
-  call win_gotoid(l:win_id)
-endfunc
+# mod can be: '', 'windo', 'tabdo windo'
+export def ClearLocalCwd(mod: any): any
+  var win_id: any = win_getid()
+  var global_cwd: any = getcwd(-1)
+  exe "noautocmd " .. mod .. " cd " .. fnameescape(global_cwd)
+  win_gotoid(win_id)
+  return 0
+enddef
 
-" Makes global cd from tcd & clears tcd
-func! planet#file#TcdToCd() abort
+# Makes global cd from tcd & clears tcd
+export def TcdToCd(): any
+  var win_id: any
+  var tab_cwd: any
   if haslocaldir() == 2
-    let l:win_id = win_getid()
-    let l:tab_cwd = getcwd(-1, 0)
-    exe "noautocmd windo cd " .. fnameescape(l:tab_cwd)
-    call win_gotoid(l:win_id)
-  end
-endfunc
+    win_id = win_getid()
+    tab_cwd = getcwd(-1, 0)
+    exe "noautocmd windo cd " .. fnameescape(tab_cwd)
+    win_gotoid(win_id)
+  endif
+  return 0
+enddef
 
-" Makes global cd from lcd & clears lcd
-func! planet#file#LcdToCd() abort
+# Makes global cd from lcd & clears lcd
+export def LcdToCd(): any
   if haslocaldir() == 1
     exe "noautocmd cd " .. fnameescape(getcwd())
-  end
-endfunc
+  endif
+  return 0
+enddef

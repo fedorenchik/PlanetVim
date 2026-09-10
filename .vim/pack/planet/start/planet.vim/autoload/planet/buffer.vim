@@ -1,86 +1,94 @@
-scriptversion 4
+vim9script
 
-func! planet#buffer#DeleteAll()
-  let l:buf = 1
-  while l:buf <= bufnr('$')
-    if !bufexists(l:buf)
-      let l:buf += 1
+export def DeleteAll(): any
+  var buf: any = 1
+  while buf <= bufnr('$')
+    if !bufexists(buf)
+      buf += 1
       continue
     endif
-    if !buflisted(l:buf) && !bufloaded(l:buf)
-      let l:buf += 1
+    if !buflisted(buf) && !bufloaded(buf)
+      buf += 1
       continue
     endif
-    exe "bdel " .. l:buf
-    let l:buf += 1
+    exe "bdel " .. buf
+    buf += 1
   endwhile
-endfunc
+  return 0
+enddef
 
-func! planet#buffer#DeleteHidden() abort
-  let l:buf = 1
-  while l:buf <= bufnr('$')
-    if !bufexists(l:buf)
-      let l:buf += 1
+export def DeleteHidden(): any
+  var buf: any = 1
+  while buf <= bufnr('$')
+    if !bufexists(buf)
+      buf += 1
       continue
     endif
-    if !buflisted(l:buf) && !bufloaded(l:buf)
-      let l:buf += 1
+    if !buflisted(buf) && !bufloaded(buf)
+      buf += 1
       continue
     endif
-    if win_findbuf(l:buf)->empty()
-      exe "bdel " .. l:buf
+    if win_findbuf(buf)->empty()
+      exe "bdel " .. buf
     endif
-    let l:buf += 1
+    buf += 1
   endwhile
-endfunc
+  return 0
+enddef
 
-func! planet#buffer#IsNormal(name, num)
-    if !bufexists(a:num)
-      return 0
-    endif
-    if isdirectory(a:name) || !buflisted(a:num)
-      return 0
-    endif
-    let type = getbufvar(a:num, '&buftype')
-    if type != '' && type != 'nofile' && type != 'nowrite'
-      return 0
-    endif
-    return 1
-endfunc
-
-let s:entries = {}
-
-func! s:Remove(number) abort
-  if has_key(s:entries, a:number)
-    execute 'silent! aunmenu 📖&u.Buffer\ List.' .. s:entries[a:number]
-    call remove(s:entries, a:number)
+export def IsNormal(name: any, num: any): any
+  var type: any
+  if !bufexists(num)
+    return 0
   endif
-endfunc
-
-func! planet#buffer#AddBuffer(name, num) abort
-  call s:Remove(a:num)
-  if planet#buffer#IsNormal(a:name, a:num)
-    let s:entries[a:num] = planet#menu#MenuifyName('[' .. a:num .. '] ' .. (empty(a:name) ? '[No Name]' : a:name))
-    execute 'PlanetMenu an 800.500 📖&u.Buffer\ List.' .. s:entries[a:num] .. ' <Cmd>confirm buffer ' .. a:num .. '<CR>'
+  if isdirectory(name) || !buflisted(num)
+    return 0
   endif
-endfunc
+  type = getbufvar(num, '&buftype')
+  if type != '' && type != 'nofile' && type != 'nowrite'
+    return 0
+  endif
+  return 1
+enddef
 
-func! planet#buffer#AddBufferAu() abort
+var script_entries = {}
+
+def LocalRemove(number: any): any
+  if has_key(script_entries, number)
+    execute 'silent! aunmenu 📖&u.Buffer\ List.' .. script_entries[number]
+    remove(script_entries, number)
+  endif
+  return 0
+enddef
+
+export def AddBuffer(name: any, num: any): any
+  LocalRemove(num)
+  if planet#buffer#IsNormal(name, num)
+    script_entries[num] = planet#menu#MenuifyName('[' .. num .. '] ' .. (empty(name) ? '[No Name]' :  name))
+    execute 'PlanetMenu an 800.500 📖&u.Buffer\ List.' .. script_entries[num] .. ' <Cmd>confirm buffer ' .. num .. '<CR>'
+  endif
+  return 0
+enddef
+
+export def AddBufferAu(): any
   if planet#menu#Visible('nav')
-    call planet#buffer#AddBuffer(expand('<afile>'), str2nr(expand('<abuf>')))
+    planet#buffer#AddBuffer(expand('<afile>'), str2nr(expand('<abuf>')))
   endif
-endfunc
+  return 0
+enddef
 
-func! planet#buffer#RemoveBufferAu() abort
-  call s:Remove(str2nr(expand('<abuf>')))
-endfunc
+export def RemoveBufferAu(): any
+  LocalRemove(str2nr(expand('<abuf>')))
+  return 0
+enddef
 
-func! planet#buffer#AddBuffers() abort
+export def AddBuffers(): any
   silent! aunmenu 📖&u.Buffer\ List
-  let s:entries = {}
+  script_entries = {}
   if planet#menu#Visible('nav')
-    for l:buffer in getbufinfo({'buflisted': 1})
-      call planet#buffer#AddBuffer(l:buffer.name, l:buffer.bufnr)
+    for buffer in getbufinfo({'buflisted': 1})
+      planet#buffer#AddBuffer(buffer.name, buffer.bufnr)
     endfor
   endif
-endfunc
+  return 0
+enddef
