@@ -1,6 +1,6 @@
 scriptversion 4
 
-let s:options = ['completeopt', 'wildoptions', 'wildmode', 'wildchar', 'splitkeep', 'jumpoptions', 'showtabpanel', 'tabpanelopt', 'guifont', 'guiligatures', 'background', 'renderoptions', 'scrolloffpad', 'statuslineopt']
+let s:options = ['printoptions', 'printdevice', 'printfont', 'completeopt', 'wildoptions', 'wildmode', 'wildchar', 'splitkeep', 'jumpoptions', 'showtabpanel', 'tabpanelopt', 'guifont', 'guiligatures', 'background', 'renderoptions', 'scrolloffpad', 'statuslineopt']
 
 func! planet#preferences#Valid(values) abort
   if type(a:values) != v:t_dict | return 0 | endif

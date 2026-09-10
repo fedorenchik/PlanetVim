@@ -455,7 +455,7 @@ replacement, batch filtering and numeric/unique sorting on GVim 9.1 and 9.2.
 
 ### MD-21 · P3 · Fill remaining file-workflow gaps
 
-- [ ] Add **File → Print / Print Selection / Print Settings**, **Open Remote
+- [x] Add **File → Print / Print Selection / Print Settings**, **Open Remote
   File…**, and optional **Encryption** inspect/set/remove-key actions.
 
 PlanetVim suppresses the default Vim menus; its own menus lack printing. Remote
@@ -468,6 +468,13 @@ save keys in menu preferences.
 
 Acceptance: explicit printing with correct scope, encrypted scratch-file round
 trip, and reuse of existing remote integrations.
+
+Implemented native printing and protected encryption input, plus SFTP/SCP/HTTP(S)
+opening through the installed netrw transfer library while retaining Fern for
+local browsing. `test_file_extras.vim` checks selected-line PostScript output,
+an encrypted-file round trip, a local HTTP fixture, and whole-buffer write
+dispatch on GVim 9.1 and 9.2. Physical printing and authenticated SSH transfers
+were not exercised.
 
 ### MD-22 · P3 · Evaluate later 9.2 display features
 
