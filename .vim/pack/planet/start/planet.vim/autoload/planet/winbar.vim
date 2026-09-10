@@ -7,9 +7,9 @@ func! planet#winbar#Preset(kind) abort
   else
     call PlanetVim_WinBarQfInit()
     if get(getwininfo(win_getid()), 0, {}).loclist
-      nnoremenu WinBar.⏪ <Cmd>lolder<CR>
-      nnoremenu WinBar.📙 <Cmd>lhistory<CR>
-      nnoremenu WinBar.⏩ <Cmd>lnewer<CR>
+      PlanetMenu nnoremenu WinBar.⏪ <Cmd>lolder<CR>
+      PlanetMenu nnoremenu WinBar.📙 <Cmd>lhistory<CR>
+      PlanetMenu nnoremenu WinBar.⏩ <Cmd>lnewer<CR>
     endif
   endif
 endfunc
@@ -37,7 +37,7 @@ func! planet#winbar#Refresh() abort
   let w:PV_winbar_buffers = filter(get(w:, 'PV_winbar_buffers', []), {_, number -> bufexists(number)})
   for l:number in w:PV_winbar_buffers
     let l:name = '[' .. l:number .. '] ' .. (empty(bufname(l:number)) ? '[No Name]' : fnamemodify(bufname(l:number), ':t'))
-    execute 'anoremenu WinBar.' .. planet#menu#MenuifyName(l:name) .. ' <Cmd>confirm buffer ' .. l:number .. '<CR>'
+    execute 'PlanetMenu anoremenu WinBar.' .. planet#menu#MenuifyName(l:name) .. ' <Cmd>confirm buffer ' .. l:number .. '<CR>'
   endfor
 endfunc
 

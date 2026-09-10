@@ -82,6 +82,7 @@ func! planet#menu#RootPath(root) abort
 endfunc
 
 func! planet#menu#Refresh() abort
+  call planet#menu_help#Begin()
   " Remove using the old translations before replacing them. Dynamic menus use
   " these same canonical root names and inherit the current translation.
   for [l:group, l:root, l:name] in s:roots

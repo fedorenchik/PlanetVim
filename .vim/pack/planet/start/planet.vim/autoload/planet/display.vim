@@ -49,18 +49,18 @@ endfunc
 
 func! planet#display#Menus(group) abort
   if a:group ==# 'basic'
-    an 170.18 📺&v.Image\ Preview.Open\ Local\ Image <Cmd>call planet#image#Open()<CR>
-    an 170.18 📺&v.Image\ Preview.Close <Cmd>call planet#image#Close()<CR>
-    an 170.18 📺&v.Image\ Preview.Help <Cmd>call planet#learn#Help(planet#image#Supported() ? 'popup-image' : 'popup')<CR>
+    PlanetMenu an 170.18 📺&v.Image\ Preview.Open\ Local\ Image <Cmd>call planet#image#Open()<CR>
+    PlanetMenu an 170.18 📺&v.Image\ Preview.Close <Cmd>call planet#image#Close()<CR>
+    PlanetMenu an 170.18 📺&v.Image\ Preview.Help <Cmd>call planet#learn#Help(planet#image#Supported() ? 'popup-image' : 'popup')<CR>
   else
-    an 970.65 ⚙️&\\.Advanced\ Display.Completion\ Popup.Rounded\ Border <Cmd>call planet#display#Popup('border', 'round')<CR>
-    an 970.65 ⚙️&\\.Advanced\ Display.Completion\ Popup.No\ Border <Cmd>call planet#display#Popup('border', '')<CR>
-    an 970.65 ⚙️&\\.Advanced\ Display.Completion\ Popup.Opacity\ 85% <Cmd>call planet#display#Popup('opacity', '85')<CR>
-    an 970.65 ⚙️&\\.Advanced\ Display.Completion\ Popup.Opaque <Cmd>call planet#display#Popup('opacity', '100')<CR>
-    an 970.65 ⚙️&\\.Advanced\ Display.Toggle\ Cursor\ Padding <Cmd>call planet#display#Padding()<CR>
-    an 970.65 ⚙️&\\.Advanced\ Display.Status\ Line.Two\ Lines\ (this\ window) <Cmd>call planet#display#Status('multiline')<CR>
-    an 970.65 ⚙️&\\.Advanced\ Display.Status\ Line.Clickable\ Actions\ (this\ window) <Cmd>call planet#display#Status('clickable')<CR>
-    an 970.65 ⚙️&\\.Advanced\ Display.Status\ Line.Restore <Cmd>call planet#display#Status('restore')<CR>
-    an 970.65 ⚙️&\\.Advanced\ Display.Status\ Line.Help <Cmd>help status-line<CR>
+    PlanetMenu an 970.65 ⚙️&\\.Advanced\ Display.Completion\ Popup.Rounded\ Border <Cmd>call planet#display#Popup('border', 'round')<CR>
+    PlanetMenu an 970.65 ⚙️&\\.Advanced\ Display.Completion\ Popup.No\ Border <Cmd>call planet#display#Popup('border', '')<CR>
+    PlanetMenu an 970.65 ⚙️&\\.Advanced\ Display.Completion\ Popup.Opacity\ 85% <Cmd>call planet#display#Popup('opacity', '85')<CR>
+    PlanetMenu an 970.65 ⚙️&\\.Advanced\ Display.Completion\ Popup.Opaque <Cmd>call planet#display#Popup('opacity', '100')<CR>
+    PlanetMenu an 970.65 ⚙️&\\.Advanced\ Display.Toggle\ Cursor\ Padding <Cmd>call planet#display#Padding()<CR>
+    PlanetMenu an 970.65 ⚙️&\\.Advanced\ Display.Status\ Line.Two\ Lines\ (this\ window) <Cmd>call planet#display#Status('multiline')<CR>
+    PlanetMenu an 970.65 ⚙️&\\.Advanced\ Display.Status\ Line.Clickable\ Actions\ (this\ window) <Cmd>call planet#display#Status('clickable')<CR>
+    PlanetMenu an 970.65 ⚙️&\\.Advanced\ Display.Status\ Line.Restore <Cmd>call planet#display#Status('restore')<CR>
+    PlanetMenu an 970.65 ⚙️&\\.Advanced\ Display.Status\ Line.Help <Cmd>help status-line<CR>
   endif
 endfunc

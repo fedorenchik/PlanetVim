@@ -81,3 +81,11 @@ PlanetMenu nmenu 160 Teaching.Lowercase zL
 nnoremap zL :<c-u>echo 'lowercase'<cr>
 call planet#menu_help#RefreshTips()
 call assert_match(":echo 'lowercase'", execute('tmenu Teaching.Lowercase'))
+
+" Right-click menus use GVim's separate per-mode copies.
+PlanetMenu nnoremenu PopUp.TestCopy <Cmd>echo 'normal'<CR>
+PlanetMenu vnoremenu PopUp.TestCopy "+y
+PlanetMenu cnoremenu PopUp.TestCopy <C-Y>
+call assert_match(":echo 'normal'", execute('tmenu PopUpn.TestCopy'))
+call assert_match('Copy the selected text', execute('tmenu PopUpv.TestCopy'))
+call assert_match('Accept the selected command-line completion', execute('tmenu PopUpc.TestCopy'))

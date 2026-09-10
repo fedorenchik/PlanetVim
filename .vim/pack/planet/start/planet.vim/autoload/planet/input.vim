@@ -99,18 +99,18 @@ func! planet#input#Menus(group) abort
   if a:group ==# 'basic'
     for [l:label, l:kind] in [['Digraph', 'digraph'], ['Unicode code point', 'unicode'], ['Literal character (then type a key)', 'literal'], ['Expression result', 'expression']]
       for [l:cmd, l:context] in [['anoremenu', 'n'], ['inoremenu', 'i'], ['vnoremenu', 'v'], ['snoremenu', 'v']]
-        execute l:cmd .. ' 120.306 📝&e.Insert\ Special\ Character.' .. escape(l:label, ' .') .. " <Cmd>call planet#input#Insert('" .. l:kind .. "', v:null, '" .. l:context .. "')<CR>"
+        execute 'PlanetMenu ' .. l:cmd .. ' 120.306 📝&e.Insert\ Special\ Character.' .. escape(l:label, ' .') .. " <Cmd>call planet#input#Insert('" .. l:kind .. "', v:null, '" .. l:context .. "')<CR>"
       endfor
     endfor
-    an 120.306 📝&e.Insert\ Special\ Character.List\ Digraphs <Cmd>digraphs<CR>
-    an 120.306 📝&e.Insert\ Special\ Character.Help <Cmd>help i_CTRL-K<CR>
+    PlanetMenu an 120.306 📝&e.Insert\ Special\ Character.List\ Digraphs <Cmd>digraphs<CR>
+    PlanetMenu an 120.306 📝&e.Insert\ Special\ Character.Help <Cmd>help i_CTRL-K<CR>
   elseif a:group ==# 'settings'
-    an 900.56 ⚙️&\\.Input\ Language.Choose\ Buffer\ Keymap <Cmd>call planet#input#Keymap()<CR>
-    an 900.56 ⚙️&\\.Input\ Language.Use\ Operating\ System\ Keyboard <Cmd>call planet#input#Keymap('')<CR>
-    an 900.56 ⚙️&\\.Input\ Language.Toggle\ Vim\ Keymap <Cmd>let &l:iminsert = &l:iminsert == 1 ? 0 : 1<CR>
-    an 900.56 ⚙️&\\.Input\ Language.Current\ Values <Cmd>setlocal keymap? iminsert? imsearch?<CR>
-    an 900.56 ⚙️&\\.Input\ Language.Help <Cmd>help mbyte-keymap<CR>
+    PlanetMenu an 900.56 ⚙️&\\.Input\ Language.Choose\ Buffer\ Keymap <Cmd>call planet#input#Keymap()<CR>
+    PlanetMenu an 900.56 ⚙️&\\.Input\ Language.Use\ Operating\ System\ Keyboard <Cmd>call planet#input#Keymap('')<CR>
+    PlanetMenu an 900.56 ⚙️&\\.Input\ Language.Toggle\ Vim\ Keymap <Cmd>let &l:iminsert = &l:iminsert == 1 ? 0 : 1<CR>
+    PlanetMenu an 900.56 ⚙️&\\.Input\ Language.Current\ Values <Cmd>setlocal keymap? iminsert? imsearch?<CR>
+    PlanetMenu an 900.56 ⚙️&\\.Input\ Language.Help <Cmd>help mbyte-keymap<CR>
   elseif a:group ==# 'tools'
-    an 720.11 🔠&-.Choose\ Spelling\ Language <Cmd>call planet#input#SpellLanguage()<CR>
+    PlanetMenu an 720.11 🔠&-.Choose\ Spelling\ Language <Cmd>call planet#input#SpellLanguage()<CR>
   endif
 endfunc

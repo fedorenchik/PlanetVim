@@ -27,6 +27,14 @@ class MenuContracts(unittest.TestCase):
                 for command in re.findall(r'<Cmd>([A-Z]\w*)', line):
                     self.assertTrue(command in definitions, f'{path.name}:{number}: undefined command {command}')
 
+    def test_first_party_definitions_use_teaching_metadata(self):
+        creation = r'(?:an|am|(?:[anvxsoic]|tl)?(?:nore)?menu)'
+        for path in [*PLUGIN.rglob('*.vim'), ROOT / '.vimrc']:
+            for number, line in enumerate(path.read_text().splitlines(), 1):
+                self.assertNotRegex(
+                    line, r'^\s*' + creation + r'\s+(?!enable\b|disable\b)',
+                    f'{path.name}:{number}: use PlanetMenu for teaching metadata')
+
     def test_callbacks_and_placeholders(self):
         definitions = set()
         # Legacy global names and vendor autoload callbacks are just as callable
@@ -40,7 +48,7 @@ class MenuContracts(unittest.TestCase):
                 path.read_text(errors='replace')))
         for path in [*(PLUGIN / 'autoload/planet/menu').glob('*.vim'), ROOT / '.vimrc']:
             for number, line in enumerate(path.read_text().splitlines(), 1):
-                if not re.match(r'\s*(?:an|am|[a-z]*menu)\s+(?:<[^>]+>\s+)*\d', line):
+                if not re.match(r'\s*(?:PlanetMenu\s+)?(?:an|am|[a-z]*menu)\s+(?:<[^>]+>\s+)*\d', line):
                     continue
                 location = f'{path.name}:{number}'
                 self.assertNotRegex(line, r'(?i)(?:<Cmd>|:)TODO(?:\b|<)', location)

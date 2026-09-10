@@ -23,29 +23,29 @@ endfunc
 
 func! planet#view#Menus(group) abort
   if a:group ==# 'basic'
-    an 150.50 📺&v.Scrolling.Toggle\ Smooth\ Wrapped-line\ Scrolling <Cmd>call planet#preferences#Toggle('smoothscroll', 1)<CR>
-    an 150.50 📺&v.Scrolling.Scroll\ Up\ One\ Line<Tab>CTRL-E <C-e>
-    an 150.50 📺&v.Scrolling.Scroll\ Down\ One\ Line<Tab>CTRL-Y <C-y>
-    an 150.50 📺&v.Scrolling.Cursor\ Line\ at\ Top<Tab>zt zt
-    an 150.50 📺&v.Scrolling.Cursor\ Line\ at\ Center<Tab>zz zz
-    an 150.50 📺&v.Scrolling.Cursor\ Line\ at\ Bottom<Tab>zb zb
-    an 150.50 📺&v.Scrolling.Help <Cmd>help 'smoothscroll'<CR>
-    an 150.51 📺&v.Tab\ Panel.Show <Cmd>call planet#view#Panel('show', 2)<CR>
-    an 150.51 📺&v.Tab\ Panel.Hide <Cmd>call planet#view#Panel('show', 0)<CR>
-    an 150.51 📺&v.Tab\ Panel.Left <Cmd>call planet#view#Panel('align', 'left')<CR>
-    an 150.51 📺&v.Tab\ Panel.Right <Cmd>call planet#view#Panel('align', 'right')<CR>
-    an 150.51 📺&v.Tab\ Panel.Width <Cmd>call planet#view#Panel('columns')<CR>
-    an 150.51 📺&v.Tab\ Panel.Toggle\ Scrollbar <Cmd>call planet#preferences#Flag('tabpanelopt', 'scrollbar')<CR>
-    an 150.51 📺&v.Tab\ Panel.Help <Cmd>help tabpanel<CR>
-    an 170.50 🧭&n.Toggle\ Jump-list\ Stack <Cmd>call planet#preferences#Flag('jumpoptions', 'stack')<CR>
+    PlanetMenu an 150.50 📺&v.Scrolling.Toggle\ Smooth\ Wrapped-line\ Scrolling <Cmd>call planet#preferences#Toggle('smoothscroll', 1)<CR>
+    PlanetMenu an 150.50 📺&v.Scrolling.Scroll\ Up\ One\ Line<Tab>CTRL-E <C-e>
+    PlanetMenu an 150.50 📺&v.Scrolling.Scroll\ Down\ One\ Line<Tab>CTRL-Y <C-y>
+    PlanetMenu an 150.50 📺&v.Scrolling.Cursor\ Line\ at\ Top<Tab>zt zt
+    PlanetMenu an 150.50 📺&v.Scrolling.Cursor\ Line\ at\ Center<Tab>zz zz
+    PlanetMenu an 150.50 📺&v.Scrolling.Cursor\ Line\ at\ Bottom<Tab>zb zb
+    PlanetMenu an 150.50 📺&v.Scrolling.Help <Cmd>help 'smoothscroll'<CR>
+    PlanetMenu an 150.51 📺&v.Tab\ Panel.Show <Cmd>call planet#view#Panel('show', 2)<CR>
+    PlanetMenu an 150.51 📺&v.Tab\ Panel.Hide <Cmd>call planet#view#Panel('show', 0)<CR>
+    PlanetMenu an 150.51 📺&v.Tab\ Panel.Left <Cmd>call planet#view#Panel('align', 'left')<CR>
+    PlanetMenu an 150.51 📺&v.Tab\ Panel.Right <Cmd>call planet#view#Panel('align', 'right')<CR>
+    PlanetMenu an 150.51 📺&v.Tab\ Panel.Width <Cmd>call planet#view#Panel('columns')<CR>
+    PlanetMenu an 150.51 📺&v.Tab\ Panel.Toggle\ Scrollbar <Cmd>call planet#preferences#Flag('tabpanelopt', 'scrollbar')<CR>
+    PlanetMenu an 150.51 📺&v.Tab\ Panel.Help <Cmd>help tabpanel<CR>
+    PlanetMenu an 170.50 🧭&n.Toggle\ Jump-list\ Stack <Cmd>call planet#preferences#Flag('jumpoptions', 'stack')<CR>
   elseif a:group ==# 'nav'
     for l:value in ['cursor', 'screen', 'topline']
-      execute 'anoremenu 820.55 🪟&w.Split\ Behavior.Keep\ ' .. l:value .. " <Cmd>call planet#preferences#Set('splitkeep', '" .. l:value .. "')<CR>"
+      execute 'PlanetMenu anoremenu 820.55 🪟&w.Split\ Behavior.Keep\ ' .. l:value .. " <Cmd>call planet#preferences#Set('splitkeep', '" .. l:value .. "')<CR>"
     endfor
-    an 820.55 🪟&w.Release\ Fixed\ Size <Cmd>setlocal nowinfixheight nowinfixwidth<CR>
-    an 820.56 🪟&w.Pin\ Buffer <Cmd>call planet#preferences#Set('winfixbuf', 1, 1)<CR>
-    an 820.56 🪟&w.Unpin\ Buffer <Cmd>call planet#preferences#Set('winfixbuf', 0, 1)<CR>
-    an 820.56 🪟&w.Current\ Pin\ and\ Split\ State <Cmd>call planet#view#WindowState()<CR>
+    PlanetMenu an 820.55 🪟&w.Release\ Fixed\ Size <Cmd>setlocal nowinfixheight nowinfixwidth<CR>
+    PlanetMenu an 820.56 🪟&w.Pin\ Buffer <Cmd>call planet#preferences#Set('winfixbuf', 1, 1)<CR>
+    PlanetMenu an 820.56 🪟&w.Unpin\ Buffer <Cmd>call planet#preferences#Set('winfixbuf', 0, 1)<CR>
+    PlanetMenu an 820.56 🪟&w.Current\ Pin\ and\ Split\ State <Cmd>call planet#view#WindowState()<CR>
   endif
 endfunc
 

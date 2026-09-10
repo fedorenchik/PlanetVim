@@ -36,43 +36,43 @@ func! planet#objects#Menus() abort
     for [l:label, l:object] in l:objects
       let l:keys = l:prefix .. l:object
       let l:path = '🖍️&i.' .. l:kind .. '.' .. escape(l:label, ' ') .. '<Tab>' .. l:keys
-      execute 'anoremenu 140.20 ' .. l:path .. ' v' .. l:keys
-      execute 'vnoremenu 140.20 ' .. l:path .. ' ' .. l:keys
-      execute 'snoremenu 140.20 ' .. l:path .. ' <C-g>' .. l:keys
-      execute 'onoremenu 140.20 ' .. l:path .. ' ' .. l:keys
-      execute 'inoremenu 140.20 ' .. l:path .. ' <Esc>v' .. l:keys
+      execute 'PlanetMenu anoremenu 140.20 ' .. l:path .. ' v' .. l:keys
+      execute 'PlanetMenu vnoremenu 140.20 ' .. l:path .. ' ' .. l:keys
+      execute 'PlanetMenu snoremenu 140.20 ' .. l:path .. ' <C-g>' .. l:keys
+      execute 'PlanetMenu onoremenu 140.20 ' .. l:path .. ' ' .. l:keys
+      execute 'PlanetMenu inoremenu 140.20 ' .. l:path .. ' <Esc>v' .. l:keys
       for [l:verb, l:operator] in [['Delete', 'd'], ['Change', 'c'], ['Yank', 'y'], ['Format', 'gq']]
-        execute 'anoremenu 140.22 🖍️&i.Text\ Objects.' .. l:verb .. '.' .. l:kind .. '.' .. escape(l:label, ' ') .. '<Tab>' .. l:operator .. l:keys .. ' ' .. l:operator .. l:keys
+        execute 'PlanetMenu anoremenu 140.22 🖍️&i.Text\ Objects.' .. l:verb .. '.' .. l:kind .. '.' .. escape(l:label, ' ') .. '<Tab>' .. l:operator .. l:keys .. ' ' .. l:operator .. l:keys
       endfor
     endfor
     let l:path = '🖍️&i.' .. l:kind .. '.Fold<Tab>' .. l:prefix .. 'z'
-    execute 'nmenu 140.20 ' .. l:path .. ' v' .. l:prefix .. 'z'
-    execute 'vmenu 140.20 ' .. l:path .. ' ' .. l:prefix .. 'z'
-    execute 'smenu 140.20 ' .. l:path .. ' <C-g>' .. l:prefix .. 'z'
-    execute 'omenu 140.20 ' .. l:path .. ' :<C-u>normal v' .. l:prefix .. 'z<CR>'
+    execute 'PlanetMenu nmenu 140.20 ' .. l:path .. ' v' .. l:prefix .. 'z'
+    execute 'PlanetMenu vmenu 140.20 ' .. l:path .. ' ' .. l:prefix .. 'z'
+    execute 'PlanetMenu smenu 140.20 ' .. l:path .. ' <C-g>' .. l:prefix .. 'z'
+    execute 'PlanetMenu omenu 140.20 ' .. l:path .. ' :<C-u>normal v' .. l:prefix .. 'z<CR>'
   endfor
   for [l:label, l:action] in [['Insert before block', 'insert'], ['Append after block', 'append'], ['Change block', 'change'], ['Other corner', 'corner']]
     for l:command in ['anoremenu', 'vnoremenu', 'snoremenu']
-      execute l:command .. ' 140.24 🖍️&i.Block.' .. escape(l:label, ' ') .. " <Cmd>call planet#objects#Block('" .. l:action .. "')<CR>"
+      execute 'PlanetMenu ' .. l:command .. ' 140.24 🖍️&i.Block.' .. escape(l:label, ' ') .. " <Cmd>call planet#objects#Block('" .. l:action .. "')<CR>"
     endfor
   endfor
-  an 140.25 🖍️&i.Text\ Object\ Help <Cmd>help text-objects<CR>
-  an 140.25 🖍️&i.Block\ Editing\ Help <Cmd>help blockwise-operators<CR>
+  PlanetMenu an 140.25 🖍️&i.Text\ Object\ Help <Cmd>help text-objects<CR>
+  PlanetMenu an 140.25 🖍️&i.Block\ Editing\ Help <Cmd>help blockwise-operators<CR>
   for [l:label, l:action] in [['Increment', 'increment'], ['Decrement', 'decrement'], ['Increase each line', 'increase each'], ['Decrease each line', 'decrease each']]
     for l:command in ['anoremenu', 'vnoremenu', 'snoremenu']
-      execute l:command .. ' 125.580 ✏️&m.Numbers.' .. escape(l:label, ' ') .. " <Cmd>call planet#objects#Number('" .. l:action .. "', 1)<CR>"
-      execute l:command .. ' 125.580 ✏️&m.Numbers.' .. escape(l:label .. ' by...', ' .') .. " <Cmd>call planet#objects#Number('" .. l:action .. "')<CR>"
+      execute 'PlanetMenu ' .. l:command .. ' 125.580 ✏️&m.Numbers.' .. escape(l:label, ' ') .. " <Cmd>call planet#objects#Number('" .. l:action .. "', 1)<CR>"
+      execute 'PlanetMenu ' .. l:command .. ' 125.580 ✏️&m.Numbers.' .. escape(l:label .. ' by...', ' .') .. " <Cmd>call planet#objects#Number('" .. l:action .. "')<CR>"
     endfor
   endfor
   for l:format in ['alpha', 'bin', 'hex', 'octal', 'unsigned', 'blank']
-    execute 'anoremenu 125.580 ✏️&m.Numbers.Formats.Toggle\ ' .. l:format .. " <Cmd>call planet#preferences#Flag('nrformats', '" .. l:format .. "', 1)<CR>"
+    execute 'PlanetMenu anoremenu 125.580 ✏️&m.Numbers.Formats.Toggle\ ' .. l:format .. " <Cmd>call planet#preferences#Flag('nrformats', '" .. l:format .. "', 1)<CR>"
   endfor
-  an 125.580 ✏️&m.Numbers.Current\ Formats <Cmd>setlocal nrformats?<CR>
-  an 125.580 ✏️&m.Numbers.Help <Cmd>help v_g_CTRL-A<CR>
+  PlanetMenu an 125.580 ✏️&m.Numbers.Current\ Formats <Cmd>setlocal nrformats?<CR>
+  PlanetMenu an 125.580 ✏️&m.Numbers.Help <Cmd>help v_g_CTRL-A<CR>
   " These native operators must consume the active selection, not amenu's
   " generic CTRL-C wrapper followed by a fresh pending operator.
   for [l:path, l:keys] in [['✏️&m.To\ UPPER', 'gU'], ['✏️&m.To\ lower', 'gu'], ['✏️&m.Swap\ Case', 'g~'], ['✏️&m.Format\ Text', 'gq'], ['✏️&m.Format\ Text\ Keep\ Cursor', 'gw'], ['✏️&m.Join\ Lines', 'J'], ['✏️&m.Join\ Lines\ without\ Whitespace', 'gJ']]
-    execute 'vnoremenu ' .. l:path .. ' ' .. l:keys
-    execute 'snoremenu ' .. l:path .. ' <C-g>' .. l:keys
+    execute 'PlanetMenu vnoremenu ' .. l:path .. ' ' .. l:keys
+    execute 'PlanetMenu snoremenu ' .. l:path .. ' <C-g>' .. l:keys
   endfor
 endfunc

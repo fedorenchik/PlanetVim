@@ -157,9 +157,9 @@ endfunc
 func! planet#lsp_display#Menus() abort
   for [l:label, l:key] in [['Inlay Hints', 'hints'], ['Inline Diagnostics', 'inline'], ['Signs', 'signs'], ['Underlines', 'underlines']]
     for [l:verb, l:enabled] in [['Enable', 1], ['Disable', 0]]
-      execute 'anoremenu 400.55 ❇️&[.Display.' .. escape(l:label, ' ') .. '.' .. l:verb .. " <Cmd>call planet#lsp_display#Set('" .. l:key .. "', " .. l:enabled .. ')<CR>'
+      execute 'PlanetMenu anoremenu 400.55 ❇️&[.Display.' .. escape(l:label, ' ') .. '.' .. l:verb .. " <Cmd>call planet#lsp_display#Set('" .. l:key .. "', " .. l:enabled .. ')<CR>'
     endfor
   endfor
-  an 400.55 ❇️&[.Display.Status <Cmd>call planet#lsp_display#Status()<CR>
-  an 400.55 ❇️&[.Display.Help <Cmd>help lsp<CR>
+  PlanetMenu an 400.55 ❇️&[.Display.Status <Cmd>call planet#lsp_display#Status()<CR>
+  PlanetMenu an 400.55 ❇️&[.Display.Help <Cmd>help lsp<CR>
 endfunc

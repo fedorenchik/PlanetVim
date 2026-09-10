@@ -47,6 +47,7 @@ if exists("g:loaded_home_vimrc")
   finish
 endif
 let g:loaded_home_vimrc = 1
+runtime plugin/menu_help.vim
 " }}}
 " Basics: {{{
 set nocompatible
@@ -329,7 +330,7 @@ if has("spell")
 	let cpo_save = &cpo
 	set cpo&vim
 	for sug in s:suglist
-	  exe 'anoremenu 1.5.' . pri . ' PopUp.' . s:changeitem . '.' . escape(sug, ' .')
+	  exe 'PlanetMenu anoremenu 1.5.' . pri . ' PopUp.' . s:changeitem . '.' . escape(sug, ' .')
 		\ . ' :call <SID>SpellReplace(' . pri . ')<CR>'
 	  let pri += 1
 	endfor
@@ -338,15 +339,15 @@ if has("spell")
 	  let g:menutrans_spell_add_ARG_to_word_list = 'Add\ "%s"\ to\ Word\ List'
 	endif
 	let s:additem = printf(g:menutrans_spell_add_ARG_to_word_list, escape(w, ' .'))
-	exe 'anoremenu 1.6 PopUp.' . s:additem . ' :spellgood ' . w . '<CR>'
+	exe 'PlanetMenu anoremenu 1.6 PopUp.' . s:additem . ' :spellgood ' . w . '<CR>'
 
 	if !exists("g:menutrans_spell_ignore_ARG")
 	  let g:menutrans_spell_ignore_ARG = 'Ignore\ "%s"'
 	endif
 	let s:ignoreitem = printf(g:menutrans_spell_ignore_ARG, escape(w, ' .'))
-	exe 'anoremenu 1.7 PopUp.' . s:ignoreitem . ' :spellgood! ' . w . '<CR>'
+	exe 'PlanetMenu anoremenu 1.7 PopUp.' . s:ignoreitem . ' :spellgood! ' . w . '<CR>'
 
-	anoremenu 1.8 PopUp.-SpellSep- :
+	PlanetMenu anoremenu 1.8 PopUp.-SpellSep- :
 	let &cpo = cpo_save
       endif
     endif
@@ -375,27 +376,27 @@ if has("spell")
 endif
 
 " Normal Mode:
-nnoremenu 1.10 PopUp.&Paste                  "+gP
-nnoremenu 1.10 PopUp.Close                   <C-w>c
+PlanetMenu nnoremenu 1.10 PopUp.&Paste                  "+gP
+PlanetMenu nnoremenu 1.10 PopUp.Close                   <C-w>c
 " Operator Pending Mode: text objects
-onoremenu PopUp.Word                         w
+PlanetMenu onoremenu PopUp.Word                         w
 " Visual:
-vnoremenu 1.10 PopUp.Cu&t                    "+x
-vnoremenu 1.10 PopUp.&Copy                   "+y
-vnoremenu 1.10 PopUp.&Yank                   y
-vnoremenu 1.10 PopUp.&Replace                "_x"+gP
-vnoremenu 1.10 PopUp.&Paste                  "_x"+gP
-vnoremenu 1.10 PopUp.&Delete                 "_x
+PlanetMenu vnoremenu 1.10 PopUp.Cu&t                    "+x
+PlanetMenu vnoremenu 1.10 PopUp.&Copy                   "+y
+PlanetMenu vnoremenu 1.10 PopUp.&Yank                   y
+PlanetMenu vnoremenu 1.10 PopUp.&Replace                "_x"+gP
+PlanetMenu vnoremenu 1.10 PopUp.&Paste                  "_x"+gP
+PlanetMenu vnoremenu 1.10 PopUp.&Delete                 "_x
 " Select Mode:
-snoremenu 1.10 PopUp.Cut                     "+d
+PlanetMenu snoremenu 1.10 PopUp.Cut                     "+d
 " Insert Mode:
-inoremenu 1.10 PopUp.&Paste                  <C-o>"+gP
-inoremenu 1.10 PopUp.Close                   <Cmd>close<CR>
+PlanetMenu inoremenu 1.10 PopUp.&Paste                  <C-o>"+gP
+PlanetMenu inoremenu 1.10 PopUp.Close                   <Cmd>close<CR>
 " Cmdline Mode: cmdline completion
-cnoremenu 1.10 PopUp.&Copy                  <Cmd>call setreg("+", getcmdline())<CR>
-cnoremenu 1.10 PopUp.&Paste                 <C-r>+
+PlanetMenu cnoremenu 1.10 PopUp.&Copy                  <Cmd>call setreg("+", getcmdline())<CR>
+PlanetMenu cnoremenu 1.10 PopUp.&Paste                 <C-r>+
 " Terminal Mode:
-tlnoremenu 1.10 PopUp.Close                  <C-w><C-c>
+PlanetMenu tlnoremenu 1.10 PopUp.Close                  <C-w><C-c>
 " }}}
 " WinBar Menus: {{{
 " TODO: Auto for LL, QF, Terminals, W3m
@@ -405,29 +406,29 @@ func! PlanetVim_WinBarFilter(bang) abort
   call planet#winbar#Filter(a:bang ==# '!')
 endfunc
 func! PlanetVim_WinBarQfInit() abort
-  nnoremenu 1.10 WinBar.⏪ <Cmd>colder<CR>
+  PlanetMenu nnoremenu 1.10 WinBar.⏪ <Cmd>colder<CR>
   "TODO: turn :chistory into popup menu
-  nnoremenu 1.20 WinBar.📙 <Cmd>chistory<CR>
-  nnoremenu 1.30 WinBar.⏩ <Cmd>cnewer<CR>
-  nnoremenu 1.40 WinBar.✅ <CR>
-  nnoremenu 1.50 WinBar.📤 <Cmd>call PlanetVim_WinBarFilter('!')<CR>
-  nnoremenu 1.60 WinBar.📥 <Cmd>call PlanetVim_WinBarFilter('')<CR>
-  nnoremenu 1.100 WinBar.⬇️ z0<CR>
-  nnoremenu 1.110 WinBar.↕️ 10<C-w>_
-  nnoremenu 1.120 WinBar.⬆️ <C-w>_
-  nnoremenu 1.130 WinBar.❌ <Cmd>close<CR>
+  PlanetMenu nnoremenu 1.20 WinBar.📙 <Cmd>chistory<CR>
+  PlanetMenu nnoremenu 1.30 WinBar.⏩ <Cmd>cnewer<CR>
+  PlanetMenu nnoremenu 1.40 WinBar.✅ <CR>
+  PlanetMenu nnoremenu 1.50 WinBar.📤 <Cmd>call PlanetVim_WinBarFilter('!')<CR>
+  PlanetMenu nnoremenu 1.60 WinBar.📥 <Cmd>call PlanetVim_WinBarFilter('')<CR>
+  PlanetMenu nnoremenu 1.100 WinBar.⬇️ z0<CR>
+  PlanetMenu nnoremenu 1.110 WinBar.↕️ 10<C-w>_
+  PlanetMenu nnoremenu 1.120 WinBar.⬆️ <C-w>_
+  PlanetMenu nnoremenu 1.130 WinBar.❌ <Cmd>close<CR>
 endfunc
 " Terminals: Previous, Next, List (popup with choose), New, Close (send Ctrl-D)
 " W3m: Back, Forward, History, AddressBar
 func! PlanetVim_WinBarTerminalInit() abort
-  nnoremenu 1.10  WinBar.⏪ <Cmd>call planet#winbar#Terminal(-1)<CR>
-  nnoremenu 1.20  WinBar.📙 <Cmd>call planet#term#PopupOutputsMenu()<CR>
-  nnoremenu 1.30  WinBar.⏩ <Cmd>call planet#winbar#Terminal(1)<CR>
-  nnoremenu 1.40  WinBar.➕ <Cmd>terminal ++curwin ++kill=kill<CR>
-  nnoremenu 1.100 WinBar.⬇️       z0<CR>
-  nnoremenu 1.110 WinBar.↕️       10<C-w>_
-  nnoremenu 1.120 WinBar.⬆️       <C-w>_
-  nnoremenu 1.130 WinBar.❌       <C-w><C-c>
+  PlanetMenu nnoremenu 1.10  WinBar.⏪ <Cmd>call planet#winbar#Terminal(-1)<CR>
+  PlanetMenu nnoremenu 1.20  WinBar.📙 <Cmd>call planet#term#PopupOutputsMenu()<CR>
+  PlanetMenu nnoremenu 1.30  WinBar.⏩ <Cmd>call planet#winbar#Terminal(1)<CR>
+  PlanetMenu nnoremenu 1.40  WinBar.➕ <Cmd>terminal ++curwin ++kill=kill<CR>
+  PlanetMenu nnoremenu 1.100 WinBar.⬇️       z0<CR>
+  PlanetMenu nnoremenu 1.110 WinBar.↕️       10<C-w>_
+  PlanetMenu nnoremenu 1.120 WinBar.⬆️       <C-w>_
+  PlanetMenu nnoremenu 1.130 WinBar.❌       <C-w><C-c>
 endfunc
 aug PlanetVim_AugroupWinBar
 au!

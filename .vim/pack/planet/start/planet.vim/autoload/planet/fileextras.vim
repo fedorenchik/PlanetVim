@@ -84,22 +84,22 @@ func! planet#fileextras#Remote(url = v:null) abort
 endfunc
 
 func! planet#fileextras#Menus() abort
-  an 110.187 📁&f.Print.File <Cmd>call planet#fileextras#Print()<CR>
-  an 110.187 📁&f.Print.Selected\ Lines V<Cmd>call planet#fileextras#Print(1)<CR>
-  vnoremenu 110.187 📁&f.Print.Selected\ Lines <Cmd>call planet#fileextras#Print(1)<CR>
-  snoremenu 110.187 📁&f.Print.Selected\ Lines <Cmd>call planet#fileextras#Print(1)<CR>
+  PlanetMenu an 110.187 📁&f.Print.File <Cmd>call planet#fileextras#Print()<CR>
+  PlanetMenu an 110.187 📁&f.Print.Selected\ Lines V<Cmd>call planet#fileextras#Print(1)<CR>
+  PlanetMenu vnoremenu 110.187 📁&f.Print.Selected\ Lines <Cmd>call planet#fileextras#Print(1)<CR>
+  PlanetMenu snoremenu 110.187 📁&f.Print.Selected\ Lines <Cmd>call planet#fileextras#Print(1)<CR>
   for l:name in ['printoptions', 'printdevice', 'printfont']
-    execute 'anoremenu 110.187 📁&f.Print.Settings.' .. l:name .. " <Cmd>call planet#fileextras#PrintSetting('" .. l:name .. "')<CR>"
+    execute 'PlanetMenu anoremenu 110.187 📁&f.Print.Settings.' .. l:name .. " <Cmd>call planet#fileextras#PrintSetting('" .. l:name .. "')<CR>"
   endfor
-  an 110.187 📁&f.Print.Help <Cmd>help printing<CR>
-  an 110.188 📁&f.Open\ Remote\ File <Cmd>call planet#fileextras#Remote()<CR>
-  an 110.188 📁&f.Remote\ File\ Help <Cmd>help netrw-start<CR>
-  an 110.189 📁&f.Encryption.Set\ Key <Cmd>call planet#fileextras#Crypt('set')<CR>
-  an 110.189 📁&f.Encryption.Remove\ Key <Cmd>call planet#fileextras#Crypt('remove')<CR>
-  an 110.189 📁&f.Encryption.Status <Cmd>call planet#fileextras#Crypt('status')<CR>
-  an 110.189 📁&f.Encryption.Method.Blowfish2 <Cmd>call planet#fileextras#CryptMethod('blowfish2')<CR>
-  an 110.189 📁&f.Encryption.Method.XChaCha20v2\ (sodium) <Cmd>call planet#fileextras#CryptMethod('xchacha20v2')<CR>
-  an 110.189 📁&f.Encryption.Help <Cmd>help encryption<CR>
+  PlanetMenu an 110.187 📁&f.Print.Help <Cmd>help printing<CR>
+  PlanetMenu an 110.188 📁&f.Open\ Remote\ File <Cmd>call planet#fileextras#Remote()<CR>
+  PlanetMenu an 110.188 📁&f.Remote\ File\ Help <Cmd>help netrw-start<CR>
+  PlanetMenu an 110.189 📁&f.Encryption.Set\ Key <Cmd>call planet#fileextras#Crypt('set')<CR>
+  PlanetMenu an 110.189 📁&f.Encryption.Remove\ Key <Cmd>call planet#fileextras#Crypt('remove')<CR>
+  PlanetMenu an 110.189 📁&f.Encryption.Status <Cmd>call planet#fileextras#Crypt('status')<CR>
+  PlanetMenu an 110.189 📁&f.Encryption.Method.Blowfish2 <Cmd>call planet#fileextras#CryptMethod('blowfish2')<CR>
+  PlanetMenu an 110.189 📁&f.Encryption.Method.XChaCha20v2\ (sodium) <Cmd>call planet#fileextras#CryptMethod('xchacha20v2')<CR>
+  PlanetMenu an 110.189 📁&f.Encryption.Help <Cmd>help encryption<CR>
 endfunc
 
 augroup PlanetVimRemoteFiles

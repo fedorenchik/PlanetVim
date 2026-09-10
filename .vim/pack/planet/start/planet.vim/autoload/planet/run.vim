@@ -169,16 +169,16 @@ func! planet#run#UpdateRunMenu() abort
   if !planet#menu#Visible('dev')
     return
   endif
-  an 510.10 ▶️&r.Run <Nop>
+  PlanetMenu an 510.10 ▶️&r.Run <Nop>
   an disable ▶️&r.Run
   for l:index in range(len(l:project.profiles))
     let l:name = '[' .. (l:index + 1) .. '] ' .. l:project.profiles[l:index].name
-    execute 'an 510.100 ▶️&r.' .. planet#menu#MenuifyName(l:name)
+    execute 'PlanetMenu an 510.100 ▶️&r.' .. planet#menu#MenuifyName(l:name)
           \ .. ' <Cmd>call planet#run#Run(' .. l:index .. ')<CR>'
   endfor
-  an 510.500 ▶️&r.--1-- <Nop>
-  an 510.500 ▶️&r.Add\ Run\ Configuration <Cmd>call planet#run#AddConfig()<CR>
-  an 510.500 ▶️&r.Edit\ Run\ Configurations <Cmd>call planet#run#EditConfig()<CR>
+  PlanetMenu an 510.500 ▶️&r.--1-- <Nop>
+  PlanetMenu an 510.500 ▶️&r.Add\ Run\ Configuration <Cmd>call planet#run#AddConfig()<CR>
+  PlanetMenu an 510.500 ▶️&r.Edit\ Run\ Configurations <Cmd>call planet#run#EditConfig()<CR>
 endfunc
 
 augroup PlanetVimRunProjects

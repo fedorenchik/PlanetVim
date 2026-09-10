@@ -240,7 +240,7 @@ export def Definition(spec: string): string
   # A native item has one accelerator and one tip shared by all editing modes.
   var preferred = name =~# '^\%(an\|am\|n\)'
   if !preferred && has_key(registry, key) && registry[key].normal
-    return spec
+    return spec .. PopupRefresh(original)
   endif
   var info = Explain(rhs, path, remap)
   var accelerator = Accelerator(rhs, parts[1 :], info.command)
@@ -251,7 +251,7 @@ export def Definition(spec: string): string
   var tip = substitute(info.tip, '\c<SID>', sid, 'g')
   tip = TipText(tip)
   return head .. path .. ' ' .. rhs .. "\ntmenu " .. original .. ' ' .. tip
-    .. (rhs =~? '\c<SID>' ? "\ncall planet#menu_help#ScriptTip(" .. string(key) .. ')' : '')
+    .. (rhs =~? '\c<SID>' ? "\ncall planet#menu_help#ScriptTip(" .. string(key) .. ')' : '') .. PopupRefresh(original)
 enddef
 
 def TipText(tip: string): string
@@ -287,5 +287,25 @@ export def RefreshTips()
     endif
     var tip = Explain(item.rhs, item.path, item.remap).tip
     execute 'tmenu ' .. item.path .. ' ' .. TipText(substitute(tip, '\c<SID>', item.sid, 'g'))
+  endfor
+enddef
+
+
+def PopupRefresh(path: string): string
+  return stridx(path, 'PopUp.') == 0 ? "\ncall planet#menu_help#PopupTips(" .. string(path) .. ')' : ''
+enddef
+
+export def PopupTips(path: string)
+  # GVim displays a separate native PopUp menu for each editing mode. tmenu on
+  # PopUp alone does not propagate to those copies, unlike action definitions.
+  for [suffix, mode] in [['n', 'n'], ['v', 'x'], ['s', 's'], ['o', 'o'], ['i', 'i'], ['c', 'c'], ['tl', 't']]
+    var clone = 'PopUp' .. suffix .. strpart(path, 5)
+    var actual = menu_info(LookupPath(clone), mode)
+    if empty(actual) || empty(get(actual, 'rhs', ''))
+      continue
+    endif
+    var command = mode ==# 'n' ? ResolvedCommand(actual.rhs, !actual.noremenu) : ExCommand(actual.rhs)
+    var tip = empty(command) ? '" ' .. planet#menu_descriptions#Context(actual.rhs, PlainPath(clone), mode) : command
+    execute 'tmenu ' .. clone .. ' ' .. TipText(tip)
   endfor
 enddef

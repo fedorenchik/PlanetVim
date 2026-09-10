@@ -488,12 +488,12 @@ func! planet#term#DefineOutputWindowsMenu() abort
   silent! aunmenu ]Outputs
   let l:found_windows = v:false
   for [nr, name] in items(planet#term#ListOutputWindows())
-    exe 'an 2.10 ]Outputs.' .. planet#menu#MenuifyName('[' .. nr .. '] ' .. name)
+    exe 'PlanetMenu an 2.10 ]Outputs.' .. planet#menu#MenuifyName('[' .. nr .. '] ' .. name)
           \ .. ' <Cmd>buffer '.. nr .. '<CR>'
     let l:found_windows = v:true
   endfor
   if ! l:found_windows
-    an 2.10 ]Outputs.No\ Windows <Nop>
+    PlanetMenu an 2.10 ]Outputs.No\ Windows <Nop>
     an disable ]Outputs.No\ Windows
   endif
 endfunc

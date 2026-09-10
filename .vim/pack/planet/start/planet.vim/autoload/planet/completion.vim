@@ -94,22 +94,22 @@ endfunc
 
 func! planet#completion#Menus(group) abort
   if a:group ==# 'basic'
-    an 130.340 🔎&/.Complete\ Search\ Pattern <Cmd>call planet#completion#Search()<CR>
+    PlanetMenu an 130.340 🔎&/.Complete\ Search\ Pattern <Cmd>call planet#completion#Search()<CR>
     for [l:label, l:source, l:keys] in s:sources
       let l:path = '📝&e.Complete.' .. escape(l:label, ' .') .. '<Tab>' .. substitute(l:keys, ' ', ',', 'g')
-      execute 'anoremenu 120.305 ' .. l:path .. " <Cmd>call planet#completion#Start('" .. l:source .. "')<CR>"
-      execute 'inoremenu 120.305 ' .. l:path .. " <Cmd>call planet#completion#Start('" .. l:source .. "', 1)<CR>"
+      execute 'PlanetMenu anoremenu 120.305 ' .. l:path .. " <Cmd>call planet#completion#Start('" .. l:source .. "')<CR>"
+      execute 'PlanetMenu inoremenu 120.305 ' .. l:path .. " <Cmd>call planet#completion#Start('" .. l:source .. "', 1)<CR>"
     endfor
   elseif a:group ==# 'settings'
     for l:engine in ['asyncomplete', 'native', 'off']
-      execute 'anoremenu 900.50 ⚙️&\\.Completion.Automatic.' .. l:engine .. " <Cmd>call planet#completion#Engine('" .. l:engine .. "')<CR>"
+      execute 'PlanetMenu anoremenu 900.50 ⚙️&\\.Completion.Automatic.' .. l:engine .. " <Cmd>call planet#completion#Engine('" .. l:engine .. "')<CR>"
     endfor
     for [l:label, l:preset] in [['Standard suggestions', 'standard'], ['Toggle fuzzy matching', 'fuzzy'], ['Toggle documentation popup', 'popup'], ['Nearest buffer matches', 'nearest'], ['Toggle original fuzzy order', 'nosort'], ['Preinsert preview', 'preinsert']]
-      execute 'anoremenu 900.50 ⚙️&\\.Completion.' .. escape(l:label, ' ') .. " <Cmd>call planet#completion#Preset('" .. l:preset .. "')<CR>"
+      execute 'PlanetMenu anoremenu 900.50 ⚙️&\\.Completion.' .. escape(l:label, ' ') .. " <Cmd>call planet#completion#Preset('" .. l:preset .. "')<CR>"
     endfor
-    an 900.51 ⚙️&\\.Command-line\ Completion.Toggle\ Popup <Cmd>call planet#preferences#Flag('wildoptions', 'pum')<CR>
-    an 900.51 ⚙️&\\.Command-line\ Completion.Toggle\ Fuzzy <Cmd>call planet#preferences#Flag('wildoptions', 'fuzzy')<CR>
-    an 900.51 ⚙️&\\.Command-line\ Completion.Search\ Pattern\ Completion\ Help <Cmd>call planet#completion#Search(0)<CR>
-    an 900.51 ⚙️&\\.Command-line\ Completion.Help <Cmd>help cmdline-completion<CR>
+    PlanetMenu an 900.51 ⚙️&\\.Command-line\ Completion.Toggle\ Popup <Cmd>call planet#preferences#Flag('wildoptions', 'pum')<CR>
+    PlanetMenu an 900.51 ⚙️&\\.Command-line\ Completion.Toggle\ Fuzzy <Cmd>call planet#preferences#Flag('wildoptions', 'fuzzy')<CR>
+    PlanetMenu an 900.51 ⚙️&\\.Command-line\ Completion.Search\ Pattern\ Completion\ Help <Cmd>call planet#completion#Search(0)<CR>
+    PlanetMenu an 900.51 ⚙️&\\.Command-line\ Completion.Help <Cmd>help cmdline-completion<CR>
   endif
 endfunc

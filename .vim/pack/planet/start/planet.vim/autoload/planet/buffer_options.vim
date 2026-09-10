@@ -48,19 +48,19 @@ endfunc
 
 func! planet#buffer_options#Menus(group) abort
   if a:group ==# 'basic'
-    an 110.186 📁&f.Encoding.Reopen\ As <Cmd>call planet#buffer_options#Encoding('reopen')<CR>
-    an 110.186 📁&f.Encoding.Encoding\ for\ Next\ Save <Cmd>call planet#buffer_options#Encoding('save')<CR>
-    an 110.186 📁&f.Encoding.Toggle\ BOM <Cmd>call planet#preferences#Toggle('bomb', 1)<CR>
-    an 110.186 📁&f.Encoding.Current\ Encoding <Cmd>setlocal fileencoding? bomb? fileformat?<CR>
-    an 110.186 📁&f.Encoding.Help <Cmd>help 'fileencoding'<CR>
+    PlanetMenu an 110.186 📁&f.Encoding.Reopen\ As <Cmd>call planet#buffer_options#Encoding('reopen')<CR>
+    PlanetMenu an 110.186 📁&f.Encoding.Encoding\ for\ Next\ Save <Cmd>call planet#buffer_options#Encoding('save')<CR>
+    PlanetMenu an 110.186 📁&f.Encoding.Toggle\ BOM <Cmd>call planet#preferences#Toggle('bomb', 1)<CR>
+    PlanetMenu an 110.186 📁&f.Encoding.Current\ Encoding <Cmd>setlocal fileencoding? bomb? fileformat?<CR>
+    PlanetMenu an 110.186 📁&f.Encoding.Help <Cmd>help 'fileencoding'<CR>
   elseif a:group ==# 'settings'
-    an 900.55 ⚙️&\\.Buffer.Filetype <Cmd>call planet#buffer_options#Filetype()<CR>
+    PlanetMenu an 900.55 ⚙️&\\.Buffer.Filetype <Cmd>call planet#buffer_options#Filetype()<CR>
     for [l:label, l:option] in [['End-of-file newline', 'endofline'], ['Ensure final newline on save', 'fixendofline'], ['Read only', 'readonly'], ['Show whitespace', 'list'], ['Expand tabs to spaces', 'expandtab'], ['Auto indent', 'autoindent'], ['Preserve indent', 'preserveindent']]
-      execute 'anoremenu 900.55 ⚙️&\\.Buffer.Toggle\ ' .. escape(l:label, ' ') .. " <Cmd>call planet#preferences#Toggle('" .. l:option .. "', 1)<CR>"
+      execute 'PlanetMenu anoremenu 900.55 ⚙️&\\.Buffer.Toggle\ ' .. escape(l:label, ' ') .. " <Cmd>call planet#preferences#Toggle('" .. l:option .. "', 1)<CR>"
     endfor
     for l:option in ['tabstop', 'shiftwidth', 'softtabstop', 'textwidth']
-      execute 'anoremenu 900.55 ⚙️&\\.Buffer.Indentation.' .. l:option .. " <Cmd>call planet#buffer_options#Indent('" .. l:option .. "')<CR>"
+      execute 'PlanetMenu anoremenu 900.55 ⚙️&\\.Buffer.Indentation.' .. l:option .. " <Cmd>call planet#buffer_options#Indent('" .. l:option .. "')<CR>"
     endfor
-    an 900.55 ⚙️&\\.Buffer.Current\ Values <Cmd>setlocal filetype? fileencoding? fileformat? endofline? fixendofline? readonly? list? expandtab? tabstop? shiftwidth? softtabstop?<CR>
+    PlanetMenu an 900.55 ⚙️&\\.Buffer.Current\ Values <Cmd>setlocal filetype? fileencoding? fileformat? endofline? fixendofline? readonly? list? expandtab? tabstop? shiftwidth? softtabstop?<CR>
   endif
 endfunc

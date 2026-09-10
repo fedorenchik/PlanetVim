@@ -61,7 +61,7 @@ func! planet#buffer#AddBuffer(name, num) abort
   call s:Remove(a:num)
   if planet#buffer#IsNormal(a:name, a:num)
     let s:entries[a:num] = planet#menu#MenuifyName('[' .. a:num .. '] ' .. (empty(a:name) ? '[No Name]' : a:name))
-    execute 'an 800.500 📖&u.Buffer\ List.' .. s:entries[a:num] .. ' <Cmd>confirm buffer ' .. a:num .. '<CR>'
+    execute 'PlanetMenu an 800.500 📖&u.Buffer\ List.' .. s:entries[a:num] .. ' <Cmd>confirm buffer ' .. a:num .. '<CR>'
   endif
 endfunc
 

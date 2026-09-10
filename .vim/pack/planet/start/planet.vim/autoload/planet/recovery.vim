@@ -103,10 +103,10 @@ func! planet#recovery#Reload(encoding = '') abort
 endfunc
 
 func! planet#recovery#Menus() abort
-  an 110.185 📁&f.Recovery.Find\ Recoverable\ Files <Cmd>call planet#recovery#Recover()<CR>
-  an 110.185 📁&f.Recovery.Recover\ Swap\ File <Cmd>call planet#recovery#Browse()<CR>
-  an 110.185 📁&f.Recovery.Compare\ with\ Disk <Cmd>call planet#recovery#Compare()<CR>
-  an 110.185 📁&f.Recovery.Save\ Recovered\ Copy <Cmd>call planet#recovery#SaveCopy()<CR>
-  an 110.185 📁&f.Recovery.Help <Cmd>help recovery<CR>
-  an 110.185 📁&f.Reload\ from\ Disk <Cmd>call planet#recovery#Reload()<CR>
+  PlanetMenu an 110.185 📁&f.Recovery.Find\ Recoverable\ Files <Cmd>call planet#recovery#Recover()<CR>
+  PlanetMenu an 110.185 📁&f.Recovery.Recover\ Swap\ File <Cmd>call planet#recovery#Browse()<CR>
+  PlanetMenu an 110.185 📁&f.Recovery.Compare\ with\ Disk <Cmd>call planet#recovery#Compare()<CR>
+  PlanetMenu an 110.185 📁&f.Recovery.Save\ Recovered\ Copy <Cmd>call planet#recovery#SaveCopy()<CR>
+  PlanetMenu an 110.185 📁&f.Recovery.Help <Cmd>help recovery<CR>
+  PlanetMenu an 110.185 📁&f.Reload\ from\ Disk <Cmd>call planet#recovery#Reload()<CR>
 endfunc

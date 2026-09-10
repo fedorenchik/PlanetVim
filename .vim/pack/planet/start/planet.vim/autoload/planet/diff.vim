@@ -79,26 +79,26 @@ func! planet#diff#Anchors(...) abort
 endfunc
 
 func! planet#diff#Menus() abort
-  an 710.41 ⛏️&;.Stop\ This\ Window <Cmd>diffoff<CR>
-  an 710.41 ⛏️&;.Stop\ This\ Tab <Cmd>diffoff!<CR>
-  an 710.41 ⛏️&;.Refresh <Cmd>diffupdate<CR>
-  an 710.40 ⛏️&;.Get\ Diff<Tab>:diffget <Cmd>call planet#diff#Transfer('get')<CR>
-  an 710.40 ⛏️&;.Put\ Diff<Tab>:diffput <Cmd>call planet#diff#Transfer('put')<CR>
-  vnoremenu 710.40 ⛏️&;.Get\ Diff<Tab>:diffget <Cmd>call planet#diff#Transfer('get', v:null, line('v'), line('.'))<CR>
-  vnoremenu 710.40 ⛏️&;.Put\ Diff<Tab>:diffput <Cmd>call planet#diff#Transfer('put', v:null, line('v'), line('.'))<CR>
+  PlanetMenu an 710.41 ⛏️&;.Stop\ This\ Window <Cmd>diffoff<CR>
+  PlanetMenu an 710.41 ⛏️&;.Stop\ This\ Tab <Cmd>diffoff!<CR>
+  PlanetMenu an 710.41 ⛏️&;.Refresh <Cmd>diffupdate<CR>
+  PlanetMenu an 710.40 ⛏️&;.Get\ Diff<Tab>:diffget <Cmd>call planet#diff#Transfer('get')<CR>
+  PlanetMenu an 710.40 ⛏️&;.Put\ Diff<Tab>:diffput <Cmd>call planet#diff#Transfer('put')<CR>
+  PlanetMenu vnoremenu 710.40 ⛏️&;.Get\ Diff<Tab>:diffget <Cmd>call planet#diff#Transfer('get', v:null, line('v'), line('.'))<CR>
+  PlanetMenu vnoremenu 710.40 ⛏️&;.Put\ Diff<Tab>:diffput <Cmd>call planet#diff#Transfer('put', v:null, line('v'), line('.'))<CR>
   for [l:label, l:policy] in [['Compare all whitespace', 'exact'], ['Ignore whitespace amount', 'iwhite'], ['Ignore all whitespace', 'iwhiteall'], ['Ignore trailing whitespace', 'iwhiteeol']]
-    execute 'anoremenu 710.42 ⛏️&;.Whitespace.' .. escape(l:label, ' ') .. " <Cmd>call planet#diff#Whitespace('" .. l:policy .. "')<CR>"
+    execute 'PlanetMenu anoremenu 710.42 ⛏️&;.Whitespace.' .. escape(l:label, ' ') .. " <Cmd>call planet#diff#Whitespace('" .. l:policy .. "')<CR>"
   endfor
   for l:algorithm in ['myers', 'minimal', 'patience', 'histogram']
-    execute 'anoremenu 710.42 ⛏️&;.Algorithm.' .. l:algorithm .. " <Cmd>call planet#diff#Option('algorithm', '" .. l:algorithm .. "')<CR>"
+    execute 'PlanetMenu anoremenu 710.42 ⛏️&;.Algorithm.' .. l:algorithm .. " <Cmd>call planet#diff#Option('algorithm', '" .. l:algorithm .. "')<CR>"
   endfor
   for l:inline in ['char', 'word', 'simple', 'none']
-    execute 'anoremenu 710.42 ⛏️&;.Inline\ Highlighting.' .. l:inline .. " <Cmd>call planet#diff#Option('inline', '" .. l:inline .. "')<CR>"
+    execute 'PlanetMenu anoremenu 710.42 ⛏️&;.Inline\ Highlighting.' .. l:inline .. " <Cmd>call planet#diff#Option('inline', '" .. l:inline .. "')<CR>"
   endfor
-  an 710.42 ⛏️&;.Align\ Similar\ Lines <Cmd>call planet#diff#Option('linematch', '60')<CR>
-  an 710.42 ⛏️&;.Disable\ Similar-line\ Alignment <Cmd>call planet#diff#Option('linematch', v:null)<CR>
-  an 710.42 ⛏️&;.Set\ Buffer\ Anchors <Cmd>call planet#diff#Anchors()<CR>
-  an 710.42 ⛏️&;.Disable\ Anchors <Cmd>call planet#diff#Option('anchor', v:null)<CR>
-  an 710.42 ⛏️&;.Current\ Diff\ Options <Cmd>set diffopt? diff?<CR>
-  an 710.42 ⛏️&;.Help <Cmd>help diff<CR>
+  PlanetMenu an 710.42 ⛏️&;.Align\ Similar\ Lines <Cmd>call planet#diff#Option('linematch', '60')<CR>
+  PlanetMenu an 710.42 ⛏️&;.Disable\ Similar-line\ Alignment <Cmd>call planet#diff#Option('linematch', v:null)<CR>
+  PlanetMenu an 710.42 ⛏️&;.Set\ Buffer\ Anchors <Cmd>call planet#diff#Anchors()<CR>
+  PlanetMenu an 710.42 ⛏️&;.Disable\ Anchors <Cmd>call planet#diff#Option('anchor', v:null)<CR>
+  PlanetMenu an 710.42 ⛏️&;.Current\ Diff\ Options <Cmd>set diffopt? diff?<CR>
+  PlanetMenu an 710.42 ⛏️&;.Help <Cmd>help diff<CR>
 endfunc

@@ -118,7 +118,7 @@ func! planet#gui#MenuListVimServers() abort
   endif
   let s:servers = split(serverlist(), "\n")
   for l:index in range(len(s:servers))
-    execute 'an 850.200 🗄️&x.&Vim\ Servers.' .. planet#menu#MenuifyName(s:servers[l:index])
+    execute 'PlanetMenu an 850.200 🗄️&x.&Vim\ Servers.' .. planet#menu#MenuifyName(s:servers[l:index])
           \ .. ' <Cmd>call planet#gui#ActivateServer(' .. l:index .. ')<CR>'
   endfor
 endfunc

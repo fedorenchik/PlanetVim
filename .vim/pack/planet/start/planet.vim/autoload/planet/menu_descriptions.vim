@@ -201,3 +201,20 @@ export def Describe(rhs: string, path: string): string
   var context = len(parts) > 2 ? parts[-2] : 'the current editing context'
   return 'Use ' .. rhs .. ' to ' .. tolower(action) .. ' in ' .. context .. '; complete any requested motion, register or input.'
 enddef
+
+
+export def Context(rhs: string, path: string, mode: string): string
+  var keys = substitute(rhs, '<[^>]\+>', (m) => toupper(m[0]), 'g')
+  if mode ==# 't' && keys ==# '<C-W><C-C>'
+    return 'Force the job running in this terminal buffer to end.'
+  elseif mode ==# 'c' && keys ==# '<C-R>+'
+    return 'Insert the system clipboard into the command line at the cursor.'
+  elseif mode ==# 'c' && keys ==# '<C-Y>'
+    return 'Accept the selected command-line completion.'
+  elseif mode ==# 'o' && keys ==# 'w'
+    return 'Apply the pending operator through the start of the next word.'
+  elseif keys ==# '"+x'
+    return 'Cut the selected text into the system clipboard register.'
+  endif
+  return Describe(substitute(rhs, '\c^<C-O>', '', ''), path)
+enddef

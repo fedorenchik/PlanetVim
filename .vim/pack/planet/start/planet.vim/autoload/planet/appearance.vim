@@ -51,15 +51,15 @@ func! planet#appearance#Ligatures() abort
 endfunc
 
 func! planet#appearance#Menus() abort
-  an 900.57 ⚙️&\\.Appearance.Font\ Larger <Cmd>call planet#appearance#Font(1)<CR>
-  an 900.57 ⚙️&\\.Appearance.Font\ Smaller <Cmd>call planet#appearance#Font(-1)<CR>
-  an 900.57 ⚙️&\\.Appearance.Reset\ Font\ Size <Cmd>call planet#appearance#Font(0)<CR>
-  an 900.57 ⚙️&\\.Appearance.Toggle\ Ligatures <Cmd>call planet#appearance#Ligatures()<CR>
-  an 900.57 ⚙️&\\.Appearance.Dark\ Colors\ and\ Widgets <Cmd>call planet#appearance#Theme('dark')<CR>
-  an 900.57 ⚙️&\\.Appearance.Light\ Colors\ and\ Widgets <Cmd>call planet#appearance#Theme('light')<CR>
-  an 900.57 ⚙️&\\.Appearance.Desktop\ Widget\ Theme <Cmd>call planet#appearance#Theme('system')<CR>
-  an 900.57 ⚙️&\\.Appearance.Toggle\ Fullscreen <Cmd>call planet#gui#Window('fullscreen')<CR>
-  an 900.57 ⚙️&\\.Appearance.Exit\ Fullscreen <Cmd>call planet#appearance#ExitFullscreen()<CR>
-  an 900.57 ⚙️&\\.Appearance.Current\ Values <Cmd>set guifont? background? guioptions?<CR>
-  an 900.57 ⚙️&\\.Appearance.Help <Cmd>help gui<CR>
+  PlanetMenu an 900.57 ⚙️&\\.Appearance.Font\ Larger <Cmd>call planet#appearance#Font(1)<CR>
+  PlanetMenu an 900.57 ⚙️&\\.Appearance.Font\ Smaller <Cmd>call planet#appearance#Font(-1)<CR>
+  PlanetMenu an 900.57 ⚙️&\\.Appearance.Reset\ Font\ Size <Cmd>call planet#appearance#Font(0)<CR>
+  PlanetMenu an 900.57 ⚙️&\\.Appearance.Toggle\ Ligatures <Cmd>call planet#appearance#Ligatures()<CR>
+  PlanetMenu an 900.57 ⚙️&\\.Appearance.Dark\ Colors\ and\ Widgets <Cmd>call planet#appearance#Theme('dark')<CR>
+  PlanetMenu an 900.57 ⚙️&\\.Appearance.Light\ Colors\ and\ Widgets <Cmd>call planet#appearance#Theme('light')<CR>
+  PlanetMenu an 900.57 ⚙️&\\.Appearance.Desktop\ Widget\ Theme <Cmd>call planet#appearance#Theme('system')<CR>
+  PlanetMenu an 900.57 ⚙️&\\.Appearance.Toggle\ Fullscreen <Cmd>call planet#gui#Window('fullscreen')<CR>
+  PlanetMenu an 900.57 ⚙️&\\.Appearance.Exit\ Fullscreen <Cmd>call planet#appearance#ExitFullscreen()<CR>
+  PlanetMenu an 900.57 ⚙️&\\.Appearance.Current\ Values <Cmd>set guifont? background? guioptions?<CR>
+  PlanetMenu an 900.57 ⚙️&\\.Appearance.Help <Cmd>help gui<CR>
 endfunc

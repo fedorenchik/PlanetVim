@@ -34,13 +34,13 @@ func! planet#learn#RunVim9() abort
 endfunc
 
 func! planet#learn#Menus() abort
-  an 990.12 ❔&?.Interactive\ Tutor\ (new\ GVim) <Cmd>call planet#learn#Tutor()<CR>
-  an 990.12 ❔&?.User\ Manual <Cmd>help usr_toc<CR>
-  an 990.12 ❔&?.Search\ Help <Cmd>call planet#learn#Help()<CR>
-  an 990.12 ❔&?.What's\ New\ in\ This\ Vim <Cmd>help news<CR>
-  an 990.12 ❔&?.PlanetVim\ Guide <Cmd>execute 'tab sview ' .. fnameescape(planet#paths#Root() .. '/docs/GUIDE.md')<CR>
-  an 990.13 ❔&?.Vim9.Learn\ Vim9\ Script <Cmd>help vim9<CR>
-  an 990.13 ❔&?.Vim9.Classes <Cmd>help vim9-class<CR>
-  an 990.13 ❔&?.Vim9.Open\ Scratch\ Example <Cmd>call planet#learn#Vim9()<CR>
-  an 990.13 ❔&?.Vim9.Compile/Run\ Scratch\ Example <Cmd>call planet#learn#RunVim9()<CR>
+  PlanetMenu an 990.12 ❔&?.Interactive\ Tutor\ (new\ GVim) <Cmd>call planet#learn#Tutor()<CR>
+  PlanetMenu an 990.12 ❔&?.User\ Manual <Cmd>help usr_toc<CR>
+  PlanetMenu an 990.12 ❔&?.Search\ Help <Cmd>call planet#learn#Help()<CR>
+  PlanetMenu an 990.12 ❔&?.What's\ New\ in\ This\ Vim <Cmd>help news<CR>
+  PlanetMenu an 990.12 ❔&?.PlanetVim\ Guide <Cmd>execute 'tab sview ' .. fnameescape(planet#paths#Root() .. '/docs/GUIDE.md')<CR>
+  PlanetMenu an 990.13 ❔&?.Vim9.Learn\ Vim9\ Script <Cmd>help vim9<CR>
+  PlanetMenu an 990.13 ❔&?.Vim9.Classes <Cmd>help vim9-class<CR>
+  PlanetMenu an 990.13 ❔&?.Vim9.Open\ Scratch\ Example <Cmd>call planet#learn#Vim9()<CR>
+  PlanetMenu an 990.13 ❔&?.Vim9.Compile/Run\ Scratch\ Example <Cmd>call planet#learn#RunVim9()<CR>
 endfunc

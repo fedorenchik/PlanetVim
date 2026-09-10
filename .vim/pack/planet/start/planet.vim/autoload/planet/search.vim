@@ -79,38 +79,38 @@ endfunc
 
 func! planet#search#Menus(group) abort
   if a:group ==# 'basic'
-    an 130.341 🔎&/.Find\ Literal\ Text <Cmd>call planet#search#Find(1)<CR>
-    an 130.341 🔎&/.Find\ Pattern <Cmd>call planet#search#Find(0)<CR>
-    an 130.341 🔎&/.Find\ Selection viw<Cmd>call planet#search#Find(1, v:null, 1)<CR>
-    vnoremenu 130.341 🔎&/.Find\ Selection <Cmd>call planet#search#Find(1, v:null, 1)<CR>
-    snoremenu 130.341 🔎&/.Find\ Selection <Cmd>call planet#search#Find(1, v:null, 1)<CR>
-    an 130.341 🔎&/.Clear\ Highlight <Cmd>nohlsearch<CR>
+    PlanetMenu an 130.341 🔎&/.Find\ Literal\ Text <Cmd>call planet#search#Find(1)<CR>
+    PlanetMenu an 130.341 🔎&/.Find\ Pattern <Cmd>call planet#search#Find(0)<CR>
+    PlanetMenu an 130.341 🔎&/.Find\ Selection viw<Cmd>call planet#search#Find(1, v:null, 1)<CR>
+    PlanetMenu vnoremenu 130.341 🔎&/.Find\ Selection <Cmd>call planet#search#Find(1, v:null, 1)<CR>
+    PlanetMenu snoremenu 130.341 🔎&/.Find\ Selection <Cmd>call planet#search#Find(1, v:null, 1)<CR>
+    PlanetMenu an 130.341 🔎&/.Clear\ Highlight <Cmd>nohlsearch<CR>
     for l:case in ['sensitive', 'ignore', 'smart']
-      execute 'anoremenu 130.342 🔎&/.Case.' .. l:case .. " <Cmd>call planet#search#Case('" .. l:case .. "')<CR>"
+      execute 'PlanetMenu anoremenu 130.342 🔎&/.Case.' .. l:case .. " <Cmd>call planet#search#Case('" .. l:case .. "')<CR>"
     endfor
-    an 130.342 🔎&/.Toggle\ Wrap\ Search <Cmd>set wrapscan!<CR>
-    an 130.342 🔎&/.Current\ Search\ Options <Cmd>set ignorecase? smartcase? wrapscan? hlsearch?<CR>
-    an 130.342 🔎&/.Pattern\ Help <Cmd>help pattern<CR>
+    PlanetMenu an 130.342 🔎&/.Toggle\ Wrap\ Search <Cmd>set wrapscan!<CR>
+    PlanetMenu an 130.342 🔎&/.Current\ Search\ Options <Cmd>set ignorecase? smartcase? wrapscan? hlsearch?<CR>
+    PlanetMenu an 130.342 🔎&/.Pattern\ Help <Cmd>help pattern<CR>
     for l:scope in ['buffer', 'selection']
       let l:prefix = l:scope ==# 'selection' ? 'V' : ''
-      execute 'anoremenu 130.343 🔎&/.Replace\ with\ Scope.' .. l:scope .. ' ' .. l:prefix .. "<Cmd>call planet#search#Substitute('" .. l:scope .. "')<CR>"
+      execute 'PlanetMenu anoremenu 130.343 🔎&/.Replace\ with\ Scope.' .. l:scope .. ' ' .. l:prefix .. "<Cmd>call planet#search#Substitute('" .. l:scope .. "')<CR>"
       for [l:label, l:inverse] in [['Matching lines', 0], ['Nonmatching lines', 1]]
-        execute 'anoremenu 125.581 ✏️&m.Run\ on\ Lines.' .. escape(l:label, ' ') .. '.' .. l:scope .. ' ' .. l:prefix .. '<Cmd>call planet#search#Global(' .. l:inverse .. ", '" .. l:scope .. "')<CR>"
+        execute 'PlanetMenu anoremenu 125.581 ✏️&m.Run\ on\ Lines.' .. escape(l:label, ' ') .. '.' .. l:scope .. ' ' .. l:prefix .. '<Cmd>call planet#search#Global(' .. l:inverse .. ", '" .. l:scope .. "')<CR>"
         if l:scope ==# 'selection'
           for l:cmd in ['vnoremenu', 'snoremenu']
-            execute l:cmd .. ' 125.581 ✏️&m.Run\ on\ Lines.' .. escape(l:label, ' ') .. '.' .. l:scope .. ' <Cmd>call planet#search#Global(' .. l:inverse .. ", 'selection')<CR>"
+            execute 'PlanetMenu ' .. l:cmd .. ' 125.581 ✏️&m.Run\ on\ Lines.' .. escape(l:label, ' ') .. '.' .. l:scope .. ' <Cmd>call planet#search#Global(' .. l:inverse .. ", 'selection')<CR>"
           endfor
         endif
       endfor
     endfor
-    vnoremenu 130.343 🔎&/.Replace\ with\ Scope.selection <Cmd>call planet#search#Substitute('selection')<CR>
-    snoremenu 130.343 🔎&/.Replace\ with\ Scope.selection <Cmd>call planet#search#Substitute('selection')<CR>
+    PlanetMenu vnoremenu 130.343 🔎&/.Replace\ with\ Scope.selection <Cmd>call planet#search#Substitute('selection')<CR>
+    PlanetMenu snoremenu 130.343 🔎&/.Replace\ with\ Scope.selection <Cmd>call planet#search#Substitute('selection')<CR>
     for l:kind in ['text', 'numeric', 'float', 'ignore case', 'unique', 'reverse', 'matched key']
       for l:cmd in ['anoremenu', 'vnoremenu', 'snoremenu']
-        execute l:cmd .. ' 125.582 ✏️&m.Sort\ Options.' .. escape(l:kind, ' ') .. " <Cmd>call planet#search#Sort('" .. l:kind .. "')<CR>"
+        execute 'PlanetMenu ' .. l:cmd .. ' 125.582 ✏️&m.Sort\ Options.' .. escape(l:kind, ' ') .. " <Cmd>call planet#search#Sort('" .. l:kind .. "')<CR>"
       endfor
     endfor
   elseif a:group ==# 'nav'
-    an 810.51 🗃️&a.Remove\ Duplicates <Cmd>argdedupe<CR>
+    PlanetMenu an 810.51 🗃️&a.Remove\ Duplicates <Cmd>argdedupe<CR>
   endif
 endfunc

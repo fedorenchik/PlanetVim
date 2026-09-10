@@ -53,14 +53,14 @@ func! planet#macros#Play(register = v:null, count = 1, selected = 0, confirm = 1
 endfunc
 
 func! planet#macros#Menus() abort
-  an 200.15 📋&".Guided\ Macros.Preview\ Register <Cmd>call planet#macros#Preview()<CR>
-  an 200.15 📋&".Guided\ Macros.Record\ Into <Cmd>call planet#macros#Record()<CR>
-  an 200.15 📋&".Guided\ Macros.Stop\ Recording <Cmd>call planet#macros#Stop()<CR>
-  an 200.15 📋&".Guided\ Macros.Play <Cmd>call planet#macros#Play()<CR>
-  an 200.15 📋&".Guided\ Macros.Repeat\ Count <Cmd>call planet#macros#Play(v:null, v:null)<CR>
-  an 200.15 📋&".Guided\ Macros.Apply\ to\ Selected\ Lines V<Cmd>call planet#macros#Play(v:null, v:null, 1)<CR>
-  vnoremenu 200.15 📋&".Guided\ Macros.Apply\ to\ Selected\ Lines <Cmd>call planet#macros#Play(v:null, v:null, 1)<CR>
-  snoremenu 200.15 📋&".Guided\ Macros.Apply\ to\ Selected\ Lines <Cmd>call planet#macros#Play(v:null, v:null, 1)<CR>
-  an 200.15 📋&".Guided\ Macros.Recording\ Status <Cmd>echo 'Recording: ' .. (empty(reg_recording()) ? 'off' : reg_recording())<CR>
-  an 200.15 📋&".Guided\ Macros.Help <Cmd>help recording<CR>
+  PlanetMenu an 200.15 📋&".Guided\ Macros.Preview\ Register <Cmd>call planet#macros#Preview()<CR>
+  PlanetMenu an 200.15 📋&".Guided\ Macros.Record\ Into <Cmd>call planet#macros#Record()<CR>
+  PlanetMenu an 200.15 📋&".Guided\ Macros.Stop\ Recording <Cmd>call planet#macros#Stop()<CR>
+  PlanetMenu an 200.15 📋&".Guided\ Macros.Play <Cmd>call planet#macros#Play()<CR>
+  PlanetMenu an 200.15 📋&".Guided\ Macros.Repeat\ Count <Cmd>call planet#macros#Play(v:null, v:null)<CR>
+  PlanetMenu an 200.15 📋&".Guided\ Macros.Apply\ to\ Selected\ Lines V<Cmd>call planet#macros#Play(v:null, v:null, 1)<CR>
+  PlanetMenu vnoremenu 200.15 📋&".Guided\ Macros.Apply\ to\ Selected\ Lines <Cmd>call planet#macros#Play(v:null, v:null, 1)<CR>
+  PlanetMenu snoremenu 200.15 📋&".Guided\ Macros.Apply\ to\ Selected\ Lines <Cmd>call planet#macros#Play(v:null, v:null, 1)<CR>
+  PlanetMenu an 200.15 📋&".Guided\ Macros.Recording\ Status <Cmd>echo 'Recording: ' .. (empty(reg_recording()) ? 'off' : reg_recording())<CR>
+  PlanetMenu an 200.15 📋&".Guided\ Macros.Help <Cmd>help recording<CR>
 endfunc

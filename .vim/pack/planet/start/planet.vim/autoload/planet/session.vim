@@ -42,7 +42,7 @@ func! planet#session#SetCurrent() abort
   if ! empty(v:this_session)
     call writefile([fnamemodify(v:this_session, ':p')], planet#paths#State() .. '/last-session')
     if planet#menu#Visible('nav')
-      exe 'an 840.20  📚&s.Current:\ ' .. planet#menu#MenuifyName(fnamemodify(v:this_session, ':t')) .. ' <Nop>'
+      exe 'PlanetMenu an 840.20  📚&s.Current:\ ' .. planet#menu#MenuifyName(fnamemodify(v:this_session, ':t')) .. ' <Nop>'
     endif
     let g:last_session = fnamemodify(v:this_session, ":t")
   endif
@@ -53,7 +53,7 @@ func! planet#session#MenuList() abort
   silent! aun 📚&s.Ope&n\ Session
   let s:menu_sessions = startify#session_list('')
   for l:index in range(len(s:menu_sessions))
-    exe 'an 840.125 📚&s.Ope&n\ Session.' .. planet#menu#MenuifyName(s:menu_sessions[l:index])
+    exe 'PlanetMenu an 840.125 📚&s.Ope&n\ Session.' .. planet#menu#MenuifyName(s:menu_sessions[l:index])
           \ .. ' <Cmd>call planet#session#LoadByIndex(' .. l:index .. ')<CR>'
   endfor
 endfunc

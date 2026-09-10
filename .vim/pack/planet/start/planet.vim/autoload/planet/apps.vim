@@ -10,7 +10,7 @@ func! planet#apps#MenuListGuiWindows() abort
     let l:id = matchstr(l:line, '^0x[0-9a-fA-F]\+')
     if !empty(l:id)
       let l:name = substitute(l:line, '^\S\+\s\+\S\+\s\+\S\+\s\+', '', '')
-      execute 'an 860.400 🎛️&@.&GUI\ Windows.' .. planet#menu#MenuifyName(l:id .. ' ' .. l:name)
+      execute 'PlanetMenu an 860.400 🎛️&@.&GUI\ Windows.' .. planet#menu#MenuifyName(l:id .. ' ' .. l:name)
             \ .. ' <Cmd>call planet#term#RunGuiApp(["wmctrl", "-ia", "' .. l:id .. '"])<CR>'
     endif
   endfor
@@ -25,7 +25,7 @@ func! planet#apps#WorkspaceListMenu() abort
   for l:line in systemlist('wmctrl -d')
     let l:id = matchstr(l:line, '^\d\+')
     if !empty(l:id)
-      execute 'an 860.600 🎛️&@.&Workspaces.' .. planet#menu#MenuifyName(l:line)
+      execute 'PlanetMenu an 860.600 🎛️&@.&Workspaces.' .. planet#menu#MenuifyName(l:line)
             \ .. ' <Cmd>call planet#term#RunGuiApp(["wmctrl", "-s", "' .. l:id .. '"])<CR>'
     endif
   endfor
