@@ -1,225 +1,227 @@
-scriptversion 4
+vim9script
 
-let s:manual_write = 0
-let s:auto_queues = {}
-let s:auto_busy = {}
+var script_manual_write = 0
+var script_auto_queues = {}
+var script_auto_busy = {}
 
-func! s:Error(message) abort
+def LocalError(message: any): any
   echohl ErrorMsg
-  echomsg 'PlanetVim: ' .. a:message
+  echomsg 'PlanetVim: ' .. message
   echohl None
   return 0
-endfunc
+enddef
 
-" Small local metadata queries use native argv too; no shell or network.
-func! s:Query(directory, arguments) abort
-  let l:output = tempname()
+# Small local metadata queries use native argv too; no shell or network.
+def LocalQuery(directory: any, arguments: any): any
+  var job: any
+  var output: any = tempname()
   try
-    let l:job = job_start(['git', '--literal-pathspecs', '-C', a:directory] + a:arguments,
-          \ #{in_io: 'null', out_io: 'file', out_name: l:output, err_io: 'null'})
-    for l:i in range(500)
-      if job_status(l:job) !=# 'run'
+    job = job_start(['git', '--literal-pathspecs', '-C', directory] + arguments, {in_io: 'null', out_io: 'file', out_name: output, err_io: 'null'})
+    for i in range(500)
+      if job_status(job) !=# 'run'
         break
       endif
       sleep 10m
     endfor
-    if job_status(l:job) ==# 'run'
-      call job_stop(l:job)
-      return #{status: -1, lines: []}
+    if job_status(job) ==# 'run'
+      job_stop(job)
+      return {status: -1, lines: []}
     endif
-    return #{status: get(job_info(l:job), 'exitval', -1),
-          \ lines: filereadable(l:output) ? readfile(l:output) : []}
+    return {status: get(job_info(job), 'exitval', -1), lines: filereadable(output) ? readfile(output) : []}
   finally
-    call delete(l:output)
+    delete(output)
   endtry
-endfunc
+  return 0
+enddef
 
-func! planet#git#Repository(path = getcwd()) abort
-  let l:directory = isdirectory(a:path) ? a:path : fnamemodify(a:path, ':p:h')
-  let l:result = s:Query(l:directory, ['rev-parse', '--show-toplevel'])
-  return l:result.status == 0 && ! empty(l:result.lines) ? l:result.lines[0] : ''
-endfunc
+export def Repository(path: any = getcwd()): any
+  var directory: any = isdirectory(path) ? path : fnamemodify(path, ':p:h')
+  var result: any = LocalQuery(directory, ['rev-parse', '--show-toplevel'])
+  return result.status == 0 && ! empty(result.lines) ? result.lines[0] : ''
+enddef
 
-func! s:Git(repository, arguments, on_exit = v:null) abort
-  return planet#term#RunArgv(['git', '--literal-pathspecs', '-C', a:repository]
-        \ + a:arguments, v:false, v:false, v:false, a:repository, a:on_exit)
-endfunc
+def LocalGit(repository: any, arguments: any, on_exit: any = v:null): any
+  return planet#term#RunArgv(['git', '--literal-pathspecs', '-C', repository] + arguments, v:false, v:false, v:false, repository, on_exit)
+enddef
 
-func! s:AfterPush(repository, result, bufnr) abort
-  if a:result.status ==# 'success'
-    call s:Git(a:repository, ['status'])
+def LocalAfterPush(repository: any, result: any, bufnr: any): any
+  if result.status ==# 'success'
+    LocalGit(repository, ['status'])
   endif
-endfunc
+  return 0
+enddef
 
-func! s:AfterCommit(repository, push, result, bufnr) abort
-  " A failed commit/push stays visible. Each stage has its own job/result.
-  if a:result.status !=# 'success'
-    return
+def LocalAfterCommit(repository: any, push: any, result: any, bufnr: any): any
+  # A failed commit/push stays visible. Each stage has its own job/result.
+  if result.status !=# 'success'
+    return 0
   endif
-  if a:push
-    call s:Git(a:repository, ['push'], function('s:AfterPush', [a:repository]))
+  if push
+    LocalGit(repository, ['push'], function(LocalAfterPush, [repository]))
   else
-    call s:Git(a:repository, ['status'])
+    LocalGit(repository, ['status'])
   endif
-endfunc
+  return 0
+enddef
 
-func! s:Message(auto, name, supplied) abort
-  if a:supplied isnot v:null
-    return a:supplied
+def LocalMessage(auto: any, name: any, supplied: any): any
+  if supplied != null
+    return supplied
   endif
-  if a:auto
-    return (empty(a:name) ? '' : a:name .. ': ') .. 'Update at ' .. strftime('%Y-%m-%d %H:%M:%S')
+  if auto
+    return (empty(name) ? '' : name .. ': ') .. 'Update at ' .. strftime('%Y-%m-%d %H:%M:%S')
   endif
   return inputdialog('Commit Message: ')
-endfunc
+enddef
 
-func! planet#git#CommitFile(save = v:true, auto = v:true, push = v:false, message = v:null, filename = '') abort
-  let l:filename = empty(a:filename) ? expand('%:p') : fnamemodify(a:filename, ':p')
-  if empty(l:filename) || (empty(a:filename) && ! empty(&buftype))
-    return s:Error('commit requires a named file buffer')
+export def CommitFile(save: any = v:true, auto: any = v:true, push: any = v:false, arg_message: any = v:null, arg_filename: any = ''): any
+  var filename: any = empty(arg_filename) ? expand('%:p') : fnamemodify(arg_filename, ':p')
+  if empty(filename) || (empty(arg_filename) && ! empty(&buftype))
+    return LocalError('commit requires a named file buffer')
   endif
-  if a:save && l:filename !=# expand('%:p')
-    return s:Error('save-and-commit must target the current file buffer')
+  if save && filename !=# expand('%:p')
+    return LocalError('save-and-commit must target the current file buffer')
   endif
-  let l:message = s:Message(a:auto, fnamemodify(l:filename, ':t'), a:message)
-  if type(l:message) != v:t_string || empty(trim(l:message))
+  var message: any = LocalMessage(auto, fnamemodify(filename, ':t'), arg_message)
+  if type(message) != v:t_string || empty(trim(message))
     return 0
   endif
-  if a:save
+  if save
     try
-      let s:manual_write += 1
+      script_manual_write += 1
       write
     catch
-      return s:Error('file was not saved; commit cancelled: ' .. v:exception)
+      return LocalError('file was not saved; commit cancelled: ' .. v:exception)
     finally
-      let s:manual_write -= 1
+      script_manual_write -= 1
     endtry
   endif
-  let l:repository = planet#git#Repository(l:filename)
-  if empty(l:repository)
-    return s:Error('file is not inside a Git working tree')
+  var repository: any = planet#git#Repository(filename)
+  if empty(repository)
+    return LocalError('file is not inside a Git working tree')
   endif
-  return s:Git(l:repository, ['commit', '-m', l:message, '--', l:filename],
-        \ function('s:AfterCommit', [l:repository, a:push]))
-endfunc
+  return LocalGit(repository, ['commit', '-m', message, '--', filename], function(LocalAfterCommit, [repository, push]))
+enddef
 
-func! planet#git#Commit(save = v:true, auto = v:true, push = v:false, message = v:null) abort
-  let l:message = s:Message(a:auto, '', a:message)
-  if type(l:message) != v:t_string || empty(trim(l:message))
+export def Commit(save: any = v:true, auto: any = v:true, push: any = v:false, arg_message: any = v:null): any
+  var message: any = LocalMessage(auto, '', arg_message)
+  if type(message) != v:t_string || empty(trim(message))
     return 0
   endif
-  if a:save
+  if save
     try
-      let s:manual_write += 1
+      script_manual_write += 1
       confirm wall
-      if ! empty(filter(getbufinfo(#{bufmodified: 1}),
-            \ {_, info -> empty(getbufvar(info.bufnr, '&buftype'))}))
-        return s:Error('not all buffers were saved; commit cancelled')
+      if ! empty(filter(getbufinfo({bufmodified: 1}), (_, lambda_info) => empty(getbufvar(lambda_info.bufnr, '&buftype'))))
+        return LocalError('not all buffers were saved; commit cancelled')
       endif
     catch
-      return s:Error('files were not saved; commit cancelled: ' .. v:exception)
+      return LocalError('files were not saved; commit cancelled: ' .. v:exception)
     finally
-      let s:manual_write -= 1
+      script_manual_write -= 1
     endtry
   endif
-  let l:repository = planet#git#Repository()
-  if empty(l:repository)
-    return s:Error('current directory is not inside a Git working tree')
+  var repository: any = planet#git#Repository()
+  if empty(repository)
+    return LocalError('current directory is not inside a Git working tree')
   endif
-  return s:Git(l:repository, ['commit', '-m', l:message],
-        \ function('s:AfterCommit', [l:repository, a:push]))
-endfunc
+  return LocalGit(repository, ['commit', '-m', message], function(LocalAfterCommit, [repository, push]))
+enddef
 
-func! s:NextAuto(repository, ...) abort
-  let s:auto_busy[a:repository] = v:false
-  while ! empty(get(s:auto_queues, a:repository, []))
-    let l:filename = remove(s:auto_queues[a:repository], 0)
-    let l:tracked = s:Query(a:repository, ['ls-files', '--error-unmatch', '--', l:filename])
-    if l:tracked.status != 0
+def LocalNextAuto(repository: any, ...args: list<any>): any
+  var filename: any
+  var tracked: any
+  var changed: any
+  var buffer: any
+  script_auto_busy[repository] = v:false
+  while ! empty(get(script_auto_queues, repository, []))
+    filename = remove(script_auto_queues[repository], 0)
+    tracked = LocalQuery(repository, ['ls-files', '--error-unmatch', '--', filename])
+    if tracked.status != 0
       continue
     endif
-    let l:changed = s:Query(a:repository, ['status', '--porcelain', '--', l:filename])
-    if l:changed.status != 0 || empty(l:changed.lines)
+    changed = LocalQuery(repository, ['status', '--porcelain', '--', filename])
+    if changed.status != 0 || empty(changed.lines)
       continue
     endif
-    let s:auto_busy[a:repository] = v:true
-    let l:buffer = s:Git(a:repository, ['commit', '-m',
-          \ s:Message(v:true, fnamemodify(l:filename, ':t'), v:null), '--', l:filename],
-          \ function('s:NextAuto', [a:repository]))
-    if l:buffer == 0
-      let s:auto_busy[a:repository] = v:false
+    script_auto_busy[repository] = v:true
+    buffer = LocalGit(repository, ['commit', '-m', LocalMessage(v:true, fnamemodify(filename, ':t'), v:null), '--', filename], function(LocalNextAuto, [repository]))
+    if buffer == 0
+      script_auto_busy[repository] = v:false
     endif
-    return
+    return 0
   endwhile
-endfunc
+  return 0
+enddef
 
-func! planet#git#AutoCommit(bufnr, filename) abort
-  if s:manual_write || ! empty(getbufvar(a:bufnr, '&buftype'))
-    return
+export def AutoCommit(bufnr: any, arg_filename: any): any
+  if script_manual_write || ! empty(getbufvar(bufnr, '&buftype'))
+    return 0
   endif
-  let l:filename = fnamemodify(bufname(a:bufnr), ':p')
-  " Whole-buffer exports (:write other-file) must not commit the source file.
-  if empty(bufname(a:bufnr)) || l:filename !=# fnamemodify(a:filename, ':p')
-        \ || ! filereadable(l:filename)
-    return
+  var filename: any = fnamemodify(bufname(bufnr), ':p')
+  # Whole-buffer exports (:write other-file) must not commit the source file.
+  if empty(bufname(bufnr)) || filename !=# fnamemodify(arg_filename, ':p') || ! filereadable(filename)
+    return 0
   endif
-  let l:repository = planet#git#Repository(l:filename)
-  if empty(l:repository)
-    return
+  var repository: any = planet#git#Repository(filename)
+  if empty(repository)
+    return 0
   endif
-  if ! has_key(s:auto_queues, l:repository)
-    let s:auto_queues[l:repository] = []
+  if ! has_key(script_auto_queues, repository)
+    script_auto_queues[repository] = []
   endif
-  if index(s:auto_queues[l:repository], l:filename) < 0
-    call add(s:auto_queues[l:repository], l:filename)
+  if index(script_auto_queues[repository], filename) < 0
+    add(script_auto_queues[repository], filename)
   endif
-  if ! get(s:auto_busy, l:repository, v:false)
-    call s:NextAuto(l:repository)
+  if ! get(script_auto_busy, repository, v:false)
+    LocalNextAuto(repository)
   endif
-endfunc
+  return 0
+enddef
 
-func! planet#git#EnableAutoCommit() abort
+export def EnableAutoCommit(): any
   augroup AugPv_AutoCommit
-    autocmd!
-    autocmd BufWritePost * call planet#git#AutoCommit(str2nr(expand('<abuf>')), expand('<afile>:p'))
+  autocmd!
+  autocmd BufWritePost * call planet#git#AutoCommit(str2nr(expand('<abuf>')), expand('<afile>:p'))
   augroup END
-endfunc
+  return 0
+enddef
 
-func! planet#git#DisableAutoCommit() abort
+export def DisableAutoCommit(): any
   augroup AugPv_AutoCommit
-    autocmd!
+  autocmd!
   augroup END
-  let s:auto_queues = {}
-endfunc
+  script_auto_queues = {}
+  return 0
+enddef
 
-func! planet#git#CheckoutBranch(branch = v:null) abort
-  let l:branch = a:branch is v:null ? inputdialog('Branch: ') : a:branch
-  if empty(l:branch)
+export def CheckoutBranch(arg_branch: any = v:null): any
+  var branch: any = arg_branch == null ? inputdialog('Branch: ') : arg_branch
+  if empty(branch)
     return 0
   endif
-  if l:branch =~# '^-' || l:branch =~# '[\r\n]'
-    return s:Error('enter a branch name, without Git options')
+  if branch =~# '^-' || branch =~# '[\r\n]'
+    return LocalError('enter a branch name, without Git options')
   endif
-  let l:repository = planet#git#Repository()
-  if empty(l:repository)
-    return s:Error('current directory is not inside a Git working tree')
+  var repository: any = planet#git#Repository()
+  if empty(repository)
+    return LocalError('current directory is not inside a Git working tree')
   endif
-  return s:Git(l:repository, ['checkout', l:branch, '--'])
-endfunc
+  return LocalGit(repository, ['checkout', branch, '--'])
+enddef
 
-func! planet#git#Clone(url = v:null, destination = v:null) abort
-  let l:url = a:url is v:null ? inputdialog('Repository URL: ') : a:url
-  if empty(l:url)
+export def Clone(arg_url: any = v:null, arg_destination: any = v:null): any
+  var url: any = arg_url == null ? inputdialog('Repository URL: ') : arg_url
+  if empty(url)
     return 0
   endif
-  let l:destination = a:destination is v:null
-        \ ? inputdialog('Destination directory (empty uses repository name): ', '', 'CANCELLED') : a:destination
-  if l:destination ==# 'CANCELLED'
+  var destination: any = arg_destination == null ? inputdialog('Destination directory (empty uses repository name): ', '', 'CANCELLED') : arg_destination
+  if destination ==# 'CANCELLED'
     return 0
   endif
-  let l:argv = ['git', 'clone', '--', l:url]
-  if ! empty(l:destination)
-    call add(l:argv, l:destination)
+  var argv: any = ['git', 'clone', '--', url]
+  if ! empty(destination)
+    add(argv, destination)
   endif
-  return planet#term#RunArgv(l:argv)
-endfunc
+  return planet#term#RunArgv(argv)
+enddef

@@ -1,9 +1,8 @@
-scriptversion 4
+vim9script
+export def CopyFile(file: any): any
+  return planet#generate#CopyFile(file)
+enddef
 
-func! planet#project#CopyFile(file) abort
-  return planet#generate#CopyFile(a:file)
-endfunc
-
-func! planet#project#CopyDir(dir) abort
-  return planet#generate#CopyDir(a:dir)
-endfunc
+export def CopyDir(dir: any): any
+  return planet#generate#CopyDir(dir)
+enddef
