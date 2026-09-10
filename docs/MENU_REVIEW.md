@@ -241,7 +241,7 @@ now consume the selection instead of dropping it.
 
 ### MD-09 · P1 · Make file recovery discoverable
 
-- [ ] Add **File → Recovery → Find Recoverable Files / Recover… / Compare with
+- [x] Add **File → Recovery → Find Recoverable Files / Recover… / Compare with
   Disk / Save Recovered Copy**, plus **Reload from Disk**.
 
 Recovery is documented but has no menu workflow. `DiffOrig` and undo history are
@@ -252,6 +252,10 @@ adjacent capabilities, not a swap-recovery picker.
 Acceptance: find/recover an abandoned-swap fixture through menus, respect live
 swap ownership and offer compare/save-copy before explicit cleanup. Reload uses
 the existing save/cancel flow for unsaved edits.
+
+Validation: `test_recovery.vim` creates a real swap checkpoint, refuses the live
+owner, stops that fixture process, recovers in a separate tab, compares with disk,
+and saves a new copy without overwriting the original or deleting the swap.
 
 ### MD-10 · P2 · Add number changes and sequences
 
