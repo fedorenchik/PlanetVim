@@ -3,6 +3,24 @@ var script_context: any
 var script_entries = []
 var script_query = ''
 var script_matches = []
+var index_dirty = true
+
+export def Invalidate()
+  index_dirty = true
+enddef
+
+def EnsureIndex()
+  if !index_dirty
+    return
+  endif
+  # Build hidden groups only when the finder needs them. Refresh removes them
+  # again after indexing, preserving the selected menubar style and group.
+  if !empty(filter(planet#menu#Roots(), (_, root) => !planet#menu#Visible(root[0])))
+    planet#menu#Refresh(true)
+  else
+    Index()
+  endif
+enddef
 
 export def Index(visible_only: any = 0): any
   var path: any
@@ -19,10 +37,12 @@ export def Index(visible_only: any = 0): any
     endif
     extend(script_entries, planet#action_index#Build(path, label, group))
   endfor
+  index_dirty = false
   return 0
 enddef
 
 export def Search(query: any, mode: any = 'n'): any
+  EnsureIndex()
   var found: any
   var result: any = []
   for item in script_entries
@@ -132,7 +152,11 @@ enddef
 
 export def Open(): any
   # Refresh changing buffer/session/run entries, retaining hidden groups.
-  planet#actions#Index(1)
+  if index_dirty
+    EnsureIndex()
+  else
+    planet#actions#Index(1)
+  endif
   var mode: any = mode()
   var kind: any = mode =~# '^[iR]' ? 'i' : index(['v', 'V', "\<C-v>"], mode) >= 0 ? 'x' : index(['s', 'S', "\<C-s>"], mode) >= 0 ? 's' : 'n'
   script_context = {mode: kind, window: win_getid(), buffer: bufnr(), cursor: getpos('.')}

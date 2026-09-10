@@ -82,7 +82,7 @@ export def RootPath(arg_root: string): string
   throw 'PlanetVim: unknown menu root'
 enddef
 
-export def Refresh(): number
+export def Refresh(index_actions: bool = false): number
   var target: any
   var root: any
   var group: any
@@ -107,7 +107,7 @@ export def Refresh(): number
       execute 'menutrans ' .. root .. ' ' .. target
     endfor
   endif
-  script_state.indexing = 1
+  script_state.indexing = index_actions
   try
     for module in ['planet', 'basic', 'edit', 'dev', 'tools', 'nav', 'settings']
       call('planet#menu#' .. module .. '#Update', [])
@@ -122,7 +122,11 @@ export def Refresh(): number
       planet#apps#WorkspaceListMenu()
     endif
     planet#run#UpdateRunMenu()
-    planet#actions#Index()
+    if index_actions
+      planet#actions#Index()
+    else
+      planet#actions#Invalidate()
+    endif
   finally
     script_state.indexing = 0
   endtry
