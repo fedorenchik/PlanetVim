@@ -1,103 +1,107 @@
-scriptversion 4
-
-func! s:Set(option, value) abort
-  if !has_key(b:PV_filetype_options, a:option)
-    let b:PV_filetype_options[a:option] = eval('&l:' .. a:option)
+vim9script
+def LocalSet(option: any, value: any): any
+  if !has_key(b:PV_filetype_options, option)
+    b:PV_filetype_options[option] = eval('&l:' .. option)
   endif
-  execute 'let &l:' .. a:option .. ' = a:value'
-endfunc
+  execute '&l:' .. option .. ' = ' .. string(value)
+  return 0
+enddef
 
-func! s:Map(mode, lhs, rhs, abbreviation = v:false, recursive = v:false) abort
-  let l:previous = maparg(a:lhs, a:mode, a:abbreviation, 1)
-  call add(b:PV_filetype_maps, {'mode': a:mode, 'lhs': a:lhs,
-        \ 'abbreviation': a:abbreviation,
-        \ 'previous': get(l:previous, 'buffer', 0) ? l:previous : {}})
-  let l:command = a:mode .. (a:recursive ? '' : 'nore') .. (a:abbreviation ? 'abbrev' : 'map')
-  execute l:command .. ' <buffer> ' .. a:lhs .. ' ' .. a:rhs
-endfunc
+def LocalMap(mode: any, lhs: any, rhs: any, abbreviation: any = v:false, recursive: any = v:false): any
+  var previous: any = maparg(lhs, mode, abbreviation, 1)
+  add(b:PV_filetype_maps, {'mode': mode, 'lhs': lhs, 'abbreviation': abbreviation, 'previous': get(previous, 'buffer', 0) ? previous : {}})
+  var command: any = mode .. (recursive ? '' : 'nore') .. (abbreviation ? 'abbrev' : 'map')
+  execute command .. ' <buffer> ' .. lhs .. ' ' .. rhs
+  return 0
+enddef
 
-func! planet#filetype#Undo() abort
-  for l:item in get(b:, 'PV_filetype_maps', [])
-    execute 'silent! ' .. l:item.mode .. 'un' .. (l:item.abbreviation ? 'abbrev' : 'map')
-          \ .. ' <buffer> ' .. l:item.lhs
-    if !empty(l:item.previous)
-      call mapset(l:item.mode, l:item.abbreviation, l:item.previous)
+export def Undo(): any
+  for item in get(b:, 'PV_filetype_maps', [])
+    execute 'silent! ' .. item.mode .. 'un' .. (item.abbreviation ? 'abbrev' : 'map') .. ' <buffer> ' .. item.lhs
+    if !empty(item.previous)
+      mapset(item.mode, item.abbreviation, item.previous)
     endif
   endfor
-  for [l:option, l:value] in items(get(b:, 'PV_filetype_options', {}))
-    execute 'let &l:' .. l:option .. ' = l:value'
+  for [option, value] in items(get(b:, 'PV_filetype_options', {}))
+    execute '&l:' .. option .. ' = ' .. string(value)
   endfor
   if exists('b:PV_filetype_undo')
-    let b:undo_ftplugin = b:PV_filetype_undo
+    b:undo_ftplugin = b:PV_filetype_undo
   endif
   unlet! b:PV_filetype_options b:PV_filetype_maps b:PV_filetype_undo
-endfunc
+  return 0
+enddef
 
-func! planet#filetype#Apply() abort
-  call planet#filetype#Undo()
-  let b:PV_filetype_options = {}
-  let b:PV_filetype_maps = []
-  let b:PV_filetype_undo = get(b:, 'undo_ftplugin', '')
-  " Restore our overrides before the upstream ftplugin clears its own options.
-  let b:undo_ftplugin = 'call planet#filetype#Undo()'
-        \ .. (empty(b:PV_filetype_undo) ? '' : ' | ' .. b:PV_filetype_undo)
-  let l:ft = &filetype
-  if l:ft ==# 'cmake'
-    call s:Set('keywordprg', ':CMakeHelpPopup')
-    call s:Set('balloonexpr', 'cmakehelp#balloonexpr()')
-    call s:Map('n', '<leader>k', '<Plug>(cmake-help-online)', v:false, v:true)
-    call s:Map('n', '<leader>K', '<Plug>(cmake-help)', v:false, v:true)
-  elseif index(['c', 'cpp'], l:ft) >= 0
-    call s:Set('foldmethod', 'syntax')
-    call s:Set('colorcolumn', l:ft ==# 'c' ? '80' : '120')
+export def Apply(): any
+  var lhs: any
+  var rhs: any
+  planet#filetype#Undo()
+  b:PV_filetype_options = {}
+  b:PV_filetype_maps = []
+  b:PV_filetype_undo = get(b:, 'undo_ftplugin', '')
+  # Restore our overrides before the upstream ftplugin clears its own options.
+  b:undo_ftplugin = 'call planet#filetype#Undo()'  .. (empty(b:PV_filetype_undo) ? '' :  ' | ' .. b:PV_filetype_undo)
+  var ft: any = &filetype
+  if ft ==# 'cmake'
+    LocalSet('keywordprg', ':CMakeHelpPopup')
+    LocalSet('balloonexpr', 'cmakehelp#balloonexpr()')
+    LocalMap('n', '<leader>k', '<Plug>(cmake-help-online)', v:false, v:true)
+    LocalMap('n', '<leader>K', '<Plug>(cmake-help)', v:false, v:true)
+  elseif index(['c', 'cpp'], ft) >= 0
+    LocalSet('foldmethod', 'syntax')
+    LocalSet('colorcolumn', ft ==# 'c' ? '80' : '120')
     if get(g:, 'PV_c_style_shortcuts', 1)
-      for [l:lhs, l:rhs] in items({'#e': '#endif', '#d': '#define', '#i': '#include', '#n': '#ifndef'})
-        call s:Map('i', l:lhs, l:rhs, v:true)
+      for [item_lhs, item_rhs] in items({'#e': '#endif', '#d': '#define', '#i': '#include', '#n': '#ifndef'})
+        lhs = item_lhs
+        rhs = item_rhs
+        LocalMap('i', lhs, rhs, v:true)
       endfor
-      if l:ft ==# 'cpp'
-        for [l:lhs, l:rhs] in items({',,': '<<', ';b': 'std::begin', ';c': 'std::cout',
-              \ ';e': 'std::end', ';m': 'std::map', ';s': 'std::string', ';v': 'std::vector'})
-          call s:Map('i', l:lhs, l:rhs, v:true)
+      if ft ==# 'cpp'
+        for [item_lhs, item_rhs] in items({',,': '<<', ';b': 'std::begin', ';c': 'std::cout', ';e': 'std::end', ';m': 'std::map', ';s': 'std::string', ';v': 'std::vector'})
+          lhs = item_lhs
+          rhs = item_rhs
+          LocalMap('i', lhs, rhs, v:true)
         endfor
-        call s:Map('i', ';;', '::')
+        LocalMap('i', ';;', '::')
       endif
     endif
   endif
-  if index(['dockerfile', 'python', 'qmake'], l:ft) >= 0
-    call s:Set('expandtab', 1)
-    call s:Set('tabstop', 4)
-    call s:Set('shiftwidth', 4)
+  if index(['dockerfile', 'python', 'qmake'], ft) >= 0
+    LocalSet('expandtab', 1)
+    LocalSet('tabstop', 4)
+    LocalSet('shiftwidth', 4)
   endif
-  if index(['help', 'markdown', 'text'], l:ft) >= 0
-    call s:Set('colorcolumn', '+0')
+  if index(['help', 'markdown', 'text'], ft) >= 0
+    LocalSet('colorcolumn', '+0')
   endif
-  if l:ft ==# 'markdown'
-    call s:Map('n', '<A-t>', '<Cmd>Vista!! toc<CR>')
-    " Vim's Markdown ftplugin supplies its folding expression when enabled.
+  if ft ==# 'markdown'
+    LocalMap('n', '<A-t>', '<Cmd>Vista!! toc<CR>')
+    # Vim's Markdown ftplugin supplies its folding expression when enabled.
     if !empty(&foldexpr) && &foldexpr !=# '0'
-      call s:Set('foldmethod', 'expr')
+      LocalSet('foldmethod', 'expr')
     endif
-  elseif l:ft ==# 'sh'
-    call s:Set('formatoptions', &formatoptions .. 'croql')
-    call s:Set('include', '^\s*\%(\.\|source\)\s')
-    call s:Set('define', '\<\%(\i\+\s*()\)\@=')
-  elseif l:ft ==# 'text'
-    call s:Set('textwidth', 72)
-    call s:Set('linebreak', 1)
-    call s:Set('breakindent', 1)
-    call s:Set('complete', &complete .. ',k,s')
-    call s:Set('spell', 1)
-  elseif l:ft ==# 'vim'
-    call s:Set('foldmethod', 'marker')
-    call s:Set('foldlevel', 0)
+  elseif ft ==# 'sh'
+    LocalSet('formatoptions', &formatoptions .. 'croql')
+    LocalSet('include', '^\s*\%(\.\|source\)\s')
+    LocalSet('define', '\<\%(\i\+\s*()\)\@=')
+  elseif ft ==# 'text'
+    LocalSet('textwidth', 72)
+    LocalSet('linebreak', 1)
+    LocalSet('breakindent', 1)
+    LocalSet('complete', &complete .. ',k,s')
+    LocalSet('spell', 1)
+  elseif ft ==# 'vim'
+    LocalSet('foldmethod', 'marker')
+    LocalSet('foldlevel', 0)
   endif
-  if index(['text', 'markdown'], l:ft) >= 0 && stridx(&formatoptions, 't') < 0
-    call s:Set('formatoptions', &formatoptions .. 't')
+  if index(['text', 'markdown'], ft) >= 0 && stridx(&formatoptions, 't') < 0
+    LocalSet('formatoptions', &formatoptions .. 't')
   endif
   if empty(&omnifunc)
-    call s:Set('omnifunc', 'syntaxcomplete#Complete')
+    LocalSet('omnifunc', 'syntaxcomplete#Complete')
   endif
   if empty(&completefunc)
-    call s:Set('completefunc', 'syntaxcomplete#Complete')
+    LocalSet('completefunc', 'syntaxcomplete#Complete')
   endif
-endfunc
+  return 0
+enddef

@@ -1,30 +1,32 @@
-scriptversion 4
+vim9script
 
-func! s:Warn(message) abort
+var script_state: dict<any> = {}
+
+def LocalWarn(message: any): any
   echohl WarningMsg
-  echom 'PlanetVim debugger: ' .. a:message
+  echom 'PlanetVim debugger: ' .. message
   echohl None
   return 0
-endfunc
+enddef
 
-func! planet#debug#Init() abort
-  if get(s:, 'ready', v:false)
+export def Init(): any
+  if get(script_state, 'ready', v:false)
     return 1
   endif
   if !has('python3')
-    return s:Warn('GVim needs +python3 support and its matching Python runtime.')
+    return LocalWarn('GVim needs +python3 support and its matching Python runtime.')
   endif
-  let l:path = planet#paths#Root() .. '/.vim/pack/apps/opt/vimspector'
-  if !filereadable(l:path .. '/plugin/vimspector.vim')
-    return s:Warn('bundled Vimspector is missing.')
+  var path: any = planet#paths#Root() .. '/.vim/pack/apps/opt/vimspector'
+  if !filereadable(path .. '/plugin/vimspector.vim')
+    return LocalWarn('bundled Vimspector is missing.')
   endif
-  let g:vimspector_base_dir = get(g:, 'vimspector_base_dir', planet#paths#State('debugger'))
-  let l:log = planet#paths#State('debugger') .. '/vimspector.log'
-  let &runtimepath = planet#paths#Runtime(l:path) .. ',' .. &runtimepath
+  g:vimspector_base_dir = get(g:, 'vimspector_base_dir', planet#paths#State('debugger'))
+  var log: any = planet#paths#State('debugger') .. '/vimspector.log'
+  &runtimepath = planet#paths#Runtime(path) .. ',' .. &runtimepath
   try
-    " Pinned and current upstream open ~/.vimspector.log in write mode on
-    " import, with no path setting. Redirect exactly that constructor once;
-    " never change HOME or leave a logging constructor installed globally.
+    # Pinned and current upstream open ~/.vimspector.log in write mode on
+    # import, with no path setting. Redirect exactly that constructor once;
+    # never change HOME or leave a logging constructor installed globally.
     py3 << EOF
 import importlib, logging, os, sys, vim, warnings
 def _pv_import_utils(state_log, module_path):
@@ -54,182 +56,194 @@ def _pv_import_utils(state_log, module_path):
         sys.dont_write_bytecode = original_bytecode
         sys.path[:] = original_path
     utils.LOG_FILE = state_log
-try:
-    _pv_import_utils(vim.eval('l:log'), vim.eval('l:path'))
-finally:
-    del _pv_import_utils
 EOF
-    execute 'source ' .. fnameescape(l:path .. '/plugin/vimspector.vim')
-    let s:ready = v:true
+    try
+      execute 'py3 _pv_import_utils(' .. json_encode(log) .. ', ' .. json_encode(path) .. ')'
+    finally
+      py3 del _pv_import_utils
+    endtry
+    execute 'source ' .. fnameescape(path .. '/plugin/vimspector.vim')
+    script_state.ready = v:true
     return 1
   catch
-    return s:Warn('cannot load Vimspector: ' .. v:exception)
+    return LocalWarn('cannot load Vimspector: ' .. v:exception)
   endtry
-endfunc
+enddef
 
-func! s:Python() abort
+def LocalPython(): any
   return executable('python3') ? 'python3' : 'python'
-endfunc
+enddef
 
-" A read-only capability probe, using argv and bounded job execution.
-func! s:Probe(argv) abort
-  if empty(a:argv) || !executable(a:argv[0])
+# A read-only capability probe, using argv and bounded job execution.
+def LocalProbe(argv: any): any
+  var job: any
+  if empty(argv) || !executable(argv[0])
     return 0
   endif
-  let l:output = tempname()
+  var output: any = tempname()
   try
-    let l:job = job_start(a:argv, #{out_io: 'file', out_name: l:output, err_io: 'out'})
-    for l:i in range(300)
-      if job_status(l:job) !=# 'run'
-        return job_status(l:job) ==# 'dead' && get(job_info(l:job), 'exitval', -1) == 0
+    job = job_start(argv, {out_io: 'file', out_name: output, err_io: 'out'})
+    for i in range(300)
+      if job_status(job) !=# 'run'
+        return job_status(job) ==# 'dead' && get(job_info(job), 'exitval', -1) == 0
       endif
       sleep 10m
     endfor
-    call job_stop(l:job, 'kill')
+    job_stop(job, 'kill')
     return 0
   finally
-    call delete(l:output)
+    delete(output)
   endtry
-endfunc
+  return 0
+enddef
 
-func! planet#debug#Configuration(language, program = '') abort
-  if a:language ==# 'python'
-    let l:command = get(g:, 'PV_debugpy_command', [s:Python(), '-m', 'debugpy.adapter'])
-    return #{adapters: {'planet-debugpy': #{command: l:command}},
-          \ configurations: {'Python': #{adapter: 'planet-debugpy',
-          \ configuration: #{request: 'launch', type: 'python', program: empty(a:program) ? '${file}' : a:program,
-          \ cwd: '${workspaceRoot}', console: 'integratedTerminal', stopOnEntry: v:false},
-          \ breakpoints: #{exception: #{raised: 'N', uncaught: '', userUnhandled: ''}}}}}
-  elseif index(['cpp', 'c', 'c++'], a:language) >= 0
-    let l:command = get(g:, 'PV_gdb_command', ['gdb', '--quiet', '--nx', '--interpreter=dap'])
-    return #{adapters: {'planet-gdb': #{command: l:command}},
-          \ configurations: {'C++': #{adapter: 'planet-gdb',
-          \ configuration: #{request: 'launch', type: 'gdb', program: empty(a:program) ? '${workspaceRoot}/build/app' : a:program,
-          \ cwd: '${workspaceRoot}', stopAtBeginningOfMainSubprogram: v:true}}}}
+export def Configuration(language: any, program: any = ''): any
+  var command: any
+  if language ==# 'python'
+    command = get(g:, 'PV_debugpy_command', [LocalPython(), '-m', 'debugpy.adapter'])
+    return {adapters: {'planet-debugpy': {command: command}}, configurations: {'Python': {adapter: 'planet-debugpy',
+         configuration: {request: 'launch', type: 'python', program: empty(program) ? '${file}' : program,
+         cwd: '${workspaceRoot}', console: 'integratedTerminal', stopOnEntry: v:false}, breakpoints: {exception: {raised: 'N',
+         uncaught: '', userUnhandled: ''}}}}}
+  elseif index(['cpp', 'c', 'c++'], language) >= 0
+    command = get(g:, 'PV_gdb_command', ['gdb', '--quiet', '--nx', '--interpreter=dap'])
+    return {adapters: {'planet-gdb': {command: command}}, configurations: {'C++': {adapter: 'planet-gdb',
+         configuration: {request: 'launch', type: 'gdb', program: empty(program) ? '${workspaceRoot}/build/app' : program,
+         cwd: '${workspaceRoot}', stopAtBeginningOfMainSubprogram: v:true}}}}
   endif
-  call s:Warn('setup supports python or cpp.')
+  LocalWarn('setup supports python or cpp.')
   return {}
-endfunc
+enddef
 
-func! planet#debug#Setup(language, program = '') abort
-  let l:config = planet#debug#Configuration(a:language, a:program)
-  if empty(l:config)
+export def Setup(language: any, program: any = ''): any
+  var config: any = planet#debug#Configuration(language, program)
+  if empty(config)
     return 0
   endif
-  let l:path = planet#run#Project().root .. '/.vimspector.json'
-  if filereadable(l:path) || getftype(l:path) !=# ''
-    return s:Warn('.vimspector.json already exists; edit it to add another configuration.')
+  var path: any = planet#run#Project().root .. '/.vimspector.json'
+  if filereadable(path) || getftype(path) !=# ''
+    return LocalWarn('.vimspector.json already exists; edit it to add another configuration.')
   endif
   try
-    call writefile([json_encode(l:config)], l:path)
-    execute 'edit ' .. fnameescape(l:path)
+    writefile([json_encode(config)], path)
+    execute 'edit ' .. fnameescape(path)
     echom 'PlanetVim debugger: configuration created. Review the program and adapter command before launch.'
     return 1
   catch
-    return s:Warn('cannot create configuration: ' .. v:exception)
+    return LocalWarn('cannot create configuration: ' .. v:exception)
   endtry
-endfunc
+enddef
 
-func! s:Check(config, configuration) abort
-  " Check PlanetVim's examples. Custom upstream adapter configurations retain
-  " Vimspector's own validation and support (TCP, gadgets, remote adapters).
-  for [l:name, l:adapter] in items(get(a:config, 'adapters', {}))
-    let l:selected = get(get(a:config, 'configurations', {}), a:configuration, {})
-    if !empty(a:configuration) && get(l:selected, 'adapter', '') !=# l:name
+def LocalCheck(config: any, configuration: any): any
+  var selected: any
+  var command: any
+  # Check PlanetVim's examples. Custom upstream adapter configurations retain
+  # Vimspector's own validation and support (TCP, gadgets, remote adapters).
+  for [name, adapter] in items(get(config, 'adapters', {}))
+    selected = get(get(config, 'configurations', {}), configuration, {})
+    if !empty(configuration) && get(selected, 'adapter', '') !=# name
       continue
     endif
-    if index(['planet-debugpy', 'planet-gdb'], l:name) < 0
+    if index(['planet-debugpy', 'planet-gdb'], name) < 0
       continue
     endif
-    let l:command = get(l:adapter, 'command', [])
-    if type(l:command) != v:t_list || empty(l:command) || !executable(l:command[0])
-      return s:Warn(l:name .. ' executable is missing; edit the adapter command in .vimspector.json.')
+    command = get(adapter, 'command', [])
+    if type(command) != v:t_list || empty(command) || !executable(command[0])
+      return LocalWarn(name .. ' executable is missing; edit the adapter command in .vimspector.json.')
     endif
-    if l:name ==# 'planet-debugpy' && len(l:command) == 3 && l:command[1:] ==# ['-m', 'debugpy.adapter']
-      if !s:Probe([l:command[0], '-c', 'import debugpy.adapter'])
-        return s:Warn('install debugpy into ' .. l:command[0] .. ' (python -m pip install debugpy), or set g:PV_debugpy_command before setup.')
+    if name ==# 'planet-debugpy' && len(command) == 3 && command[1 : ] ==# ['-m', 'debugpy.adapter']
+      if !LocalProbe([command[0], '-c', 'import debugpy.adapter'])
+        return LocalWarn('install debugpy into ' .. command[0] .. ' (python -m pip install debugpy), or set g:PV_debugpy_command before setup.')
       endif
-    elseif l:name ==# 'planet-gdb' && !s:Probe([l:command[0], '--nx', '--quiet', '--batch', '-ex', 'python import gdb.dap'])
-      return s:Warn('GDB needs its Python DAP module (GDB 14+); install a DAP-capable GDB or configure another adapter.')
+    elseif name ==# 'planet-gdb' && !LocalProbe([command[0], '--nx', '--quiet', '--batch', '-ex', 'python import gdb.dap'])
+      return LocalWarn('GDB needs its Python DAP module (GDB 14+); install a DAP-capable GDB or configure another adapter.')
     endif
   endfor
   return 1
-endfunc
+enddef
 
-func! planet#debug#Action(action, configuration = '') abort
-  let l:actions = {'continue': 'Continue', 'breakpoint': 'ToggleBreakpoint', 'step-over': 'StepOver',
-        \ 'step-into': 'StepInto', 'step-out': 'StepOut', 'restart': 'Restart', 'pause': 'Pause', 'stop': 'Stop'}
-  if a:action ==# 'detach'
+export def Action(action: any, configuration: any = ''): any
+  var path: any
+  var config: any
+  var selection: any
+  var names: any
+  var choice: any
+  var actions: any = {'continue': 'Continue', 'breakpoint': 'ToggleBreakpoint', 'step-over': 'StepOver',
+       'step-into': 'StepInto', 'step-out': 'StepOut', 'restart': 'Restart', 'pause': 'Pause', 'stop': 'Stop'}
+  if action ==# 'detach'
     return planet#debug#Detach()
-  elseif a:action !=# 'launch' && a:action !=# 'reset' && !has_key(l:actions, a:action)
-    return s:Warn('unknown action: ' .. a:action)
+  elseif action !=# 'launch' && action !=# 'reset' && !has_key(actions, action)
+    return LocalWarn('unknown action: ' .. action)
   endif
-  if a:action ==# 'launch'
-    let l:path = planet#run#Project().root .. '/.vimspector.json'
-    if !filereadable(l:path)
-      return s:Warn('create .vimspector.json first with :PlanetDebugSetup python or :PlanetDebugSetup cpp.')
+  if action ==# 'launch'
+    path = planet#run#Project().root .. '/.vimspector.json'
+    if !filereadable(path)
+      return LocalWarn('create .vimspector.json first with :PlanetDebugSetup python or :PlanetDebugSetup cpp.')
     endif
     try
-      let l:config = json_decode(join(readfile(l:path), "\n"))
-      let l:selection = a:configuration
-      let l:names = sort(keys(get(l:config, 'configurations', {})))
-      if empty(l:names)
-        return s:Warn('no configurations are defined in .vimspector.json.')
+      config = json_decode(join(readfile(path), "\n"))
+      selection = configuration
+      names = sort(keys(get(config, 'configurations', {})))
+      if empty(names)
+        return LocalWarn('no configurations are defined in .vimspector.json.')
       endif
-      if empty(l:selection)
-        if len(l:names) == 1
-          let l:selection = l:names[0]
+      if empty(selection)
+        if len(names) == 1
+          selection = names[0]
         else
-          let l:choice = inputlist(['Debug configuration:'] + map(copy(l:names), '(v:key + 1) .. ". " .. v:val'))
-          if l:choice < 1 || l:choice > len(l:names)
+          choice = inputlist(['Debug configuration:'] + map(copy(names), (choice_index, choice_name) => (choice_index + 1) .. '. ' .. choice_name))
+          if choice < 1 || choice > len(names)
             return 0
           endif
-          let l:selection = l:names[l:choice - 1]
+          selection = names[choice - 1]
         endif
-      elseif index(l:names, l:selection) < 0
-        return s:Warn('configuration not found: ' .. l:selection)
+      elseif index(names, selection) < 0
+        return LocalWarn('configuration not found: ' .. selection)
       endif
-      if !s:Check(l:config, l:selection)
+      if !LocalCheck(config, selection)
         return 0
       endif
     catch
-      return s:Warn('invalid .vimspector.json: ' .. v:exception)
+      return LocalWarn('invalid .vimspector.json: ' .. v:exception)
     endtry
   endif
   if !planet#debug#Init()
     return 0
   endif
   try
-    if a:action ==# 'launch'
-      call vimspector#LaunchWithSettings(#{configuration: l:selection})
-    elseif a:action ==# 'reset'
-      call vimspector#Reset(#{interactive: v:false})
+    if action ==# 'launch'
+      vimspector#LaunchWithSettings({configuration:  selection})
+    elseif action ==# 'reset'
+      vimspector#Reset({interactive:  v:false})
     else
-      call call('vimspector#' .. l:actions[a:action], [])
+      call('vimspector#' .. actions[action], [])
     endif
     return 1
   catch
-    return s:Warn(v:exception)
+    return LocalWarn(v:exception)
   endtry
-endfunc
+enddef
 
-func! planet#debug#Detach() abort
+export def Detach(): any
   if !planet#debug#Init()
     return 0
   endif
-  let l:bridge_path = planet#paths#Root() .. '/.vim/pack/planet/start/planet.vim/python3'
+  var bridge_path: any = planet#paths#Root() .. '/.vim/pack/planet/start/planet.vim/python3'
   try
+    py3 << EOF
+EOF
+    execute 'py3 _pv_bridge_path = ' .. json_encode(bridge_path)
     py3 << EOF
 _pv_detach_bytecode = sys.dont_write_bytecode
 _pv_detach_path = sys.path[:]
 try:
     sys.dont_write_bytecode = True
-    sys.path.insert(0, vim.eval('l:bridge_path'))
+    sys.path.insert(0, _pv_bridge_path)
     import planetvim_debug
 finally:
     sys.dont_write_bytecode = _pv_detach_bytecode
     sys.path[:] = _pv_detach_path
-    del _pv_detach_bytecode, _pv_detach_path
+    del _pv_detach_bytecode, _pv_detach_path, _pv_bridge_path
 def _pv_detach_report(result):
     vim.vars['PV_debug_detach_result'] = result
     if result['status'] == 'failed':
@@ -241,6 +255,6 @@ _pv_detach_started = planetvim_debug.detach(
 EOF
     return py3eval('_pv_detach_started') ? 1 : 0
   catch
-    return s:Warn(v:exception)
+    return LocalWarn(v:exception)
   endtry
-endfunc
+enddef

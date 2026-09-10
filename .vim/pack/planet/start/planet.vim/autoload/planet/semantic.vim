@@ -1,115 +1,146 @@
-scriptversion 4
-
-func! s:Column(text, character, encoding) abort
-  let l:units = 0
-  let l:byte = 0
-  for l:char in split(a:text, '\zs')
-    if l:units >= a:character | break | endif
-    let l:units += a:encoding ==# 'utf-8' ? strlen(l:char)
-          \ : a:encoding ==# 'utf-32' ? 1 : char2nr(l:char) > 0xffff ? 2 : 1
-    let l:byte += strlen(l:char)
+vim9script
+def LocalColumn(text: any, character: any, encoding: any): any
+  var units: any = 0
+  var byte: any = 0
+  for char in split(text, '\zs')
+    if units >= character
+      break
+    endif
+    units += encoding ==# 'utf-8' ? strlen(char)  :  encoding ==# 'utf-32' ? 1 :  char2nr(char) > 0xffff ? 2 :  1
+    byte += strlen(char)
   endfor
-  if l:units != a:character
+  if units != character
     throw 'semantic token position is outside the source character boundaries'
   endif
-  return l:byte + 1
-endfunc
+  return byte + 1
+enddef
 
-func! planet#semantic#Decode(buffer, legend, data, encoding = 'utf-16') abort
-  if type(a:data) != v:t_list || len(a:data) % 5
-        \ || !empty(filter(copy(a:data), {_, value -> type(value) != v:t_number || value < 0}))
+export def Decode(buffer: any, legend: any, data: any, encoding: any = 'utf-16'): any
+  var delta: any
+  var start: any
+  var length: any
+  var type: any
+  var bits: any
+  var text: any
+  var first: any
+  var last: any
+  var labels: any
+  var mask: any
+  if type(data) != v:t_list || len(data) % 5 != 0 || !empty(filter(copy(data), (_, lambda_value) => type(lambda_value) != v:t_number || lambda_value < 0))
     throw 'invalid semantic token response'
   endif
-  let l:types = get(a:legend, 'tokenTypes', [])
-  let l:modifiers = get(a:legend, 'tokenModifiers', [])
-  let l:items = []
-  let l:line = 0
-  let l:character = 0
-  let l:index = 0
-  while l:index < len(a:data)
-    let [l:delta, l:start, l:length, l:type, l:bits] = a:data[l:index : l:index + 4]
-    let l:line += l:delta
-    let l:character = l:delta ? l:start : l:character + l:start
-    let l:text = get(getbufline(a:buffer, l:line + 1), 0, '')
-    if l:type >= len(l:types) || l:length == 0
+  var types: any = get(legend, 'tokenTypes', [])
+  var modifiers: any = get(legend, 'tokenModifiers', [])
+  var items: any = []
+  var line: any = 0
+  var character: any = 0
+  var index: any = 0
+  while index < len(data)
+    [delta, start, length, type, bits] = data[index :  index + 4]
+    line += delta
+    character = delta != 0 ? start : character + start
+    text = get(getbufline(buffer, line + 1), 0, '')
+    if type >= len(types) || length == 0
       throw 'invalid semantic token type or length'
     endif
-    let l:first = s:Column(l:text, l:character, a:encoding)
-    let l:last = s:Column(l:text, l:character + l:length, a:encoding)
-    let l:labels = []
-    let l:mask = 1
-    for l:modifier in l:modifiers
-      if and(l:bits, l:mask) | call add(l:labels, l:modifier) | endif
-      let l:mask *= 2
+    first = LocalColumn(text, character, encoding)
+    last = LocalColumn(text, character + length, encoding)
+    labels = []
+    mask = 1
+    for modifier in modifiers
+      if and(bits, mask) != 0
+        add(labels, modifier)
+      endif
+      mask *= 2
     endfor
-    call add(l:items, #{bufnr:a:buffer, lnum:l:line+1, col:l:first, end_col:l:last-1,
-          \ text:l:types[l:type] .. (empty(l:labels) ? '' : ' [' .. join(l:labels, ', ') .. ']')
-          \ .. ': ' .. strpart(l:text, l:first-1, l:last-l:first)})
-    let l:index += 5
+    add(items, {bufnr: buffer, lnum: line + 1, col: first, end_col: last - 1, text: types[type] .. (empty(labels) ? '' : ' [' .. join(labels,
+         ', ') .. ']') .. ': ' .. strpart(text, first - 1, last - first)})
+    index += 5
   endwhile
-  return l:items
-endfunc
+  return items
+enddef
 
-func! s:Finish(context, response) abort
-  if a:context.done | return | endif
-  let a:context.done = 1
-  call timer_stop(a:context.timer)
-  let l:result = #{status:'failed', items:[], server:a:context.server}
+def LocalFinish(context: any, arg_response: any): any
+  var response: any
+  var tokens: any
+  var data: any
+  if context.done
+    return 0
+  endif
+  context.done = 1
+  timer_stop(context.timer)
+  var result: any = {status: 'failed', items: [], server: context.server}
   try
-    if !bufexists(a:context.buffer) || getbufvar(a:context.buffer, 'changedtick') != a:context.tick
+    if !bufexists(context.buffer) || getbufvar(context.buffer, 'changedtick') != context.tick
       throw 'source changed while semantic scopes were requested; run the action again'
     endif
-    let l:response = get(a:response, 'response', {})
-    if has_key(l:response, 'error')
-      throw get(l:response.error, 'message', 'semantic token request failed')
+    response = get(arg_response, 'response', {})
+    if has_key(response, 'error')
+      throw get(response.error, 'message', 'semantic token request failed')
     endif
-    let l:tokens = get(l:response, 'result', v:null)
-    let l:data = l:tokens is v:null ? [] : get(l:tokens, 'data', [])
-    let l:result.items = planet#semantic#Decode(a:context.buffer, a:context.legend, l:data, a:context.encoding)
-    let l:result.status = 'success'
-    if win_id2win(a:context.window) > 0
-      call setloclist(win_id2win(a:context.window), [], ' ', #{title:'Semantic scopes: ' .. a:context.server, items:l:result.items})
-      if win_getid() == a:context.window && !empty(l:result.items)
+    tokens = get(response, 'result', v:null)
+    data = tokens == null ? [] : get(tokens, 'data', [])
+    result.items = planet#semantic#Decode(context.buffer, context.legend, data, context.encoding)
+    result.status = 'success'
+    if win_id2win(context.window) > 0
+      setloclist(win_id2win(context.window), [], ' ', {title: 'Semantic scopes: ' .. context.server, items: result.items})
+      if win_getid() == context.window && !empty(result.items)
         lopen
       endif
     endif
-    if empty(l:result.items) | echom 'PlanetVim: the server returned no semantic scopes for this document.' | endif
+    if empty(result.items)
+      echom 'PlanetVim: the server returned no semantic scopes for this document.'
+    endif
   catch
-    let l:result.error = v:exception
-    echohl WarningMsg | echom 'PlanetVim semantic scopes: ' .. v:exception | echohl None
+    result.error = v:exception
+    echohl WarningMsg
+    echom 'PlanetVim semantic scopes: ' .. v:exception
+    echohl None
   endtry
-  if bufexists(a:context.buffer)
-    call setbufvar(a:context.buffer, 'PV_semantic_result', l:result)
+  if bufexists(context.buffer)
+    setbufvar(context.buffer, 'PV_semantic_result', result)
   endif
-endfunc
+  return 0
+enddef
 
-func! s:Timeout(context, timer) abort
-  if has_key(a:context, 'Dispose') | call a:context.Dispose() | endif
-  call s:Finish(a:context, #{response:#{error:#{message:'semantic token request timed out'}}})
-endfunc
+def LocalTimeout(context: any, timer: any): any
+  if has_key(context, 'Dispose')
+    context.Dispose()
+  endif
+  LocalFinish(context, {response: {error: {message: 'semantic token request timed out'}}})
+  return 0
+enddef
 
-func! planet#semantic#Show() abort
+export def Show(): any
+  var capabilities: any
+  var provider: any
+  var full: any
+  var context: any
+  var server: any
   if empty(expand('%:p')) || &buftype !=# ''
     echom 'PlanetVim: semantic scopes require a named source buffer.'
     return 0
   endif
-  for l:server in lsp#get_allowed_servers()
-    if lsp#get_server_status(l:server) !=# 'running' | continue | endif
-    let l:capabilities = lsp#get_server_capabilities(l:server)
-    let l:provider = get(l:capabilities, 'semanticTokensProvider', {})
-    if type(l:provider) != v:t_dict || !has_key(l:provider, 'legend') | continue | endif
-    let l:full = get(l:provider, 'full', v:false)
-    if type(l:full) != v:t_dict && !l:full | continue | endif
-    let l:context = #{buffer:bufnr(), window:win_getid(), tick:b:changedtick, done:0,
-          \ server:l:server, legend:l:provider.legend, encoding:get(l:capabilities, 'positionEncoding', 'utf-16')}
-    let b:PV_semantic_result = #{status:'running', items:[], server:l:server}
-    let l:context.timer = timer_start(5000, function('s:Timeout', [l:context]))
-    let l:context.Dispose = lsp#callbag#pipe(
-          \ lsp#request(l:server, #{method:'textDocument/semanticTokens/full',
-          \ params:#{textDocument:lsp#get_text_document_identifier()}}),
-          \ lsp#callbag#subscribe(#{next:function('s:Finish', [l:context]), error:function('s:Finish', [l:context])}))
+  for item_server in lsp#get_allowed_servers()
+    server = item_server
+    if lsp#get_server_status(server) !=# 'running'
+      continue
+    endif
+    capabilities = lsp#get_server_capabilities(server)
+    provider = get(capabilities, 'semanticTokensProvider', {})
+    if type(provider) != v:t_dict || !has_key(provider, 'legend')
+      continue
+    endif
+    full = get(provider, 'full', v:false)
+    if type(full) != v:t_dict && !full
+      continue
+    endif
+    context = {buffer: bufnr(), window: win_getid(), tick: b:changedtick, done: 0, server: server, legend: provider.legend, encoding: get(capabilities, 'positionEncoding', 'utf-16')}
+    b:PV_semantic_result = {status: 'running', items: [], server: server}
+    context.timer = timer_start(5000, function(LocalTimeout, [context]))
+    context.Dispose = lsp#callbag#pipe(  lsp#request(server, {method: 'textDocument/semanticTokens/full',  params: {textDocument: lsp#get_text_document_identifier()}}),  lsp#callbag#subscribe({next: function(LocalFinish, [context]), error: function(LocalFinish, [context])}))
     return 1
   endfor
   echom 'PlanetVim: no running server supports full semantic tokens. Configure/start a capable server such as clangd; use :PlanetLspStatus.'
   return 0
-endfunc
+enddef

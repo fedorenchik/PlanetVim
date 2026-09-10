@@ -1,131 +1,164 @@
-scriptversion 4
+vim9script
 
-let s:last_error = ''
-let s:links = {'gdb-dashboard': 'https://github.com/cyrus-and/gdb-dashboard',
-      \ 'gdb-unreal': 'https://dev.epicgames.com/documentation/en-us/unreal-engine/linux-development-requirements-for-unreal-engine',
-      \ 'gdb-pretty-printers': 'https://sourceware.org/gdb/current/onlinedocs/gdb.html/Pretty-Printing.html',
-      \ 'lldb': 'https://lldb.llvm.org/use/tutorial.html', 'rr': 'https://rr-project.org/',
-      \ 'live-recorder': 'https://docs.undo.io/', 'radare2': 'https://book.rada.re/',
-      \ 'cutter': 'https://cutter.re/', 'gdb-kernel-setup': 'https://docs.kernel.org/process/debugging/gdb-kernel-debugging.html',
-      \ 'gdb-kernel': 'https://docs.kernel.org/process/debugging/gdb-kernel-debugging.html',
-      \ 'kgdb': 'https://docs.kernel.org/process/debugging/kgdb.html',
-      \ 'kdb': 'https://docs.kernel.org/process/debugging/kgdb.html',
-      \ 'debugfs': 'https://docs.kernel.org/filesystems/debugfs.html'}
+var script_last_error = ''
+var script_links = {'gdb-dashboard': 'https://github.com/cyrus-and/gdb-dashboard', 'gdb-unreal': 'https://dev.epicgames.com/documentation/en-us/unreal-engine/linux-development-requirements-for-unreal-engine',
+     'gdb-pretty-printers': 'https://sourceware.org/gdb/current/onlinedocs/gdb.html/Pretty-Printing.html',
+     'lldb': 'https://lldb.llvm.org/use/tutorial.html', 'rr': 'https://rr-project.org/', 'live-recorder': 'https://docs.undo.io/',
+     'radare2': 'https://book.rada.re/', 'cutter': 'https://cutter.re/', 'gdb-kernel-setup': 'https://docs.kernel.org/process/debugging/gdb-kernel-debugging.html',
+     'gdb-kernel': 'https://docs.kernel.org/process/debugging/gdb-kernel-debugging.html', 'kgdb': 'https://docs.kernel.org/process/debugging/kgdb.html',
+     'kdb': 'https://docs.kernel.org/process/debugging/kgdb.html', 'debugfs': 'https://docs.kernel.org/filesystems/debugfs.html'}
 
-func! planet#debugtools#LastError() abort
-  return s:last_error
-endfunc
+export def LastError(): any
+  return script_last_error
+enddef
 
-func! planet#debugtools#Value(options, key, prompt, default = '') abort
-  let l:value = has_key(a:options, a:key) ? a:options[a:key] : inputdialog(a:prompt, a:default)
-  if type(l:value) != v:t_string || empty(l:value) || l:value =~# '[\r\n]'
-    throw 'PlanetVim: cancelled or invalid ' .. a:key
+export def Value(options: any, key: any, prompt: any, default: any = ''): any
+  var value: any = has_key(options, key) ? options[key] : inputdialog(prompt, default)
+  if type(value) != v:t_string || empty(value) || value =~# '[\r\n]'
+    throw 'PlanetVim: cancelled or invalid ' .. key
   endif
-  return l:value
-endfunc
+  return value
+enddef
 
-func! planet#debugtools#Tool(name, options = {}) abort
-  let l:argv = get(a:options, 'tool', get(get(g:, 'PV_debug_tools', {}), a:name, [a:name]))
-  if type(l:argv) == v:t_string | let l:argv = [l:argv] | endif
-  if type(l:argv) != v:t_list || empty(l:argv)
-        \ || !empty(filter(copy(l:argv), 'type(v:val) != v:t_string || v:val =~# "[\\r\\n]"'))
-    throw 'PlanetVim: configure ' .. a:name .. ' as a nonempty executable argv list'
+export def Tool(name: any, options: any = {}): any
+  var argv: any = get(options, 'tool', get(get(g:, 'PV_debug_tools', {}), name, [name]))
+  if type(argv) == v:t_string
+    argv = [argv]
   endif
-  if !executable(l:argv[0])
-    throw 'PlanetVim: install ' .. a:name .. ' and add it to PATH, or set g:PV_debug_tools[' .. string(a:name) .. '] to its executable argv'
+  if type(argv) != v:t_list || empty(argv) || !empty(filter(copy(argv), (_, value) => type(value) != v:t_string || value =~# '[\r\n]'))
+    throw 'PlanetVim: configure ' .. name .. ' as a nonempty executable argv list'
   endif
-  return copy(l:argv)
-endfunc
+  if !executable(argv[0])
+    throw 'PlanetVim: install ' .. name .. ' and add it to PATH, or set g:PV_debug_tools[' .. string(name) .. '] to its executable argv'
+  endif
+  return copy(argv)
+enddef
 
-func! s:GdbQuote(path) abort
-  if a:path =~# '[\r\n]' | throw 'PlanetVim: GDB paths cannot contain line breaks' | endif
-  return '"' .. escape(fnamemodify(a:path, ':p'), '\"') .. '"'
-endfunc
+def LocalGdbQuote(path: any): any
+  if path =~# '[\r\n]'
+    throw 'PlanetVim: GDB paths cannot contain line breaks'
+  endif
+  return '"' .. escape(fnamemodify(path, ':p'), '\"') .. '"'
+enddef
 
-func! s:Profiles() abort
-  let l:file = planet#paths#Config('debugtools') .. '/profiles.json'
-  return filereadable(l:file) ? json_decode(join(readfile(l:file), "\n")) : {}
-endfunc
+def LocalProfiles(): any
+  var file: any = planet#paths#Config('debugtools') .. '/profiles.json'
+  return filereadable(file) ? json_decode(join(readfile(file), "\n")) : {}
+enddef
 
-func! s:Remember(id, options) abort
-  let l:profiles = s:Profiles()
-  let l:profiles[a:id] = a:options
-  call writefile([json_encode(l:profiles)], planet#paths#Config('debugtools') .. '/profiles.json')
-endfunc
+def LocalRemember(id: any, options: any): any
+  var profiles: any = LocalProfiles()
+  profiles[id] = options
+  writefile([json_encode(profiles)], planet#paths#Config('debugtools') .. '/profiles.json')
+  return 0
+enddef
 
-func! s:KernelSetup(options, root) abort
-  let l:vmlinux = planet#debugtools#Value(a:options, 'vmlinux', 'Kernel vmlinux with debug symbols:', a:root .. '/vmlinux')
-  if !filereadable(l:vmlinux) | throw 'PlanetVim: build a kernel with debug symbols first; vmlinux is missing' | endif
-  let l:helper = planet#debugtools#Value(a:options, 'helper', 'Kernel GDB helper:', a:root .. '/vmlinux-gdb.py')
-  if !filereadable(l:helper) | throw 'PlanetVim: enable CONFIG_GDB_SCRIPTS and build the kernel GDB scripts first' | endif
-  let l:file = planet#paths#Config('debugtools') .. '/kernel-' .. sha256(a:root)[:15] .. '.gdb'
-  call writefile(['file ' .. s:GdbQuote(l:vmlinux), 'source ' .. s:GdbQuote(l:helper)], l:file)
-  call s:Remember('gdb-kernel', {'init': l:file, 'vmlinux': l:vmlinux, 'cwd': a:root})
-  execute 'edit ' .. fnameescape(l:file)
+def LocalKernelSetup(options: any, root: any): any
+  var vmlinux: any = planet#debugtools#Value(options, 'vmlinux', 'Kernel vmlinux with debug symbols:', root .. '/vmlinux')
+  if !filereadable(vmlinux)
+    throw 'PlanetVim: build a kernel with debug symbols first; vmlinux is missing'
+  endif
+  var helper: any = planet#debugtools#Value(options, 'helper', 'Kernel GDB helper:', root .. '/vmlinux-gdb.py')
+  if !filereadable(helper)
+    throw 'PlanetVim: enable CONFIG_GDB_SCRIPTS and build the kernel GDB scripts first'
+  endif
+  var file: any = planet#paths#Config('debugtools') .. '/kernel-' .. sha256(root)[ : 15] .. '.gdb'
+  writefile(['file ' .. LocalGdbQuote(vmlinux), 'source ' .. LocalGdbQuote(helper)], file)
+  LocalRemember('gdb-kernel', {'init': file, 'vmlinux': vmlinux, 'cwd': root})
+  execute 'edit ' .. fnameescape(file)
   echom 'PlanetVim: kernel symbols configured. Use gdb kernel or kgdb and enter the target endpoint to connect.'
-  return l:file
-endfunc
+  return file
+enddef
 
-func! planet#debugtools#Run(id, options = {}) abort
-  let s:last_error = ''
+export def Run(id: any, arg_options: any = {}): any
+  var options: any
+  var root: any
+  var path: any
+  var argv: any
+  var vmlinux: any
+  var target: any
+  var device: any
+  var baud: any
+  var tool: any
+  var program: any
+  var arguments: any
+  script_last_error = ''
   try
-    if !has_key(s:links, a:id) | throw 'PlanetVim: unknown debug tool ' .. a:id | endif
-    let l:options = extend(get(s:Profiles(), a:id, {}), a:options, 'force')
-    let l:root = get(l:options, 'cwd', planet#run#Project().root)
-    if !isdirectory(l:root) | throw 'PlanetVim: working directory does not exist' | endif
-    if a:id ==# 'gdb-kernel-setup'
-      return s:KernelSetup(l:options, l:root)
-    elseif a:id ==# 'debugfs'
-      let l:path = planet#debugtools#Value(l:options, 'path', 'Mounted debugfs directory:', '/sys/kernel/debug')
-      if !isdirectory(l:path) | throw 'PlanetVim: debugfs is not mounted or not accessible at ' .. l:path | endif
+    if !has_key(script_links, id)
+      throw 'PlanetVim: unknown debug tool ' .. id
+    endif
+    options = extend(get(LocalProfiles(), id, {}), arg_options, 'force')
+    root = get(options, 'cwd', planet#run#Project().root)
+    if !isdirectory(root)
+      throw 'PlanetVim: working directory does not exist'
+    endif
+    if id ==# 'gdb-kernel-setup'
+      return LocalKernelSetup(options, root)
+    elseif id ==# 'debugfs'
+      path = planet#debugtools#Value(options, 'path', 'Mounted debugfs directory:', '/sys/kernel/debug')
+      if !isdirectory(path)
+        throw 'PlanetVim: debugfs is not mounted or not accessible at ' .. path
+      endif
       if exists(':Fern') == 2
         tabnew
-        execute 'Fern ' .. fnameescape(l:path)
+        execute 'Fern ' .. fnameescape(path)
       else
-        execute 'tabedit ' .. fnameescape(l:path)
+        execute 'tabedit ' .. fnameescape(path)
       endif
       return 1
-    elseif index(['gdb-dashboard', 'gdb-unreal', 'gdb-pretty-printers'], a:id) >= 0
-      let l:path = planet#debugtools#Value(l:options, 'init', 'Select the installed ' .. a:id .. ' GDB/Python script:')
-      if !filereadable(l:path) | throw 'PlanetVim: the selected GDB extension script does not exist' | endif
-      let l:argv = planet#debugtools#Tool('gdb', l:options) + ['--quiet', '--nx', '-x', fnamemodify(l:path, ':p')]
-      let l:options.init = fnamemodify(l:path, ':p')
-    elseif index(['gdb-kernel', 'kgdb'], a:id) >= 0
-      let l:vmlinux = planet#debugtools#Value(l:options, 'vmlinux', 'Kernel vmlinux with debug symbols:', l:root .. '/vmlinux')
-      if !filereadable(l:vmlinux) | throw 'PlanetVim: vmlinux is missing; use Setup GDB for Kernel first' | endif
-      let l:target = planet#debugtools#Value(l:options, 'target', 'GDB remote endpoint (host:port or serial device):', ':1234')
-      if l:target !~# '^[-a-zA-Z0-9_./:\[\]]\+$' | throw 'PlanetVim: invalid GDB remote endpoint' | endif
-      let l:argv = planet#debugtools#Tool('gdb', l:options) + ['--quiet', '--nx', l:vmlinux]
-      if has_key(l:options, 'init') && filereadable(l:options.init)
-        let l:argv += ['-x', l:options.init]
+    elseif index(['gdb-dashboard', 'gdb-unreal', 'gdb-pretty-printers'], id) >= 0
+      path = planet#debugtools#Value(options, 'init', 'Select the installed ' .. id .. ' GDB/Python script:')
+      if !filereadable(path)
+        throw 'PlanetVim: the selected GDB extension script does not exist'
       endif
-      let l:argv += ['-ex', 'target remote ' .. l:target]
-    elseif a:id ==# 'kdb'
-      let l:device = planet#debugtools#Value(l:options, 'device', 'Serial device for the configured KDB console:', '/dev/ttyUSB0')
-      let l:baud = planet#debugtools#Value(l:options, 'baud', 'Serial baud rate:', '115200')
-      if l:baud !~# '^\d\+$' | throw 'PlanetVim: baud rate must be numeric' | endif
-      let l:argv = has('win32') ? planet#debugtools#Tool('plink', l:options) + ['-serial', l:device, '-sercfg', l:baud]
-            \ : planet#debugtools#Tool('picocom', l:options) + ['--baud', l:baud, l:device]
+      argv = planet#debugtools#Tool('gdb', options) + ['--quiet', '--nx', '-x', fnamemodify(path, ':p')]
+      options.init = fnamemodify(path, ':p')
+    elseif index(['gdb-kernel', 'kgdb'], id) >= 0
+      vmlinux = planet#debugtools#Value(options, 'vmlinux', 'Kernel vmlinux with debug symbols:', root .. '/vmlinux')
+      if !filereadable(vmlinux)
+        throw 'PlanetVim: vmlinux is missing; use Setup GDB for Kernel first'
+      endif
+      target = planet#debugtools#Value(options, 'target', 'GDB remote endpoint (host:port or serial device):', ':1234')
+      if target !~# '^[-a-zA-Z0-9_./:\[\]]\+$'
+        throw 'PlanetVim: invalid GDB remote endpoint'
+      endif
+      argv = planet#debugtools#Tool('gdb', options) + ['--quiet', '--nx', vmlinux]
+      if has_key(options, 'init') && filereadable(options.init)
+        argv += ['-x', options.init]
+      endif
+      argv += ['-ex', 'target remote ' .. target]
+    elseif id ==# 'kdb'
+      device = planet#debugtools#Value(options, 'device', 'Serial device for the configured KDB console:', '/dev/ttyUSB0')
+      baud = planet#debugtools#Value(options, 'baud', 'Serial baud rate:', '115200')
+      if baud !~# '^\d\+$'
+        throw 'PlanetVim: baud rate must be numeric'
+      endif
+      argv = has('win32') ? planet#debugtools#Tool('plink', options) + ['-serial', device, '-sercfg', baud] : planet#debugtools#Tool('picocom', options) + ['--baud', baud, device]
     else
-      let l:tool = {'lldb': 'lldb', 'rr': 'rr', 'live-recorder': 'live-record', 'radare2': 'r2', 'cutter': 'cutter'}[a:id]
-      let l:program = planet#debugtools#Value(l:options, 'program', 'Program to open with ' .. l:tool .. ':')
-      if !filereadable(l:program) | throw 'PlanetVim: selected program does not exist' | endif
-      let l:argv = planet#debugtools#Tool(l:tool, l:options)
-      if a:id ==# 'rr' | let l:argv += ['record'] | endif
-      let l:argv += [fnamemodify(l:program, ':p')]
-      let l:options.program = fnamemodify(l:program, ':p')
+      tool = {'lldb': 'lldb', 'rr': 'rr', 'live-recorder': 'live-record', 'radare2': 'r2', 'cutter': 'cutter'}[id]
+      program = planet#debugtools#Value(options, 'program', 'Program to open with ' .. tool .. ':')
+      if !filereadable(program)
+        throw 'PlanetVim: selected program does not exist'
+      endif
+      argv = planet#debugtools#Tool(tool, options)
+      if id ==# 'rr'
+        argv += ['record']
+      endif
+      argv += [fnamemodify(program, ':p')]
+      options.program = fnamemodify(program, ':p')
     endif
-    let l:arguments = get(l:options, 'args', [])
-    if type(l:arguments) != v:t_list || !empty(filter(copy(l:arguments), 'type(v:val) != v:t_string'))
+    arguments = get(options, 'args', [])
+    if type(arguments) != v:t_list || !empty(filter(copy(arguments), (_, value) => type(value) != v:t_string))
       throw 'PlanetVim: debug program args must be an argv list'
     endif
-    call s:Remember(a:id, l:options)
-    return a:id ==# 'cutter' ? planet#term#RunGuiApp(l:argv + l:arguments, l:root)
-          \ : planet#term#RunArgv(l:argv + l:arguments, v:false, v:false, v:false, l:root)
+    LocalRemember(id, options)
+    return id ==# 'cutter' ? planet#term#RunGuiApp(argv + arguments, root) : planet#term#RunArgv(argv + arguments, v:false, v:false, v:false, root)
   catch
-    let s:last_error = v:exception
-    echom s:last_error
-    if has_key(s:links, a:id) | echom 'Setup guide: ' .. s:links[a:id] | endif
+    script_last_error = v:exception
+    echom script_last_error
+    if has_key(script_links, id)
+      echom 'Setup guide: ' .. script_links[id]
+    endif
     return 0
   endtry
-endfunc
+enddef

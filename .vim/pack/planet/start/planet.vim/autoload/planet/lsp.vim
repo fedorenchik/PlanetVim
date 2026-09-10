@@ -1,6 +1,6 @@
-scriptversion 4
-
-func! planet#lsp#UpdateFolds() abort
+vim9script
+export def UpdateFolds(): any
   set foldmethod=expr foldexpr=lsp#ui#vim#folding#foldexpr() foldtext=lsp#ui#vim#folding#foldtext()
-  LspDocumentFold
-endfunc
+  execute 'LspDocumentFold'
+  return 0
+enddef
