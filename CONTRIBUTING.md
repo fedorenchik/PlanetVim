@@ -21,6 +21,28 @@ The supported product is Linux GVim first and Windows GVim second, version 9.1 o
 
 JSON argv input uses arrays such as `["--flag", "value with spaces"]`. A blank cancelled prompt must not execute. Tests should assert behavior rather than mirror a dispatch dictionary alone.
 
+## Menu teaching metadata
+
+Define first-party actions with `PlanetMenu` followed by the native menu
+command, flags, priority, path, and unchanged RHS. This adds native `:tmenu`
+tips and compact accelerator text while preserving remapping, mode overrides,
+and `<SID>` context. Use ordinary `aunmenu` and enable/disable commands.
+Third-party menu definitions stay in their upstream sources.
+
+Use `<Tab>` before a hint and escape spaces/periods in menu paths. Keep at most
+two short shortcuts; put the primary one last. The shared helper prefers keys,
+then short Ex commands, with a combined 36-column limit. Long commands and
+function calls remain in tips. Add a precise description in
+`autoload/planet/menu_descriptions.vim` for native key actions with no Ex
+equivalent. Do not invent shortcuts, execute expression mappings to inspect
+them, or manufacture `:normal!` wrappers just to give every tip a colon.
+
+The helper follows global Normal-mode mappings after plugins load. A shared
+menubar tip teaches the Normal action; popup tips follow the editing mode.
+Buffer-local mappings are not advertised
+as universal shortcuts. Run `test_menu_help.vim` and `test_menu_teaching.vim`
+after adding or changing entries, including dynamic menu builders.
+
 ## Running checks
 
 ```sh

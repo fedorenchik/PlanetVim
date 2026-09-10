@@ -216,6 +216,25 @@ Settings → Input Language chooses an installed Vim keymap or the operating
 system keyboard. Spelling → Choose Spelling Language lists installed dictionaries.
 See the [completion guide](COMPLETION.md) for native completion examples.
 
+## Learning from menu entries
+
+Hints favor shortcuts and show at most two, with the primary shortcut at the far
+right. A second short shortcut takes the middle position; otherwise a short
+command can go there. Examples: **Undo — :undo — u**, **Next Tab — <C-PgDown> —
+gt**, and **Minimize — :suspend — <C-z>**. Long commands and function calls stay
+in the tip to keep menus compact.
+
+Hover over an entry to see its command or function, beginning with `:`, in GVim's
+bottom command area. Actions with no Ex command have a fuller explanation
+beginning with `"`. Menubar tips teach the Normal-mode action when the same item also has
+Insert/Visual variants. Right-click tips follow the current editing mode. Vim does not show menu tips while editing a command line.
+The displayed hints document existing keys; they do not create key bindings.
+
+Edit → Undo/Redo and Earlier/Later Change are separate: `u` and `<C-r>` follow
+the undo tree, while `g-` and `g+` follow the chronological change history.
+Modify → Toggle Comment uses the filetype's `commentstring`; `gcc` toggles the
+current line. `:PlanetToggleComment` also accepts an Ex line range.
+
 ## Editing and comparison menus
 
 Selection → Inside / Around exposes Vim text objects, including words, quotes,

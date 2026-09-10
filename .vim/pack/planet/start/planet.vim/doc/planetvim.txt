@@ -98,6 +98,18 @@ root is always visible. Select Basic, Editing, Development, Tools, Navigation,
 or Settings there. Compact styles let these groups be toggled independently.
 Style and selected group are saved across restarts.
 
+Menu hints prefer keyboard shortcuts. The primary shortcut is on the far right;
+a second short shortcut, or a short command, appears before it. At most two
+shortcuts are shown. For example, Undo shows :undo then u; Next Tab shows
+<C-PgDown> then gt. A long command or function call stays in the menu tip.
+Hover over an entry to read its tip in GVim's bottom command area: a leading
+colon introduces its command/function, and a leading double quote introduces
+an explanation of a key-based action. Tips use Normal mode when an item also
+has Insert/Visual variants; right-click tips follow the current editing mode.
+Command-line mode does not display menu tips (see |:tmenu|).
+Undo/Redo traverse the undo tree; Earlier/Later Change (g-/g+) follow the
+chronological change history. These can differ after editing an undone buffer.
+
 Find Menu Action searches the actual menu tree, including hidden groups. Type
 words to filter, arrows to choose, Enter to run, F1 for help, or Esc to cancel.
 The action runs in the original editing window with its insertion point or

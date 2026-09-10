@@ -2,6 +2,14 @@
 
 ## Unreleased — Linux GVim menu coverage
 
+- Teach keys and commands in menu hints, preferring up to two short shortcuts
+  with the primary key on the right. Show commands/functions or fuller action
+  descriptions in native bottom tips, including per-mode right-click menus.
+- Separate chronological Earlier/Later Change from Undo/Redo; repair malformed
+  menu paths, stale hints, and entries that bypassed their plugin mappings.
+- Implement the advertised `gcc` comment action using `commentstring`, and fix
+  Insert-mode Close and command-line Copy in the context menu.
+
 - Add persistent Emoji, compact Plain, and single-group Descriptive menu styles;
   keep PlanetVim visible in every style.
 - Search actual menu actions across groups, preserve editing context, and open
