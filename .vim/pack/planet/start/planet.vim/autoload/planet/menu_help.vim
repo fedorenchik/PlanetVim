@@ -15,6 +15,12 @@ enddef
 
 def ExCommand(rhs: string): string
   var start = stridx(rhs, '<Cmd>')
+  # Most first-party entries are one literal <Cmd> action. Avoid repeated
+  # regular-expression parsing for that common case; retain the general path
+  # for chained commands, expression registers and special-key arguments.
+  if start == 0 && strpart(rhs, strlen(rhs) - 4) ==# '<CR>' && count(rhs, '<') == 2
+    return ':' .. trim(strpart(rhs, 5, strlen(rhs) - 9))
+  endif
   var text = ''
   if rhs =~# '^q:i'
     return ':' .. trim(substitute(strpart(rhs, 3), '\c<C-X>.*$', '', ''))
@@ -160,6 +166,10 @@ export def Explain(rhs: string, path: string, remap: bool = false): dict<string>
 enddef
 
 def Accelerator(rhs: string, annotations: list<string>, command: string): string
+  var direct = rhs !~? '<Cmd>\|<Plug>\|<SNR>' && rhs !~# ':' && !empty(rhs)
+  if !direct && empty(annotations) && stridx(command, ':call ') == 0 && !has_key(reverse_maps, command)
+    return ''
+  endif
   var keys: list<string> = []
   # Existing annotations also document mode-specific and pending-motion keys.
   for annotation in annotations
@@ -168,7 +178,6 @@ def Accelerator(rhs: string, annotations: list<string>, command: string): string
       add(keys, key)
     endif
   endfor
-  var direct = rhs !~? '<Cmd>\|<Plug>\|<SNR>' && rhs !~# ':' && !empty(rhs)
   var primary = direct ? rhs : Shortcut(command)
   primary = substitute(primary, '\c<Leader>', escape(get(g:, 'mapleader', '\'), '\&'), 'g')
   if primary =~? '<CR>'
