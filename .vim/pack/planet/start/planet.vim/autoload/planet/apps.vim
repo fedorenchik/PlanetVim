@@ -1,6 +1,7 @@
 scriptversion 4
 
 func! planet#apps#MenuListGuiWindows() abort
+  if !planet#menu#Visible('nav') | return | endif
   silent! aunmenu 🎛️&@.&GUI\ Windows
   if has('win32') || !executable('wmctrl')
     return
@@ -16,6 +17,7 @@ func! planet#apps#MenuListGuiWindows() abort
 endfunc
 
 func! planet#apps#WorkspaceListMenu() abort
+  if !planet#menu#Visible('nav') | return | endif
   silent! aunmenu 🎛️&@.&Workspaces
   if has('win32') || !executable('wmctrl')
     return

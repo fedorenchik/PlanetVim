@@ -111,6 +111,7 @@ func! s:TransferReady(context, timer) abort
 endfunc
 
 func! planet#gui#MenuListVimServers() abort
+  if !planet#menu#Visible('nav') | return | endif
   silent! aunmenu 🗄️&x.&Vim\ Servers
   if !exists('*serverlist')
     return

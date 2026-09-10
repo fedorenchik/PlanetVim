@@ -1,7 +1,7 @@
 scriptversion 4
 
 func! planet#menu#nav#Update() abort
-  if g:PlanetVim_menus_nav
+  if planet#menu#Visible('nav')
     " Buffers
     an 800.10  📖&u.Buffers <Nop>
     an disable 📖&u.Buffers

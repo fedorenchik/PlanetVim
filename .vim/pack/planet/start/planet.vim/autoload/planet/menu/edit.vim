@@ -1,7 +1,7 @@
 scriptversion 4
 
 func! planet#menu#edit#Update() abort
-  if g:PlanetVim_menus_editing
+  if planet#menu#Visible('editing')
     " Vim Registers
     an 200.10  📋&".Registers <Nop>
     an disable 📋&".Registers

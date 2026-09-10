@@ -166,7 +166,7 @@ endfunc
 func! planet#run#UpdateRunMenu() abort
   silent! aunmenu ▶️&r
   let l:project = planet#run#Project()
-  if ! get(g:, 'PlanetVim_menus_dev', 1)
+  if !planet#menu#Visible('dev')
     return
   endif
   an 510.10 ▶️&r.Run <Nop>

@@ -4,6 +4,15 @@ Start with `:PlanetDoctor`, `:PlanetLspStatus`, and `:PlanetVersion`. Doctor rep
 
 Git is optional for basic editing. Git menu actions remain available and report missing prerequisites; gutter change indicators start automatically when Git is available. You can set `g:gitgutter_git_executable` to a custom Git executable or explicitly set `g:gitgutter_enabled`. Restart PlanetVim after installing Git or changing its executable path.
 
+## Menu styles
+
+Use **PlanetVim → Menu Style** to choose **Emoji** (the default compact roots),
+**Plain** (compact keyboard letters), or **Descriptive** (File, Edit, and so on).
+Descriptive mode shows one group at a time. Choose Basic, Editing, Development,
+Tools, Navigation, or Settings from PlanetVim to switch groups. PlanetVim is
+always visible, and both your style and selected group survive a restart.
+In compact styles the same group entries toggle groups independently.
+
 ## Home startup and recovery
 
 `make install` (or `python3 scripts/install.py install`)

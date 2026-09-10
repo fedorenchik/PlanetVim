@@ -6,7 +6,7 @@ scriptversion 4
 "TODO: change icon based on IP (Americas: 🌎, Europe, Africa, Middle-East: 🌍,
 "TODO:    SEA, Pacific: 🌏, ISS: 🛰️, Interplanetary: 🪐) or use country flag
 function! planet#menu#planet#Update() abort
-  if g:PlanetVim_menus_planet
+  if planet#menu#Visible('planet')
     an 100.10  🌐&P.PlanetVim <Nop>
     an disable 🌐&P.PlanetVim
     an 100.10  🌐&P.&Open\ Welcome\ Screen                  <Cmd>tabnew<CR><Cmd>Startify<CR>
@@ -16,6 +16,9 @@ function! planet#menu#planet#Update() abort
     an 100.10  🌐&P.Set\ Standa&rd\ Mode                    <Cmd>call planet#planet#SetStandardMode()<CR>
     an 100.10  🌐&P.Set\ S&uper-Charged\ Mode               <Cmd>call planet#planet#SetSuperChargedMode()<CR>
     an 100.10  🌐&P.--2-- <Nop>
+    an 100.20 🌐&P.Menu\ Style.Emoji\ (default) <Cmd>call planet#menu#Style('emoji')<CR>
+    an 100.20 🌐&P.Menu\ Style.Plain <Cmd>call planet#menu#Style('plain')<CR>
+    an 100.20 🌐&P.Menu\ Style.Descriptive\ (one\ group) <Cmd>call planet#menu#Style('descriptive')<CR>
     an 100.20  🌐&P.--3-- <Nop>
     an 100.30  🌐&P.&Basic\ Menus                           <Cmd>call planet#planet#BasicToggle()<CR>
     an 100.40  🌐&P.&Editing\ Menus                         <Cmd>call planet#planet#EditingToggle()<CR>

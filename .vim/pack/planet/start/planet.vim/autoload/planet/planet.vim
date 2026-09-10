@@ -192,87 +192,31 @@ func! planet#planet#IsGuiDialogs() abort
 endfunc
 
 func! planet#planet#PlanetToggle() abort
-  if g:PlanetVim_menus_planet
-    let g:PlanetVim_menus_planet = 0
-  else
-    let g:PlanetVim_menus_planet = 1
-  endif
-  call planet#menu#planet#Update()
-  if empty(v:this_session)
-    call planet#planet#ConfigUpdate('g:PlanetVim_menus_planet')
-  endif
+  call planet#menu#Group('planet')
 endfunc
 
 func! planet#planet#BasicToggle() abort
-  if g:PlanetVim_menus_basic
-    let g:PlanetVim_menus_basic = 0
-  else
-    let g:PlanetVim_menus_basic = 1
-  endif
-  call planet#menu#basic#Update()
-  if empty(v:this_session)
-    call planet#planet#ConfigUpdate('g:PlanetVim_menus_basic')
-  endif
+  call planet#menu#Group('basic')
 endfunc
 
 func! planet#planet#EditingToggle() abort
-  if g:PlanetVim_menus_editing
-    let g:PlanetVim_menus_editing = 0
-  else
-    let g:PlanetVim_menus_editing = 1
-  endif
-  call planet#menu#edit#Update()
-  if empty(v:this_session)
-    call planet#planet#ConfigUpdate('g:PlanetVim_menus_editing')
-  endif
+  call planet#menu#Group('editing')
 endfunc
 
 func! planet#planet#DevelopmentToggle() abort
-  if g:PlanetVim_menus_dev
-    let g:PlanetVim_menus_dev = 0
-  else
-    let g:PlanetVim_menus_dev = 1
-  endif
-  call planet#menu#dev#Update()
-  if empty(v:this_session)
-    call planet#planet#ConfigUpdate('g:PlanetVim_menus_dev')
-  endif
+  call planet#menu#Group('dev')
 endfunc
 
 func! planet#planet#ToolsToggle() abort
-  if g:PlanetVim_menus_tools
-    let g:PlanetVim_menus_tools = 0
-  else
-    let g:PlanetVim_menus_tools = 1
-  endif
-  call planet#menu#tools#Update()
-  if empty(v:this_session)
-    call planet#planet#ConfigUpdate('g:PlanetVim_menus_tools')
-  endif
+  call planet#menu#Group('tools')
 endfunc
 
 func! planet#planet#NavigationToggle() abort
-  if g:PlanetVim_menus_nav
-    let g:PlanetVim_menus_nav = 0
-  else
-    let g:PlanetVim_menus_nav = 1
-  endif
-  call planet#menu#nav#Update()
-  if empty(v:this_session)
-    call planet#planet#ConfigUpdate('g:PlanetVim_menus_nav')
-  endif
+  call planet#menu#Group('nav')
 endfunc
 
 func! planet#planet#SettingsToggle() abort
-  if g:PlanetVim_menus_settings
-    let g:PlanetVim_menus_settings = 0
-  else
-    let g:PlanetVim_menus_settings = 1
-  endif
-  call planet#menu#settings#Update()
-  if empty(v:this_session)
-    call planet#planet#ConfigUpdate('g:PlanetVim_menus_settings')
-  endif
+  call planet#menu#Group('settings')
 endfunc
 
 func! planet#planet#SetPerSessionOptions()

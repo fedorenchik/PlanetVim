@@ -1,7 +1,7 @@
 scriptversion 4
 
 func! planet#menu#basic#Update() abort
-  if g:PlanetVim_menus_basic
+  if planet#menu#Visible('basic')
     " File
     an 110.10  📁&f.File <Nop>
     an disable 📁&f.File

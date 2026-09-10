@@ -50,13 +50,7 @@ if !exists('g:gitgutter_enabled')
   let g:gitgutter_enabled = executable(get(g:, 'gitgutter_git_executable', 'git'))
 endif
 
-call planet#menu#planet#Update()
-call planet#menu#basic#Update()
-call planet#menu#edit#Update()
-call planet#menu#dev#Update()
-call planet#menu#tools#Update()
-call planet#menu#nav#Update()
-call planet#menu#settings#Update()
+call planet#menu#Refresh()
 
 " Avoid the ":ptag" when there is no word under the cursor, and a few other
 " things. Opens the tag under cursor in Preview window.

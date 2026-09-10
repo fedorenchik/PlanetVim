@@ -128,20 +128,17 @@ Acceptance: “compare”, “inside quotes”, “recover” and “complete fi
 right actions; execution retains Visual selections. Index existing actions
 without duplicating or modifying vendor implementations.
 
-### MD-03 · P1 · Make names and action state informative
+### MD-03 · Superseded by owner request · Compact menu styles
 
-- [ ] Offer descriptive text or icon-plus-text root names, explanations, contextual
-  help, and visible current values for toggles/settings.
+- [x] PlanetVim → Menu Style offers Emoji (default), Plain, and Descriptive.
+  Descriptive mode shows exactly one of the six groups; PlanetVim always remains
+  visible. Style and selected group are saved across restarts. Compact styles
+  retain the independent group toggles. Dynamic buffer, session, GUI and run
+  menus respect visibility and are rebuilt when their group is selected.
 
-Roots such as `📋"` and `⚙️\\` require prior knowledge. `:PlanetPlainMenus` currently
-produces `[f]` and `[z]`, not “File” and “Folds”; its translation list also omits
-Tags and Diff/Patch. Offer a complete readable scheme. Long labels across 42 roots
-need an optional grouped layout and search; preserve all actions and the compact
-layout choice. [plain menus](../.vim/pack/planet/start/planet.vim/autoload/planet/menu.vim#L16)
-
-Acceptance: style changes preserve dynamic lists and actions; small windows leave
-everything reachable. Show effective local/global values and whether a preference
-is saved. Distinguish native Vim keys from PlanetVim remappings in shortcut labels.
+The original broader MD-03 proposal is skipped. Validation:
+`tests/test_menu_styles.vim` and `tests/test_menus.vim` exercise switching,
+all six groups, dynamic updates, preference persistence, and root restoration.
 
 ### MD-04 · P1 · Expose built-in completion sources
 

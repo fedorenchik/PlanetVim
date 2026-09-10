@@ -1,7 +1,7 @@
 scriptversion 4
 
 func! planet#menu#tools#Update() abort
-  if g:PlanetVim_menus_tools
+  if planet#menu#Visible('tools')
     " Git
     " Open Log in new window
     an 700.10  🔀&g.Git <Nop>

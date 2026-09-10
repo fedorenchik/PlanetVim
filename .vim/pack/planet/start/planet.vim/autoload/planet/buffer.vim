@@ -66,7 +66,7 @@ func! planet#buffer#AddBuffer(name, num) abort
 endfunc
 
 func! planet#buffer#AddBufferAu() abort
-  if get(g:, 'PlanetVim_menus_nav', 1)
+  if planet#menu#Visible('nav')
     call planet#buffer#AddBuffer(expand('<afile>'), str2nr(expand('<abuf>')))
   endif
 endfunc
@@ -78,7 +78,7 @@ endfunc
 func! planet#buffer#AddBuffers() abort
   silent! aunmenu 📖&u.Buffer\ List
   let s:entries = {}
-  if get(g:, 'PlanetVim_menus_nav', 1)
+  if planet#menu#Visible('nav')
     for l:buffer in getbufinfo({'buflisted': 1})
       call planet#buffer#AddBuffer(l:buffer.name, l:buffer.bufnr)
     endfor

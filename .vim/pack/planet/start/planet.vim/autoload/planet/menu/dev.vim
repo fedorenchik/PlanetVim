@@ -1,7 +1,7 @@
 scriptversion 4
 
 func! planet#menu#dev#Update() abort
-  if g:PlanetVim_menus_dev
+  if planet#menu#Visible('dev')
     " LSP
     an 300.10  ❇️&[.LSP <Nop>
     an disable ❇️&[.LSP

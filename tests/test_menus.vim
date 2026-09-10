@@ -1,8 +1,10 @@
+aunmenu *
+silent! tlunmenu *
 execute 'source ' .. fnameescape(g:PV_root .. '/scripts/planetvim.vim')
 runtime! plugin/**/*.vim
 set nomore noautowrite noautowriteall
 let s:groups = [
-      \ ['planet', 'planet', '🌐P'], ['basic', 'basic', '📁f'],
+      \ ['basic', 'basic', '📁f'],
       \ ['editing', 'edit', '📜z'], ['dev', 'dev', '🔨b'],
       \ ['tools', 'tools', '🔧o'], ['nav', 'nav', '🗂️t'],
       \ ['settings', 'settings', '⚙️\\']]

@@ -41,12 +41,15 @@ func! planet#session#SetCurrent() abort
   endif
   if ! empty(v:this_session)
     call writefile([fnamemodify(v:this_session, ':p')], planet#paths#State() .. '/last-session')
-    exe 'an 840.20  📚&s.Current:\ ' .. planet#menu#MenuifyName(fnamemodify(v:this_session, ':t')) .. ' <Nop>'
+    if planet#menu#Visible('nav')
+      exe 'an 840.20  📚&s.Current:\ ' .. planet#menu#MenuifyName(fnamemodify(v:this_session, ':t')) .. ' <Nop>'
+    endif
     let g:last_session = fnamemodify(v:this_session, ":t")
   endif
 endfunc
 
 func! planet#session#MenuList() abort
+  if !planet#menu#Visible('nav') | return | endif
   silent! aun 📚&s.Ope&n\ Session
   let s:menu_sessions = startify#session_list('')
   for l:index in range(len(s:menu_sessions))

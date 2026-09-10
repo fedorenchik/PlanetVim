@@ -3,6 +3,12 @@ scriptversion 4
 let s:menus = ['planet', 'basic', 'editing', 'dev', 'tools', 'nav', 'settings']
 
 func! s:Valid(key, value) abort
+  if a:key ==# 'PV_menu_style'
+    return type(a:value) == v:t_string && index(['emoji', 'plain', 'descriptive'], a:value) >= 0
+  endif
+  if a:key ==# 'PV_menu_group'
+    return type(a:value) == v:t_string && index(['basic', 'editing', 'dev', 'tools', 'nav', 'settings'], a:value) >= 0
+  endif
   if a:key ==# 'PV_mode'
     return type(a:value) == v:t_string && index(['e', 's', 'p'], a:value) >= 0
   endif
