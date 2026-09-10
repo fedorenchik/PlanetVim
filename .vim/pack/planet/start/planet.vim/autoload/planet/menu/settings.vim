@@ -134,6 +134,7 @@ func! planet#menu#settings#Update() abort
     call planet#buffer_options#Menus('settings')
     call planet#input#Menus('settings')
     call planet#appearance#Menus()
+    call planet#learn#Menus()
   else
     silent! aunmenu ⚙️&\\
     silent! aunmenu ⌨️&\|

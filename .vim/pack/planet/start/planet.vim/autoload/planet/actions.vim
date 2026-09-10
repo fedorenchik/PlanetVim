@@ -31,10 +31,15 @@ func! s:Walk(path, label, group) abort
   call add(s:entries, #{path: a:path, label: a:label, group: a:group, modes: l:modes, search: l:search})
 endfunc
 
-func! planet#actions#Index() abort
-  let s:entries = []
+func! planet#actions#Index(visible_only = 0) abort
+  if !a:visible_only | let s:entries = [] | endif
   for [l:group, l:root, l:label] in planet#menu#Roots()
-    call s:Walk(planet#menu#RootPath(l:root), l:label, l:group)
+    let l:path = planet#menu#RootPath(l:root)
+    if a:visible_only
+      if empty(menu_info(l:path)) && empty(menu_info(l:path, 'i')) | continue | endif
+      call filter(s:entries, {_, item -> stridx(item.path, l:path .. '.') != 0})
+    endif
+    call s:Walk(l:path, l:label, l:group)
   endfor
 endfunc
 
@@ -83,7 +88,32 @@ func! s:Chosen(id, result) abort
   endif
 endfunc
 
+func! planet#actions#Help(item, mode = 'n') abort
+  let l:rhs = get(get(a:item.modes, a:mode, {}), 'rhs', '')
+  let l:topic = matchstr(l:rhs, '\<help\s\+\zs[^< ]*')
+  if empty(l:topic)
+    let l:option = matchstr(l:rhs, "preferences#\\%(Set\\|Toggle\\|Flag\\)('\\zs[^']*")
+    if !empty(l:option) | let l:topic = "'" .. l:option .. "'" | endif
+  endif
+  if empty(l:topic) && index(getcompletion(l:rhs, 'help'), l:rhs) >= 0 | let l:topic = l:rhs | endif
+  if empty(l:topic)
+    let l:topic = get({'basic': 'usr_02.txt', 'editing': 'change.txt', 'dev': 'usr_29.txt', 'tools': 'usr_30.txt', 'nav': 'windows.txt', 'settings': 'options.txt', 'planet': 'planetvim'}, a:item.group, 'index')
+  endif
+  call planet#learn#Help(l:topic)
+  call popup_create([a:item.label, 'Mode: ' .. a:mode, 'Menu mapping: ' .. l:rhs, 'Help: ' .. l:topic, 'Press Escape or click outside to close this note.'],
+        \ #{title: ' Menu Action Help ', pos: 'topleft', line: 2, col: 2, maxwidth: max([30, &columns - 6]), maxheight: 8, padding: [1, 1, 1, 1], close: 'click', filter: 'popup_filter_yesno', mapping: 0})
+endfunc
+
 func! s:Filter(id, key) abort
+  if a:key ==# "\<F1>"
+    let l:index = getcurpos(a:id)[1] - 1
+    if l:index >= 0 && l:index < len(s:matches)
+      let l:item = s:matches[l:index]
+      call popup_close(a:id, -1)
+      call planet#actions#Help(l:item, s:context.mode)
+    endif
+    return 1
+  endif
   if a:key ==# "\<BS>" || a:key ==# "\<C-h>"
     let s:query = strcharpart(s:query, 0, max([0, strchars(s:query) - 1]))
   elseif strchars(a:key) == 1 && char2nr(a:key) >= 32 && a:key !=# "\<Del>"
@@ -99,6 +129,8 @@ func! s:Filter(id, key) abort
 endfunc
 
 func! planet#actions#Open() abort
+  " Refresh changing buffer/session/run entries, retaining hidden groups.
+  call planet#actions#Index(1)
   let l:mode = mode()
   let l:kind = l:mode =~# '^[iR]' ? 'i' : index(['v', 'V', "\<C-v>"], l:mode) >= 0 ? 'x' : index(['s', 'S', "\<C-s>"], l:mode) >= 0 ? 's' : 'n'
   let s:context = #{mode: l:kind, window: win_getid(), buffer: bufnr(), cursor: getpos('.')}
@@ -106,7 +138,7 @@ func! planet#actions#Open() abort
   let s:query = ''
   let s:matches = planet#actions#Search('', l:kind)
   return popup_menu(map(copy(s:matches), {_, item -> item.label}),
-        \ #{title: ' Find Menu Action: type to filter; Enter runs; Esc cancels ',
+        \ #{title: ' Find Menu Action: type to filter; Enter runs; F1 help; Esc cancels ',
         \ maxheight: 20, maxwidth: max([30, &columns - 8]), mapping: 0,
         \ filter: function('s:Filter'), callback: function('s:Chosen')})
 endfunc

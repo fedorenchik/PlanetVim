@@ -369,7 +369,7 @@ messages, signs, and presentation toggles on GVim 9.1 and 9.2.
 
 ### MD-17 · P1 · Add guided learning and “what is new” entries
 
-- [ ] Add **Help → Interactive Tutor / User Manual / Search Help / What's New in
+- [x] Add **Help → Interactive Tutor / User Manual / Search Help / What's New in
   This Vim / PlanetVim Guide**, plus action-specific help in the action finder.
 
 Help/index/quickref/plugin entries exist, but the new `:Tutor`, user manual and
@@ -382,6 +382,12 @@ silently use Supercharged remappings.
 Acceptance: scratch lessons preserve files and mode; release help matches the
 installed version. An optional Vim9 submenu can link scripting/classes and
 source/compile a scratch example, without a menu for each language keyword.
+
+Implemented native/fallback tutoring in a separate clean GVim and an editable
+Vim9 scratch lesson. F1 in Find Menu Action opens relevant help with the exact
+menu path and mapping. The finder refreshes visible dynamic entries while
+retaining its hidden-group catalog. `test_learning.vim` and
+`test_menu_actions.vim` cover these flows without changing the source buffer.
 
 ### MD-18 · P2 · Modernize existing GUI controls
 

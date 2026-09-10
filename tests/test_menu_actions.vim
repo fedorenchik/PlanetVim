@@ -45,3 +45,17 @@ call cursor(1, 1)
 call feedkeys("i\<F12>insert probe\<CR>\<Esc>", 'xt')
 call assert_equal('INSERTEDfirst selection', getline(1))
 iunmap <F12>
+nnoremenu Modify.Dynamic\ Probe <Cmd>let g:PV_dynamic_probe = 1<CR>
+let s:popup = planet#actions#Open()
+call assert_equal(1, len(planet#actions#Search('dynamic probe')))
+call popup_close(s:popup, -1)
+let s:before = getline(1, '$')
+call planet#menu#Refresh()
+nnoremap <F12> <Cmd>call planet#actions#Open()<CR>
+call feedkeys("\<F12>help user manual\<F1>\<Esc>", 'xt')
+call assert_equal('help', &buftype)
+call assert_match('usr_toc', expand('%:t'))
+call popup_clear()
+close
+call assert_equal(s:before, getline(1, '$'))
+nunmap <F12>
