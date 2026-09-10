@@ -4,6 +4,8 @@ PlanetVim is a **GVim distribution for Linux and Windows**, with discoverable me
 
 The current version is **0.1.0-rc.1**. See [the acceptance record](docs/ACCEPTANCE.md) for what has actually been exercised and what still needs platform or SDK validation. Menu actions are implemented and enabled; optional tools report their prerequisites when selected.
 
+The first-party Vim runtime uses Vim9 compiled functions; bundled upstream plugins retain their original code. The minimum remains GVim **9.1.0000**.
+
 ![PlanetVim running in Linux GVim](docs/images/gvim-linux.png)
 
 ## Start from a checkout

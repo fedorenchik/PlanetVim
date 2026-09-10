@@ -35,6 +35,26 @@ class MenuContracts(unittest.TestCase):
                     line, r'^\s*' + creation + r'\s+(?!enable\b|disable\b)',
                     f'{path.name}:{number}: use PlanetMenu for teaching metadata')
 
+    def test_first_party_runtime_uses_vim9(self):
+        own = ROOT / '.vim/pack/planet/start'
+        paths = [*own.rglob('*.vim'), ROOT / '.vimrc',
+                 ROOT / '.vim/after/unmap.vim', ROOT / '.vim/keymap/russian-dvp.vim']
+        for path in paths:
+            if not path.is_file():
+                continue
+            source = path.read_text()
+            code = [line.strip() for line in source.splitlines()
+                    if line.strip() and not line.lstrip().startswith(('"', '#'))]
+            self.assertTrue(code[0].startswith('vim9script'), str(path))
+            # Keymap entries after loadkeymap are data, not Vim statements.
+            source = source.split('\nloadkeymap', 1)[0]
+            if path == PLUGIN / 'plugin/planet.vim':
+                # Sole legacy bridge: Vim 9.1 tag-file addresses need its context.
+                bridge = "function LocalPreviewTag(word) abort\n  execute 'ptag ' .. a:word\nendfunction"
+                self.assertEqual(1, source.count(bridge))
+                source = source.replace(bridge, '')
+            self.assertNotRegex(source, r'(?m)^\s*fu(?:nction|nc|n)?!?\s', str(path))
+
     def test_callbacks_and_placeholders(self):
         definitions = set()
         # Legacy global names and vendor autoload callbacks are just as callable
@@ -43,9 +63,15 @@ class MenuContracts(unittest.TestCase):
         for path in [*(ROOT / '.vim').rglob('*.vim'), ROOT / '.vimrc']:
             if not path.is_file():
                 continue
+            source = path.read_text(errors='replace')
             definitions.update(re.findall(
-                r'(?mi)^\s*(?:fu[a-z]*!?|def!?)\s+(' + callback_pattern + r')\s*\(',
-                path.read_text(errors='replace')))
+                r'(?mi)^\s*(?:legacy\s+)?(?:fu[a-z]*!?|def!?)\s+(?:g:)?('
+                + callback_pattern + r')\s*\(', source))
+            if 'autoload' in path.parts:
+                relative = Path(*path.parts[path.parts.index('autoload') + 1:])
+                prefix = '#'.join(relative.with_suffix('').parts) + '#'
+                definitions.update(prefix + name for name in re.findall(
+                    r'(?m)^\s*export\s+def\s+(\w+)\s*\(', source))
         for path in [*(PLUGIN / 'autoload/planet/menu').glob('*.vim'), ROOT / '.vimrc']:
             for number, line in enumerate(path.read_text().splitlines(), 1):
                 if not re.match(r'\s*(?:PlanetMenu\s+)?(?:an|am|[a-z]*menu)\s+(?:<[^>]+>\s+)*\d', line):

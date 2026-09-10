@@ -10,6 +10,38 @@ The supported product is Linux GVim first and Windows GVim second, version 9.1 o
 - Other packages are upstream snapshots. Retain their notices; update or replace them through the workflow in [docs/PLUGINS.md](docs/PLUGINS.md). Do not patch vendored source locally.
 - `tests/` contains isolated Vimscript/Python fixtures and opt-in real-tool acceptance checks.
 
+## Vim9 runtime code
+
+Use `vim9script` and compiled `def` functions for first-party Vim code. An
+`export def Open()` in `autoload/planet/example.vim` remains callable as
+`planet#example#Open()` from legacy mappings, plugins, and personal configuration.
+Keep stable public names. Use concrete types where the contract is fixed;
+`any` is appropriate at validated JSON, optional argument, and plugin boundaries.
+Prefer compiled lambdas to string expressions in `map()` and `filter()`.
+
+The entry point keeps a small legacy feature/version guard so unsupported Vim
+builds receive the existing error before parsing Vim9 code; its setup function
+is compiled. Lowercase compatibility APIs use `legacy def! planet#planet#f()`:
+`legacy` permits the existing name, while the body is still compiled Vim9.
+Native mappings, commands, menus, and autocmds retain their native syntax.
+The sole legacy function, `LocalPreviewTag`, supplies legacy context to native
+`:ptag` because Vim 9.1 otherwise parses numeric tag-file addresses as Vim9
+ranges (even through `:legacy ptag`). Its surrounding helper is compiled.
+Borrowed syntax definitions and all upstream plugin sources remain unchanged.
+
+Vim9 checks all branches when compiling a function. Read optional post-9.1
+options with guarded `eval()` and invoke optional commands with `execute` so
+compilation also succeeds on GVim 9.1.0000. Preserve explicit buffer/window-local
+option scopes. Compare numeric counts and IDs with zero rather than treating
+arbitrary integers as booleans. Use `<script>` for the defining source path,
+and explicit arguments when crossing into Python or executing a ranged command;
+compiled local variables are not legacy `l:` dictionary entries.
+
+`tests/test_vim9.vim` compiles the loaded first-party functions, including
+optional actions, and exercises a script-local popup callback through a legacy
+caller. Run it and the full GUI suite on both the minimum and current GVim.
+The fixtures intentionally retain legacy syntax to check interoperability.
+
 ## Adding an action
 
 1. Define the requested operation, required files/SDKs, output, cancellation, and failure behavior. Use an existing public plugin API when it matches.

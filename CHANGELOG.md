@@ -1,7 +1,11 @@
 # Changelog
 
-## Unreleased — Linux GVim menu coverage
+## Unreleased — Linux GVim menus and Vim9 runtime
 
+- Migrate first-party Vim helpers, menu builders, startup configuration, and
+  plugin glue to Vim9 with compiled functions. Preserve public APIs and the
+  GVim 9.1.0000 minimum; leave bundled third-party code unchanged. Add an
+  exhaustive compilation check and legacy-caller regression coverage.
 - Teach keys and commands in menu hints, preferring up to two short shortcuts
   with the primary key on the right. Show commands/functions or fuller action
   descriptions in native bottom tips, including per-mode right-click menus.
