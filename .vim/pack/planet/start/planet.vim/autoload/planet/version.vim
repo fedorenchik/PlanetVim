@@ -1,5 +1,5 @@
-scriptversion 4
-func! planet#version#Get() abort
-  let l:path = planet#paths#Root() .. '/VERSION'
-  return filereadable(l:path) ? get(readfile(l:path, '', 1), 0, 'unknown') : 'unknown'
-endfunc
+vim9script
+export def Get(): string
+  var path: any = planet#paths#Root() .. '/VERSION'
+  return filereadable(path) ? get(readfile(path, '', 1), 0, 'unknown') : 'unknown'
+enddef

@@ -1,49 +1,50 @@
-scriptversion 4
-let s:root = expand("<sfile>:p:h:h:h:h:h:h:h:h")
+vim9script
+var script_root = expand("<sfile>:p:h:h:h:h:h:h:h:h")
 
-func! s:Directory(kind, name) abort
-  let l:key = 'PV_' .. a:kind .. '_dir'
-  if !has_key(g:, l:key)
-    let l:override = getenv('PLANETVIM_' .. toupper(a:kind) .. '_DIR')
-    if l:override isnot v:null && !empty(l:override)
-      let g:[l:key] = l:override
+def LocalDirectory(kind: string, name: string): string
+  var override: any
+  var base: any
+  var xdg: any
+  var key: any = 'PV_' .. kind .. '_dir'
+  if !has_key(g:, key)
+    override = getenv('PLANETVIM_' .. toupper(kind) .. '_DIR')
+    if override != null && !empty(override)
+      g:[key] = override
     elseif has('win32')
-      let l:base = empty($LOCALAPPDATA) ? expand('~/AppData/Local') : $LOCALAPPDATA
-      let g:[l:key] = l:base .. '/PlanetVim/' .. a:kind
+      base = empty($LOCALAPPDATA) ? expand('~/AppData/Local') : $LOCALAPPDATA
+      g:[key] = base .. '/PlanetVim/' .. kind
     else
-      let l:xdg = {'config': ['XDG_CONFIG_HOME', '~/.config'],
-            \ 'state': ['XDG_STATE_HOME', '~/.local/state'],
-            \ 'cache': ['XDG_CACHE_HOME', '~/.cache']}[a:kind]
-      let l:base = getenv(l:xdg[0])
-      let g:[l:key] = (l:base is v:null || empty(l:base) ? expand(l:xdg[1]) : l:base) .. '/planetvim'
+      xdg = {'config': ['XDG_CONFIG_HOME', '~/.config'], 'state': ['XDG_STATE_HOME', '~/.local/state'], 'cache': ['XDG_CACHE_HOME', '~/.cache']}[kind]
+      base = getenv(xdg[0])
+      g:[key] = (base == null || empty(base) ? expand(xdg[1]) :  base) .. '/planetvim'
     endif
   endif
-  let l:path = substitute(fnamemodify(g:[l:key], ':p'), '[/\\]\+$', '', '') .. (empty(a:name) ? '' : '/' .. a:name)
-  if !isdirectory(l:path)
-    call mkdir(l:path, 'p', 0o700)
+  var path: any = substitute(fnamemodify(g:[key], ':p'), '[/\\]\+$', '', '') .. (empty(name) ? '' : '/' .. name)
+  if !isdirectory(path)
+    mkdir(path, 'p', 0o700)
   endif
-  return substitute(l:path, '[/\\]\+$', '', '')
-endfunc
+  return substitute(path, '[/\\]\+$', '', '')
+enddef
 
-func! planet#paths#Config(name = '') abort
-  return s:Directory('config', a:name)
-endfunc
+export def Config(name: string = ''): string
+  return LocalDirectory('config', name)
+enddef
 
-func! planet#paths#State(name = '') abort
-  return s:Directory('state', a:name)
-endfunc
+export def State(name: string = ''): string
+  return LocalDirectory('state', name)
+enddef
 
-func! planet#paths#Cache(name = '') abort
-  return s:Directory('cache', a:name)
-endfunc
+export def Cache(name: string = ''): string
+  return LocalDirectory('cache', name)
+enddef
 
-func! planet#paths#Root() abort
-  return get(g:, 'PV_root', s:root)
-endfunc
+export def Root(): string
+  return get(g:, 'PV_root', script_root)
+enddef
 
-" Escape one entry for runtimepath/packpath/globpath, not for native file APIs.
-" Apostrophes invoke shell expansion on Unix. On Windows a backslash before an
-" apostrophe becomes a path separator after settings adds 39 to 'isfname'.
-func! planet#paths#Runtime(path) abort
-  return escape(a:path, has('win32') ? ',' : ",'")
-endfunc
+# Escape one entry for runtimepath/packpath/globpath, not for native file APIs.
+# Apostrophes invoke shell expansion on Unix. On Windows a backslash before an
+# apostrophe becomes a path separator after settings adds 39 to 'isfname'.
+export def Runtime(path: string): string
+  return escape(path, has('win32') ? ',' : ",'")
+enddef

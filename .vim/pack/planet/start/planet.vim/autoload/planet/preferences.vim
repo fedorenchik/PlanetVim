@@ -1,53 +1,70 @@
-scriptversion 4
+vim9script
 
-let s:options = ['pumopt', 'printoptions', 'printdevice', 'printfont', 'completeopt', 'wildoptions', 'wildmode', 'wildchar', 'splitkeep', 'jumpoptions', 'showtabpanel', 'tabpanelopt', 'guifont', 'guiligatures', 'background', 'renderoptions', 'scrolloffpad', 'statuslineopt']
+var script_options = ['pumopt', 'printoptions', 'printdevice', 'printfont', 'completeopt', 'wildoptions', 'wildmode', 'wildchar', 'splitkeep', 'jumpoptions', 'showtabpanel', 'tabpanelopt', 'guifont', 'guiligatures', 'background', 'renderoptions', 'scrolloffpad', 'statuslineopt']
 
-func! planet#preferences#Valid(values) abort
-  if type(a:values) != v:t_dict | return 0 | endif
-  for [l:name, l:value] in items(a:values)
-    if index(s:options, l:name) < 0 || index([v:t_string, v:t_number], type(l:value)) < 0 | return 0 | endif
+export def Valid(values: any): number
+  if type(values) != v:t_dict
+    return 0
+  endif
+  for [name, value] in items(values)
+    if index(script_options, name) < 0 || index([v:t_string, v:t_number], type(value)) < 0
+      return 0
+    endif
   endfor
   return 1
-endfunc
+enddef
 
-func! planet#preferences#Set(name, value, local = 0, save = 1) abort
-  if a:name !~# '^\a\+$' || !exists('+' .. a:name)
-    return planet#prompt#Unavailable(a:name, "'" .. a:name .. "'")
+export def Set(name: string, value: any, local: number = 0, save: number = 1): number
+  if name !~# '^\a\+$' || !exists('+' .. name)
+    return planet#prompt#Unavailable(name, "'" .. name .. "'")
   endif
-  let l:scope = a:local ? 'l:' : 'g:'
-  let l:old = eval('&' .. l:scope .. a:name)
+  var scope: any = local ? 'l:' : 'g:'
+  var old: any = eval('&' .. scope .. name)
   try
-    execute 'let &' .. l:scope .. a:name .. ' = ' .. string(a:value)
+    execute '&' .. scope .. name .. ' = ' .. string(value)
   catch /^Vim\%((\a\+)\)\=:E/
-    execute 'let &' .. l:scope .. a:name .. ' = ' .. string(l:old)
-    return planet#prompt#Unavailable(a:name .. '=' .. string(a:value), "'" .. a:name .. "'")
+    execute '&' .. scope .. name .. ' = ' .. string(old)
+    return planet#prompt#Unavailable(name .. '=' .. string(value), "'" .. name .. "'")
   endtry
-  if !a:local && a:save && index(s:options, a:name) >= 0
-    let g:PV_editor_options = get(g:, 'PV_editor_options', {})
-    let g:PV_editor_options[a:name] = a:value
-    call planet#config#SavePreference('PV_editor_options', g:PV_editor_options)
+  if !local && save && index(script_options, name) >= 0
+    g:PV_editor_options = get(g:, 'PV_editor_options', {})
+    g:PV_editor_options[name] = value
+    planet#config#SavePreference('PV_editor_options', g:PV_editor_options)
   endif
   return 1
-endfunc
+enddef
 
-func! planet#preferences#Toggle(name, local = 0) abort
-  if !exists('+' .. a:name) | return planet#prompt#Unavailable(a:name, "'" .. a:name .. "'") | endif
-  return planet#preferences#Set(a:name, !eval('&' .. (a:local ? 'l:' : 'g:') .. a:name), a:local)
-endfunc
+export def Toggle(name: string, local: number = 0): number
+  if !exists('+' .. name)
+    return planet#prompt#Unavailable(name, "'" .. name .. "'")
+  endif
+  return planet#preferences#Set(name, !eval('&' .. (local ? 'l:' : 'g:') .. name), local)
+enddef
 
-func! planet#preferences#Flag(name, flag, local = 0) abort
-  if !exists('+' .. a:name) | return planet#prompt#Unavailable(a:name, "'" .. a:name .. "'") | endif
-  let l:flags = split(eval('&' .. (a:local ? 'l:' : 'g:') .. a:name), ',')
-  let l:index = index(l:flags, a:flag)
-  if l:index >= 0 | call remove(l:flags, l:index) | else | call add(l:flags, a:flag) | endif
-  return planet#preferences#Set(a:name, join(l:flags, ','), a:local)
-endfunc
+export def Flag(name: string, flag: string, local: number = 0): number
+  if !exists('+' .. name)
+    return planet#prompt#Unavailable(name, "'" .. name .. "'")
+  endif
+  var flags: any = split(eval('&' .. (local ? 'l:' : 'g:') .. name), ',')
+  var index: any = index(flags, flag)
+  if index >= 0
+    remove(flags, index)
+  else
+    add(flags, flag)
+  endif
+  return planet#preferences#Set(name, join(flags, ','), local)
+enddef
 
-func! planet#preferences#Apply() abort
-  call planet#lsp_display#Restore()
-  for [l:name, l:value] in items(get(g:, 'PV_editor_options', {}))
-    call planet#preferences#Set(l:name, l:value, 0, 0)
+export def Apply(): number
+  planet#lsp_display#Restore()
+  for [name, value] in items(get(g:, 'PV_editor_options', {}))
+    planet#preferences#Set(name, value, 0, 0)
   endfor
-  if exists('g:PV_gui_theme') | call planet#appearance#Theme(g:PV_gui_theme, 0) | endif
-  if exists('g:PV_completion_engine') | call planet#completion#Engine(g:PV_completion_engine, 0) | endif
-endfunc
+  if exists('g:PV_gui_theme')
+    planet#appearance#Theme(g:PV_gui_theme, 0)
+  endif
+  if exists('g:PV_completion_engine')
+    planet#completion#Engine(g:PV_completion_engine, 0)
+  endif
+  return 0
+enddef
