@@ -1,5 +1,4 @@
-scriptversion 4
-
+vim9script noclear
 aug AugPv_MenuBuffers
 au!
 au BufCreate,BufFilePost * call planet#buffer#AddBufferAu()

@@ -1,5 +1,5 @@
 vim9script
-var script_root = expand("<sfile>:p:h:h:h:h:h:h:h:h")
+var script_root = expand("<script>:p:h:h:h:h:h:h:h:h")
 
 def LocalDirectory(kind: string, name: string): string
   var override: any

@@ -8,41 +8,43 @@ if !has('gui') || !has('patch-9.1.0000')
   echoerr 'PlanetVim requires GVim 9.1 or newer.'
   finish
 endif
-let g:PV_root = empty($PLANETVIM_ROOT)
-      \ ? fnamemodify(resolve(expand('<sfile>:p')), ':h:h')
-      \ : fnamemodify($PLANETVIM_ROOT, ':p')
-" Vim 9.1's package loader adds raw paths back to runtimepath. An apostrophe
-" then invokes shell wildcard expansion (and fish rejects unmatched patterns).
-" Enumerate bundled packages without globbing and register escaped entries
-" before loading any configuration. Vim still loads their plugin/after files.
-let s:runtime = g:PV_root .. '/.vim'
-let s:planet = s:runtime .. '/pack/planet/start/planet.vim'
-let s:packages = []
-for s:collection in sort(readdir(s:runtime .. '/pack'))
-  let s:start = s:runtime .. '/pack/' .. s:collection .. '/start'
-  if !isdirectory(s:start) | continue | endif
-  for s:name in sort(readdir(s:start))
-    if isdirectory(s:start .. '/' .. s:name)
-      call add(s:packages, s:start .. '/' .. s:name)
+" Keep the feature check readable by older Vim before it encounters Vim9.
+" Everything after that bootstrap is a compiled Vim9 function.
+def! s:Configure()
+  g:PV_root = empty($PLANETVIM_ROOT)
+      ? fnamemodify(resolve(expand('<script>:p')), ':h:h')
+      : fnamemodify($PLANETVIM_ROOT, ':p')
+  # Vim 9.1's package loader adds raw paths back to runtimepath. Register
+  # escaped entries first so spaces, apostrophes and commas remain literal.
+  var runtime = g:PV_root .. '/.vim'
+  var planet = runtime .. '/pack/planet/start/planet.vim'
+  var packages: list<string> = []
+  for collection in sort(readdir(runtime .. '/pack'))
+    var start = runtime .. '/pack/' .. collection .. '/start'
+    if !isdirectory(start)
+      continue
+    endif
+    for name in sort(readdir(start))
+      if isdirectory(start .. '/' .. name)
+        add(packages, start .. '/' .. name)
+      endif
+    endfor
+  endfor
+  var entries = [planet, runtime]
+      + filter(copy(packages), (_, package) => package !=# planet) + [$VIMRUNTIME]
+  for path in packages + [runtime]
+    if isdirectory(path .. '/after')
+      add(entries, path .. '/after')
     endif
   endfor
-endfor
-" First-party autoload is available to vimrc; retain every bundled package.
-let s:entries = [s:planet, s:runtime] + filter(copy(s:packages), 'v:val !=# s:planet') + [$VIMRUNTIME]
-for s:path in s:packages + [s:runtime]
-  if isdirectory(s:path .. '/after')
-    call add(s:entries, s:path .. '/after')
+  var path_escapes = has('win32') ? ',' : ",'"
+  &runtimepath = join(map(entries, (_, path) => escape(path, path_escapes)), ',')
+  # Built-in optional packages remain available through :packadd.
+  &packpath = escape($VIMRUNTIME, path_escapes)
+  g:PV_config = planet#paths#Config() .. '/planetvimrc.vim'
+  execute 'source ' .. fnameescape(g:PV_root .. '/.vimrc')
+  if !executable(get(g:, 'w3m#command', 'w3m'))
+    g:loaded_w3m = 1
   endif
-endfor
-let s:path_escapes = has('win32') ? ',' : ",'"
-let &runtimepath = join(map(s:entries, 'escape(v:val, s:path_escapes)'), ',')
-" Built-in optional packages remain available through :packadd. Bundled
-" optional Vimspector uses planet#debug#Init(), which escapes its entry too.
-let &packpath = escape($VIMRUNTIME, s:path_escapes)
-let g:PV_config = planet#paths#Config() .. '/planetvimrc.vim'
-execute 'source ' .. fnameescape(g:PV_root .. '/.vimrc')
-
-" Optional browser integration must not make a clean machine fail startup.
-if !executable(get(g:, 'w3m#command', 'w3m'))
-  let g:loaded_w3m = 1
-endif
+enddef
+call s:Configure()

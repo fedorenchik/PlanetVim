@@ -1,5 +1,4 @@
-scriptversion 4
-
+vim9script noclear
 command! PlanetLspStatus call planet#intelligence#ShowStatus()
 command! PlanetLspSetup call planet#intelligence#Register()
 command! PlanetDefinition call planet#intelligence#Action('LspDefinition')

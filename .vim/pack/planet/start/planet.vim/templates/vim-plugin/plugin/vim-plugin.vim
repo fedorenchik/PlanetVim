@@ -1,5 +1,5 @@
-scriptversion 4
+vim9script
 
-func! MyNewFunction() abort
+def g:MyNewFunction()
   echo "This Plugin Works!"
-endfunc
+enddef

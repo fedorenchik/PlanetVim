@@ -8,9 +8,9 @@
 
 " All characters are given literally, conversion to another encoding (e.g.,
 " UTF-8) should work.
-scriptencoding utf-8
+vim9script
 
-let b:keymap_name = "ru"
+b:keymap_name = "ru"
 
 loadkeymap
 ~	Ё	CYRILLIC CAPITAL LETTER IO

@@ -1,10 +1,10 @@
-scriptversion 4
+vim9script noclear
 if exists('g:loaded_planet_vim_settings')
   finish
 endif
-let g:loaded_planet_vim_settings = 1
+g:loaded_planet_vim_settings = 1
 
-" Fix the string encoding before assigning any Unicode filesystem options.
+# Fix the string encoding before assigning any Unicode filesystem options.
 set encoding=utf-8
 
 set autoindent
@@ -13,8 +13,8 @@ set noautowrite
 set noautowriteall
 set bs=start
 set backup
-let &backupdir = escape(planet#paths#State('backup'), ',') .. '//'
-"TODO: set & show baloons
+&backupdir = escape(planet#paths#State('backup'), ',') .. '//'
+#TODO: set & show baloons
 set ballooneval
 set balloonevalterm
 set belloff=all,backspace,cursor,complete,copy,ctrlg,error,esc,ex,insertmode,lang,mess,showmatch,operator,register,shell,spell,wildmode
@@ -44,7 +44,7 @@ set nodelcombine
 set dictionary+=/usr/share/dict/words
 set dictionary+=/usr/share/dict/web2
 set diffopt=filler,context:12,iwhite,vertical,foldcolumn:2,internal,indent-heuristic,algorithm:histogram,closeoff,hiddenoff
-let &directory = escape(planet#paths#State('swap'), ',') .. '//'
+&directory = escape(planet#paths#State('swap'), ',') .. '//'
 set display=lastline,uhex
 set noedcompatible
 set emoji
@@ -69,24 +69,23 @@ set formatoptions+=1jMmn
 set fsync
 set nogdefault
 set grepprg=grep\ -nH\ $*
-"TODO: Colorize cursor in different modes.
-"set guicursor+=a:blinkon0
+#TODO: Colorize cursor in different modes.
+#set guicursor+=a:blinkon0
 if has('win32')
-  " Font availability differs between Windows installations and Wine.
-  " Keep GVim's usable default if none of the preferred fonts is installed.
-  for s:font in ['Consolas:h10', 'Liberation_Mono:h10', 'Courier_New:h10']
+  # Font availability differs between Windows installations and Wine.
+  # Keep GVim's usable default if none of the preferred fonts is installed.
+  for script_font in ['Consolas:h10', 'Liberation_Mono:h10', 'Courier_New:h10']
     try
-      let &guifont = s:font
+      &guifont = script_font
       break
     catch /^Vim\%((\a\+)\)\=:E596/
     endtry
   endfor
-  unlet s:font
 else
   set guifont=Monospace\ 10
 endif
 set guiheadroom=0
-" Adding '!' to guioptions causes too much redraw & 'hit enter' prompts (vim bug)
+# Adding '!' to guioptions causes too much redraw & 'hit enter' prompts (vim bug)
 set guioptions=aAcdeimMgpk
 set guipty
 set guitablabel=%{g:GuiTabLabel()}
@@ -106,8 +105,8 @@ if has('reltime')
 endif
 set infercase
 set isfname+=@-@,128-255
-" On Windows, adding apostrophe changes how fnameescape() backslashes are
-" interpreted and breaks :source/:edit for quoted paths. Keep native rules.
+# On Windows, adding apostrophe changes how fnameescape() backslashes are
+# interpreted and breaks :source/:edit for quoted paths. Keep native rules.
 if !has('win32')
   set isfname+=39
 endif
@@ -170,7 +169,7 @@ if &shell =~# 'fish$' && (v:version < 704 || v:version == 704 && !has('patch276'
 endif
 set shiftround
 set shiftwidth=8
-set shortmess="I"
+set shortmess=I
 set showbreak=>>>>>>>>
 set showcmd
 set showfulltag
@@ -184,8 +183,8 @@ set smartcase
 set smartindent
 set smarttab
 set softtabstop=8
-" Ordinary buffers share a private dictionary; writing buffers can override it.
-call planet#writing#SetSpellFile(escape(planet#paths#Config('spell') .. '/personal.utf-8.add', ','), v:false)
+# Ordinary buffers share a private dictionary; writing buffers can override it.
+planet#writing#SetSpellFile(escape(planet#paths#Config('spell') .. '/personal.utf-8.add', ','), v:false)
 set spelllang+=cjk
 set spelloptions=camel
 set spellsuggest=best,10
@@ -197,7 +196,7 @@ set swapfile
 set swapsync=
 set switchbuf=uselast
 set synmaxcol=1000
-if &t_Co == 8 && $TERM !~# '^linux\|^Eterm'
+if str2nr(&t_Co) == 8 && $TERM !~# '^linux\|^Eterm'
   set t_Co=16
 endif
 set t_vb=
@@ -209,9 +208,9 @@ set tagrelative
 set tags=tags;
 set tagstack
 set termguicolors
-let s:thesaurus = planet#paths#Config('thesaurus') .. '/words.txt'
-if filereadable(s:thesaurus)
-  let &thesaurus = escape(s:thesaurus, ',')
+var script_thesaurus = planet#paths#Config('thesaurus') .. '/words.txt'
+if filereadable(script_thesaurus)
+  &thesaurus = escape(script_thesaurus, ',')
 endif
 set notildeop
 set notimeout
@@ -223,7 +222,7 @@ set ttimeout
 set ttimeoutlen=10
 set ttyfast
 if has('persistent_undo')
-  let &undodir = escape(planet#paths#State('undo'), ',') .. '//'
+  &undodir = escape(planet#paths#State('undo'), ',') .. '//'
   set undofile
 endif
 set undolevels=1000
@@ -247,5 +246,5 @@ set nowrap
 set nowrapscan
 set writebackup
 
-let &viewdir = planet#paths#State('views')
-let &viminfofile = planet#paths#State() .. '/viminfo'
+&viewdir = planet#paths#State('views')
+&viminfofile = planet#paths#State() .. '/viminfo'

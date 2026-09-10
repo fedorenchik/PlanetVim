@@ -1,67 +1,66 @@
-scriptversion 4
-
+vim9script noclear
 if exists('g:loaded_planet_vim_globals')
   finish
 endif
-let g:loaded_planet_vim_globals = 1
+g:loaded_planet_vim_globals = 1
 
 
-let g:PV_config = get(g:, 'PV_config', planet#paths#Config() .. '/planetvimrc.vim')
+g:PV_config = get(g:, 'PV_config', planet#paths#Config() .. '/planetvimrc.vim')
 
 
 if ! exists("g:PlanetVim_menus_planet")
-  let g:PlanetVim_menus_planet = 1
+  g:PlanetVim_menus_planet = 1
 endif
 
 if ! exists("g:PlanetVim_menus_basic")
-  let g:PlanetVim_menus_basic = 1
+  g:PlanetVim_menus_basic = 1
 endif
 
 if ! exists("g:PlanetVim_menus_editing")
-  let g:PlanetVim_menus_editing = 1
+  g:PlanetVim_menus_editing = 1
 endif
 
 if ! exists("g:PlanetVim_menus_dev")
-  let g:PlanetVim_menus_dev = 1
+  g:PlanetVim_menus_dev = 1
 endif
 
 if ! exists("g:PlanetVim_menus_tools")
-  let g:PlanetVim_menus_tools = 1
+  g:PlanetVim_menus_tools = 1
 endif
 
 if ! exists("g:PlanetVim_menus_nav")
-  let g:PlanetVim_menus_nav = 1
+  g:PlanetVim_menus_nav = 1
 endif
 
 if ! exists("g:PlanetVim_menus_settings")
-  let g:PlanetVim_menus_settings = 1
+  g:PlanetVim_menus_settings = 1
 endif
 
 
 if ! exists("g:PV_mode")
-  let g:PV_mode = 's'
-end
+  g:PV_mode = 's'
+endif
 
 
 if ! exists('g:PV_build_dir')
-  let g:PV_build_dir = ''
-end
+  g:PV_build_dir = ''
+endif
 
 if ! exists('g:PV_run_configurations')
-  let g:PV_run_configurations = ''
-end
+  g:PV_run_configurations = ''
+endif
 
 if ! exists('g:PV_server_port')
-  let g:PV_server_port = 8080
-end
+  g:PV_server_port = 8080
+endif
 
-" Autocommands
+# Autocommands
 if ! exists('g:PV_alternate_tab')
-  let g:PV_alternate_tab = tabpagenr('#')
-end
+  g:PV_alternate_tab = tabpagenr('#')
+endif
 if ! exists('g:PV_current_tab')
-  let g:PV_current_tab = tabpagenr()
-end
+  g:PV_current_tab = tabpagenr()
+endif
 if ! exists('g:PV_new_tab')
-  let g:PV_new_tab = 1
-end
+  g:PV_new_tab = 1
+endif

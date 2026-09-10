@@ -1,96 +1,100 @@
-scriptversion 4
+vim9script noclear
+# TODO: $VIMRUNTIME folder
+# TODO: Vim help reference
+# TODO: VS Code
+# TODO: Qt Creator
+# TODO: LibreOffice
+# TODO: Use $VIMRUNTIME/tools/demoserver.py for controlling Vim
+# TODO: Add Buffer Cmdline Window: Input commands and ouput results in
+# TODO:    'prompt' buffer.
+# TODO: Add sessions inside project dir support
+# Custom config file: $HOME/.vim/planetvimrc.vim
+#TODO: Add function to follow DE night mode & theme settings (auto switch
+#TODO: guioptions+=d when dark theme, auto switch to dark colorscheme variant)
 
-" TODO: $VIMRUNTIME folder
-" TODO: Vim help reference
-" TODO: VS Code
-" TODO: Qt Creator
-" TODO: LibreOffice
-" TODO: Use $VIMRUNTIME/tools/demoserver.py for controlling Vim
-" TODO: Add Buffer Cmdline Window: Input commands and ouput results in
-" TODO:    'prompt' buffer.
-" TODO: Add sessions inside project dir support
-" Custom config file: $HOME/.vim/planetvimrc.vim
-"TODO: Add function to follow DE night mode & theme settings (auto switch
-"TODO: guioptions+=d when dark theme, auto switch to dark colorscheme variant)
+#TODO: add setting 'equalprg' for formatting wih == (clang-format, etc.)
+#TODO: Choise between text, emoji, symbols, nerdicons menus
+#TODO: Customize tabline-menu when vim bug #7991 is fixed
+#TODO: Add prompt buffer to exec viml commands
+#TODO: menus:
+#TODO:    C++
+#TODO:    Python
+#TODO:    Arduino
+#TODO:    PlatformIO
+#TODO:    CMake
+#TODO:    Meson
+#TODO:    Conan
+#TODO:    Qt (uic, moc, rcc, lupdate, lrelease, shiboken)
+#TODO:    SWIG,
+#TODO:    Latex
+#TODO:    Writing
+#TODO:    Docker
+#TODO:    Yocto
+#TODO:    ROS
+#TODO:    gdb/lldb
+#TODO:    cppcheck/clazy/clang-tidy
+#TODO:    indent/astyle/clang-format
+#TODO:    LKD: linux kernel development: patches, checkpatch.pl, get-maintainers.sh, send-email
+#TODO:    kvm,virsh,qemu cli
+#TODO:    chroot,schroot,conan_venv
+#TODO:    unreal engine, godot
+#TODO: detect 'rtp' based on v:progname ('pvim') (v:progname for PlanetVim
+#TODO:    package is 'pvim'
 
-"TODO: add setting 'equalprg' for formatting wih == (clang-format, etc.)
-"TODO: Choise between text, emoji, symbols, nerdicons menus
-"TODO: Customize tabline-menu when vim bug #7991 is fixed
-"TODO: Add prompt buffer to exec viml commands
-"TODO: menus:
-"TODO:    C++
-"TODO:    Python
-"TODO:    Arduino
-"TODO:    PlatformIO
-"TODO:    CMake
-"TODO:    Meson
-"TODO:    Conan
-"TODO:    Qt (uic, moc, rcc, lupdate, lrelease, shiboken)
-"TODO:    SWIG, 
-"TODO:    Latex
-"TODO:    Writing
-"TODO:    Docker
-"TODO:    Yocto
-"TODO:    ROS
-"TODO:    gdb/lldb
-"TODO:    cppcheck/clazy/clang-tidy
-"TODO:    indent/astyle/clang-format
-"TODO:    LKD: linux kernel development: patches, checkpatch.pl, get-maintainers.sh, send-email
-"TODO:    kvm,virsh,qemu cli
-"TODO:    chroot,schroot,conan_venv
-"TODO:    unreal engine, godot
-"TODO: detect 'rtp' based on v:progname ('pvim') (v:progname for PlanetVim
-"TODO:    package is 'pvim'
+planet#config#Initialize()
 
-call planet#config#Initialize()
-
-" Git is optional for editor startup. Apply this after the user's config and
-" before bundled GitGutter loads; explicit preferences remain authoritative.
+# Git is optional for editor startup. Apply this after the user's config and
+# before bundled GitGutter loads; explicit preferences remain authoritative.
 if !exists('g:gitgutter_enabled')
-  let g:gitgutter_enabled = executable(get(g:, 'gitgutter_git_executable', 'git'))
+  g:gitgutter_enabled = executable(get(g:, 'gitgutter_git_executable', 'git'))
 endif
 
-call planet#menu#Refresh()
+planet#menu#Refresh()
 
-" Avoid the ":ptag" when there is no word under the cursor, and a few other
-" things. Opens the tag under cursor in Preview window.
+# Avoid the ":ptag" when there is no word under the cursor, and a few other
+# things. Opens the tag under cursor in Preview window.
 hi previewWord term=bold ctermbg=green guibg=green
-func! PreviewWord() abort
+# Vim 9.1 loses :legacy modifiers when evaluating numeric tag-file addresses.
+# A legacy function supplies the required context for this native command only.
+function LocalPreviewTag(word) abort
+  execute 'ptag ' .. a:word
+endfunction
+
+def! g:PreviewWord(): any
   if &previewwindow
-    return
+    return 0
   endif
-  let w = expand("<cword>")
+  var w: any = expand("<cword>")
   if w =~ '\a'
     try
-      exe "ptag " .. w
+      LocalPreviewTag(w)
     catch
-      return
+      return 0
     endtry
     silent! wincmd P
     if &previewwindow
       if has("folding")
-        silent! .foldopen
+        silent! :.foldopen
       endif
-      call search("$", "b")
-      let w = substitute(w, '\\', '\\\\', "")
-      call search('\<\V' .. w .. '\>')
+      search("$", "b")
+      w = substitute(w, '\\', '\\\\', "")
+      search('\<\V' .. w .. '\>')
       exe 'match previewWord "\%' .. line(".") .. 'l\%' .. col(".") .. 'c\k*"'
       wincmd p
     endif
   endif
-endfunc
+  return 0
+enddef
 
-func! ListMonths() abort
-  let l:line = getline(".")
-  let l:last_word_start_idx = match(l:line, '\w*$')
-  let l:last_word = matchstr(l:line, '\w*$')
-  let l:months = ['January', 'February', 'March', 'April', 'May', 'June',
-        \ 'July', 'August', 'September',
-        \ 'October', 'November', 'December']
-  call filter(l:months, 'v:val =~ "^' . l:last_word . '"')
-  echom 'l:last_word_start_idx = ' . l:last_word_start_idx
-  echom 'l:last_word = ' . l:last_word
-  echom 'l:months = ' . string(l:months)
-  call complete(l:last_word_start_idx + 1, l:months)
+def! g:ListMonths(): any
+  var line: any = getline(".")
+  var last_word_start_idx: any = match(line, '\w*$')
+  var last_word: any = matchstr(line, '\w*$')
+  var months: any = ['January', 'February', 'March', 'April', 'May', 'June',  'July', 'August', 'September',  'October', 'November', 'December']
+  filter(months, (_, month) => month =~# '^' .. last_word)
+  echom 'l:last_word_start_idx = ' .. last_word_start_idx
+  echom 'l:last_word = ' .. last_word
+  echom 'l:months = ' .. string(months)
+  complete(last_word_start_idx + 1, months)
   return ''
-endfunc
+enddef

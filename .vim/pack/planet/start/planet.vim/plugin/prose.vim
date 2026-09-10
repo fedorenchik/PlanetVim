@@ -1,12 +1,13 @@
+vim9script noclear
 if exists('g:loaded_planet_prose')
   finish
 endif
-let g:loaded_planet_prose = 1
-" Keep the bundled Python engines, replace its eval-based Vim job layer.
-let g:loaded_translator = 1
-let g:translator_history_enable = v:false
-" Wordy's generated spelling data must never go into its installed package.
-let g:wordy_spell_dir = planet#paths#Cache('wordy')
+g:loaded_planet_prose = 1
+# Keep the bundled Python engines, replace its eval-based Vim job layer.
+g:loaded_translator = 1
+g:translator_history_enable = v:false
+# Wordy's generated spelling data must never go into its installed package.
+g:wordy_spell_dir = planet#paths#Cache('wordy')
 command! -nargs=1 PlanetFocus call planet#prose#Focus(<q-args> ==# 'on')
 command! -nargs=? PlanetTranslate call planet#translation#Translate(empty(<q-args>) ? 'window' : <q-args>)
 command! PlanetTranslationHistory call planet#translation#History()

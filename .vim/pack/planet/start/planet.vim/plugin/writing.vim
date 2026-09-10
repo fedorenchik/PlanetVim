@@ -1,5 +1,4 @@
-scriptversion 4
-
+vim9script noclear
 command! PlanetMarkdownPreview call planet#writing#MarkdownPreview()
 command! PlanetLatexBuild call planet#writing#LatexBuild()
 command! PlanetWritingOpen call planet#writing#OpenOutput()

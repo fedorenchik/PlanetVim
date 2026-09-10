@@ -1,4 +1,4 @@
-scriptversion 4
+vim9script noclear
 command! PlanetDoctor call planet#health#Show()
 command! PlanetHelp help planetvim
 command! PlanetVersion echo 'PlanetVim ' .. planet#version#Get()
