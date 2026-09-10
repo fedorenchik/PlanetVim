@@ -7,6 +7,9 @@ scriptversion 4
 "TODO:    SEA, Pacific: 🌏, ISS: 🛰️, Interplanetary: 🪐) or use country flag
 function! planet#menu#planet#Update() abort
   if planet#menu#Visible('planet')
+    an 100.15 🌐&P.Find\ Menu\ Action <Cmd>call planet#actions#Open()<CR>
+    vnoremenu 100.15 🌐&P.Find\ Menu\ Action <Cmd>call planet#actions#Open()<CR>
+    inoremenu 100.15 🌐&P.Find\ Menu\ Action <Cmd>call planet#actions#Open()<CR>
     an 100.10  🌐&P.PlanetVim <Nop>
     an disable 🌐&P.PlanetVim
     an 100.10  🌐&P.&Open\ Welcome\ Screen                  <Cmd>tabnew<CR><Cmd>Startify<CR>

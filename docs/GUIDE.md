@@ -13,6 +13,11 @@ Tools, Navigation, or Settings from PlanetVim to switch groups. PlanetVim is
 always visible, and both your style and selected group survive a restart.
 In compact styles the same group entries toggle groups independently.
 
+**PlanetVim → Find Menu Action** (also in View) searches actions in every group.
+Type words to filter, use the arrow keys to choose, Enter to run, or Esc to cancel.
+The picker keeps your insertion point or current selection and opens a hidden
+group when needed. The existing Clap providers and command picker remain available.
+
 ## Home startup and recovery
 
 `make install` (or `python3 scripts/install.py install`)

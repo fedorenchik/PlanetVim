@@ -114,7 +114,7 @@ does not establish valid built-in arguments or correct behavior.
 
 ### MD-02 · P1 · Search actual menu actions
 
-- [ ] Add **View → Find Menu Action…**, indexed by readable full path, synonyms,
+- [x] Add **View → Find Menu Action…**, indexed by readable full path, synonyms,
   description and applicable mode; retain the existing Clap picker.
 
 The current **Command Palette** calls bare `:Clap`, which opens providers.
@@ -127,6 +127,11 @@ user commands rather than the complete menu hierarchy or Normal-mode operations.
 Acceptance: “compare”, “inside quotes”, “recover” and “complete filename” find the
 right actions; execution retains Visual selections. Index existing actions
 without duplicating or modifying vendor implementations.
+
+Implemented in both PlanetVim and View. The native popup indexes actual menu
+leaves in all groups, filters readable paths and synonyms as you type, and runs
+the selected mode's menu. `tests/test_menu_actions.vim` covers hidden-group
+execution and preserving an active Visual selection. Existing Clap entries remain.
 
 ### MD-03 · Superseded by owner request · Compact menu styles
 

@@ -3,6 +3,8 @@ scriptversion 4
 " Capture the anchor and cursor before a menu or dialog ends Visual mode.
 func! planet#selection#Current() abort
   let l:type = mode()
+  let l:select = index(['s', 'S', "\<C-s>"], l:type)
+  if l:select >= 0 | let l:type = ['v', 'V', "\<C-v>"][l:select] | endif
   if index(['v', 'V', "\<C-v>"], l:type) >= 0
     let l:start = getpos('v')
     let l:end = getpos('.')
@@ -131,4 +133,9 @@ func! planet#selection#CopySelectionToFile(to_delete = v:false, flags = '') abor
     echohl None
     return 0
   endtry
+endfunc
+
+func! planet#selection#Restore(selection) abort
+  call s:Validate(a:selection)
+  call s:Select(a:selection)
 endfunc

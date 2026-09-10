@@ -34,7 +34,7 @@ func! planet#menu#Roots() abort
 endfunc
 
 func! planet#menu#Visible(group) abort
-  if a:group ==# 'planet' | return 1 | endif
+  if a:group ==# 'planet' || get(s:, 'indexing', 0) | return 1 | endif
   if get(g:, 'PV_menu_style', 'emoji') ==# 'descriptive'
     return a:group ==# get(g:, 'PV_menu_group', 'basic')
   endif
@@ -71,6 +71,16 @@ func! planet#menu#Group(group) abort
   call planet#menu#Refresh()
 endfunc
 
+func! planet#menu#RootPath(root) abort
+  let l:style = get(g:, 'PV_menu_style', 'emoji')
+  for [l:group, l:root, l:name] in s:roots
+    if l:root !=# a:root | continue | endif
+    if l:style ==# 'descriptive' | return escape(l:name, '\. |') | endif
+    return substitute(l:style ==# 'plain' ? '[' .. matchstr(l:root, '&.*$') .. ']' : l:root, '&', '', 'g')
+  endfor
+  throw 'PlanetVim: unknown menu root'
+endfunc
+
 func! planet#menu#Refresh() abort
   " Remove using the old translations before replacing them. Dynamic menus use
   " these same canonical root names and inherit the current translation.
@@ -85,6 +95,8 @@ func! planet#menu#Refresh() abort
       execute 'menutrans ' .. l:root .. ' ' .. l:target
     endfor
   endif
+  let s:indexing = 1
+  try
   for l:module in ['planet', 'basic', 'edit', 'dev', 'tools', 'nav', 'settings']
     call call('planet#menu#' .. l:module .. '#Update', [])
   endfor
@@ -95,5 +107,12 @@ func! planet#menu#Refresh() abort
     call planet#apps#MenuListGuiWindows()
     call planet#apps#WorkspaceListMenu()
   endif
-  if planet#menu#Visible('dev') | call planet#run#UpdateRunMenu() | endif
+  call planet#run#UpdateRunMenu()
+  call planet#actions#Index()
+  finally
+    let s:indexing = 0
+  endtry
+  for [l:group, l:root, l:name] in s:roots
+    if !planet#menu#Visible(l:group) | execute 'silent! aunmenu ' .. l:root | endif
+  endfor
 endfunc

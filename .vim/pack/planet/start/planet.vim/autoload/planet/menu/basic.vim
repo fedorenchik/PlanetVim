@@ -2,6 +2,9 @@ scriptversion 4
 
 func! planet#menu#basic#Update() abort
   if planet#menu#Visible('basic')
+    an 160.15 📺&v.Find\ Menu\ Action <Cmd>call planet#actions#Open()<CR>
+    vnoremenu 160.15 📺&v.Find\ Menu\ Action <Cmd>call planet#actions#Open()<CR>
+    inoremenu 160.15 📺&v.Find\ Menu\ Action <Cmd>call planet#actions#Open()<CR>
     " File
     an 110.10  📁&f.File <Nop>
     an disable 📁&f.File
