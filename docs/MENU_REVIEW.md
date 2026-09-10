@@ -417,7 +417,7 @@ window manager's fullscreen transition or native Wayland rendering.
 
 ### MD-19 · P2 · Turn register/macro prefixes into guided actions
 
-- [ ] Enhance **Registers / Macros** with named-register preview, Record Into…,
+- [x] Enhance **Registers / Macros** with named-register preview, Record Into…,
   Stop Recording, Play…, Repeat Count… and Apply to Selected Lines….
 
 Existing `q`, `@` and register-prefix entries expose keys but require knowledge of
@@ -427,6 +427,10 @@ and cancellation. Reuse the register editor and yank history.
 
 Acceptance: record/replay through menus alone; show register contents and count
 before applying a macro to multiple lines.
+
+Implemented guided prompts, recording status, preview and ranged playback using
+native registers. `test_macros.vim` verifies recording, repeated playback,
+selected-line scope and cancellation on GVim 9.1 and 9.2.
 
 ### MD-20 · P2 · Complete search and batch-edit discovery
 

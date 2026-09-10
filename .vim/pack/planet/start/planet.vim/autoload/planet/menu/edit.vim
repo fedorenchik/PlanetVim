@@ -283,6 +283,7 @@ func! planet#menu#edit#Update() abort
     an 270.390 &LL.Delete\ All\ LocLists\ in\ Window            :call setloclist(0, [], 'f')<CR>
     an 270.390 &LL.Delete\ All\ LocLists\ in\ Tab               :windo call setloclist(0, [], 'f')<CR>
     an 270.390 &LL.Delete\ All\ LocLists\ in\ All\ Tabs         :tabdo windo call setloclist(0, [], 'f')<CR>
+    call planet#macros#Menus()
   else
     silent! aunmenu 📋&"
     silent! aunmenu 🔖&'
