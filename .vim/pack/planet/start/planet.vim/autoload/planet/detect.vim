@@ -1,18 +1,9 @@
-scriptversion 4
-
-" Detects binaries used by PlanetVim
-func planet#detect#Binaries() abort
-  let l:binaries = [
-        \ 'aqtinstall',
-        \ 'conan',
-        \ 'docker',
-        \ 'git',
-        \ 'languagetool',
-        \ 'pip',
-        \ 'pipenv',
-        \ 'xxd',
-        \ ]
-  for bin in l:binaries
-    exe 'let g:PV_has_' .. bin .. ' = ! exepath("' .. bin .. '")->empty()'
+vim9script
+# Detects binaries used by PlanetVim
+export def Binaries(): any
+  var binaries: any = [ 'aqtinstall', 'conan', 'docker', 'git', 'languagetool', 'pip', 'pipenv', 'xxd', ]
+  for bin in binaries
+    g:['PV_has_' .. bin] = !empty(exepath(bin))
   endfor
-endfunc
+  return 0
+enddef

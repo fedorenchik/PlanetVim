@@ -1,535 +1,541 @@
-scriptversion 4
+vim9script
 
-let s:bin_dir = expand('<sfile>:p:h:h:h')->resolve() .. '/bin/'
+var script_bin_dir = expand('<script>:p:h:h:h')->resolve() .. '/bin/'
 
-func! s:WindowsArgument(argument) abort
-  " Quote for CommandLineToArgvW/the C runtime, including a zero-length arg.
-  let l:quoted = '"'
-  let l:slashes = 0
-  for l:char in split(a:argument, '\zs')
-    if l:char ==# '\'
-      let l:slashes += 1
-    elseif l:char ==# '"'
-      let l:quoted ..= repeat('\', 2 * l:slashes + 1) .. '"'
-      let l:slashes = 0
+def LocalWindowsArgument(argument: any): any
+  # Quote for CommandLineToArgvW/the C runtime, including a zero-length arg.
+  var quoted: any = '"'
+  var slashes: any = 0
+  for char in split(argument, '\zs')
+    if char ==# '\'
+      slashes += 1
+    elseif char ==# '"'
+      quoted ..= repeat('\', 2 * slashes + 1) .. '"'
+      slashes = 0
     else
-      let l:quoted ..= repeat('\', l:slashes) .. l:char
-      let l:slashes = 0
+      quoted ..= repeat('\', slashes) .. char
+      slashes = 0
     endif
   endfor
-  return l:quoted .. repeat('\', 2 * l:slashes) .. '"'
-endfunc
+  return quoted .. repeat('\', 2 * slashes) .. '"'
+enddef
 
-func! s:NativeCommand(argv) abort
-  if !has('win32') || index(a:argv, '') < 0
-    return a:argv
+def LocalNativeCommand(argv: any): any
+  if !has('win32') || index(argv, '') < 0
+    return argv
   endif
-  " Vim's win32_escape_arg() drops empty List items. A String here is the
-  " native CreateProcess command line, with no shell involved. Serialize only
-  " this affected case ourselves and retain the original argv in the result.
-  return join(map(copy(a:argv), {_, arg -> s:WindowsArgument(arg)}), ' ')
-endfunc
+  # Vim's win32_escape_arg() drops empty List items. A String here is the
+  # native CreateProcess command line, with no shell involved. Serialize only
+  # this affected case ourselves and retain the original argv in the result.
+  return join(map(copy(argv), (_, lambda_arg) => LocalWindowsArgument(lambda_arg)), ' ')
+enddef
 
-" A List is native argv; a String is an intentional script for the configured
-" shell. Never split/rejoin a script: doing so loses quotes and argument bounds.
-func! s:ShellCommand(script) abort
-  let l:words = []
-  let l:word = ''
-  let l:quote = ''
-  let l:escape = v:false
-  for l:char in split(&shell, '\zs')
-    if l:escape
-      let l:word ..= l:char
-      let l:escape = v:false
-    elseif l:char == '\' && ! has('win32') && l:quote != "'"
-      let l:escape = v:true
-    elseif ! empty(l:quote)
-      if l:char == l:quote
-        let l:quote = ''
+# A List is native argv; a String is an intentional script for the configured
+# shell. Never split/rejoin a script: doing so loses quotes and argument bounds.
+def LocalShellCommand(script: any): any
+  var words: any = []
+  var word: any = ''
+  var quote: any = ''
+  var escape: any = v:false
+  for char in split(&shell, '\zs')
+    if escape
+      word ..= char
+      escape = v:false
+    elseif char == '\' && ! has('win32') && quote != "'"
+      escape = v:true
+    elseif ! empty(quote)
+      if char == quote
+        quote = ''
       else
-        let l:word ..= l:char
+        word ..= char
       endif
-    elseif l:char == '"' || l:char == "'"
-      let l:quote = l:char
-    elseif l:char =~# '\s'
-      if ! empty(l:word)
-        call add(l:words, l:word)
-        let l:word = ''
+    elseif char == '"' || char == "'"
+      quote = char
+    elseif char =~# '\s'
+      if ! empty(word)
+        add(words, word)
+        word = ''
       endif
     else
-      let l:word ..= l:char
+      word ..= char
     endif
   endfor
-  if l:escape || ! empty(l:quote)
+  if escape || ! empty(quote)
     throw 'PlanetVim: unmatched quote or escape in shell option'
   endif
-  if ! empty(l:word)
-    call add(l:words, l:word)
+  if ! empty(word)
+    add(words, word)
   endif
-  if empty(l:words) || empty(&shellcmdflag)
+  if empty(words) || empty(&shellcmdflag)
     throw 'PlanetVim: shell and shellcmdflag must be configured'
   endif
-  let l:command = #{argv: l:words + split(&shellcmdflag), script_file: ''}
-  if has('win32') && fnamemodify(l:words[0], ':t') =~? '^cmd\%(\.exe\)\?$'
-    " Vim quotes List arguments for the Windows C runtime. cmd.exe does not
-    " understand those backslash-escaped quotes, so pass quoted shell text in
-    " a batch file instead. `call` keeps /c from stripping the path's quotes.
-    let l:command.script_file = tempname() .. '.cmd'
-    call writefile(split(a:script, "\n", 1), l:command.script_file)
-    let l:command.argv += ['call', l:command.script_file]
+  var command: any = {argv: words + split(&shellcmdflag), script_file: ''}
+  if has('win32') && fnamemodify(words[0], ':t') =~? '^cmd\%(\.exe\)\?$'
+    # Vim quotes List arguments for the Windows C runtime. cmd.exe does not
+    # understand those backslash-escaped quotes, so pass quoted shell text in
+    # a batch file instead. `call` keeps /c from stripping the path's quotes.
+    command.script_file = tempname() .. '.cmd'
+    writefile(split(script, "\n", 1), command.script_file)
+    command.argv += ['call', command.script_file]
   else
-    let l:command.argv += [a:script]
+    command.argv += [script]
   endif
-  return l:command
-endfunc
+  return command
+enddef
 
-func! s:DeleteScript(command, ...) abort
-  if ! empty(a:command.script_file)
-    call delete(a:command.script_file)
+def LocalDeleteScript(command: any, ...args: list<any>): any
+  if ! empty(command.script_file)
+    delete(command.script_file)
   endif
-endfunc
+  return 0
+enddef
 
-func! s:Label(cmd) abort
-  let l:text = type(a:cmd) == v:t_list ? string(a:cmd) : a:cmd
-  return substitute(l:text, '[\r\n]', ' ', 'g')
-endfunc
+def LocalLabel(cmd: any): any
+  var text: any = type(cmd) == v:t_list ? string(cmd) : cmd
+  return substitute(text, '[\r\n]', ' ', 'g')
+enddef
 
-func! s:Error(message) abort
+def LocalError(message: any): any
   echohl ErrorMsg
-  echomsg 'PlanetVim: ' .. a:message
+  echomsg 'PlanetVim: ' .. message
   echohl None
   return 0
-endfunc
+enddef
 
-" A snapshot suitable for dependent actions. Only status == 'success' permits
-" a success-only next step; exit_code stays v:null until the child exits.
-func! planet#term#Result(bufnr) abort
-  return deepcopy(getbufvar(a:bufnr, 'planet_result', {}))
-endfunc
+# A snapshot suitable for dependent actions. Only status == 'success' permits
+# a success-only next step; exit_code stays v:null until the child exits.
+export def Result(bufnr: any): any
+  return deepcopy(getbufvar(bufnr, 'planet_result', {}))
+enddef
 
-func! planet#term#Statusline(bufnr) abort
-  let l:result = planet#term#Result(a:bufnr)
-  if empty(l:result)
+export def Statusline(bufnr: any): any
+  var result: any = planet#term#Result(bufnr)
+  if empty(result)
     return ''
   endif
-  let l:status = l:result.status
-  if l:result.exit_code isnot v:null
-    let l:status ..= ' (' .. l:result.exit_code .. ')'
+  var status: any = result.status
+  if result.exit_code != null
+    status ..= ' (' .. result.exit_code .. ')'
   endif
-  return '[' .. l:status .. '] ' .. l:result.command .. ' | ' .. l:result.cwd
-endfunc
+  return '[' .. status .. '] ' .. result.command .. ' | ' .. result.cwd
+enddef
 
-func! planet#term#Info(bufnr = bufnr('%')) abort
-  let l:result = planet#term#Result(a:bufnr)
-  if empty(l:result)
-    return s:Error('this buffer has no PlanetVim command result')
+export def Info(bufnr: any = bufnr('%')): any
+  var result: any = planet#term#Result(bufnr)
+  if empty(result)
+    return LocalError('this buffer has no PlanetVim command result')
   endif
-  echomsg 'Output ' .. a:bufnr .. ': ' .. planet#term#Statusline(a:bufnr)
-  return l:result
-endfunc
+  echomsg 'Output ' .. bufnr .. ': ' .. planet#term#Statusline(bufnr)
+  return result
+enddef
 
-func! s:UseStatusline() abort
+def LocalUseStatusline(): any
   if ! exists('w:planet_previous_statusline')
-    let w:planet_previous_statusline = &l:statusline
+    w:planet_previous_statusline = &l:statusline
   endif
-  let &l:statusline = '%{planet#term#Statusline(bufnr())}'
-endfunc
+  &l:statusline = '%{planet#term#Statusline(bufnr())}'
+  return 0
+enddef
 
-func! s:RestoreStatusline() abort
+def LocalRestoreStatusline(): any
   if exists('w:planet_previous_statusline')
-    let &l:statusline = w:planet_previous_statusline
+    &l:statusline = w:planet_previous_statusline
     unlet w:planet_previous_statusline
   endif
-endfunc
+  return 0
+enddef
 
 augroup PlanetVimOutputStatusline
   autocmd!
-  autocmd BufWinEnter * if exists('b:planet_result') | call s:UseStatusline() | endif
-  autocmd BufWinLeave * if exists('b:planet_result') | call s:RestoreStatusline() | endif
+  autocmd BufWinEnter * if exists('b:planet_result') | call LocalUseStatusline() | endif
+  autocmd BufWinLeave * if exists('b:planet_result') | call LocalRestoreStatusline() | endif
 augroup END
 
-" Close successful interactive commands only after the terminal has drained.
-" Failed/cancelled commands keep their terminal output and colours for review.
-func! s:Finish(context, timer) abort
-  let l:bufnr = a:context.buffer
-  if ! bufexists(l:bufnr)
-    return
+# Close successful interactive commands only after the terminal has drained.
+# Failed/cancelled commands keep their terminal output and colours for review.
+def LocalFinish(context: any, timer: any): any
+  var bufnr: any = context.buffer
+  if ! bufexists(bufnr)
+    return 0
   endif
-  if term_getstatus(l:bufnr) !~# 'finished'
-    call timer_start(20, function('s:Finish', [a:context]))
-    return
+  if term_getstatus(bufnr) !~# 'finished'
+    timer_start(20, function(LocalFinish, [context]))
+    return 0
   endif
-  if a:context.close_on_exit && a:context.result.status ==# 'success'
-    for l:winid in win_findbuf(l:bufnr)
+  if context.close_on_exit && context.result.status ==# 'success'
+    for winid in win_findbuf(bufnr)
       try
-        call win_execute(l:winid, 'hide close')
+        win_execute(winid, 'hide close')
       catch /^Vim\%((\a\+)\)\=:E444/
-        " A command in the last editor window must leave that window open.
+        # A command in the last editor window must leave that window open.
       endtry
     endfor
   endif
-endfunc
+  return 0
+enddef
 
-func! s:Exited(context, job, status) abort
-  if a:context.buffer == 0
-    call timer_start(0, {timer -> s:Exited(a:context, a:job, a:status)})
-    return
+def LocalExited(context: any, job: any, status: any): any
+  if context.buffer == 0
+    timer_start(0, (lambda_timer) => LocalExited(context, job, status))
+    return 0
   endif
-  let l:result = a:context.result
-  if l:result.exit_code isnot v:null
-    return
+  var result: any = context.result
+  if result.exit_code != null
+    return 0
   endif
-  let l:result.exit_code = a:status
-  let l:result.signal = get(job_info(a:job), 'termsig', '')
-  let l:result.status = a:context.cancel_requested ? 'cancelled'
-        \ : a:status == 0 && empty(l:result.signal) ? 'success' : 'failed'
-  if bufexists(a:context.buffer)
-    call setbufvar(a:context.buffer, 'planet_result', l:result)
+  result.exit_code = status
+  result.signal = get(job_info(job), 'termsig', '')
+  result.status = context.cancel_requested ? 'cancelled'  :  status == 0 && empty(result.signal) ? 'success' :  'failed'
+  if bufexists(context.buffer)
+    setbufvar(context.buffer, 'planet_result', result)
   endif
-  echomsg 'Output ' .. a:context.buffer .. ': ' .. l:result.status
-        \ .. ', exit status ' .. a:status .. ', cwd=' .. l:result.cwd
-        \ .. ', command=' .. l:result.command
-  if a:context.close_on_exit && l:result.status ==# 'success'
-    call timer_start(0, function('s:Finish', [a:context]))
+  echomsg 'Output ' .. context.buffer .. ': ' .. result.status  .. ', exit status ' .. status .. ', cwd=' .. result.cwd  .. ', command=' .. result.command
+  if context.close_on_exit && result.status ==# 'success'
+    timer_start(0, function(LocalFinish, [context]))
   endif
-  call s:DeleteScript(a:context)
-  if type(a:context.on_exit) == v:t_func
+  LocalDeleteScript(context)
+  if type(context.on_exit) == v:t_func
     try
-      call call(a:context.on_exit, [deepcopy(l:result), a:context.buffer])
+      call(context.on_exit, [deepcopy(result), context.buffer])
     catch
-      let l:result.callback_error = v:exception
-      call s:Error('command completion callback failed: ' .. v:exception)
+      result.callback_error = v:exception
+      LocalError('command completion callback failed: ' .. v:exception)
     endtry
   endif
   redrawstatus
-endfunc
+  return 0
+enddef
 
-func! planet#term#Cancel(bufnr = bufnr('%')) abort
-  let l:context = getbufvar(a:bufnr, 'planet_command', {})
-  if empty(l:context) || job_status(l:context.job) !=# 'run'
+export def Cancel(bufnr: any = bufnr('%')): any
+  var context: any = getbufvar(bufnr, 'planet_command', {})
+  if empty(context) || job_status(context.job) !=# 'run'
     return 0
   endif
-  let l:context.cancel_requested = v:true
-  if ! job_stop(l:context.job, 'term')
-    let l:context.cancel_requested = v:false
+  context.cancel_requested = v:true
+  if ! job_stop(context.job, 'term')
+    context.cancel_requested = v:false
     return 0
   endif
   return 1
-endfunc
+enddef
 
-" Run native argv or a shell script in an existing idle/new [Output] window.
-" @cmd[in] List of literal arguments, or String containing shell syntax
-" @this_window[in] if true, run in current window unconditionally
-" @close_on_exit[in] if true, close current window after successful completion
-" @start_hidden[in] if true, do not open new window
-" @cd if not empty, change command's CWD to this dir
-" @on_exit optional Funcref(result, bufnr); result.status must be checked before
-"          starting success-only followups. Callback errors do not change the
-"          original process status.
-func! planet#term#RunCmd(cmd, this_window = v:false, close_on_exit = v:false, start_hidden = v:false, cd = '', on_exit = v:null, input_file = '') abort
-  if index([v:t_string, v:t_list], type(a:cmd)) < 0 || empty(a:cmd)
-    return s:Error('command must be a nonempty String or argv List')
+# Run native argv or a shell script in an existing idle/new [Output] window.
+# @cmd[in] List of literal arguments, or String containing shell syntax
+# @this_window[in] if true, run in current window unconditionally
+# @close_on_exit[in] if true, close current window after successful completion
+# @start_hidden[in] if true, do not open new window
+# @cd if not empty, change command's CWD to this dir
+# @on_exit optional Funcref(result, bufnr); result.status must be checked before
+#          starting success-only followups. Callback errors do not change the
+#          original process status.
+export def RunCmd(cmd: any, this_window: any = v:false, close_on_exit: any = v:false, start_hidden: any = v:false, cd: any = '', on_exit: any = v:null, input_file: any = ''): any
+  var command: any
+  var winnr: any
+  var ret: any
+  if index([v:t_string, v:t_list], type(cmd)) < 0 || empty(cmd)
+    return LocalError('command must be a nonempty String or argv List')
   endif
-  if type(a:cmd) == v:t_list && (empty(a:cmd[0])
-        \ || ! empty(filter(copy(a:cmd), {_, value -> type(value) != v:t_string})))
-    return s:Error('argv must contain Strings and a nonempty executable')
+  if type(cmd) == v:t_list && (empty(cmd[0]) || ! empty(filter(copy(cmd), (_, lambda_value) => type(lambda_value) != v:t_string)))
+    return LocalError('argv must contain Strings and a nonempty executable')
   endif
-  if a:on_exit isnot v:null && type(a:on_exit) != v:t_func
-    return s:Error('on_exit must be a Funcref or v:null')
+  if on_exit != null && type(on_exit) != v:t_func
+    return LocalError('on_exit must be a Funcref or v:null')
   endif
-  let l:cwd = empty(a:cd) ? getcwd() : fnamemodify(a:cd, ':p')
-  if ! isdirectory(l:cwd)
-    return s:Error('working directory does not exist: ' .. l:cwd)
+  var cwd: any = empty(cd) ? getcwd() : fnamemodify(cd, ':p')
+  if ! isdirectory(cwd)
+    return LocalError('working directory does not exist: ' .. cwd)
   endif
-  if !empty(a:input_file) && !filereadable(a:input_file)
-    return s:Error('input file is not readable: ' .. a:input_file)
+  if !empty(input_file) && !filereadable(input_file)
+    return LocalError('input file is not readable: ' .. input_file)
   endif
   try
-    let l:command = type(a:cmd) == v:t_list
-          \ ? #{argv: copy(a:cmd), script_file: ''} : s:ShellCommand(a:cmd)
+    command = type(cmd) == v:t_list ? {argv: copy(cmd), script_file: ''} : LocalShellCommand(cmd)
   catch
-    return s:Error(v:exception)
+    return LocalError(v:exception)
   endtry
-  let l:origin = win_getid()
-  if ! a:this_window && ! a:start_hidden
-    let l:winnr = planet#term#FindOutputWindow(v:true)
-    if l:winnr == -1
-      botright 10new
+  var origin: any = win_getid()
+  if ! this_window && ! start_hidden
+    winnr = planet#term#FindOutputWindow(v:true)
+    if winnr == -1
+      botright :10new
       set winfixheight winfixwidth
     else
-      exe l:winnr .. 'wincmd w'
+      exe ':' .. winnr .. 'wincmd w'
     endif
   endif
-  let l:context = #{buffer: 0, cancel_requested: v:false,
-        \ close_on_exit: a:close_on_exit,
-        \ script_file: l:command.script_file,
-        \ on_exit: a:on_exit,
-        \ result: #{status: 'running', exit_code: v:null, signal: '',
-        \ cwd: l:cwd, command: s:Label(a:cmd), argv: copy(l:command.argv)}}
-  " Omitting term_finish retains the terminal on all supported Vim 9.1 builds;
-  " early 9.1 rejects the later explicit 'noclose' option value.
-  let l:term_opts = #{cwd: l:cwd,
-        \ exit_cb: function('s:Exited', [l:context])}
-  if !empty(a:input_file)
-    let l:term_opts.in_io = 'file'
-    let l:term_opts.in_name = fnamemodify(a:input_file, ':p')
+  var context: any = {buffer: 0, cancel_requested: v:false, close_on_exit: close_on_exit, script_file: command.script_file,
+       on_exit: on_exit, result: {status: 'running', exit_code: v:null, signal: '', cwd: cwd, command: LocalLabel(cmd),
+       argv: copy(command.argv)}}
+  # Omitting term_finish retains the terminal on all supported Vim 9.1 builds;
+  # early 9.1 rejects the later explicit 'noclose' option value.
+  var term_opts: any = {cwd: cwd, exit_cb: function(LocalExited, [context])}
+  if !empty(input_file)
+    term_opts.in_io = 'file'
+    term_opts.in_name = fnamemodify(input_file, ':p')
   endif
-  let l:term_opts.term_name = '[Output - ' .. s:Label(a:cmd) .. ']'
-  if ! a:this_window
-    let l:term_opts.term_rows = 10
+  term_opts.term_name = '[Output - ' .. LocalLabel(cmd) .. ']'
+  if ! this_window
+    term_opts.term_rows = 10
   endif
-  if a:start_hidden
-    let l:term_opts.hidden = v:true
+  if start_hidden
+    term_opts.hidden = v:true
   else
-    let l:term_opts.curwin = v:true
+    term_opts.curwin = v:true
   endif
-  let l:term_opts.norestore = v:true
-  let l:term_opts.term_kill = ''
+  term_opts.norestore = v:true
+  term_opts.term_kill = ''
   try
-    let l:ret = term_start(s:NativeCommand(l:command.argv), l:term_opts)
+    ret = term_start(LocalNativeCommand(command.argv), term_opts)
   catch
-    call s:DeleteScript(l:command)
-    call win_gotoid(l:origin)
-    return s:Error('failed to start command: ' .. v:exception)
+    LocalDeleteScript(command)
+    win_gotoid(origin)
+    return LocalError('failed to start command: ' .. v:exception)
   endtry
-  if l:ret == 0
-    call s:DeleteScript(l:command)
-    call win_gotoid(l:origin)
-    return s:Error('failed to start command: ' .. s:Label(a:cmd))
+  if ret == 0
+    LocalDeleteScript(command)
+    win_gotoid(origin)
+    return LocalError('failed to start command: ' .. LocalLabel(cmd))
   endif
-  let l:context.buffer = l:ret
-  let l:context.job = term_getjob(l:ret)
-  call setbufvar(l:ret, 'planet_command', l:context)
-  call setbufvar(l:ret, 'planet_job', l:context.job)
-  call setbufvar(l:ret, 'planet_result', l:context.result)
-  call setbufvar(l:ret, '&bufhidden', 'hide')
-  if ! a:start_hidden
-    call s:UseStatusline()
+  context.buffer = ret
+  context.job = term_getjob(ret)
+  setbufvar(ret, 'planet_command', context)
+  setbufvar(ret, 'planet_job', context.job)
+  setbufvar(ret, 'planet_result', context.result)
+  setbufvar(ret, '&bufhidden', 'hide')
+  if ! start_hidden
+    LocalUseStatusline()
   endif
-  if job_status(l:context.job) ==# 'fail'
-    call s:Exited(l:context, l:context.job, -1)
+  if job_status(context.job) ==# 'fail'
+    LocalExited(context, context.job, -1)
   endif
-  echomsg 'Output ' .. l:ret .. ': cwd=' .. l:cwd .. ', command=' .. s:Label(a:cmd)
-  if ! a:this_window && ! a:start_hidden
-    call win_gotoid(l:origin)
+  echomsg 'Output ' .. ret .. ': cwd=' .. cwd .. ', command=' .. LocalLabel(cmd)
+  if ! this_window && ! start_hidden
+    win_gotoid(origin)
   endif
-  return l:ret
-endfunc
+  return ret
+enddef
 
-func! planet#term#RunInput(argv, input_file, cd = '') abort
-  return planet#term#RunCmd(a:argv, v:false, v:false, v:false, a:cd, v:null, a:input_file)
-endfunc
+export def RunInput(argv: any, input_file: any, cd: any = ''): any
+  return planet#term#RunCmd(argv, v:false, v:false, v:false, cd, v:null, input_file)
+enddef
 
-func! planet#term#RunArgv(argv, ...) abort
-  if type(a:argv) != v:t_list
-    return s:Error('RunArgv requires a List of literal arguments')
+export def RunArgv(argv: any, ...args: list<any>): any
+  if type(argv) != v:t_list
+    return LocalError('RunArgv requires a List of literal arguments')
   endif
-  return call('planet#term#RunCmd', [a:argv] + a:000)
-endfunc
+  return call('planet#term#RunCmd', [argv] + args)
+enddef
 
-func! planet#term#RunShell(script, ...) abort
-  if type(a:script) != v:t_string
-    return s:Error('RunShell requires a String containing shell syntax')
+export def RunShell(script: any, ...args: list<any>): any
+  if type(script) != v:t_string
+    return LocalError('RunShell requires a String containing shell syntax')
   endif
-  return call('planet#term#RunCmd', [a:script] + a:000)
-endfunc
+  return call('planet#term#RunCmd', [script] + args)
+enddef
 
-func! planet#term#RunScript(cmd) abort
-  if empty(a:cmd)
-    return s:Error('no helper script specified')
+export def RunScript(cmd: any): any
+  if empty(cmd)
+    return LocalError('no helper script specified')
   endif
   if ! executable('bash')
-    return s:Error('this helper is a Bash script; install Bash to run it')
+    return LocalError('this helper is a Bash script; install Bash to run it')
   endif
-  if type(a:cmd) == v:t_list
-    return planet#term#RunArgv(['bash', s:bin_dir .. a:cmd[0]] + a:cmd[1:])
+  if type(cmd) == v:t_list
+    return planet#term#RunArgv(['bash', script_bin_dir .. cmd[0]] + cmd[1 : ])
   endif
-  " Legacy callers supply a script basename followed by intentional shell args.
-  let l:name = matchstr(a:cmd, '^\S\+')
-  let l:args = strpart(a:cmd, strlen(l:name))
-  let l:path = "'" .. join(split(s:bin_dir .. l:name, "'", 1), "'\"'\"'") .. "'"
-  return planet#term#RunArgv(['bash', '-c', l:path .. l:args])
-endfunc
+  # Legacy callers supply a script basename followed by intentional shell args.
+  var name: any = matchstr(cmd, '^\S\+')
+  var args: any = strpart(cmd, strlen(name))
+  var path: any = "'" .. join(split(script_bin_dir .. name, "'", 1), "'\"'\"'") .. "'"
+  return planet#term#RunArgv(['bash', '-c', path .. args])
+enddef
 
-" Runs (interactive) shell command in new Tab
-" When command finishes, tab is automatically closed, unless other window was
-" opened in the meantime.
-func! planet#term#RunCmdTab(cmd, cd = '') abort
+# Runs (interactive) shell command in new Tab
+# When command finishes, tab is automatically closed, unless other window was
+# opened in the meantime.
+export def RunCmdTab(cmd: any, cd: any = ''): any
   tabnew
-  let l:ret = planet#term#RunCmd(a:cmd, v:true, v:true, v:false, a:cd)
-  if l:ret == 0
+  var ret: any = planet#term#RunCmd(cmd, v:true, v:true, v:false, cd)
+  if ret == 0
     tabclose
   endif
-  return l:ret
-endfunc
+  return ret
+enddef
 
-" Runs vim command in new GVIM Window
-func! planet#term#RunCmdGui(cmd) abort
-  return planet#term#RunGuiApp([v:progpath, '--cmd',
-        \ 'let g:startify_disable_at_vimenter = 1', '+' .. a:cmd, '+tabo'])
-endfunc
+# Runs vim command in new GVIM Window
+export def RunCmdGui(cmd: any): any
+  return planet#term#RunGuiApp([v:progpath, '--cmd', 'let g:startify_disable_at_vimenter = 1', '+' .. cmd, '+tabo'])
+enddef
 
-" Run gui command
-func! planet#term#RunGuiApp(app, cd = '') abort
-  let l:cwd = empty(a:cd) ? getcwd() : fnamemodify(a:cd, ':p')
-  if ! isdirectory(l:cwd)
-    return s:Error('working directory does not exist: ' .. l:cwd)
+# Run gui command
+export def RunGuiApp(app: any, cd: any = ''): any
+  var command: any
+  var job: any
+  var cwd: any = empty(cd) ? getcwd() : fnamemodify(cd, ':p')
+  if ! isdirectory(cwd)
+    return LocalError('working directory does not exist: ' .. cwd)
   endif
   try
-    let l:command = type(a:app) == v:t_list
-          \ ? #{argv: a:app, script_file: ''} : s:ShellCommand(a:app)
-    let l:job = job_start(l:command.argv, #{cwd: l:cwd, stoponexit: '',
-          \ in_io: 'null', out_io: 'null', err_io: 'null',
-          \ exit_cb: function('s:DeleteScript', [l:command])})
-    if job_status(l:job) ==# 'fail'
-      call s:DeleteScript(l:command)
+    command = type(app) == v:t_list ? {argv: app, script_file: ''} : LocalShellCommand(app)
+    job = job_start(command.argv, {cwd: cwd, stoponexit: '', in_io: 'null', out_io: 'null', err_io: 'null', exit_cb: function(LocalDeleteScript, [command])})
+    if job_status(job) ==# 'fail'
+      LocalDeleteScript(command)
     endif
-    return l:job
+    return job
   catch
-    if exists('l:command')
-      call s:DeleteScript(l:command)
+    if type(command) == v:t_dict
+      LocalDeleteScript(command)
     endif
-    return s:Error('failed to start GUI application: ' .. v:exception)
+    return LocalError('failed to start GUI application: ' .. v:exception)
   endtry
-endfunc
+enddef
 
-" Run command in background (do not open any windows)
-func! planet#term#RunCmdBg(cmd) abort
-  return planet#term#RunCmd(a:cmd, v:false, v:false, v:true)
-endfunc
+# Run command in background (do not open any windows)
+export def RunCmdBg(cmd: any): any
+  return planet#term#RunCmd(cmd, v:false, v:false, v:true)
+enddef
 
-" Find @cmd in 'path' setting and run with @cmd_args arguments.
-" Can be used to find programs/scripts under current directory.
-" Example
-" call planet#term#RunCmdFind('config.status', '--recheck')<CR>
-func! planet#term#RunCmdFind(cmd, cmd_args) abort
-  let l:cmd_path = findfile(a:cmd)
-  if ! empty(l:cmd_path)
-    let l:cmd_path = fnamemodify(l:cmd_path, ":p")
-    if type(a:cmd_args) == v:t_list
-      return planet#term#RunArgv([l:cmd_path] + a:cmd_args)
+# Find @cmd in 'path' setting and run with @cmd_args arguments.
+# Can be used to find programs/scripts under current directory.
+# Example
+# call planet#term#RunCmdFind('config.status', '--recheck')<CR>
+export def RunCmdFind(cmd: any, cmd_args: any): any
+  var cmd_path: any = findfile(cmd)
+  if ! empty(cmd_path)
+    cmd_path = fnamemodify(cmd_path, ":p")
+    if type(cmd_args) == v:t_list
+      return planet#term#RunArgv([cmd_path] + cmd_args)
     endif
-    return planet#term#RunShell(shellescape(l:cmd_path) .. ' ' .. a:cmd_args)
+    return planet#term#RunShell(shellescape(cmd_path) .. ' ' .. cmd_args)
   endif
-endfunc
+  return 0
+enddef
 
-" Run @cmd with additional arguments asked from user.
-" @cmd           - command to run
-" @prompt        - prompt shown to user
-" @default_input - prepopulated arguments
-func! planet#term#RunCmdAskArgs(cmd, prompt, default_input = '') abort
-  let l:cmd_args = inputdialog(a:prompt, a:default_input)
-  if ! empty(l:cmd_args)
-    call planet#term#RunCmd(a:cmd .. ' ' .. l:cmd_args)
+# Run @cmd with additional arguments asked from user.
+# @cmd           - command to run
+# @prompt        - prompt shown to user
+# @default_input - prepopulated arguments
+export def RunCmdAskArgs(cmd: any, prompt: any, default_input: any = ''): any
+  var cmd_args: any = inputdialog(prompt, default_input)
+  if ! empty(cmd_args)
+    planet#term#RunCmd(cmd .. ' ' .. cmd_args)
   endif
-endfunc
+  return 0
+enddef
 
-" Ask user whole command (with arguments) to run.
-" @prompt        - prompt shown for user (to give an idea what command to
-"                  input
-" @default_input - prepopulated input (to help user to type expected command
-"                  and arguments
-func! planet#term#RunCmdAsk(prompt, default_input = '') abort
-  let l:cmd_with_args = inputdialog(a:prompt, a:default_input)
-  if ! empty(l:cmd_with_args)
-    call planet#term#RunCmd(l:cmd_with_args)
+# Ask user whole command (with arguments) to run.
+# @prompt        - prompt shown for user (to give an idea what command to
+#                  input
+# @default_input - prepopulated input (to help user to type expected command
+#                  and arguments
+export def RunCmdAsk(prompt: any, default_input: any = ''): any
+  var cmd_with_args: any = inputdialog(prompt, default_input)
+  if ! empty(cmd_with_args)
+    planet#term#RunCmd(cmd_with_args)
   endif
-endfunc
+  return 0
+enddef
 
-func! planet#term#ListTermWindows() abort
-  let l:out_list = []
+export def ListTermWindows(): any
+  var buf_name: any
+  var out_list: any = []
   for bufnr in term_list()
-    let l:buf_name = bufname(bufnr)
-    if l:buf_name !~# '^\[Output - '
-      l:out_list->add({bufnr: l:buf_name})
+    buf_name = bufname(bufnr)
+    if buf_name !~# '^\[Output - '
+      out_list->add({bufnr:  buf_name})
     endif
   endfor
-  return l:out_list
-endfunc
+  return out_list
+enddef
 
-" Finds terminal window in current tab.
-" @returns window number or -1
-func! planet#term#FindOutputWindow(idle_only = v:false) abort
+# Finds terminal window in current tab.
+# @returns window number or -1
+export def FindOutputWindow(idle_only: any = v:false): any
+  var winnr: any
   for bufnr in term_list()
     if bufname(bufnr) =~# '^\[Output - '
-      if a:idle_only && term_getstatus(bufnr) !~# 'finished'
+      if idle_only && term_getstatus(bufnr) !~# 'finished'
         continue
       endif
-      let l:winnr = bufwinnr(bufnr)
-      if l:winnr != -1
-        return l:winnr
+      winnr = bufwinnr(bufnr)
+      if winnr != -1
+        return winnr
       endif
     endif
   endfor
   return -1
-endfunc
+enddef
 
-func! planet#term#CloseOutputWindow() abort
-  let l:winnr = planet#term#FindOutputWindow()
-  if l:winnr != -1
-    exe l:winnr .. 'wincmd w'
-    call planet#term#Cancel(bufnr('%'))
+export def CloseOutputWindow(): any
+  var winnr: any = planet#term#FindOutputWindow()
+  if winnr != -1
+    exe ':' .. winnr .. 'wincmd w'
+    planet#term#Cancel(bufnr('%'))
     hide close
   endif
-endfunc
+  return 0
+enddef
 
-func! planet#term#ListOutputWindows() abort
-  let l:out_dict = {}
+export def ListOutputWindows(): any
+  var buf_name: any
+  var out_dict: any = {}
   for bufnr in term_list()
-    let l:buf_name = bufname(bufnr)
-    if l:buf_name =~# '^\[Output - '
-      let l:out_dict[bufnr] = l:buf_name
+    buf_name = bufname(bufnr)
+    if buf_name =~# '^\[Output - '
+      out_dict[bufnr] = buf_name
     endif
   endfor
-  return l:out_dict
-endfunc
+  return out_dict
+enddef
 
-func! planet#term#DefineOutputWindowsMenu() abort
+export def DefineOutputWindowsMenu(): any
   silent! aunmenu ]Outputs
-  let l:found_windows = v:false
+  var found_windows: any = v:false
   for [nr, name] in items(planet#term#ListOutputWindows())
-    exe 'PlanetMenu an 2.10 ]Outputs.' .. planet#menu#MenuifyName('[' .. nr .. '] ' .. name)
-          \ .. ' <Cmd>buffer '.. nr .. '<CR>'
-    let l:found_windows = v:true
+    exe 'PlanetMenu an 2.10 ]Outputs.' .. planet#menu#MenuifyName('[' .. nr .. '] ' .. name) .. ' <Cmd>buffer ' .. nr .. '<CR>'
+    found_windows = v:true
   endfor
-  if ! l:found_windows
+  if ! found_windows
     PlanetMenu an 2.10 ]Outputs.No\ Windows <Nop>
     an disable ]Outputs.No\ Windows
   endif
-endfunc
+  return 0
+enddef
 
-func! planet#term#PopupOutputsMenu() abort
-  call planet#term#DefineOutputWindowsMenu()
+export def PopupOutputsMenu(): any
+  planet#term#DefineOutputWindowsMenu()
   popup ]Outputs
-endfunc
+  return 0
+enddef
 
-" Finds Terminal/Output/QF/LL window
-"   - LL windows should be ignored always (but not QF)
-" New Output window:
-"   - if have Output window, reuse it
-"   - if have other bottow window: vsplit
-"   - otherwise open at bottom
-" Terminal:
-"   - if have terminal (job is running (not finished)): vsplit
-"   - if terminal job finished: reuse
-"   - if output: vsplit or reuse
-"   - if QF: vsplit
-"   - otherwise opet at bottom
-" QF:
-"   - if have QF, reuse
-"   - if have bottom: vsplit
-"   - otherwise open bottom
-" Return:
-"   List of numbers:
-"     1 - terminal running
-"     2 - terminal finished
-"     3 - output running
-"     4 - output finished
-"     5 - QF
-"
-" ----------
-"  any special window at bottom ?
-"    vsplit
-func! planet#term#CheckBottomWindow() abort
+# Finds Terminal/Output/QF/LL window
+#   - LL windows should be ignored always (but not QF)
+# New Output window:
+#   - if have Output window, reuse it
+#   - if have other bottow window: vsplit
+#   - otherwise open at bottom
+# Terminal:
+#   - if have terminal (job is running (not finished)): vsplit
+#   - if terminal job finished: reuse
+#   - if output: vsplit or reuse
+#   - if QF: vsplit
+#   - otherwise opet at bottom
+# QF:
+#   - if have QF, reuse
+#   - if have bottom: vsplit
+#   - otherwise open bottom
+# Return:
+#   List of numbers:
+#     1 - terminal running
+#     2 - terminal finished
+#     3 - output running
+#     4 - output finished
+#     5 - QF
+#
+# ----------
+#  any special window at bottom ?
+#    vsplit
+export def CheckBottomWindow(): any
 
-endfunc
+  return 0
+enddef
