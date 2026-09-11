@@ -1319,11 +1319,11 @@
       "path": ".vim/pack/file-manager/start/nerdfont.vim",
       "provenance": {
         "branch": "master",
-        "commit": "ee07f3ea815ca038542d6b6081ebb7ccd9abc389",
+        "commit": "83cec2786e00c0c132a19c2e181fe810a3f99802",
         "kind": "git-subrepo",
         "remote": "https://github.com/lambdalisue/nerdfont.vim.git"
       },
-      "snapshot_sha256": "c30186560a41d2cd89773a935505a3236380c6dd9dbbcd44ddf8484f2ef20f8c"
+      "snapshot_sha256": "f9621cab231d0ff3a0c32bd647c22658c669d655bc24a824401eb92015fc9fac"
     },
     {
       "group": "git",

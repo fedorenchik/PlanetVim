@@ -1,12 +1,11 @@
-name: neovim
+name: Neovim
 
 on:
   push:
     branches:
       - master
   pull_request:
-    branches:
-      - master
+  workflow_dispatch:
 
 jobs:
   build:
@@ -19,22 +18,22 @@ jobs:
           - ubuntu-latest
         version:
           - stable
-          - v0.4.3
+          - v0.4.4
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           repository: thinca/vim-themis
           path: vim-themis
       - uses: rhysd/action-setup-vim@v1
-        id: vim
+        id: nvim
         with:
           neovim: true
-          version: ${{ matrix.version }}
+          version: "${{ matrix.version }}"
       - name: Run tests
         env:
-          THEMIS_VIM: ${{ steps.vim.outputs.executable }}
+          THEMIS_VIM: ${{ steps.nvim.outputs.executable }}
           # XXX:
           # Overwrite %TMP% to point a correct temp directory.
           # Note that %TMP% only affects value of 'tempname()' in Windows.

@@ -1,0 +1,21 @@
+name: JSON check
+
+on:
+  push:
+    paths:
+      - assets/json/*.json
+  pull_request:
+    paths:
+      - assets/json/*.json
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check if a json is sorted
+        run: |
+          for json in assets/json/*.json ; do
+            diff <(jq -S . $json) $json || exit 1
+          done

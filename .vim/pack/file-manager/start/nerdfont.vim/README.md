@@ -1,13 +1,13 @@
 # 👓 nerdfont.vim
 
-![Support Vim 8.1 or above](https://img.shields.io/badge/support-Vim%208.1%20or%20above-yellowgreen.svg)
-![Support Neovim 0.4 or above](https://img.shields.io/badge/support-Neovim%200.4%20or%20above-yellowgreen.svg)
+![Support Vim 8.2.5136 or above](https://img.shields.io/badge/support-Vim%208.2.5136%20or%20above-yellowgreen.svg)
+![Support Neovim 0.4.4 or above](https://img.shields.io/badge/support-Neovim%200.4.4%20or%20above-yellowgreen.svg)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Doc](https://img.shields.io/badge/doc-%3Ah%20nerdfont-orange.svg)](doc/nerdfont.txt)
 
 [![reviewdog](https://github.com/lambdalisue/nerdfont.vim/workflows/reviewdog/badge.svg)](https://github.com/lambdalisue/nerdfont.vim/actions?query=workflow%3Areviewdog)
-[![vim](https://github.com/lambdalisue/nerdfont.vim/workflows/vim/badge.svg)](https://github.com/lambdalisue/nerdfont.vim/actions?query=workflow%3Avim)
-[![neovim](https://github.com/lambdalisue/nerdfont.vim/workflows/neovim/badge.svg)](https://github.com/lambdalisue/nerdfont.vim/actions?query=workflow%3Aneovim)
+[![Vim](https://github.com/lambdalisue/vim-nerdfont/actions/workflows/vim.yml/badge.svg)](https://github.com/lambdalisue/vim-nerdfont/actions/workflows/vim.yml)
+[![Neovim](https://github.com/lambdalisue/vim-nerdfont/actions/workflows/neovim.yml/badge.svg)](https://github.com/lambdalisue/vim-nerdfont/actions/workflows/neovim.yml)
 
 A simplified version of [vim-devicons][] which does NOT provide any 3rd party integrations in itself.
 In otherwords, it is a fundemental plugin to handle [Nerd Fonts][] from Vim.
@@ -16,7 +16,7 @@ In otherwords, it is a fundemental plugin to handle [Nerd Fonts][] from Vim.
 [nerd fonts]: https://github.com/ryanoasis/nerd-fonts
 
 ![](https://user-images.githubusercontent.com/546312/88701008-6c1c5980-d144-11ea-8d6b-d4f4290274a6.png)
-*With fern.vim + fern-renderer-nerdfont.vim. All glyphs above were powered by this plugin*
+_With fern.vim + fern-renderer-nerdfont.vim. All glyphs above were powered by this plugin_
 
 ## Usage
 
@@ -53,22 +53,15 @@ See `:help nerdfont-function` to find glyphs for directory, fileformat, platform
 
 If you would like to add new glyph/filetype supports, see the following files
 
-| If                                                  | Where                                                                            |
-| --------------------------------------------------- | -------------------------------------------------------------------------------- |
-| Want to add new extension (e.g. `.js`)              | [`autoload/nerdfont/path/extension.vim`](./autoload/nerdfont/path/extension.vim) |
-| Want to add new exact name (e.g. `Makefile`)        | [`autoload/nerdfont/path/basename.vim`](./autoload/nerdfont/path/basename.vim)   |
-| Want to add new complex pattern (e.g. `.*/bin/.*$`) | [`autoload/nerdfont/path/pattern.vim`](./autoload/nerdfont/path/pattern.vim)     |
+| If                                                  | Where                                                        |
+| --------------------------------------------------- | ------------------------------------------------------------ |
+| Want to add new extension (e.g. `.js`)              | [`assets/json/extension.json`](./assets/json/extension.json) |
+| Want to add new exact name (e.g. `Makefile`)        | [`assets/json/basename.json`](./assets/json/basename.json)   |
+| Want to add new complex pattern (e.g. `.*/bin/.*$`) | [`assets/json/pattern.json`](./assets/json/pattern.json)     |
 
 ## Integrations
 
-| Name                           | Description                                                          |
-| ------------------------------ | -------------------------------------------------------------------- |
-| [glyph-palette.vim][]          | An universal palette for glyphs to highlight nicely                  |
-| [fern-renderer-nerdfont.vim][] | A [fern.vim][] plugin which use nerdfont.vim to provide fancy glyphs |
-
-[glyph-palette.vim]: https://github.com/lambdalisue/glyph-palette.vim
-[fern-renderer-nerdfont.vim]: https://github.com/lambdalisue/fern-renderer-nerdfont.vim
-[fern.vim]: https://github.com/lambdalisue/fern.vim
+See [Integration section](https://github.com/lambdalisue/nerdfont.vim/wiki#integrations) of Wiki.
 
 ## License
 
