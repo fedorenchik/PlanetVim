@@ -1198,11 +1198,11 @@
       "path": ".vim/pack/file-manager/start/fern-hijack.vim",
       "provenance": {
         "branch": "master",
-        "commit": "5989a1ac6ddffd0fe49631826b6743b129992b32",
+        "commit": "f65524899231b15528066744e714fb344abf0892",
         "kind": "git-subrepo",
         "remote": "https://github.com/lambdalisue/fern-hijack.vim.git"
       },
-      "snapshot_sha256": "cbb2cbae385dfd23543fae900c9c1dad974e6edfaa768c7088e4d0661b221fa3"
+      "snapshot_sha256": "c4d8224072725f78182809b5d49269fc33ffe1e8f4d3b6d46e3d46adfedab150"
     },
     {
       "group": "file-manager",
