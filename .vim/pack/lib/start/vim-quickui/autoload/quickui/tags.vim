@@ -3,7 +3,7 @@
 " tags.vim - 
 "
 " Created by skywind on 2020/01/07
-" Last Modified: 2020/01/07 03:17:49
+" Last Modified: 2024/03/23 21:14
 "
 "======================================================================
 
@@ -302,13 +302,16 @@ function! quickui#tags#ctags_function(bid, ft)
 			\ "go": "--go-kinds=f --language-force=Go",  
 			\ "rust": "--rust-kinds=fPM",
 			\ "ocaml": "--ocaml-kinds=mf", 
+			\ "dosini": "--iniconf-kinds=s --language-force=iniconf",
+			\ "taskini": "--iniconf-kinds=s --language-force=iniconf",
+			\ "ini": "--iniconf-kinds=s --language-force=iniconf",
 			\ }
 	let ft = (a:ft != '')? a:ft : getbufvar(a:bid, '&ft')
 	let modified = getbufvar(a:bid, '&modified')
 	let ctags = get(g:, 'quickui_ctags_exe', 'ctags')
 	let filename = bufname(a:bid)
 	let extname = fnamemodify(filename, ':e')
-	let extras = get(parameters, ft, '')
+	let extras  = get(get(g:, 'quickui_ctags_opts', {}), ft, get(parameters, ft, ''))
 	let srcname = fnamemodify(filename, ':p')
 	if modified || filename == ''
 		if filename == '' || extname == ''
@@ -330,12 +333,13 @@ function! quickui#tags#ctags_function(bid, ft)
 	endif
 	let items = []
 	for line in split(output, "\n")
+		let line = substitute(line, '[\t\r\n ]*$', '', '')
 		let item = split(line, "\t")
 		if len(item) >= 4
 			let ni = {}
 			let ni.tag = item[0]    " tagname
 			let ni.line = str2nr(substitute(item[2], '[;"\s]', '', 'g'))
-			let ni.mode = substitute(item[3], '[\r\n\s]*$', '', 'g')
+			let ni.mode = substitute(item[3], '[\r\n\t ]*$', '', 'g')
 			let ni.text = ''
 			let code = getbufline(a:bid, ni.line)
 			if len(code) == 1
@@ -349,6 +353,34 @@ function! quickui#tags#ctags_function(bid, ft)
 endfunc
 
 
+"----------------------------------------------------------------------
+" ctags vim help file
+"----------------------------------------------------------------------
+function! quickui#tags#ctags_vim_help(bid)
+	let content = getbufline(a:bid, 1, '$')
+	let tags = []
+	let lnum = 0
+	for text in content
+		let lnum += 1
+		let p1 = stridx(text, '*')
+		if p1 < 0
+			continue
+		endif
+		let p = matchstr(text, '\*\(\S\+\)\*')
+		if p == ''
+			continue
+		endif
+		let tag = {}
+		let tag.tag = p
+		let tag.line = lnum
+		let sp = substitute(text, '^\s*\(.\{-}\)\s*$', '\1', '')
+		let tag.text = tr(sp, "\t", ' ')
+		let tag.mode = 't'
+		call add(tags, tag)
+	endfor
+	return tags
+endfunc
+
 
 "----------------------------------------------------------------------
 " query function list
@@ -358,7 +390,11 @@ function! quickui#tags#function_list(bid, ft)
 	let currenttick = getbufvar(a:bid, '__quickui_tags_tick', -100)
 	let start = reltime()
 	if currenttick != changedtick
-		let items = quickui#tags#ctags_function(a:bid, a:ft)
+		if &ft != 'help'
+			let items = quickui#tags#ctags_function(a:bid, a:ft)
+		else
+			let items = quickui#tags#ctags_vim_help(a:bid)
+		endif
 		call setbufvar(a:bid, '__quickui_tags_func', items)
 		call setbufvar(a:bid, '__quickui_tags_tick', changedtick)
 	endif
@@ -370,6 +406,18 @@ function! quickui#tags#function_list(bid, ft)
 	endif
 	let g:quickui#tags#elapse = reltimestr(reltime(start))
 	" echo g:quickui#tags#elapse
+	if a:ft == 'python'
+		let output = []
+		for ni in items
+			if ni.mode == 'f'
+				if ni.text =~ '\v<lambda>\s.*\:\s*\S+'
+					continue
+				endif
+			endif
+			let output += [ni]
+		endfor
+		return output
+	endif
 	return items
 endfunc
 

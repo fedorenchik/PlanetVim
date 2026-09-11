@@ -4,3 +4,10 @@
 /autoload/quickui/speedkey.vim
 /autoload/quickui/speedlib.vim
 
+/.vscode/*
+/.qoder/*
+/.claude/*
+/.opencode/*
+
+nul
+

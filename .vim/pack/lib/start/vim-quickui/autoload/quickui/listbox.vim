@@ -3,7 +3,7 @@
 " listbox.vim - 
 "
 " Created by skywind on 2019/12/20
-" Last Modified: 2020/02/20 02:00
+" Last Modified: 2023/08/30 14:47
 "
 "======================================================================
 
@@ -141,8 +141,10 @@ function! s:vim_create_listbox(textlist, opts)
 	let hwnd.hotkey = items.keymap
 	let hwnd.opts = deepcopy(a:opts)
 	let hwnd.context = has_key(a:opts, 'context')? a:opts.context : {}
+	let minsize = strdisplaywidth(get(a:opts, 'title', ''))
+	let minsize = max([items.displaywidth, minsize])
 	let border = get(a:opts, 'border', g:quickui#style#border)
-	let w = has_key(a:opts, 'w')? a:opts.w : items.displaywidth
+	let w = has_key(a:opts, 'w')? a:opts.w : minsize
 	let h = has_key(a:opts, 'h')? a:opts.h : items.nrows
 	if h + 6 > &lines
 		let h = &lines - 6
@@ -354,6 +356,7 @@ function! quickui#listbox#cursor_movement(where)
 		let curline = curline - height / 2
 	elseif a:where == 'HALFDOWN'
 		let curline = curline + height / 2
+	elseif a:where == 'KEEP'
 	endif
 	if curline < 1
 		let curline = 1
@@ -466,7 +469,9 @@ function! s:nvim_create_listbox(textlist, opts)
 	let hwnd.opts = deepcopy(a:opts)
 	let hwnd.context = has_key(a:opts, 'context')? a:opts.context : {}
 	let border = get(a:opts, 'border', g:quickui#style#border)
-	let w = has_key(a:opts, 'w')? a:opts.w : items.displaywidth
+	let minsize = strdisplaywidth(get(a:opts, 'title', ''))
+	let minsize = max([items.displaywidth, minsize])
+	let w = has_key(a:opts, 'w')? a:opts.w : minsize + 2
 	let h = has_key(a:opts, 'h')? a:opts.h : items.nrows
 	if h + 6 > &lines
 		let h = &lines - 6
@@ -485,10 +490,11 @@ function! s:nvim_create_listbox(textlist, opts)
 	else
 		let limit1 = (&lines - 2) * 90 / 100
 		let limit2 = (&lines - 2)
+		" echom printf("limit1=%d limit2=%d h=%d hh=%d", limit1, limit2, h, hh)
 		if h + 4 < limit1
-			let opts.row = (limit1 - hh) / 2 - 1
+			let opts.row = (limit1 - hh) / 2
 		else
-			let opts.row = (limit2 - hh) / 2 - 1
+			let opts.row = (limit2 - hh) / 2
 		endif
 		let opts.row = (opts.row < 0)? 0 : opts.row
 	endif
@@ -559,6 +565,9 @@ function! s:nvim_create_listbox(textlist, opts)
 	endif
 	call s:highlight_keys(winid, items)
 	call quickui#core#win_execute(winid, "setlocal cursorline scrolloff=0")
+	if exists('+cursorlineopt')
+		call quickui#core#win_execute(winid, "setlocal cursorlineopt=both")
+	endif
 	let retval = -1
 	while 1
 		noautocmd redraw!
@@ -592,6 +601,8 @@ function! s:nvim_create_listbox(textlist, opts)
 			endif
 		elseif ch == ':' || ch == '/' || ch == '?'
 			call quickui#utils#search_or_jump(winid, ch)
+			let cmd = 'call quickui#listbox#cursor_movement("KEEP")'
+			noautocmd call quickui#core#win_execute(winid, cmd)
 		elseif has_key(hwnd.hotkey, ch)
 			let retval = hwnd.hotkey[ch]
 			break

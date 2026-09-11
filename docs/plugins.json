@@ -1541,11 +1541,11 @@
       "path": ".vim/pack/lib/start/vim-quickui",
       "provenance": {
         "branch": "master",
-        "commit": "2fd05c8ba71aa54f7f225f5e87cca8c2868e1976",
+        "commit": "0726a99a76fbfec6fe1f78891cc616eb27540bd9",
         "kind": "git-subrepo",
         "remote": "https://github.com/skywind3000/vim-quickui.git"
       },
-      "snapshot_sha256": "49d0b1b4d4db9cbf0a88ef6b305dce32a8b1f5af9b52fe16914f8c098a0b1e2c"
+      "snapshot_sha256": "6704b48a7d79b4e8615d8aa2c71ff917171201ba5c1c0fbfe55923bf4ef2f51a"
     },
     {
       "group": "lib",

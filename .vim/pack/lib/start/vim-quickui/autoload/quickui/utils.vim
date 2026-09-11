@@ -3,7 +3,7 @@
 " utils.vim - 
 "
 " Created by skywind on 2019/12/19
-" Last Modified: 2022/08/24 20:05
+" Last Modified: 2023/07/23 18:44
 "
 "======================================================================
 
@@ -15,19 +15,26 @@
 "----------------------------------------------------------------------
 function! quickui#utils#item_parse(description)
 	let obj = {'text':'', 'key_pos':-1, 'key_char':'', 'is_sep':0, 'help':''}
-	let obj.info = []
 	let text = ''
+	let child = 0
 	if type(a:description) == v:t_string
 		let text = a:description
 		let obj.help = ''
 		let obj.cmd = ''
-		let obj.info = [ text ]
 	elseif type(a:description) == v:t_list
 		let size = len(a:description)
 		let text = (size >= 1)? a:description[0] : ''
-		let obj.cmd = (size >= 2)? a:description[1] : ''
 		let obj.help = (size >= 3)? a:description[2] : ''
-		let obj.info = deepcopy(a:description)
+		let obj.cmd = ''
+		if size >= 2
+			if type(a:description[1]) == v:t_string
+				let obj.cmd = a:description[1]
+			elseif type(a:description[1]) == v:t_list
+				let obj.cmd = ''
+				let obj.child = a:description[1]
+				let child = 1
+			endif
+		endif
 	endif
 	if text =~ '^-\+$'
 		let obj.is_sep = 1
@@ -44,6 +51,7 @@ function! quickui#utils#item_parse(description)
 			let obj.enable = 0
 		endif
 		let pos = stridx(text, "\t")
+		let sep = ">"
 		if pos < 0 
 			let obj.text = text
 			let obj.desc = ""
@@ -52,6 +60,7 @@ function! quickui#utils#item_parse(description)
 			let obj.desc = strpart(text, pos + 1)
 			let obj.desc = substitute(obj.desc, "\t", " ", "g")
 		endif
+		let obj.desc = (child == 0)? obj.desc : sep
 		let text = obj.text
 		let rest = ''
 		let start = 0
@@ -396,6 +405,9 @@ function! quickui#utils#show_cursor(winid, row)
 				call popup_setoptions(a:winid, {'cursorline': 1})
 			else
 				call quickui#core#win_execute(a:winid, 'setl cursorline')
+				if exists('+cursorlineopt')
+					call quickui#core#win_execute(a:winid, 'setl cursorlineopt=both')
+				endif
 			endif
 		endif
 		let w:__quickui_line__ = 1
@@ -544,6 +556,9 @@ function! quickui#utils#search_next(winid, cmd)
 		endtry
 		noautocmd call quickui#core#win_execute(a:winid, 'nohl')
 	endif
+	let cmds = ['exec line(".")']
+	let cmds += ['normal! 0']
+	silent call quickui#core#win_execute(a:winid, cmds)
 endfunc
 
 
@@ -659,7 +674,7 @@ function! quickui#utils#getchar(wait)
 	if type(code) == v:t_number && code == 0
 		try
 			exec 'sleep 15m'
-			continue
+			return ''
 		catch /^Vim:Interrupt$/
 			let code = "\<c-c>"
 		endtry
@@ -800,16 +815,18 @@ function! quickui#utils#match_ft(filetype, pattern)
 		if match(ft, pattern) >= 0
 			return 1
 		endif
+		return 0
 	elseif pattern =~ '^!'
 		let pattern = strpart(pattern, 1)
 		if match(ft, pattern) < 0
 			return 1
 		endif
+		return 0
 	endif
 	let blacklist = []
 	let whitelist = []
 	for check in split(pattern, ',')
-		if pattern[0] == '-'
+		if check[0] == '-'
 			let blacklist += [check]
 		else
 			let whitelist += [check]
@@ -893,6 +910,49 @@ function! quickui#utils#print_table(rows, highmap)
 	endfor
 	echohl None
 endfunc
+
+
+"----------------------------------------------------------------------
+" hide/show cursor
+"----------------------------------------------------------------------
+function! quickui#utils#hide_system_cursor(hide) abort
+	if !exists('s:cursor_highlight')
+		let s:cursor_highlight = quickui#highlight#get('Cursor')
+	endif
+	if !exists('s:cursor_guicursor')
+		let s:cursor_guicursor = &guicursor
+	endif
+	if !exists('s:cursor_tve')
+		let s:cursor_tve = exists('&t_ve')? &t_ve : ''
+	endif
+	if !exists('s:cursor_current')
+		let s:cursor_current = 0
+	endif
+	if a:hide == 0
+		call quickui#highlight#set(s:cursor_highlight)
+		let &guicursor = s:cursor_guicursor
+		if exists('&t_ve')
+			let &t_ve = s:cursor_tve
+		endif
+		let s:cursor_current = 0
+	else
+		if s:cursor_current == 0
+			let s:cursor_current = 1
+			let s:cursor_highlight = quickui#highlight#get('Cursor')
+			let s:cursor_guicursor = &guicursor
+			if exists('&t_ve')
+				let s:cursor_tve = &t_ve
+			endif
+		endif
+		exec 'hi! clear Cursor'
+		exec 'hi! link Cursor Normal'
+		if exists('&t_ve')
+			exec 'set t_ve='
+		endif
+		exec 'set guicursor=a:ver25-Cursor/lCursor'
+	endif
+endfunc
+
 
 
 

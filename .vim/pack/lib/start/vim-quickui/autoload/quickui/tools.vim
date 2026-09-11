@@ -275,7 +275,11 @@ function! quickui#tools#preview_quickfix(...)
 		let obj.version = -1
 	endif
 	if b:changedtick != obj.version
-		let obj.items = getqflist()
+		if getwininfo(win_getid())[0].loclist != 0
+			let obj.items = getloclist(0)
+		else
+			let obj.items = getqflist()
+		endif
 		let obj.version = b:changedtick
 	endif
 	let index = (a:0 > 0)? a:1 : line('.')
@@ -428,19 +432,38 @@ endfunc
 
 function! quickui#tools#clever_context(name, content, opts)
 	let opts = deepcopy(a:opts)
-	let opts.index = get(s:previous_cursor, a:name, -1)
+	let opts.index = get(s:previous_cursor, a:name, 0)
 	let opts.keep_name = a:name
 	let opts.callback = function('s:remember_cursor_context')
 	let content = quickui#context#reduce_items(a:content)
-	call quickui#context#open(content, opts)
+	call quickui#context#open_nested(content, opts)
 endfunc
 
 function! quickui#tools#clever_listbox(name, content, opts)
 	let opts = deepcopy(a:opts)
-	let opts.index = get(s:previous_cursor, a:name, -1)
+	let opts.index = get(s:previous_cursor, a:name, 0)
 	let opts.keep_name = a:name
 	let opts.callback = function('s:remember_cursor_listbox')
 	call quickui#listbox#open(a:content, opts)
+endfunc
+
+function! quickui#tools#clever_inputlist(name, content, opts)
+	let opts = deepcopy(a:opts)
+	let opts.index = get(s:previous_cursor, a:name, 0)
+	let opts.keep_name = a:name
+	let hide_system_cursor = get(a:opts, 'hide_system_cursor', 0)
+	" let opts.callback = function('s:remember_cursor_listbox')
+	if hide_system_cursor != 0
+		call quickui#utils#hide_system_cursor(1)
+	endif
+	let hr = quickui#listbox#inputlist(a:content, opts)
+	if hide_system_cursor != 0
+		call quickui#utils#hide_system_cursor(0)
+	endif
+	if hr >= 0
+		let s:previous_cursor[a:name] = hr
+	endif
+	return hr
 endfunc
 
 

@@ -1,200 +1,168 @@
-# What Is It ?
+# vim-quickui
 
-There are many keymaps defined in my `.vimrc`. Getting tired from checking `.vimrc` time to time when I forget some, based on the latest `+popup` feature (vim 8.2), I created this `vim-quickui` plugin to introduce some basic UI components to enrich vim's interactive experience:
+[![GitHub Stars](https://img.shields.io/github/stars/skywind3000/vim-quickui?style=flat-square&logo=github)](https://github.com/skywind3000/vim-quickui/stargazers)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
+[![Vim](https://img.shields.io/badge/Vim-8.2+-green.svg?style=flat-square&logo=vim)](https://www.vim.org)
+[![NeoVim](https://img.shields.io/badge/NeoVim-0.4+-green.svg?style=flat-square&logo=neovim)](https://neovim.io)
 
-- Well designed and carefully colored Borland/Turbo C++ flavor ui system combined with vim's productivity.
-- Can be accessed by keyboard only while mouse is also supported.
-- Navigate with the usual Vim keys like `h/j/k/l`, confirm with `ENTER/SPACE` and cancel with `ESC/Ctrl+[`.
-- `Tip` for each entry can display in the cmdline when you are moving the cursor around.
-- Available widgets: [menu](#menu), [listbox](#listbox), [inputbox](#inputbox), [textbox](#textbox).. (coming soon)
-- Fully customizable, including color scheme and borders.
-- Corresponding experience in both `Vim` and `NeoVim`.
-- Pure vim-script, `+python` is not required.
-- No longer have to be afraid to forget keymaps anymore.
-
-Just see this GIF demonstration below:
+Borland/Turbo C++ inspired TUI widget library for Vim and NeoVim — menus, dialogs, context menus and more, all in pure VimScript with no dependencies.
 
 ![](https://skywind3000.github.io/images/p/quickui/screenshot.gif)
 
-Trying to share my configuration to my friends, I found that they did't have patience to remember all the keymaps in my vimrc, but text ui is quite acceptable for them.
+## Features
 
-# Content 
-
-<!-- TOC -->
-
-- [What Is It ?](#what-is-it-)
-- [Content](#content)
-  - [Requirements](#requirements)
-  - [Installation](#installation)
-  - [Gallery Screenshot](#gallery-screenshot)
-    - [Menu](#menu)
-    - [Listbox](#listbox)
-    - [Inputbox](#inputbox)
-    - [Context menu](#context-menu)
-    - [Textbox](#textbox)
-    - [Preview window](#preview-window)
-    - [Terminal](#terminal)
-    - [Confirm dialog](#confirm-dialog)
-  - [User Manual](#user-manual)
-  - [Who Am I ?](#who-am-i-)
-  - [Credit](#credit)
-
-<!-- /TOC -->
-
-## Requirements
-
-- Vim: 8.2 or later.
-- NeoVim: 0.4.0 or later.
+- **Rich widget set** — menubar, context menu, data-driven dialog, listbox, textbox, preview window, and more
+- **Data-driven dialog system** — declare UI controls as data, get results as a dictionary
+- **Cross-platform** — consistent experience across Vim 8.2+ and NeoVim 0.4+
+- **Keyboard-driven** — navigate with `hjkl`, confirm with `Enter`, cancel with `ESC`; full mouse support
+- **Customizable** — multiple color schemes (Borland, gruvbox, solarized...) and border styles
+- **Pure VimScript** — no `+python`, no external dependencies, zero overhead
 
 ## Installation
 
-    Plug 'skywind3000/vim-quickui'
+Using [vim-plug](https://github.com/junegunn/vim-plug):
 
-For more information, please see the [User Manual](MANUAL.md).
+```vim
+Plug 'skywind3000/vim-quickui'
+```
 
-## Gallery Screenshot
+Using Vim's built-in package manager:
 
-### Menu
+```bash
+mkdir -p ~/.vim/pack/vendor/start
+cd ~/.vim/pack/vendor/start
+git clone https://github.com/skywind3000/vim-quickui
+```
 
-Display a dropdown menubar at top of the screen, use `hjkl` or mouse to navigate:
+## Quick Start
+
+Add a dropdown menubar to your Vim — just put this in your `.vimrc`:
+
+```vim
+" clear all the menus
+call quickui#menu#reset()
+
+" install a 'File' menu
+call quickui#menu#install('&File', [
+            \ [ "&Open\t(:w)", 'call feedkeys(":tabe ")'],
+            \ [ "&Save\t(:w)", 'write'],
+            \ [ "--", ],
+            \ [ "E&xit", 'qa' ],
+            \ ])
+
+" install a 'Edit' menu
+call quickui#menu#install('&Edit', [
+            \ [ '&Trailing Space', 'call StripTrailingWhitespace()' ],
+            \ [ 'Format J&son', '%!python -m json.tool' ],
+            \ ])
+
+" map to a key
+noremap <silent><space><space> :call quickui#menu#open()<cr>
+```
+
+Press `<space><space>` and you'll see a menubar at the top of Vim — navigate with `hjkl` or mouse, pick an item with `Enter`:
 
 ![](https://skywind3000.github.io/images/p/quickui/mainmenu.png)
 
-Customizable border style:
+For a complete configuration example, see [menu_example.vim](test/menu_example.vim).
 
-![](https://skywind3000.github.io/images/p/quickui/border2.png)
+## Showcase
 
-Menu color schemes:
+### Menu
 
-![](https://skywind3000.github.io/images/p/quickui/colors.png)
+The menubar displays a row of dropdown menus at the top of the screen, similar to the classic Borland/Turbo C++ IDE. Use `&` in item text to define hotkeys, and `\t` to add right-aligned annotations:
 
-See: [Menu help](MANUAL.md#menu).
+![](https://skywind3000.github.io/images/p/quickui/mainmenu.png)
 
-### Listbox
+Customizable border styles and color schemes:
 
-When you have hundres of items to deal with, menu is not enough to hold them. Then you will need a listbox.
+| Border Styles | Color Schemes |
+|:---:|:---:|
+| ![](https://skywind3000.github.io/images/p/quickui/border2.png) | ![](https://skywind3000.github.io/images/p/quickui/colors.png) |
 
-![](https://skywind3000.github.io/images/p/quickui/listbox.png)
+See: [Menu API reference](MANUAL.md#menu)
 
-It has scroll bar, content can be scrolled by keyboard or mouse wheel. You can search items with `/` or `?` command.
+### Context Menu
 
-It can be used to select buffers or functions in current file:
+A right-click style menu that appears near the cursor — ideal for presenting commands relevant to the current context:
 
-![](https://skywind3000.github.io/images/p/quickui/list-function.png)
+| Default Border | Custom Border |
+|:---:|:---:|
+| ![](https://skywind3000.github.io/images/p/quickui/context.png) | ![](https://skywind3000.github.io/images/p/quickui/context2.png) |
 
-The cursor will stay in the current function initially. Navigate and press enter to jump to the selected function. 
+```vim
+let content = [
+            \ ['&Help Keyword', 'echo 123' ],
+            \ ['&Signature', 'echo 456' ],
+            \ ['-'],
+            \ ['&Peek Definition', 'echo 789'],
+            \ ]
+call quickui#context#open(content, {})
+```
 
-See: [Listbox help](MANUAL.md#listbox).
+See: [Context Menu API reference](MANUAL.md#context-menu)
 
-### Inputbox
+### Dialog
 
-Prompt user to input a string in a TUI box:
+The most powerful widget in QuickUI. Declare a list of controls — inputs, radio buttons, checkboxes, dropdowns, buttons — and get all values back as a dictionary:
 
-![](https://skywind3000.github.io/images/p/quickui/input1.png)
+![](https://skywind3000.github.io/images/p/quickui/dialog1.png)
 
-Could be used as a drop-in replacement of `input()` function.
+```vim
+let items = [
+            \ {'type': 'label', 'text': 'Settings:'},
+            \ {'type': 'input', 'name': 'name', 'prompt': 'Name:', 'value': 'test'},
+            \ {'type': 'radio', 'name': 'choice', 'prompt': 'Pick:', 'items': ['A', 'B', 'C']},
+            \ {'type': 'check', 'name': 'flag', 'text': 'Enable Feature'},
+            \ {'type': 'button', 'name': 'confirm', 'items': [' &OK ', ' &Cancel ']},
+            \ ]
+let result = quickui#dialog#open(items, {'title': 'Settings'})
+echo result
+```
 
-See: [Input box help](MANUAL.md#inputbox).
+Supported controls: `label`, `input`, `radio`, `check`, `button`, `separator`, `dropdown`. Navigate with `Tab`/`Shift-Tab` or hotkeys.
 
-### Context menu
+See: [Dialog guide](DIALOG.md) | [Tutorial](https://dev.to/skywind3000/build-real-dialogs-in-vim-no-python-no-dependencies-3b5a) | [Dialog Examples](test/test_dialog.vim)
 
-Context menu imitates Windows context menu (triggered by your mouse right button), which will display around the cursor:
+### More Widgets
 
-![](https://skywind3000.github.io/images/p/quickui/context.png)
+QuickUI also provides several additional widgets:
 
-It is usually used to present some commands that will do something with source code in the current line.
+| Widget | Description | Docs |
+|--------|------------|------|
+| **Listbox** | Scrollable list with search (`/` or `?`) and mouse wheel support — great for buffer switching or function navigation | [Manual](MANUAL.md#listbox) |
+| **Textbox** | Display arbitrary text in a popup — useful for reading help or messages without splitting windows | [Manual](MANUAL.md#textbox) |
+| **Preview** | Popup preview window near cursor — glimpse definitions or quickfix results without opening files | [Manual](MANUAL.md#preview-window) |
+| **Inputbox** | Single-line text input popup | [Manual](MANUAL.md#inputbox) |
+| **Terminal** | Run terminal programs in a popup window | [Manual](MANUAL.md#terminal) |
+| **Confirm** | Simple choice dialog | [Manual](MANUAL.md#confirm-dialog) |
 
-The border can be changed too:
+| Listbox | Preview | Textbox |
+|:---:|:---:|:---:|
+| ![](https://skywind3000.github.io/images/p/quickui/listbox.png) | ![](https://skywind3000.github.io/images/p/quickui/preview.png) | ![](https://skywind3000.github.io/images/p/quickui/display-help.png) |
 
-![](https://skywind3000.github.io/images/p/quickui/context2.png)
+## Documentation
 
-Because some terminals or fonts cannot display unicode borders correctly, so QuickUI choose ascii border characters by default. But you can change it as you like.
+- **[User Manual](MANUAL.md)** — complete API reference for all widgets
+- **[Dialog Guide](DIALOG.md)** — in-depth guide for the dialog system
 
-See: [Context menu help](MANUAL.md#context-menu).
+## Related Projects
 
-### Textbox
+- [vim-navigator](https://github.com/skywind3000/vim-navigator) — navigate your commands easily, powered by QuickUI
 
-Textbox is used to display arbitrary text in a popup window.
+## Author
 
-![](https://skywind3000.github.io/images/p/quickui/textbox.png)
-
-Display vim help with syntax highlighting in the `textbox`:
-
-![](https://skywind3000.github.io/images/p/quickui/display-help.png)
-
-With `textbox`, you can read the help text at anytime in a popup, without creating a new split window.
-
-Display vim messages:
-
-![](https://skywind3000.github.io/images/p/quickui/messages.png)
-
-Navigating the messages with `HJKL` or `PageUp/PageDown` is much more convenient than using `:messages`.
-
-See: [Text box help](MANUAL.md#textbox).
-
-### Preview window
-
-Preview window is used to replace traditional `pedit` command and can be used to display certain file in a small popup window around your cursor:
-
-![](https://skywind3000.github.io/images/p/quickui/preview.png)
-
-Sometimes I just want a glimpse to the definition of the current word under cursor without actually open that file, the `preview` window is much helpful for this. 
-
-Use it to preview quickfix result:
-
-![](https://skywind3000.github.io/images/p/quickui/quickfix.png)
-
-If you have many items in the quickfix window, instead of open them one by one, you are able to press `p` in the quickfix window and preview them in the popup.
-
-See: [Preview window help](MANUAL.md#preview-window).
-
-### Terminal
-
-The `terminal` widget can allow you open a terminal in the popup window:
-
-![](https://skywind3000.github.io/images/p/quickui/terminal.png)
-
-This feature require vim `8.2.200` (nvim `0.4.0`) or later, it enables you to run various tui programs in a dialog window.
-
-See: [Terminal help](MANUAL.md#terminal).
-
-### Confirm dialog
-
-This widget offers user a dialog, from which a choice can be made:
-
-![](https://skywind3000.github.io/images/p/quickui/confirm1.png)
-
-It returns the number of the choice. For the first choice, this is 1.
-
-See: [Confirm dialog help](MANUAL.md#confirm-dialog).
-
-
-## User Manual
-
-To get started, please visit:
-
-- [User Manual](MANUAL.md)
-
-For more examples, see [my config](test/menu_example.vim).
-
-
-## Who Am I ?
-
-My name is Lin Wei, an open source believer and vim enthusiast. I started learning programming in early 1990s. Borland's Turbo Pascal/C++ was the most popular IDE at that time and I really enjoyed the old days, back home from school, powered on my computer, started Turbo c++ 3.1 and studied how to make a game in MS-DOS.
-
-I even imitated Turbo C++ and made my own editor when I moved to Watcom C++:
+Created by **Lin Wei** ([@skywind3000](https://github.com/skywind3000)), an open-source advocate and long-time Vim user. This project is inspired by the Borland/Turbo C++ IDE from the 1990s — an attempt to bring that classic TUI experience into modern Vim.
 
 ![](https://skywind3000.github.io/images/p/quickui/editor.png)
 
-Because I didn't own a proper editor/IDE for Watcom C++ at that time.
+*A Turbo C++ style editor I wrote for Watcom C++ back in the day*
 
-After coming to windows, I tried a lot of GUI-editors, from UltraEdit, editplus to NotePad++, from gedit to geany, none of them could fully satisfy me. Every day I was busy, tired to learn new IDEs/editors or new frameworks, I even forgot the true joy of programming. Eventually I met vim, and soon fell in love with it.
+## License
 
-As Vim is evolving nowadays, due to the effort of Bram, 8.2 released. Finally I realise, maybe, it is possible to bring some cool things from 25 years ago to vim now. Maybe I can have a Borland/Turbo C++ flavor vim in my everyday work just like I was learning making PC games in the golden 1990s as a middle school student.
+[MIT](LICENSE)
 
-It is time for me to bring these ideas to reality, just start from this plugin.
+---
 
-## Credit
-
-like vim-quickui? Follow the repository on [GitHub](https://github.com/skywind3000/vim-quickui) and vote for it on [vim.org](https://www.vim.org/scripts/script.php?script_id=5845). And if you're feeling especially charitable, follow skywind3000 on [Twitter](https://twitter.com/skywind3000) and [GitHub](https://github.com/skywind3000).
-
+Like vim-quickui? Star the repo on [GitHub](https://github.com/skywind3000/vim-quickui) and vote on [vim.org](https://www.vim.org/scripts/script.php?script_id=5845).
+Follow [@skywind3000](https://twitter.com/skywind3000) on Twitter for updates.
