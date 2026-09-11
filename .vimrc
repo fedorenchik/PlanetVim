@@ -585,12 +585,11 @@ g:vimsyn_folding = "aflmpPrt"
 g:xml_syntax_folding = 1
 # }}}
 # }}}
+# Built-in EditorConfig package (enabled by the startup entry point).
+g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
 # External Plugins: {{{
 # Plugin: asyncomplete.vim {{{
 g:asyncomplete_auto_completeopt = 0
-# }}}
-# Plugin: editorconfig-vim {{{
-g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
 # }}}
 # Plugin: emmet-vim {{{
 g:user_emmet_mode = 'iv'

@@ -19,10 +19,12 @@ The September 11 refresh imports unchanged upstream snapshots; no local third-pa
 - asyncomplete-emoji includes an MIT notice for its emoji data source. That
   file-specific notice does not establish terms for the surrounding adapter.
 
-The corrected inventory has 73 notice-file records, 27 documentation pointers,
+The corrected inventory has 72 notice-file records, 27 documentation pointers,
 4 source-header pointers, 3 first-party license pointers, and 15 records with
 no detected statement. The tool ignores syntax keywords as license evidence and
 does not substitute licenses from test fixtures for the plugin itself.
+EditorConfig is now supplied by Vim's runtime; its removed vendored snapshot is
+no longer counted in this inventory. Vim distributes its own package notices.
 
 ## Notices supplied by the September 11 upstream updates
 

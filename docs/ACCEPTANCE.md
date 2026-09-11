@@ -203,6 +203,10 @@ The local `dist/PlanetVim-0.1.0-rc.1.manifest.json` records the exact clean sour
 
 Three pinned upstream test/documentation submodules are not present in the vendored checkout and are explicitly excluded: EditorConfig's `tests/core/tests` and `tests/plugin/spec/plugin_tests`, and Emmet's `docs` website. Their full paths, exact commits, and reasons appear in `excluded_submodules` in the manifest. The plugin runtime, bundled Vim help, and available license notices are retained. Unknown submodules or changed pins fail packaging rather than disappearing silently.
 
+The subsequent built-in EditorConfig migration removes that vendored package and
+its two test-submodule exceptions. New archives retain only Emmet's website
+exception; EditorConfig code and help come from the installed Vim runtime.
+
 The remaining local license evidence review was completed; the inventory now recognizes source-header and Vim-help notices and the owner-selected first-party license. The eight plugin-inventory tests passed. This maintenance-only change does not alter the previously tested GUI runtime or third-party snapshots.
 
 The subsequent home-installation follow-up makes `make install` configure plain

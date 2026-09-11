@@ -2,6 +2,8 @@
 
 ## Unreleased — Linux GVim menus, Vim9 runtime and plugin refresh
 
+- Use Vim's built-in EditorConfig package and remove the redundant vendored
+  copy. Preserve project settings, existing menu commands and buffer opt-out.
 - Audit all 118 third-party packages and update 68 to their latest stable tags
   or maintained branch snapshots where no suitable release exists. Preserve
   exact upstream source and record every revision in the

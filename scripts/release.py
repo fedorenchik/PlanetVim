@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build deterministic, unpublished PlanetVim archives from a clean Git commit.
 
-Three pinned upstream test/website submodules are intentionally omitted and
+One pinned upstream website submodule is intentionally omitted and
 listed in the manifest. All other submodules, including changed exclusion pins,
 must be reviewed and vendored before packaging. Runtime help and license files
 are ordinary tracked files and remain in both archives.
@@ -27,14 +27,6 @@ ROOT = Path(__file__).resolve().parents[1]
 # Verified against each vendored plugin's .gitmodules and test harness. These
 # are exact path/commit exceptions, never a general tests/ or docs/ exclusion.
 OPTIONAL_SUBMODULES = {
-    '.vim/pack/basic/start/editorconfig-vim/tests/core/tests': {
-        'commit': '6c8fe6815b12f96f4b357d610ee1cd8da074880a',
-        'reason': 'Upstream EditorConfig core conformance test fixtures; not used by the Vim runtime.',
-    },
-    '.vim/pack/basic/start/editorconfig-vim/tests/plugin/spec/plugin_tests': {
-        'commit': 'cb7ae15d16ab3d72a1139f7a629b11cfe16d972f',
-        'reason': 'Upstream EditorConfig plugin test fixtures; not used by the Vim runtime.',
-    },
     '.vim/pack/web/start/emmet-vim/docs': {
         'commit': 'ff5a094cc821051de0eea9b51fd8c90356d2c712',
         'reason': 'Upstream gh-pages website; runtime help is the separately vendored doc/emmet.txt.',

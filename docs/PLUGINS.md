@@ -7,6 +7,12 @@ SHA256 fingerprint of each upstream snapshot. Local packages are versioned with
 PlanetVim itself. The installer copies these sources; it does not upgrade plugins
 or download their optional native components.
 
+EditorConfig uses the package distributed with Vim, loaded with
+`packadd! editorconfig` from `$VIMRUNTIME/pack/dist/opt/editorconfig`.
+PlanetVim does not vendor a second copy. Existing EditorConfig menu commands,
+`g:EditorConfig_*` settings and buffer opt-out remain available. The current
+inventory contains 117 upstream packages and four first-party packages.
+
 The [2026-09-11 upgrade ledger](PLUGIN_UPDATES_2026-09-11.md) records the latest
 complete audit, version selection policy, compatibility fixes and new menus.
 

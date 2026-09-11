@@ -47,6 +47,8 @@ def! s:Configure()
   &runtimepath = join(map(entries, (_, path) => escape(path, path_escapes)), ',')
   # Built-in optional packages remain available through :packadd.
   &packpath = escape($VIMRUNTIME, path_escapes)
+  # Use Vim's distributed package in the normal plugin-loading phase.
+  packadd! editorconfig
   g:PV_config = planet#paths#Config() .. '/planetvimrc.vim'
   execute 'source ' .. fnameescape(g:PV_root .. '/.vimrc')
   if !executable(get(g:, 'w3m#command', 'w3m'))

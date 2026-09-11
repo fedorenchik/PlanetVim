@@ -10,8 +10,9 @@ PLUGIN = ROOT / '.vim/pack/planet/start/planet.vim'
 class MenuContracts(unittest.TestCase):
     def test_named_commands_have_an_implementation(self):
         # Include filetype-local commands without activating external SDKs.
-        # TOhtml is supplied by GVim's own runtime, outside the repository.
-        definitions = {'TOhtml'}
+        # These commands come from GVim's runtime. test_editorconfig.vim also
+        # exercises the distributed package and existing menu actions in GVim.
+        definitions = {'TOhtml', 'EditorConfigReload', 'EditorConfigEnable', 'EditorConfigDisable'}
         for path in (ROOT / '.vim').rglob('*.vim'):
             if not path.is_file():
                 continue

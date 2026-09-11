@@ -4,6 +4,11 @@ Audited all **118 upstream packages**: **68 updated**, **50 already at the selec
 revision**. The four first-party packages remain owned by PlanetVim. Each upstream
 import has its own commit and matching inventory fingerprint.
 
+Subsequent follow-up: the bundled `editorconfig-vim` snapshot was removed in
+favor of Vim's distributed EditorConfig package. The audit below records the
+completed upgrade; [plugins.json](plugins.json) tracks the current 117 upstream
+packages plus four first-party packages.
+
 ## Selection and provenance
 
 Prefer the latest numeric stable version tag. If a plugin has no such tag, pin

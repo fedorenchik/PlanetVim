@@ -340,27 +340,6 @@
     {
       "group": "basic",
       "license_evidence": {
-        "paths": [
-          ".vim/pack/basic/start/editorconfig-vim/LICENSE",
-          ".vim/pack/basic/start/editorconfig-vim/LICENSE.PSF"
-        ],
-        "status": "notice_files_found"
-      },
-      "load": "start",
-      "local_patches": "not_compared_with_upstream",
-      "name": "editorconfig-vim",
-      "path": ".vim/pack/basic/start/editorconfig-vim",
-      "provenance": {
-        "branch": "master",
-        "commit": "3c2813f2566d9392ff3614248c5db43c3fda9d5f",
-        "kind": "git-subrepo",
-        "remote": "https://github.com/editorconfig/editorconfig-vim.git"
-      },
-      "snapshot_sha256": "42b90d73606ed4a9c6d5d13962673e2a7bfc155064922c9bd441b6327ef9b59c"
-    },
-    {
-      "group": "basic",
-      "license_evidence": {
         "paths": [],
         "status": "not_found"
       },
