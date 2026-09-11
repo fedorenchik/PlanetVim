@@ -5,8 +5,8 @@
 ;
 [subrepo]
 	remote = https://github.com/babaybus/DoxygenToolkit.vim.git
-	branch = master
-	commit = db70eb843f26e210f1854505fecb36a8f60d674c
-	parent = 2da37a75321346cea9b6e459c07504f69eb6a822
+	branch = main
+	commit = 4c1e3380df7a8f5941ad20274615dcb8f31582aa
+	parent = 0492d51b6332e44d7e0420a48c02df1915acff6c
 	method = merge
-	cmdver = 0.4.3
+	cmdver = 0.4.9

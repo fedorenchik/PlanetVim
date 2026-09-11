@@ -826,21 +826,21 @@
       "group": "ccpp",
       "license_evidence": {
         "paths": [
-          ".vim/pack/ccpp/start/DoxygenToolkit.vim/README"
+          ".vim/pack/ccpp/start/DoxygenToolkit.vim/LICENSE"
         ],
-        "status": "documentation_mentions"
+        "status": "notice_files_found"
       },
       "load": "start",
       "local_patches": "not_compared_with_upstream",
       "name": "DoxygenToolkit.vim",
       "path": ".vim/pack/ccpp/start/DoxygenToolkit.vim",
       "provenance": {
-        "branch": "master",
-        "commit": "db70eb843f26e210f1854505fecb36a8f60d674c",
+        "branch": "main",
+        "commit": "4c1e3380df7a8f5941ad20274615dcb8f31582aa",
         "kind": "git-subrepo",
         "remote": "https://github.com/babaybus/DoxygenToolkit.vim.git"
       },
-      "snapshot_sha256": "c1de00f702d6d1217d747bae3eeddd74994a590ed3b122e764fcbd8dee3a632c"
+      "snapshot_sha256": "ba38294d6e600dc4af537fa13f0f66cf2fee39152d68c38c7ee20d62b0cab329"
     },
     {
       "group": "ccpp",
