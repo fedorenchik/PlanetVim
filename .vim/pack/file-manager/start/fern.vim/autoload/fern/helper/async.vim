@@ -19,9 +19,11 @@ function! s:async_redraw() abort dict
   let fern = helper.fern
   return s:Promise.resolve()
         \.then({ -> fern.renderer.render(fern.visible_nodes) })
+        \.then({ v -> s:reject_on_non_fern_buffer(helper.bufnr, v) })
         \.then({ v -> fern#internal#buffer#replace(helper.bufnr, v) })
         \.then({ -> helper.async.remark() })
         \.then({ -> fern#hook#emit('viewer:redraw', helper) })
+        \.catch({ e -> s:is_non_fern_buffer_rejection(e) ? 0 : s:Promise.reject(e) })
         \.finally({ -> Profile() })
 endfunction
 let s:async.redraw = funcref('s:async_redraw')
@@ -155,6 +157,32 @@ function! s:async_expand_node(key) abort dict
         \.finally({ -> Profile() })
 endfunction
 let s:async.expand_node = funcref('s:async_expand_node')
+
+function! s:async_expand_tree(key) abort dict
+  let helper = self.helper
+  let fern = helper.fern
+  let node = fern#internal#node#find(a:key, fern.nodes)
+  if empty(node)
+    return s:Promise.reject(printf('failed to find a node %s', a:key))
+  elseif node.status is# helper.STATUS_NONE
+    " To improve UX, reload owner instead
+    return self.reload_node(node.__owner.__key)
+  endif
+  let l:Profile = fern#profile#start('fern#helper:helper.async.expand_tree')
+  return s:Promise.resolve()
+        \.then({ -> fern#internal#node#expand_tree(
+        \   node,
+        \   fern.nodes,
+        \   fern.provider,
+        \   fern.comparator,
+        \   fern.source.token,
+        \   fern.exclude,
+        \ )
+        \})
+        \.then({ ns -> self.update_nodes(ns) })
+        \.finally({ -> Profile() })
+endfunction
+let s:async.expand_tree = funcref('s:async_expand_tree')
 
 function! s:async_collapse_node(key) abort dict
   let helper = self.helper
@@ -321,4 +349,19 @@ function! s:enter(fern, node) abort
   catch
     return s:Promise.reject(v:exception)
   endtry
+endfunction
+
+" Check if the 'bufnr' is a fern buffer
+" This check is required because the 'bufnr' may be a buffer that is not a
+" fern buffer caused by 'enew' command prior to the initial rendering.
+" See https://github.com/lambdalisue/fern.vim/issues/514 for detail.
+function! s:reject_on_non_fern_buffer(bufnr, value) abort
+  if bufname(a:bufnr) !~# 'fern://'
+    return s:Promise.reject('reject because the buffer is not a fern buffer')
+  endif
+  return s:Promise.resolve(a:value)
+endfunction
+
+function! s:is_non_fern_buffer_rejection(message) abort
+  return a:message ==# 'reject because the buffer is not a fern buffer'
 endfunction

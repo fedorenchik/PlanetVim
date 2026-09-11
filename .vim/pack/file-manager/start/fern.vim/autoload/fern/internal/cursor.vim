@@ -16,8 +16,7 @@ if has('nvim-0.5.0')
   endfunction
 
   function! s:restore() abort
-    set guicursor+=a:Cursor/lCursor
-    let &guicursor = s:guicursor_saved
+    set guicursor-=a:FernTransparentCursor/lCursor
   endfunction
 
   function! s:highlight() abort

@@ -60,7 +60,9 @@ function! fern#internal#node#parent(node, provider, token, ...) abort
   endif
   let l:Profile = fern#profile#start('fern#internal#node#parent')
   let l:Done = fern#internal#node#process(a:node)
-  let p = a:provider.get_parent(a:node, a:token)
+  let p = s:Promise.new({ resolve ->
+        \   resolve(a:provider.get_parent(a:node, a:token))
+        \ })
         \.then({ n -> s:new(n, {
         \   '__key': [],
         \   '__owner': v:null,
@@ -80,29 +82,38 @@ function! fern#internal#node#children(node, provider, token, ...) abort
         \}, a:0 ? a:1 : {})
   if a:node.status is# s:STATUS_NONE
     return s:Promise.reject('leaf node does not have children')
-  elseif has_key(a:node.concealed, '__cache_children') && options.cache
-    return s:AsyncLambda.map(
-          \ a:node.concealed.__cache_children,
-          \ { v -> extend(v, { 'status': v.status > 0 }) },
-          \)
   elseif has_key(a:node.concealed, '__promise_children')
     return a:node.concealed.__promise_children
   endif
   let l:Profile = fern#profile#start('fern#internal#node#children')
   let l:Done = fern#internal#node#process(a:node)
-  let p = a:provider.get_children(a:node, a:token)
+  let p = s:Promise.new({ resolve ->
+        \   resolve(a:provider.get_children(a:node, a:token))
+        \ })
         \.then(s:AsyncLambda.map_f({ n ->
         \   s:new(n, {
         \     '__key': a:node.__key + [n.name],
         \     '__owner': a:node,
         \   })
         \ }))
-        \.then({ v -> s:Lambda.pass(v, s:Lambda.let(a:node.concealed, '__cache_children', v)) })
         \.finally({ -> Done() })
         \.finally({ -> Profile() })
   let a:node.concealed.__promise_children = p
         \.finally({ -> s:Lambda.unlet(a:node.concealed, '__promise_children') })
   return p
+endfunction
+
+function! fern#internal#node#descendants(node, provider, token, ...) abort
+  let options = extend({
+        \ 'cache': 1,
+        \}, a:0 ? a:1 : {})
+  if a:node.status is# s:STATUS_NONE
+    return s:Promise.resolve([])
+  endif
+  return fern#internal#node#children(a:node, a:provider, a:token, options)
+        \.then(s:Lambda.map_f({ n -> fern#internal#node#descendants(n, a:provider, a:token, options).then({ ns -> extend([n], ns) }) }))
+        \.then({ ps -> s:Promise.all(ps) })
+        \.then(s:Lambda.reduce_f({ a, ns -> extend(a, ns) }, []))
 endfunction
 
 function! fern#internal#node#expand(node, nodes, provider, comparator, token) abort
@@ -121,7 +132,40 @@ function! fern#internal#node#expand(node, nodes, provider, comparator, token) ab
         \.finally({ -> Profile('children') })
         \.then({ v -> s:sort(v, a:comparator.compare) })
         \.finally({ -> Profile('sort') })
-        \.then({ v -> s:extend(a:node.__key, a:nodes, v) })
+        \.then({ v -> s:extend(a:node.__key, copy(a:nodes), v) })
+        \.finally({ -> Profile('extend') })
+        \.finally({ -> Done() })
+        \.finally({ -> Profile() })
+  call p.then({ -> s:Lambda.let(a:node, 'status', s:STATUS_EXPANDED) })
+  let a:node.concealed.__promise_expand = p
+        \.finally({ -> s:Lambda.unlet(a:node.concealed, '__promise_expand') })
+  return p
+endfunction
+
+function! fern#internal#node#expand_tree(node, nodes, provider, comparator, token, ...) abort
+  let exclude = a:0 ? a:1 : ''
+  if a:node.status is# s:STATUS_NONE
+    return s:Promise.reject('cannot expand leaf node')
+  elseif a:node.status is# s:STATUS_EXPANDED
+    " Collapse first to avoid duplication
+    return fern#internal#node#collapse(a:node, a:nodes, a:provider, a:comparator, a:token)
+      \.then({ ns -> fern#internal#node#expand_tree(a:node, ns, a:provider, a:comparator, a:token, exclude) })
+  elseif has_key(a:node.concealed, '__promise_expand')
+    return a:node.concealed.__promise_expand
+  elseif has_key(a:node, 'concealed.__promise_collapse')
+    return a:node.concealed.__promise_collapse
+  endif
+  let l:Profile = fern#profile#start('fern#internal#node#expand_tree')
+  let l:Done = fern#internal#node#process(a:node)
+  let p = fern#internal#node#descendants(a:node, a:provider, a:token)
+        \.finally({ -> Profile('descendants') })
+        \.then({ v -> s:sort(v, a:comparator.compare) })
+        \.finally({ -> Profile('sort') })
+        \.then({ v -> s:filter_excluded(v, exclude) })
+        \.finally({ -> Profile('filter_excluded') })
+        \.then(s:Lambda.map_f({ n -> n.status isnot# s:STATUS_NONE ? extend(n, {'status': s:STATUS_EXPANDED}) : n }))
+        \.finally({ -> Profile('expand') })
+        \.then({ v -> s:extend(a:node.__key, copy(a:nodes), v) })
         \.finally({ -> Profile('extend') })
         \.finally({ -> Done() })
         \.finally({ -> Profile() })
@@ -203,6 +247,10 @@ function! fern#internal#node#reveal(key, nodes, provider, comparator, token) abo
     return s:Promise.resolve(a:nodes)
   endif
   let l:Profile = fern#profile#start('fern#internal#node#reveal')
+  let node = fern#internal#node#find(a:key[:0], a:nodes)
+  if node is# v:null || node.status is# s:STATUS_NONE
+    return s:Promise.resolve(a:nodes)
+  endif
   return s:expand_recursively(0, a:key, a:nodes, a:provider, a:comparator, a:token)
         \.finally({ -> Profile() })
 endfunction
@@ -230,20 +278,45 @@ function! s:sort(nodes, compare) abort
   return s:Promise.resolve(sort(a:nodes, a:compare))
 endfunction
 
+function! s:filter_excluded(nodes, exclude) abort
+  if empty(a:exclude)
+    return a:nodes
+  endif
+  let excluded_keys = []
+  let result = []
+  for node in a:nodes
+    let dominated = 0
+    for ekey in excluded_keys
+      if len(node.__key) > len(ekey) && node.__key[:len(ekey)-1] ==# ekey
+        let dominated = 1
+        break
+      endif
+    endfor
+    if dominated
+      continue
+    endif
+    if node.label =~# a:exclude
+      call add(excluded_keys, node.__key)
+      continue
+    endif
+    call add(result, node)
+  endfor
+  return result
+endfunction
+
 function! s:extend(key, nodes, new_nodes) abort
   let index = fern#internal#node#index(a:key, a:nodes)
   return index is# -1 ? a:nodes : extend(a:nodes, a:new_nodes, index + 1)
 endfunction
 
 function! s:expand_recursively(index, key, nodes, provider, comparator, token) abort
+  if a:index >= len(a:key)
+    return s:Promise.resolve(a:nodes)
+  endif
   let node = fern#internal#node#find(a:key[:a:index], a:nodes)
   if node is# v:null || node.status is# s:STATUS_NONE
     return s:Promise.resolve(a:nodes)
   endif
   return fern#internal#node#expand(node, a:nodes, a:provider, a:comparator, a:token)
-        \.then({ ns -> s:Lambda.if(
-        \   a:index < len(a:key) - 1,
-        \   { -> s:expand_recursively(a:index + 1, a:key, ns, a:provider, a:comparator, a:token) },
-        \   { -> ns },
-        \ )})
+        \.then({ ns -> s:expand_recursively(a:index + 1, a:key, ns, a:provider, a:comparator, a:token) })
 endfunction

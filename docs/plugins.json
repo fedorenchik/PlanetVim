@@ -1278,11 +1278,11 @@
       "path": ".vim/pack/file-manager/start/fern.vim",
       "provenance": {
         "branch": "main",
-        "commit": "d134808916cb7ccd0800830032d07a0757ed68ee",
+        "commit": "fd039979718b608a7c5912f163a07b230da1b5f4",
         "kind": "git-subrepo",
         "remote": "https://github.com/lambdalisue/fern.vim.git"
       },
-      "snapshot_sha256": "c19f837b5fa34c229e9fad4339a88eaee786b3a6d1ce558ff8253b73bc0ce976"
+      "snapshot_sha256": "ea060603b73700e070ea0e50e85d1b3e1579c19bd90da486c712b66eb9551db8"
     },
     {
       "group": "file-manager",
