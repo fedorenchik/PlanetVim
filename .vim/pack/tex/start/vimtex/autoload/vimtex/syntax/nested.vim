@@ -11,7 +11,7 @@ function! vimtex#syntax#nested#include(name) abort " {{{1
     let s:included[l:inc_name] = s:include(l:inc_name, a:name)
   endif
 
-  return s:included[l:inc_name] ? l:inc_name : ''
+  return s:included[l:inc_name] ? '@' . l:inc_name : ''
 endfunction
 
 " }}}1
@@ -46,6 +46,9 @@ function! s:include(cluster, name) abort " {{{1
     call s:hooks_{l:name}_after()
   catch /E117/
   endtry
+
+  " Reset syntax options to ensure options are not overridden by external 
+  call vimtex#syntax#core#init_options()
 
   return 1
 endfunction

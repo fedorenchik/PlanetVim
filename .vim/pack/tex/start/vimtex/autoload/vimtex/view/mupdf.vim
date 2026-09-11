@@ -26,7 +26,9 @@ function! s:viewer.compiler_callback(outfile) dict abort " {{{1
     call self._start(a:outfile)
   endif
 
-  call self.xdo_send_keys('r')
+  if has_key(self, 'job') && self.job.get_pid() > 0
+    call self.job.signal_hup()
+  endif
 endfunction
 
 " }}}1
@@ -91,28 +93,32 @@ endfunction
 
 " }}}1
 function! s:viewer._start(outfile) dict abort " {{{1
-  let l:cmd = 'mupdf'
+  let l:cmd = 'exec mupdf'
   if !empty(g:vimtex_view_mupdf_options)
     let l:cmd .= ' ' . g:vimtex_view_mupdf_options
   endif
   let l:cmd .= ' ' . vimtex#util#shellescape(a:outfile)
-  let l:cmd .= '&'
   let self.cmd_start = l:cmd
 
-  call vimtex#jobs#run(self.cmd_start)
-
-  call self.xdo_get_id()
-  call self.xdo_send_keys(g:vimtex_view_mupdf_send_keys)
-
+  let self.job = vimtex#jobs#start(self.cmd_start, {'detached': v:true})
   if g:vimtex_view_forward_search_on_start
     call self._forward_search(a:outfile)
   endif
+
+  call timer_start(500, self._start_post)
+endfunction
+
+" }}}1
+function! s:viewer._start_post(_timer_id) dict abort " {{{1
+  call self.xdo_get_id()
+  call self.xdo_send_keys(g:vimtex_view_mupdf_send_keys)
 endfunction
 
 " }}}1
 function! s:viewer._forward_search(outfile) dict abort " {{{1
   if !executable('xdotool') | return | endif
   if !executable('synctex') | return | endif
+  if self.xwin_id <= 0 | return | endif
 
   let self.cmd_synctex_view = 'synctex view -i '
         \ . (line('.') + 1) . ':'

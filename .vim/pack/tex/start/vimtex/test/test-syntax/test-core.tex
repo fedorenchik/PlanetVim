@@ -40,7 +40,7 @@ $
 
 \begin{document}
 
-Test accents \v! and \v@ here.
+Test accents \v! and \v@ here. And errors: _ ^
 
 Line with inline verbatim: \verb+verb+
 Line with inline verbatim: \verb*+verb+
@@ -70,7 +70,7 @@ Line with $inline math$ here.\footnote{here {asd} with \cmd also}. $n$th
 \begin{equation}
   ( )
   [ ]
-
+  1 = 3 < 4 > 2 | f(x) / 3 .1.
   \left( \right)
   \left\{ \right\}
   \left\lvert \right\rvert
@@ -128,5 +128,22 @@ Let \(F = \{f : S \to S \mid \textnormal{$f$ is a cool function}\}\).
 \begin{tabular}{*{1}{p{1cm}}}
   0
 \end{tabular}
+
+%% Some basic stuff re. #2877
+foo\\~bar \~More test; in math: $f(x) ~ \~ 1$
+
+Foo \phantom{\{} bar
+
+% See https://github.com/lervag/vimtex/discussions/3080
+\NewDocumentCommand{\varappend}{m o m}{%
+  %mathzone begin
+  \IfNoValueTF{#2}{#1_{\textup{#3}}}{#1_{#2_{\scriptstyle\textup{#3}}}}%
+  %mathzone end
+}
+
+\foo[abc\\def]
+\foo[abc\%def]
+\foo[abc\\ def]
+\foo[abc\% def]
 
 \end{document}

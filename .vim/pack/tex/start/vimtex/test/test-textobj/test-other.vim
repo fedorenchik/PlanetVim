@@ -23,4 +23,189 @@ call vimtex#test#keys('f\dac',
       \ 'a + \; f',
       \ 'a +  f')
 
+call vimtex#test#keys('di$',
+      \ 'Hello world! $(x)$',
+      \ 'Hello world! $$')
+
+call vimtex#test#keys('da$',
+      \ 'Hello world! $(x)$',
+      \ 'Hello world! ')
+
+call vimtex#test#keys('vi$d',
+      \ 'Hello world! $(x)$',
+      \ 'Hello world! $$')
+
+call vimtex#test#keys('va$d',
+      \ 'Hello world! $(x)$',
+      \ 'Hello world! ')
+
+call vimtex#test#keys('jjva$d',
+      \ [
+      \   '\documentclass{minimal}',
+      \   '\begin{document}',
+      \   'z',
+      \   '$y$',
+      \   '\end{document}',
+      \ ],
+      \ [
+      \   '\documentclass{minimal}',
+      \   '\begin{document}',
+      \   'z',
+      \   '',
+      \   '\end{document}',
+      \ ],
+      \)
+
+call vimtex#test#keys('jjvi$d',
+      \ [
+      \   '\documentclass{minimal}',
+      \   '\begin{document}',
+      \   'z',
+      \   '$y$',
+      \   '\end{document}',
+      \ ],
+      \ [
+      \   '\documentclass{minimal}',
+      \   '\begin{document}',
+      \   'z',
+      \   '$$',
+      \   '\end{document}',
+      \ ],
+      \)
+
+call vimtex#test#keys('jjda$',
+      \ [
+      \   '\documentclass{minimal}',
+      \   '\begin{document}',
+      \   'Hello world!',
+      \   '\end{document}',
+      \ ],
+      \ [
+      \   '\documentclass{minimal}',
+      \   '\begin{document}',
+      \   'Hello world!',
+      \   '\end{document}',
+      \ ],
+      \)
+
+call vimtex#test#keys('jjfxda$',
+      \ [
+      \   '\documentclass{minimal}',
+      \   '\begin{document}',
+      \   '\begin{equation} x \end{equation}',
+      \   '$y$',
+      \   '\end{document}',
+      \ ],
+      \ [
+      \   '\documentclass{minimal}',
+      \   '\begin{document}',
+      \   '',
+      \   '$y$',
+      \   '\end{document}',
+      \ ],
+      \)
+
+call vimtex#test#keys('jjda$',
+      \ [
+      \   '\documentclass{minimal}',
+      \   '\begin{document}',
+      \   'z',
+      \   '\begin{equation} x \end{equation}',
+      \   '$y$',
+      \   '\end{document}',
+      \ ],
+      \ [
+      \   '\documentclass{minimal}',
+      \   '\begin{document}',
+      \   'z',
+      \   '',
+      \   '$y$',
+      \   '\end{document}',
+      \ ],
+      \)
+
+call vimtex#test#keys('Gkda$',
+      \ [
+      \   '\documentclass{minimal}',
+      \   '\begin{document}',
+      \   '$a$',
+      \   '$b$',
+      \   '$c$',
+      \   '$d$',
+      \   '\end{document}',
+      \ ],
+      \ [
+      \   '\documentclass{minimal}',
+      \   '\begin{document}',
+      \   '$a$',
+      \   '$b$',
+      \   '$c$',
+      \   '',
+      \   '\end{document}',
+      \ ],
+      \)
+
+call vimtex#test#keys('Gk2da$',
+      \ [
+      \   '\documentclass{minimal}',
+      \   '\begin{document}',
+      \   '$a$',
+      \   '$b$',
+      \   '$c$',
+      \   '$d$',
+      \   '\end{document}',
+      \ ],
+      \ [
+      \   '\documentclass{minimal}',
+      \   '\begin{document}',
+      \   '$a$',
+      \   '$b$',
+      \   '$c$',
+      \   '',
+      \   '\end{document}',
+      \ ],
+      \)
+
+call vimtex#test#keys('Gk3da$',
+      \ [
+      \   '\documentclass{minimal}',
+      \   '\begin{document}',
+      \   '$a$',
+      \   '$b$',
+      \   '$c$',
+      \   '$d$',
+      \   '\end{document}',
+      \ ],
+      \ [
+      \   '\documentclass{minimal}',
+      \   '\begin{document}',
+      \   '$a$',
+      \   '$b$',
+      \   '$c$',
+      \   '',
+      \   '\end{document}',
+      \ ],
+      \)
+
+call vimtex#test#keys('Gk3di$',
+      \ [
+      \   '\documentclass{minimal}',
+      \   '\begin{document}',
+      \   '$a$',
+      \   '$b$',
+      \   '$c$',
+      \   '$d$',
+      \   '\end{document}',
+      \ ],
+      \ [
+      \   '\documentclass{minimal}',
+      \   '\begin{document}',
+      \   '$a$',
+      \   '$b$',
+      \   '$c$',
+      \   '$$',
+      \   '\end{document}',
+      \ ],
+      \)
+
 call vimtex#test#finished()

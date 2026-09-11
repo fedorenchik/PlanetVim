@@ -103,10 +103,15 @@ function! vimtex#util#is_win() abort " {{{1
 endfunction
 
 " }}}1
+function! vimtex#util#win_clean_output(lines) abort " {{{1
+  return map(a:lines, {_, x -> substitute(x, '\r$', '', '')})
+endfunction
+
+" }}}1
 function! vimtex#util#extend_recursive(dict1, dict2, ...) abort " {{{1
   let l:option = a:0 > 0 ? a:1 : 'force'
   if index(['force', 'keep', 'error'], l:option) < 0
-    throw 'E475: Invalid argument: ' . l:option
+    throw 'E475: Invalid argument: ' .. l:option
   endif
 
   for [l:key, l:value] in items(a:dict2)
@@ -115,7 +120,7 @@ function! vimtex#util#extend_recursive(dict1, dict2, ...) abort " {{{1
     elseif type(l:value) == v:t_dict
       call vimtex#util#extend_recursive(a:dict1[l:key], l:value, l:option)
     elseif l:option ==# 'error'
-      throw 'E737: Key already exists: ' . l:key
+      throw 'E737: Key already exists: ' .. l:key
     elseif l:option ==# 'force'
       let a:dict1[l:key] = l:value
     endif
@@ -123,6 +128,20 @@ function! vimtex#util#extend_recursive(dict1, dict2, ...) abort " {{{1
   endfor
 
   return a:dict1
+endfunction
+
+" }}}1
+function! vimtex#util#materialize_property(dict, name, ...) abort " {{{1
+  if type(get(a:dict, a:name)) != v:t_func | return | endif
+
+  try
+    let a:dict[a:name] = call(a:dict[a:name], a:000)
+  catch
+    call vimtex#log#error(
+          \ 'Could not materialize property: ' .. a:name,
+          \ v:exception)
+    let a:dict[a:name] = ''
+  endtry
 endfunction
 
 " }}}1
@@ -158,68 +177,222 @@ function! vimtex#util#tex2unicode(line) abort " {{{1
   return l:line
 endfunction
 
-"
 " Define list for converting compositions like \"u to unicode ű
 let s:tex2unicode_list = map([
-      \ ['\\''A', 'Á'],
-      \ ['\\`A',  'À'],
-      \ ['\\^A',  'À'],
-      \ ['\\¨A',  'Ä'],
-      \ ['\\"A',  'Ä'],
-      \ ['\\''a', 'á'],
-      \ ['\\`a',  'à'],
-      \ ['\\^a',  'à'],
-      \ ['\\¨a',  'ä'],
-      \ ['\\"a',  'ä'],
-      \ ['\\\~a', 'ã'],
-      \ ['\\''E', 'É'],
-      \ ['\\`E',  'È'],
-      \ ['\\^E',  'Ê'],
-      \ ['\\¨E',  'Ë'],
-      \ ['\\"E',  'Ë'],
-      \ ['\\''e', 'é'],
-      \ ['\\`e',  'è'],
-      \ ['\\^e',  'ê'],
-      \ ['\\¨e',  'ë'],
-      \ ['\\"e',  'ë'],
-      \ ['\\''I', 'Í'],
-      \ ['\\`I',  'Î'],
-      \ ['\\^I',  'Ì'],
-      \ ['\\¨I',  'Ï'],
-      \ ['\\"I',  'Ï'],
-      \ ['\\''i', 'í'],
-      \ ['\\`i',  'î'],
-      \ ['\\^i',  'ì'],
-      \ ['\\¨i',  'ï'],
-      \ ['\\"i',  'ï'],
-      \ ['\\''i', 'í'],
-      \ ['\\''O', 'Ó'],
-      \ ['\\`O',  'Ò'],
-      \ ['\\^O',  'Ô'],
-      \ ['\\¨O',  'Ö'],
-      \ ['\\"O',  'Ö'],
-      \ ['\\''o', 'ó'],
-      \ ['\\`o',  'ò'],
-      \ ['\\^o',  'ô'],
-      \ ['\\¨o',  'ö'],
-      \ ['\\"o',  'ö'],
-      \ ['\\o',   'ø'],
-      \ ['\\''U', 'Ú'],
-      \ ['\\`U',  'Ù'],
-      \ ['\\^U',  'Û'],
-      \ ['\\¨U',  'Ü'],
-      \ ['\\"U',  'Ü'],
-      \ ['\\''u', 'ú'],
-      \ ['\\`u',  'ù'],
-      \ ['\\^u',  'û'],
-      \ ['\\¨u',  'ü'],
-      \ ['\\"u',  'ü'],
-      \ ['\\`N',  'Ǹ'],
-      \ ['\\\~N', 'Ñ'],
-      \ ['\\''n', 'ń'],
-      \ ['\\`n',  'ǹ'],
-      \ ['\\\~n', 'ñ'],
-      \], {_, x -> ['\C' . x[0], x[1]]})
+      \ ['\\"A',                'Ä'],
+      \ ['\\"E',                'Ë'],
+      \ ['\\"I',                'Ï'],
+      \ ['\\"O',                'Ö'],
+      \ ['\\"U',                'Ü'],
+      \ ['\\"Y',                'Ÿ'],
+      \ ['\\"\\i',              'ï'],
+      \ ['\\"a',                'ä'],
+      \ ['\\"e',                'ë'],
+      \ ['\\"i',                'ï'],
+      \ ['\\"o',                'ö'],
+      \ ['\\"u',                'ü'],
+      \ ['\\"y',                'ÿ'],
+      \ ['\\''A',               'Á'],
+      \ ['\\''C',               'Ć'],
+      \ ['\\''E',               'É'],
+      \ ['\\''G',               'Ǵ'],
+      \ ['\\''I',               'Í'],
+      \ ['\\''L',               'Ĺ'],
+      \ ['\\''N',               'Ń'],
+      \ ['\\''O',               'Ó'],
+      \ ['\\''R',               'Ŕ'],
+      \ ['\\''S',               'Ś'],
+      \ ['\\''U',               'Ú'],
+      \ ['\\''Y',               'Ý'],
+      \ ['\\''Z',               'Ź'],
+      \ ['\\''\\i',             'í'],
+      \ ['\\''a',               'á'],
+      \ ['\\''c',               'ć'],
+      \ ['\\''e',               'é'],
+      \ ['\\''g',               'ǵ'],
+      \ ['\\''i',               'í'],
+      \ ['\\''i',               'í'],
+      \ ['\\''l',               'ĺ'],
+      \ ['\\''n',               'ń'],
+      \ ['\\''o',               'ó'],
+      \ ['\\''r',               'ŕ'],
+      \ ['\\''s',               'ś'],
+      \ ['\\''u',               'ú'],
+      \ ['\\''y',               'ý'],
+      \ ['\\''z',               'ź'],
+      \ ['\\=A',                'Ā'],
+      \ ['\\=E',                'Ē'],
+      \ ['\\=I',                'Ī'],
+      \ ['\\=O',                'Ō'],
+      \ ['\\=U',                'Ū'],
+      \ ['\\=a',                'ā'],
+      \ ['\\=e',                'ē'],
+      \ ['\\=i',                'ī'],
+      \ ['\\=o',                'ō'],
+      \ ['\\=u',                'ū'],
+      \ ['\\HO',                'Ő'],
+      \ ['\\HU',                'Ű'],
+      \ ['\\Ho',                'ő'],
+      \ ['\\Hu',                'ű'],
+      \ ['\\\%(\~\|tilde\)A',   'Ã'],
+      \ ['\\\%(\~\|tilde\)E',   'Ẽ'],
+      \ ['\\\%(\~\|tilde\)I',   'Ĩ'],
+      \ ['\\\%(\~\|tilde\)N',   'Ñ'],
+      \ ['\\\%(\~\|tilde\)O',   'Õ'],
+      \ ['\\\%(\~\|tilde\)U',   'Ũ'],
+      \ ['\\\%(\~\|tilde\)Y',   'Ỹ'],
+      \ ['\\\%(\~\|tilde\)\\i', 'ĩ'],
+      \ ['\\\%(\~\|tilde\)a',   'ã'],
+      \ ['\\\%(\~\|tilde\)e',   'ẽ'],
+      \ ['\\\%(\~\|tilde\)i',   'ĩ'],
+      \ ['\\\%(\~\|tilde\)n',   'ñ'],
+      \ ['\\\%(\~\|tilde\)o',   'õ'],
+      \ ['\\\%(\~\|tilde\)u',   'ũ'],
+      \ ['\\\%(\~\|tilde\)y',   'ỹ'],
+      \ ['\\\.A',               'Ȧ'],
+      \ ['\\\.C',               'Ċ'],
+      \ ['\\\.E',               'Ė'],
+      \ ['\\\.G',               'Ġ'],
+      \ ['\\\.I',               'İ'],
+      \ ['\\\.O',               'Ȯ'],
+      \ ['\\\.Z',               'Ż'],
+      \ ['\\\.\\i',             'į'],
+      \ ['\\\.a',               'ȧ'],
+      \ ['\\\.c',               'ċ'],
+      \ ['\\\.e',               'ė'],
+      \ ['\\\.g',               'ġ'],
+      \ ['\\\.i',               'į'],
+      \ ['\\\.o',               'ȯ'],
+      \ ['\\\.z',               'ż'],
+      \ ['\\^A',                'Â'],
+      \ ['\\^C',                'Ĉ'],
+      \ ['\\^E',                'Ê'],
+      \ ['\\^G',                'Ĝ'],
+      \ ['\\^I',                'Î'],
+      \ ['\\^L',                'Ľ'],
+      \ ['\\^O',                'Ô'],
+      \ ['\\^S',                'Ŝ'],
+      \ ['\\^U',                'Û'],
+      \ ['\\^W',                'Ŵ'],
+      \ ['\\^Y',                'Ŷ'],
+      \ ['\\^\\i',              'î'],
+      \ ['\\^a',                'â'],
+      \ ['\\^c',                'ĉ'],
+      \ ['\\^e',                'ê'],
+      \ ['\\^g',                'ĝ'],
+      \ ['\\^h',                'ĥ'],
+      \ ['\\^i',                'î'],
+      \ ['\\^l',                'ľ'],
+      \ ['\\^o',                'ô'],
+      \ ['\\^s',                'ŝ'],
+      \ ['\\^u',                'û'],
+      \ ['\\^w',                'ŵ'],
+      \ ['\\^y',                'ŷ'],
+      \ ['\\`A',                'À'],
+      \ ['\\`E',                'È'],
+      \ ['\\`I',                'Ì'],
+      \ ['\\`N',                'Ǹ'],
+      \ ['\\`O',                'Ò'],
+      \ ['\\`U',                'Ù'],
+      \ ['\\`Y',                'Ỳ'],
+      \ ['\\`\\i',              'ì'],
+      \ ['\\`a',                'à'],
+      \ ['\\`e',                'è'],
+      \ ['\\`i',                'ì'],
+      \ ['\\`n',                'ǹ'],
+      \ ['\\`o',                'ò'],
+      \ ['\\`y',                'ỳ'],
+      \ ['\\cC',                'Ç'],
+      \ ['\\cE',                'Ȩ'],
+      \ ['\\cG',                'Ģ'],
+      \ ['\\cK',                'Ķ'],
+      \ ['\\cL',                'Ļ'],
+      \ ['\\cN',                'Ņ'],
+      \ ['\\cR',                'Ŗ'],
+      \ ['\\cS',                'Ş'],
+      \ ['\\cT',                'Ţ'],
+      \ ['\\cc',                'ç'],
+      \ ['\\ce',                'ȩ'],
+      \ ['\\cg',                'ģ'],
+      \ ['\\ck',                'ķ'],
+      \ ['\\cl',                'ļ'],
+      \ ['\\cn',                'ņ'],
+      \ ['\\cr',                'ŗ'],
+      \ ['\\cs',                'ş'],
+      \ ['\\ct',                'ţ'],
+      \ ['\\kA',                'Ą'],
+      \ ['\\kE',                'Ę'],
+      \ ['\\kI',                'Į'],
+      \ ['\\kO',                'Ǫ'],
+      \ ['\\kU',                'Ų'],
+      \ ['\\ka',                'ą'],
+      \ ['\\ke',                'ę'],
+      \ ['\\ki',                'į'],
+      \ ['\\ko',                'ǫ'],
+      \ ['\\ks',                'ȿ'],
+      \ ['\\ku',                'ų'],
+      \ ['\\o',                 'ø'],
+      \ ['\\rA',                'Å'],
+      \ ['\\rU',                'Ů'],
+      \ ['\\ra',                'å'],
+      \ ['\\ru',                'ů'],
+      \ ['\\uA',                'Ă'],
+      \ ['\\uE',                'Ĕ'],
+      \ ['\\uG',                'Ğ'],
+      \ ['\\uI',                'Ĭ'],
+      \ ['\\uO',                'Ŏ'],
+      \ ['\\uU',                'Ŭ'],
+      \ ['\\u\\i',              'ĭ'],
+      \ ['\\ua',                'ă'],
+      \ ['\\ue',                'ĕ'],
+      \ ['\\ug',                'ğ'],
+      \ ['\\ui',                'ĭ'],
+      \ ['\\uo',                'ŏ'],
+      \ ['\\uu',                'ŭ'],
+      \ ['\\vA',                'Ǎ'],
+      \ ['\\vC',                'Č'],
+      \ ['\\vD',                'Ď'],
+      \ ['\\vE',                'Ě'],
+      \ ['\\vG',                'Ǧ'],
+      \ ['\\vH',                'Ȟ'],
+      \ ['\\vI',                'Ǐ'],
+      \ ['\\vJ',                'ǰ'],
+      \ ['\\vK',                'Ǩ'],
+      \ ['\\vL',                'Ľ'],
+      \ ['\\vN',                'Ň'],
+      \ ['\\vO',                'Ǒ'],
+      \ ['\\vR',                'Ř'],
+      \ ['\\vS',                'Š'],
+      \ ['\\vT',                'Ť'],
+      \ ['\\vU',                'Ǔ'],
+      \ ['\\vZ',                'Ž'],
+      \ ['\\va',                'ǎ'],
+      \ ['\\vc',                'č'],
+      \ ['\\vd',                'ď'],
+      \ ['\\ve',                'ě'],
+      \ ['\\vg',                'ǧ'],
+      \ ['\\vh',                'ȟ'],
+      \ ['\\vi',                'ǐ'],
+      \ ['\\vk',                'ǩ'],
+      \ ['\\vl',                'ľ'],
+      \ ['\\vn',                'ň'],
+      \ ['\\vo',                'ǒ'],
+      \ ['\\vr',                'ř'],
+      \ ['\\vs',                'š'],
+      \ ['\\vt',                'ť'],
+      \ ['\\vu',                'ǔ'],
+      \ ['\\vz',                'ž'],
+      \ ['\\¨A',                'Ä'],
+      \ ['\\¨E',                'Ë'],
+      \ ['\\¨I',                'Ï'],
+      \ ['\\¨O',                'Ö'],
+      \ ['\\¨U',                'Ü'],
+      \ ['\\¨a',                'ä'],
+      \ ['\\¨e',                'ë'],
+      \ ['\\¨i',                'ï'],
+      \ ['\\¨o',                'ö'],
+      \ ['\\¨u',                'ü'],
+      \], {_, x -> ['\C' .. x[0], x[1]]})
 
 " }}}1
 function! vimtex#util#tex2tree(str) abort " {{{1
@@ -285,18 +458,8 @@ function! vimtex#util#texsplit(str) abort " {{{1
 endfunction
 
 " }}}1
-function! vimtex#util#trim(str) abort " {{{1
-  if exists('*trim') | return trim(a:str) | endif
-
-  let l:str = substitute(a:str, '^\s*', '', '')
-  let l:str = substitute(l:str, '\s*$', '', '')
-
-  return l:str
-endfunction
-
-" }}}1
 function! vimtex#util#uniq_unsorted(list) abort " {{{1
-  if len(a:list) <= 1 | return a:list | endif
+  if len(a:list) <= 1 | return deepcopy(a:list) | endif
 
   let l:visited = {}
   let l:result = []
@@ -321,16 +484,26 @@ function! vimtex#util#undostore() abort " {{{1
 endfunction
 
 " }}}1
-function! vimtex#util#www(url) abort " {{{1
-  let l:os = vimtex#util#get_os()
+function! vimtex#util#url_encode(str) abort " {{{1
+  " This code is based on Tip Pope's vim-unimpaired:
+  " https://github.com/tpope/vim-unimpaired
+  return substitute(
+        \ iconv(a:str, 'latin1', 'utf-8'),
+        \ '[^A-Za-z0-9_.~-]',
+        \ '\="%".printf("%02X",char2nr(submatch(0)))',
+        \ 'g'
+        \)
+endfunction
 
-  silent execute (l:os ==# 'linux'
-        \         ? '!xdg-open'
-        \         : (l:os ==# 'mac'
-        \            ? '!open'
-        \            : '!start'))
-        \ . ' ' . a:url
-        \ . (l:os ==# 'win' ? '' : ' &')
+" }}}1
+function! vimtex#util#www(url) abort " {{{1
+  let l:cmd = get(#{
+        \ linux: 'xdg-open',
+        \ mac: 'open',
+        \ win: 'start',
+        \}, vimtex#util#get_os())
+
+  call vimtex#jobs#start(l:cmd .. ' ' .. a:url)
 endfunction
 
 " }}}1

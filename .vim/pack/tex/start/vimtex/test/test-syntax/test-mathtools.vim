@@ -1,6 +1,6 @@
 source common.vim
 
-silent edit test-mathtools.tex
+EditConcealed test-mathtools.tex
 
 if empty($INMAKE) | finish | endif
 

@@ -15,8 +15,10 @@ function! vimtex#syntax#p#tcolorbox#load(cfg) abort " {{{1
 
   " Add listing support for detected environments
   for l:env in b:vimtex.syntax.tcolorbox.listing_envs
-    call vimtex#syntax#core#new_region_env('texTCBZone', l:env, {
-          \'contains': 'texCmdEnv,texCmdTCBEnv',
+    call vimtex#syntax#core#new_env({
+          \ 'name': l:env,
+          \ 'region': 'texTCBZone',
+          \ 'contains': 'texCmdEnv,texCmdTCBEnv',
           \})
   endfor
 
@@ -29,11 +31,13 @@ endfunction
 function! s:parse_constructs() abort " {{{1
   if has_key(b:vimtex.syntax, 'tcolorbox') | return | endif
 
-  let b:vimtex.syntax.tcolorbox = {'listing_envs': []}
+  let l:re = '\c\\\%(declare\|new\)tcblisting'
+
+  let b:vimtex.syntax.tcolorbox = {}
   let b:vimtex.syntax.tcolorbox.listing_envs = map(filter(
         \   vimtex#parser#tex(b:vimtex.tex, {'detailed': 0}),
-        \   'v:val =~# ''\\DeclareTCBListing'''),
-        \ {_, x -> matchstr(x, '\\DeclareTCBListing\s*{\zs[a-zA-Z-]\+\ze}')})
+        \   { _, x -> x =~? l:re }),
+        \ {_, x -> matchstr(x, l:re . '\s*{\zs[a-zA-Z-]\+\ze}')})
 endfunction
 
 " }}}1

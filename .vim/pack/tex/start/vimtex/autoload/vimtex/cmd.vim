@@ -23,11 +23,17 @@ function! vimtex#cmd#init_buffer() abort " {{{1
   nnoremap <silent><buffer> <plug>(vimtex-cmd-toggle-star)
         \ :<c-u>call <sid>operator_setup('toggle_star')<bar>normal! g@l<cr>
 
+  nnoremap <silent><buffer> <plug>(vimtex-cmd-toggle-star-agn)
+        \ :<c-u>call <sid>operator_setup('toggle_star_agnostic')<bar>normal! g@l<cr>
+
   nnoremap <silent><buffer> <plug>(vimtex-cmd-toggle-frac)
         \ :<c-u>call <sid>operator_setup('toggle_frac')<bar>normal! g@l<cr>
 
   xnoremap <silent><buffer> <plug>(vimtex-cmd-toggle-frac)
         \ :<c-u>call vimtex#cmd#toggle_frac_visual()<cr>
+
+  nnoremap <silent><buffer> <plug>(vimtex-cmd-toggle-break)
+        \ :<c-u>call <sid>operator_setup('toggle_break')<bar>normal! g@l<cr>
 endfunction
 
 " }}}1
@@ -126,7 +132,7 @@ endfunction
 function! vimtex#cmd#create_insert() abort " {{{1
   if mode() !=# 'i' | return | endif
 
-  let l:re = '\v%(^|\A)\zs\a+\ze%(\A|$)'
+  let l:re = '\v%(^|\A)\zs\a+(\*=)@>\a*\ze%(\A|$)'
   let l:c0 = col('.') - 1
 
   let [l:l1, l:c1] = searchpos(l:re, 'bcn', line('.'))
@@ -202,6 +208,7 @@ endfunction
 function! vimtex#cmd#toggle_star() abort " {{{1
   let l:cmd = vimtex#cmd#get_current()
   if empty(l:cmd) | return | endif
+  if !s:cmd_in_star_whitelist(l:cmd.name) | return | endif
 
   let l:old_name = l:cmd.name
   let l:lnum = l:cmd.pos_start.lnum
@@ -229,6 +236,29 @@ function! vimtex#cmd#toggle_star() abort " {{{1
 
   " Restore cursor position
   cal vimtex#pos#set_cursor(l:save_pos)
+endfunction
+
+" }}}1
+function! vimtex#cmd#toggle_star_agnostic() abort " {{{1
+  let l:cmd = vimtex#cmd#get_current()
+  if empty(l:cmd) || l:cmd.name ==# '\begin'
+    call vimtex#env#toggle_star()
+    return
+  endif
+
+  let [l:open, l:close] = vimtex#env#get_surrounding('normal')
+  if empty(l:open) || l:open.name ==# 'document'
+    call vimtex#cmd#toggle_star()
+    return
+  endif
+
+  let l:pos_val_cmd = vimtex#pos#val(l:cmd.pos_start)
+  let l:pos_val_env = vimtex#pos#val(l:open)
+  if l:pos_val_cmd >= l:pos_val_env
+    call vimtex#cmd#toggle_star()
+  else
+    call vimtex#env#toggle_star()
+  endif
 endfunction
 
 " }}}1
@@ -268,8 +298,49 @@ function! vimtex#cmd#toggle_frac_visual() abort " {{{1
 endfunction
 
 " }}}1
+function! vimtex#cmd#toggle_break() abort " {{{1
+  let l:lnum = line('.')
+  let l:line = getline(l:lnum)
 
+  let l:replace = l:line =~# '\s*\\\\\s*$'
+        \ ? substitute(l:line, '\s*\\\\\s*$', '', '')
+        \ : substitute(l:line, '\s*$', ' \\\\', '')
+
+  call setline(l:lnum, l:replace)
+endfunction
+
+" }}}1
+
+function! vimtex#cmd#parser_separator_check(separator_string) abort " {{{1
+  return a:separator_string =~# '\v^%(\n\s*)?$'
+endfunction
+
+" }}}1
+
+function! s:get_frac_toggled(origin, numerator, denominator) abort " {{{1
+  let l:target = get(g:vimtex_toggle_fractions, a:origin, 'INLINE')
+
+  if l:target ==# 'INLINE'
+    let l:numerator = (a:numerator =~# '^\\\?\w*$')
+          \ ? a:numerator
+          \ : '(' . a:numerator . ')'
+
+    let l:denominator = (a:denominator =~# '^\\\?\w*$')
+          \ ? a:denominator
+          \ : '(' . a:denominator . ')'
+
+    return l:numerator . '/' . l:denominator
+  endif
+
+  return printf('\%s{%s}{%s}', l:target, a:numerator, a:denominator)
+endfunction
+
+" }}}1
 function! s:get_frac_cmd() abort " {{{1
+  let l:frac_cmds = map(filter(
+        \ keys(g:vimtex_toggle_fractions), { _, x -> x !~# 'INLINE' }),
+        \ { _, x -> '\' .. x })
+
   let l:save_pos = vimtex#pos#get_cursor()
   while 1
     let l:cmd = s:get_cmd('prev')
@@ -278,8 +349,8 @@ function! s:get_frac_cmd() abort " {{{1
       return {}
     endif
 
-    " Note: \dfrac is defined by amsmath and is a common variant
-    if index(['\frac', '\dfrac'], l:cmd.name) >= 0
+    " Note: \dfrac and \cfrac are defined by amsmath and are common variants
+    if index(l:frac_cmds, l:cmd.name) >= 0
       break
     endif
 
@@ -289,22 +360,23 @@ function! s:get_frac_cmd() abort " {{{1
 
   let l:frac = {
         \ 'type': 'cmd',
+        \ 'origin': l:cmd.name[1:],
         \ 'col_start': l:cmd.pos_start.cnum - 1,
         \ 'col_end': l:cmd.pos_end.cnum - 1,
         \}
 
   if len(l:cmd.args) >= 2
     let l:consume = []
-    let l:frac.denominator = l:cmd.args[0].text
-    let l:frac.numerator = l:cmd.args[1].text
+    let l:frac.numerator = l:cmd.args[0].text
+    let l:frac.denominator = l:cmd.args[1].text
   elseif len(l:cmd.args) == 1
-    let l:consume = ['numerator']
-    let l:frac.denominator = l:cmd.args[0].text
-    let l:frac.numerator = ''
-  else
-    let l:consume = ['denominator', 'numerator']
+    let l:consume = ['denominator']
+    let l:frac.numerator = l:cmd.args[0].text
     let l:frac.denominator = ''
+  else
+    let l:consume = ['numerator', 'denominator']
     let l:frac.numerator = ''
+    let l:frac.denominator = ''
   endif
 
   " Handle unfinished cases
@@ -315,14 +387,14 @@ function! s:get_frac_cmd() abort " {{{1
 
     let l:blurp = matchstr(l:part, '^\s*{[^}]*}')
     if !empty(l:blurp)
-      let l:frac[l:key] = vimtex#util#trim(l:blurp)[1:-2]
+      let l:frac[l:key] = trim(l:blurp)[1:-2]
       let l:frac.col_end += len(l:blurp)
       continue
     endif
 
     let l:blurp = matchstr(l:part, '^\s*\w')
     if !empty(l:blurp)
-      let l:frac[l:key] = vimtex#util#trim(l:blurp)
+      let l:frac[l:key] = trim(l:blurp)
       let l:frac.col_end += len(l:blurp)
     endif
   endfor
@@ -332,38 +404,33 @@ function! s:get_frac_cmd() abort " {{{1
 
   let l:frac.text = strpart(getline('.'),
         \ l:frac.col_start, l:frac.col_end - l:frac.col_start + 1)
+  let l:frac.text_toggled = s:get_frac_toggled(
+        \ l:frac.origin, l:frac.numerator, l:frac.denominator)
 
-  return s:get_frac_cmd_aux(l:frac)
+  return l:frac
 endfunction
 
 " }}}1
 function! s:get_frac_cmd_visual(selected) abort " {{{1
-  let l:matches = matchlist(a:selected, '^\s*\\frac\s*{\(.*\)}\s*{\(.*\)}\s*$')
+  let l:frac_re = '\\\(' . join(filter(
+        \ keys(g:vimtex_toggle_fractions),
+        \ { _, x -> x !~# 'INLINE' }), '\|') . '\)'
+  let l:matches = matchlist(
+        \ a:selected, '^\s*' . l:frac_re . '\s*{\(.*\)}\s*{\(.*\)}\s*$')
   if empty(l:matches) | return {} | endif
 
   let l:frac = {
         \ 'type': 'cmd',
+        \ 'origin': l:matches[1],
         \ 'text': a:selected,
-        \ 'denominator': l:matches[1],
         \ 'numerator': l:matches[2],
+        \ 'denominator': l:matches[3],
         \}
 
-  return s:get_frac_cmd_aux(l:frac)
-endfunction
+  let l:frac.text_toggled = s:get_frac_toggled(
+        \ l:frac.origin, l:frac.numerator, l:frac.denominator)
 
-" }}}1
-function! s:get_frac_cmd_aux(frac) abort " {{{1
-  let l:denominator = (a:frac.denominator =~# '^\\\?\w*$')
-        \ ? a:frac.denominator
-        \ : '(' . a:frac.denominator . ')'
-
-  let l:numerator = (a:frac.numerator =~# '^\\\?\w*$')
-        \ ? a:frac.numerator
-        \ : '(' . a:frac.numerator . ')'
-
-  let a:frac.text_toggled = l:denominator . '/' . l:numerator
-
-  return a:frac
+  return l:frac
 endfunction
 
 " }}}1
@@ -391,6 +458,9 @@ function! s:get_frac_inline() abort " {{{1
     let l:positions += [l:pos_after]
   endif
 
+  let l:re_denom_1 = '\v^\s*[^$()} ]*'
+  let l:re_denom_2 = '\\%(right|[bB]igg?r?)?\)'
+
   for l:pos in l:positions
     let l:frac = {'type': 'inline'}
 
@@ -416,9 +486,9 @@ function! s:get_frac_inline() abort " {{{1
     " Parse denominator
     "
     let l:after = strpart(l:line, l:pos+1)
-    let l:atoms = l:after =~# '^\s*[^$()} ]*\\)'
-          \ ? matchstr(l:after, '^\s*[^$()} ]*\ze\\)')
-          \ : matchstr(l:after, '^\s*[^$()} ]*')
+    let l:atoms = l:after =~# l:re_denom_1 .. l:re_denom_2
+          \ ? matchstr(l:after, l:re_denom_1 .. '\ze' .. l:re_denom_2)
+          \ : matchstr(l:after, l:re_denom_1)
     let l:pos_after = l:pos + strlen(l:atoms)
     let l:after = strpart(l:line, l:pos_after+1)
     if l:after =~# '^('
@@ -434,11 +504,12 @@ function! s:get_frac_inline() abort " {{{1
     "
     " Combine/Parse inline and frac expressions
     "
+    let l:frac.origin = 'INLINE'
     let l:frac.text = strpart(l:line,
           \ l:frac.col_start,
           \ l:frac.col_end - l:frac.col_start + 1)
-    let l:frac.text_toggled  = printf('\frac{%s}{%s}',
-          \ l:frac.numerator, l:frac.denominator)
+    let l:frac.text_toggled  = s:get_frac_toggled(
+          \ l:frac.origin, l:frac.numerator, l:frac.denominator)
 
     "
     " Accept result if the range contains the cursor column
@@ -458,13 +529,14 @@ function! s:get_frac_inline_visual(selected) abort " {{{1
 
   let l:frac = {
         \ 'type': 'inline',
+        \ 'origin': 'INLINE',
         \ 'text': a:selected,
         \ 'numerator': s:get_inline_trim(l:parts[0]),
         \ 'denominator': s:get_inline_trim(l:parts[1]),
         \}
 
-  let l:frac.text_toggled  = printf('\frac{%s}{%s}',
-        \ l:frac.numerator, l:frac.denominator)
+  let l:frac.text_toggled = s:get_frac_toggled(
+        \ l:frac.origin, l:frac.numerator, l:frac.denominator)
 
   return l:frac
 endfunction
@@ -502,8 +574,22 @@ endfunction
 
 " }}}1
 function! s:get_inline_trim(str) abort " {{{1
-  let l:str = vimtex#util#trim(a:str)
+  let l:str = trim(a:str)
   return substitute(l:str, '^(\(.*\))$', '\1', '')
+endfunction
+
+" }}}1
+function! s:cmd_in_star_whitelist(name) abort " {{{1
+  if empty(g:vimtex_toggle_star_cmds) | return v:true | endif
+
+  let l:name = substitute(a:name, '\v^\\|\*$', '', 'g')
+  for l:pattern in g:vimtex_toggle_star_cmds
+    if l:name =~? '\v^%(' . l:pattern . ')$'
+      return v:true
+    endif
+  endfor
+
+  return v:false
 endfunction
 
 " }}}1
@@ -581,7 +667,9 @@ function! s:operator_function(_) abort " {{{1
         \   'create': 'create(l:name, 0)',
         \   'delete': 'delete()',
         \   'toggle_star': 'toggle_star()',
+        \   'toggle_star_agnostic': 'toggle_star_agnostic()',
         \   'toggle_frac': 'toggle_frac()',
+        \   'toggle_break': 'toggle_break()',
         \ }[s:operator]
 endfunction
 
@@ -602,13 +690,15 @@ function! s:get_cmd(direction) abort " {{{1
         \ 'pos_start' : { 'lnum' : lnum, 'cnum' : cnum },
         \ 'pos_end' : { 'lnum' : lnum, 'cnum' : cnum + strlen(match) - 1 },
         \ 'args' : [],
+        \ 'args_parens' : [],
+        \ 'args_chevrons' : [],
         \ 'opts' : [],
         \}
 
   " Environments always start with environment name and allows option
-  " afterwords
+  " afterwards
   if res.name ==# '\begin'
-    let arg = s:get_cmd_part('{', res.pos_end)
+    let arg = s:get_cmd_part_delim('{', res.pos_end)
     if empty(arg) | return res | endif
 
     call add(res.args, arg)
@@ -616,16 +706,9 @@ function! s:get_cmd(direction) abort " {{{1
     let res.pos_end.cnum = arg.close.cnum
   endif
 
-  " Get overlay specification
-  let res.overlay = s:get_cmd_overlay(res.pos_end.lnum, res.pos_end.cnum)
-  if !empty(res.overlay)
-    let res.pos_end.lnum = res.overlay.close.lnum
-    let res.pos_end.cnum = res.overlay.close.cnum
-  endif
-
-  " Get options and arguments
+  " Parse the arguments
   while v:true
-    let opt = s:get_cmd_part('[', res.pos_end)
+    let opt = s:get_cmd_part_delim('[', res.pos_end)
     if !empty(opt)
       call add(res.opts, opt)
       let res.pos_end.lnum = opt.close.lnum
@@ -633,9 +716,25 @@ function! s:get_cmd(direction) abort " {{{1
       continue
     endif
 
-    let arg = s:get_cmd_part('{', res.pos_end)
+    let arg = s:get_cmd_part_delim('{', res.pos_end)
     if !empty(arg)
       call add(res.args, arg)
+      let res.pos_end.lnum = arg.close.lnum
+      let res.pos_end.cnum = arg.close.cnum
+      continue
+    endif
+
+    let arg = s:get_cmd_part_simple(['(', ')'], res.pos_end)
+    if !empty(arg)
+      call add(res.args_parens, arg)
+      let res.pos_end.lnum = arg.close.lnum
+      let res.pos_end.cnum = arg.close.cnum
+      continue
+    endif
+
+    let arg = s:get_cmd_part_simple(['<', '>'], res.pos_end)
+    if !empty(arg)
+      call add(res.args_chevrons, arg)
       let res.pos_end.lnum = arg.close.lnum
       let res.pos_end.cnum = arg.close.cnum
       continue
@@ -653,30 +752,27 @@ endfunction
 " }}}1
 function! s:get_cmd_name(next) abort " {{{1
   let [l:lnum, l:cnum] = searchpos(
-        \ '\v\\%(\a+\*?|[,:;!])',
+        \ '\v\\%([a-zA-Z@]+\*?|[,:;!])',
         \ a:next ? 'nW' : 'cbnW')
-  let l:match = matchstr(getline(l:lnum), '^\v\\%([,:;!]|\a*\*?)', l:cnum-1)
+  let l:match = matchstr(getline(l:lnum), '^\v\\%([,:;!]|[a-zA-Z@]*\*?)', l:cnum-1)
   return [l:lnum, l:cnum, l:match]
 endfunction
 
 " }}}1
-function! s:get_cmd_part(part, start_pos) abort " {{{1
+function! s:get_cmd_part_delim(open_delim, start_pos) abort " {{{1
   let l:save_pos = vimtex#pos#get_cursor()
   call vimtex#pos#set_cursor(a:start_pos)
   let l:open = vimtex#delim#get_next('delim_tex', 'open')
   call vimtex#pos#set_cursor(l:save_pos)
-  if empty(l:open) | return | endif
 
-  "
-  " Ensure that the delimiter
-  " 1) is of the right type,
-  " 2) and is the next non-whitespace character.
-  "
-  let l:separate = s:text_between(a:start_pos, l:open)
-  let l:newlines = count(l:separate, "\n")
-  if l:open.match !=# a:part
-        \ || strlen(substitute(l:separate, '\_s\+', '', 'g')) != 0
-        \ || l:newlines > 1
+  " Ensure that the next delimiter is found and is of the right type
+  if empty(l:open) || l:open.match !=# a:open_delim | return {} | endif
+
+  " Ensure that the delimiter is the next non-whitespace character according to
+  " a configurable rule
+  if ! call(g:vimtex_parser_cmd_separator_check, [
+        \ s:text_between(a:start_pos, l:open)
+        \])
     return {}
   endif
 
@@ -693,15 +789,26 @@ function! s:get_cmd_part(part, start_pos) abort " {{{1
 endfunction
 
 " }}}1
-function! s:get_cmd_overlay(lnum, cnum) abort " {{{1
-  let l:match = matchstr(getline(a:lnum), '^\s*<[^>]*>', a:cnum)
+function! s:get_cmd_part_simple(delims, start_pos) abort " {{{1
+  let l:lnum = a:start_pos.lnum
+  let l:cnum = a:start_pos.cnum
+  let l:regex = '^\s*' . a:delims[0] . '[^' . a:delims[1] . ']*' . a:delims[1]
 
-  return empty(l:match)
-        \ ? {}
-        \ : {
-        \    'open' : {'lnum' : a:lnum, 'cnum' : a:cnum + 1},
-        \    'close' : {'lnum' : a:lnum, 'cnum' : a:cnum + strlen(l:match)},
-        \    'text' : l:match
+  let l:match = matchstr(getline(l:lnum), l:regex, l:cnum)
+  if empty(l:match) | return {} | endif
+
+  " Ensure that the delimiter is the next non-whitespace character according to
+  " a configurable rule
+  let l:separator = matchstr(l:match, '^\s*')
+  if ! call(g:vimtex_parser_cmd_separator_check, [l:separator])
+    return {}
+  endif
+
+  let l:offset = strlen(l:separator)
+  return {
+        \    'open' : {'lnum' : l:lnum, 'cnum' : l:cnum + l:offset + 1},
+        \    'close' : {'lnum' : l:lnum, 'cnum' : l:cnum + strlen(l:match)},
+        \    'text' : trim(l:match)
         \   }
 endfunction
 

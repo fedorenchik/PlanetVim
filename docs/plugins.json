@@ -2083,11 +2083,11 @@
       "path": ".vim/pack/tex/start/vimtex",
       "provenance": {
         "branch": "master",
-        "commit": "54fd9f5ba70ba907e683a42e2b1903133a98dd60",
+        "commit": "cb1374f1f3f9717ea91787c54dc11031d673aea5",
         "kind": "git-subrepo",
         "remote": "https://github.com/lervag/vimtex.git"
       },
-      "snapshot_sha256": "b3b58af318f037f56b0e57b60f5f38615a8a2b2a92080374add16c4232e1516b"
+      "snapshot_sha256": "1ffb3239378d00912759d9500f5db8d0ce1f65476e09cc365c01f3522fca06a4"
     },
     {
       "group": "viml",

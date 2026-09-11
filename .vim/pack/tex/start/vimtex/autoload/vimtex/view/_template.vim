@@ -30,24 +30,9 @@ endfunction
 
 " }}}1
 function! s:viewer.out() dict abort " {{{1
-  " Copy pdf and synctex files if we use temporary files
-  if g:vimtex_view_use_temp_files
-    let l:out = b:vimtex.root . '/' . b:vimtex.name . '_vimtex.pdf'
-
-    if getftime(b:vimtex.out()) > getftime(l:out)
-      call writefile(readfile(b:vimtex.out(), 'b'), l:out, 'b')
-    endif
-
-    let l:old = b:vimtex.ext('synctex.gz')
-    let l:new = fnamemodify(l:out, ':r') . '.synctex.gz'
-    if getftime(l:old) > getftime(l:new)
-      call rename(l:old, l:new)
-    endif
-  else
-    let l:out = b:vimtex.out(1)
-  endif
-
-  return filereadable(l:out) ? l:out : ''
+  return exists('*b:vimtex.compiler.get_file')
+        \ ? b:vimtex.compiler.get_file('pdf')
+        \ : ''
 endfunction
 
 " }}}1
@@ -83,6 +68,10 @@ function! s:viewer.compiler_callback(outfile) dict abort " {{{1
 
   call self._start(a:outfile)
   let self.started_through_callback = 1
+
+  if exists('#User#VimtexEventView')
+    doautocmd <nomodeline> User VimtexEventView
+  endif
 endfunction
 
 " }}}1
@@ -133,9 +122,6 @@ function! s:viewer.xdo_get_id() dict abort " {{{1
   if !self.xdo_check() | return 0 | endif
 
   if self.xwin_id > 0 | return self.xwin_id | endif
-
-  " Allow some time for the viewer to start properly
-  sleep 500m
 
   " Try to find viewer's window ID by different methods:
   " * by PID (probably most reliable when it works)
@@ -257,8 +243,8 @@ function! s:viewer.xdo_focus_vim() dict abort " {{{1
     let l:xwinids = filter(reverse(l:output), '!empty(v:val)')
 
     if !empty(l:xwinids)
+      call vimtex#jobs#run('xdotool mousemove --window '. l:xwinids[0] . ' --polar 0 0')
       call vimtex#jobs#run('xdotool windowactivate ' . l:xwinids[0] . ' &')
-      call feedkeys("\<c-l>", 'tn')
       return l:xwinids[0]
       break
     endif

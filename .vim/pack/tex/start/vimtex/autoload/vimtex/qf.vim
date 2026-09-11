@@ -109,8 +109,8 @@ function! vimtex#qf#setqflist(...) abort " {{{1
     let l:jump = 0
   else
     let l:tex = b:vimtex.tex
-    let l:log = b:vimtex.log()
-    let l:blg = b:vimtex.ext('blg')
+    let l:log = b:vimtex.compiler.get_file('log')
+    let l:blg = b:vimtex.compiler.get_file('blg')
     let l:jump = g:vimtex_quickfix_autojump
   endif
 
@@ -141,6 +141,12 @@ function! vimtex#qf#setqflist(...) abort " {{{1
       endfor
       call setqflist(l:qflist, 'r')
     endif
+
+    " Put errors on top
+    let l:qflist = getqflist()
+    call setqflist(l:qflist->sort({ q1, q2 ->
+          \ (q2.type ==? 'e' ? 1 : 0) - (q1.type ==? 'e' ? 1 : 0)
+          \}), 'r')
 
     " Set title if supported
     try
@@ -196,6 +202,10 @@ endfunction
 
 " }}}1
 function! s:qf_autoclose_check() abort " {{{1
+  " Avoid this check if command-line window is open
+  " See :help E11
+  if bufexists("[Command Line]") | return | endif
+
   if get(s:, 'keystroke_counter') == 0
     let s:keystroke_counter = g:vimtex_quickfix_autoclose_after_keystrokes
   endif

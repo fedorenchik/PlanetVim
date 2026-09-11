@@ -10,6 +10,8 @@ endfunction
 
 " }}}1
 function! vimtex#parser#preamble(file, ...) abort " {{{1
+  " This will return the list of lines of the current project from the
+  " beginning of the preamble until and including the `\begin{document}`
   return vimtex#parser#tex#parse_preamble(a:file, a:0 > 0 ? a:1 : {})
 endfunction
 
@@ -27,8 +29,8 @@ endfunction
 function! vimtex#parser#toc(...) abort " {{{1
   let l:vimtex = a:0 > 0 ? a:1 : b:vimtex
 
-  let l:cache = vimtex#cache#open('parsertoc', {
-        \ 'persistent': 0,
+  let l:cache = vimtex#cache#open('parser_toc', {
+        \ 'persistent': v:false,
         \ 'default': {'entries': [], 'ftime': -1},
         \})
   let l:current = l:cache.get(l:vimtex.tex)
@@ -36,7 +38,6 @@ function! vimtex#parser#toc(...) abort " {{{1
   " Update cache if relevant
   let l:ftime = l:vimtex.getftime()
   if l:ftime > l:current.ftime
-    let l:cache.modified = 1
     let l:current.ftime = l:ftime
     let l:current.entries = vimtex#parser#toc#parse(l:vimtex.tex)
   endif
@@ -126,19 +127,26 @@ function! vimtex#parser#selection_to_texfile(opts) range abort " {{{1
     let l:lines = l:template[:l:i-1] + l:lines + l:template[l:i+1:]
   else
     let l:lines = vimtex#parser#preamble(b:vimtex.tex)
-          \ + ['\begin{document}']
           \ + l:lines
           \ + ['\end{document}']
   endif
 
+  " Respect the compiler out_dir option
+  if empty(b:vimtex.compiler.out_dir)
+    let l:out_dir = b:vimtex.root
+  else
+    let l:out_dir = vimtex#paths#is_abs(b:vimtex.compiler.out_dir)
+          \ ? b:vimtex.compiler.out_dir
+          \ : b:vimtex.root . '/' . b:vimtex.compiler.out_dir
+  endif
+
   " Write content to temporary file
   let l:file = {}
-  let l:file.root = b:vimtex.root
-  let l:file.base = l:opts.name
-  let l:file.tex = l:file.root . '/' . l:file.base . '.tex'
-  let l:file.pdf = l:file.root . '/' . l:file.base . '.pdf'
-  let l:file.log = l:file.root . '/' . l:file.base . '.log'
-  let l:file.base .= '.tex'
+  let l:file.root = l:out_dir
+  let l:file.name = l:opts.name
+  let l:file.base = l:file.name . '.tex'
+  let l:file.tex = l:file.root . '/' . l:file.name . '.tex'
+  let l:file.pdf = l:file.root . '/' . l:file.name . '.pdf'
   call writefile(l:lines, l:file.tex)
 
   return l:file

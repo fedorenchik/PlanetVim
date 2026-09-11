@@ -28,7 +28,7 @@ function! s:viewer._check() dict abort " {{{1
   let l:output = vimtex#jobs#capture(
         \ 'osascript -l JavaScript -e ''Application("Skim").id()''')
 
-  if l:output[0] !~# '^net.sourceforge.skim-app'
+  if join(l:output) !~# 'net.sourceforge.skim-app'
     call vimtex#log#error('Skim is not installed!')
     return v:false
   endif
@@ -66,6 +66,7 @@ function! s:make_cmd_view(outfile, open, sync) abort " {{{1
           \ 'app.documents[0].go({ to: app.texLines[' . (line('.')-1) . '],',
           \ 'from: Path("'. expand('%:p') . '")',
           \ (g:vimtex_view_skim_reading_bar ? ', showingReadingBar: true' : ''),
+          \ (g:vimtex_view_skim_no_select ? ', selecting: false' : ''),
           \ '});'
           \])
   endif

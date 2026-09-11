@@ -23,10 +23,12 @@ let s:qf = {
       \}
 
 function! s:qf.set_errorformat() abort dict "{{{1
-  setlocal errorformat=%+E%.%#---line\ %l\ of\ file\ %f
+  setlocal errorformat=
+  setlocal errorformat+=%+EName%.%#has\ a\ comma\ at\ the\ end%.%#
   setlocal errorformat+=%+EI\ found\ %.%#---while\ reading\ file\ %f
   setlocal errorformat+=%+WWarning--empty\ %.%#\ in\ %.%m
   setlocal errorformat+=%+WWarning--entry\ type\ for%m
+  setlocal errorformat+=%-Cwhile\ executing---line\ %l\ of\ file\ %f
   setlocal errorformat+=%-C--line\ %l\ of\ file\ %f
   setlocal errorformat+=%-G%.%#
 endfunction
@@ -73,14 +75,15 @@ endfunction
 " }}}1
 function! s:qf.get_db_files() abort " {{{1
   if empty(self.db_files)
-    let l:build_dir = fnamemodify(b:vimtex.ext('log'), ':.:h') . '/'
+    let l:out_dir = fnamemodify(
+          \ b:vimtex.compiler.get_file('log'), ':.:h') . '/'
     for l:file in map(
           \ filter(readfile(self.file), 'v:val =~# ''Database file #\d:'''),
           \ 'matchstr(v:val, '': \zs.*'')')
       if filereadable(l:file)
         call add(self.db_files, l:file)
-      elseif filereadable(l:build_dir . l:file)
-        call add(self.db_files, l:build_dir . l:file)
+      elseif filereadable(l:out_dir . l:file)
+        call add(self.db_files, l:out_dir . l:file)
       endif
     endfor
   endif
@@ -184,6 +187,24 @@ function! s:type_no_bibstyle.fix(ctx, entry) abort " {{{1
       endif
     endfor
     return 1
+  endif
+endfunction
+
+" }}}1
+
+let s:type_fix_bst_path = {}
+function! s:type_fix_bst_path.fix(ctx, entry) abort " {{{1
+  let l:filename = has_key(a:entry, 'filename')
+        \ ? a:entry.filename
+        \ : has_key(a:entry, 'bufnr')
+        \   ? bufname(a:entry.bufnr)
+        \   : ''
+  if l:filename =~# '\.bst$' && !filereadable(l:filename)
+    let l:path = vimtex#kpsewhich#find(l:filename)
+    if filereadable(l:path)
+      let a:entry.filename = l:path
+      unlet! a:entry.bufnr
+    endif
   endif
 endfunction
 

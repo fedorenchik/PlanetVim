@@ -14,15 +14,28 @@ endfunction
 
 " }}}1
 function! vimtex#state#init() abort " {{{1
-  let [l:main, l:main_parser] = s:get_main()
+  let [l:main, l:main_parser, l:unsupported_modules] = s:get_main()
   let l:id = s:get_main_id(l:main)
+
+  if exists('s:cand_fallback')
+    call vimtex#log#warning(
+          \ 'Ignored latexmain specifier which points to: ',
+          \ s:cand_fallback,
+          \ 'Reason: That main file did not include this file!',
+          \)
+    unlet s:cand_fallback
+  endif
 
   if l:id >= 0
     let b:vimtex_id = l:id
     let b:vimtex = s:vimtex_states[l:id]
   else
     let b:vimtex_id = s:vimtex_next_id
-    let b:vimtex = vimtex#state#class#new(l:main, l:main_parser, 0)
+    let b:vimtex = vimtex#state#class#new({
+          \ 'main': l:main,
+          \ 'main_parser': l:main_parser,
+          \ 'unsupported_modules': l:unsupported_modules
+          \})
     let s:vimtex_next_id += 1
     let s:vimtex_states[b:vimtex_id] = b:vimtex
   endif
@@ -42,9 +55,11 @@ function! vimtex#state#init_local() abort " {{{1
 
   if l:vimtex_id < 0
     let l:vimtex_id = s:vimtex_next_id
-    let l:vimtex = vimtex#state#class#new(
-          \ l:filename, 'local file',
-          \ l:preserve_root || s:check_standalone())
+    let l:vimtex = vimtex#state#class#new({
+          \ 'main': l:filename,
+          \ 'main_parser': 'local file',
+          \ 'preserve_root': l:preserve_root || s:check_standalone(),
+          \})
     let s:vimtex_next_id += 1
     let s:vimtex_states[l:vimtex_id] = l:vimtex
 
@@ -184,70 +199,71 @@ function! s:get_main_id(main) abort " {{{1
 endfunction
 
 function! s:get_main() abort " {{{1
-  if exists('s:disabled_modules')
-    unlet s:disabled_modules
-  endif
-
   " Use buffer variable if it exists
   if exists('b:vimtex_main') && filereadable(b:vimtex_main)
-    return [fnamemodify(b:vimtex_main, ':p'), 'buffer variable']
+    return [fnamemodify(b:vimtex_main, ':p'), 'buffer variable', []]
   endif
 
   " Search for TEX root specifier at the beginning of file. This is used by
   " several other plugins and editors.
   let l:candidate = s:get_main_from_texroot()
   if !empty(l:candidate)
-    return [l:candidate, 'texroot specifier']
+    return [l:candidate, 'texroot specifier', []]
   endif
 
   if &filetype ==# 'tex'
     " Check if the current file is a main file
     if s:file_is_main(expand('%:p'))
-      return [expand('%:p'), 'current file verified']
+      return [expand('%:p'), 'current file verified', []]
     endif
 
     " Support for subfiles package
     let l:candidate = s:get_main_from_subfile()
     if !empty(l:candidate)
-      return [l:candidate, 'subfiles']
+      return [l:candidate, 'subfiles', []]
     endif
   endif
 
   " Search for .latexmain-specifier
   let l:candidate = s:get_main_latexmain(expand('%:p'))
   if !empty(l:candidate)
-    return [l:candidate, 'latexmain specifier']
+    return [l:candidate, 'latexmain specifier', []]
   endif
 
   " Search for .latexmkrc @default_files specifier
   let l:candidate = s:get_main_latexmk()
   if !empty(l:candidate)
-    return [l:candidate, 'latexmkrc @default_files']
+    return [l:candidate, 'latexmkrc @default_files', []]
   endif
 
   " Check if we are class or style file
   if index(['cls', 'sty'], expand('%:e')) >= 0
     let l:id = getbufvar('#', 'vimtex_id', -1)
     if l:id >= 0 && has_key(s:vimtex_states, l:id)
-      return [s:vimtex_states[l:id].tex, 'cls/sty file (inherit from alternate)']
+      return [
+            \ s:vimtex_states[l:id].tex,
+            \ 'cls/sty file (inherit from alternate)',
+            \ []
+            \]
     else
-      let s:disabled_modules = ['compiler', 'view', 'toc', 'qf']
-      return [expand('%:p'), 'cls/sty file']
+      return [
+            \ expand('%:p'),
+            \ 'cls/sty file',
+            \ ['compiler', 'view', 'toc', 'qf']
+            \]
     endif
   endif
 
   " Search for main file recursively through include specifiers
-  if !get(g:, 'vimtex_disable_recursive_main_file_detection', 0)
-    if &filetype ==# 'tex'
-      let l:candidate = s:get_main_choose(s:get_main_recurse())
-      if !empty(l:candidate)
-        return [l:candidate, 'recursive search']
-      endif
-    else
-      let l:candidate = s:get_main_choose(s:get_main_recurse_from_bib())
-      if !empty(l:candidate)
-        return [l:candidate, 'recursive search (bib)']
-      endif
+  if &filetype ==# 'tex'
+    let l:candidate = s:get_main_choose(s:get_main_recurse())
+    if !empty(l:candidate)
+      return [l:candidate, 'recursive search', []]
+    endif
+  else
+    let l:candidate = s:get_main_choose(s:get_main_recurse_from_bib())
+    if !empty(l:candidate)
+      return [l:candidate, 'recursive search (bib)', []]
     endif
   endif
 
@@ -258,23 +274,30 @@ function! s:get_main() abort " {{{1
   if exists('s:cand_fallback')
     let l:candidate = s:cand_fallback
     unlet s:cand_fallback
-    return [l:candidate, 'fallback']
+    return [l:candidate, 'fallback', []]
   elseif &filetype ==# 'bib'
     let l:id = getbufvar('#', 'vimtex_id', -1)
     if l:id >= 0 && has_key(s:vimtex_states, l:id)
-      return [s:vimtex_states[l:id].tex, 'bib file (inherit from alternate)']
+      return [
+            \ s:vimtex_states[l:id].tex,
+            \ 'bib file (inherit from alternate)',
+            \ []
+            \]
     else
-      let s:disabled_modules = ['compiler', 'view', 'toc', 'qf', 'fold']
-      return [expand('%:p'), 'bib file']
+      return [
+            \ expand('%:p'),
+            \ 'bib file',
+            \ ['compiler', 'view', 'toc', 'qf', 'fold']
+            \]
     endif
   else
-    return [expand('%:p'), 'fallback current file']
+    return [expand('%:p'), 'fallback current file', []]
   endif
 endfunction
 
 " }}}1
 function! s:get_main_from_texroot() abort " {{{1
-  for l:line in getline(1, 5)
+  for l:line in getline(1, 20)
     let l:file_pattern = matchstr(l:line, g:vimtex#re#tex_input_root)
     if empty(l:file_pattern) | continue | endif
 
@@ -295,7 +318,7 @@ endfunction
 
 " }}}1
 function! s:get_main_from_subfile() abort " {{{1
-  for l:line in getline(1, 5)
+  for l:line in getline(1, 20)
     let l:filename = matchstr(l:line,
           \ '^\C\s*\\documentclass\[\zs.*\ze\]{subfiles}')
     if len(l:filename) > 0
@@ -340,7 +363,7 @@ endfunction
 
 " }}}1
 function! s:get_main_latexmain(file) abort " {{{1
-  for l:cand in s:findfiles_recursive('*.latexmain', expand('%:p:h'))
+  for l:cand in s:globpath_upwards('*.latexmain', expand('%:p:h'))
     let l:cand = fnamemodify(l:cand, ':p:r')
     if s:file_reaches_current(l:cand)
       return l:cand
@@ -394,9 +417,9 @@ function! s:get_main_recurse(...) abort " {{{1
   let l:re_filter1 = fnamemodify(l:file, ':t:r')
   let l:re_filter2 = g:vimtex#re#tex_input . '\s*\f*' . l:re_filter1
 
-  " Search through candidates found recursively upwards in the directory tree
+  " Search through candidates found upwards in the directory tree
   let l:results = []
-  for l:cand in s:findfiles_recursive('*.tex', fnamemodify(l:file, ':p:h'))
+  for l:cand in s:globpath_upwards('*.tex', fnamemodify(l:file, ':p:h'))
     if index(l:tried[l:file], l:cand) >= 0 | continue | endif
     call add(l:tried[l:file], l:cand)
 
@@ -420,9 +443,9 @@ function! s:get_main_recurse_from_bib() abort " {{{1
   let l:re_filter1 = fnamemodify(l:file, ':t:r')
   let l:re_filter2 = g:vimtex#re#bib_input . '\s*\f*' . l:re_filter1
 
-  " Search through candidates found recursively upwards in the directory tree
+  " Search through candidates found upwards in the directory tree
   let l:results = []
-  for l:cand in s:findfiles_recursive('*.tex', fnamemodify(l:file, ':p:h'))
+  for l:cand in s:globpath_upwards('*.tex', fnamemodify(l:file, ':p:h'))
     if index(l:tried[l:file], l:cand) >= 0 | continue | endif
     call add(l:tried[l:file], l:cand)
 
@@ -457,6 +480,8 @@ function! s:get_main_choose(list) abort " {{{1
     return l:existing[l:alternate_id]
   elseif len(l:existing) < 1 && len(l:new) == 1
     return l:new[0]
+  elseif g:vimtex_main_choose_first
+    return l:list[0]
   else
     let l:choices = {}
     for l:tex in l:list
@@ -465,7 +490,7 @@ function! s:get_main_choose(list) abort " {{{1
 
     unsilent return vimtex#ui#select(l:choices, {
           \ 'prompt': 'Please select an appropriate main file:',
-          \ 'abort': v:false,
+          \ 'return': 'key',
           \})
   endif
 endfunction
@@ -475,34 +500,40 @@ endfunction
 function! s:file_is_main(file) abort " {{{1
   if !filereadable(a:file) | return 0 | endif
 
+  let l:preamble = vimtex#parser#preamble(a:file, {
+        \ 'root' : fnamemodify(a:file, ':p:h'),
+        \})
+
   " Check if a:file is a main file by looking for the \documentclass command,
   " but ignore the following:
-  "
-  "   \documentclass[...]{subfiles}
-  "   \documentclass[...]{standalone}
-  "
-  let l:lines = readfile(a:file, 0, 50)
+  " * \documentclass[...]{subfiles}
+  " * \documentclass[...]{standalone}
+  let l:lines = copy(l:preamble)
   call filter(l:lines, 'v:val =~# ''^\s*\\documentclass\_\s*[\[{]''')
   call filter(l:lines, 'v:val !~# ''{subfiles}''')
   call filter(l:lines, 'v:val !~# ''{standalone}''')
   if len(l:lines) == 0 | return 0 | endif
 
-  " A main file contains `\begin{document}`
-  let l:lines = vimtex#parser#preamble(a:file, {
-        \ 'inclusive' : 1,
-        \ 'root' : fnamemodify(a:file, ':p:h'),
-        \})
+  " A main file must also contain `\begin{document}`
+  let l:lines = copy(l:preamble)
   call filter(l:lines, 'v:val =~# ''^\s*\\begin\s*{document}''')
   return len(l:lines) > 0
 endfunction
 
 " }}}1
-function! s:file_reaches_current(file) abort " {{{1
+function! s:file_reaches_current(file, ...) abort " {{{1
+  let l:visited = a:0 > 0 ? a:1 : []
+
   " Note: This function assumes that the input a:file is an absolute path
   if !filereadable(a:file) | return 0 | endif
 
+  if index(l:visited, a:file) >= 0 | return 0 | endif
+  call add(l:visited, a:file)
+
   for l:line in filter(readfile(a:file), 'v:val =~# g:vimtex#re#tex_input')
-    let l:file = matchstr(l:line, g:vimtex#re#tex_input . '\zs\f+')
+    let l:file = get(
+          \ vimtex#parser#tex#input_parser(l:line, a:file, ''),
+          \ 'file', '')
     if empty(l:file) | continue | endif
 
     if !vimtex#paths#is_abs(l:file)
@@ -513,8 +544,7 @@ function! s:file_reaches_current(file) abort " {{{1
       let l:file .= '.tex'
     endif
 
-    if expand('%:p') ==# l:file
-          \ || s:file_reaches_current(l:file)
+    if expand('%:p') ==# l:file || s:file_reaches_current(l:file, l:visited)
       return 1
     endif
   endfor
@@ -523,20 +553,24 @@ function! s:file_reaches_current(file) abort " {{{1
 endfunction
 
 " }}}1
-function! s:findfiles_recursive(expr, path) abort " {{{1
+function! s:globpath_upwards(expr, path) abort " {{{1
+  " Returns the list of files (NOT directories) obtained by globpath(p, a:expr)
+  " with p going from a:path and upwards in the directory tree.
   let l:path = a:path
   let l:dirs = l:path
   while l:path != fnamemodify(l:path, ':h')
     let l:path = fnamemodify(l:path, ':h')
     let l:dirs .= ',' . l:path
   endwhile
-  return split(globpath(fnameescape(l:dirs), a:expr), '\n')
+  return filter(
+        \ split(globpath(fnameescape(l:dirs), a:expr), '\n'),
+        \ 'filereadable(v:val)')
 endfunction
 
 " }}}1
 
 function! s:check_standalone() abort " {{{1
-  return match(getline(1, 5),
+  return match(getline(1, 20),
         \      '\v^\C\s*\\documentclass%(\[.*\])?\{standalone\}') >= 0
 endfunction
 

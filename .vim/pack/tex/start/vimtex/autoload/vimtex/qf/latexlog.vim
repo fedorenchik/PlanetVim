@@ -33,9 +33,13 @@ function! s:qf.set_errorformat() abort dict "{{{1
   setlocal errorformat+=%-P**\"%f\"
 
   " Match errors
+  setlocal errorformat+=%+E!\ Emergency\ stop.
   setlocal errorformat+=%E!\ LaTeX\ %trror:\ %m
+  setlocal errorformat+=%E!pdfTeX\ error:\ %m
+  setlocal errorformat+=%E%f:%l:\ \ ==>\ %m
   setlocal errorformat+=%E%f:%l:\ %m
   setlocal errorformat+=%+ERunaway\ argument?
+  setlocal errorformat+=%-G{/%m
   setlocal errorformat+=%+C{%m
   setlocal errorformat+=%C!\ %m
 
@@ -49,18 +53,23 @@ function! s:qf.set_errorformat() abort dict "{{{1
   " Define general warnings
   "
   setlocal errorformat+=%+WLaTeX\ Font\ Warning:\ %.%#line\ %l%.%#
-  setlocal errorformat+=%-CLaTeX\ Font\ Warning:\ %m
+  setlocal errorformat+=%+WLaTeX\ Font\ Warning:\ %m
+  setlocal errorformat+=%-C(Font)\ %#%m\ on\ input\ line\ %l%.
   setlocal errorformat+=%-C(Font)%m
 
   setlocal errorformat+=%+WLaTeX\ %.%#Warning:\ %.%#line\ %l%.%#
   setlocal errorformat+=%+WLaTeX\ %.%#Warning:\ %m
+  setlocal errorformat+=%-C\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ %m\ on\ input\ line\ %l%.
 
   setlocal errorformat+=%+WOverfull\ %\\%\\hbox%.%#\ at\ lines\ %l--%*\\d
   setlocal errorformat+=%+WOverfull\ %\\%\\hbox%.%#\ at\ line\ %l
   setlocal errorformat+=%+WOverfull\ %\\%\\vbox%.%#\ at\ line\ %l
+  setlocal errorformat+=%+WOverfull\ %\\%\\vbox%.%#\ %m
 
   setlocal errorformat+=%+WUnderfull\ %\\%\\hbox%.%#\ at\ lines\ %l--%*\\d
   setlocal errorformat+=%+WUnderfull\ %\\%\\vbox%.%#\ at\ line\ %l
+
+  setlocal errorformat+=%+WMissing\ character:\ %m
 
   "
   " Define package related warnings
@@ -90,10 +99,15 @@ function! s:qf.set_errorformat() abort dict "{{{1
   setlocal errorformat+=%+WPackage\ titlesec\ Warning:\ %m
   setlocal errorformat+=%-C(titlesec)%m
 
+  setlocal errorformat+=%+WPackage\ silence\ Warning:\ %m
+  setlocal errorformat+=%-C(silence)%m
+
   setlocal errorformat+=%+WPackage\ %.%#\ Warning:\ %m\ on\ input\ line\ %l.
   setlocal errorformat+=%+WPackage\ %.%#\ Warning:\ %m
   setlocal errorformat+=%-Z(%.%#)\ %m\ on\ input\ line\ %l.
   setlocal errorformat+=%-C(%.%#)\ %m
+
+  setlocal errorformat+=%+W%.%#\ Warning:\ %m\ on\ input\ line\ %l.
 
   " Ignore unmatched lines
   setlocal errorformat+=%-G%.%#
@@ -109,7 +123,7 @@ function! s:qf.addqflist(tex, log) abort dict "{{{1
 
   " Apply some post processing of the quickfix list
   let self.main = a:tex
-  let self.root = b:vimtex.root
+  let self.root = fnamemodify(a:tex, ':h')
   call self.fix_paths(a:log)
 endfunction
 
@@ -117,9 +131,19 @@ endfunction
 function! s:qf.fix_paths(log) abort dict " {{{1
   let l:qflist = getqflist()
   let l:lines = readfile(a:log)
+  let l:nlines = len(l:lines)
   let l:hbox_cache = {'index': {}, 'paths': {}}
 
   for l:qf in l:qflist
+    " Clean up some messages
+    if l:qf.lnum > 0 && l:qf.text =~# 'on input line \d\+.$'
+      let l:qf.text = substitute(l:qf.text, '\s*on input line \d\+.$', '', '')
+    endif
+
+    if l:qf.text ==# '! Emergency stop.'
+      let l:qf.text = 'Emergency stop (fatal error)!'
+    endif
+
     " Handle missing buffer/filename: Fallback to the main file (this is always
     " correct in single-file projects and is thus a good fallback).
     if l:qf.bufnr == 0
@@ -131,8 +155,11 @@ function! s:qf.fix_paths(log) abort dict " {{{1
       let l:qf.bufnr = l:bufnr_main
     endif
 
-    " Try to parse the filename from logfile for certain errors
-    if s:fix_paths_hbox_warning(l:qf, l:lines, self.root, l:hbox_cache)
+    " Try to parse the filename from logfile for certain errors, except for
+    " large log files where this makes for bad UI because it locks Vim while
+    " waiting for this parsing to finish.
+    if l:nlines < 10000
+          \ && s:fix_paths_hbox_warning(l:qf, l:lines, self.root, l:hbox_cache)
       continue
     endif
 
@@ -148,7 +175,7 @@ endfunction
 function! s:fix_paths_hbox_warning(qf, log, root, cache) abort " {{{1
   if a:qf.text !~# 'Underfull\|Overfull' | return v:false | endif
 
-  let l:index = match(a:log, '\V' . escape(a:qf.text, '\'))
+  let l:index = index(a:log, a:qf.text)
   if l:index < 0 | return v:false | endif
 
   " Check index cache first

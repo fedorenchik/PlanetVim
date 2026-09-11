@@ -24,8 +24,12 @@ function! vimtex#jobs#start(cmd, ...) abort " {{{1
   let l:job.wait_timeout = str2nr(get(l:opts, 'wait_timeout', 5000))
   let l:job.capture_output = get(l:opts, 'capture_output', v:false)
   let l:job.detached = get(l:opts, 'detached', v:false)
+  call l:job.start()
 
-  return l:job.start()
+  " Add some minor delay to ensure the job was properly started
+  sleep 100m
+
+  return l:job
 endfunction
 
 " }}}1
@@ -58,8 +62,8 @@ function! vimtex#jobs#capture(cmd, ...) abort " {{{1
   call vimtex#paths#popd()
 
   " On Windows there may be trailing CR characters
-  return has('win32')
-        \ ? map(l:output, {_, x -> substitute(x, '\r$', '', '')})
+  return vimtex#util#is_win()
+        \ ? vimtex#util#win_clean_output(l:output)
         \ : l:output
 endfunction
 

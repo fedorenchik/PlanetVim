@@ -24,6 +24,20 @@ endfunction
 
 " }}}1
 
+function! vimtex#jobs#neovim#shell_default() abort " {{{1
+  let s:saveshell = [&shell, &shellcmdflag, &shellslash]
+  let &shell = 'cmd.exe'
+  let &shellcmdflag = '/s /c'
+  set shellslash&
+endfunction
+
+" }}}1
+function! vimtex#jobs#neovim#shell_restore() abort " {{{1
+  let [&shell, &shellcmdflag, &shellslash] = s:saveshell
+endfunction
+
+" }}}1
+
 let s:os = has('win32') ? 'win' : 'unix'
 
 
@@ -47,7 +61,9 @@ function! s:job.start() abort dict " {{{1
     let l:options.cwd = self.cwd
   endif
 
+  call vimtex#jobs#neovim#shell_default()
   let self.job = jobstart(self.cmd, l:options)
+  call vimtex#jobs#neovim#shell_restore()
 
   return self
 endfunction
@@ -88,15 +104,19 @@ endfunction
 
 " }}}1
 function! s:job.get_pid() abort dict " {{{1
-  if !has_key(self, 'pid')
-    try
-      let self.pid = jobpid(self.job)
-    catch
-      let self.pid = 0
-    endtry
-  endif
+  try
+    return jobpid(self.job)
+  catch
+    return 0
+  endtry
+endfunction
 
-  return self.pid
+" }}}1
+function! s:job.signal_hup() abort dict " {{{1
+  let l:pid = self.get_pid()
+  if l:pid > 0
+    call system(['kill', '-HUP', l:pid])
+  endif
 endfunction
 
 " }}}1
@@ -144,22 +164,16 @@ endfunction
 " }}}1
 
 function! s:neovim_win_run(cmd) abort " {{{1
-  let s:saveshell = [&shell, &shellcmdflag, &shellslash]
-  set shell& shellcmdflag& shellslash&
-
+  call vimtex#jobs#neovim#shell_default()
   call system('cmd /s /c "' . a:cmd . '"')
-
-  let [&shell, &shellcmdflag, &shellslash] = s:saveshell
+  call vimtex#jobs#neovim#shell_restore()
 endfunction
 
 " }}}1
 function! s:neovim_win_capture(cmd) abort " {{{1
-  let s:saveshell = [&shell, &shellcmdflag, &shellslash]
-  set shell& shellcmdflag& shellslash&
-
+  call vimtex#jobs#neovim#shell_default()
   let l:output = systemlist('cmd /s /c "' . a:cmd . '"')
-
-  let [&shell, &shellcmdflag, &shellslash] = s:saveshell
+  call vimtex#jobs#neovim#shell_restore()
 
   return l:output
 endfunction

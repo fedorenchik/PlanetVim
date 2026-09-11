@@ -14,9 +14,11 @@ function! vimtex#syntax#p#pgfplots#load(cfg) abort " {{{1
   syntax match texTikzEnvBgn contains=texCmdEnv nextgroup=texTikzOpt skipwhite skipnl "\\begin{\%(log\)*axis}"
   syntax match texTikzEnvBgn contains=texCmdEnv nextgroup=texTikzOpt skipwhite skipnl "\\begin{groupplot}"
   for l:env in ['axis', 'logaxis', 'loglogaxis', 'groupplot']
-    call vimtex#syntax#core#new_region_env('texTikzZone', l:env, {
+    call vimtex#syntax#core#new_env({
+          \ 'name': l:env,
+          \ 'region': 'texTikzZone',
           \ 'contains': '@texClusterTikz',
-          \ 'transparent': 1,
+          \ 'transparent': v:true,
           \})
   endfor
 
@@ -39,7 +41,9 @@ function! vimtex#syntax#p#pgfplots#load(cfg) abort " {{{1
 
 
   syntax match texPgfType "coordinates" contained nextgroup=texPgfCoordinates skipwhite skipnl
-  call vimtex#syntax#core#new_arg('texPgfCoordinates', {'contains': ''})
+  call vimtex#syntax#core#new_arg('texPgfCoordinates', {
+        \ 'contains': 'texComment'
+        \})
 
 
   syntax match texPgfNode "node" contained nextgroup=texTikzNodeOpt skipwhite skipnl

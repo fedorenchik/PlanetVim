@@ -13,11 +13,12 @@ endfunction
 " }}}1
 
 function! vimtex#doc#get_context(...) abort " {{{1
-  let l:context = a:0 == 0 || empty(a:1)
+  let l:word = a:0 > 0 ? a:1 : ''
+  let l:context = empty(l:word)
         \ ? s:packages_get_from_cursor()
         \ : {
         \     'type': 'word',
-        \     'candidates': [a:word],
+        \     'candidates': [l:word],
         \   }
   if empty(l:context) | return {} | endif
 
@@ -31,9 +32,9 @@ function! vimtex#doc#package(word) abort " {{{1
   let l:context = vimtex#doc#get_context(a:word)
   if empty(l:context) | return | endif
 
-  for l:handler in g:vimtex_doc_handlers
+  for l:Handler in g:vimtex_doc_handlers
     try
-      if call(l:handler, [l:context]) | return | endif
+      if call(l:Handler, [l:context]) | return | endif
     catch /E117/
     endtry
   endfor
@@ -56,7 +57,7 @@ function! vimtex#doc#make_selection(context) abort " {{{1
   endif
 
   if len(a:context.candidates) == 1
-    if vimtex#ui#confirm([
+    if !g:vimtex_doc_confirm_single || vimtex#ui#confirm([
           \ 'Open documentation for ' . a:context.type . ': ',
           \ ['VimtexSuccess', a:context.candidates[0]],
           \ '?'
@@ -80,7 +81,7 @@ function! s:packages_get_from_cursor() abort " {{{1
   let l:cmd = vimtex#cmd#get_current()
   if empty(l:cmd) | return {} | endif
 
-  if l:cmd.name ==# '\usepackage'
+  if l:cmd.name ==# '\usepackage' || l:cmd.name ==# '\RequirePackage'
     return s:packages_from_usepackage(l:cmd)
   elseif l:cmd.name ==# '\documentclass'
     return s:packages_from_documentclass(l:cmd)
@@ -263,10 +264,10 @@ function! s:packages_open(context) abort " {{{1
   call vimtex#doc#make_selection(a:context)
   if empty(a:context.selected) | return 0 | endif
 
-  call vimtex#util#www('http://texdoc.net/pkg/' . a:context.selected)
+  call vimtex#util#www('http://texdoc.org/pkg/' . a:context.selected)
   redraw!
 endfunction
 
 " }}}1
 
-let s:complete_dir = fnamemodify(expand('<sfile>'), ':h') . '/complete/'
+let s:complete_dir = expand('<sfile>:h') . '/complete/'

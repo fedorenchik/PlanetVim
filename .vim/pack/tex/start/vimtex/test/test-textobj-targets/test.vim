@@ -9,23 +9,31 @@ set noswapfile
 set softtabstop=16
 set expandtab
 
-silent edit test1.tex
+silent edit test.tex
 
 if empty($INMAKE) | finish | endif
 
-function! s:testVimtexCmdtargets()
+" IMPORTANT NOTE 2025-06-28; 2025-12-17
+" As of neovim 0.12 there are default mapping clashes that prevents "in" and
+" "an" from working, see `:h v_an` and `:h v_in`.
+" There are therefore ignored in the tests.
+
+function! s:testVimtexCmdtargets(name)
   silent! edit!
-  call search('xxxxxx')
   normal! "lyy
 
   for operator in ['c', 'd', 'y', 'v']
     for cnt in ['', '1', '2']
       for lastnext in ['l', '', 'n']
         for iaIA in ['I', 'i', 'a', 'A']
-          for target in ['c']
-            normal! "lpfx
-            call s:execute(operator, cnt . iaIA . lastnext . target)
-          endfor
+          let l:motion = cnt . iaIA . lastnext . 'c'
+          if (operator ==# 'c' && l:motion =~# '^2.c$')
+                \ || (l:motion =~# '[ia]nc$')
+            continue
+          endif
+
+          normal! "lpfx
+          call s:execute(operator, l:motion)
         endfor
       endfor
     endfor
@@ -34,12 +42,12 @@ function! s:testVimtexCmdtargets()
   normal! "lp2f}l
   call s:execute('v', 'ilc')
 
-  write! test1.out
+  execute 'silent write!' a:name
 endfunction
 
 function! s:execute(operation, motions)
-  execute 'normal' a:operation . a:motions
-        \ . (a:operation ==# 'c' ? '_' : '')
+  let l:cmd = a:operation . a:motions . (a:operation ==# 'c' ? '_' : '')
+  silent execute 'normal' l:cmd
 
   if a:operation ==# 'v'
     normal! r_
@@ -49,13 +57,13 @@ function! s:execute(operation, motions)
     execute "normal! A\<tab>'\<c-r>\"'"
   endif
 
-  execute 'normal! I' . a:operation . a:motions . "\<tab>"
+  execute 'normal! I' . l:cmd . "\<tab>"
 endfunction
 
-call s:testVimtexCmdtargets()
+call s:testVimtexCmdtargets('test1.out')
 
 " Tests should pass with this setting too
 set selection=exclusive
-call s:testVimtexCmdtargets()
+call s:testVimtexCmdtargets('test2.out')
 
 quit!

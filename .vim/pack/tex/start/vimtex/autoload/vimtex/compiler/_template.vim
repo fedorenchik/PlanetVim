@@ -13,12 +13,13 @@ endfunction
 
 let s:compiler = {
       \ 'name': '__template__',
-      \ 'build_dir': '',
+      \ 'enabled': v:true,
+      \ 'out_dir': '',
       \ 'continuous': 0,
       \ 'hooks': [],
       \ 'output': tempname(),
       \ 'silence_next_callback': 0,
-      \ 'state': {},
+      \ 'file_info': {},
       \ 'status': -1,
       \}
 
@@ -29,9 +30,22 @@ function! s:compiler.new(options) abort dict " {{{1
 
   call l:compiler.__check_requirements()
 
-  call s:build_dir_materialize(l:compiler)
+  call vimtex#util#materialize_property(
+        \ l:compiler, 'out_dir', l:compiler.file_info)
   call l:compiler.__init()
-  call s:build_dir_respect_envvar(l:compiler)
+
+  " $VIMTEX_OUTPUT_DIRECTORY overrides configured compiler.out_dir
+  if !empty($VIMTEX_OUTPUT_DIRECTORY)
+    if !empty(l:compiler.out_dir)
+          \ && (l:compiler.out_dir !=# $VIMTEX_OUTPUT_DIRECTORY)
+      call vimtex#log#warning(
+            \ 'Setting VIMTEX_OUTPUT_DIRECTORY overrides out_dir!',
+            \ 'Changed out_dir from: ' . l:compiler.out_dir,
+            \ 'Changed out_dir to: ' . $VIMTEX_OUTPUT_DIRECTORY)
+    endif
+
+    let l:compiler.out_dir = $VIMTEX_OUTPUT_DIRECTORY
+  endif
 
   " Remove init methods
   unlet l:compiler.new
@@ -44,14 +58,50 @@ endfunction
 " }}}1
 
 function! s:compiler.__check_requirements() abort dict " {{{1
+  let self.enabled = v:false
 endfunction
 
 " }}}1
+
+function! s:compiler._get_executable_string() abort dict " {{{1
+  " Convert executable (string or list) to a command string
+  "
+  " The executable property can be:
+  "   - A string: 'latexmk'
+  "   - A list: ['docker', 'exec', 'my-container', 'latexmk']
+  "
+  if type(self.executable) == v:t_string
+    return self.executable
+  elseif type(self.executable) == v:t_list
+    return join(self.executable)
+  endif
+
+  throw 'VimTeX: executable must be a string or list'
+endfunction
+
+" }}}1
+function! s:compiler._is_executable_available() abort dict " {{{1
+  " Check if the executable is available
+  "
+  " For string executables, check directly.
+  " For list executables, check only the first element.
+  "
+  if type(self.executable) == v:t_string
+    return executable(self.executable)
+  endif
+
+  return type(self.executable) == v:t_list
+        \ && !empty(self.executable)
+        \ && executable(self.executable[0])
+endfunction
+
+" }}}1
+
 function! s:compiler.__init() abort dict " {{{1
 endfunction
 
 " }}}1
-function! s:compiler.__build_cmd() abort dict " {{{1
+function! s:compiler.__build_cmd(opts) abort dict " {{{1
   throw 'VimTeX: __build_cmd method must be defined!'
 endfunction
 
@@ -59,9 +109,13 @@ endfunction
 function! s:compiler.__pprint() abort dict " {{{1
   let l:list = []
 
-  if self.state.tex !=# b:vimtex.tex
-    call add(l:list, ['root', self.state.root])
-    call add(l:list, ['target', self.state.tex])
+  if self.file_info.target !=# b:vimtex.tex
+    call add(l:list, ['root', self.file_info.root])
+    call add(l:list, ['target', self.file_info.target_basename])
+  endif
+
+  if self.file_info.jobname !=# b:vimtex.name
+    call add(l:list, ['jobname', self.file_info.jobname])
   endif
 
   if has_key(self, 'get_engine')
@@ -72,8 +126,8 @@ function! s:compiler.__pprint() abort dict " {{{1
     call add(l:list, ['options', self.options])
   endif
 
-  if !empty(self.build_dir)
-    call add(l:list, ['build_dir', self.build_dir])
+  if !empty(self.out_dir)
+    call add(l:list, ['out_dir', self.out_dir])
   endif
 
   if has_key(self, '__pprint_append')
@@ -96,32 +150,163 @@ endfunction
 
 " }}}1
 
+function! s:compiler._create_build_dir(path) abort dict " {{{1
+  " Create build dir "path" if it does not exist
+  " Note: This may need to create a hierarchical structure!
+  if empty(a:path) | return | endif
+
+  if has_key(b:vimtex, 'get_sources')
+    let l:dirs = b:vimtex.get_sources()
+    call filter(map(
+          \ l:dirs, "fnamemodify(v:val, ':h')"),
+          \ {_, x -> x !=# '.'})
+    call filter(l:dirs, {_, x -> stridx(x, '../') != 0})
+  else
+    let l:dirs = glob(self.file_info.root . '/**/*.tex', v:false, v:true)
+    call map(l:dirs, "fnamemodify(v:val, ':h')")
+    call map(l:dirs, 'strpart(v:val, strlen(self.file_info.root) + 1)')
+  endif
+  call uniq(sort(filter(l:dirs, '!empty(v:val)')))
+
+  call map(l:dirs, {_, x ->
+        \ (vimtex#paths#is_abs(a:path) ? '' : self.file_info.root . '/')
+        \ . a:path . '/' . x})
+  call map(l:dirs, {_, x -> simplify(x) })
+  call filter(l:dirs, '!isdirectory(v:val)')
+  if empty(l:dirs) | return | endif
+
+  " Create the non-existing directories
+  call vimtex#log#warning(["Creating directorie(s):"]
+        \ + map(copy(l:dirs), {_, x -> '* ' . x}))
+
+  for l:dir in l:dirs
+    call mkdir(l:dir, 'p')
+  endfor
+endfunction
+
+" }}}1
+function! s:compiler._remove_dir(path) abort dict " {{{1
+  if empty(a:path) | return | endif
+
+  let l:out_dir = vimtex#paths#is_abs(a:path)
+        \ ? a:path
+        \ : self.file_info.root . '/' . a:path
+  if !isdirectory(l:out_dir) | return | endif
+
+  let l:tree = glob(l:out_dir . '/**/*', 0, 1)
+  let l:files = filter(copy(l:tree), 'filereadable(v:val)')
+
+  if empty(l:files)
+    for l:dir in sort(l:tree) + [l:out_dir]
+      call delete(l:dir, 'd')
+    endfor
+  endif
+endfunction
+
+" }}}1
+
+function! s:compiler.create_dirs() abort dict " {{{1
+  call self._create_build_dir(self.out_dir)
+endfunction
+
+" }}}1
+function! s:compiler.remove_dirs() abort dict " {{{1
+  call self._remove_dir(self.out_dir)
+endfunction
+
+" }}}1
+
+function! s:compiler._output_roots() abort dict " {{{1
+  " The list of candidate roots for output/auxiliary files, in the order of
+  " precedence used to locate a generated file. Backends that support a
+  " separate auxiliary directory override this.
+  return [
+        \ $VIMTEX_OUTPUT_DIRECTORY,
+        \ self.out_dir,
+        \ self.file_info.root,
+        \]
+endfunction
+
+" }}}1
+function! s:compiler._get_file_candidates(ext) abort dict " {{{1
+  " The absolute candidate paths for the given extension, in order of
+  " precedence, regardless of whether they currently exist.
+  let l:candidates = []
+  for l:root in self._output_roots()
+    if empty(l:root) | continue | endif
+
+    let l:cand = printf('%s/%s.%s', l:root, self.file_info.jobname, a:ext)
+    if !vimtex#paths#is_abs(l:root)
+      let l:cand = self.file_info.root . '/' . l:cand
+    endif
+
+    call add(l:candidates, fnamemodify(l:cand, ':p'))
+  endfor
+
+  return l:candidates
+endfunction
+
+" }}}1
+function! s:compiler.get_file(ext) abort dict " {{{1
+  for l:cand in self._get_file_candidates(a:ext)
+    if filereadable(l:cand)
+      return l:cand
+    endif
+  endfor
+
+  return ''
+endfunction
+
+" }}}1
+function! s:compiler.get_output_signature(ext) abort dict " {{{1
+  " The path the compiler is expected to write for the given extension,
+  " regardless of whether it currently exists. This is the highest-precedence
+  " candidate root combined with the jobname, and can be used to detect output
+  " clashes between compilers before they start.
+  return get(self._get_file_candidates(a:ext), 0, '')
+endfunction
+
+" }}}1
+
 function! s:compiler.clean(full) abort dict " {{{1
-  let l:files = ['synctex.gz', 'toc', 'out', 'aux', 'log']
+  let l:extensions = ['synctex.gz', 'toc', 'out', 'aux', 'log', 'xdv', 'fls']
   if a:full
-    call extend(l:files, ['pdf'])
+    call extend(l:extensions, ['pdf'])
   endif
 
-  call map(l:files, {_, x -> printf('%s/%s.%s',
-        \ self.build_dir, fnamemodify(self.state.tex, ':t:r:S'), x)})
+  call map(l:extensions, { _, x -> self.get_file(x) })
+  for l:file in filter(l:extensions, { _, x -> !empty(x) })
+    call delete(l:file)
+  endfor
 
-  call vimtex#jobs#run('rm -f ' . join(l:files), {'cwd': self.state.root})
+  for l:expr in g:vimtex_compiler_clean_paths
+    for l:path in glob(self.file_info.root . '/' . l:expr, v:false, v:true)
+      call delete(l:path, 'rf')
+    endfor
+  endfor
 endfunction
 
 " }}}1
 function! s:compiler.start(...) abort dict " {{{1
   if self.is_running() | return | endif
 
-  call self.create_build_dir()
+  call self.create_dirs()
 
   " Initialize output file
   call writefile([], self.output, 'a')
 
   " Prepare compile command
-  let self.cmd = self.__build_cmd()
+  let l:passed_options = a:0 > 0 ? ' ' . a:1 : ''
+  let self.cmd = self.__build_cmd(l:passed_options)
   let l:cmd = has('win32')
         \ ? 'cmd /s /c "' . self.cmd . '"'
         \ : ['sh', '-c', self.cmd]
+
+  " Handle -jobname if it is passed as an option
+  let l:jobname = matchstr(self.cmd, '-jobname=\zs\S*')
+  let self.file_info.jobname = empty(l:jobname)
+        \ ? self.file_info.target_name
+        \ : l:jobname
 
   " Execute command and toggle status
   call self.exec(l:cmd)
@@ -158,10 +343,10 @@ endfunction
 " }}}2
 
 " }}}1
-function! s:compiler.start_single() abort dict " {{{1
+function! s:compiler.start_single(...) abort dict " {{{1
   let l:continuous = self.continuous
   let self.continuous = 0
-  call self.start()
+  call call(self.start, a:000)
   let self.continuous = l:continuous
 endfunction
 
@@ -180,62 +365,6 @@ endfunction
 
 " }}}1
 
-function! s:compiler.create_build_dir() abort dict " {{{1
-  " Create build dir if it does not exist
-  " Note: This may need to create a hierarchical structure!
-  if empty(self.build_dir) | return | endif
-
-  if has_key(self.state, 'sources')
-    let l:dirs = copy(self.state.sources)
-    call filter(map(
-          \ l:dirs, "fnamemodify(v:val, ':h')"),
-          \ {_, x -> x !=# '.'})
-    call filter(l:dirs, {_, x -> stridx(x, '../') != 0})
-  else
-    let l:dirs = glob(self.state.root . '/**/*.tex', v:false, v:true)
-    call map(l:dirs, "fnamemodify(v:val, ':h')")
-    call map(l:dirs, 'strpart(v:val, strlen(self.state.root) + 1)')
-  endif
-  call uniq(sort(filter(l:dirs, '!empty(v:val)')))
-
-  call map(l:dirs, {_, x ->
-        \ (vimtex#paths#is_abs(self.build_dir) ? '' : self.state.root . '/')
-        \ . self.build_dir . '/' . x})
-  call filter(l:dirs, '!isdirectory(v:val)')
-  if empty(l:dirs) | return | endif
-
-  " Create the non-existing directories
-  call vimtex#log#warning(["Creating build_dir directorie(s):"]
-        \ + map(copy(l:dirs), {_, x -> '* ' . x}))
-
-  for l:dir in l:dirs
-    call mkdir(l:dir, 'p')
-  endfor
-endfunction
-
-" }}}1
-function! s:compiler.remove_build_dir() abort dict " {{{1
-  " Remove auxilliary output directories (only if they are empty)
-  if empty(self.build_dir) | return | endif
-
-  if vimtex#paths#is_abs(self.build_dir)
-    let l:build_dir = self.build_dir
-  else
-    let l:build_dir = self.state.root . '/' . self.build_dir
-  endif
-
-  let l:tree = glob(l:build_dir . '/**/*', 0, 1)
-  let l:files = filter(copy(l:tree), 'filereadable(v:val)')
-
-  if empty(l:files)
-    for l:dir in sort(l:tree) + [l:build_dir]
-      call delete(l:dir, 'd')
-    endfor
-  endif
-endfunction
-
-" }}}1
-
 
 let s:compiler_jobs = {}
 function! s:compiler_jobs.exec(cmd) abort dict " {{{1
@@ -245,15 +374,21 @@ function! s:compiler_jobs.exec(cmd) abort dict " {{{1
         \ 'err_io': 'file',
         \ 'out_name': self.output,
         \ 'err_name': self.output,
-        \ 'cwd': self.state.root,
+        \ 'cwd': self.file_info.root,
         \}
   if self.continuous
+    if get(self, 'stdin_pipe', v:false)
+      let l:options.in_io = 'pipe'
+    endif
     let l:options.out_io = 'pipe'
     let l:options.err_io = 'pipe'
     let l:options.out_cb = function('s:callback_continuous_output')
     let l:options.err_cb = function('s:callback_continuous_output')
   else
-    let s:cb_target = self.state.tex !=# b:vimtex.tex ? self.state.tex : ''
+    let s:cb_target = self.file_info.target !=# b:vimtex.tex
+          \ ? self.file_info.target
+          \ : ''
+    let s:cb_output = self.output
     let l:options.exit_cb = function('s:callback')
   endif
 
@@ -307,6 +442,17 @@ function! s:callback(ch, msg) abort " {{{1
     "
     " See https://github.com/lervag/vimtex/issues/2225
   endtry
+
+  if !exists('b:vimtex.compiler.hooks') | return | endif
+  try
+    let l:lines = readfile(s:cb_output)
+    for l:Hook in b:vimtex.compiler.hooks
+      for l:line in l:lines
+        call l:Hook(l:line)
+      endfor
+    endfor
+  catch /E716/
+  endtry
 endfunction
 
 " }}}1
@@ -333,11 +479,13 @@ endfunction
 let s:compiler_nvim = {}
 function! s:compiler_nvim.exec(cmd) abort dict " {{{1
   let l:shell = {
-        \ 'stdin': 'null',
+        \ 'stdin': self.continuous && get(self, 'stdin_pipe', v:false)
+        \   ? 'pipe'
+        \   : 'null',
         \ 'on_stdout': function('s:callback_nvim_output'),
         \ 'on_stderr': function('s:callback_nvim_output'),
-        \ 'cwd': self.state.root,
-        \ 'tex': self.state.tex,
+        \ 'cwd': self.file_info.root,
+        \ 'tex': self.file_info.target,
         \ 'output': self.output,
         \}
 
@@ -345,10 +493,9 @@ function! s:compiler_nvim.exec(cmd) abort dict " {{{1
     let l:shell.on_exit = function('s:callback_nvim_exit')
   endif
 
-  let s:saveshell = [&shell, &shellcmdflag]
-  set shell& shellcmdflag&
+  call vimtex#jobs#neovim#shell_default()
   let self.job = jobstart(a:cmd, l:shell)
-  let [&shell, &shellcmdflag] = s:saveshell
+  call vimtex#jobs#neovim#shell_restore()
 endfunction
 
 " }}}1
@@ -418,38 +565,6 @@ endfunction
 
 " }}}1
 
-
-function! s:build_dir_materialize(compiler) abort " {{{1
-  if type(a:compiler.build_dir) != v:t_func | return | endif
-
-  try
-    let a:compiler.build_dir = a:compiler.build_dir()
-  catch
-    call vimtex#log#error(
-          \ 'Could not expand build_dir function!',
-          \ v:exception)
-    let a:compiler.build_dir = ''
-  endtry
-endfunction
-
-" }}}1
-function! s:build_dir_respect_envvar(compiler) abort " {{{1
-  " Specifying the build_dir by environment variable should override the
-  " current value.
-  if empty($VIMTEX_OUTPUT_DIRECTORY) | return | endif
-
-  if !empty(a:compiler.build_dir)
-        \ && (a:compiler.build_dir !=# $VIMTEX_OUTPUT_DIRECTORY)
-    call vimtex#log#warning(
-          \ 'Setting VIMTEX_OUTPUT_DIRECTORY overrides build_dir!',
-          \ 'Changed build_dir from: ' . a:compiler.build_dir,
-          \ 'Changed build_dir to: ' . $VIMTEX_OUTPUT_DIRECTORY)
-  endif
-
-  let a:compiler.build_dir = $VIMTEX_OUTPUT_DIRECTORY
-endfunction
-
-" }}}1
 
 function! s:check_callback(line) abort " {{{1
   let l:status = get(s:callbacks, substitute(a:line, '\r', '', ''))

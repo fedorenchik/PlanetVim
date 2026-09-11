@@ -33,10 +33,39 @@ function! s:init_state() abort " {{{1
 endfunction
 
 " }}}1
+
 function! s:init_buffer() abort " {{{1
-  " This function configures settings for the buffer, which may be either of
-  " filetype "tex" or "bib". A lot of settings are shared, but some are
-  " different.
+  try
+    let l:disabled_modules = s:init_buffer_{&filetype}()
+  catch /E117/
+    let l:disabled_modules = []
+  endtry
+
+  " Define autocommands
+  augroup vimtex_buffers
+    autocmd! * <buffer>
+    autocmd BufFilePre  <buffer> call s:filename_changed_pre()
+    autocmd BufFilePost <buffer> call s:filename_changed_post()
+    autocmd BufUnload   <buffer> call s:buffer_deleted('unload')
+    autocmd BufWipeout  <buffer> call s:buffer_deleted('wipe')
+  augroup END
+
+  " Initialize buffer settings for sub modules
+  call extend(l:disabled_modules, get(b:vimtex, 'disabled_modules', []))
+  for l:mod in filter(copy(s:modules),
+        \ 'index(l:disabled_modules, v:val) < 0')
+    try
+      call vimtex#{l:mod}#init_buffer()
+    catch /E117.*#init_/
+    catch /E127.*vimtex#profile#/
+    endtry
+  endfor
+endfunction
+
+" }}}1
+function! s:init_buffer_tex() abort " {{{1
+  setlocal comments=sO:%\ -,mO:%\ \ ,eO:%%,:%
+  setlocal commentstring=\%\ %s
 
   for l:suf in [
         \ '.sty',
@@ -61,79 +90,86 @@ function! s:init_buffer() abort " {{{1
         \ ]
     execute 'set suffixes+=' . l:suf
   endfor
-  setlocal comments=sO:%\ -,mO:%\ \ ,eO:%%,:%
-  setlocal commentstring=\%\ %s
+  setlocal suffixesadd=.tex,.sty,.cls
+  setlocal iskeyword+=:
+  setlocal includeexpr=vimtex#include#expr()
 
-  " Define autocommands
-  augroup vimtex_buffers
-    autocmd! * <buffer>
-    autocmd BufFilePre  <buffer> call s:filename_changed_pre()
-    autocmd BufFilePost <buffer> call s:filename_changed_post()
-    autocmd BufUnload   <buffer> call s:buffer_deleted('unload')
-    autocmd BufWipeout  <buffer> call s:buffer_deleted('wipe')
-  augroup END
+  let &l:include = g:vimtex#re#tex_include
+  let &l:define  = '\v\\%('
+        \ . '([egx]|mathchar|count|dimen|muskip|skip|toks)?def'
+        \ . '|font'
+        \ . '|(future)?let'
+        \ . '|new(count|dimen|skip|muskip|box|toks|read|write|fam|insert)'
+        \ . '|(re)?new(boolean|command|counter|environment'
+        \ .   '|font|if|length|savebox|theorem(style)?)'
+        \ . '|DeclareMathOperator'
+        \ . '|bibitem%(\[[^]]*\])?'
+        \ . ')'
 
-  " Get list of disabled modules from state object
-  let l:disabled_modules = copy(get(b:vimtex, 'disabled_modules', []))
-
-  " Apply some filetype specific settings
-  if &filetype ==# 'tex'
-    setlocal suffixesadd=.tex,.sty,.cls
-    setlocal iskeyword+=:
-    setlocal includeexpr=vimtex#include#expr()
-    let &l:include = g:vimtex#re#tex_include
-    let &l:define  = '\v\\%('
-          \ . '([egx]|mathchar|count|dimen|muskip|skip|toks)?def'
-          \ . '|font'
-          \ . '|(future)?let'
-          \ . '|new(count|dimen|skip|muskip|box|toks|read|write|fam|insert)'
-          \ . '|(re)?new(boolean|command|counter|environment'
-          \ .   '|font|if|length|savebox|theorem(style)?)'
-          \ . '|DeclareMathOperator'
-          \ . '|bibitem%(\[[^]]*\])?'
-          \ . ')'
-  elseif &filetype ==# 'bib'
-    setlocal suffixesadd=.tex,.bib
-
-    " Several additional modules should be disabled in bib files
-    let l:disabled_modules += [
-          \ 'fold', 'matchparen', 'format', 'doc', 'imaps', 'delim',
-          \ 'env', 'motion', 'complete',
-          \]
-
-    if g:vimtex_fold_bib_enabled
-      call vimtex#fold#bib#init()
-    endif
-  endif
-
-  " Initialize buffer settings for sub modules
-  for l:mod in filter(copy(s:modules),
-        \ 'index(l:disabled_modules, v:val) < 0')
-    try
-      call vimtex#{l:mod}#init_buffer()
-    catch /E117.*#init_/
-    catch /E127.*vimtex#profile#/
-    endtry
-  endfor
+  " Specify list of modules to disable
+  return []
 endfunction
 
 " }}}1
+function! s:init_buffer_bib() abort " {{{1
+  setlocal comments=sO:%\ -,mO:%\ \ ,eO:%%,:%
+  setlocal commentstring=\%\ %s
+
+  for l:suf in [
+        \ '.sty',
+        \ '.cls',
+        \ '.log',
+        \ '.aux',
+        \ '.bbl',
+        \ '.out',
+        \ '.blg',
+        \ '.brf',
+        \ '.cb',
+        \ '.dvi',
+        \ '.fdb_latexmk',
+        \ '.fls',
+        \ '.idx',
+        \ '.ilg',
+        \ '.ind',
+        \ '.inx',
+        \ '.pdf',
+        \ '.synctex.gz',
+        \ '.toc',
+        \ ]
+    execute 'set suffixes+=' . l:suf
+  endfor
+  setlocal suffixesadd=.tex,.bib
+
+  if g:vimtex_fold_bib_enabled
+    call vimtex#fold#bib#init()
+  endif
+
+  " Specify list of modules to disable
+  return [
+        \ 'fold', 'matchparen', 'format', 'doc', 'imaps', 'delim',
+        \ 'env', 'motion', 'complete',
+        \]
+endfunction
+
+" }}}1
+
 function! s:init_default_mappings() abort " {{{1
   if !g:vimtex_mappings_enabled | return | endif
 
-  call s:map(0, 'n', '<localleader>li', '<plug>(vimtex-info)')
-  call s:map(0, 'n', '<localleader>lI', '<plug>(vimtex-info-full)')
-  call s:map(0, 'n', '<localleader>lx', '<plug>(vimtex-reload)')
-  call s:map(0, 'n', '<localleader>lX', '<plug>(vimtex-reload-state)')
-  call s:map(1, 'n', '<localleader>ls', '<plug>(vimtex-toggle-main)')
-  call s:map(0, 'n', '<localleader>lq', '<plug>(vimtex-log)')
-  call s:map(1, 'n', '<localleader>la', '<plug>(vimtex-context-menu)')
+  call s:map_prefixed(0, 'n', 'i', '<plug>(vimtex-info)')
+  call s:map_prefixed(0, 'n', 'I', '<plug>(vimtex-info-full)')
+  call s:map_prefixed(0, 'n', 'x', '<plug>(vimtex-reload)')
+  call s:map_prefixed(0, 'n', 'X', '<plug>(vimtex-reload-state)')
+  call s:map_prefixed(1, 'n', 's', '<plug>(vimtex-toggle-main)')
+  call s:map_prefixed(0, 'n', 'q', '<plug>(vimtex-log)')
+  call s:map_prefixed(1, 'n', 'a', '<plug>(vimtex-context-menu)')
 
   call s:map(0, 'n', 'ds$', '<plug>(vimtex-env-delete-math)')
   call s:map(0, 'n', 'cs$', '<plug>(vimtex-env-change-math)')
   call s:map(0, 'n', 'dse', '<plug>(vimtex-env-delete)')
   call s:map(0, 'n', 'cse', '<plug>(vimtex-env-change)')
-  call s:map(0, 'n', 'tse', '<plug>(vimtex-env-toggle-star)')
+  call s:map(0, 'n', 'tse', '<plug>(vimtex-env-toggle)')
+  call s:map(0, 'n', 'tss', '<plug>(vimtex-env-toggle-star)')
   call s:map(0, 'n', 'ts$', '<plug>(vimtex-env-toggle-math)')
   call s:map(0, 'n', '<F6>', '<plug>(vimtex-env-surround-line)')
   call s:map(0, 'x', '<F6>', '<plug>(vimtex-env-surround-visual)')
@@ -143,6 +179,7 @@ function! s:init_default_mappings() abort " {{{1
   call s:map(0, 'n', 'tsc',  '<plug>(vimtex-cmd-toggle-star)')
   call s:map(0, 'n', 'tsf',  '<plug>(vimtex-cmd-toggle-frac)')
   call s:map(0, 'x', 'tsf',  '<plug>(vimtex-cmd-toggle-frac)')
+  call s:map(0, 'n', 'tsb',  '<plug>(vimtex-cmd-toggle-break)')
   call s:map(0, 'i', '<F7>', '<plug>(vimtex-cmd-create)')
   call s:map(0, 'n', '<F7>', '<plug>(vimtex-cmd-create)')
   call s:map(0, 'x', '<F7>', '<plug>(vimtex-cmd-create)')
@@ -157,17 +194,18 @@ function! s:init_default_mappings() abort " {{{1
   call s:map(0, 'n', '<F8>', '<plug>(vimtex-delim-add-modifiers)')
 
   if g:vimtex_compiler_enabled
-    call s:map(0, 'n', '<localleader>ll', '<plug>(vimtex-compile)')
-    call s:map(0, 'n', '<localleader>lo', '<plug>(vimtex-compile-output)')
-    call s:map(1, 'n', '<localleader>lL', '<plug>(vimtex-compile-selected)')
-    call s:map(1, 'x', '<localleader>lL', '<plug>(vimtex-compile-selected)')
-    call s:map(0, 'n', '<localleader>lk', '<plug>(vimtex-stop)')
-    call s:map(0, 'n', '<localleader>lK', '<plug>(vimtex-stop-all)')
-    call s:map(0, 'n', '<localleader>le', '<plug>(vimtex-errors)')
-    call s:map(0, 'n', '<localleader>lc', '<plug>(vimtex-clean)')
-    call s:map(0, 'n', '<localleader>lC', '<plug>(vimtex-clean-full)')
-    call s:map(0, 'n', '<localleader>lg', '<plug>(vimtex-status)')
-    call s:map(0, 'n', '<localleader>lG', '<plug>(vimtex-status-all)')
+    call s:map_prefixed(0, 'n', 'l', '<plug>(vimtex-compile)')
+    call s:map_prefixed(0, 'n', 'S', '<plug>(vimtex-compile-ss)')
+    call s:map_prefixed(0, 'n', 'o', '<plug>(vimtex-compile-output)')
+    call s:map_prefixed(1, 'n', 'L', '<plug>(vimtex-compile-selected)')
+    call s:map_prefixed(1, 'x', 'L', '<plug>(vimtex-compile-selected)')
+    call s:map_prefixed(0, 'n', 'k', '<plug>(vimtex-stop)')
+    call s:map_prefixed(0, 'n', 'K', '<plug>(vimtex-stop-all)')
+    call s:map_prefixed(0, 'n', 'e', '<plug>(vimtex-errors)')
+    call s:map_prefixed(0, 'n', 'c', '<plug>(vimtex-clean)')
+    call s:map_prefixed(0, 'n', 'C', '<plug>(vimtex-clean-full)')
+    call s:map_prefixed(0, 'n', 'g', '<plug>(vimtex-status)')
+    call s:map_prefixed(0, 'n', 'G', '<plug>(vimtex-status-all)')
   endif
 
   if g:vimtex_motion_enabled
@@ -288,19 +326,19 @@ function! s:init_default_mappings() abort " {{{1
   endif
 
   if g:vimtex_toc_enabled
-    call s:map(0, 'n', '<localleader>lt', '<plug>(vimtex-toc-open)')
-    call s:map(0, 'n', '<localleader>lT', '<plug>(vimtex-toc-toggle)')
+    call s:map_prefixed(0, 'n', 't', '<plug>(vimtex-toc-open)')
+    call s:map_prefixed(0, 'n', 'T', '<plug>(vimtex-toc-toggle)')
   endif
 
   if has_key(b:vimtex, 'viewer')
-    call s:map(0, 'n', '<localleader>lv', '<plug>(vimtex-view)')
+    call s:map_prefixed(0, 'n', 'v', '<plug>(vimtex-view)')
     if !empty(maparg('<plug>(vimtex-reverse-search)', 'n'))
-      call s:map(1, 'n', '<localleader>lr', '<plug>(vimtex-reverse-search)')
+      call s:map_prefixed(1, 'n', 'r', '<plug>(vimtex-reverse-search)')
     endif
   endif
 
   if g:vimtex_imaps_enabled
-    call s:map(0, 'n', '<localleader>lm', '<plug>(vimtex-imaps-list)')
+    call s:map_prefixed(0, 'n', 'm', '<plug>(vimtex-imaps-list)')
   endif
 
   if g:vimtex_doc_enabled
@@ -317,22 +355,23 @@ endfunction
 " }}}1
 function! s:filename_changed_post() abort " {{{1
   if s:filename_changed
-    let l:base_old = b:vimtex.base
-    let b:vimtex.tex = fnamemodify(expand('%'), ':p')
+    let l:old = b:vimtex.tex
+    let b:vimtex.tex = expand('%:p')
+    let b:vimtex.root = fnamemodify(b:vimtex.tex, ':h')
     let b:vimtex.base = fnamemodify(b:vimtex.tex, ':t')
     let b:vimtex.name = fnamemodify(b:vimtex.tex, ':t:r')
 
     call vimtex#log#warning('Filename change detected')
-    call vimtex#log#info('Old filename: ' . l:base_old)
-    call vimtex#log#info('New filename: ' . b:vimtex.base)
+    call vimtex#log#info('Old: ' . l:old)
+    call vimtex#log#info('New: ' . b:vimtex.tex)
 
     if has_key(b:vimtex, 'compiler')
       if b:vimtex.compiler.is_running()
-        call vimtex#log#warning('Compilation stopped!')
         call vimtex#compiler#stop()
+        call vimtex#log#warning('Compilation stopped!')
       endif
-      let b:vimtex.compiler.target = b:vimtex.base
-      let b:vimtex.compiler.target_path = b:vimtex.tex
+
+      call vimtex#compiler#init_state(b:vimtex)
     endif
   endif
 endfunction
@@ -368,6 +407,12 @@ endfunction
 
 " }}}1
 
+function! s:map_prefixed(ftype, mode, lhs, rhs) abort " {{{1
+  let l:lhs = g:vimtex_mappings_prefix . a:lhs
+  call s:map(a:ftype, a:mode, l:lhs, a:rhs)
+endfunction
+
+" }}}1
 function! s:map(ftype, mode, lhs, rhs, ...) abort " {{{1
   if (a:ftype == 0
         \     || a:ftype == 1 && &filetype ==# 'tex'
@@ -386,8 +431,8 @@ endfunction
 " {{{1 Initialize module
 
 let s:modules = map(
-      \ glob(fnamemodify(expand('<sfile>'), ':r') . '/*.vim', 0, 1),
-      \ "fnamemodify(v:val, ':t:r')")
+      \ glob(expand('<sfile>:r') . '/*.vim', 0, 1),
+      \ { _, x -> fnamemodify(x, ':t:r') })
 call remove(s:modules, index(s:modules, 'test'))
 
 " }}}1

@@ -12,51 +12,18 @@ endfunction
 
 let s:handler = {
       \ 'name': 'citation handler',
-      \ 're': '\v%(%(\a*cite|Cite)\a*|bibentry|%(text|block|%(for|hy)\w+)cquote)',
       \}
 function! s:handler.match(cmd, word) abort dict " {{{1
-  if a:cmd.name[1:] !~# self.re
-    return v:false
-  endif
-
-  if len(a:cmd.args) < 1 || len(a:cmd.args) > 2
-    return v:false
-  endif
-
-  let l:text = a:cmd.args[0].text
-  if len(a:cmd.args) == 2
-    let l:text .= ',' . a:cmd.args[1].text
-  endif
-
-  let self.cites = split(l:text, ',\s*')
-  if index(self.cites, a:word) >= 0
-    let self.selected = a:word
-  else
-    let self.selected = self.cites[0]
-  endif
-
-  if empty(self.selected)
-    return v:false
-  endif
-
-  return v:true
+  let self.selected = vimtex#cite#get_key(a:cmd, a:word)
+  return !empty(self.selected)
 endfunction
 
 " }}}1
 function! s:handler.get_actions() abort dict " {{{1
-  " Ensure we're at the root directory when locating bib files
-  call vimtex#paths#pushd(b:vimtex.root)
-  let l:entries = []
-  for l:file in vimtex#bib#files()
-    let l:entries += vimtex#parser#bib(l:file, {'backend': 'vim'})
-  endfor
-  call vimtex#paths#popd()
-
-  let l:entry = get(
-        \ filter(copy(l:entries), {_, x -> x.key ==# self.selected}), 0, {})
+  let l:entry = vimtex#cite#get_entry(self.selected)
 
   if empty(l:entry)
-    call vimtex#log#warning('Cite key not found: ' . self.selected)
+    call vimtex#log#warning('Cite key not found: ' .. self.selected)
     return {}
   endif
 
@@ -78,7 +45,7 @@ function! s:actions.create(entry) abort dict " {{{1
   unlet l:new.create
 
   let l:new.entry = deepcopy(a:entry)
-  let l:new.prompt = 'Context menu for citekey ' . a:entry.key
+  let l:new.prompt = 'Context menu for citekey ' .. a:entry.key
 
   if has_key(a:entry, 'file')
     let l:pdfs = filter(split(a:entry.file, ';'),
@@ -104,6 +71,18 @@ function! s:actions.create(entry) abort dict " {{{1
     call add(l:new.menu, {'name': 'Open url', 'func': 'open_url'})
   endif
 
+  if executable('zotero')
+    call add(l:new.menu, {'name': 'Open in Zotero', 'func': 'open_zotero'})
+  endif
+
+  if vimtex#util#get_os() ==# 'mac'
+    let l:output = vimtex#jobs#capture(
+          \ 'osascript -l JavaScript -e ''Application("BibDesk").id()''')
+    if join(l:output) =~# 'edu.ucsd.cs.mmccrack.bibdesk'
+      call add(l:new.menu, {'name': 'Open in BibDesk', 'func': 'open_bdsk'})
+    endif
+  endif
+
   return l:new
 endfunction
 
@@ -119,7 +98,7 @@ function! s:actions.show() abort dict " {{{1
         \ ['Normal', ','],
         \])
 
-  for l:x in ['key', 'type', 'vimtex_lnum', 'vimtex_file']
+  for l:x in ['key', 'type', 'source_lnum', 'source_file']
     if has_key(l:entry, l:x)
       call remove(l:entry, l:x)
     endif
@@ -128,7 +107,7 @@ function! s:actions.show() abort dict " {{{1
   for l:x in ['title', 'author', 'year']
     if has_key(l:entry, l:x)
       call vimtex#ui#echo([
-            \ ['VimtexInfoValue', '  ' . l:x . ': '],
+            \ ['VimtexInfoValue', '  ' .. l:x .. ': '],
             \ ['Normal', remove(l:entry, l:x)]
             \])
     endif
@@ -136,18 +115,19 @@ function! s:actions.show() abort dict " {{{1
 
   for [l:key, l:val] in items(l:entry)
       call vimtex#ui#echo([
-            \ ['VimtexInfoValue', '  ' . l:key . ': '],
+            \ ['VimtexInfoValue', '  ' .. l:key .. ': '],
             \ ['Normal', l:val]
             \])
   endfor
+  call vimtex#ui#echo([['Normal', '}']])
 endfunction
 
 " }}}1
 function! s:actions.edit() abort dict " {{{1
-  execute 'edit' self.entry.vimtex_file
+  execute 'edit' self.entry.source_file
   filetype detect
 
-  call vimtex#pos#set_cursor(self.entry.vimtex_lnum, 0)
+  call vimtex#pos#set_cursor(self.entry.source_lnum, 0)
   normal! zv
 endfunction
 
@@ -157,37 +137,46 @@ function! s:actions.open_pdf() abort dict " {{{1
   if empty(l:readable)
     call vimtex#log#warning('Could not open PDF file!')
     for l:file in self.pdfs
-      call vimtex#log#info('Filename: ' . l:file)
+      call vimtex#log#info('Filename: ' .. l:file)
     endfor
     return
   endif
 
   let l:file = vimtex#ui#select(l:readable, {
         \ 'prompt': 'Open file:',
-        \ 'abort': v:false,
         \})
   if empty(l:file) | return | endif
 
   call vimtex#jobs#start(
         \ g:vimtex_context_pdf_viewer
-        \ . ' ' . vimtex#util#shellescape(l:file),
+        \ .. ' ' .. vimtex#util#shellescape(l:file),
         \ {'detached': v:true})
 endfunction
 
 " }}}1
 function! s:actions.open_arxiv() abort dict " {{{1
   let l:id = matchstr(self.entry.eprint, '\v^(arXiv:)?\zs.*')
-  call vimtex#util#www('https://arxiv.org/abs/' . l:id)
+  call vimtex#util#www('https://arxiv.org/abs/' .. l:id)
 endfunction
 
 " }}}1
 function! s:actions.open_doi() abort dict " {{{1
-  call vimtex#util#www('http://dx.doi.org/' . self.entry.doi)
+  call vimtex#util#www('http://dx.doi.org/' .. self.entry.doi)
 endfunction
 
 " }}}1
 function! s:actions.open_url() abort dict " {{{1
   call vimtex#util#www(self.entry.url)
+endfunction
+
+" }}}1
+function! s:actions.open_zotero() abort dict " {{{1
+  call vimtex#util#www('zotero://select/items/bbt:' .. self.entry.key)
+endfunction
+
+" }}}1
+function! s:actions.open_bdsk() abort dict " {{{1
+  call vimtex#util#www('x-bdsk://' .. vimtex#util#url_encode(self.entry.key))
 endfunction
 
 " }}}1

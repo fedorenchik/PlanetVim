@@ -78,7 +78,7 @@ endfunction
 
 let s:completer_bib = {
       \ 'patterns' : [
-      \   '\v\\%(\a*cite|Cite)\a*\*?%(\s*\[[^]]*\]){0,2}\s*\{[^}]*$',
+      \   '\v\\%(\a*cite|Cite)\a*\*?%(\s*\[[^]]*\]|\s*\<[^>]*\>){0,2}\s*\{[^}]*$',
       \   '\v\\%(\a*cites|Cites)%(\s*\([^)]*\)){0,2}'
       \     . '%(%(\s*\[[^]]*\]){0,2}\s*\{[^}]*\})*'
       \     . '%(\s*\[[^]]*\]){0,2}\s*\{[^}]*$',
@@ -86,6 +86,7 @@ let s:completer_bib = {
       \   '\v\\%(text|block)cquote\*?%(\s*\[[^]]*\]){0,2}\{[^}]*$',
       \   '\v\\%(for|hy)\w+cquote\*?\{[^}]*\}%(\s*\[[^]]*\]){0,2}\{[^}]*$',
       \   '\v\\defbibentryset\{[^}]*\}\{[^}]*$',
+      \   '\v\\\a?[vV]olcite%(\s*\[[^]]*\])?\s*\{[^}]*\}%(\s*\[[^]]*\])?\s*\{[^}]*$',
       \  ],
       \ 'initialized' : 0,
       \}
@@ -117,7 +118,8 @@ function! s:completer_bib.gather_candidates() dict abort " {{{2
 
   let l:cache = vimtex#cache#open('bibcomplete', {
         \ 'local': 1,
-        \ 'default': {'result': [], 'ftime': -1}
+        \ 'default': {'result': [], 'ftime': -1},
+        \ 'validate': {'options': deepcopy(g:vimtex_complete_bib)}
         \})
 
   "
@@ -183,39 +185,47 @@ endfunction
 " }}}2
 
 function! s:bib_to_candidate(entry) abort " {{{2
-  let auth = substitute(get(a:entry, 'author', 'Unknown'), '\~', ' ', 'g')
+  let l:auth = substitute(get(a:entry, 'author', 'Unknown'), '\~', ' ', 'g')
 
-  let substitutes = {
+  let l:substitutes = {
         \ '@author_all' : g:vimtex_complete_bib.auth_len > 0
-        \     ? strcharpart(auth, 0, g:vimtex_complete_bib.auth_len)
-        \     : auth,
-        \ '@author_short' : substitute(auth, ',.*\ze', ' et al.', ''),
+        \     ? strcharpart(l:auth, 0, g:vimtex_complete_bib.auth_len)
+        \     : l:auth,
+        \ '@author_short' : substitute(l:auth, ',.*\ze', ' et al.', ''),
         \ '@key' : a:entry['key'],
         \ '@title' : get(a:entry, 'title', 'No title'),
         \ '@type' : empty(a:entry['type']) ? '-' : a:entry['type'],
         \ '@year' : get(a:entry, 'year', get(a:entry, 'date', '?')),
         \}
 
-  let cand = {'word': a:entry['key']}
+  let l:cand = {'word': a:entry['key']}
 
   " Create match and menu strings
-  let cand.mstr = copy(g:vimtex_complete_bib.match_str_fmt)
-  let cand.menu = copy(g:vimtex_complete_bib.menu_fmt)
-  for [key, val] in items(substitutes)
-    let val = escape(val, '&')
-    let cand.mstr = substitute(cand.mstr, key, val, '')
-    let cand.menu = substitute(cand.menu, key, val, '')
+  let l:cand.mstr = copy(g:vimtex_complete_bib.match_str_fmt)
+  let l:cand.menu = copy(g:vimtex_complete_bib.menu_fmt)
+  let l:cand.info = copy(g:vimtex_complete_bib.info_fmt)
+  for [l:key, l:val] in items(l:substitutes)
+    let l:val = escape(l:val, '&')
+    let l:cand.mstr = substitute(l:cand.mstr, l:key, l:val, '')
+    let l:cand.menu = substitute(l:cand.menu, l:key, l:val, '')
+    let l:cand.info = substitute(l:cand.info, l:key, l:val, '')
   endfor
+  if empty(l:cand.menu)
+    unlet l:cand.menu
+  endif
+  if empty(l:cand.info)
+    unlet l:cand.info
+  endif
 
   " Create abbreviation string (if necessary)
   if !empty(g:vimtex_complete_bib.abbr_fmt)
-    let cand.abbr = copy(g:vimtex_complete_bib.abbr_fmt)
-    for [key, val] in items(substitutes)
-      let cand.abbr = substitute(cand.abbr, key, escape(val, '&'), '')
+    let l:cand.abbr = copy(g:vimtex_complete_bib.abbr_fmt)
+    for [l:key, l:val] in items(l:substitutes)
+      let l:cand.abbr = substitute(l:cand.abbr, l:key, escape(l:val, '&'), '')
     endfor
   endif
 
-  return cand
+  return l:cand
 endfunction
 
 " }}}2
@@ -228,6 +238,7 @@ let s:completer_ref = {
       \   '\v\\v?%(auto|eq|[cC]?%(page)?|labelc)?ref%(\s*\{[^}]*|range\s*\{[^,{}]*%(\}\{)?)$',
       \   '\\hyperref\s*\[[^]]*$',
       \   '\\subref\*\?{[^}]*$',
+      \   '\\nameref{[^}]*$',
       \ ],
       \ 're_context' : '\\\w*{[^}]*$',
       \ 'initialized' : 0,
@@ -254,6 +265,11 @@ endfunction
 
 function! s:completer_ref.get_matches(regex) dict abort " {{{2
   let l:labels = vimtex#parser#auxiliary#labels()
+
+  let l:words = map(copy(l:labels), 'v:val.word')
+  call extend(l:labels, filter(
+        \ vimtex#parser#auxiliary#labels_manual(),
+        \ { _, x -> index(l:words, x.word) < 0 }))
 
   " Match number
   let l:matches = filter(copy(l:labels), {_, x -> x.menu =~# a:regex})
@@ -411,24 +427,20 @@ let s:completer_img = {
       \   . ')$',
       \}
 
-function! s:completer_img.complete(regex) dict abort " {{{2
-  return s:filter(self.gather_candidates(), a:regex)
-endfunction
-
-function! s:completer_img.gather_candidates() dict abort " {{{2
+function! s:completer_img.complete(regex) dict abort
   let l:added_files = []
-  let l:generated_pdf = b:vimtex.out()
+  let l:generated_pdf = b:vimtex.compiler.get_file('pdf')
 
   let l:candidates = []
   for l:path in b:vimtex.graphicspath + [b:vimtex.root]
     let l:files = globpath(l:path, '**/*.*', 1, 1)
-
-    call filter(l:files,
-          \ {_, x ->    x =~? self.ext_re
-          \          && x !=# l:generated_pdf
-          \          && index(l:added_files, x) < 0})
-
+          \ ->filter({_, x ->
+          \      x =~? self.ext_re
+          \   && x !=# l:generated_pdf
+          \   && index(l:added_files, x) < 0
+          \})
     let l:added_files += l:files
+
     let l:candidates += map(l:files, {_, x -> {
             \ 'abbr': vimtex#paths#shorten_relative(x),
             \ 'word': vimtex#paths#relative(x, l:path),
@@ -436,7 +448,7 @@ function! s:completer_img.gather_candidates() dict abort " {{{2
             \}})
   endfor
 
-  return l:candidates
+  return s:filter(l:candidates, a:regex)
 endfunction
 
 " }}}1
@@ -449,32 +461,27 @@ let s:completer_inc = {
       \ ],
       \}
 
-function! s:completer_inc.complete(regex) dict abort " {{{2
-  let self.candidates = globpath(b:vimtex.root, '**/*.tex', 0, 1)
+function! s:completer_inc.complete(regex) dict abort
+  let l:candidates = globpath(b:vimtex.root, '**/*.tex', 0, 1)
 
   " Add .tikz files if appropriate
   if has_key(b:vimtex.packages, 'tikz') && self.context !~# '\\subfile'
-    call extend(self.candidates,
-          \ globpath(b:vimtex.root, '**/*.tikz', 0, 1))
+    call extend(l:candidates, globpath(b:vimtex.root, '**/*.tikz', 0, 1))
   endif
-
-  let self.candidates = map(self.candidates,
-        \ 'strpart(v:val, len(b:vimtex.root)+1)')
-  call s:filter(self.candidates, a:regex)
 
   if self.context =~# '\\include'
-    let self.candidates = map(self.candidates, {_, x -> {
-          \ 'word': fnamemodify(x, ':r'),
-          \ 'kind': '[include]',
+    let l:candidates = map(l:candidates, {_, x -> #{
+          \ word: vimtex#paths#relative(x, b:vimtex.root)->fnamemodify(':r'),
+          \ kind: '[include]',
           \}})
   else
-    let self.candidates = map(self.candidates, {_, x -> {
-          \ 'word': x,
-          \ 'kind': '[input]',
+    let l:candidates = map(l:candidates, {_, x -> #{
+          \ word: vimtex#paths#relative(x, b:vimtex.root),
+          \ kind: '[input]',
           \}})
   endif
 
-  return self.candidates
+  return s:filter(l:candidates, a:regex)
 endfunction
 
 " }}}1
@@ -484,16 +491,15 @@ let s:completer_pdf = {
       \ 'patterns' : ['\v\\includepdf%(\s*\[[^]]*\])?\s*\{[^}]*$'],
       \}
 
-function! s:completer_pdf.complete(regex) dict abort " {{{2
-  let self.candidates = globpath(b:vimtex.root, '**/*.pdf', 0, 1)
-  let self.candidates = map(self.candidates,
-        \ 'strpart(v:val, len(b:vimtex.root)+1)')
-  call s:filter(self.candidates, a:regex)
-  let self.candidates = map(self.candidates, {_, x -> {
-        \ 'word': x,
-        \ 'kind': '[includepdf]',
-        \}})
-  return self.candidates
+function! s:completer_pdf.complete(regex) dict abort
+  let l:candidates = globpath(b:vimtex.root, '**/*.pdf', 0, 1)
+        \ ->map({_, x -> #{
+        \   word: vimtex#paths#relative(x, b:vimtex.root),
+        \   kind: '[includepdf]',
+        \  }
+        \})
+
+  return s:filter(l:candidates, a:regex)
 endfunction
 
 " }}}1
@@ -503,18 +509,14 @@ let s:completer_sta = {
       \ 'patterns' : ['\v\\includestandalone%(\s*\[[^]]*\])?\s*\{[^}]*$'],
       \}
 
-function! s:completer_sta.complete(regex) dict abort " {{{2
-  let self.candidates = substitute(
-        \ globpath(b:vimtex.root, '**/*.tex'), '\.tex', '', 'g')
-  let self.candidates = split(self.candidates, '\n')
-  let self.candidates = map(self.candidates,
-        \ 'strpart(v:val, len(b:vimtex.root)+1)')
-  call s:filter(self.candidates, a:regex)
-  let self.candidates = map(self.candidates, {_, x -> {
-        \ 'word': x,
-        \ 'kind': '[includestandalone]',
+function! s:completer_sta.complete(regex) dict abort
+  let l:candidates = globpath(b:vimtex.root, '**/*.tex', 0, 1)
+        \ ->map({_, x -> #{
+        \ word: vimtex#paths#relative(x, b:vimtex.root)->fnamemodify(':r'),
+        \ kind: '[includestandalone]',
         \}})
-  return self.candidates
+
+  return s:filter(l:candidates, a:regex)
 endfunction
 
 " }}}1
@@ -533,42 +535,6 @@ let s:completer_gls = {
       \   'glsxtrnewsymbol' : ' [symbol]',
       \ },
       \}
-
-function! s:completer_gls.init() dict abort " {{{2
-  if !has_key(b:vimtex.packages, 'glossaries-extra') | return | endif
-
-  " Detect stuff like this:
-  "  \GlsXtrLoadResources[src=glossary.bib]
-  "  \GlsXtrLoadResources[src={glossary.bib}, selection={all}]
-  "  \GlsXtrLoadResources[selection={all},src={glossary.bib}]
-  "  \GlsXtrLoadResources[
-  "    src={glossary.bib},
-  "    selection={all},
-  "  ]
-
-  let l:do_search = 0
-  for l:line in vimtex#parser#preamble(b:vimtex.tex)
-    if line =~# '^\s*\\GlsXtrLoadResources\s*\['
-      let l:do_search = 1
-      let l:line = matchstr(l:line, '^\s*\\GlsXtrLoadResources\s*\[\zs.*')
-    endif
-    if !l:do_search | continue | endif
-
-    let l:matches = split(l:line, '[=,]')
-    if empty(l:matches) | continue | endif
-
-    while !empty(l:matches)
-      let l:key = vimtex#util#trim(remove(l:matches, 0))
-      if l:key ==# 'src'
-        let l:value = vimtex#util#trim(remove(l:matches, 0))
-        let l:value = substitute(l:value, '^{', '', '')
-        let l:value = substitute(l:value, '[]}]\s*', '', 'g')
-        let b:vimtex.complete.glsbib = l:value
-        break
-      endif
-    endwhile
-  endfor
-endfunction
 
 function! s:completer_gls.complete(regex) dict abort " {{{2
   return s:filter(
@@ -595,15 +561,24 @@ function! s:completer_gls.parse_glsentries() dict abort " {{{2
 endfunction
 
 function! s:completer_gls.parse_glsbib() dict abort " {{{2
-  let l:filename = get(b:vimtex.complete, 'glsbib', '')
-  if empty(l:filename) | return [] | endif
-
   let l:candidates = []
-  for l:entry in vimtex#parser#bib(l:filename, {'backend': 'vim'})
-    call add(l:candidates, {
-          \ 'word': l:entry.key,
-          \ 'menu': get(l:entry, 'name', '--'),
-          \})
+
+  for l:filename in b:vimtex.glossaries
+    for l:entry in vimtex#parser#bib(l:filename, {'backend': 'vim'})
+      let l:menu = ''
+      for l:c in ['name', 'long', 'title']
+        if l:entry->has_key(l:c)
+          let l:menu = ' ' .. l:entry[l:c]
+          break
+        endif
+      endfor
+
+      call add(l:candidates, {
+            \ 'word': l:entry.key,
+            \ 'kind': '[gls]',
+            \ 'menu': l:menu
+            \})
+    endfor
   endfor
 
   return l:candidates
@@ -639,7 +614,10 @@ endfunction
 " {{{1 Documentclasses (\documentclass)
 
 let s:completer_doc = {
-      \ 'patterns' : ['\v\\documentclass%(\s*\[[^]]*\])?\s*\{[^}]*$'],
+      \ 'patterns' : [
+      \   '\v\\documentclass%(\s*\[[^]]*\])?\s*\{[^}]*$',
+      \   '\v\\PassOptionsToClass\s*\{[^}]*\}\s*\{[^}]*$',
+      \ ],
       \ 'candidates' : [],
       \}
 
@@ -679,6 +657,35 @@ function! s:completer_bst.gather_candidates() dict abort " {{{2
   endif
 
   return copy(self.candidates)
+endfunction
+
+" }}}1
+" {{{1 Beamer themes (\use(color|inner|outer|font)?theme)
+"
+let s:completer_theme = {
+      \ 'patterns' : [
+      \   '\v\\use%(color|inner|outer|font)?theme%(\s*\[[^]]*\])?\s*\{[^}]*$',
+      \ ],
+      \ 're_context' : '\\use\a*theme',
+      \ 'candidates' : {},
+      \}
+
+function! s:completer_theme.complete(regex) dict abort " {{{2
+  let l:type =
+        \ self.context =~# 'color' ? 'beamercolortheme' :
+        \ self.context =~# 'inner' ? 'beamerinnertheme' :
+        \ self.context =~# 'outer' ? 'beameroutertheme' :
+        \ self.context =~# 'font'  ? 'beamerfonttheme'  :
+        \                            'beamertheme'
+
+  if !has_key(self.candidates, l:type)
+    let l:n = strlen(l:type)
+    let self.candidates[l:type] = s:get_texmf_candidates('sty')
+          \ ->filter({_, x -> stridx(x, l:type) == 0 && x[l:n] =~# '\a'})
+          \ ->map({_, x -> {'word': strpart(x, l:n), 'kind': '[' . l:type[6:] . ']'}})
+  endif
+
+  return s:filter(copy(self.candidates[l:type]), a:regex)
 endfunction
 
 " }}}1
@@ -953,4 +960,4 @@ let s:completers = map(
       \ filter(items(s:), 'v:val[0] =~# ''^completer_'''),
       \ 'v:val[1]')
 
-let s:complete_dir = fnamemodify(expand('<sfile>'), ':r') . '/'
+let s:complete_dir = expand('<sfile>:r') . '/'

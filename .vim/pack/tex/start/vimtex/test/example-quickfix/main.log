@@ -25,6 +25,8 @@ Package typearea Warning: \typearea used at group level 2.
 Package caption Warning: Unsupported document class (or package) detected,
 (caption) usage of the caption package is not recommended.
 
+Overfull \vbox (303.66812pt too high) has occurred while \output is active []
+
 Runaway argument?
 {\sqrt {{1}} \end {equation} \par \end {document} 
 ! File ended while scanning use of \frac .
@@ -50,3 +52,30 @@ l.16
 I suspect you've forgotten a `}', causing me to apply this
 control sequence to too much text. How can we recover?
 My plan is to forget the whole thing and hope for the best.
+
+Missing character: There is no ^^A (U+0001) in font [lmroman10-regular]:+tlig;!
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (./test.aux)
+
+Class memoir Warning: As of 2018, \fixpdflayout\ is no longer used on input line 4.
+
+./test.tex:11: Undefined control sequence.
+l.11 \cdashline
+               {1-7}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+!pdfTeX error: pdflatex (file ./a.pdf): PDF inclusion: required page does not exist <1>
+
+./b.tex:5:  ==> Fatal error occurred, no output PDF file produced!
+
+LaTeX Font Warning: Font shape `OT1/cmr/bx/n' in size <8.43146> not available
+(Font)              size <8> substituted on input line 5.
+
+LaTeX Warning: No positions in optional float specifier.
+               Default added (so using `tbp') on input line 6.
+
+Package silence Warning: There were 6 warning(s) and 0 error(s).
+(silence)                I've killed 5 warning(s) and 0 error(s).

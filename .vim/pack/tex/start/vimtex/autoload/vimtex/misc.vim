@@ -63,6 +63,7 @@ function! vimtex#misc#wordcount(...) abort " {{{1
     return l:lines
   else
     call filter(l:lines, 'v:val !~# ''ERROR\|^\s*$''')
+    call filter(l:lines, 'v:val !~# ''^Possible precedence problem''')
     return join(l:lines, '')
   endif
 endfunction
@@ -118,7 +119,10 @@ if get(s:, 'reload_guard', 1)
   function! vimtex#misc#reload() abort
     let s:reload_guard = 0
 
-    for l:file in glob(fnamemodify(s:file, ':h') . '/../**/*.vim', 0, 1)
+    " Stop all compiler processes
+    silent call vimtex#compiler#stop_all()
+
+    for l:file in glob(s:file . '/**/*.vim', 0, 1)
       execute 'source' l:file
     endfor
 
@@ -150,4 +154,4 @@ endif
 " }}}1
 
 
-let s:file = expand('<sfile>')
+let s:file = expand('<sfile>:h:h')

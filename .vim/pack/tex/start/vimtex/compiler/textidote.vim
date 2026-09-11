@@ -33,15 +33,14 @@ endif
 
 let s:language = vimtex#ui#select(split(&spelllang, ','), {
       \ 'prompt': 'Multiple spelllang languages detected, please select one:',
-      \ 'abort': v:false,
+      \ 'force_choice': v:true,
       \})
 let &l:makeprg = 'java -jar ' . shellescape(fnamemodify(s:cfg.jar, ':p'))
       \ . (has_key(s:cfg, 'args') ? ' ' . s:cfg.args : '')
       \ . ' --no-color --output singleline --check '
       \ . s:get_textidote_lang(s:language) . ' %:S'
 
-setlocal errorformat=
-setlocal errorformat+=%f(L%lC%c-L%\\d%\\+C%\\d%\\+):\ %m
+setlocal errorformat=%f(L%lC%c-L%\\d%\\+C%\\d%\\+):\ %m
 setlocal errorformat+=%-G%.%#
 
 silent CompilerSet makeprg
