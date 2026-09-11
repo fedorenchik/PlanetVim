@@ -2285,11 +2285,11 @@
       "path": ".vim/pack/writing/start/vim-abolish",
       "provenance": {
         "branch": "master",
-        "commit": "3f0c8faadf0c5b68bcf40785c1c42e3731bfa522",
+        "commit": "880a562ff9176773897930b5a26a496f68e5a985",
         "kind": "git-subrepo",
         "remote": "https://github.com/tpope/vim-abolish.git"
       },
-      "snapshot_sha256": "b1d332f8f6c22164f83e8549703cba2b4a9d4fb625567b10029213464fa0d6e7"
+      "snapshot_sha256": "bc7d840df7b2103f049ea033c23a8414744e4c6a12d14cdff45d096246b4c0e4"
     },
     {
       "group": "writing",
