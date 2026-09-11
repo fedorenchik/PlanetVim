@@ -7,6 +7,9 @@ SHA256 fingerprint of each upstream snapshot. Local packages are versioned with
 PlanetVim itself. The installer copies these sources; it does not upgrade plugins
 or download their optional native components.
 
+The [2026-09-11 upgrade ledger](PLUGIN_UPDATES_2026-09-11.md) records the latest
+complete audit, version selection policy, compatibility fixes and new menus.
+
 ## Inventory checks
 
 ```sh
@@ -68,8 +71,10 @@ python3 scripts/benchmark.py --runs 5
 python3 scripts/benchmark.py --runs 5 --xvfb /path/to/Xvfb --output /tmp/planetvim-startup.json
 ```
 
-The benchmark starts real GVim with the full distribution and fresh isolated
-config/state/cache directories. Each startup sample measures elapsed time from
+The benchmark starts real GVim with the full distribution and isolated config
+and state directories. It shares the menu-hint cache after an excluded warmup;
+use `--cold-cache` for an empty PlanetVim cache on each run (this does not flush
+the operating system file cache). Each startup sample measures elapsed time from
 an early pre-vimrc hook through the first event-loop callback after `VimEnter`.
 Process launch-through-exit wall time is recorded separately. Startup includes
 GUI initialization and plugins, but does not wait for language
@@ -87,17 +92,18 @@ Package counts alone are not evidence that a plugin is slow.
 
 ## CI version pins
 
-The workflow tests Linux GVim **9.1.0000** and **9.2.1046** from pinned official
-source commits, and Windows x64 GUI archives **9.1.0** and **9.2.1046**. These are
+The workflow tests Linux GVim **9.1.0016** and **9.2.1046** from pinned official
+source commits, and Windows x64 GUI archives **9.1.0016** and **9.2.1046**. These are
 fixed test baselines; the current 9.2 pin was verified on 2026-09-08. Update the
-current-release entry deliberately and rerun the complete matrix. The Windows
-minimum archive uses the upstream release label `v9.1.0`, not `v9.1.0000`.
+current-release entry deliberately and rerun the complete matrix. The minimum
+was raised on 2026-09-11 for VimTeX v2.18. The official Windows minimum
+release/archive uses the full label `v9.1.0016`.
 
 Source tags and commits were verified against [vim/vim tags](https://github.com/vim/vim/tags)
 and `git ls-remote` from that official repository. Windows asset names and layout
-were verified from the official [9.1.0 release](https://github.com/vim/vim-win32-installer/releases/tag/v9.1.0)
+were verified from the official [9.1.0016 release](https://github.com/vim/vim-win32-installer/releases/tag/v9.1.0016)
 and [9.2.1046 release](https://github.com/vim/vim-win32-installer/releases/tag/v9.2.1046).
-Both downloaded archives were hashed locally; the current archive's digest also
+Both archived baselines were hashed locally; the current archive's digest also
 matches GitHub's release metadata. The workflow verifies those recorded hashes
 before extraction. Action revisions are pinned to the official
 [checkout](https://github.com/actions/checkout) and

@@ -1,0 +1,73 @@
+{
+  "cache": "empty per run",
+  "display": "private Xvfb",
+  "first_screen_measurement": "--startuptime through completed first screen update, including initialization before vimrc",
+  "first_screen_median_seconds": 1.463297,
+  "gvim": [
+    "VIM - Vi IMproved 9.2 (2026 Feb 14, compiled Jul 24 2026 20:21:32)",
+    "Included patches: 1-849"
+  ],
+  "inventory_sha256": "9946e84a9480b7f2ed7e8c7c487e64adb6d4ac7039a2ff1263b6977166925cd6",
+  "machine": "x86_64",
+  "maximum_seconds": 1.395464,
+  "measurement": "GVim pre-vimrc initialization through first event-loop callback after VimEnter; one warmup excluded",
+  "median_seconds": 1.376584,
+  "minimum_seconds": 1.355887,
+  "platform": "Linux-6.18.45-1-MANJARO-x86_64-with-glibc2.44",
+  "processor": "",
+  "revision": "10b17da639c3fe93c042b8e363ed2fe833424ef6",
+  "runs": 5,
+  "samples": [
+    {
+      "first_screen_seconds": 1.465636,
+      "last_vim_error": "E329: No menu \"&GUI Windows\"",
+      "menu_cache": {
+        "hits": 2,
+        "misses": 2126
+      },
+      "process_seconds": 1.684949112997856,
+      "startup_seconds": 1.385128
+    },
+    {
+      "first_screen_seconds": 1.4775509999999998,
+      "last_vim_error": "E329: No menu \"&GUI Windows\"",
+      "menu_cache": {
+        "hits": 2,
+        "misses": 2126
+      },
+      "process_seconds": 1.6951170089887455,
+      "startup_seconds": 1.395464
+    },
+    {
+      "first_screen_seconds": 1.450157,
+      "last_vim_error": "E329: No menu \"&GUI Windows\"",
+      "menu_cache": {
+        "hits": 2,
+        "misses": 2126
+      },
+      "process_seconds": 1.6869097030139528,
+      "startup_seconds": 1.376584
+    },
+    {
+      "first_screen_seconds": 1.463297,
+      "last_vim_error": "E329: No menu \"&GUI Windows\"",
+      "menu_cache": {
+        "hits": 2,
+        "misses": 2126
+      },
+      "process_seconds": 1.6851065439986996,
+      "startup_seconds": 1.373746
+    },
+    {
+      "first_screen_seconds": 1.436673,
+      "last_vim_error": "E329: No menu \"&GUI Windows\"",
+      "menu_cache": {
+        "hits": 2,
+        "misses": 2126
+      },
+      "process_seconds": 1.654727906017797,
+      "startup_seconds": 1.355887
+    }
+  ],
+  "working_tree_modified": true
+}

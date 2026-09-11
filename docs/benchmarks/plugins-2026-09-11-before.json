@@ -1,0 +1,53 @@
+{
+  "cache": "shared after warmup; fresh GVim process for every run",
+  "display": "private Xvfb",
+  "first_screen_measurement": "--startuptime through completed first screen update, including initialization before vimrc",
+  "first_screen_median_seconds": 1.1470250000000002,
+  "gvim": [
+    "VIM - Vi IMproved 9.2 (2026 Feb 14, compiled Jul 24 2026 20:21:32)",
+    "Included patches: 1-849"
+  ],
+  "inventory_sha256": "66067fdf3f2c5c8cfd28aa8325e0722f6831beefa20a346a1ab85a8962987323",
+  "machine": "x86_64",
+  "maximum_seconds": 1.175955,
+  "measurement": "GVim pre-vimrc initialization through first event-loop callback after VimEnter; one warmup excluded",
+  "median_seconds": 1.073386,
+  "minimum_seconds": 1.049346,
+  "platform": "Linux-6.18.45-1-MANJARO-x86_64-with-glibc2.44",
+  "processor": "",
+  "revision": "652b73eeb3ca922a221e648e05ce08f3a7731e6f",
+  "runs": 3,
+  "samples": [
+    {
+      "first_screen_seconds": 1.1470250000000002,
+      "last_vim_error": "E329: No menu \"&GUI Windows\"",
+      "menu_cache": {
+        "hits": 2092,
+        "misses": 1
+      },
+      "process_seconds": 1.36034084300627,
+      "startup_seconds": 1.073386
+    },
+    {
+      "first_screen_seconds": 1.1218240000000002,
+      "last_vim_error": "E329: No menu \"&GUI Windows\"",
+      "menu_cache": {
+        "hits": 2093,
+        "misses": 0
+      },
+      "process_seconds": 1.3076522009796463,
+      "startup_seconds": 1.049346
+    },
+    {
+      "first_screen_seconds": 1.2554770000000002,
+      "last_vim_error": "E329: No menu \"&GUI Windows\"",
+      "menu_cache": {
+        "hits": 2093,
+        "misses": 0
+      },
+      "process_seconds": 1.4554951019817963,
+      "startup_seconds": 1.175955
+    }
+  ],
+  "working_tree_modified": false
+}

@@ -1,10 +1,22 @@
 # Changelog
 
-## Unreleased — Linux GVim menus and Vim9 runtime
+## Unreleased — Linux GVim menus, Vim9 runtime and plugin refresh
+
+- Audit all 118 third-party packages and update 68 to their latest stable tags
+  or maintained branch snapshots where no suitable release exists. Preserve
+  exact upstream source and record every revision in the
+  [upgrade ledger](docs/PLUGIN_UPDATES_2026-09-11.md).
+- Raise the minimum to **GVim 9.1.0016** for VimTeX v2.18. Update Vimspector
+  session handling, Crystalline statusline APIs, Flog graph/diff integration,
+  and LSP startup. Debugging requires embedded Python 3.10+; Flog needs LuaJIT 2.1.
+- Keep core Clap pickers usable without Maple, including asynchronous ripgrep
+  search, selection and filtering. Add LSP document links/signature help,
+  debugger sessions/disassembly, Fern tree/preview actions and VimTeX menus.
 
 - Migrate first-party Vim helpers, menu builders, startup configuration, and
   plugin glue to Vim9 with compiled functions. Preserve public APIs and the
-  GVim 9.1.0000 minimum; leave bundled third-party code unchanged. Add an
+  then-current GVim 9.1.0000 minimum during the migration; leave bundled
+  third-party code unchanged by that conversion. Add an
   exhaustive compilation check and legacy-caller regression coverage.
 - Teach keys and commands in menu hints, preferring up to two short shortcuts
   with the primary key on the right. Show commands/functions or fuller action

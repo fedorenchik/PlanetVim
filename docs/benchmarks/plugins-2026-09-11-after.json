@@ -1,0 +1,73 @@
+{
+  "cache": "shared after warmup; fresh GVim process for every run",
+  "display": "private Xvfb",
+  "first_screen_measurement": "--startuptime through completed first screen update, including initialization before vimrc",
+  "first_screen_median_seconds": 1.461284,
+  "gvim": [
+    "VIM - Vi IMproved 9.2 (2026 Feb 14, compiled Jul 24 2026 20:21:32)",
+    "Included patches: 1-849"
+  ],
+  "inventory_sha256": "9946e84a9480b7f2ed7e8c7c487e64adb6d4ac7039a2ff1263b6977166925cd6",
+  "machine": "x86_64",
+  "maximum_seconds": 1.53057,
+  "measurement": "GVim pre-vimrc initialization through first event-loop callback after VimEnter; one warmup excluded",
+  "median_seconds": 1.378509,
+  "minimum_seconds": 1.175549,
+  "platform": "Linux-6.18.45-1-MANJARO-x86_64-with-glibc2.44",
+  "processor": "",
+  "revision": "10b17da639c3fe93c042b8e363ed2fe833424ef6",
+  "runs": 5,
+  "samples": [
+    {
+      "first_screen_seconds": 1.247861,
+      "last_vim_error": "E329: No menu \"&GUI Windows\"",
+      "menu_cache": {
+        "hits": 2127,
+        "misses": 1
+      },
+      "process_seconds": 1.4524195379926823,
+      "startup_seconds": 1.175549
+    },
+    {
+      "first_screen_seconds": 1.513727,
+      "last_vim_error": "E329: No menu \"&GUI Windows\"",
+      "menu_cache": {
+        "hits": 2128,
+        "misses": 0
+      },
+      "process_seconds": 1.7762369840056635,
+      "startup_seconds": 1.43674
+    },
+    {
+      "first_screen_seconds": 1.6159919999999999,
+      "last_vim_error": "E329: No menu \"&GUI Windows\"",
+      "menu_cache": {
+        "hits": 2128,
+        "misses": 0
+      },
+      "process_seconds": 1.8159153340093326,
+      "startup_seconds": 1.53057
+    },
+    {
+      "first_screen_seconds": 1.461284,
+      "last_vim_error": "E329: No menu \"&GUI Windows\"",
+      "menu_cache": {
+        "hits": 2128,
+        "misses": 0
+      },
+      "process_seconds": 1.6556289870059118,
+      "startup_seconds": 1.378509
+    },
+    {
+      "first_screen_seconds": 1.4363789999999999,
+      "last_vim_error": "E329: No menu \"&GUI Windows\"",
+      "menu_cache": {
+        "hits": 2128,
+        "misses": 0
+      },
+      "process_seconds": 1.6073445630026981,
+      "startup_seconds": 1.339229
+    }
+  ],
+  "working_tree_modified": true
+}

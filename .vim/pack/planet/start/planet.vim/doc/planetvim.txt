@@ -1,7 +1,7 @@
 *planetvim.txt*       PlanetVim: Linux and Windows GVim              *planetvim*
 
 PlanetVim is a menu-oriented GVim distribution. Linux is primary; Windows is
-secondary. GVim 9.1+ is required. Terminal Vim, Neovim, and macOS are excluded.
+secondary. GVim 9.1.0016+ is required. Terminal Vim, Neovim, and macOS are excluded.
 Run :PlanetVersion for the distribution version and :version for the editor.
 
 Getting started ......................................... |planetvim-start|
@@ -186,6 +186,11 @@ also provides buffer/file completion without a server.
 modifiers, and symbols. It requires a server supporting full semantic tokens,
 such as clangd. Analyze → Check uses the current document's LSP diagnostics.
 
+LSP → Document Links lists server-provided links or opens the link at the cursor.
+LSP → Preview → Signature runs :LspSignatureHelp. Pull diagnostics are enabled for
+servers advertising the protocol; set g:lsp_diagnostics_pull_enabled = 0 to opt
+out. Stop All Servers also stops servers belonging to other filetypes.
+
 Modify → Snippets prompts for fields before insertion. Custom snippets are JSON
 objects whose values are arrays of lines, stored under config/snippets/FILETYPE
 .json. ${field} prompts once; ${cursor} selects the final cursor position. Custom
@@ -202,7 +207,7 @@ size limit is 64 MiB; set g:PV_hex_max_bytes explicitly for larger files.
 DEBUGGING                                                    *planetvim-debug*
 
 The core debugger is Vimspector, loaded on demand. GVim needs +python3 and a
-compatible Python library. Test the provider with :py3 print('ready'). The DAP
+compatible Python 3.10+ library. Test the provider with :py3 print('ready'). The DAP
 adapter can use a different Python executable.
 
 Python: install debugpy into the adapter environment. Optionally set: >
@@ -228,6 +233,16 @@ Core actions: >
     :PlanetDebug detach
     :PlanetDebug reset
 <
+Debug → Disassembly shows assembly and steps by instruction when the adapter
+supports it. Debug → Breakpoints configures exception filters or watches a
+variable selected in Vimspector's variables/watch window (adapter support needed).
+Generated GDB configurations disable exception filters initially, avoiding
+interactive launch questions; Configure Exceptions lets you choose them later.
+
+Debug → Sessions creates, selects, renames, and closes independent sessions.
+A session with an active connection/UI must be reset before it can be closed.
+These actions still load Vimspector only when first used.
+
 The debugger displays stack and variables through Vimspector. Errors report
 missing providers, adapters, or programs. Logs use private state rather than
 ~/.vimspector.log or vendored source. Additional debug tools and kernel actions
@@ -240,6 +255,13 @@ Save a Markdown document, install Pandoc 2.19+, and run :PlanetMarkdownPreview.
 It writes HTML and resources to private cache, then opens a desktop viewer after
 success. :PlanetLatexBuild uses latexmk plus a TeX distribution and retains errors.
 :PlanetWritingOpen reopens output; :PlanetWritingErrors opens source diagnostics.
+
+Writing → LaTeX exposes VimTeX's continuous and single-shot compilation, selected
+line compilation, PDF viewer, errors, and table of contents. In a TeX buffer,
+Toggle Itemize and Enumerate teaches tse; Toggle Starred Environment teaches tss;
+Toggle Command Line Break teaches tsb. Compilation/viewing uses the configured
+VimTeX backend and its separately installed tools. PlanetLatexBuild remains the
+separate build-to-private-cache workflow described above.
 
 Executable overrides are argv Lists:
     g:PV_pandoc_argv             default ['pandoc']

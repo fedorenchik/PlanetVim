@@ -4,13 +4,13 @@ PlanetVim is a **GVim distribution for Linux and Windows**, with discoverable me
 
 The current version is **0.1.0-rc.1**. See [the acceptance record](docs/ACCEPTANCE.md) for what has actually been exercised and what still needs platform or SDK validation. Menu actions are implemented and enabled; optional tools report their prerequisites when selected.
 
-The first-party Vim runtime uses Vim9 compiled functions; bundled upstream plugins retain their original code. The minimum remains GVim **9.1.0000**.
+The first-party Vim runtime uses Vim9 compiled functions; bundled upstream plugins retain their original code. The minimum is GVim **9.1.0016**.
 
 ![PlanetVim running in Linux GVim](docs/images/gvim-linux.png)
 
 ## Start from a checkout
 
-Install GVim **9.1 or newer** with GUI, menus, terminal, jobs, channels, timers, and persistent undo, plus Python 3.10 or newer for the installer and project generators. Debugging additionally requires a working GVim `+python3` provider. You can inspect a build with `gvim --version`.
+Install GVim **9.1.0016 or newer** with GUI, menus, terminal, jobs, channels, timers, and persistent undo, plus Python 3.10 or newer for the installer and project generators. Debugging additionally requires a working GVim `+python3` provider using Python 3.10 or newer. Git history graphs require LuaJIT 2.1. You can inspect a build with `gvim --version`.
 
 ```sh
 git clone https://github.com/fedorenchik/PlanetVim.git
@@ -114,3 +114,8 @@ python3 scripts/plugins.py inventory --check
 The GUI suite needs a display; `--xvfb /path/to/Xvfb` creates a private Linux display. Tests use disposable config, state, repositories, and project files. [CONTRIBUTING.md](CONTRIBUTING.md) explains the code layout, integration contracts, and tests. [Plugin maintenance](docs/PLUGINS.md) records bundled sources and revisions. Third-party plugin source is not patched by this implementation.
 
 PlanetVim's first-party code is licensed under [MIT](LICENSE). Bundled plugins keep their own licenses and notices; see [the plugin inventory](docs/plugins.json). [CHANGELOG.md](CHANGELOG.md) records release changes, and [TASKS.md](TASKS.md) tracks the original review work and acceptance limits.
+
+The [September 2026 plugin upgrade](docs/PLUGIN_UPDATES_2026-09-11.md) records all
+118 upstream checks, exact selected versions, compatibility changes, and new
+menus. Native Clap/Maple acceleration remains optional; files, buffers, palettes,
+and ripgrep search work without it.

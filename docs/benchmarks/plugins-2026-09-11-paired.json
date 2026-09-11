@@ -1,0 +1,115 @@
+{
+  "method": "Five interleaved pairs; order alternates; separate warmed menu caches; same GVim 9.2.0849 and private Xvfb display",
+  "before_revision": "652b73eeb3ca922a221e648e05ce08f3a7731e6f",
+  "after_revision": "10b17da639c3fe93c042b8e363ed2fe833424ef6",
+  "samples": {
+    "before": [
+      {
+        "startup_seconds": 1.155104,
+        "process_seconds": 1.4445595659781247,
+        "first_screen_seconds": 1.232844,
+        "menu_cache": {
+          "hits": 2092,
+          "misses": 1
+        },
+        "last_vim_error": "E329: No menu \"&GUI Windows\""
+      },
+      {
+        "startup_seconds": 1.169696,
+        "process_seconds": 1.4392782280046958,
+        "first_screen_seconds": 1.245498,
+        "menu_cache": {
+          "hits": 2093,
+          "misses": 0
+        },
+        "last_vim_error": "E329: No menu \"&GUI Windows\""
+      },
+      {
+        "startup_seconds": 1.220915,
+        "process_seconds": 1.4826614169869572,
+        "first_screen_seconds": 1.3073489999999999,
+        "menu_cache": {
+          "hits": 2093,
+          "misses": 0
+        },
+        "last_vim_error": "E329: No menu \"&GUI Windows\""
+      },
+      {
+        "startup_seconds": 1.246347,
+        "process_seconds": 1.540791467006784,
+        "first_screen_seconds": 1.3283019999999999,
+        "menu_cache": {
+          "hits": 2093,
+          "misses": 0
+        },
+        "last_vim_error": "E329: No menu \"&GUI Windows\""
+      },
+      {
+        "startup_seconds": 1.238688,
+        "process_seconds": 1.5243987390131224,
+        "first_screen_seconds": 1.3170840000000001,
+        "menu_cache": {
+          "hits": 2093,
+          "misses": 0
+        },
+        "last_vim_error": "E329: No menu \"&GUI Windows\""
+      }
+    ],
+    "after": [
+      {
+        "startup_seconds": 1.267005,
+        "process_seconds": 1.555164491001051,
+        "first_screen_seconds": 1.3443409999999998,
+        "menu_cache": {
+          "hits": 2128,
+          "misses": 0
+        },
+        "last_vim_error": "E329: No menu \"&GUI Windows\""
+      },
+      {
+        "startup_seconds": 1.252973,
+        "process_seconds": 1.5192410520103294,
+        "first_screen_seconds": 1.339431,
+        "menu_cache": {
+          "hits": 2128,
+          "misses": 0
+        },
+        "last_vim_error": "E329: No menu \"&GUI Windows\""
+      },
+      {
+        "startup_seconds": 1.317593,
+        "process_seconds": 1.5964244409988169,
+        "first_screen_seconds": 1.399361,
+        "menu_cache": {
+          "hits": 2128,
+          "misses": 0
+        },
+        "last_vim_error": "E329: No menu \"&GUI Windows\""
+      },
+      {
+        "startup_seconds": 1.44889,
+        "process_seconds": 1.7326873209967744,
+        "first_screen_seconds": 1.542903,
+        "menu_cache": {
+          "hits": 2128,
+          "misses": 0
+        },
+        "last_vim_error": "E329: No menu \"&GUI Windows\""
+      },
+      {
+        "startup_seconds": 1.252103,
+        "process_seconds": 1.5220907590119168,
+        "first_screen_seconds": 1.333069,
+        "menu_cache": {
+          "hits": 2128,
+          "misses": 0
+        },
+        "last_vim_error": "E329: No menu \"&GUI Windows\""
+      }
+    ]
+  },
+  "first_screen_median_seconds": {
+    "before": 1.3073489999999999,
+    "after": 1.3443409999999998
+  }
+}

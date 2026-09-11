@@ -29,7 +29,7 @@ exercised. This is not an execution test of every menu or external SDK action.
 
 ### Version boundaries
 
-- **At PlanetVim's 9.1.0000 minimum:** traditional Vim editing, command-line popup
+- **At the review's original 9.1.0000 baseline:** traditional Vim editing, command-line popup
   completion, virtual text, smooth scrolling and built-in EditorConfig.
   [Vim 9.1 release](https://www.vim.org/vim-9.1-released.php)
 - **By Vim 9.2.0000:** native automatic/fuzzy completion, register completion,
@@ -43,6 +43,9 @@ exercised. This is not an execution test of every menu or external SDK action.
   [Current changes](https://github.com/vim/vim/blob/master/runtime/doc/version9.txt),
   [release status](https://www.vim.org/download.php),
   [GTK4 announcement](https://www.vim.org/news/news.php)
+
+The later [plugin refresh](PLUGIN_UPDATES_2026-09-11.md) raises PlanetVim's minimum
+to GVim 9.1.0016 for VimTeX. The newer capabilities above remain separately gated.
 
 ## Existing coverage to retain
 
