@@ -956,11 +956,11 @@
       "path": ".vim/pack/colors/start/papercolor-theme",
       "provenance": {
         "branch": "master",
-        "commit": "9051480ad9129ff4ab4fffb38b44779b9081626f",
+        "commit": "0cfe64ffb24c21a6101b5f994ca342a74c977aef",
         "kind": "git-subrepo",
         "remote": "https://github.com/NLKNguyen/papercolor-theme.git"
       },
-      "snapshot_sha256": "fec21bddbc4bde838a21ecdb3d7fa38906a421b206c8b6b319bbc82bfe513918"
+      "snapshot_sha256": "0065e005320dfddca14be55d34e17457e092b05d53eb118bfd3a251444f70866"
     },
     {
       "group": "colors",
