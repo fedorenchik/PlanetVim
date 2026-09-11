@@ -2,61 +2,77 @@
 
 [![test status](https://github.com/rbong/vim-flog/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/rbong/vim-flog/actions)
 
-Flog is a lightweight and powerful git branch viewer that integrates with
-[fugitive](https://github.com/tpope/vim-fugitive).
+Flog is a blazingly fast, stunningly beautiful, exceptionally powerful Git branch viewer for Vim/Neovim.
 
 ![flog in action](img/screen-graph.png)
 
+## Features
+
+- Custom log format support
+- Multiline commit message support
+- Ability to view history of selected visual range
+- Contextual command completion
+- Many navigation mappings
+- Commit-based marks and jump history
+- Ability to expand/collapse commit body
+- Intelligently restore cursor position between updates
+- [Fugitive](https://github.com/tpope/vim-fugitive) integration
+- Functions for integrating with your Git workflow and plugins
+- Extended graph symbol support (currently only in [Kitty](https://github.com/kovidgoyal/kitty))
+- Dynamic branch highlighting (Neovim only)
+- Automatic updates (Neovim only)
+- And more!
+
 ## Installation
 
-Using [Plug](https://github.com/junegunn/vim-plug) add the following to your `.vimrc`:
+If you use [Plug](https://github.com/junegunn/vim-plug), add the following to your `.vimrc`:
 
 ```vim
 Plug 'tpope/vim-fugitive'
 Plug 'rbong/vim-flog'
 ```
 
-See `:help plug-example` for more information.
-If you do not use plug, see your plugin manager of choice's documentation.
+For lazy.nvim users:
 
-Requires vim version 8 or greater.
-Neovim is also supported.
+```lua
+{
+  "rbong/vim-flog",
+  lazy = true,
+  cmd = { "Flog", "Flogsplit", "Floggit" },
+  dependencies = {
+    "tpope/vim-fugitive",
+  },
+},
+```
 
-## Using Flog
+In Vim, [LuaJIT 2.1](https://luajit.org/download.html) must be installed.
+[Lua](https://www.lua.org/) 5.1 is also supported but less performant than LuaJIT.
 
-Open the commit graph with `:Flog` or `:Flogsplit`.
-Many options can be passed in, complete with `<Tab>` completion.
+## Getting Started
 
-Open commits in temporary windows once you've opened Flog using `<CR>`.
-Jump between commits with `<C-N>` and `<C-P>`.
+- You can open the commit graph with `:Flog` or `:Flogsplit`.
+- Use `<Tab>` completion or `:help :Flog` to see available arguments.
+- Open commits with [Fugitive](https://github.com/tpope/vim-fugitive) using `<CR>`.
+- Jump between commits with `<C-N>` and `<C-P>`.
+- Toggle viewing all branches with `a`.
+- See more mappings with `g?`.
+- Quit with `gq`.
 
-Refresh the graph with `u`.
-Toggle viewing all branches with `a`.
-Toggle bisect mode with `gb`.
-Toggle displaying no merges with `gm`.
-Toggle viewing the reflog with `gr`.
-Quit with `gq`.
+Many familiar mappings from the Fugitive `:Git` status window will work in Flog.
 
-Many of the bindings that work in fugitive in `:Gstatus` windows will work in Flog.
+You can also run any git command using `:Floggit`.
+This command will contextually complete arguments based on your cursor position.
+See `:help :Floggit` for more.
 
-To see more bindings or get a refresher, press `g?`.
+Flog can be heavily customized.
+See [examples](EXAMPLES.md) for details.
 
-Run `:Git` commands in a split next to the graph using `:Floggit -p`.
-Command line completion is provided to do any git command with the commits and refs under the cursor.
+## More Help
 
-You can do a lot more with Flog.
-Flog can be heavily customized, and comes with utility functions for defining your own commands.
-See the [examples](EXAMPLES.md) for more details.
-
-## Getting Help
-
-If you have questions, requests, or bugs, see
-[the issue tracker](https://github.com/rbong/vim-flog/issues) and `:help flog`.
-
-Please see [fugitive](https://github.com/tpope/vim-fugitive) for help with Fugitive commands.
-See `git log --help` for any problems specific to `git log`.
-
-More info:
 - [FAQ](FAQ.md)
 - [Examples](EXAMPLES.md)
-- [Contributing](CONTRIBUTING.md)
+- [Issue tracker](https://github.com/rbong/vim-flog/issues)
+- [Discussions board](https://github.com/rbong/vim-flog/discussions)
+- [Fugitive repo](https://github.com/tpope/vim-fugitive)
+- Run `git log --help` in a terminal for help with `git log`.
+- Run `:help flog` in Vim to see the full documentation.

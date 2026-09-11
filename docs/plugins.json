@@ -1378,11 +1378,11 @@
       "path": ".vim/pack/git/start/vim-flog",
       "provenance": {
         "branch": "master",
-        "commit": "c880254c0d56a9dba0bfe7bc3a5f99cd15273363",
+        "commit": "e7a0e9f6f26d154b1e550de94414ea71e354c563",
         "kind": "git-subrepo",
         "remote": "https://github.com/rbong/vim-flog.git"
       },
-      "snapshot_sha256": "5a4078a985c84e0c95e62444585a7e239fa081a06a53e548f48890bd69e4706b"
+      "snapshot_sha256": "1bd00f700dbaa990073a6ae72c340f8a532d07e3262de383076a6f0f2df5bd42"
     },
     {
       "group": "git",

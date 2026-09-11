@@ -4,148 +4,218 @@ endif
 
 let b:current_syntax = 'floggraph'
 
-if get(g:, 'flog_use_ansi_esc')
-  finish
-endif
-
 runtime! syntax/diff.vim
 
-" Commit {{{
+" Commit format highlighting
 
-syntax match flogHash   / \[[0-9a-f]\+\]/
-syntax match flogAuthor / {[^}]\+}/
-syntax match flogRef    / (\(tag: \| -> \|, \|[^ \\)?*[]\+\)\+)/
-syntax match flogDate   /\v<\zs\d{4}-\d\d-\d\d( \d\d:\d\d(:\d\d( [+-]\d{4})?)?)?/
+syntax cluster flogCommitInfo contains=flogHash,flogAuthor,flogRef,flogDate
 
-highlight default link flogHash   Statement
-highlight default link flogAuthor String
-highlight default link flogRef    Directory
-highlight default link flogDate   Number
+if g:flog_enable_dynamic_commit_hl
+  syntax match flogConceal conceal /\e\[./
 
-" Ref {{{
+  syntax region flogHash   start=/\e\[h/ end=/\e\[H\|$/me=e-3 contains=flogConceal
+  syntax region flogAuthor start=/\e\[n/ end=/\e\[N\|$/me=e-3 contains=flogConceal
+  syntax region flogRef    start=/\e\[r/ end=/\e\[R\|$/me=e-3 contains=flogConceal
+  syntax region flogDate   start=/\e\[d/ end=/\e\[D\|$/me=e-3 contains=flogConceal
+else
+  syntax match flogHash   contained nextgroup=flogAuthor,flogRef,flogDate  /\v%(\].*)@<!\[[0-9a-f]{4,}\]%( |$)/
+  syntax match flogAuthor contained nextgroup=flogHash,flogRef,flogDate    /\v%(\}.*)@<!\{.{-}\}%( |$)/
+  syntax match flogRef    contained nextgroup=flogHash,flogAuthor,flogDate /\%().*\)\@<!(\%(tag: \| -> \|, \|[^ \\)?*[]\+\)\+)\%( \|$\)/
 
-syntax match flogRefTag    contained containedin=flogRef /\vtag: \zs.{-}\ze(, |)\)/
-syntax match flogRefRemote contained containedin=flogRef /\vremotes\/\zs.{-}\ze(, |)\)/
+  " Date patterns
+  let weekday_name_pattern = '%(Mon|Monday|Tue|Tuesday|Wed|Wednesday|Thu|Thursday|Fri|Friday|Sat|Saturday|Sun|Sunday)'
+  let month_name_pattern = '%(Jan|January|Feb|February|Mar|March|Apr|April|May|Jun|June|Jul|July|Aug|August|Sep|September|Oct|October|Nov|November|Dec|December)'
+  let iso_date_pattern = '%(\d{4}-\d\d-\d\d|%())'
+  let iso_time_pattern = '%(\d\d:\d\d%(:\d\d%( ?[+-]\d\d:?\d\d)?)?)'
 
-highlight default link flogRefTag    String
-highlight default link flogRefRemote Statement
+  " ISO format
+  exec 'syntax match flogDate contained nextgroup=flogHash,flogAuthor,flogRef /\v' . iso_date_pattern . '%([T ]' . iso_time_pattern . ')?%( |$)/'
+  " RFC format
+  exec 'syntax match flogDate contained nextgroup=flogHash,flogAuthor,flogRef /\v' . weekday_name_pattern . ', \d{1,2} ' . month_name_pattern . ' \d{4}%( ' . iso_time_pattern . ')?%( |$)/'
+  " Local format
+  exec 'syntax match flogDate contained nextgroup=flogHash,flogAuthor,flogRef /\v' . weekday_name_pattern . ' ' . month_name_pattern . ' \d{1,2}%( ' . iso_time_pattern . ')? \d{4}' . '%( |$)/'
+  " Relative format
+  exec 'syntax match flogDate contained nextgroup=flogHash,flogAuthor,flogRef /\v%(\d+ %([yY]ear|[mM]onth|[wW]eek|[dD]ay|[hH]our|[mM]inute|[sS]econd)s? [aA]go)%( |$)/'
+  " Human formats
+  exec 'syntax match flogDate contained nextgroup=flogHash,flogAuthor,flogRef /\v' . weekday_name_pattern . ' ' . iso_time_pattern . '%( |$)/'
+  exec 'syntax match flogDate contained nextgroup=flogHash,flogAuthor,flogRef /\v' . month_name_pattern . ' \d{1,2} \d{4}' . '%( |$)/'
+endif
 
+" Commit ref
+syntax match flogRefTag        contained containedin=flogRef /\vtag: \zs.{-}\ze%(, |)\)/
+syntax match flogRefRemote     contained containedin=flogRef /\vremotes\/\zs.{-}\ze%(, |)\)/
 syntax match flogRefHead       contained containedin=flogRef nextgroup=flogRefHeadArrow  /\<HEAD/
 syntax match flogRefHeadArrow  contained                     nextgroup=flogRefHeadBranch / -> /
 syntax match flogRefHeadBranch contained                                                 /[^,)]\+/
 
-highlight default link flogRefHead       Keyword
-highlight default link flogRefHeadArrow  flogRef
-highlight default link flogRefHeadBranch Special
+" Collapsed commit indicator
+syntax match flogCollapsedCommit contained /== \d\+ hidden lines ==$/
 
-" }}}
+highlight default link flogHash            Statement
+highlight default link flogAuthor          String
+highlight default link flogDate            Number
+highlight default link flogRef             Directory
+highlight default link flogRefTag          String
+highlight default link flogRefRemote       Statement
+highlight default link flogRefHead         Keyword
+highlight default link flogRefHeadArrow    flogRef
+highlight default link flogRefHeadBranch   Special
+highlight default link flogCollapsedCommit Comment
 
-" Diff {{{
+" Diff highlighting
+" Copied from syntax/diff.vim
 
 syntax cluster flogDiff contains=flogDiffAdded,flogDiffBDiffer,flogDiffChanged,flogDiffComment,flogDiffCommon,flogDiffDiffer,flogDiffFile,flogDiffIdentical,flogDiffIndexLine,flogDiffIsA,flogDiffLine,flogDiffNewFile,flogDiffNoEOL,flogDiffOldFile,flogDiffOnly,flogDiffRemoved
 
-syntax match flogEmptyStart /^ \+\ze / nextgroup=@flogDiff
+syntax match flogDiffOnly      contained /Only in .*/
+syntax match flogDiffIdentical contained /Files .* and .* are identical$/
+syntax match flogDiffDiffer    contained /Files .* and .* differ$/
+syntax match flogDiffBDiffer   contained /Binary files .* and .* differ$/
+syntax match flogDiffIsA       contained /File .* is a .* while file .* is a .*/
+syntax match flogDiffNoEOL     contained /\\ No newline at end of file .*/
+syntax match flogDiffCommon    contained /Common subdirectories: .*/
 
-" copied from syntax/diff.vim
+syntax match flogDiffRemoved contained /-.*/
+syntax match flogDiffRemoved contained /<.*/
+syntax match flogDiffAdded   contained /+.*/
+syntax match flogDiffAdded   contained />.*/
+syntax match flogDiffChanged contained /! .*/
 
-syn match flogDiffOnly      contained / Only in .*/
-syn match flogDiffIdentical contained / Files .* and .* are identical$/
-syn match flogDiffDiffer    contained / Files .* and .* differ$/
-syn match flogDiffBDiffer   contained / Binary files .* and .* differ$/
-syn match flogDiffIsA       contained / File .* is a .* while file .* is a .*/
-syn match flogDiffNoEOL     contained / \\ No newline at end of file .*/
-syn match flogDiffCommon    contained / Common subdirectories: .*/
+syntax match flogDiffSubname contained containedin=flogDiffSubname /@@..*/ms=s+3
+syntax match flogDiffLine    contained /@.*/
 
-syn match flogDiffRemoved contained / -.*/
-syn match flogDiffRemoved contained / <.*/
-syn match flogDiffAdded   contained / +.*/
-syn match flogDiffAdded   contained / >.*/
-syn match flogDiffChanged contained / ! .*/
+syntax match flogDiffLine contained /\*\*\*\*.*/
+syntax match flogDiffLine contained /---$/
+syntax match flogDiffLine contained /\d\+\%(,\d\+\)\=[cda]\d\+\>.*/
 
-syn match flogDiffSubname contained containedin=flogDiffSubname / @@..*/ms=s+3
-syn match flogDiffLine    contained / @.*/
+syntax match flogDiffFile    contained /diff\>.*/
+syntax match flogDiffFile    contained /+++ .*/
+syntax match flogDiffFile    contained /Index: .*/
+syntax match flogDiffFile    contained /==== .*/
+syntax match flogDiffOldFile contained /\*\*\* .*/
+syntax match flogDiffNewFile contained /--- .*/
 
-syn match flogDiffLine contained / \*\*\*\*.*/
-syn match flogDiffLine contained / ---$/
-syn match flogDiffLine contained / \d\+\(,\d\+\)\=[cda]\d\+\>.*/
+syntax match flogDiffIndexLine contained /index \x\x\x\x.*/
+syntax match flogDiffComment   contained /#.*/
 
-syn match flogDiffFile    contained / diff\>.*/
-syn match flogDiffFile    contained / +++ .*/
-syn match flogDiffFile    contained / Index: .*/
-syn match flogDiffFile    contained / ==== .*/
-syn match flogDiffOldFile contained / \*\*\* .*/
-syn match flogDiffNewFile contained / --- .*/
+" Link to original highlight groups
+highlight default link flogDiffAdded     diffAdded
+highlight default link flogDiffBDiffer   diffBDiffer
+highlight default link flogDiffChanged   diffChanged
+highlight default link flogDiffComment   diffComment
+highlight default link flogDiffCommon    diffCommon
+highlight default link flogDiffDiffer    diffDiffer
+highlight default link flogDiffFile      diffFile
+highlight default link flogDiffIdentical diffIdentical
+highlight default link flogDiffIndexLine diffIndexLine
+highlight default link flogDiffIsA       diffIsA
+highlight default link flogDiffLine      diffLine
+highlight default link flogDiffNewFile   diffNewFile
+highlight default link flogDiffNoEOL     diffNoEOL
+highlight default link flogDiffOldFile   diffOldFile
+highlight default link flogDiffOnly      diffOnly
+highlight default link flogDiffRemoved   diffRemoved
 
-syn match flogDiffIndexLine contained / index \x\x\x\x.*/
-syn match flogDiffComment   contained / #.*/
+" Graph highlighting
 
-" link to original highlight groups
-
-hi default link flogDiffAdded     diffAdded
-hi default link flogDiffBDiffer   diffBDiffer
-hi default link flogDiffChanged   diffChanged
-hi default link flogDiffComment   diffComment
-hi default link flogDiffCommon    diffCommon
-hi default link flogDiffDiffer    diffDiffer
-hi default link flogDiffFile      diffFile
-hi default link flogDiffIdentical diffIdentical
-hi default link flogDiffIndexLine diffIndexLine
-hi default link flogDiffIsA       diffIsA
-hi default link flogDiffLine      diffLine
-hi default link flogDiffNewFile   diffNewFile
-hi default link flogDiffNoEOL     diffNoEOL
-hi default link flogDiffOldFile   diffOldFile
-hi default link flogDiffOnly      diffOnly
-hi default link flogDiffRemoved   diffRemoved
-
-" }}}
-
-" }}}
-
-" Graph {{{
-
-" these syntax regex match all possible graph characters
-" they will match one vertical column of graph characters from left to right ignoring whitespace
-" this makes all graph characters in a column highlighted in the same way
-syntax match flogGraphEdge9 /[_/ ]\?[|/\\*]/  nextgroup=flogGraphEdge1,@flogDiff contained
-syntax match flogGraphEdge8 /[_/ ]\?[|/\\*]/  nextgroup=flogGraphEdge9,@flogDiff contained
-syntax match flogGraphEdge7 /[_/ ]\?[|/\\*]/  nextgroup=flogGraphEdge8,@flogDiff contained
-syntax match flogGraphEdge6 /[_/ ]\?[|/\\*]/  nextgroup=flogGraphEdge7,@flogDiff contained
-syntax match flogGraphEdge5 /[_/ ]\?[|/\\*]/  nextgroup=flogGraphEdge6,@flogDiff contained
-syntax match flogGraphEdge4 /[_/ ]\?[|/\\*]/  nextgroup=flogGraphEdge5,@flogDiff contained
-syntax match flogGraphEdge3 /[_/ ]\?[|/\\*]/  nextgroup=flogGraphEdge4,@flogDiff contained
-syntax match flogGraphEdge2 /[_/ ]\?[|/\\*]/  nextgroup=flogGraphEdge3,@flogDiff contained
-syntax match flogGraphEdge1 /[_/ ]\?[|/\\*]/  nextgroup=flogGraphEdge2,@flogDiff contained
-syntax match flogGraphEdge0 /^[_/ ]\?[|/\\*]/ nextgroup=flogGraphEdge2,@flogDiff
-
-syntax cluster flogGraphEdge contains=flogGraphEdge0,flogGraphEdge1,flogGraphEdge2,flogGraphEdge3,flogGraphEdge4,flogGraphEdge5,flogGraphEdge6,flogGraphEdge7,flogGraphEdge8,flogGraphEdge9
-
-syntax match flogGraphCrossing /_\|\/\ze|/ contained containedin=@flogGraphEdge
-syntax match flogGraphCommit /\*/ contained containedin=@flogGraphEdge
-
-if &background ==# 'dark'
-  highlight default flogGraphEdge1 ctermfg=magenta     guifg=green1
-  highlight link    flogGraphEdge0 flogGraphEdge1
-  highlight default flogGraphEdge2 ctermfg=green       guifg=yellow1
-  highlight default flogGraphEdge3 ctermfg=yellow      guifg=orange1
-  highlight default flogGraphEdge4 ctermfg=cyan        guifg=greenyellow
-  highlight default flogGraphEdge5 ctermfg=red         guifg=springgreen1
-  highlight default flogGraphEdge6 ctermfg=yellow      guifg=cyan1
-  highlight default flogGraphEdge7 ctermfg=green       guifg=slateblue1
-  highlight default flogGraphEdge8 ctermfg=cyan        guifg=magenta1
-  highlight default flogGraphEdge9 ctermfg=magenta     guifg=purple1
+if has('nvim') && g:flog_enable_dynamic_branch_hl
+  if g:flog_enable_extended_chars
+    syntax match flogBranches nextgroup=@flogCommitInfo,flogCollapsedCommit,@flogDiff /\v^%(%(%uf5d0|%uf5d1|%uf5d4|%uf5d6|%uf5d7|%uf5d8|%uf5d9|%uf5da|%uf5db|%uf5dd|%uf5de|%uf5e0|%uf5e1|%uf5e5|%uf5e6|%uf5ea|%uf5ef|%uf5f6|%uf5f7|%uf5f9|%uf5fa|%uf5fb| ).)*/
+  else
+    syntax match flogBranches nextgroup=@flogCommitInfo,flogCollapsedCommit,@flogDiff /\v^%(%(%u2022|%u2500|%u2502|%u250a|%u251c|%u2524|%u252c|%u2534|%u253c|%u256d|%u256e|%u256f|%u2570| ).)*/
+  endif
 else
-  highlight default flogGraphEdge1 ctermfg=darkyellow  guifg=orangered3
-  highlight default flogGraphEdge2 ctermfg=darkgreen   guifg=orange2
-  highlight default flogGraphEdge3 ctermfg=blue        guifg=yellow3
-  highlight default flogGraphEdge4 ctermfg=darkmagenta guifg=olivedrab4
-  highlight default flogGraphEdge5 ctermfg=red         guifg=green4
-  highlight default flogGraphEdge6 ctermfg=darkyellow  guifg=paleturquoise3
-  highlight default flogGraphEdge7 ctermfg=darkgreen   guifg=deepskyblue4
-  highlight default flogGraphEdge8 ctermfg=blue        guifg=darkslateblue
-  highlight default flogGraphEdge9 ctermfg=darkmagenta guifg=darkviolet
+  " Start of line, lead into branches or commit body
+  syntax match flogLineStart nextgroup=@flogBranch1,@flogCommitInfo,flogCollapsedCommit,@flogDiff /^/
+
+  " Cluster all branch 1 groups
+  syntax cluster flogBranch1 contains=flogBranch1,flogBranch1Commit,flogBranch1MergeStart,flogBranch1MissingParentsStart
+
+  let num_branch_colors = get(g:, 'flog_num_branch_colors', 8)
+
+  " Dynamically generate highlight groups for branches
+  for branch_idx in range(1, num_branch_colors)
+    let branch = 'flogBranch' . branch_idx
+    let merge = 'flogMerge' . branch_idx
+    let next_branch_idx = branch_idx % num_branch_colors + 1
+    let next_branch = 'flogBranch' . next_branch_idx
+    let next_merge_branch = 'flogMerge' . branch_idx . 'Branch' . next_branch_idx
+
+    " Support both flogGraphBranch* and flogBranch
+    exec 'highlight link flogGraphBranch' . branch_idx . ' ' . branch
+
+    " Branches at the start of the line - leads into other groups
+    exec 'syntax match ' . branch . ' contained nextgroup=' . next_branch . ',' . next_branch . 'Commit,' . next_branch . 'MergeStart,' . next_branch . 'MissingParentsStart,flogCollapsedCommit,@flogDiff /\v  |%u2502 |%u2502$|%uf5d1 |%uf5d1$/'
+
+    " Commit indicators
+    exec 'syntax match ' . branch . 'Commit contained nextgroup=' . next_branch . 'AfterCommit,@flogCommitInfo /\v(%u2022|%uf5ef|%uf5f6|%uf5f7|%uf5f9|%uf5fa|%uf5fb) /'
+    if g:flog_enable_extended_chars
+      exec 'highlight link ' . branch . 'Commit ' . branch
+    else
+      exec 'highlight link ' . branch . 'Commit flogCommit'
+    endif
+
+    " Branches to the right of the commit indicator
+    exec 'syntax match ' . branch . 'AfterCommit contained nextgroup=' . next_branch . 'AfterCommit,@flogCommitInfo /\v  |%u2502 |%u2502$|%uf5d1 |%uf5d1$/'
+    exec 'highlight link ' . branch . 'AfterCommit ' . branch
+
+    " Start of a merge - saves the branch that the merge starts on (see below)
+    exec 'syntax match ' . branch . 'MergeStart contained nextgroup=' . next_merge_branch . ' /\v%u251c|%u256d|%u2570|%uf5da|%uf5db|%uf5d6|%uf5d8/'
+    exec 'highlight link ' . branch . 'MergeStart ' . branch
+
+    " Horizontal line inside of a merge
+    exec 'syntax match ' . merge . 'Horizontal contained /\v%u2500|%uf5d0/'
+    exec 'highlight link ' . merge . 'Horizontal ' . branch
+
+    " Branches to the right of a merge
+    exec 'syntax match ' . branch . 'AfterMerge contained nextgroup=' . next_branch . 'AfterMerge / ./'
+    exec 'highlight link ' . branch . 'AfterMerge ' . branch
+
+    " Start of missing parents line
+    exec 'syntax match ' . branch . 'MissingParentsStart contained nextgroup=' . next_branch . 'MissingParents /\v%u250a |%uf5d4 /'
+    exec 'highlight link ' . branch . 'MissingParentsStart ' . branch
+
+    " Branches to right of missing parents start
+    exec 'syntax match ' . branch . 'MissingParents contained nextgroup=' . next_branch . 'MissingParents /\v..|.$/'
+    exec 'highlight link ' . branch . 'MissingParents ' . branch
+  endfor
+
+  " Dynamically generate highlight groups for merges
+  for merge_idx in range(1, num_branch_colors)
+    let merge = 'flogMerge' . merge_idx
+
+    for branch_idx in range(1, num_branch_colors)
+      let branch = 'flogBranch' . branch_idx
+      let merge_branch = merge . 'Branch' . branch_idx
+      let next_branch_idx = branch_idx % num_branch_colors + 1
+      let next_branch = 'flogBranch' . next_branch_idx
+      let next_merge_branch = merge . 'Branch' . next_branch_idx
+
+      " Merge branches
+      exec 'syntax match ' . merge_branch . ' contained contains=' . merge . 'Horizontal nextgroup=' . next_merge_branch . ',' . next_branch . 'AfterMerge /\v%u2500.|%uf5d0./'
+      exec 'highlight link ' . merge_branch . ' ' . branch
+    endfor
+  endfor
 endif
 
-" }}}
+if &background ==# 'dark'
+  highlight default flogBranch1 ctermfg=green       guifg=green1
+  highlight default flogBranch2 ctermfg=yellow      guifg=yellow
+  highlight default flogBranch3 ctermfg=darkmagenta guifg=orange1
+  highlight default flogBranch4 ctermfg=red         guifg=indianred3
+  highlight default flogBranch5 ctermfg=magenta     guifg=orchid1
+  highlight default flogBranch6 ctermfg=darkred     guifg=purple1
+  highlight default flogBranch7 ctermfg=blue        guifg=royalblue1
+  highlight default flogBranch8 ctermfg=cyan        guifg=cyan2
+else
+  highlight default flogBranch1 ctermfg=darkgreen   guifg=green3
+  highlight default flogBranch2 ctermfg=darkyellow  guifg=gold2
+  highlight default flogBranch3 ctermfg=red         guifg=orange2
+  highlight default flogBranch4 ctermfg=darkmagenta guifg=orangered3
+  highlight default flogBranch5 ctermfg=darkred     guifg=deeppink2
+  highlight default flogBranch6 ctermfg=magenta     guifg=darkviolet
+  highlight default flogBranch7 ctermfg=darkblue    guifg=deepskyblue4
+  highlight default flogBranch8 ctermfg=darkcyan    guifg=cyan3
+endif
 
-" vim: set et sw=2 ts=2 fdm=marker:
+highlight link flogBranch0 flogBranch1

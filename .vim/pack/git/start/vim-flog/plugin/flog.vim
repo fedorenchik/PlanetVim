@@ -1,134 +1,73 @@
-" Plugin boilerplate {{{
+" Errors
 
-if exists('g:loaded_flog')
-  finish
+let g:flog_shell_error = 'flog: encountered shell error'
+let g:flog_missing_state = 'flog: could not find state'
+let g:flog_not_a_fugitive_buffer = 'flog: not a fugitive buffer'
+let g:flog_not_a_flog_buffer = 'flog: not a flog buffer'
+let g:flog_no_commits_found = 'flog: error parsing commits: no commits found'
+let g:flog_unsupported_argument = 'flog: unrecognized argument'
+let g:flog_unsupported_exec_format_item = 'flog: unrecognized exec format item'
+let g:flog_invalid_commit_mark = 'flog: invalid commit mark'
+let g:flog_reverse_requires_no_graph = 'flog: -reverse requires -no-graph'
+let g:flog_lua_not_found = 'flog: Lua not found'
+
+" Settings
+
+if !has_key(g:, 'flog_write_commit_graph')
+  let g:flog_write_commit_graph = v:true
 endif
 
-let g:loaded_flog = 1
+if !has_key(g:, 'flog_write_commit_graph_args')
+  let g:flog_write_commit_graph_args = '--reachable --progress'
+endif
 
-" }}}
+if !has_key(g:, 'flog_enable_status')
+  let g:flog_enable_status = v:false
+endif
 
-" Global state {{{
+if !has_key(g:, 'flog_enable_extended_chars')
+  let g:flog_enable_extended_chars = v:false
+endif
 
-let g:flog_instance_counter = 0
+if !has_key(g:, 'flog_enable_extra_padding')
+  let g:flog_enable_extra_padding = v:false
+endif
 
-" }}}
+if !has_key(g:, 'flog_enable_dynamic_branch_hl')
+  let g:flog_enable_dynamic_branch_hl = v:true
+endif
 
-" Open command arg data {{{
+if !has_key(g:, 'flog_enable_dynamic_commit_hl')
+  let g:flog_enable_dynamic_commit_hl = v:false
+endif
 
-let g:flog_open_cmds = [
-      \ 'edit',
-      \ 'split',
-      \ 'vsplit',
-      \ 'new',
-      \ 'vnew',
-      \ 'tabedit',
-      \ 'tabnew',
-      \ ]
+if !has_key(g:, 'flog_check_lua_version')
+  let g:flog_check_lua_version = v:true
+endif
 
-let g:flog_open_cmd_modifiers = [
-      \ 'aboveleft',
-      \ 'belowright',
-      \ 'botright',
-      \ 'confirm',
-      \ 'leftabove',
-      \ 'rightbelow',
-      \ 'silent',
-      \ 'tab',
-      \ 'topleft',
-      \ 'verbose',
-      \ 'vertical',
-      \ ]
+if !has_key(g:, 'flog_get_author_args')
+  let g:flog_get_author_args = '--all --no-merges --max-count=100000'
+endif
 
-" }}}
+if !has_key(g:, 'flog_commit_start_token')
+  let g:flog_commit_start_token = '__START'
+endif
 
-" Log command build data {{{
+if !has_key(g:, 'flog_order_types')
+  let g:flog_order_types = [
+        \ { 'name': 'date', 'args': '--date-order' },
+        \ { 'name': 'author', 'args': '--author-date-order' },
+        \ { 'name': 'topo', 'args': '--topo-order' },
+        \ ]
+endif
 
-" used to delineate format specifiers used to retrieve commit data
-let g:flog_format_start = '__FSTART__'
-let g:flog_data_start = '__DSTART__'
+" Data
 
-" }}}
+let g:flog_root_dir = fnamemodify(resolve(expand('<sfile>:p')), ':h:h')
 
-" Sorting type data {{{
+let g:flog_lua_dir = g:flog_root_dir .. '/lua'
 
-let g:flog_sort_types = [
-      \ { 'name': 'date', 'args': '--date-order' },
-      \ { 'name': 'author', 'args': '--author-date-order' },
-      \ { 'name': 'topo', 'args': '--topo-order' },
-      \ ]
-
-" }}}
-
-" Completion data {{{
-
-let g:flog_default_completion = [
-      \ '-all ',
-      \ '-author=',
-      \ '-bisect ',
-      \ '-date=',
-      \ '-format=',
-      \ '-limit=',
-      \ '-max-count=',
-      \ '-no-graph',
-      \ '-no-merges',
-      \ '-no-patch',
-      \ '-open-cmd=',
-      \ '-patch-search=',
-      \ '-path=',
-      \ '-raw-args=',
-      \ '-reflog ',
-      \ '-rev=',
-      \ '-reverse',
-      \ '-search=',
-      \ '-skip=',
-      \ '-sort=',
-      \ ]
-
-let g:flog_date_formats = [
-      \ 'iso8601', 
-      \ 'short',
-      \ ]
-
-" Format specifier data {{{
-
-function! s:LongSpecifierPattern()
-  let l:long_specifiers = []
-  for l:specifier in g:flog_long_specifiers
-    for i in range(1, len(l:specifier) - 2)
-      let l:long_specifiers += [specifier[:i]]
-    endfor
-  endfor
-  return '\(' . join(l:long_specifiers, '\|') . '\)'
-endfunction
-
-let g:flog_eat_specifier_pattern = '^\(%.\|[^%]\)*'
-let g:flog_specifier_partial_char = '[acgGC(]' 
-let g:flog_specifier_hex_start = 'x[0-9]\?'
-let g:flog_specifier_bracket_start = '\([Cw<>]\|<|\|>>\|><\)'
-let g:flog_specifier_partial_bracket = '\(\([Cw<>]\|<|\|>>\|><\)(\|(trailers:\)[^\)]*'
-let g:flog_long_specifiers = [
-      \ 'Cred',
-      \ 'Cgreen',
-      \ 'Cblue',
-      \ 'Creset',
-      \ '(trailers:',
-      \ '(trailers)',
-      \ ]
-let g:flog_specifier_long_pattern = s:LongSpecifierPattern()
-let g:flog_completable_partials = [
-      \ g:flog_specifier_partial_char,
-      \ g:flog_specifier_bracket_start,
-      \ g:flog_specifier_long_pattern,
-      \ ]
-let g:flog_noncompletable_partials = [
-      \ g:flog_specifier_hex_start,
-      \ g:flog_specifier_partial_bracket,
-      \ ]
-let g:flog_completable_specifier_pattern = '\(' . join(g:flog_completable_partials, '\|') . '\)'
-let g:flog_noncompletable_specifier_pattern = '\(' . join(g:flog_noncompletable_partials, '\|') . '\)'
-
-let g:flog_completion_specifiers = [
+let g:flog_format_specifiers = [
       \ '%H',
       \ '%h',
       \ '%T',
@@ -174,11 +113,6 @@ let g:flog_completion_specifiers = [
       \ '%ge',
       \ '%gE',
       \ '%gs',
-      \ '%Cred',
-      \ '%Cgreen',
-      \ '%Cblue',
-      \ '%Creset',
-      \ '%C(',
       \ '%m',
       \ '%n',
       \ '%%',
@@ -193,113 +127,44 @@ let g:flog_completion_specifiers = [
       \ '%(trailers)',
       \ ]
 
-" }}}
+let g:flog_date_formats = [
+      \ 'human',
+      \ 'local',
+      \ 'relative',
+      \ 'short',
+      \ 'iso', 
+      \ 'iso-strict',
+      \ 'rfc',
+      \ 'format:',
+      \ ]
 
-" }}}
+let g:flog_open_cmds = [
+      \ 'edit',
+      \ 'split',
+      \ 'vsplit',
+      \ 'new',
+      \ 'vnew',
+      \ 'tabedit',
+      \ 'tabnew',
+      \ ]
 
-" Errors {{{
+let g:flog_open_cmd_modifiers = [
+      \ 'aboveleft',
+      \ 'belowright',
+      \ 'botright',
+      \ 'confirm',
+      \ 'leftabove',
+      \ 'rightbelow',
+      \ 'silent',
+      \ 'tab',
+      \ 'topleft',
+      \ 'verbose',
+      \ 'vertical',
+      \ ]
 
-let g:flog_shell_error = 'flog: encountered shell error'
-let g:flog_missing_state = 'flog: could not find state'
-let g:flog_not_a_fugitive_buffer = 'flog: not a fugitive buffer'
-let g:flog_no_commits = 'flog: error parsing commits: no commits found'
-let g:flog_missing_commit_start = 'flog: error parsing commits: could not find start of commit'
-let g:flog_unsupported_argument = 'flog: unrecognized argument'
-let g:flog_unsupported_command_format_item = 'flog: unrecognized command format item'
-let g:flog_invalid_mark = 'flog: invalid mark'
+" Commands
 
-" }}}
-
-" Deprecation warnings {{{
-
-let g:flog_shown_deprecation_warnings = {}
-
-" }}}
-
-" Git command data {{{
-
-let g:flog_git_command_spec = {
-      \ 'bisect': {
-            \ 'subcommands': [
-                  \ 'start',
-                  \ 'new',
-                  \ 'bad',
-                  \ 'old',
-                  \ 'terms',
-                  \ 'skip',
-                  \ 'reset',
-                  \ 'replay',
-                  \ 'run',
-                  \ 'help',
-                  \ ],
-            \ },
-      \ 'rebase': {
-            \ 'subcommands': [
-                  \ '--continue',
-                  \ '--skip',
-                  \ '--abort',
-                  \ '--quit',
-                  \ '--show-current-patch',
-                  \ ],
-            \ 'options': [
-                  \ '-i',
-                  \ '--interactive',
-                  \ '--autosquash',
-                  \ '--edit-todo',
-                  \ '--exec',
-                  \ ],
-            \ },
-      \ 'merge': {
-            \ 'subcommands': [
-                  \ '--continue',
-                  \ '--abort',
-                  \ '--quit',
-                  \ ],
-            \ 'options': [
-                  \ '--squash',
-                  \ '--edit',
-                  \ '--no-edit',
-                  \ '--no-verify',
-                  \ '-m',
-                  \ '-F',
-                  \ ],
-            \ },
-      \ 'cherry-pick': {
-            \ 'subcommands': [
-                  \ '--continue',
-                  \ '--skip',
-                  \ '--abort',
-                  \ '--quit',
-                  \ ],
-            \ },
-      \ 'push': {
-            \ 'options': [
-                  \ '--all',
-                  \ '--mirror',
-                  \ '--tags',
-                  \ '--atomic',
-                  \ '--no-atomic',
-                  \ '--dry-run',
-                  \ '--force',
-                  \ '--delete',
-                  \ '--prune',
-                  \ '--verbose',
-                  \ '--upstream',
-                  \ '--no-verify',
-                  \ ],
-            \ },
-      \ }
-
-" }}}
-
-" Commands {{{
-
-command! -range -bang -complete=customlist,flog#complete_git -nargs=* Floggit call flog#run_raw_command('<mods> Git ' . <q-args>, 1, 1, !empty('<bang>'))
-
-command! -range=0 -complete=customlist,flog#complete -nargs=* Flog call flog#open((<count> ? ['-limit=<line1>,<line2>:' . expand('%:p')] : []) + [<f-args>])
-
-command! -range=0 -complete=customlist,flog#complete -nargs=* Flogsplit call flog#open((<count> ? ['-limit=<line1>,<line2>:' . expand('%:p')] : []) + ['-open-cmd=<mods> split', <f-args>])
-
-" }}}
-
-" vim: set et sw=2 ts=2 fdm=marker:
+command! -range=0 -complete=customlist,flog#cmd#flog#args#Complete -nargs=* Flog call flog#cmd#Flog(flog#cmd#flog#args#GetRangeArgs(<range>, <line1>, <line2>) + [<f-args>])
+command! -range=0 -complete=customlist,flog#cmd#flog#args#Complete -nargs=* Flogsplit call flog#cmd#Flog(flog#cmd#flog#args#GetRangeArgs(<range>, <line1>, <line2>) + ['-open-cmd=<mods> split', <f-args>])
+cnoreabbrev Flogsp Flogsplit
+command! -range -bang -complete=customlist,flog#cmd#floggit#args#Complete -nargs=* Floggit call flog#cmd#Floggit('<mods>', '<args>', '<bang>')
