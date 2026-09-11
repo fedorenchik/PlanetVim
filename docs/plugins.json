@@ -2363,11 +2363,11 @@
       "path": ".vim/pack/writing/start/vim-translator",
       "provenance": {
         "branch": "master",
-        "commit": "91b9bf71ce0ca6e85009fa6aa14eb0c6820574f6",
+        "commit": "67457d5ab92a9d022f466df7e4a578a129207aa2",
         "kind": "git-subrepo",
         "remote": "https://github.com/voldikss/vim-translator.git"
       },
-      "snapshot_sha256": "2f9baaf8219a6d86df5f7a326c3bfe53ec88809f6d8d0e071ce19d052b154a77"
+      "snapshot_sha256": "39706d5285cfad2b74f77c6a2a298b783bc108b5de1702a3bf41c9f8d11ca267"
     },
     {
       "group": "writing",
