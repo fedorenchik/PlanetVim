@@ -487,11 +487,11 @@
       "path": ".vim/pack/basic/start/vim-crystalline",
       "provenance": {
         "branch": "master",
-        "commit": "dd1a59e5103c358292e4e113f479aae8f435b138",
+        "commit": "44f4340d274accbea2bd31a91d55554089dddab0",
         "kind": "git-subrepo",
         "remote": "https://github.com/rbong/vim-crystalline.git"
       },
-      "snapshot_sha256": "c16d147f43da8a13c31ce05568b0797c13c3b2163b610fa25448f0e7f3792d49"
+      "snapshot_sha256": "cb54cc2fdf5d109398380ea064aa1faf0e3ff27ee08b87e83321d01c22bfba5a"
     },
     {
       "group": "basic",
