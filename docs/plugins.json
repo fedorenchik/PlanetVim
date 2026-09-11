@@ -610,11 +610,11 @@
       "path": ".vim/pack/basic/start/vim-qf-preview",
       "provenance": {
         "branch": "master",
-        "commit": "f70f760122814f2a8a6c6eade9bd7bd68e206f26",
+        "commit": "4e6a43ddbab7ebf3c586734727b1ef75155d4c3b",
         "kind": "git-subrepo",
         "remote": "https://github.com/bfrg/vim-qf-preview.git"
       },
-      "snapshot_sha256": "34049539a0a84675d6a966072e63296a1b17a799be03b9edb152ef6415cd9072"
+      "snapshot_sha256": "1fe5b643e9a624ccedfb237ffb454a9d7a60c2919340ca75d0e267dcb2726149"
     },
     {
       "group": "basic",

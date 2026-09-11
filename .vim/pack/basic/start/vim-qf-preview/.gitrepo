@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/bfrg/vim-qf-preview.git
 	branch = master
-	commit = f70f760122814f2a8a6c6eade9bd7bd68e206f26
-	parent = ba674776971d9ade058c4d86e2b821c69bedc49b
+	commit = 4e6a43ddbab7ebf3c586734727b1ef75155d4c3b
+	parent = 765574c6af7078a0fa825c9a364f579b733705ec
 	method = merge
-	cmdver = 0.4.3
+	cmdver = 0.4.9

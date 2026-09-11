@@ -1,7 +1,7 @@
 # vim-qf-preview
 
 A plugin for the quickfix and location list window to quickly preview the file
-with the quickfix item under the cursor in a popup window.
+under the cursor at the current quickfix location in a popup window.
 
 <dl>
   <p align="center">
@@ -10,11 +10,6 @@ with the quickfix item under the cursor in a popup window.
   </a>
   </p>
 </dl>
-
-
-## Requirements
-
-Vim `>= 8.1.2250`
 
 
 ## Usage
@@ -39,10 +34,10 @@ augroup qfpreview
 augroup END
 ```
 
-Now navigate the cursor in the quickfix window to the desired error and press
-<kbd>p</kbd> to open a popup window with the file containing the error. The
-window is scrolled such that the buffer line with the error is at the top of the
-popup window.
+In the quickfix window navigate the cursor to the desired error and press
+<kbd>p</kbd> to preview the file at the current quickfix location in a popup
+window. The window is scrolled such that the buffer line with the error is at
+the top of the popup window.
 
 ### Popup window mappings
 
@@ -64,25 +59,25 @@ configured through the variable `b:qfpreview` in `after/ftplugin/qf.vim`, or
 alternatively through the global variable `g:qfpreview`. The variable must be a
 dictionary containing any of the following entries:
 
-| Entry          | Description                                                | Default       |
-| -------------- | ---------------------------------------------------------- | ------------- |
-| `top`          | Scroll to the first line of the buffer.                    | `"\<S-Home>"` |
-| `bottom`       | Scroll to the bottom of the buffer.                        | `"\<S-End>"`  |
-| `scrollup`     | Scroll window up one text line.                            | `"\<C-k>"`    |
-| `scrolldown`   | Scroll window down one text line.                          | `"\<C-j>"`    |
-| `halfpageup`   | Scroll window up one half page.                            | none          |
-| `halfpagedown` | Scroll window down one half page.                          | none          |
-| `fullpageup`   | Scroll window up one full page.                            | none          |
-| `fullpagedown` | Scroll window down one full page.                          | none          |
-| `reset`        | Scroll window back to error line.                          | `"r"`         |
-| `close`        | Close the popup window.                                    | `"q"`         |
-| `next`         | Navigate to next quickfix item in current list.            | none          |
-| `previous`     | Navigate to previous quickfix item in current list.        | none          |
-| `height`       | Number of text lines to display in the popup window.       | `15`          |
-| `offset`       | Number of buffer lines to show above the error line.       | `0`           |
-| `number`       | Enable the `'number'` column in the popup window.          | `v:false`     |
-| `sign`         | Place a `sign` on the error line in the displayed buffer.¹ | `{}`          |
-| `matchcolumn`  | Highlight column of current quickfix item in popup window. | `v:false`     |
+| Entry          | Description                                                | Default                 |
+| -------------- | ---------------------------------------------------------- | ----------------------- |
+| `top`          | Scroll to the first line of the buffer.                    | `"\<S-Home>"`           |
+| `bottom`       | Scroll to the bottom of the buffer.                        | `"\<S-End>"`            |
+| `scrollup`     | Scroll window up one text line.                            | `"\<C-k>"`              |
+| `scrolldown`   | Scroll window down one text line.                          | `"\<C-j>"`              |
+| `halfpageup`   | Scroll window up one half page.                            | none                    |
+| `halfpagedown` | Scroll window down one half page.                          | none                    |
+| `fullpageup`   | Scroll window up one full page.                            | none                    |
+| `fullpagedown` | Scroll window down one full page.                          | none                    |
+| `reset`        | Scroll window back to error line.                          | `"r"`                   |
+| `close`        | Close the popup window.                                    | `"q"`                   |
+| `next`         | Navigate to next quickfix item in current list.            | none                    |
+| `previous`     | Navigate to previous quickfix item in current list.        | none                    |
+| `height`       | Number of text lines to display in the popup window.       | `15`                    |
+| `offset`       | Number of buffer lines to show above the error line.       | `3`                     |
+| `number`       | Enable the `'number'` column in the popup window.          | `false`                 |
+| `sign`         | Place a `sign` on the error line in the displayed buffer.¹ | `{linehl: 'CursorLine'}`|
+| `matchcolumn`  | Highlight column of current quickfix item in popup window. | `true`                  |
 
 ¹For valid `sign` attributes see <kbd>:help qfpreview.sign</kbd> and the
 [examples](#examples) below.
@@ -97,60 +92,56 @@ groups `QfPreview`, `QfPreviewTitle`, `QfPreviewScrollbar`, `QfPreviewThumb` and
 
 1. Override the popup scrolling keys:
    ```vim
-   let g:qfpreview = {
-       \ 'top': g,
-       \ 'bottom': G,
-       \ 'scrollup': 'k',
-       \ 'scrolldown': 'j',
-       \ 'halfpageup': 'u',
-       \ 'halfpagedown': 'd',
-       \ 'fullpageup': 'b',
-       \ 'fullpagedown': 'f',
-       \ 'next': 'n',
-       \ 'previous': 'p'
-       \ }
+   vim9script
+   g:qfpreview = {
+       top: 'g',
+       bottom: 'G',
+       scrollup: 'k',
+       scrolldown: 'j',
+       halfpageup: 'u',
+       halfpagedown: 'd',
+       fullpageup: 'b',
+       fullpagedown: 'f',
+       next: 'n',
+       previous: 'p'
+   }
    ```
-2. Place a sign in the buffer at the error line and highlight the whole line
-   using `CursorLine`:
+2. Instead of displaying a cursorline, display a sign in the `'signcolumn'`:
    ```vim
-   let g:qfpreview = {'sign': {'linehl': 'CursorLine'}}
+   g:qfpreview = {
+       sign: {
+           text: '>>',
+           texthl: 'Search'
+       }
+   }
    ```
-3. Instead of highlighting the whole line, display a sign in the `'signcolumn'`:
-   ```vim
-   let g:qfpreview = {'sign': {'text': '>>', 'texthl': 'Search'}}
-   ```
-4. Same as 3., but also enable the `'number'` column. In this case the placed
+3. Same as 2., but also enable the `'number'` column. In this case the placed
    sign is shown in the `'number'` column:
    ```vim
-   let g:qfpreview = {'number': 1, 'sign': {'text': '>>', 'texthl': 'Todo'}}
+   g:qfpreview = {
+       number: true,
+       sign: {
+           text: '>>',
+           texthl: 'Search'
+       }
+   }
    ```
 
-Screenshots of 2., 3. and 4.:
+Screenshots of default configuration, 2. and 3.:
 ![out](https://user-images.githubusercontent.com/6266600/77472775-b4cdaa00-6e14-11ea-8abd-d55c47fdeda7.png)
 
 
 ## Installation
 
-### Manual Installation
-
 Run the following commands in your terminal:
 ```bash
 $ cd ~/.vim/pack/git-plugins/start
 $ git clone https://github.com/bfrg/vim-qf-preview
-$ vim -u NONE -c "helptags vim-qf-preview/doc" -c q
+$ vim -u NONE -c 'helptags vim-qf-preview/doc | quit'
 ```
 **Note:** The directory name `git-plugins` is arbitrary, you can pick any other
-name. For more details see <kbd>:help packages</kbd>.
-
-### Plugin Managers
-
-Assuming [vim-plug](https://github.com/junegunn/vim-plug) is your favorite
-plugin manager, add the following to your `vimrc`:
-```vim
-if has('patch-8.1.2250')
-    Plug 'bfrg/vim-qf-preview'
-endif
-```
+name. For more details see <kbd>:help packages</kbd>. Alternatively, use your
+favorite plugin manager.
 
 
 ## License
