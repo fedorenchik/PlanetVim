@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/tpope/vim-surround.git
 	branch = master
-	commit = bf3480dc9ae7bea34c78fbba4c65b4548b5b1fea
-	parent = a9331a25b0154eacd9a45dd855fbfd939c7fd8f3
+	commit = 3d188ed2113431cf8dac77be61b842acb64433d9
+	parent = 0ee868f09e1a4c4b9284983ed46f2e7a8faff111
 	method = merge
-	cmdver = 0.4.3
+	cmdver = 0.4.9
