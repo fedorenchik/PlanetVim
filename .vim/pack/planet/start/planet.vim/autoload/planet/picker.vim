@@ -30,6 +30,8 @@ enddef
 def Typed()
   var query = g:clap.input.get()
   if empty(query)
+    g:__clap_has_no_matches = false
+    g:__clap_fuzzy_matched_indices = []
     g:clap.display.set_lines(script_candidates)
     clap#legacy#state#refresh_matches_count(len(script_candidates))
     g:clap#display_win.shrink_if_undersize()
@@ -43,6 +45,126 @@ def Initialize()
   g:clap.display.initial_size = len(script_candidates)
   clap#picker#init(script_candidates, {}, false, false)
   Typed()
+enddef
+
+# Ripgrep's JSON protocol keeps paths, spaces and search text out of the shell.
+var grep_job: job = null_job
+var grep_timer = -1
+var grep_generation = 0
+var grep_items: dict<dict<any>> = {}
+var grep_rows: list<string> = []
+var grep_cwd = ''
+var grep_errors: list<string> = []
+
+def GrepStop()
+  grep_generation += 1
+  if grep_timer != -1
+    timer_stop(grep_timer)
+    grep_timer = -1
+  endif
+  if job_status(grep_job) ==# 'run'
+    job_stop(grep_job)
+  endif
+enddef
+
+def GrepShow()
+  g:__clap_has_no_matches = empty(grep_rows)
+  g:clap.display.set_lines(grep_rows)
+  clap#legacy#state#refresh_matches_count(len(grep_rows))
+  g:clap#display_win.shrink_if_undersize()
+enddef
+
+def GrepOutput(generation: number, channel: channel, line: string)
+  if generation != grep_generation || len(grep_rows) >= 2000
+    return
+  endif
+  var record = json_decode(line)
+  if get(record, 'type', '') !=# 'match'
+    return
+  endif
+  var data = record.data
+  if !has_key(data.path, 'text') || !has_key(data.lines, 'text')
+    return
+  endif
+  var path = data.path.text
+  var column = get(get(data, 'submatches', [{}]), 0, {start: 0}).start + 1
+  var contents = substitute(data.lines.text, '[\r\n]\+$', '', '')
+  var row = path .. ':' .. data.line_number .. ':' .. column .. ':' .. contents
+  grep_items[row] = {filename: simplify(grep_cwd .. '/' .. path), lnum: data.line_number, col: column, text: contents}
+  add(grep_rows, row)
+  if len(grep_rows) == 1 || len(grep_rows) % 100 == 0
+    GrepShow()
+  endif
+  if len(grep_rows) == 2000
+    job_stop(grep_job)
+    echom 'PlanetVim: showing the first 2000 search matches; refine the query for more specific results'
+  endif
+enddef
+
+def GrepError(generation: number, channel: channel, line: string)
+  if generation == grep_generation && len(grep_errors) < 5
+    add(grep_errors, line)
+  endif
+enddef
+
+def GrepClosed(generation: number, channel: channel)
+  if generation == grep_generation
+    GrepShow()
+    if empty(grep_rows) && !empty(grep_errors)
+      g:clap.display.set_lines(grep_errors)
+    endif
+  endif
+enddef
+
+def GrepStart(query: string, generation: number, timer: number)
+  grep_timer = -1
+  if generation != grep_generation
+    return
+  endif
+  if !executable('rg')
+    g:clap.display.set_lines(['Install ripgrep (rg) to search file contents'])
+    return
+  endif
+  grep_job = job_start(['rg', '--json', '--smart-case', '--', query, '.'], {
+    cwd: grep_cwd, in_io: 'null', err_cb: function(GrepError, [generation]),
+    out_cb: function(GrepOutput, [generation]), close_cb: function(GrepClosed, [generation]),
+  })
+enddef
+
+def GrepTyped()
+  GrepStop()
+  grep_rows = []
+  grep_items = {}
+  grep_errors = []
+  grep_cwd = clap#rooter#working_dir()
+  GrepShow()
+  var query = g:clap.input.get()
+  if !empty(query)
+    grep_timer = timer_start(150, function(GrepStart, [query, grep_generation]))
+  endif
+enddef
+
+def GrepSink(row: string)
+  if has_key(grep_items, row)
+    var item = grep_items[row]
+    clap#sink#open_file(item.filename, item.lnum, item.col)
+  endif
+enddef
+
+def GrepMany(rows: list<string>)
+  clap#sink#open_quickfix(map(copy(rows), (_, row) => grep_items[row]))
+enddef
+
+def GrepPreview()
+  var row = g:clap.display.getcurline()
+  if has_key(grep_items, row)
+    clap#preview#file(grep_items[row].filename)
+  endif
+enddef
+
+def SelectProvider(selected: string)
+  var id = matchstr(selected, '^[^:]*')
+  timer_start(0, (_) => planet#picker#Clap(0, [id]))
 enddef
 
 export def Prepare()
@@ -63,6 +185,10 @@ export def Clap(bang: number, arguments: list<string>)
   if !exists('*clap#')
     runtime autoload/clap.vim
   endif
+  if !clap#maple#is_available() && !exists('g:clap_provider_providers')
+    g:clap_provider_providers = copy(g:clap#provider#providers#)
+    g:clap_provider_providers.sink = function(SelectProvider)
+  endif
   var args = copy(arguments)
   var provider = get(args, 0, 'providers')
   var custom = get(g:, 'clap_provider_' .. provider, {})
@@ -78,16 +204,25 @@ export def Clap(bang: number, arguments: list<string>)
         filter: function(Filter), enable_rooter: true, support_open_action: true,
       }
     elseif provider ==# 'grep'
-      # This is the upstream ripgrep provider retained for installations
-      # without Maple; it supports the same --query argument.
-      args[0] = 'live_grep'
+      g:clap_provider_grep = {init: function(GrepTyped), on_typed: function(GrepTyped),
+        on_exit: function(GrepStop), sink: function(GrepSink), 'sink*': function(GrepMany),
+        on_move: function(GrepPreview), support_open_action: true}
     elseif provider ==# 'filer'
       execute 'Fern . -reveal=%'
       return
     endif
   endif
-  if !clap#maple#is_available() && !has_key(g:clap#provider_alias, 'grep')
-    g:clap#provider_alias.grep = 'live_grep'
-  endif
   call('clap#', [bang] + args)
+  if !clap#maple#is_available() && get(popup_getpos(get(g:clap.display, 'winid', 0)), 'visible', 0)
+    # --query is now consumed by Maple. Local providers need the same input
+    # applied explicitly, followed by their regular filtering hook.
+    for argument in args
+      if argument =~# '^--query='
+        var query = strpart(argument, 8)
+        g:clap.input.set(query ==# '@visual' ? clap#util#get_visual_selection() : clap#util#expand(query))
+        g:clap.provider._().on_typed()
+        break
+      endif
+    endfor
+  endif
 enddef
