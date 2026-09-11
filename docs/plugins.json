@@ -508,11 +508,11 @@
       "path": ".vim/pack/basic/start/vim-eunuch",
       "provenance": {
         "branch": "master",
-        "commit": "cc564695076d89b3d1e06b2693fca788cfbc5910",
+        "commit": "929490937745cd96130d3e7948f762f0aa403314",
         "kind": "git-subrepo",
         "remote": "https://github.com/tpope/vim-eunuch.git"
       },
-      "snapshot_sha256": "ee8f9334bef397ca41f9df4c9c9815fbbc8767ee702bda5b8e3d986a2dddbb43"
+      "snapshot_sha256": "9a5ec283e815fb585fc33c5105517bf8ee2654d742535577ecd5445dd550cf6a"
     },
     {
       "group": "basic",
