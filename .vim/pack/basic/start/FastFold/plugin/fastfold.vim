@@ -26,8 +26,12 @@ set cpo&vim
 
 if !exists('g:fastfold_fdmhook')        | let g:fastfold_fdmhook        = 0  | endif
 if !exists('g:fastfold_savehook')       | let g:fastfold_savehook       = 1  | endif
-if !exists('g:fastfold_force')          | let g:fastfold_force          = 0  | endif
-
+" translate this setting for backwards compatibility
+if get(g:, 'fastfold_force', 0) == 1
+  let g:fastfold_foldmethods = ['syntax', 'expr']
+else
+  let g:fastfold_foldmethods = ['syntax']
+endif
 if !exists('g:fastfold_skip_filetypes') | let g:fastfold_skip_filetypes = [] | endif
 if !exists('g:fastfold_minlines') | let g:fastfold_minlines = 100 | endif
 if !exists('g:fastfold_fold_command_suffixes')
@@ -86,7 +90,7 @@ function! s:WinDo( command )
   " Work around Vim bug.
   " See https://github.com/vim/vim/issues/4622#issuecomment-508985573
   let l:currwinwidth = &winwidth
-  let &winwidth = 1
+  let &winwidth = &winminwidth > 0 ? &winminwidth : 1
   silent! execute 'keepjumps noautocmd windo ' . a:command
   silent! execute 'noautocmd ' . curaltwin . 'wincmd w'
   silent! execute 'noautocmd ' . currwin . 'wincmd w'
@@ -104,6 +108,9 @@ function! s:UpdateWin()
 endfunction
 
 function! s:UpdateBuf(feedback)
+  " skip if in TelescopeResults and TelescopePrompt UI buffers
+  if has('nvim') && &l:filetype[0:8] ==# 'Telescope' | return | endif
+
   " skip if another session still loading
   if exists('g:SessionLoad') | return | endif
 
@@ -139,11 +146,7 @@ function! s:Skip()
 endfunction
 
 function! s:isReasonable()
-  if (&l:foldmethod is# 'syntax' || &l:foldmethod is# 'expr') || g:fastfold_force == 1
-    return 1
-  else
-    return 0
-  endif
+  return index(g:fastfold_foldmethods, &l:foldmethod) >= 0
 endfunction
 
 function! s:inSkipList()

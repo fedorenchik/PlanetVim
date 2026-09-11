@@ -272,11 +272,11 @@
       "path": ".vim/pack/basic/start/FastFold",
       "provenance": {
         "branch": "master",
-        "commit": "542683b0cce738be22b6fdadb08302faed68e7b4",
+        "commit": "c1ddfa1a0e00316d1161ce11438ec980348b8cb9",
         "kind": "git-subrepo",
         "remote": "https://github.com/Konfekt/FastFold.git"
       },
-      "snapshot_sha256": "8b474390c58486fe6a41f942fee48a4074b4bcb109d773375cb4dbbe61175529"
+      "snapshot_sha256": "f980f43836400bda435560692072072b8d9afc0908f569ebafaf9f13e83045b2"
     },
     {
       "group": "basic",
