@@ -28,9 +28,15 @@
       "configuration": {
         "request": "launch",
         // If this changes, update language_csharp.test.vim
-        "program": "${workspaceRoot}/bin/Debug/netcoreapp5.0/csharp.dll",
+        "program": "${workspaceRoot}/bin/Debug/netcoreapp6.0/csharp.dll",
         "args": [],
         "stopAtEntry": false
+      },
+      "breakpoints": {
+        "exception": {
+          "user-unhandled": "",
+          "all": ""
+        }
       }
     },
     "launch - netcoredbg - with debug log": {
@@ -38,9 +44,15 @@
       "configuration": {
         "request": "launch",
         // If this changes, update language_csharp.test.vim
-        "program": "${workspaceRoot}/bin/Debug/netcoreapp5.0/csharp.dll",
+        "program": "${workspaceRoot}/bin/Debug/netcoreapp6.0/csharp.dll",
         "args": [],
         "stopAtEntry": false
+      },
+      "breakpoints": {
+        "exception": {
+          "user-unhandled": "",
+          "all": ""
+        }
       }
     },
     "launch - mono": {
@@ -52,6 +64,12 @@
         "cwd": "${workspaceRoot}",
         "args": [],
         "env": {}
+      },
+      "breakpoints": {
+        "exception": {
+          "user-unhandled": "",
+          "all": ""
+        }
       }
     }
   }

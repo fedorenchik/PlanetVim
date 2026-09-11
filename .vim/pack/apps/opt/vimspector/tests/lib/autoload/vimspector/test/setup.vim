@@ -66,9 +66,21 @@ function! vimspector#test#setup#WaitForReset() abort
   call WaitForAssert( {->
         \ assert_true( pyxeval( '_vimspector_session is None or ' .
         \                       '_vimspector_session._uiTab is None' ) )
-        \ }, 10000 )
+        \ }, g:test_long_timeout )
 
   call vimspector#test#signs#AssertSignGroupEmpty( 'VimspectorCode' )
+endfunction
+
+function! vimspector#test#setup#WaitForSessionReset( session_id ) abort
+  let s = '_VimspectorSession(' .. a:session_id .. ')'
+  call WaitForAssert( {->
+        \ assert_true( pyxeval( s .. ' is None or ' .
+        \                       s .. '._connection is None' ) )
+        \ } )
+  call WaitForAssert( {->
+        \ assert_true( pyxeval( s ..' is None or ' .
+        \                       s .. '._uiTab is None' ) )
+        \ }, g:test_long_timeout )
 endfunction
 
 function! vimspector#test#setup#Reset() abort
@@ -95,6 +107,7 @@ function! vimspector#test#setup#PushGlobal( name, value ) abort
   endif
 
   let old_value = get( g:, a:name, v:null )
+  call TestLog( 'Overriding ' . a:name . ' to ' . string( a:value ) )
   call add( s:g_stack[ a:name ], old_value )
   let g:[ a:name ] = a:value
 
@@ -107,6 +120,7 @@ function! vimspector#test#setup#PopGlobal( name ) abort
   endif
 
   let old_value = s:g_stack[ a:name ][ -1 ]
+  call TestLog( 'Restoring ' . a:name . ' to ' . string( old_value ) )
   call remove( s:g_stack[ a:name ], -1 )
 
   if old_value is v:null
@@ -127,6 +141,7 @@ function! vimspector#test#setup#PushOption( name, value ) abort
 
   let old_value = v:null
   execute 'let old_value = &' . a:name
+  call TestLog( 'Overriding &' . a:name . ' to ' . string( a:value ) )
   call add( s:o_stack[ a:name ], old_value )
   execute 'set ' . a:name . '=' . a:value
   return old_value
@@ -138,6 +153,7 @@ function! vimspector#test#setup#PopOption( name ) abort
   endif
 
   let old_value = s:o_stack[ a:name ][ -1 ]
+  call TestLog( 'Restoring &' . a:name . ' to ' . string( old_value ) )
   call remove( s:o_stack[ a:name ], -1 )
 
   execute 'set ' . a:name . '=' . old_value

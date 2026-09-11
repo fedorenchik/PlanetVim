@@ -11,6 +11,7 @@ for Vimspector.
      * [Debug adapter configuration](#debug-adapter-configuration)
      * [Debug profile configuration](#debug-profile-configuration)
      * [Replacements and variables](#replacements-and-variables)
+        * [Macro functions](#macro-functions)
         * [The splat operator](#the-splat-operator)
         * [Default values](#default-values)
         * [Coercing Types](#coercing-types)
@@ -36,7 +37,7 @@ for Vimspector.
   * [Appendix: Configuration file format](#appendix-configuration-file-format)
   * [Appendix: Editor configuration](#appendix-editor-configuration)
 
-<!-- Added by: ben, at: Mon 22 Nov 2021 20:18:32 GMT -->
+<!-- Added by: ben, at: Wed 24 May 2023 09:07:25 BST -->
 
 <!--te-->
 
@@ -170,6 +171,42 @@ the following variable substitutions:
   `variables` block. Its value is taken from the `strip`'d result of running
   the shell command. Note these variables can be supplied by both the debug and
   adapter configurations and can be either static strings or shell commands.
+
+#### Macro functions
+
+Vimspector also provides the following syntax for calling specific "macro"
+functions: `${Name(arg0,arg1,...)}`. 
+
+The following macro functions are provided:
+
+* `${PickProcess(...)}`: Ask the user to select a process and return its PID.
+  If a custom PID picker is installed, the arguments are
+  passed to it. Otherwise, a single (optional) argument is allowed, the name of
+  the binary to find processes for. See the main Vimspector README for examples
+  of how this is used.
+
+It's not possible to define your own macros or call any other functions.
+
+In detail: Syntax is same as a braced variable, but with trailing parentheses.
+The contents between the parentheses must result in the inner contents of a
+valid JSON list, that is it must be valid to take the inner contents of the
+parentheses and wrap them in `[` and `]`, and the result must be a valid JSON
+list. This list is then used as arguments to the macro. Don't forget that as
+your expansion is actually part of some existing JSON string, you must escape
+any double quotes within the arguments!
+
+For example:
+
+```json
+"configurations": {
+  "Test": {
+    "configuration": {
+      // Just an example, there is no FooBar macro
+      "FooBar": "${FooBar(\"foo\", 10, {\"bar\": \"baz\"})}"
+    }
+  }
+}
+```
 
 #### The splat operator
 
@@ -496,7 +533,7 @@ will point to the parent folder of the file that is currently open in vim.
 When starting debugging, you can specify which debug configuration to launch
 with `call vimspector#LaunchWithSettings( #{ configuration: 'name here' } )`.
 
-Otherwise, vimspector tries to work out which one to laucnh.
+Otherwise, vimspector tries to work out which one to launch.
 
 First it finds the configurations for the current filetype from the files, or
 ad-hoc dictionary, mentioned above.  Configurations are ignored if they specify
@@ -558,7 +595,7 @@ Setting `autoselect` to `false` overrides setting `default` to `true`.
 
 If you have a number of different types of files, say some Python and some
 javascript/node, you can specify the `filetypes` list in the `configuration`
-section.  As noted above, vimsepector will filter the list of configurations
+section.  As noted above, vimspector will filter the list of configurations
 based on the filetypes of the current buffer. If the `filetypes` entry is not
 provided, it's assume to apply to all buffer filetypes.
 
@@ -757,7 +794,7 @@ For example:
 }
 ```
 
-The resulting "derived" configuraition ends up like this:
+The resulting "derived" configuration ends up like this:
 
 ```jsonc
 {
@@ -799,9 +836,12 @@ Vimspector has in-built support for executing remote debuggers (such as
 where the development is done on one host and the runtime is
 some other host, account, container, etc.
 
-In order for it to work, you have to set up paswordless SSH between the local
-and remote machines/accounts. Then just tell Vimspector how to remotely launch
-and/or attach to the app.
+In order for it to work, it is preferred to have set up passwordless SSH between
+the local and remote machines/accounts. Then just tell Vimspector how to remotely
+launch and/or attach to the app. By default, 'ssh' command is being used.
+Optionally, the custom ssh command can be specified with cmd property which gives
+opportunity to use, e.g. sshpass, for non-interactive password passing to actual
+ssh client (see the [Python (debugpy) Example](#python-debugpy-example) below).
 
 This is presented as examples with commentary, as it's a fairly advanced/niche
 case. If you're not already familiar with remote debugging tools (such as
@@ -810,8 +850,8 @@ research that.
 
 Vimspector's tools are intended to automate your existing process for setting
 this up rather than to offer batteries-included approach. Ultimately, all
-Vimspector is going to do is run your commands over SSH, or docker, and
-co-ordinate with the adapter.
+Vimspector is going to do is run your commands over SSH, docker, or locally,
+and co-ordinate with the adapter.
 
 ### Python (debugpy) Example
 
@@ -834,11 +874,13 @@ Vimspector then orchestrates the various tools to set you up.
       "host": "${host}",
       "launch": {
         "remote": {
-          "host": "${host}",       // Remote host to ssh to (mandatory if not using container)
+          "host": "${host}", // Remote host to ssh to
+                             // If omitted, runCommand(s) is run locally
           "account": "${account}", // User to connect as (optional)
 
-          // Optional.... Manual additional arguments for ssh
+          // Optional.... Manual ssh client and additional arguments
           // "ssh": {
+          //   "cmd": [ "sshpass", "-p", "pa$$w0rd", "ssh" ],
           //   "args": [ "-o", "StrictHostKeyChecking=no" ]
           // },
 
@@ -868,14 +910,15 @@ Vimspector then orchestrates the various tools to set you up.
       },
       "attach": {
         "remote": {
-          "host": "${host}", // Remote host to ssh to (mandatory if not using container)
+          "host": "${host}", // Remote host to ssh to
+                             // If omitted, runCommand(s) is run locally
           "account": "${account}", // User to connect as (optional)
           // Command to get the PID of the process to attach  (mandatory)
           "pidCommand": [
             //
             // Remember that you can use ${var} to ask for input. I use this to
             // call a custom command to return the PID for a named service, so
-            // here's an examle:
+            // here's an example:
             //
             "/path/to/secret/script/GetPIDForService", "${ServiceName}"
           ],
@@ -899,8 +942,9 @@ Vimspector then orchestrates the various tools to set you up.
           //   /* optional command to run after initialized */
           // ]
 
-          // Optional.... Manual additional arguments for ssh
+          // Optional.... Manual ssh client and additional arguments
           // "ssh": {
+          //   "cmd": [ "sshpass", "-p", "pa$$w0rd", "ssh" ],
           //   "args": [ "-o", "StrictHostKeyChecking=no" ]
           // },
         }
@@ -982,7 +1026,7 @@ and have to tell cpptools a few more options.
             "gdbserver",
             "--once",
             "--no-startup-with-shell",
-            "--disable-randomisation",
+            "--disable-randomization",
             "0.0.0.0:${port}",
             "%CMD%"
           ]
@@ -1068,7 +1112,7 @@ port.
       "port": "${port}",
       "launch": {
         "remote": {
-          "container": "${container}", // Docker container id or name to exec into to.
+          "container": "${container}", // Docker container id or name to exec into.
 
           // Command to launch the debuggee and attach the debugger;
           // %CMD% replaced with the remote-cmdLine configured in the launch
@@ -1102,7 +1146,7 @@ port.
             //
             // Remember that you can use ${var} to ask for input. I use this to
             // call a custom command to return the PID for a named service, so
-            // here's an examle:
+            // here's an example:
             //
             "sh", "-c", "pgrep", "-f", "${filename}"
           ],
@@ -1190,7 +1234,7 @@ Comments are "c-style", i.e.:
 
 There is much debate about whether JSON files should contain comments. I have
 added them because they are useful in the context of configuration files.
-Unforutnately this may mean your editor doesn't like them (they are strictly
+Unfortunately this may mean your editor doesn't like them (they are strictly
 invalid JSON) so it's up to you if you use them.
 
 Technically, Vimspector uses [JSON
@@ -1259,8 +1303,9 @@ This configuration can be adapted to any other LSP-based editor configuration
 and is provided just as an example.
 
 [dap]: https://microsoft.github.io/debug-adapter-protocol/
-[schema]: http://puremourning.github.io/vimspector/schema/vimspector.schema.json
-[gadget-schema]: http://puremourning.github.io/vimspector/schema/gadgets.schema.json
+[schema]: https://puremourning.github.io/vimspector/schema/vimspector.schema.json
+[gadget-schema]: https://puremourning.github.io/vimspector/schema/gadgets.schema.json
+[website-getting-started]: https://puremourning.github.io/vimspector-web/#getting-started
 [YouCompleteMe]: https://github.com/ycm-core/YouCompleteMe
 [lsp-examples]: https://github.com/ycm-core/lsp-examples
 [vscode-json]: https://github.com/vscode-langservers/vscode-json-languageserver

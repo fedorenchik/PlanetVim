@@ -33,7 +33,7 @@ function! Test_Step_With_Different_Tabpage()
   let vimspector_tabnr = tabpagenr()
   call WaitForAssert( {->
         \ assert_equal( 'simple.cpp', bufname( '%' ), 'Current buffer' )
-        \ }, 10000 )
+        \ }, g:test_long_timeout )
   call assert_equal( 15, line( '.' ), 'Current line' )
   call assert_equal( 1, col( '.' ), 'Current column' )
 
@@ -170,14 +170,6 @@ endfunction
 function! Test_Close_Tab_No_Vimspector()
   tabnew
   q
-  %bwipe!
-endfunction
-
-function! Test_Close_Tab_With_Vimspector()
-  call s:StartDebugging()
-  call vimspector#test#setup#WaitForReset()
-  call s:StartDebugging()
-  tabclose!
   %bwipe!
 endfunction
 

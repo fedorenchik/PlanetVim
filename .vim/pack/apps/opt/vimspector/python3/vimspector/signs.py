@@ -31,13 +31,17 @@ def DefineSign( name, text, double_text, texthl, col = 'right', **kwargs ):
   if utils.GetVimValue( vim.options, 'ambiwidth', '' ) == 'double':
     text = double_text
 
-  if col == 'right':
-    if int( utils.Call( 'strdisplaywidth', text ) ) < 2:
-      text = ' ' + text
+  if text is not None:
+    if col == 'right':
+      if int( utils.Call( 'strdisplaywidth', text ) ) < 2:
+        text = ' ' + text
+    text = text.replace( ' ', r'\ ' )
+    kwargs[ 'text' ] = text
 
-  text = text.replace( ' ', r'\ ' )
+  if texthl is not None:
+    kwargs[ 'texthl' ] = texthl
 
-  cmd = f'sign define { name } text={ text } texthl={ texthl }'
+  cmd = f'sign define { name }'
   for key, value in kwargs.items():
     cmd += f' { key }={ value }'
 
@@ -59,3 +63,24 @@ def PlaceSign( sign_id, group, name, file_name, line ):
 
 def UnplaceSign( sign_id, group ):
   vim.command( f'sign unplace { sign_id } group={ group }' )
+
+
+def DefineProgramCounterSigns():
+  if not SignDefined( 'vimspectorPC' ):
+    DefineSign( 'vimspectorPC',
+                text = '▶',
+                double_text = '▶',
+                texthl = 'MatchParen',
+                linehl = 'CursorLine' )
+  if not SignDefined( 'vimspectorPCBP' ):
+    DefineSign( 'vimspectorPCBP',
+                text = '●▶',
+                double_text  = '▷',
+                texthl = 'MatchParen',
+                linehl = 'CursorLine' )
+  if not SignDefined( 'vimspectorNonActivePC' ):
+    DefineSign( 'vimspectorNonActivePC',
+                text = None,
+                double_text = None,
+                texthl = None,
+                linehl = 'DiffAdd' )

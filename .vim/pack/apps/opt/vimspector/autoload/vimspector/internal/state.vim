@@ -28,11 +28,48 @@ endif
 
 function! vimspector#internal#state#Reset() abort
   try
-    py3 import vim
-    py3 _vimspector_session = __import__(
-          \ "vimspector",
-          \ fromlist=[ "debug_session" ] ).debug_session.DebugSession(
-          \   vim.eval( 's:prefix' ) )
+    py3 <<EOF
+
+import vim
+
+def _VimspectorMakeActive( session ):
+  global _vimspector_session
+
+  if '_vimspector_session' not in globals() or _vimspector_session is None:
+    _vimspector_session = session
+    return True
+
+  if _vimspector_session == session:
+    # nothing to do
+    return False
+
+  if _vimspector_session is not None:
+    _vimspector_session.SwitchFrom()
+
+  _vimspector_session = session
+  return True
+
+def _VimspectorSwitchTo( session ):
+  global _vimspector_session
+
+  if _VimspectorMakeActive( session ) and _vimspector_session is not None:
+    _vimspector_session.SwitchTo()
+
+def _VimspectorSession( session_id ):
+  return _vimspector_session_man.GetSession( int( session_id ) )
+
+_vimspector_session_man = __import__(
+  "vimspector",
+  fromlist=[ "session_manager" ] ).session_manager.Get()
+
+_vimspector_session_man.api_prefix = vim.eval( 's:prefix' )
+if '_vimspector_session' in globals() and _vimspector_session is not None:
+  _vimspector_session_man.DestroyRootSession( _vimspector_session,
+                                              _vimspector_session )
+_VimspectorMakeActive( _vimspector_session_man.NewSession() )
+
+
+EOF
   catch /.*/
     echohl WarningMsg
     echom 'Exception while loading vimspector:' v:exception
@@ -45,6 +82,13 @@ function! vimspector#internal#state#Reset() abort
   return v:true
 endfunction
 
+function! vimspector#internal#state#NewSession( options ) abort
+  py3 << EOF
+_VimspectorMakeActive(
+  _vimspector_session_man.NewSession( **vim.eval( 'a:options' ) ) )
+EOF
+endfunction
+
 function! vimspector#internal#state#GetAPIPrefix() abort
   return s:prefix
 endfunction
@@ -52,25 +96,44 @@ endfunction
 function! vimspector#internal#state#TabClosed( afile ) abort
   py3 << EOF
 
-# reset if:
-# - a tab closed
-# - the vimspector session exists
-# - the vimspector session does _not_ have a UI (which suggests that it was
-#   probably the vimspector UI tab that was closed)
-#
-# noevim helpfully provides the tab number that was closed in <afile>, so we
-# use that there (it also doesn't correctly invalidate tab objects:
-# https://github.com/neovim/neovim/issues/16327)
-
-if '_vimspector_session' in globals() and _vimspector_session:
-  if int( vim.eval( 's:is_neovim' ) ) and _vimspector_session.IsUITab(
-    int( vim.eval( 'a:afile' ) ) ):
-    _vimspector_session.Reset( interactive = False )
-  elif not _vimspector_session.HasUI():
-    _vimspector_session.Reset( interactive = False )
+# Try to reset any session which was closed.
+if '_vimspector_session_man' in globals():
+  if int( vim.eval( 's:is_neovim' ) ):
+    # noevim helpfully provides the tab number that was closed in <afile>, so we
+    # use that there (it also doesn't correctly invalidate tab objects:
+    # https://github.com/neovim/neovim/issues/16327), so we can't use the same
+    # code for both. And as usual, when raising bugs against neovim, they are
+    # simply closed and never fixed. sigh.
+    # What's worse is that at this point, the tab numbers have already been
+    # updated (the tab has already been closed), so if we close the tab
+    # immediately prior to a vimspector tab, we incorrectly identify the
+    # vimspector tab as the closed one! We need a TabClosedPre!
+    s = _vimspector_session_man.FindSessionByTab( int( vim.eval( 'a:afile' ) ) )
+    if s:
+      s.Reset( interactive = False )
+  else:
+    for session in _vimspector_session_man.SessionsWithInvalidUI():
+      session.Reset( interactive = False )
 
 EOF
 endfunction
+
+function! vimspector#internal#state#SwitchToSession( id ) abort
+  py3 _VimspectorSwitchTo( _VimspectorSession( vim.eval( 'a:id' ) ) )
+endfunction
+
+
+function! vimspector#internal#state#OnTabEnter() abort
+  py3 <<EOF
+if '_vimspector_session_man' in globals():
+  session = _vimspector_session_man.SessionForTab(
+    int( vim.eval( 'tabpagenr()' ) ) )
+
+  if session is not None:
+    _VimspectorMakeActive( session )
+EOF
+endfunction
+
 
 " Boilerplate {{{
 let &cpoptions=s:save_cpo

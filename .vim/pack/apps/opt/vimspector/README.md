@@ -9,94 +9,110 @@ For detailed explanation of the `.vimspector.json` format, see the
 [![Build](https://github.com/puremourning/vimspector/actions/workflows/build.yaml/badge.svg?branch=master)](https://github.com/puremourning/vimspector/actions/workflows/build.yaml) [![Matrix](https://img.shields.io/matrix/vimspector:matrix.org?label=matrix)](https://matrix.to/#/#vimspector_Lobby:gitter.im) [![Gitter](https://badges.gitter.im/vimspector/Lobby.svg)](https://gitter.im/vimspector/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 <!--ts-->
- * [Features and Usage](#features-and-usage)
-    * [Supported debugging features](#supported-debugging-features)
-    * [Supported languages](#supported-languages)
-    * [Other languages](#other-languages)
- * [Installation](#installation)
-    * [Quick Start](#quick-start)
-    * [Dependencies](#dependencies)
-    * [Neovim differences](#neovim-differences)
-    * [Windows differences](#windows-differences)
-    * [Trying it out](#trying-it-out)
-    * [Cloning the plugin](#cloning-the-plugin)
-    * [Install some gadgets](#install-some-gadgets)
-       * [VimspectorInstall and VimspectorUpdate commands](#vimspectorinstall-and-vimspectorupdate-commands)
-       * [install_gadget.py](#install_gadgetpy)
-    * [Manual gadget installation](#manual-gadget-installation)
-       * [The gadget directory](#the-gadget-directory)
-    * [Upgrade](#upgrade)
- * [About](#about)
-    * [Background](#background)
-    * [Status](#status)
-       * [Experimental](#experimental)
-    * [Motivation](#motivation)
-    * [License](#license)
-    * [Sponsorship](#sponsorship)
- * [Mappings](#mappings)
-    * [Visual Studio / VSCode](#visual-studio--vscode)
-    * [Human Mode](#human-mode)
- * [Usage and API](#usage-and-api)
-    * [Launch and attach by PID:](#launch-and-attach-by-pid)
-       * [Launch with options](#launch-with-options)
-       * [Debug configuration selection](#debug-configuration-selection)
-       * [Get configurations](#get-configurations)
-    * [Breakpoints](#breakpoints)
-       * [Breakpoints Window](#breakpoints-window)
-       * [Line breakpoints](#line-breakpoints)
-       * [Conditional breakpoints and logpoints](#conditional-breakpoints-and-logpoints)
-       * [Exception breakpoints](#exception-breakpoints)
-       * [API Summary](#api-summary)
-       * [Clear breakpoints](#clear-breakpoints)
-       * [Run to Cursor](#run-to-cursor)
-       * [Save and restore](#save-and-restore)
-    * [Stepping](#stepping)
-    * [Variables and scopes](#variables-and-scopes)
-    * [Variable or selection hover evaluation](#variable-or-selection-hover-evaluation)
-    * [Watches](#watches)
-       * [Watch autocompletion](#watch-autocompletion)
-    * [Dump memory](#dump-memory)
-    * [Stack Traces](#stack-traces)
-    * [Program Output](#program-output)
-       * [Console](#console)
-       * [Console autocompletion](#console-autocompletion)
-       * [Log View](#log-view)
-    * [Closing debugger](#closing-debugger)
-    * [Terminate debuggee](#terminate-debuggee)
- * [Debug profile configuration](#debug-profile-configuration)
-    * [C, C  , Rust, etc.](#c-c-rust-etc)
-       * [Data visualization / pretty printing](#data-visualization--pretty-printing)
-       * [C   Remote debugging](#c-remote-debugging)
-       * [C   Remote launch and attach](#c-remote-launch-and-attach)
-    * [Rust](#rust)
-    * [Python](#python)
-       * [Python Remote Debugging](#python-remote-debugging)
-       * [Python Remote launch and attach](#python-remote-launch-and-attach)
-    * [TCL](#tcl)
-    * [C♯](#c)
-    * [Go](#go)
-    * [PHP](#php)
-       * [Debug web application](#debug-web-application)
-       * [Debug cli application](#debug-cli-application)
-    * [JavaScript, TypeScript, etc.](#javascript-typescript-etc)
-    * [Java](#java)
-       * [Hot code replace](#hot-code-replace)
-       * [Usage with YouCompleteMe](#usage-with-youcompleteme)
-       * [Other LSP clients](#other-lsp-clients)
-    * [Lua](#lua)
-    * [Other servers](#other-servers)
- * [Customisation](#customisation)
-    * [Changing the default signs](#changing-the-default-signs)
-    * [Sign priority](#sign-priority)
-    * [Changing the default window sizes](#changing-the-default-window-sizes)
-    * [Changing the terminal size](#changing-the-terminal-size)
-    * [Custom mappings while debugging](#custom-mappings-while-debugging)
-    * [Advanced UI customisation](#advanced-ui-customisation)
-    * [Customising the WinBar](#customising-the-winbar)
-    * [Example](#example)
- * [FAQ](#faq)
+* [Features and Usage](#features-and-usage)
+   * [Supported debugging features](#supported-debugging-features)
+   * [Supported languages](#supported-languages)
+   * [Other languages](#other-languages)
+* [Installation](#installation)
+   * [Quick Start](#quick-start)
+      * [Method 1: Using a repo clone, Vim packages and select gadgets to be installed](#method-1-using-a-repo-clone-vim-packages-and-select-gadgets-to-be-installed)
+      * [Method 2: Using a plugin manager](#method-2-using-a-plugin-manager)
+   * [Dependencies](#dependencies)
+      * [Neovim limitations](#neovim-limitations)
+      * [Windows differences](#windows-differences)
+   * [Trying it out](#trying-it-out)
+   * [Installing the plugin](#installing-the-plugin)
+   * [Install some gadgets](#install-some-gadgets)
+      * [VimspectorInstall and VimspectorUpdate commands](#vimspectorinstall-and-vimspectorupdate-commands)
+      * [install_gadget.py](#install_gadgetpy)
+   * [Manual gadget installation](#manual-gadget-installation)
+      * [The gadget directory](#the-gadget-directory)
+   * [Upgrade](#upgrade)
+* [About](#about)
+   * [Background](#background)
+* [What Vimspector is not](#what-vimspector-is-not)
+   * [Status](#status)
+      * [Experimental](#experimental)
+   * [Motivation](#motivation)
+   * [License](#license)
+   * [Sponsorship](#sponsorship)
+* [Mappings](#mappings)
+   * [Visual Studio / VSCode](#visual-studio--vscode)
+   * [Human Mode](#human-mode)
+* [Usage and API](#usage-and-api)
+   * [Launch and attach by PID:](#launch-and-attach-by-pid)
+      * [Picking a PID](#picking-a-pid)
+      * [Launch with options](#launch-with-options)
+      * [Debug configuration selection](#debug-configuration-selection)
+      * [Get configurations](#get-configurations)
+   * [Breakpoints](#breakpoints)
+      * [Breakpoints Window](#breakpoints-window)
+      * [Line breakpoints](#line-breakpoints)
+      * [Conditional breakpoints and logpoints](#conditional-breakpoints-and-logpoints)
+      * [Exception breakpoints](#exception-breakpoints)
+      * [Data breakpoints](#data-breakpoints)
+      * [API Summary](#api-summary)
+      * [Instruction breakpoints](#instruction-breakpoints)
+      * [Clear breakpoints](#clear-breakpoints)
+      * [Run to Cursor](#run-to-cursor)
+      * [Go to current line](#go-to-current-line)
+      * [Save and restore](#save-and-restore)
+   * [Stepping](#stepping)
+   * [Variables and scopes](#variables-and-scopes)
+   * [Variable or selection hover evaluation](#variable-or-selection-hover-evaluation)
+   * [Watches](#watches)
+      * [Watch autocompletion](#watch-autocompletion)
+   * [Disassembly](#disassembly)
+   * [Dump memory](#dump-memory)
+   * [Stack Traces](#stack-traces)
+      * [Child sessions](#child-sessions)
+   * [Program Output](#program-output)
+      * [Console](#console)
+      * [Console autocompletion](#console-autocompletion)
+      * [Log View](#log-view)
+   * [Closing debugger](#closing-debugger)
+   * [Terminate debuggee](#terminate-debuggee)
+* [Multiple debugging sessions](#multiple-debugging-sessions)
+* [Debug profile configuration](#debug-profile-configuration)
+   * [C, C++, Rust, etc.](#c-c-rust-etc)
+      * [Data visualization / pretty printing](#data-visualization--pretty-printing)
+      * [C++ Remote debugging](#c-remote-debugging)
+      * [C++ Remote launch and attach](#c-remote-launch-and-attach)
+   * [Rust](#rust)
+   * [Jai](#jai)
+   * [Python](#python)
+      * [Python Remote Debugging](#python-remote-debugging)
+      * [Python Remote launch and attach](#python-remote-launch-and-attach)
+      * [Python 2](#python-2)
+   * [TCL](#tcl)
+   * [C♯](#c)
+   * [Go](#go)
+   * [PHP](#php)
+      * [Debug web application](#debug-web-application)
+      * [Debug cli application](#debug-cli-application)
+   * [JavaScript and TypeScript](#javascript-and-typescript)
+   * [Java](#java)
+      * [Hot code replace](#hot-code-replace)
+      * [Usage with YouCompleteMe](#usage-with-youcompleteme)
+      * [Other LSP clients](#other-lsp-clients)
+   * [Lua](#lua)
+   * [Other servers](#other-servers)
+* [Customisation](#customisation)
+   * [Changing the default signs](#changing-the-default-signs)
+   * [Sign priority](#sign-priority)
+   * [Presentation Hints](#presentation-hints)
+   * [Changing the default window sizes](#changing-the-default-window-sizes)
+   * [Changing the terminal size](#changing-the-terminal-size)
+   * [Custom mappings while debugging](#custom-mappings-while-debugging)
+   * [Pre-launch building strategies](#pre-launch-building-strategies)
+   * [Disabling the WinBar](#disabling-the-winbar)
+   * [Advanced UI customisation](#advanced-ui-customisation)
+   * [Customising the WinBar](#customising-the-winbar)
+   * [Example](#example)
+* [FAQ](#faq)
 
-<!-- Added by: ben, at: Sat  5 Mar 2022 18:59:09 GMT -->
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: ben, at: Thu 12 Dec 2024 15:40:32 GMT -->
 
 <!--te-->
 
@@ -123,15 +139,18 @@ And a couple of brief demos:
 
 - flexible configuration syntax that can be checked in to source control
 - breakpoints (function, line and exception breakpoints)
+- instruction breakpoints
+- data breakpoints
 - conditional breakpoints (function, line)
 - step in/out/over/up, stop, restart
 - run to cursor
 - go to line (reset program counter to line)
-- launch and attach
+- launch and attach, including PID picker
 - remote launch, remote attach
 - locals and globals display
 - watch expressions with autocompletion
 - variable inspection tooltip on hover
+- disassembly view and step-by-instruction
 - set variable value in locals, watch and hover windows
 - call stack display and navigation
 - hierarchical variable value display popup (see `<Plug>VimspectorBalloonEval`)
@@ -140,6 +159,8 @@ And a couple of brief demos:
 - logging/stdout display
 - simple stable API for custom tooling (e.g. integrate with language server)
 - view hex dump of process memory
+- multiple independent debugging sessions (debug different apps in tabs)
+- multi-process (multi-session) debugging
 
 ## Supported languages
 
@@ -152,24 +173,22 @@ runtime dependencies). They are categorised by their level of support:
 * `Legacy`: No longer supported, please migrate your config
 * `Retired`: No longer included or supported.
 
-| Language(s)          | Status       | Switch (for `install_gadget.py`)   | Adapter (for `:VimspectorInstall`)   | Dependencies                                 |
-| -------------------- | -----------  | ---------------------------------- | ------------------------------------ | -------------------------------------------- |
-| C, C++, Rust etc.    | Tested       | `--all` or `--enable-c` (or cpp)   | vscode-cpptools                      | mono-core                                    |
-| C, C++, Rust etc.    | Supported    | `--enable-rust`                    | CodeLLDB                             | none                                         |
-| Python               | Tested       | `--all` or `--enable-python`       | debugpy                              | Python 3                                     |
-| Go                   | Tested       | `--enable-go`                      | delve                                | Go 1.16+                                     |
-| TCL                  | Supported    | `--all` or `--enable-tcl`          | tclpro                               | TCL 8.5                                      |
-| Bourne Shell         | Supported    | `--all` or `--enable-bash`         | vscode-bash-debug                    | Bash v??                                     |
-| Lua                  | Tested       | `--all` or `--enable-lua`          | local-lua-debugger-vscode            | Node >=12.13.0, Npm, Lua interpreter         |
-| Node.js              | Supported    | `--force-enable-node`              | vscode-node-debug2                   | 6 < Node < 12, Npm                           |
-| Javascript           | Supported    | `--force-enable-chrome`            | debugger-for-chrome                  | Chrome                                       |
-| Javascript           | Supported    | `--force-enable-firefox`           | vscode-firefox-debug                 | Firefox                                      |
-| Java                 | Supported    | `--force-enable-java  `            | vscode-java-debug                    | Compatible LSP plugin (see [later](#java))   |
-| PHP                  | Experimental | `--force-enable-php`               | vscode-php-debug                     | Node, PHP, XDEBUG                            |
-| C# (dotnet core)     | Tested       | `--force-enable-csharp`            | netcoredbg                           | DotNet core                                  |
-| F#, VB, etc.         | Supported    | `--force-enable-[fsharp,vbnet]`    | netcoredbg                           | DotNet core                                  |
-| Go (legacy)          | Legacy       | `--enable-go`                      | vscode-go                            | Node, Go, [Delve][]                          |
-| Python 2             | Legacy       | `--force-enable-python2`           | debugpy-python2                      | Python 2.7                                   |
+| Language(s)             | Status                | Switch (for `install_gadget.py`)    | Adapter (for `:VimspectorInstall`)   | Dependencies                                 |
+| --------------------    | -----------           | ----------------------------------  | ------------------------------------ | -------------------------------------------- |
+| C, C++, Rust, Jai, etc. | Tested                | `--all` or `--enable-c` (or cpp)    | vscode-cpptools                      | mono-core                                    |
+| C, C++, Rust, Jai, etc. | Tested                | `--enable-rust`, `--enable-c`, etc. | CodeLLDB                             | none                                         |
+| Python                  | Tested                | `--all` or `--enable-python`        | debugpy                              | Python 3                                     |
+| Go                      | Tested                | `--enable-go`                       | delve                                | Go 1.16+                                     |
+| TCL                     | Supported             | `--all` or `--enable-tcl`           | tclpro                               | TCL >= 8.5 < 9.0                             |
+| Bourne Shell            | Supported             | `--all` or `--enable-bash`          | vscode-bash-debug                    | Bash v??                                     |
+| Lua                     | Tested                | `--all` or `--enable-lua`           | local-lua-debugger-vscode            | Node >=12.13.0, Npm, Lua interpreter         |
+| Node.js                 | Supported             | `--force-enable-node`               | vscode-js-debug                      | Node >= 18                                   |
+| Javascript              | Legacy [Deprecated]   | `--force-enable-chrome`             | debugger-for-chrome                  | Chrome                                       |
+| Javascript              | Legacy [Unsupported]  | `--force-enable-firefox`            | vscode-firefox-debug                 | Firefox                                      |
+| Java                    | Supported             | `--force-enable-java  `             | vscode-java-debug                    | Compatible LSP plugin (see [later](#java))   |
+| PHP                     | Experimental          | `--force-enable-php`                | vscode-php-debug                     | Node, PHP, XDEBUG                            |
+| C# (dotnet core)        | Tested                | `--force-enable-csharp`             | netcoredbg                           | DotNet core                                  |
+| F#, VB, etc.            | Supported             | `--force-enable-[fsharp,vbnet]`     | netcoredbg                           | DotNet core                                  |
 
 ## Other languages
 
@@ -182,37 +201,12 @@ To use Vimspector with a language that's not "built-in", see this
 
 ## Quick Start
 
-There are 3 installation methods:
+There are 2 installation methods:
 
-* Using a release tarball and Vim packages
 * Using a repo clone and Vim packages
 * Using a plugin manager
 
-### Method 1: Using a release tarball and Vim packages
-
-Release tarballs come with debug adapters for the default languages
-pre-packaged. To use a release tarball:
-
-1. [Check the dependencies](#dependencies)
-2. Untar the release tarball for your OS into `$HOME/.vim/pack`:
-
-   ```bash
-   $ mkdir -p $HOME/.vim/pack
-   $ curl -L <url> | tar -C $HOME/.vim/pack zxvf -
-   ```
-
-3. Add `packadd! vimspector` to your `.vimrc`
-
-4. (optionally) Enable the default set of mappings:
-
-   ```vim
-   let g:vimspector_enable_mappings = 'HUMAN'
-   ```
-
-5. Configure your project's debug profiles (create `.vimspector.json`, or set
-   `g:vimspector_configurations`) - see the [reference guide][vimspector-ref]
-
-### Method 2: Using a repo clone, Vim packages and select gadgets to be installed
+### Method 1: Using a repo clone, Vim packages and select gadgets to be installed
 
 1. [Check the dependencies](#dependencies)
 1. Install the plugin as a Vim package. See `:help packages`.
@@ -221,10 +215,10 @@ pre-packaged. To use a release tarball:
 3. Configure your project's debug profiles (create `.vimspector.json`, or set
    `g:vimspector_configurations`) - see the [reference guide][vimspector-ref]
 
-### Method 3: Using a plugin manager
+### Method 2: Using a plugin manager
 
 1. [Check the dependencies](#dependencies)
-1. See the plugin manager's docs and install the plugin  
+1. See the plugin manager's docs and install the plugin
    For Vundle, use:
 
    ```vim
@@ -242,52 +236,20 @@ The following sections expand on the above brief overview.
 Vimspector requires:
 
 * One of:
-  * Vim 8.2 Huge build compiled with Python 3.6 or later
-  * Neovim 0.4.3 with Python 3.6 or later (experimental)
+  * Vim 8.2.4797 or later "huge" build compiled with Python 3.10 or later
+  * Neovim 0.8 with Python 3.10 or later
 * One of the following operating systems:
   * Linux
   * macOS Mojave or later
   * Windows (experimental)
 
-Why such a new vim? Well 2 reasons:
+Which Linux versions? I only test on Ubuntu 20.04 and later and RHEL 7.
 
-1. Because vimspector uses a lot of new Vim features
-2. Because there are Vim bugs that vimspector triggers that will frustrate you
-   if you hit them.
+### Neovim limitations
 
-Why is neovim experimental? Because the author doesn't use neovim regularly, and
-there are no regression tests for vimspector in neovim, so it may break
-occasionally. Issue reports are handled on best-efforts basis, and PRs are
-welcome to fix bugs. See also the next section describing differences for neovim
-vs vim.
-
-Why is Windows support experimental? Because it's effort and it's not a priority
-for the author. PRs are welcome to fix bugs. Windows will not be regularly
-tested.
-
-Which Linux versions? I only test on Ubuntu 18.04 and later and RHEL 7.
-
-## Neovim differences
-
-neovim doesn't implement some features Vimspector relies on:
-
-* WinBar - used for the buttons at the top of the code window and for changing
-  the output window's current output.
-* Prompt Buffers - used to send commands in the Console and add Watches.
-  (*Note*: prompt buffers are available in neovim nightly)
-* Balloons - this allows for the variable evaluation popup to be displayed when
-  hovering the mouse. See below for how to create a keyboard mapping instead.
-
-Workarounds are in place as follows:
-
-* WinBar - There are [mappings](#mappings),
-  [`:VimspectorShowOutput`](#program-output) and
-  [`:VimspectorReset`](#closing-debugger)
-* Prompt Buffers - There are [`:VimspectorEval`](#console)
-  and [`:VimspectorWatch`](#watches)
-* Balloons - There is the `<Plug>VimspectorBalloonEval` mapping. There is no
-default mapping for this, so I recommend something like this to get variable
-display in a popup:
+Neovim doesn't implement mouse hover balloons. Instead there is the
+`<Plug>VimspectorBalloonEval` mapping. There is no default mapping for this, so
+I recommend something like this to get variable display in a popup:
 
 ```viml
 " mnemonic 'di' = 'debug inspect' (pick your own, if you prefer!)
@@ -298,7 +260,7 @@ nmap <Leader>di <Plug>VimspectorBalloonEval
 xmap <Leader>di <Plug>VimspectorBalloonEval
 ```
 
-## Windows differences
+### Windows differences
 
 The following features are not implemented for Windows:
 
@@ -309,10 +271,10 @@ The following features are not implemented for Windows:
 If you just want to try out vimspector without changing your vim config, there
 are example projects for a number of languages in `support/test`, including:
 
-* Python (`support/test/python/simple_python`)
-* Go (`support/test/go/hello_world` and `support/test/go/name-starts-with-vowel`)
-* Nodejs (`support/test/node/simple`)
-* Chrome/Firefox (`support/test/web/`)
+* Python ([support/test/python/simple_python](support/test/python/simple_python))
+* Go ([support/test/go/hello_world](support/test/go/hello_world) and [support/test/go/name-starts-with-vowel](support/test/go/name-starts-with-vowel))
+* Nodejs ([support/test/node/simple](support/test/node/simple))
+* Chrome/Firefox ([support/test/web](support/test/web))
 * etc.
 
 To test one of these out, cd to the directory and run:
@@ -328,10 +290,7 @@ which can be used to check everything is working. This is used by the regression
 tests in CI so should always work, and is a good way to check if the problem is
 your configuration rather than a bug.
 
-## Cloning the plugin
-
-If you're not using a release tarball, you'll need to clone this repo to the
-appropriate place.
+## Installing the plugin
 
 1. Clone the plugin
 
@@ -376,8 +335,6 @@ In order for Vimspector to be useful, you need to have some adapters installed.
 
 There are a few ways to do this:
 
-* If you downloaded a tarball, gadgets for main supported languages are already
-  installed for you.
 * Using `:VimspectorInstall <adapter> <args...>` (use TAB `wildmenu` to see the
   options, also accepts any `install_gadget.py` option)
 * Using `python3 install_gadget.py <args>` (use `--help` to see all options)
@@ -395,7 +352,7 @@ though the default behaviours are slightly different. For supported languages,
 they will:
 
 * Download the relevant debug adapter at a version that's been tested from the
-  internet, either as a 'vsix' (Visusal Studio plugin), or clone from GitHub. If
+  internet, either as a 'vsix' (Visual Studio plugin), or clone from GitHub. If
   you're in a corporate environment and this is a problem, you may need to
   install the gadgets manually.
 * Perform any necessary post-installation actions, such as:
@@ -519,7 +476,7 @@ Example:
 ```json
 {
   "adapters": {
-    "lldb-vscode": {
+    "lldb-dap": {
       "variables": {
         "LLVM": {
           "shell": "brew --prefix llvm"
@@ -530,7 +487,7 @@ Example:
         "pidSelect": "ask"
       },
       "command": [
-        "${LLVM}/bin/lldb-vscode"
+        "lldb-dap"
       ],
       "env": {
         "LLDB_LAUNCH_FLAG_LAUNCH_IN_TTY": "YES"
@@ -585,6 +542,23 @@ baking it in to the debugging experience is a top bill goal for the project. So
 vimspector has first-class support for executing programs remotely and attaching
 to them. This support is unique to vimspector and on top of (complementary to)
 any such support in actual debug adapters.
+
+# What Vimspector is not
+
+Vimspector is a vim UI on top of the Debug Adapter Protocol. It's intended to be high level and convenient for day-to-day debugging tasks.
+
+Vimspector is not:
+
+* a debugger! It's just the UI and some glue.
+* fast. It's abstractions all the way down. If you want a fast, native debugger,
+  there are other options.
+* comprehensive. It's limited by DAP, and limited by my time. I implement the
+  features I think most users will need, not every feature possible.
+* for everyone. Vimspector intentionally provides a "one size fits all" UI and
+  approach. This means that it can only provide essential/basic debugging
+  features for a given language. This makes it convenient for everyday usage,
+  but not ideal for power users or those with very precise or specific
+  requirements. See [motivation](#motivation) for more info.
 
 ## Status
 
@@ -658,10 +632,10 @@ Copyright © 2018 Ben Jackson
 ## Sponsorship
 
 If you like Vimspector so much that you're wiling to part with your hard-earned
-cash, please consider donating to one of the following charities, which are 
+cash, please consider donating to one of the following charities, which are
 meaningful to the author of Vimspector (in order of preference):
 
-* [Greyhound Rescue Wales](https://greyhoundrescuewales.co.uk)
+* [Hector's Greyhound Rescue](http://hectorsgreyhoundrescue.org)
 * [Cancer Research UK](https://www.cancerresearchuk.org)
 * [ICCF Holland](https://iccf.nl)
 * Any charity of your choosing.
@@ -677,7 +651,7 @@ features to set your own mappings. To that end, Vimspector defines the following
 | ---                                           | ---                                                                 | ---                                                               |
 | `<Plug>VimspectorContinue`                    | When debugging, continue. Otherwise start debugging.                | `vimspector#Continue()`                                           |
 | `<Plug>VimspectorStop`                        | Stop debugging.                                                     | `vimspector#Stop()`                                               |
-| `<Plug>VimpectorRestart`                      | Restart debugging with the same configuration.                      | `vimspector#Restart()`                                            |
+| `<Plug>VimspectorRestart`                      | Restart debugging with the same configuration.                      | `vimspector#Restart()`                                            |
 | `<Plug>VimspectorPause`                       | Pause debuggee.                                                     | `vimspector#Pause()`                                              |
 | `<Plug>VimspectorBreakpoints`                 | Show/hide the breakpoints window                                    | `vimspector#ListBreakpoints()`                                    |
 | `<Plug>VimspectorToggleBreakpoint`            | Toggle line breakpoint on the current line.                         | `vimspector#ToggleBreakpoint()`                                   |
@@ -688,6 +662,7 @@ features to set your own mappings. To that end, Vimspector defines the following
 | `<Plug>VimspectorStepOver`                    | Step Over                                                           | `vimspector#StepOver()`                                           |
 | `<Plug>VimspectorStepInto`                    | Step Into                                                           | `vimspector#StepInto()`                                           |
 | `<Plug>VimspectorStepOut`                     | Step out of current function scope                                  | `vimspector#StepOut()`                                            |
+| `<Plug>VimspectorDisassemble`                 | Show disassembly. Enable instruction stepping                       | `vimspector#ShowDisassembly()`                                    |
 | `<Plug>VimspectorUpFrame`                     | Move up a frame in the current call stack                           | `vimspector#UpFrame()`                                            |
 | `<Plug>VimspectorDownFrame`                   | Move down a frame in the current call stack                         | `vimspector#DownFrame()`                                          |
 | `<Plug>VimspectorJumpToNextBreakpoint`        | Move Cursor to the next breakpoint in current file                  | `vimspector#JumpToNextBreakpoint()`                               |
@@ -707,7 +682,7 @@ nmap <F5> <Plug>VimspectorContinue
 
 In addition, many users probably want to only enable certain Vimspector mappings
 while debugging is active. This is also possible, though it requires writing
-[some vimscipt](#custom-mappings-while-debugging).
+[some vimscript](#custom-mappings-while-debugging).
 
 That said, many people are familiar with particular debuggers, so the following
 mappings can be enabled by setting `g:vimspector_enable_mappings` to the
@@ -733,8 +708,15 @@ let g:vimspector_enable_mappings = 'VISUAL_STUDIO'
 | `F9`            | `<Plug>VimspectorToggleBreakpoint`      | Toggle line breakpoint on the current line.
 | `Shift F9`      | `<Plug>VimspectorAddFunctionBreakpoint` | Add a function breakpoint for the expression under cursor
 | `F10`           | `<Plug>VimspectorStepOver`              | Step Over
+| `Ctrl F10`      | `<Plug>VimspectorRunToCursor`           | Run to cursor*
 | `F11`           | `<Plug>VimspectorStepInto`              | Step Into
 | `Shift F11`     | `<Plug>VimspectorStepOut`               | Step out of current function scope
+| `Alt 8`         | `<Plug>VimspectorDisassemble`           | Show disassembly
+
+***NOTE: Some mappings, such as ctrl and F-keys may not work depending on your
+terminal, keyboard, windowing system and all sorts of other things.
+See `:help modifyOtherKeys` and other sources. If you are unable to make this
+work, just use the "human mode" mappings.***
 
 ## Human Mode
 
@@ -775,11 +757,14 @@ nmap <Leader>di <Plug>VimspectorBalloonEval
 xmap <Leader>di <Plug>VimspectorBalloonEval
 ```
 
-You may also wish to add mappings for navigating up/down the stack, for example:
+You may also wish to add mappings for navigating up/down the stack, toggling
+the breakpoints window, and showing disassembly, for example:
 
 ```viml
 nmap <LocalLeader><F11> <Plug>VimspectorUpFrame
 nmap <LocalLeader><F12> <Plug>VimspectorDownFrame
+nmap <LocalLeader>B     <Plug>VimspectorBreakpoints
+nmap <LocalLeader>D     <Plug>VimspectorDisassemble
 ```
 
 # Usage and API
@@ -789,12 +774,123 @@ users, the [mappings](#mappings) section contains the most common commands and
 default usage. This section can be used as a reference to create your own
 mappings or custom behaviours.
 
+All the below instructions assume a single debugging session. For details on how
+to debug multiple independent apps at the same time, see
+[multiple debugging sessions][#multiple-debugging-sessions].
+
 ## Launch and attach by PID:
 
 * Create `.vimspector.json`. See [below](#supported-languages).
 * `:call vimspector#Launch()` and select a configuration.
 
 ![debug session](https://puremourning.github.io/vimspector-web/img/vimspector-overview.png)
+
+Launching a new session makes it the active
+[debugging session][#multiple-debugging-sessions].
+
+### Picking a PID
+
+If the debug adapter configuration uses `pidProperty`, and you make an `attach`
+request, then you will be asked to enter a PID (process ID) to attach to.
+
+To make this easier, Vimspector supplies a little utility for listing PIDs. It's
+like a very very simple clone of `ps` but works on all the supported platforms.
+See [its README](support/vimspector_process_list/README.md) for instructions on
+setting it up.
+
+Run `go build` in the `support/vimspector_process_list` directory to set it
+up.
+
+If Vimspector is able to find this app, it will try to list all processes owned
+by the current user by default.
+
+Alternatively (preferably), you can use a special form of variable expansion
+called `${PickProcess(\"binaryName\")}`. The version of this call will list all
+processes for the current user that match this binary name.
+
+For example:
+
+```jsonc
+"Attach": {
+  "adapter": "CodeLLDB",
+  "configuration": {
+    "request": "attach",
+    "program": "${workspaceRoot}/Jails",
+    "pid": "${PickProcess(\"jails\")}"
+  }
+}
+```
+
+This will list each matching processes, its parent process, start time and
+working directory. It's looks something like this:
+
+```
+PID   PPID           CWD                                           START
+52218 52217 (Python) /Users/ben/.vim/bundle/lsp-examples/jai/Jails 2023-05-22 16:02:24
+Enter Process ID:
+```
+
+You then enter the PID and hit `<CR>`.
+
+You can even replace the process picker with your own function. If you define
+some function and set `g:vimspector_custom_process_picker_func` to the name of
+that function. It will be passed any arguments passed to the `PickProcess`
+expansion function. It will also be used whenever a `pidProperty` is specified,
+so it must also handle no arguments (use `...` as the formal arguments
+for the function, see `:help ...`).
+
+For example, to use `fzf` along with the supplied `vimspector_process_list`:
+
+```viml
+function! CustomPickProcess( ... ) abort
+  let ps = $HOME .. '/.vim/bundle/vimspector/support/vimspector_process_list/vimspector_process_list'
+  " a:0 is number of args
+  " a:1 is the optional binary name
+  if a:0 > 0
+    let ps .= ' ^' . a:1 . '$'
+  endif
+
+  let line_selected = fzf#run( {
+      \ 'source': ps,
+      \ 'options': '--header-lines=1  '
+      \          . '--prompt="Select Process: " '
+      \ ,
+      \
+      \ } )[ 0 ]
+  if empty( line_selected)
+    return 0
+  endif
+  let pid = split( line_selected )[ 0 ]
+  return str2nr( pid )
+endfunction
+
+
+let g:vimspector_custom_process_picker_func = 'CustomPickProcess'
+```
+
+Or to use `fzf` with the output of `ps`:
+
+```viml
+function! CustomPickProcess( ... ) abort
+  let ps = 'ps aux'
+
+  let line_selected = fzf#run( {
+      \ 'source': ps,
+      \ 'options': '--header-lines=1  '
+      \          . '--prompt="Select Process: " '
+      \ ,
+      \
+      \ } )[ 0 ]
+  if empty( line_selected)
+    return 0
+  endif
+  let pid = split( line_selected )[ 0 ]
+  return str2nr( pid )
+endfunction
+
+
+let g:vimspector_custom_process_picker_func = 'CustomPickProcess'
+```
 
 ### Launch with options
 
@@ -881,6 +977,12 @@ For example, to get an array of configurations and fuzzy matching on the result
 See the [mappings](#mappings) section for the default mappings for working with
 breakpoints. This section describes the full API in vimscript functions.
 
+Breakpoints are associated with the current
+[debugging session][#multiple-debugging-sessions]. When switching between
+sessions, the breakpoint signs for the previous session are removed and the
+breakpoints for the newly activated session are displayed. While it might be
+useful to see breakpoints for all sessions, this can be very confusing.
+
 ### Breakpoints Window
 
 Use `:VimspectorBreakpoints` or map something to `<Plug>VimspectorBreakpoints`
@@ -898,12 +1000,14 @@ The following mappings apply by default in the breakpoints window:
 * `t`, `<F9>` - toggle, i.e. enable/disable breakpoint
 * `T` - toggle, i.e. enable/disable ALL breakpoints
 * `dd`, `<Del>` - delete the current breakpoint
+* `cc`, `C` - edit the current breakpoint options
 * `i`, `a`, `o` - add a new line breakpoint
 * `I`, `A`, `O` - add a new function breakpoint
 * `<Enter>` or double-click - jump to the line breakpoint
 
 A WinBar is provided (where supported) too. This adds functions like
-saving/restoring sessions and clearing all breakpoints too.
+saving/restoring sessions, clearing all breakpoints, and resetting the exception
+breakpoints options.
 
 ### Line breakpoints
 
@@ -955,6 +1059,28 @@ then answer `Y` to that (for example).
 You can configure your choices in the `.vimspector.json`. See
 [the configuration guide][vimspector-ref-exception] for details on that.
 
+### Data breakpoints
+
+Data breakpoints are not supported by all debug adapters. They are breakpoints
+which trigger when some memory is read or written. They can be created:
+
+- For a given variable in the variables window (`<F9>` on variable)
+- For a given child variable in the watches or variables windows 
+  (`<F9>` on child variable)
+- For an arbitrary expression which evaluates to an address (`<F9>` in watch
+  window, not on any variable)
+
+When specifying an expression, you can also specify a size.
+
+In general, if you hit `<F9>` (or whatever mapping you have) in the Variables or
+Watch window, you'll be adding a Data Breakpoint. If the context looks like a
+variable, then Vimspector will ask the debug adapter to create a data breakpoint
+on that variable expression. Otherwise, you'll be asked to enter an expression,
+or an address and a size, depending on the capabilities of the debugger.
+
+NOTE: Not all debug adapters support data breakpoints, and the ability to
+actually create them often depends on the hardware of the target.
+
 ### API Summary
 
 ***NOTE:*** Previously, ToggleBreakpoint would cycle between 3 states:
@@ -973,11 +1099,14 @@ deletes a breakpoint. If you wish to 'disable' breakpoints, use the
 * Use `vimspector#ClearLineBreakpoint( file_name, line_num )` to
   remove a breakpoint at a specific file/line
 * Use `vimspector#ClearBreakpoints()` to clear all breakpoints
+* Use `vimspector#ResetExceptionBreakpoints()` to clear the exception breakpoints
+  configuration and re-answer the various questions like "Break on C++ Throw"
 * Use `:VimspectorMkSession` and `:VimspectorLoadSession` to save and restore
   breakpoints
 * `call vimspector#ListBreakpoints()` - toggle breakpoints window
 * `call vimspector#BreakpointsAsQuickFix()` - return the current set of
   breakpoints in vim quickfix format
+* `call vimspector#AddDataBreakpoint()` - add a data breakpoint
 
 Examples:
 
@@ -997,6 +1126,28 @@ Examples:
 * `VimspectorLoadSession` - read `.vimspector.session`
 * `VimspectorMkSession my_session_file` - create `my_session_file`
 * `VimspectorLoadSession my_session_file` - read `my_session_file`
+
+### Instruction breakpoints
+
+**NOTE**: Experimental feature, which may change significantly in future based
+on user feedback.
+
+Instruction breakpoints can be added from the [disassembly window](#disassembly)
+in the same way that you add [line breakpoints](#line-breakpoints) in the code
+window. The same mappings and functions work for adding and toggling them. Where
+supported by the debug adapter, you can even create logpoints and conditional
+breakpoints this way.
+
+Currently, instruction breakpoints are internally modelled as line breakpoints
+against the buffer containing the disassembly, but that may change in future, so
+please don't rely on this.
+
+Instruction breakpoints are also visible from and can be deleted/disabled from
+the [breakpoints window](#breakpoints-window).
+
+Currently, instruction breakpoints are automatically cleared when the debug
+session ends. The reason for this is that the addresses can't be guaranteed to
+be valid for any other debug session. However, this may also change in future.
 
 ### Clear breakpoints
 
@@ -1026,18 +1177,22 @@ pick one.
 Vimspector can save and restore breakpoints (and some other stuff) to a session
 file. The following commands exist for that:
 
-* `VimspectorMkSession [file name]` - save the current set of line breakpoints,
+* `VimspectorMkSession [file/dir name]` - save the current set of line breakpoints,
   logpoints, conditional breakpoints, function breakpoints and exception
-  breakpoint filters to the session file.
-* `VimspectorLoadSession [file name]` - read breakpoints from the session file
-  and replace any currently set breakpoints. Prior to loading, all current
-  breakpoints are cleared (as if `vimspector#ClearLineBreakpoints()` was
-  called).
+  breakpoint filters to the supplied session file or the default file in the
+  supplied directory.
+* `VimspectorLoadSession [file/dir name]` - read breakpoints from the session
+  file supplied or the default file in the supplied directory and replace any
+  currently set breakpoints. Prior to loading, all current breakpoints are
+  cleared (as if `vimspector#ClearLineBreakpoints()` was called).
 
-In both cases, the file name argument is optional. By default, the file is named
-`.vimspector.session`, but this can be changed globally by setting
+In both cases, the file/dir name argument is optional. By default, the file is
+named `.vimspector.session`, but this can be changed globally by setting
 `g:vimspector_session_file_name` to something else, or by manually specifying a
-path when calling the command.
+path when calling the command. If you supply a directory, the default or
+configured session file name is read from or written to that directory.
+Otherwise, the file is read based on the currently open buffer or written to the
+current working directory.
 
 Advanced users may wish to automate the process of loading and saving, for
 example by adding `VimEnter` and `VimLeave` autocommands. It's recommended in
@@ -1061,7 +1216,12 @@ autocmd SessionLoadPost * silent! VimspectorLoadSession
 ## Stepping
 
 * Step in/out, finish, continue, pause etc. using the WinBar, or mappings.
-* If you really want to, the API is `vimspector#StepInto()` etc.
+* Stepping is contextual. By default, stepping is statement granularity. But
+  if your cursor is in the [disassembly window](#disassembly), then stepping
+  defaults to instruction granularity.
+* If you really want to, the API is `vimspector#StepInto()` etc.. There are also
+  `vimspector#StepSOver()` and `vimspector#StepIOver()` etc. variants for
+  statement and instruction granularity respectively.
 
 ![code window](https://puremourning.github.io/vimspector-web/img/vimspector-code-window.png)
 
@@ -1074,6 +1234,7 @@ autocmd SessionLoadPost * silent! VimspectorLoadSession
 * View the type of the variable via mouse hover.
 * When changing the stack frame the locals window updates.
 * While paused, hover to see values.
+* Create a data breakpoint with `<F9>`.
 
 ![locals window](https://puremourning.github.io/vimspector-web/img/vimspector-locals-window.png)
 
@@ -1103,6 +1264,10 @@ All rules for `Variables and scopes` apply plus the following:
 
 ![variable eval hover](https://puremourning.github.io/vimspector-web/img/vimspector-variable-eval-hover.png)
 
+You can disable automatic hovering popup by settings
+`g:vimspector_enable_auto_hover=0` before starting the debug session. You can
+then map something to `<Plug>VimspectorBalloonEval` and trigger it manually.
+
 ## Watches
 
 The watch window is used to inspect variables and expressions. Expressions are
@@ -1120,6 +1285,7 @@ to add a new watch expression.
 * Set the value of the variable with `<C-CR>` (control + `<CR>`) or
   `<leader><CR>` (if `modifyOtherKeys` doesn't work for you)
 * Delete with `<DEL>`.
+* Create a data breakpoint with `<F9>`.
 
 ![watch window](https://puremourning.github.io/vimspector-web/img/vimspector-watch-window.png)
 
@@ -1130,6 +1296,10 @@ If you prefer a more verbose display for variables and watches, then you can
 value are displayed, with other data available from hovering the mouse or
 triggering `<Plug>VimspectorBalloonEval` on the line containing the value in the
 variables (or watches) window.
+
+You can disable automatic hovering popup by settings
+`g:vimspector_enable_auto_hover=0` before starting the debug session. You can
+then map something to `<Plug>VimspectorBalloonEval` and trigger it manually.
 
 ### Watch autocompletion
 
@@ -1146,6 +1316,45 @@ let g:ycm_semantic_triggers =  {
   \   'VimspectorPrompt': [ '.', '->', ':', '<' ]
 }
 ```
+
+## Disassembly
+
+* Display disassembly around current PC
+* Step over/into/out by instruction (contextually, or using the WinBar)
+* `:VimspectorDisassemble`, `vimspector#ShowDisassembly()` or
+  `<Plug>VimspectorDisassemble`
+
+[![Demo](https://asciinema.org/a/esEncAxP45CJmo8Em1sQtxRYe.svg)](https://asciinema.org/a/esEncAxP45CJmo8Em1sQtxRYe)
+
+Some debug adapters (few!) support disassembly. The way this works in DAP is a
+little weird, but in practice vimspector will ask to disassemble a number of
+instructions around the current stack frame's PC. This is then shown in a window
+with a WinBar similar to the Code window, but with instruction stepping
+granularity. There's a sign for the current instruction and the syntax
+highlighting defaults to "asm" which mostly works ok for x86 and ARM.
+
+![disassembly-view](https://user-images.githubusercontent.com/10584846/194766584-d798c96b-6e4e-4914-9d4a-991c219f78d0.png)
+
+As mentioned above, when your current window is the disassembly windows and you
+use the default "step" commands (e.g. `<F10>`), the stepping is automatically
+changed to per-instruction rather than per statement.
+
+Each time the process stops, vimspector requests about 2 windows full of
+instructions around the current PC. To see more, you can scroll the window.
+Vimspector will page in an extra screenful of instructions when the window
+scrolls to the top or near the bottom. This isn't perfect. Sometimes you have to
+scroll a bit more to make it page in (e.g. ctrl-e ctrl-y at the top).
+This is not ideal, and may be improved in future.
+
+You can control the initial height of the disassembly window with
+`let g:vimspector_disassembly_height = 10` (or whatever number of lines).
+
+The filetype (and syntax) of the buffers in the disassembly window is
+`vimspector-disassembly`. You can use `FileType` autocommands to customise
+things like the syntax highlighting.
+
+***NOTE***: This feature is experimental and may change in any way based on user
+feedback.
 
 ## Dump memory
 
@@ -1194,6 +1403,21 @@ be changed manually to "switch to" that thread.
 ![stack trace](https://puremourning.github.io/vimspector-web/img/vimspector-callstack-window.png)
 
 The stack trace is represented by the buffer `vimspector.StackTrace`.
+
+### Child sessions
+
+If there are child debug sessions, such as where the debugee
+launches child processes and the debug adapter supports multi-session
+debugging, then each session's threads are shown separately. The currently
+active session is the one that is highlighted as the currently active
+thread/stack frame. To switch control to a different session, focus a thread
+within that session.
+
+![multiple sessions](https://user-images.githubusercontent.com/10584846/232473234-666d1a77-81f2-40d5-bc65-ebab774888ce.png)
+
+Note: This refers to sessions created as children of an existing session, and is
+not to be confused with
+[multiple (parent) debugging sessions][#multiple-debugging-sessions].
 
 ## Program Output
 
@@ -1279,6 +1503,83 @@ choice as to whether or not to terminate the debuggee, you will be prompted to
 choose. The same applies for `vimspector#Stop()` which can take an argument:
 `vimspector#Stop( { 'interactive': v:true } )`.
 
+# Multiple debugging sessions
+
+**NOTE**: This feature is _experimental_ and any part of it may change in
+response to user feedback.
+
+Vimspector supports starting an arbitrary number of debug sessions. Each session
+is associated with an individual UI tab. Typically, you only debug a single app
+and so don't need to think about this, but this advanced feature can be useful
+if you need to simultaneously debug multiple, independent applications, or
+multiple independent instances of your application.
+
+At any time there is a single "active" root session. Breakpoints are associated
+with the current session, and all UI and API commands are applied to the
+currently active session.
+
+When switching between root sessions, the breakpoint signs for the previous
+session are removed and the breakpoints for the newly activated session are
+displayed.  While it might be useful to see breakpoints for all sessions, this
+can be very confusing.
+
+A typical workflow might be:
+
+1. Start debugging a server app (e.g. `:edit server.cc` then `<F5>`). This
+   starts a debug session named after the configuration selected. You could
+   rename it `:VimspectorRenameSession server`.
+2. Open the client code in a new tab (e.g. `:tabedit client.cc`)
+3. Instantiate and make active a new debugging session and name it `client`:
+   `:VimspectorNewSession client` (`client` is now the active session).
+4. Add a breakpoint in the `client` session and start debugging with `<F5>`.
+
+You now have 2 vimspector tabs. Intuitively, switching to a particular tab will
+make its session active. You can also manually switch the active session with
+`:VimspectorSwitchToSession <name>`.
+
+So, in summary you have the following facilities:
+
+* `VimspectorNewSession <name>`
+  This creates a new session and makes it active. Optional name is used
+  in place of the generated one when starting a launch.
+* Switching to a specific debug tab makes that session active. This is
+  intuitive and probably the most common way to work with this.
+* Switching manually using `VimspectorSwitchToSession <tab complete>`.
+* Name/Rename session with `VimspectorRenameSession <new name>`
+* Root-level sessions are never 'destroyed' but you can manually destroy
+  them (if you're brave) using `VimspectorDestroySession <name>`. You
+  can't destroy a running/active session.
+* `vimspector#GetSessionName()` useful for putting in a statusline. There's also
+  `vimspector#GetSessionID()` for techies.
+
+Here's an example of how you can display the current session name in the
+`statusline` (see `:help statusline`, or the documentation for your fancy status
+line plugin).
+
+```viml
+function! StlVimspectorSession()
+  " Only include in buffers containing actual files
+  if !empty( &buftype )
+    return ''
+  endif
+
+  " Abort if vimspector not loaded
+  if !exists( '*vimspector#GetSessionName' ) ||
+        \ !exists( '*vimspector#GetSessionID' )
+    return ''
+  endif
+
+  return vimspector#GetSessionName()
+        \ .. ' ('
+        \ .. vimspector#GetSessionID()
+        \ .. ')'
+endfunction
+
+" ... existing statusline stuff
+" set statusline=...
+" Show the vimspector active session name (max 20 chars) if there is onw.
+set statusline+=%(\ %.20{StlVimspectorSession()}\ %)
+```
 
 # Debug profile configuration
 
@@ -1297,14 +1598,16 @@ Currently tested with the following debug adapters.
 
 ## C, C++, Rust, etc.
 
+* Recommended: [CodeLLDB](#rust)
 * [vscode-cpptools](https://github.com/Microsoft/vscode-cpptools)
-* On macOS, I *strongly* recommend using [CodeLLDB](#rust) instead for C and C++
+* [lldb-dap](https://marketplace.visualstudio.com/items?itemName=llvm-vs-code-extensions.lldb-dap)
+* I *strongly* recommend using [CodeLLDB](#rust) over cpptools for almost all
 projects. It's really excellent, has fewer dependencies and doesn't open console
 apps in another Terminal window.
 
 
-Example `.vimspector.json` (works with both `vscode-cpptools` and `lldb-vscode`.
-For `lldb-vscode` replace the name of the adapter with `lldb-vscode`:
+Example `.vimspector.json` (works with both `vscode-cpptools` and `lldb-dap`.
+For `lldb-dap` replace the name of the adapter with `lldb-dap`:
 
 * vscode-cpptools Linux/MacOS:
 
@@ -1360,6 +1663,31 @@ licensing.
 }
 ```
 
+* `lldb-dap`
+
+```json
+
+    "lldb-dap": {
+      "adapter": {
+          "command": [
+            // TODO: Replace this with the path to your installation of lldb
+            "/opt/homebrew/Cellar/llvm/bin/lldb-dap"
+          ],
+          "name": "lldb"
+      },
+      "configuration": {
+        "request": "launch",
+        "program": "${workspaceRoot}/${fileBasenameNoExtension}",
+        "args": [
+            "*${args}"
+        ],
+        "stopOnEntry": true,
+        "runInTerminal": true,
+        "cwd": "${workspaceRoot}"
+      }
+    }
+```
+
 ### Data visualization / pretty printing
 
 Depending on the backend you need to enable pretty printing of complex types
@@ -1407,22 +1735,22 @@ an example of getting Vimspector to remotely launch and attach.
 
 * CodeLLDB (MacOS)
 
-CodeLLDB is superior to vscode-cpptools in a number of ways on macOS at least.
+CodeLLDB is superior to vscode-cpptools in a number of ways.
 
 See [Rust](#rust).
 
-* lldb-vscode (MacOS)
+* lldb-dap (MacOS)
 
-An alternative is to to use `lldb-vscode`, which comes with llvm.  Here's how:
+An alternative is to to use `lldb-dap`, which comes with llvm.  Here's how:
 
 * Install llvm (e.g. with HomeBrew: `brew install llvm`)
 * Create a file named
-  `/path/to/vimspector/gadgets/macos/.gadgets.d/lldb-vscode.json`:
+  `/path/to/vimspector/gadgets/macos/.gadgets.d/lldb-dap.json`:
 
 ```json
 {
   "adapters": {
-    "lldb-vscode": {
+    "lldb-dap": {
       "variables": {
         "LLVM": {
           "shell": "brew --prefix llvm"
@@ -1433,7 +1761,7 @@ An alternative is to to use `lldb-vscode`, which comes with llvm.  Here's how:
         "pidSelect": "ask"
       },
       "command": [
-        "${LLVM}/bin/lldb-vscode"
+        "${LLVM}/bin/lldb-dap"
       ],
       "env": {
         "LLDB_LAUNCH_FLAG_LAUNCH_IN_TTY": "YES"
@@ -1447,7 +1775,7 @@ An alternative is to to use `lldb-vscode`, which comes with llvm.  Here's how:
 ## Rust
 
 Rust is supported with any gdb/lldb-based debugger. So it works fine with
-`vscode-cpptools` and `lldb-vscode` above. However, support for rust is best in
+`vscode-cpptools` and `lldb-dap` above. However, support for rust is best in
 [`CodeLLDB`](https://github.com/vadimcn/vscode-lldb#features).
 
 * `./install_gadget.py --enable-rust` or `:VimspectorInstall CodeLLDB`
@@ -1461,7 +1789,18 @@ Rust is supported with any gdb/lldb-based debugger. So it works fine with
       "filetypes": [ "rust" ],
       "configuration": {
         "request": "launch",
-        "program": "${workspaceRoot}/target/debug/vimspector_test"
+        "program": "${workspaceRoot}/target/debug/vimspector_test",
+        "sourceLanguages": [ "rust" ]
+      }
+    },
+    "attach": {
+      "adapter": "CodeLLDB",
+      "filetypes": [ "rust", "c", "cpp", "jai" ],
+      "configuration": {
+        "request": "attach",
+        "program": "${workspaceRoot}/${fileBasenameNoExtension}",
+        "PID": "${PID}",
+        "sourceLanguages": [ "rust" ]
       }
     }
   }
@@ -1469,8 +1808,81 @@ Rust is supported with any gdb/lldb-based debugger. So it works fine with
 ```
 
 * Docs: https://github.com/vadimcn/vscode-lldb/blob/master/MANUAL.md
+* ***NOTE***: The CodeLLDB manual assumes you are using VSCode (sigh) and therefore says things which don't work in vimspector, as there is a whole load of javascript nonesense behind every VSCode plugin. I can't possibly document all the wierdnesses, but the following are known
 
 
+1. To use the ["custom" launch](https://github.com/vadimcn/vscode-lldb/blob/master/MANUAL.md#custom-launch), you can't use `"request": "custom"` - this is invalid. Instead use `"request": "launch", "custom": true`. Because [reasons](https://github.com/vadimcn/vscode-lldb/blob/master/extension/main.ts#L397-L401)
+2. All the integration with `cargo` is done in the vscode javascript madness, so is not supported.
+3. The stuff about [remote agents](https://github.com/vadimcn/vscode-lldb/blob/master/MANUAL.md#connecting-to-a-gdbserver-style-agent) uses `"request": custom`; see the point about "custom" launch above
+4. Source Mapping (i.e., enabling `step-into` for standard library functions) can be done by adding `"sourceMap": { "from_path" : "to_path" }`. `"from_path"` can be found in disassembly window by going up in the stack trace; `"to_path"` is just your locally installed standard library path for current toolchain.
+
+## Jai
+
+Jai debugging works fine with any of the other native debuggers. I recommend [CodeLLDB](#rust), but cpptools also works.
+
+Example:
+
+```jsonc
+{
+  "$schema": "https://puremourning.github.io/vimspector/schema/vimspector.schema.json",
+  "adapters": {
+    "gdb-with-build": {
+      "extends": "vscode-cpptools",
+      "variables": {
+        "buildme": {
+          "shell": "jai ${workspaceRoot}/build.jai"
+        }
+      }
+    },
+    "codelldb-with-build": {
+      "extends": "CodeLLDB",
+      "variables": {
+        "buildme": {
+          "shell": "jai ${workspaceRoot}/build.jai"
+        }
+      }
+    }
+  },
+  "configurations": {
+    "Run - gdb": {
+      "adapter": "gdb-with-build",
+      "filetypes": [ "jai" ],
+      "configuration": {
+        "request": "launch",
+        "program": "${workspaceRoot}/${binaryName}",
+        "args": [ "*${args}" ],
+        "stopAtEntry": true,
+        "stopOnEntry": true
+      }
+    },
+    "Run - lldb": {
+      "extends": "Run - gdb",
+      "filetypes": [ "jai" ],
+      "adapter": "codelldb-with-build"
+    },
+    "Attach - gdb": {
+      "adapter": "vscode-cpptools",
+      "filetypes": [ "jai" ],
+      "configuration": {
+        "request": "attach",
+        "program": "${workspaceRoot}/${binaryName}",
+        "processId": "${PID}"
+      }
+    },
+    "Attach - lldb": {
+      "extends": "Attach - gdb",
+      "filetypes": [ "jai" ],
+      "adapter": "CodeLLDB",
+      "configuration": {
+        "pid": "${PID}"
+      }
+    }
+  }
+}
+
+```
+
+<img width="1031" alt="Screenshot 2022-10-09 at 11 27 13" src="https://user-images.githubusercontent.com/10584846/194751648-72419216-2e4c-4ddc-adf7-9008f7e4f3c2.png">
 
 ## Python
 
@@ -1478,9 +1890,6 @@ Rust is supported with any gdb/lldb-based debugger. So it works fine with
 * Install with `install_gadget.py --enable-python` or `:VimspectorInstall
   debugpy`, ideally requires a working compiler and the python development
   headers/libs to build a C python extension for performance.
-* ***NOTE***: Debugpy no longer supports python 2. In order to continue to debug
-  python 2 applications, use the `debugpy-python2` adapter after installing the
-  `debugpy-python2` gadget.
 
 * Full options: https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings
 
@@ -1554,28 +1963,14 @@ an example of getting Vimspector to remotely launch and attach.
 
 ### Python 2
 
-In order to continue to debug python 2 applications, ensure that you install the
-`debugpy-python2` gadget (e.g. `--force-enable-python2` or
-`:VimspectorInstall debugpy-python2`), and then change your configuration to
-use:
-
-```json
-{
-  "configurations": {
-    "Python Attach": {
-      "adapter": "debugpy-python2",
-      // ...
-    }
-  }
-}
-
-```
-
-for examk
+Python 2 is no longer supported, having been out of support by both Python and
+debugpy for years.
 
 ## TCL
 
 * TCL (TclProDebug)
+
+Requires TCL 8.x. Does not work with TCL 9.
 
 See [my fork of TclProDebug](https://github.com/puremourning/TclProDebug) for instructions.
 
@@ -1651,38 +2046,6 @@ not documented by delve itself).
 The vscode-go docs also have useful
 [troubleshooting information](https://github.com/golang/vscode-go/blob/master/docs/debugging.md#troubleshooting)
 
-* Go (legacy vscode-go)
-
-Requires:
-
-* `install_gadget.py --enable-go` or `:VimspectorInstall vscode-go`
-* [Delve][delve-install] installed, e.g. `go get -u github.com/go-delve/delve/cmd/dlv`
-* Delve to be in your PATH, or specify the `dlvToolPath` launch option
-
-NOTE: Vimspector uses the ["legacy" vscode-go debug adapter](https://github.com/golang/vscode-go/blob/master/docs/debugging-legacy.md) rather than the "built-in" DAP support in Delve. You can track https://github.com/puremourning/vimspector/issues/186 for that.
-
-```json
-{
-  "configurations": {
-    "run": {
-      "adapter": "vscode-go",
-      "filetypes": [ "go" ], // optional
-      "configuration": {
-        "request": "launch",
-        "program": "${fileDirname}",
-        "mode": "debug",
-        "dlvToolPath": "$HOME/go/bin/dlv"
-        // example, to disable delve's go version check
-        // "dlvFlags": [ "--check-go-version=false" ]
-      }
-    }
-  }
-}
-```
-
-See the vscode-go docs for
-[troubleshooting information](https://github.com/golang/vscode-go/blob/master/docs/debugging-legacy.md#troubleshooting)
-
 ## PHP
 
 This uses the php-debug, see
@@ -1755,43 +2118,65 @@ curl "http://localhost?XDEBUG_SESSION_START=xdebug"
 or use the previously mentioned Xdebug Helper extension (which sets a `XDEBUG_SESSION` cookie)
 
 ### Debug cli application
-```
+
+```sh
 export XDEBUG_CONFIG="idekey=xdebug"
 php <path to script>
 ```
 
-## JavaScript, TypeScript, etc.
+## JavaScript and TypeScript
 
 * Node.js
 
-Requires:
+This uses [vscode-js-debug](https://github.com/microsoft/vscode-js-debug), the
+debugger that is used in vscode as well. For additional configurations, check
+the documentation [here](https://github.com/microsoft/vscode-js-debug/blob/main/OPTIONS.md).
 
-* `install_gadget.py --force-enable-node`
-* For installation, a Node.js environment that is < node 12. I believe this is an
-  incompatibility with gulp. Advice, use [nvm](https://github.com/nvm-sh/nvm) with `nvm install --lts 10; nvm
-  use --lts 10; ./install_gadget.py --force-enable-node ...`
-* Options described here:
-  https://code.visualstudio.com/docs/nodejs/nodejs-debugging
-* Example: `support/test/node/simple`
+To install vscode-js-debug, run `VimspectorInstall vscode-js-debug` from vim or
+run the install script `install_gadget.py --force-enable-node`. There are
+multiple examples which you can check out. Find them under
+`support/test/node/simple`, `support/test/node/multiprocess` and
+`support/test/node/typescript`. A typical configuration for debugging typescript
+looks like this:
 
 ```json
+
 {
   "configurations": {
-    "run": {
-      "adapter": "vscode-node",
-      "filetypes": [ "javascript", "typescript" ], // optional
+    "run - js-debug": {
+      "adapter": "js-debug",
+      "filetypes": [ "javascript", "typescript" ],
       "configuration": {
         "request": "launch",
-        "protocol": "auto",
-        "stopOnEntry": true,
-        "console": "integratedTerminal",
-        "program": "${workspaceRoot}/simple.js",
-        "cwd": "${workspaceRoot}"
+        "program": "${workspaceRoot}/src/index.ts",
+        "cwd": "${workspaceRoot}",
+        "stopOnEntry": false,
+        "type": "pwa-node"
+      },
+      // 'breakpoints' is an optional part. This is a way to configure exception
+      // breakpoints. You can leave this out or set as you prefer.
+      "breakpoints": {
+        "exception": {
+          "all": "N",
+          "uncaught": "N"
+        }
       }
     }
   }
 }
+
 ```
+
+`vscode-js-debug` supports a number of different "types" and can do some stuff
+that may or may not work. The `type` field is sadly not documented, but the
+valid values are [defined here in the DebugType enum](https://github.com/microsoft/vscode-js-debug/blob/main/src/common/contributionUtils.ts#L61).
+
+Vimspector has only been tested with `pwa-node` type.
+
+Note also that for some reason this debug adapter always forces us to start
+multiple debug sessions. For a user, that shouldn't change anything (other than
+perhaps a slightly confusing stack trace). But it does make things more
+complicated and so there may be subtle bugs.
 
 * Chrome/Firefox
 
@@ -2005,10 +2390,6 @@ This debugger uses stdio to communicate with the running process, so calls to
 
 ## Other servers
 
-* Java - vscode-javac. This works, but is not as functional as Java Debug
-  Server. Take a look at [this
-  comment](https://github.com/puremourning/vimspector/issues/3#issuecomment-576916076)
-  for instructions.
 - See also [the wiki](https://github.com/puremourning/vimspector/wiki/Additional-Language-Support)
   which has community-contributed plugin files for some languages.
 
@@ -2019,8 +2400,8 @@ There is very limited support for customisation of the UI.
 
 ## Changing the default signs
 
-Vimsector uses the following signs internally. If they are defined before
-Vimsector uses them, they will not be replaced. So to customise the signs,
+Vimspector uses the following signs internally. If they are defined before
+Vimspector uses them, they will not be replaced. So to customise the signs,
 define them in your `vimrc`.
 
 
@@ -2032,6 +2413,7 @@ define them in your `vimrc`.
 | `vimspectorBPDisabled`    | Disabled breakpoint                     | 9        |
 | `vimspectorPC`            | Program counter (i.e. current line)     | 200      |
 | `vimspectorPCBP`          | Program counter and breakpoint          | 200      |
+| `vimspectorNonActivePC`   | Program counter for non-focused thread  | 9        |
 | `vimspectorCurrentThread` | Focussed thread in stack trace view     | 200      |
 | `vimspectorCurrentFrame`  | Current stack frame in stack trace view | 200      |
 
@@ -2044,6 +2426,7 @@ sign define vimspectorBPLog         text=\ ◆ texthl=SpellRare
 sign define vimspectorBPDisabled    text=\ ● texthl=LineNr
 sign define vimspectorPC            text=\ ▶ texthl=MatchParen linehl=CursorLine
 sign define vimspectorPCBP          text=●▶  texthl=MatchParen linehl=CursorLine
+sign define vimspectorNonActivePC   linehl=DiffAdd
 sign define vimspectorCurrentThread text=▶   texthl=MatchParen linehl=CursorLine
 sign define vimspectorCurrentFrame  text=▶   texthl=Special    linehl=CursorLine
 ```
@@ -2082,11 +2465,13 @@ For example:
 
 ```viml
 let g:vimspector_sign_priority = {
-  \    'vimspectorBP':         3,
-  \    'vimspectorBPCond':     2,
-  \    'vimspectorBPLog':      2,
-  \    'vimspectorBPDisabled': 1,
-  \    'vimspectorPC':         999,
+  \    'vimspectorBP':          3,
+  \    'vimspectorBPCond':      3,
+  \    'vimspectorBPLog':       3,
+  \    'vimspectorBPDisabled':  3,
+  \    'vimspectorNonActivePC': 3,
+  \    'vimspectorPC':          999,
+  \    'vimspectorPCBP':        999,
   \ }
 ```
 
@@ -2095,6 +2480,60 @@ All keys are optional. If a sign is not customised, the default priority it used
 
 See `:help sign-priority`. The default priority is 10, larger numbers override
 smaller ones.
+
+***NOTE***: The default `vimspectorNonActivePC` sign does not add any text to
+the sign column, it simply adds a line highlight so that you can see the lines
+where other threads or processes are currently stopped. As a result this sign
+normally should _merge_ with any sign that adds a symbol (such as a breakpoint
+sign).  Vim will only merge the properties of signs with the same priority, so
+if changing the default priorities, it's recommended that:
+
+1. All the breakpoint signs (`vimspectorBP`, `vimspectorBPCond`, etc.) have the
+   same priority.
+2. You also set the `vimspectorNonActivePC` sign that same priority
+3. Active PC ( `vimspectorPC`, `vimspectorPCBP`, etc.) have a higher priority.
+
+## Presentation Hints
+
+***NOTE:*** This customisation point is currently ***unusable*** and may change
+at any time.
+
+Sometimes the Debug Adapter provides hints as to how the UI should display
+certain things. This includes stack frames, variables etc.
+
+Vimspector provides a simple way to customise how these are displayed, by
+setting values in the dictionary `g:vimspector_presentation_hint_hl`.
+
+The following keys are supported with the mentioned default highlight group.
+
+
+| Group        | Key           | Usage                                                           | Default      |
+| ------------ | ------------  | -------------------------------------                           | ------------ |
+| *all*        | `normal`      | anything not covered below                                      | `Normal`     |
+| Stack trace  | `emphasize`   | emphasize sources in stack trace                                | `Title`      |
+| Stack trace  | `deemphasize` | deemphasize sources in stack trace                              | `Conceal`    |
+| Stack trace  | `label`       | stack frames which are "labels", not representing actual frames | `NonText`    |
+| Stack trace  | `subtle`      | stack frames which are internal or not interesting              | `Conceal`    |
+| Scopes       | `arguments`   | Function arguments scope                                        | `Title`      |
+| Scopes       | `locals`      | Local variables scope                                           | `Title`      |
+| Scopes       | `registers`   | Registers scope                                                 | `Title`      |
+| Variables    | `property`    | Function arguments scope                                        | `Identifier` |
+| Variables    | `method`      | Local variables scope                                           | `Function`   |
+| Variables    | `class`       | Registers scope                                                 | `Type`       |
+| Variables    | `data`        | Registers scope                                                 | `String`     |
+
+In addition, any value supplied in the DAP `VariablePresentationHint` can be set
+which will be used if supplied by the debug adapter.
+
+A silly example; the defaults should probably be OK for most colour schemes:
+
+```viml
+let g:vimspector_presentation_hint_hl = {
+  \    'normal': 'Identifier',
+  \    'label':  'Title',
+  \ }
+```
+
 
 ## Changing the default window sizes
 
@@ -2171,6 +2610,27 @@ section `Custom mappings while debugging`.
 NOTE: This is a fairly advanced feature requiring some nontrivial vimscript.
 It's possible that this feature will be incorporated into Vimspector in future
 as it is a common requirement.
+
+
+## Pre-launch building strategies
+
+In many cases you will want to rebuild your project before starting a new debugging
+session. Vimspector is not a task manager and implementing this functionality
+is out of the scope of this project. However, there are some strategies described in the
+[community wiki](https://github.com/puremourning/vimspector/wiki/Pre-launch-building-strategies)
+to achieve similar functionality.
+
+
+## Disabling the WinBar
+
+You can tell vimspector not to draw the WinBar (the toolbars in the code,
+variables, output, etc. windows) by setting:
+
+```viml
+let g:vimspector_enable_winbar=0
+```
+
+The WinBar is in any case not displayed if the mouse is not enabled.
 
 ## Advanced UI customisation
 
@@ -2295,7 +2755,7 @@ function s:SetUpTerminal()
   set norelativenumber nonumber
 endfunction
 
-augroup MyVimspectorUICustomistaion
+augroup MyVimspectorUICustomisation
   autocmd!
   autocmd User VimspectorUICreated call s:CustomiseUI()
   autocmd User VimspectorTerminalOpened call s:SetUpTerminal()

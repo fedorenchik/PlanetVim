@@ -22,6 +22,7 @@ DEFAULTS = {
   # UI
   'ui_mode':            'auto',
   'bottombar_height':   10,
+  'disassembly_height': 20,
   'variables_display_mode': 'compact', # compact/full
 
   # For ui_mode = 'horizontal':
@@ -36,6 +37,10 @@ DEFAULTS = {
   'terminal_maxheight': 15,
   'terminal_minheight': 5,
 
+  # Features
+  'enable_winbar':      True,
+  'enable_auto_hover':  True,
+
   # Session files
   'session_file_name': '.vimspector.session',
 
@@ -46,12 +51,35 @@ DEFAULTS = {
   'sign_priority': {
     'vimspectorPC':            200,
     'vimspectorPCBP':          200,
+    'vimspectorNonActivePC':   9, # must be same as vimspectorBP* to combine
     'vimspectorBP':            9,
     'vimspectorBPCond':        9,
     'vimspectorBPLog':         9,
     'vimspectorBPDisabled':    9,
     'vimspectorCurrentThread': 200,
     'vimspectorCurrentFrame':  200,
+  },
+
+  # Presentation hints
+  'presentation_hint_hl': {
+    # Source.presentationHint
+    'emphasize': 'Title',
+    'deemphasize': 'Conceal',
+
+    # StackFrame.presentationHint
+    'label': 'NonText',
+    'subtle': 'Conceal',
+
+    # Scope.presentationHint
+    'arguments': 'Title',
+    'locals': 'Title',
+    'registers': 'Title',
+
+    # VariablePresentaionHint.kind
+    'property': 'Identifier',
+    'method': 'Function',
+    'class': 'Type',
+    'data': 'String',
   },
 
   # Installer
@@ -64,6 +92,7 @@ DEFAULTS = {
       'delete': [ '<Del>' ],
       'set_value': [ '<C-CR>', '<leader><CR>' ],
       'read_memory': [ '<leader>m' ],
+      'add_data_breakpoint': [ '<F9>' ],
     },
     'stack_trace': {
       'expand_or_jump': [ '<CR>', '<2-LeftMouse>' ],
@@ -73,14 +102,16 @@ DEFAULTS = {
       'toggle': [ 't', '<F9>' ],
       'toggle_all': [ 'T' ],
       'delete': [ 'dd', '<Del>' ],
+      'edit': [ 'cc', 'C' ],
       'add_line': [ 'i', 'a', 'o', '<Insert>' ],
       'add_func': [ 'I', 'A', 'O', '<leader><Insert>' ],
-      'jump_to': [ '<2-LeftMouse>', '<Enter>' ]
+      'jump_to': [ '<2-LeftMouse>', '<Enter>' ],
     }
   },
 
   # Custom
   'java_hotcodereplace_mode': 'ask',
+  'custom_process_picker_func': '',
 
   # Debug configs
   'adapters': {},

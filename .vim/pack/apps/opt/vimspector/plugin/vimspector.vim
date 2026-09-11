@@ -117,6 +117,8 @@ nnoremap <silent> <Plug>VimspectorJumpToProgramCounter
 
 nnoremap <silent> <Plug>VimspectorBreakpoints
       \ :<c-u>call vimspector#ListBreakpoints()<CR>
+nnoremap <silent> <Plug>VimspectorDisassemble
+      \ :<c-u>call vimspector#ShowDisassembly()<CR>
 
 if s:mappings ==# 'VISUAL_STUDIO'
   nmap <F5>         <Plug>VimspectorContinue
@@ -128,8 +130,10 @@ if s:mappings ==# 'VISUAL_STUDIO'
   nmap <F9>         <Plug>VimspectorToggleBreakpoint
   nmap <S-F9>       <Plug>VimspectorAddFunctionBreakpoint
   nmap <F10>        <Plug>VimspectorStepOver
+  nmap <C-F10>      <Plug>VimspectorRunToCursor
   nmap <F11>        <Plug>VimspectorStepInto
   nmap <S-F11>      <Plug>VimspectorStepOut
+  nmap <M-8>        <Plug>VimspectorDisassemble
 elseif s:mappings ==# 'HUMAN'
   nmap <F5>         <Plug>VimspectorContinue
   nmap <leader><F5> <Plug>VimspectorLaunch
@@ -144,6 +148,20 @@ elseif s:mappings ==# 'HUMAN'
   nmap <F11>        <Plug>VimspectorStepInto
   nmap <F12>        <Plug>VimspectorStepOut
 endif
+
+" Session commands
+command! -bar -nargs=?
+      \ VimspectorNewSession
+      \ call vimspector#NewSession( <f-args> )
+command! -bar -nargs=1 -complete=custom,vimspector#CompleteSessionName
+      \ VimspectorSwitchToSession
+      \ call vimspector#SwitchToSession( <f-args> )
+command! -bar -nargs=1
+      \ VimspectorRenameSession
+      \ call vimspector#RenameSession( <f-args> )
+command! -bar -nargs=1 -complete=custom,vimspector#CompleteSessionName
+      \ VimspectorDestroySession
+      \ call vimspector#DestroySession( <f-args> )
 
 command! -bar -nargs=1 -complete=custom,vimspector#CompleteExpr
       \ VimspectorWatch
@@ -166,6 +184,9 @@ command! -bar
 command! -bar
       \ VimspectorBreakpoints
       \ call vimspector#ListBreakpoints()
+command! -bar
+      \ VimspectorDisassemble
+      \ call vimspector#ShowDisassembly()
 
 " Installer commands
 command! -bar -bang -nargs=* -complete=custom,vimspector#CompleteInstall
@@ -205,6 +226,7 @@ augroup Vimspector
         \   if !g:vimspector_resetting
         \ |   call vimspector#internal#state#TabClosed( expand( '<afile>' ) )
         \ | endif
+  autocmd TabEnter * call vimspector#internal#state#OnTabEnter()
 augroup END
 
 " boilerplate {{{

@@ -10,6 +10,26 @@ forms, such as:
 
 At all times the [code of conduct](#code-of-conduct) applies.
 
+## No AI Generated Contributions
+
+Please do not submit contributions wholly or mostly generated using AI tools,
+such as ChatGPT, GitHub Copilot, Claude or similar. This includes, but is
+not limited to:
+
+- code
+- issues
+- comments
+- documentation
+- tests
+- etc.
+
+To be clear, this prohibition applies only to *wholly or mostly* generated
+content that you (the contributor) cannot reasonably claim to have independently
+created, reviewed, verified and are willing to take full responsibility for.
+
+There is no restriction on leveraging these tools as a developer aid, nor on
+their use in the usual practice of software engineering.
+
 ## Troubleshooting
 
 It's not completely trivial to configure Vimspector and there is a fairly large
@@ -39,6 +59,23 @@ information when something goes wrong that's not a clear Vim traceback.
 
 If you just want to see the Vimspector log file, use `:VimspectorToggleLog`,
 which will tail it in a little window (doesn't work on Windows).
+
+## Discussions
+
+GitHub discussions are not for *bug reports* or *feature requests* - please
+use GitHub Issues for that.
+
+If you're not sure if your issue is a bug, feature, or just configuration
+error, then feel free to use the Q&A Discussion and/or the Matrix channel
+to check. Don't be offended if the response is that it's a bug or feature
+requests requiring raising a full Issue. 
+
+This is mainly for project management purposes, as:
+
+* the Issues template contains a lot of data that maintainers require to
+  diagnose them, and
+* feature requests can be put in Projects and tracked; requests in
+  Discussions are easily forgotten.
 
 ## Issues
 
@@ -155,6 +192,19 @@ When contributing pull requests, I ask that:
   *not* PEP8, nor should it be.
 
 ### Running the tests locally
+
+Requirements for running the tests:
+
+* Linux or macOS
+* Supported Vim or Neovim version (ideally both)
+* acsiinema instaled (`pip3 install --user asciinema`)
+* `timeout` installed (on macOS: `brew install coreutils`)
+* various other dependencies for the individual debuggers.
+
+The simplest way to run the tests is using the container image, as all
+dependencies are there for you. If you decide not to, then the best way to work
+out what's required is to look at either the `Dockerfile` (for Linux) or the
+`.github/workflows/build.yaml` (for macOS).
 
 There are 2 ways:
 

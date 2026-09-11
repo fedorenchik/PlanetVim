@@ -23,7 +23,6 @@ function! SetUp_Test_StandardLayout()
 endfunction
 
 function! Test_StandardLayout()
-  call SkipNeovim()
   call s:StartDebugging()
 
   call vimspector#StepOver()
@@ -537,7 +536,6 @@ function! Test_CloseOutput()
 endfunction
 
 function! Test_CloseOutput_Early()
-  call SkipNeovim()
   augroup TestCustomUI
     au!
     au User VimspectorUICreated
@@ -662,8 +660,21 @@ function! Test_CustomWinBar()
   %bwipe!
 endfunction
 
-function! Test_VimspectorJumpedToFrame()
+function! Test_NoMouseNoWinBar()
   call SkipNeovim()
+  call vimspector#test#setup#PushOption( 'mouse', '' )
+  call s:StartDebugging()
+  call assert_equal( {}, menu_info( 'WinBar' ) )
+
+  call vimspector#test#setup#Reset()
+  %bwipe!
+endfunction
+
+function! TearDown_Test_NoMouseNoWinBar()
+  call vimspector#test#setup#PopOption( 'mouse' )
+endfunction
+
+function! Test_VimspectorJumpedToFrame()
   let s:ended = 0
   let s:au_visited_buffers = {}
 
@@ -717,7 +728,6 @@ function! Test_VimspectorJumpedToFrame()
 endfunction
 
 function! Test_DebugInfo_NotConnected()
-  call SkipNeovim()
   redir => debug_message
   VimspectorDebugInfo
   redir END
@@ -730,7 +740,6 @@ function! Test_DebugInfo_NotConnected()
 endfunction
 
 function! Test_DebugInfo_Connected()
-  call SkipNeovim()
   call s:StartDebugging()
 
   " Just make sure there are no errors for now

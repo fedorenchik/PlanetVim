@@ -8,11 +8,20 @@ AbsDirOf() {
   fi
 }
 
-BASEDIR=$(AbsDirOf "$0")/${VIMSPECTOR_TEST_BASE:-test-base}
+HOMEDIR=$(AbsDirOf "$0")
+pushd ${HOMEDIR}
+
+BASEDIR=${HOMEDIR}/${VIMSPECTOR_TEST_BASE:-test-base}
 INSTALL=0
 UPDATE=0
 INSTALLER_ARGS=''
 VIM_EXE='vim'
+SCREENCOLS=160
+SCREENROWS=48
+ASCIINEMA="python3 -m asciinema"
+TEST_UNTIL_FAILURE=0
+NO_QUIT_ON_FAIL=0
+
 
 # 1 is stdout
 out_fd=1
@@ -23,6 +32,10 @@ while [ -n "$1" ]; do
       shift
       BASEDIR=$(AbsDirOf "$1")
       shift
+      ;;
+    "--until-failure")
+      shift
+      TEST_UNTIL_FAILURE=1
       ;;
     "--install")
       INSTALL=1
@@ -37,6 +50,10 @@ while [ -n "$1" ]; do
       UPDATE=1
       shift
       ;;
+    "--no-quit-on-fail")
+      NO_QUIT_ON_FAIL=1
+      shift
+      ;;
     "--report")
       shift
       VIMSPECTOR_TEST_STDOUT=$1
@@ -46,6 +63,15 @@ while [ -n "$1" ]; do
       shift
       VIM_EXE=$1
       shift
+      ;;
+    "--failfast"|"--no-retry")
+      shift
+      export TEST_NO_RETRY=1
+      ;;
+    "--quick")
+      shift
+      export TEST_NO_RETRY=1
+      SKIP_BUILD=1
       ;;
     "--skip-build")
       shift
@@ -60,6 +86,14 @@ while [ -n "$1" ]; do
       out_fd=3
       exec 3>/dev/null
       INSTALLER_ARGS="${INSTALLER_ARGS} --quiet"
+      ;;
+    "--gdb")
+      shift
+      export VIMSPECTOR_MIMODE=gdb
+      ;;
+    "--lldb")
+      shift
+      export VIMSPECTOR_MIMODE=lldb
       ;;
     "--")
       shift
@@ -94,7 +128,26 @@ IS_NVIM=$($VIM_EXE --version | grep -cm1 NVIM)
 VERSION_OPTIONS=$([ "$IS_NVIM" -ne 0 ] && echo '--headless' || echo '--not-a-term')
 
 RUN_VIM="${VIM_EXE} -N --clean ${VERSION_OPTIONS}"
-RUN_TEST="${RUN_VIM} -S lib/run_test.vim"
+
+if which timeout >/dev/null 2>&1; then
+  TIMEOUT_SCRIPT="timeout --verbose --foreground --kill-after 7m 5m"
+else
+  TIMEOUT_SCRIPT=""
+  echo "WARNING: No timeout found, not using timeout"
+fi
+
+# Check that vim's python support actual works, else we can't run tests
+if ! ${TIMEOUT_SCRIPT} ${RUN_VIM} --cmd "py3 import vim; vim.command( 'qa!' )" --cmd "cquit!"; then
+  echo "Vim's python support doesn't work. Cannot run tests" >&2
+  exit 1
+else
+  echo "Vim's python support works. Let's go..."
+fi
+
+# There seems to be a race condition with the way asciinema sets the pty size.
+# It does fork() then if is_child: execvpe(...) else: set_pty_size(). This means
+# the child might read the pty size before it's set. So we use a 1s sleepy.
+RUN_TEST="sleep 1 && ${TIMEOUT_SCRIPT} ${RUN_VIM} -S lib/run_test.vim"
 
 # We use fd 3 for vim's output. Send it to stdout if not already redirected
 # Note: can't use ${out_fd} in a redirect because redirects happen before
@@ -105,7 +158,7 @@ fi
 
 # Basic pre-flight check that vim and python work
 # ffs neovim https://github.com/neovim/neovim/issues/14438
-if ${RUN_VIM} -u support/test_python3.vim .fail; then
+if ${TIMEOUT_SCRIPT} ${RUN_VIM} -u support/test_python3.vim .fail; then
   rm -f .fail
   echo "$VIM_EXE appears to have working python3 support. Let's go..."
 else
@@ -119,14 +172,24 @@ else
 fi
 
 if [ -z "$VIMSPECTOR_MIMODE" ]; then
-  if which lldb >/dev/null 2>&1; then
-    export VIMSPECTOR_MIMODE=lldb
-  elif which gdb >/dev/null 2>&1; then
-    export VIMSPECTOR_MIMODE=gdb
-  else
-    echo "Couldn't guess VIMSPECTOR_MIMODE. Need lldb or gdb in path"
-    exit 1
-  fi
+  case $(uname) in
+    Linux)
+      export VIMSPECTOR_MIMODE=gdb
+      ;;
+    Darwin)
+      export VIMSPECTOR_MIMODE=lldb
+      ;;
+    *)
+      if which lldb-mi >/dev/null 2>&1; then
+        export VIMSPECTOR_MIMODE=lldb
+      elif which gdb >/dev/null 2>&1; then
+        export VIMSPECTOR_MIMODE=gdb
+      else
+        echo "Couldn't guess VIMSPECTOR_MIMODE. Specify --gdb/--lldb"
+        exit 1
+      fi
+      ;;
+  esac
 fi
 
 if [ -z "$VIMSPECTOR_ARCH" ]; then
@@ -137,6 +200,7 @@ if [ -z "$VIMSPECTOR_ARCH" ]; then
 fi
 
 BASEDIR_CMD="let g:vimspector_base_dir='${BASEDIR}'"
+TESTDIR=${HOMEDIR}/tests
 
 echo "Testing with:"
 echo " * VIMSPECTOR_MIMODE=$VIMSPECTOR_MIMODE"
@@ -145,9 +209,10 @@ echo " * RUN_VIM=$RUN_VIM"
 echo " * RUN_TEST=$RUN_TEST"
 echo " * BASEDIR=$BASEDIR"
 echo " * BASEDIR_CMD=$BASEDIR_CMD"
+echo " * TESTDIR=$TESTDIR"
 
 if [ "$INSTALL" = "1" ] || [ "$INSTALL" = "script" ]; then
-  if ! python3 $(dirname $0)/install_gadget.py \
+  if ! python3 ${HOMEDIR}/install_gadget.py \
                --basedir ${BASEDIR} \
                ${INSTALLER_ARGS} \
                --all \
@@ -158,22 +223,28 @@ if [ "$INSTALL" = "1" ] || [ "$INSTALL" = "script" ]; then
   fi
 fi
 
+QUIT_ON_FAIL=(-c 'autocmd User VimspectorInstallFailed cquit!')
+
+if [ "$NO_QUIT_ON_FAIL" -eq 1 ]; then
+  QUIT_ON_FAIL=()
+fi
+
 if [ "$INSTALL" = "1" ] || [ "$INSTALL" = "vim" ]; then
-  if ! $RUN_VIM -u $(dirname $0)/tests/vimrc \
+  if ! $RUN_VIM -u ${HOMEDIR}/tests/vimrc \
                --cmd "${BASEDIR_CMD}" \
                -c 'autocmd User VimspectorInstallSuccess qa!' \
-               -c 'autocmd User VimspectorInstallFailed cquit!' \
-               -c "VimspectorInstall --all netcoredbg vscode-node-debug2"; then
+               "${QUIT_ON_FAIL[@]}" \
+               -c "VimspectorInstall --all netcoredbg vscode-js-debug"; then
     echo "Vim installation reported errors" >&2
     exit 1
   fi
 fi
 
 if [ "$UPDATE" = "1" ]; then
-  if ! $RUN_VIM -u $(dirname $0)/tests/vimrc \
+  if ! $RUN_VIM -u ${HOMEDIR}/tests/vimrc \
                --cmd "${BASEDIR_CMD}" \
                -c 'autocmd User VimspectorInstallSuccess qa!' \
-               -c 'autocmd User VimspectorInstallFailed cquit!' \
+               "${QUIT_ON_FAIL[@]}" \
                -c "VimspectorUpdate"; then
     echo "Vim update reported errors" >&2
     exit 1
@@ -188,7 +259,8 @@ else
   echo "%SETUP - Building test programs..."
   set -e
     pushd tests/testdata/cpp/simple
-      make clean all
+      make clean
+      make -j all
     popd
     pushd support/test/csharp
       dotnet build
@@ -198,7 +270,6 @@ else
 fi
 
 # Start
-pushd $(dirname $0)/tests > /dev/null
 echo "Running Vimspector Vim tests"
 
 RESULT=0
@@ -206,58 +277,83 @@ RESULT=0
 TESTS="$@"
 
 if [ -z "$TESTS" ]; then
-  TESTS=*.test.vim
+  TESTS=${TESTDIR}/*.test.vim
 fi
 
-for t in ${TESTS}; do
-  echo ""
-  echo "%RUN: $t"
+while true; do
+  for t in ${TESTS}; do
+    # split on : into fileName and testName
+    IFS=: read -s tt T <<< "$t"
 
-  # split on : into fileName and testName
-  IFS=: read -s t T <<< "$t"
-
-  TESTLOGDIR=${BASEDIR}/tests/logs/$t
-
-  if ${RUN_TEST} --cmd "${BASEDIR_CMD}" \
-                 --cmd 'au SwapExists * let v:swapchoice = "e"' $t $T \
-                 >&3\
-     && [ -f $t.res ];  then
-    echo "%PASS: $t PASSED"
-  else
-    echo "%FAIL: $t FAILED - see $TESTLOGDIR"
-    RESULT=1
-  fi
-
-  rm -rf $TESTLOGDIR
-  mkdir -p $TESTLOGDIR
-  ${RUN_VIM} --version > ${TESTLOGDIR}/vimversion
-  if [ "$VIMSPECTOR_TEST_STDOUT" = "messages" ]; then
-    if [ -f messages ]; then
-      echo "%MESSAGES"
-      cat messages
-      echo "%END"
+    # Resolve into absolute path ($tt) and test file name ($t)
+    if [ -f "$tt" ]; then
+      tt=$(readlink -f "$tt")
+      t=$(basename "$tt")
+    elif [ -f "$TESTDIR/$tt" ]; then
+      t=$tt
+      tt=$TESTDIR/$t
     else
-      echo "%MESSAGES"
-      echo "No messages found"
-      echo "%END"
+      echo "%ERROR: Unable to find a test named $tt ($t) in $TESTDIR"
+      RESULT=1
+      break
     fi
-  fi
 
-  for l in messages debuglog test.log *.testlog; do
-    # In CI we can't view the output files, so we just have to cat them
-    if [ -f $l ]; then
-      if [ "$VIMSPECTOR_TEST_STDOUT" = "all" ]; then
-        echo ""
-        echo ""
-        echo "*** START: $l ***"
-        cat $l
-        echo "*** END: $l ***"
+    echo ""
+    echo "%RUN: $t ($tt)"
+
+    TESTLOGDIR=${BASEDIR}/tests/logs/$t
+
+    pushd ${TESTDIR} > /dev/null
+      RUN="${RUN_TEST} --cmd \"${BASEDIR_CMD}\" \
+                       --cmd 'au SwapExists * let v:swapchoice = \"e\"'\
+                       '$tt' '$T'"
+
+      if ${ASCIINEMA} rec -q --cols $SCREENCOLS --rows $SCREENROWS --overwrite --command "${RUN}" $t.cast >&3 && [ -f $t.res ];  then
+        echo "%PASS: $t PASSED"
+      else
+        echo "%FAIL: $t FAILED - see $TESTLOGDIR"
+        RESULT=1
       fi
-      mv $l $TESTLOGDIR
-    fi
+
+      rm -rf $TESTLOGDIR
+      mkdir -p $TESTLOGDIR
+      ${RUN_VIM} --version > ${TESTLOGDIR}/vimversion
+      if [ "$VIMSPECTOR_TEST_STDOUT" = "messages" ]; then
+        if [ -f messages ]; then
+          echo "%MESSAGES"
+          cat messages
+          echo "%END"
+        else
+          echo "%MESSAGES"
+          echo "No messages found"
+          echo "%END"
+        fi
+      fi
+
+      mv $t.cast $TESTLOGDIR
+      for l in messages debuglog test.log *.testlog; do
+        # In CI we can't view the output files, so we just have to cat them
+        if [ -f $l ]; then
+          if [ "$VIMSPECTOR_TEST_STDOUT" = "all" ]; then
+            echo ""
+            echo ""
+            echo "*** START: $l ***"
+            cat $l
+            echo "*** END: $l ***"
+          fi
+          mv $l $TESTLOGDIR
+        fi
+      done
+
+      rm -f $t.res
+    popd > /dev/null
   done
 
-  rm -f $t.res
+  if [ $TEST_UNTIL_FAILURE -eq 1 ] && [ $RESULT -eq 0 ]; then
+    echo "All tests passed. Running again."
+    continue
+  fi
+  break
 done
 
 # close out_fd if it's not stdout/stderr/
@@ -265,7 +361,6 @@ done
 
 
 echo "Done running tests"
-popd > /dev/null
 
 echo ""
 echo "All done. Exit with ${RESULT}"

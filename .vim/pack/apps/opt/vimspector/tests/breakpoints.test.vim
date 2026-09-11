@@ -7,7 +7,9 @@ function! SetUp() abort
 
   if ! s:init
     let s:break_main_line = FunctionBreakOnBrace() ? 14 : 15
+    let s:break_main_pat = FunctionBreakOnBrace() ? ' *{$' : '.*printf.*argc'
     let s:break_foo_line = FunctionBreakOnBrace() ? 6 : 9
+    let s:break_foo_pat = FunctionBreakOnBrace() ? ' *{$' : '.*printf.*bar'
     let s:init = 1
   endif
 endfunction
@@ -567,6 +569,118 @@ function! Test_Conditional_Line_Breakpoint()
   %bwipeout!
 endfunction
 
+function! Test_Conditional_Line_Breakpoint_Edit()
+  lcd testdata/cpp/simple
+  edit simple.cpp
+  call setpos( '.', [ 0, 16, 1 ] )
+
+  call vimspector#test#signs#AssertCursorIsAtLineInBuffer( 'simple.cpp', 16, 1 )
+  call vimspector#test#signs#AssertSignGroupEmptyAtLine( 'VimspectorBP', 16 )
+
+  " Add breakpoint using API:
+  "  - add it using a condition which doesn't match (argc == 0)
+  "  - then edit it to use a condition which matches (argc == 1)
+  call vimspector#SetLineBreakpoint( 'simple.cpp', 17,
+                                   \ { 'condition': 'argc == 0' } )
+  call vimspector#test#signs#AssertSignGroupSingletonAtLine(
+        \ 'VimspectorBP',
+        \ 17,
+        \ 'vimspectorBPCond',
+        \ 9 )
+
+  call vimspector#ListBreakpoints()
+  call s:CheckBreakpointView( [
+    \ 'simple.cpp:17 Line breakpoint - ENABLED: {"condition": "argc == 0"}'
+    \ ] )
+  let bname = bufname( winbufnr( g:vimspector_session_windows.breakpoints ) )
+  call vimspector#test#signs#AssertCursorIsAtLineInBuffer(
+        \ bname,
+        \ 1,
+        \ 1 )
+
+  call feedkeys( 'cc'
+               \ .. "\<C-u>argc == 1\<CR>"
+               \ .. "1\<CR>"
+               \ .. "\<CR>",
+               \ 'xt' )
+
+  call s:CheckBreakpointView( [
+    \ 'simple.cpp:17 Line breakpoint - ENABLED: {"condition": "argc == 1", "hitCondition": "1"}'
+    \ ] )
+
+  wincmd p
+  call vimspector#ListBreakpoints()
+  call setpos( '.', [ 0, 1, 1 ] )
+
+  " Start debugging
+  call vimspector#LaunchWithSettings( #{ configuration: 'run-to-breakpoint' } )
+
+  " Condition matches on line 17
+  call vimspector#test#signs#AssertCursorIsAtLineInBuffer( 'simple.cpp', 17, 1 )
+
+  call vimspector#test#setup#Reset()
+
+  lcd -
+  %bwipeout!
+endfunction
+
+function! Test_Conditional_Line_Breakpoint_Edit_While_Connected()
+  lcd testdata/cpp/simple
+  edit simple.cpp
+  call setpos( '.', [ 0, 16, 1 ] )
+
+  call vimspector#Launch()
+  " break on main
+  call vimspector#test#signs#AssertCursorIsAtLineInBuffer(
+        \ 'simple.cpp',
+        \ s:break_main_line, 1 )
+
+  " Add breakpoint using API:
+  "  - add it using a condition which doesn't match (argc == 0)
+  "  - then edit it to use a condition which matches (argc == 1)
+  call vimspector#SetLineBreakpoint( 'simple.cpp', 17,
+                                   \ { 'condition': 'argc == 0' } )
+  call WaitForAssert( { ->
+        \ vimspector#test#signs#AssertSignGroupSingletonAtLine(
+          \ 'VimspectorBP',
+          \ 17,
+          \ 'vimspectorBPCond',
+          \ 9 ) } )
+
+  call vimspector#ListBreakpoints()
+  call s:CheckBreakpointView( [
+    \ 'simple.cpp:17 Line breakpoint - VERIFIED: {"condition": "argc == 0"}'
+    \ ] )
+  let bname = bufname( winbufnr( g:vimspector_session_windows.breakpoints ) )
+  call vimspector#test#signs#AssertCursorIsAtLineInBuffer(
+        \ bname,
+        \ 1,
+        \ 1 )
+
+  call feedkeys( 'cc'
+               \ .. "\<C-u>argc == 1\<CR>"
+               \ .. "1\<CR>"
+               \ .. "\<CR>",
+               \ 'xt' )
+
+  call s:CheckBreakpointView( [
+    \ 'simple.cpp:17 Line breakpoint - VERIFIED: {"condition": "argc == 1", "hitCondition": "1"}'
+    \ ] )
+
+  wincmd p
+  call vimspector#ListBreakpoints()
+  call setpos( '.', [ 0, 1, 1 ] )
+
+  " Condition matches on line 17
+  call vimspector#Continue()
+  call vimspector#test#signs#AssertCursorIsAtLineInBuffer( 'simple.cpp', 17, 1 )
+  call vimspector#test#setup#Reset()
+
+  lcd -
+  %bwipeout!
+endfunction
+
+
 function! SetUp_Test_Conditional_Line_Breakpoint_Disable()
   let g:vimspector_enable_mappings = 'HUMAN'
   call s:PushSetting( 'vimspector_toggle_disables_breakpoint', 1 )
@@ -690,6 +804,15 @@ function! Test_Function_Breakpoint()
   lcd testdata/cpp/simple
   edit simple.cpp
   call vimspector#AddFunctionBreakpoint( 'foo' )
+
+  " @show
+  call vimspector#ListBreakpoints()
+  call s:CheckBreakpointView( [
+        \ 'foo: Function breakpoint - {}$'
+        \ ] )
+  " @hide
+  call vimspector#ListBreakpoints()
+
   call vimspector#Launch()
   " break on main
   call vimspector#test#signs#AssertCursorIsAtLineInBuffer(
@@ -901,20 +1024,36 @@ function! Test_ListBreakpoints()
   call setpos( '.', [ 0, 15, 1 ] )
   let main_win_id = win_getid()
 
+  let g:Test_ListBreakpoints_Enter = 0
+  let g:Test_ListBreakpoints_Leave = 0
+
+  augroup Test_ListBreakpoints
+    autocmd!
+    autocmd BufEnter,BufFilePost vimspector.Breakpoints*
+          \ let g:Test_ListBreakpoints_Enter += 1
+    autocmd BufLeave vimspector.Breakpoints*
+          \ let g:Test_ListBreakpoints_Leave += 1
+  augroup END
+
+  " vimspector.Breakpoints[0]
+  " @show
   call vimspector#ListBreakpoints()
   " buffer is never actually empty
   call s:CheckBreakpointView( [ '' ] )
   " Cursor jumps to the breakpoint window
   call assert_equal( win_getid(), g:vimspector_session_windows.breakpoints )
+  call assert_match( 'vimspector.Breakpoints[\[0-9]\+]',  bufname() )
+  call assert_equal( 1, g:Test_ListBreakpoints_Enter )
 
   call win_gotoid( main_win_id )
+  call assert_equal( 1, g:Test_ListBreakpoints_Leave )
   call vimspector#test#signs#AssertCursorIsAtLineInBuffer( 'simple.cpp', 15, 1 )
 
   call vimspector#ToggleBreakpoint()
-  " call vimspector#ListBreakpoints()
   call s:CheckBreakpointView( [
-        \ 'simple.cpp:15 Line breakpoint - ENABLED: {}'
+        \ 'simple.cpp:15 Line breakpoint - ENABLED: {}\t.*printf.*$'
         \ ] )
+  " @hide
   call vimspector#ListBreakpoints()
 
   call vimspector#test#signs#AssertCursorIsAtLineInBuffer( 'simple.cpp', 15, 1 )
@@ -923,11 +1062,15 @@ function! Test_ListBreakpoints()
   " break on main
   call vimspector#test#signs#AssertCursorIsAtLineInBuffer( 'simple.cpp', 15, 1 )
 
+  " @show
   call vimspector#ListBreakpoints()
+  call assert_equal( 2, g:Test_ListBreakpoints_Enter )
   call s:CheckBreakpointView( [
         \ 'simple.cpp:15 Line breakpoint - VERIFIED: {}'
         \ ] )
+  " @hide
   call vimspector#ListBreakpoints()
+  call assert_equal( 2, g:Test_ListBreakpoints_Leave )
 
   call win_gotoid( main_win_id )
   call vimspector#test#signs#AssertCursorIsAtLineInBuffer( 'simple.cpp', 15, 1 )
@@ -937,20 +1080,24 @@ function! Test_ListBreakpoints()
   call vimspector#test#signs#AssertCursorIsAtLineInBuffer( 'simple.cpp', 5, 1 )
   call vimspector#ToggleBreakpoint()
 
+  " @show
   call vimspector#ListBreakpoints()
+  call assert_equal( 3, g:Test_ListBreakpoints_Enter )
   call s:CheckBreakpointView( [
         \ 'simple.cpp:15 Line breakpoint - VERIFIED: {}',
         \ 'simple.cpp:' . s:break_foo_line . ' Line breakpoint - VERIFIED: {}'
         \ ] )
 
+  " @hide
   call vimspector#ListBreakpoints()
+  call assert_equal( 3, g:Test_ListBreakpoints_Leave )
 
+  autocmd! Test_ListBreakpoints
   call vimspector#test#setup#Reset()
   %bwipe!
 endfunction
 
 function! Test_BreakpointMovements()
-  let g:test_is_flaky = 0
   lcd testdata/cpp/simple
   edit simple.cpp
 
@@ -995,7 +1142,6 @@ function! Test_BreakpointMovements()
 endfunction
 
 function! Test_BreakpointMovements_MovedByServer()
-  let g:test_is_flaky = 0
   lcd testdata/cpp/simple
   edit simple.cpp
 
@@ -1024,6 +1170,29 @@ function! Test_BreakpointMovements_MovedByServer()
   call vimspector#test#signs#AssertCursorIsAtLineInBuffer( 'simple.cpp',
                                                          \ resolved_line,
                                                          \ 1 )
+
+  call vimspector#test#setup#Reset()
+  %bwipe!
+endfunction
+
+function! Test_Server_Generated_Breakpoint()
+  lcd testdata/cpp/simple
+  edit simple.cpp
+  call vimspector#SetLineBreakpoint( 'simple.cpp', 15 )
+  call vimspector#LaunchWithSettings( #{ configuration: 'CodeLLDB' } )
+  call vimspector#test#signs#AssertCursorIsAtLineInBuffer( 'simple.cpp',
+                                                         \ 15,
+                                                         \ v:null )
+
+  VimspectorEval b foo
+  call win_gotoid( g:vimspector_session_windows.code )
+  call WaitForAssert( { ->
+        \ vimspector#test#signs#AssertSignGroupSingletonAtLine(
+          \ 'VimspectorBP',
+          \ 9,
+          \ 'vimspectorBP',
+          \ 9 )
+        \ } )
 
   call vimspector#test#setup#Reset()
   %bwipe!
@@ -1310,7 +1479,7 @@ function! Test_LineBreakpoint_Moved_By_Server()
 
   call vimspector#ListBreakpoints()
   call s:CheckBreakpointView( [
-        \ 'simple.cpp:5 Line breakpoint - ENABLED: {}'
+        \ 'simple.cpp:5 Line breakpoint - ENABLED: {}\t.*foo.*'
         \ ] )
   wincmd p
 
@@ -1333,7 +1502,8 @@ function! Test_LineBreakpoint_Moved_By_Server()
         \ 5 )
   call vimspector#ListBreakpoints()
   call s:CheckBreakpointView( [
-        \ 'simple.cpp:' . s:break_foo_line . ' Line breakpoint - VERIFIED: {}'
+        \ 'simple.cpp:' . s:break_foo_line . ' Line breakpoint - VERIFIED: {}\t'
+        \   . s:break_foo_pat
         \ ] )
   wincmd p
 
@@ -1449,4 +1619,47 @@ function! Test_LineBreakpoint_Moved_By_Server()
   lcd-
   call vimspector#test#setup#Reset()
   %bwipe!
+endfunction
+
+function! Test_ShowBreakpointsAfterStop()
+  let fn = '../support/test/python/simple_python/main.py'
+  exe 'edit' fn
+  call vimspector#SetLineBreakpoint( fn, 23 )
+  call vimspector#test#signs#AssertSignGroupSingletonAtLine(
+        \ 'VimspectorBP',
+        \ 23,
+        \ 'vimspectorBP',
+        \ 9 )
+  call vimspector#LaunchWithSettings( { 'configuration': 'run' } )
+  call vimspector#test#signs#AssertCursorIsAtLineInBuffer( fn, 23, 1 )
+  call vimspector#test#signs#AssertSignGroupSingletonAtLine(
+        \ 'VimspectorCode',
+        \ 23,
+        \ 'vimspectorPCBP',
+        \ 200 )
+
+  call vimspector#ListBreakpoints()
+  call s:CheckBreakpointView( [
+        \ 'main.py:23 Line breakpoint - VERIFIED: {}'
+        \ ] )
+  wincmd p
+  call vimspector#ListBreakpoints()
+
+  call vimspector#Stop()
+  call WaitForAssert( { ->
+        \ vimspector#test#signs#AssertSignGroupSingletonAtLine(
+        \   'VimspectorBP',
+        \   23,
+        \   'vimspectorBP',
+        \   9 ) } )
+
+  call vimspector#ListBreakpoints()
+  call s:CheckBreakpointView( [
+        \ 'main.py:23 Line breakpoint - ENABLED: {}'
+        \ ] )
+  wincmd p
+  call vimspector#ListBreakpoints()
+
+  call vimspector#test#setup#Reset()
+  %bwipeout!
 endfunction

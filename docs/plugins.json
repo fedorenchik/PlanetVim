@@ -15,11 +15,11 @@
       "path": ".vim/pack/apps/opt/vimspector",
       "provenance": {
         "branch": "master",
-        "commit": "c95ad4c8fb54adb75ceb0397ef6ace1c4eec3790",
+        "commit": "34099d18d8957bb3db5f396c8ca993ffb246a437",
         "kind": "git-subrepo",
         "remote": "https://github.com/puremourning/vimspector.git"
       },
-      "snapshot_sha256": "3910d71370afb755c7ac61e05618d8a12b8b770b3aa791c33331fe66d2fe3f66"
+      "snapshot_sha256": "abc636876763bf0ee98eb5eca8f56141bfda6a8412ea921ea6fe7a2bee441244"
     },
     {
       "group": "apps",

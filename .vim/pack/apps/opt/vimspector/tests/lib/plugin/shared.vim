@@ -17,7 +17,7 @@ endif
 " When running into the timeout an exception is thrown, thus the function does
 " not return.
 func WaitFor(expr, ...)
-  let timeout = get(a:000, 0, 10000)
+  let timeout = get(a:000, 0, g:test_long_timeout)
   let slept = s:WaitForCommon(a:expr, v:null, timeout)
   if slept < 0
     throw 'WaitFor() timed out after ' . timeout . ' msec'
@@ -34,7 +34,7 @@ endfunc
 "
 " Return zero for success, one for failure (like the assert function).
 func WaitForAssert(assert, ...)
-  let timeout = get(a:000, 0, 5000)
+  let timeout = get(a:000, 0, g:test_timeout)
   if s:WaitForCommon(v:null, a:assert, timeout) < 0
     return 1
   endif
@@ -104,7 +104,7 @@ func s:WaitForCommon(expr, assert, timeout)
 endfunc
 
 function! ThisTestIsFlaky()
-  let g:test_is_flaky = v:true
+  " Deprectaed for now
 endfunction
 
 " In vim, py3eval( 'None' ) returns v:none, which is not equal v:null
@@ -112,12 +112,12 @@ endfunction
 " In neovim, py3eval( 'None' ) returns v:null, and v:none does not exist
 function! AssertNull( actual ) abort
   return assert_equal( type( v:null ), type( a:actual ),
-      \ 'actual: ' .. a:actual  )
+      \ 'Expected null, but actually: ' .. a:actual  )
 endfunction
 
 function! AssertNotNull( actual ) abort
   return assert_notequal( type( v:null ), type( a:actual ),
-      \ 'actual: ' .. a:actual  )
+      \ 'Expected not null, but actually: ' .. a:actual  )
 endfunction
 
 function! AssertMatchList( expected, actual ) abort
@@ -157,16 +157,42 @@ function! SkipNeovim() abort
 endfunction
 
 function! SkipOn( arch, system ) abort
-  if trim( system( 'uname -m' ) ) == a:arch &&
-        \ trim( system( 'uname -s' ) ) == a:system
-    throw 'skipped: Not on this architecture'
+  if a:arch != v:null && trim( system( 'uname -m' ) ) != a:arch
+    return
+  endif
+
+  if a:system != v:null && trim( system( 'uname -s' ) ) != a:system
+    return
+  endif
+
+  throw 'skipped: Not on this architecture/platform ('
+        \ . a:arch
+        \ . '/'
+        \ . a:system .
+        \ ')'
+endfunction
+
+function! SkipIf( f, msg ) abort
+  if a:f()
+    throw 'skipped: ' . a:msg
   endif
 endfunction
 
 function! FunctionBreakOnBrace() abort
   " Annoyingly, the behaviour of gcc 8 differs from clang _and_ it differs
   " between x86 and arm
-  return trim( system( 'uname -m' ) ) ==# 'x86_64'
-        \ && trim( system( 'uname -s' ) ) ==# 'Linux'
+  " return trim( system( 'uname -m' ) ) ==# 'x86_64'
+        " \ && trim( system( 'uname -s' ) ) ==# 'Linux'
+  " However, the good news is that gcc-14 works consistently!
+  return v:false
 endfunction
 
+function MoveMouseToPositionInWindow( win_id, line, colum ) abort
+  let pos = screenpos( a:win_id, a:line, a:colum )
+  return MoveMouseTo( pos.row, pos.col )
+endfunction
+
+function! MoveMouseTo( screen_line, screen_column ) abort
+  call test_setmouse( a:screen_line, a:screen_column )
+  call feedkeys("\<MouseMove>", 'xt')
+endfunction

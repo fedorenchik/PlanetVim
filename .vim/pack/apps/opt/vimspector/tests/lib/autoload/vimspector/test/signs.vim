@@ -1,24 +1,31 @@
 function! vimspector#test#signs#AssertCursorIsAtLineInBuffer( buffer,
                                                             \ line,
                                                             \ column ) abort
-  call WaitFor( {-> bufexists( a:buffer ) } )
+  try
+    call WaitFor( {-> bufexists( a:buffer ) } )
+  catch /.*/
+    throw 'Buffer ' .. a:buffer .. ' does not exist'
+  endtry
   call WaitForAssert( {->
         \ assert_equal( fnamemodify( a:buffer, ':p' ),
         \               fnamemodify( bufname( '%' ), ':p' ),
         \               'Current buffer' )
-        \ }, 10000 )
+        \ }, g:test_long_timeout )
   call WaitForAssert( {->
         \ assert_equal( a:line, line( '.' ), 'Current line' )
-        \ }, 10000 )
+        \ }, g:test_long_timeout )
   if a:column isnot v:null
     call assert_equal( a:column, col( '.' ), 'Current column' )
   endif
 endfunction
 
-function! vimspector#test#signs#AssertPCIsAtLineInBuffer( buffer, line ) abort
+function! vimspector#test#signs#AssertPCIsAtLineInBuffer(
+      \ buffer,
+      \ line,
+      \ group = 'VimspectorCode' ) abort
   call WaitFor( {-> bufexists( a:buffer ) } )
   let signs = sign_getplaced( a:buffer, {
-    \ 'group': 'VimspectorCode',
+    \ 'group': a:group,
     \ } )
 
   if assert_equal( 1, len( signs ), 'Number of buffers named ' . a:buffer )
@@ -26,7 +33,7 @@ function! vimspector#test#signs#AssertPCIsAtLineInBuffer( buffer, line ) abort
   endif
 
   if assert_true( len( signs[ 0 ].signs ) >= 1,
-                \ 'At least one VimspectorCode sign' )
+                \ 'At least one ' . a:group . ' sign' )
     return 1
   endif
 

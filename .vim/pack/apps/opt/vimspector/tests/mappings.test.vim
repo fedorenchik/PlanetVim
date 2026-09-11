@@ -45,6 +45,7 @@ function! Test_Mappings_Are_Added_VISUAL_STUDIO()
   call assert_true( hasmapto( 'vimspector#StepOver()' ) )
   call assert_true( hasmapto( 'vimspector#StepInto()' ) )
   call assert_true( hasmapto( 'vimspector#StepOut()' ) )
+  call assert_true( hasmapto( 'vimspector#RunToCursor()' ) )
 endfunction
 
 function! SetUp_Test_Use_Mappings_HUMAN()
@@ -354,7 +355,7 @@ function! Test_Partial_Mappings_Dict_Override()
   py3 <<EOF
 from unittest import mock
 with mock.patch( 'vimspector.utils.InputSave' ):
-  vim.eval( 'feedkeys( "\<Tab>\<C-u>100\<CR>", "xt" )' )
+  vim.eval( r'feedkeys( "\<Tab>\<C-u>100\<CR>", "xt" )' )
 EOF
 
   call WaitForAssert( {->

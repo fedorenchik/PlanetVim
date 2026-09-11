@@ -200,6 +200,14 @@ def RunUpdate( api_prefix, leave_open, *args ):
   if insatller_args:
     insatller_args.append( '--upgrade' )
     RunInstaller( api_prefix, leave_open, *insatller_args )
+  else:
+    utils.UserMessage(
+      "Can't update: No gadgets are currently installed, "
+      "and none configured to be installed.",
+      persist=True,
+      error=True )
+    import vim
+    vim.command( 'silent doautocmd User VimspectorInstallFailed' )
 
 
 def _ResetInstaller():
@@ -396,10 +404,30 @@ def InstallDebugpy( name, root, gadget ):
   root = os.path.join( root, 'debugpy-{}'.format( gadget[ 'version' ] ) )
   os.chdir( root )
   try:
+    PYDEVD_ATTACH_TO_PROCESS = os.path.join( root,
+                                             'src',
+                                             'debugpy',
+                                             '_vendored',
+                                             'pydevd',
+                                             'pydevd_attach_to_process' )
+    if install.GetOS() == 'windows':
+      CheckCall( [ os.path.join( PYDEVD_ATTACH_TO_PROCESS,
+                                 'windows',
+                                 'compile_windows.bat' ) ] )
+    elif install.GetOS() == 'macos':
+      CheckCall( [ '/bin/sh', os.path.join( PYDEVD_ATTACH_TO_PROCESS,
+                                            'linux_and_mac',
+                                            'compile_mac.sh' ) ] )
+    else:
+      CheckCall( [ '/bin/sh', os.path.join( PYDEVD_ATTACH_TO_PROCESS,
+                                            'linux_and_mac',
+                                            'compile_linux.sh' ) ] )
+
     CheckCall( [ sys.executable,
                  'setup.py',
                  'build',
                  '--build-platlib', os.path.join( 'build', 'lib' ) ] )
+
   finally:
     os.chdir( wd )
 
@@ -428,10 +456,15 @@ def InstallTclProDebug( name, root, gadget ):
     #    '/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System'
     #    '/Library/Frameworks/Tcl.framework/Versions'
     #    '/Current',
-    for p in [ '/usr/local/opt/tcl-tk/lib', '/opt/homebrew/opt/tcl-tk/lib' ]:
-      if os.path.exists( os.path.join( p, 'tclConfig.sh' ) ):
-        configure.append( '--with-tcl=' + p )
-        break
+    for tcl in [ "tcl-tk@8", "tcl-tk" ]:
+      for p in [ f'/usr/local/opt/{tcl}/lib', f'/opt/homebrew/opt/{tcl}/lib' ]:
+        if os.path.exists( os.path.join( p, 'tclConfig.sh' ) ):
+          Print( f"Found tclConfig.sh in {p}" )
+          configure.append( '--with-tcl=' + p )
+          break
+      else:
+        continue
+      break
 
 
   with CurrentWorkingDir( os.path.join( root, 'lib', 'tclparser' ) ):
@@ -561,10 +594,16 @@ def InstallGadget( name: str,
         'download',
         name )
 
+    model = gadget.get( 'model', 'extension' )
     if 'do' in gadget:
       gadget[ 'do' ]( name, root, spec )
-    else:
+    elif model == 'extension':
       InstallGeneric( name, root, spec )
+    elif model == 'simple':
+      MakeSymlink( name, root )
+    else:
+      raise ValueError(
+        f"Invalid configuration - model {model} not recognised" )
 
     save_adapters()
     manifest.Update( name, spec )

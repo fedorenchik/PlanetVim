@@ -26,21 +26,39 @@ import re
 import typing
 import base64
 
-from vimspector.core_utils import memoize
+from vimspector.core_utils import memoize, NormalizePath
 from vimspector.vendor.hexdump import hexdump
 
 LOG_FILE = os.path.expanduser( os.path.join( '~', '.vimspector.log' ) )
+NVIM_NAMESPACE = None
 
-_log_handler = logging.FileHandler( LOG_FILE, mode = 'w' )
+_log_handler = logging.FileHandler( LOG_FILE, mode = 'w', encoding = 'utf-8' )
 
 _log_handler.setFormatter(
-    logging.Formatter( '%(asctime)s - %(levelname)s - %(message)s' ) )
+  logging.Formatter( '%(asctime)s - %(levelname)s - %(filename)s:%(lineno)s - '
+                     '%(context)s - %(message)s' ) )
 
 
-def SetUpLogging( logger ):
+class ContextLogFilter( logging.Filter ):
+  context: str
+
+  def __init__( self, context ):
+    self.context = str( context )
+
+  def filter( self, record: logging.LogRecord ):
+    if self.context is None:
+      record.context = 'UNKNOWN'
+    else:
+      record.context = self.context
+
+    return True
+
+
+def SetUpLogging( logger, context = None ):
   logger.setLevel( logging.DEBUG )
   if _log_handler not in logger.handlers:
     logger.addHandler( _log_handler )
+    logger.addFilter( ContextLogFilter( context ) )
 
 
 _logger = logging.getLogger( __name__ )
@@ -48,9 +66,10 @@ SetUpLogging( _logger )
 
 
 def BufferNumberForFile( file_name, create = True ):
-  return int( vim.eval( "bufnr( '{0}', {1} )".format(
-    Escape( file_name ),
-    int( create ) ) ) )
+  with NoAutocommands():
+    return int( vim.eval( "bufnr( '{0}', {1} )".format(
+      Escape( file_name ),
+      int( create ) ) ) )
 
 
 def BufferForFile( file_name ):
@@ -61,44 +80,66 @@ def BufferExists( file_name ):
   return bool( int ( vim.eval( f"bufexists( '{ Escape( file_name ) }' )" ) ) )
 
 
+def BufferLineValue( file_name: str, line_num: int ) -> str:
+  if not BufferExists( file_name ):
+    return ''
+  Call( 'bufload', file_name )
+  buf = BufferForFile( file_name )
+  try:
+    return buf[ line_num - 1 ]
+  except IndexError:
+    return ''
+
+
 def NewEmptyBuffer():
   bufnr = int( vim.eval( 'bufadd("")' ) )
   Call( 'bufload', bufnr )
   return vim.buffers[ bufnr ]
 
 
-def WindowForBuffer( buf ):
+def AllWindowsForBuffer( buf ):
   for w in vim.current.tabpage.windows:
     if w.buffer == buf:
-      return w
+      yield w
 
-  return None
+
+def WindowForBuffer( buf ):
+  i = AllWindowsForBuffer( buf )
+  return next( i, None )
 
 
 def OpenFileInCurrentWindow( file_name ):
   buffer_number = BufferNumberForFile( file_name )
+  if vim.current.buffer.number == buffer_number:
+    return False
+
   try:
     vim.current.buffer = vim.buffers[ buffer_number ]
   except vim.error as e:
     if 'E325' not in str( e ):
       raise
 
-  return vim.buffers[ buffer_number ]
+  return True
 
 
 COMMAND_HANDLERS = {}
 
 
-def OnCommandWithLogComplete( name, exit_code ):
-  cb = COMMAND_HANDLERS.get( name )
+def OnCommandWithLogComplete( session_id, name, exit_code ):
+  cb = COMMAND_HANDLERS.get( str( session_id ) + '.' + name )
   if cb:
     cb( exit_code )
 
 
-def SetUpCommandBuffer( cmd, name, api_prefix, completion_handler = None ):
-  COMMAND_HANDLERS[ name ] = completion_handler
+def SetUpCommandBuffer( session_id,
+                        cmd,
+                        name,
+                        api_prefix,
+                        completion_handler = None ):
+  COMMAND_HANDLERS[ str( session_id ) + '.' + name ] = completion_handler
 
   buf = Call( f'vimspector#internal#{api_prefix}job#StartCommandWithLog',
+              session_id,
               cmd,
               name )
 
@@ -112,10 +153,12 @@ def SetUpCommandBuffer( cmd, name, api_prefix, completion_handler = None ):
   return vim.buffers[ int( buf ) ]
 
 
-def CleanUpCommand( name, api_prefix ):
-  return vim.eval( 'vimspector#internal#{}job#CleanUpCommand( "{}" )'.format(
-    api_prefix,
-    name ) )
+def CleanUpCommand( session_id, name, api_prefix ):
+  return vim.eval(
+    'vimspector#internal#{}job#CleanUpCommand( {}, "{}" )'.format(
+      api_prefix,
+      session_id,
+      name ) )
 
 
 def CleanUpHiddenBuffer( buf ):
@@ -236,10 +279,7 @@ def RestoreCurrentBuffer( window ):
     yield
   finally:
     if window.valid:
-      with RestoreCurrentWindow():
-        with NoAutocommands():
-          JumpToWindow( window )
-          vim.current.buffer = old_buffer
+      Call( 'win_execute', WindowID( window ), f'bu { old_buffer.number }' )
 
 
 @contextlib.contextmanager
@@ -334,21 +374,18 @@ def Escape( msg ):
 
 
 def UserMessage( msg, persist=False, error=False ):
-  if persist:
-    _logger.warning( 'User Msg: ' + msg )
-  else:
-    _logger.info( 'User Msg: ' + msg )
+  if not isinstance( msg, list ):
+    msg = msg.split( '\n' )
 
   cmd = 'echom' if persist else 'echo'
   vim.command( 'redraw' )
   try:
     if error:
       vim.command( "echohl WarningMsg" )
-    for line in msg.split( '\n' ):
+    for line in msg:
       vim.command( "{0} '{1}'".format( cmd, Escape( line ) ) )
   finally:
     vim.command( 'echohl None' ) if error else None
-  vim.command( 'redraw' )
 
 
 @contextlib.contextmanager
@@ -372,6 +409,7 @@ def SelectFromList( prompt, options, ret='label' ):
     try:
       selection = int( vim.eval(
         'inputlist( ' + json.dumps( display_options ) + ' )' ) ) - 1
+
       if selection < 0 or selection >= len( options ):
         return None
       if ret == 'index':
@@ -423,6 +461,8 @@ def Confirm( api_prefix,
              default_value = 2,
              options: list = None,
              keys: list = None ):
+  # TODO: Implement a queue here? If calling code calls Confirm (async) multiple
+  # times, we... well what happens?!
   if not options:
     options = [ '(Y)es', '(N)o' ]
   if not keys:
@@ -439,7 +479,10 @@ def Confirm( api_prefix,
         keys )
 
 
-def AppendToBuffer( buf, line_or_lines, modified=False ):
+def AppendToBuffer( buf,
+                    line_or_lines,
+                    modified=False,
+                    hl = None ):
   line = 1
   try:
     # After clearing the buffer (using buf[:] = None) there is always a single
@@ -447,6 +490,7 @@ def AppendToBuffer( buf, line_or_lines, modified=False ):
     if len( buf ) > 1 or buf[ 0 ]:
       line = len( buf ) + 1
       buf.append( line_or_lines )
+
     elif isinstance( line_or_lines, str ):
       line = 1
       buf[ -1 ] = line_or_lines
@@ -462,12 +506,20 @@ def AppendToBuffer( buf, line_or_lines, modified=False ):
     if not modified:
       buf.options[ 'modified' ] = False
 
+  if len( buf ) > 0:
+    HighlightTextSection( buf,
+                          hl = hl,
+                          start_line = line,
+                          start_col = 1,
+                          end_line = len( buf ),
+                          end_col = len( buf[ -1 ] ) )
+
   # Return the first Vim line number (1-based) that we just set.
   return line
 
 
-
 def ClearBuffer( buf, modified = False ):
+  ClearTextPropertiesForBuffer( buf )
   buf[ : ] = None
   if not modified:
     buf.options[ 'modified' ] = False
@@ -529,7 +581,9 @@ VAR_MATCH = re.compile(
     \$(?:                               # A dollar, followed by...
       (?P<escaped>\$)                |  # Another dollar = escaped
       (?P<named>[_a-z][_a-z0-9]*)    |  # or An identifier - named param
-      {(?P<braced>[_a-z][_a-z0-9]*)} |  # or An {identifier} - braced param
+                # or An {identifier} - braced param
+                # or An {identifier([arg,...])} - braced calculus call
+      {(?P<braced>[_a-z][_a-z0-9]*)(?:\((?P<args>[^\)]*)\))?} |
       {(?P<braceddefault>               # or An {id:default} - default param, as
         (?P<defname>[_a-z][_a-z0-9]*)   #   an ID
         :                               #   then a colon
@@ -542,19 +596,45 @@ VAR_MATCH = re.compile(
 
 
 class MissingSubstitution( Exception ):
-  def __init__( self, name, default_value = None ):
+  def __init__( self, name, default_value = None, args = (), arg_hash = '' ):
     self.name = name
     self.default_value = default_value
+    self.args = args
+    self.arg_hash = arg_hash
 
 
 def _Substitute( template, mapping ):
   def convert( mo ):
     # Check the most common path first.
+    args: str = mo.group( 'args' )
     named = mo.group( 'named' ) or mo.group( 'braced' )
+    if args is None:
+      args = ()
+      arg_hash = ''
+    else:
+      # The args string must be the "internal" json of a list
+      # The key in mapping is just the calculus function a hash of the string
+      # representation of the arguments. This is important because things like
+      # unusedLocalPort should always return the same value. As a consequence
+      # multiple "calls" to the same calculus function with the same arguments
+      # only trigger one actual call.. shrug?
+      arg_hash = str( hash( args ) )
+      try:
+        args = ( arg for arg in json.loads( "[" + args + "]" ) )
+      except json.JSONDecodeError as e:
+        raise ValueError( f"Unable to parse arguments to macro '{named}': {e}" )
+
     if named is not None:
-      if named not in mapping:
-        raise MissingSubstitution( named )
-      return str( mapping[ named ] )
+      if named + arg_hash not in mapping:
+        raise MissingSubstitution( named,
+                                   args = args,
+                                   arg_hash = arg_hash )
+
+      _logger.debug( "Returning %s from the map for %s with args %s",
+                     named + arg_hash,
+                     named,
+                     args )
+      return str( mapping[ named + arg_hash ] )
 
     if mo.group( 'escaped' ) is not None:
       return '$'
@@ -564,7 +644,7 @@ def _Substitute( template, mapping ):
       if named not in mapping:
         raise MissingSubstitution(
           named,
-          mo.group( 'default' ).replace( '\\}', '}' ) )
+          default_value = mo.group( 'default' ).replace( '\\}', '}' ) )
       return str( mapping[ named ] )
 
     if mo.group( 'invalid' ) is not None:
@@ -584,19 +664,33 @@ def ExpandReferencesInString( orig_s,
 
   # Parse any variables passed in in mapping, and ask for any that weren't,
   # storing the result in mapping
-  bug_catcher = 0
-  while bug_catcher < 100:
-    ++bug_catcher
-
+  while True:
     try:
       s = _Substitute( s, mapping )
       break
     except MissingSubstitution as e:
-      key = e.name
+      key = e.name + e.arg_hash
 
-      if key in calculus:
-        mapping[ key ] = calculus[ key ]()
+      if e.name in calculus:
+        # Expand any recursive mappings in the args.... eeeek
+        new_args = []
+        for arg in e.args:
+          new_args.append( ExpandReferencesInObject( arg,
+                                                     mapping,
+                                                     calculus,
+                                                     user_choices ) )
+
+        mapping[ key ] = calculus[ e.name ]( *new_args )
+        _logger.debug( "Put %s into mapping for %s with args %s",
+                       key,
+                       e.name,
+                       e.args )
+      elif e.args:
+        raise ValueError( f"Invalid arguments '{ e.args }' supplied for named "
+                          f"variable '{ e.name }'. This variable does not take "
+                          "formal arguments" )
       else:
+        assert key == e.name
         default_value = user_choices.get( key )
         # Allow _one_ level of additional substitution. This allows a very real
         # use case of "program": ${program:${file\\}}
@@ -753,7 +847,7 @@ def Exists( expr ):
   return int( vim.eval( f'exists( "{ expr }" )' ) )
 
 
-def SetSyntax( current_syntax, syntax, *args ):
+def SetSyntax( current_syntax: str, syntax: str, *buffers ):
   if not syntax:
     syntax = ''
 
@@ -763,7 +857,7 @@ def SetSyntax( current_syntax, syntax, *args ):
   # We use set syn= because just setting vim.Buffer.options[ 'syntax' ]
   # doesn't actually trigger the Syntax autocommand, and i'm not sure that
   # 'doautocmd Syntax' is the right solution or not
-  for buf in args:
+  for buf in buffers:
     Call( 'setbufvar', buf.number, '&syntax', syntax )
 
   return syntax
@@ -808,7 +902,7 @@ def DisplaySplash( api_prefix: str, splash, text: typing.Union[ str, list ] ):
 
 def HideSplash( api_prefix, splash ):
   if splash:
-    Call( f'vimspector#internal#{api_prefix}popup#HideSplash', splash )
+    return Call( f'vimspector#internal#{api_prefix}popup#HideSplash', splash )
 
   return None
 
@@ -864,24 +958,82 @@ def WindowID( window, tab=None ):
   return int( Call( 'win_getid', window.number, tab.number ) )
 
 
-@memoize
+def GetWindowInfo( window ):
+  return Call( 'getwininfo', WindowID( window ) )[ 0 ]
+
+
+NVIM_WINBAR = {}
+
+
+def SetWinBarOption( *args ):
+  window = vim.current.window
+  win_id = WindowID( window )
+
+  NVIM_WINBAR[ win_id ] = []
+  winbar = []
+  for idx, button in enumerate( args ):
+    button, action = button
+    winbar.append( '%#ToolbarButton#'
+                    f'%{idx}@vimspector#internal#neowinbar#Do@ { button } %X'
+                    '%*' )
+    NVIM_WINBAR[ win_id ].append( action )
+
+  window.options[ 'winbar' ] = '  '.join( winbar )
+  return True
+
+
+def DoWinBarAction( win_id, idx ):
+  action = NVIM_WINBAR[ win_id ][ idx ]
+  vim.command( f':call { action }' )
+
+
+def SetWinBar( *args ):
+  if VimIsNeovim():
+    return SetWinBarOption( *args )
+
+  vim.command( 'silent! nunmenu WinBar' )
+  for idx, button in enumerate( args ):
+    button, action = button
+    button = button.replace( ' ', '\\ ' )
+    vim.command( f'nnoremenu <silent> 1.{idx + 1} '
+                 f'WinBar.{ button } '
+                 f':call {action}<CR>' )
+
+
 def UseWinBar():
-  # Buggy neovim doesn't render correctly when the WinBar is defined:
-  # https://github.com/neovim/neovim/issues/12689
-  return not int( Call( 'has', 'nvim' ) )
+  from vimspector import settings
+  return settings.Bool( 'enable_winbar' ) and VimHasMouseSupport()
+
+
+@memoize
+def VimIsNeovim():
+  return int( Call( 'has', 'nvim' ) )
+
+
+def VimHasMouseSupport():
+  mouse = ToUnicode( vim.options[ 'mouse' ] )
+  return 'a' in mouse or 'n' in mouse
+
+
+class VisiblePosition:
+  UNCHANGED = None
+  TOP = 'zt'
+  BOTTOM = 'zb'
+  MIDDLE = 'zz'
 
 
 # Jump to a specific 1-based line/column
-def SetCursorPosInWindow( window, line, column = 1 ):
+def SetCursorPosInWindow( window,
+                          line,
+                          column = 1,
+                          make_visible = VisiblePosition.UNCHANGED ):
   # simplify the interface and make column 1 based, same as line
   column = max( 1, column )
   # ofc column is actually 0 based in vim
   window.cursor = ( line, column - 1 )
 
-
-def NormalizePath( filepath ):
-  absolute_path = os.path.abspath( filepath )
-  return absolute_path if os.path.isfile( absolute_path ) else filepath
+  if make_visible:
+    Call( 'win_execute', WindowID( window ), f'normal! { make_visible }' )
 
 
 def UpdateSessionWindows( d ):
@@ -942,6 +1094,86 @@ class EventEmitter( object ):
     self.__callbacks = {}
 
 
-def Base64ToHexDump( data ):
+def Base64ToHexDump( data, base_addr ):
   data = base64.b64decode( data )
-  return list( hexdump( data, 'generator' ) )
+  return list( hexdump( data, result = 'generator', base_address = base_addr ) )
+
+
+def ParseAddress( addr: str ):
+  if not addr:
+    return 0
+
+  base = 10
+  if addr.startswith( '0x' ):
+    base = 16
+
+  try:
+    return int( addr, base )
+  except ValueError:
+    return 0
+
+
+def Hex( val: int ):
+  # TODO: is 16 always the right number ? what if your system is 32 bit
+  try:
+    return f'0x{val:0>16x}'
+  except ValueError:
+    return f'0x{0:0>16x}'
+
+
+def BufferNameForSession( name, session_id ):
+  return f'{name}[{session_id}]'
+
+
+def ClearTextPropertiesForBuffer( buf ):
+  if VimIsNeovim() and NVIM_NAMESPACE is not None:
+    Call( 'nvim_buf_clear_namespace', buf.number, NVIM_NAMESPACE, 0, -1 )
+    return
+
+  if Exists( '*prop_clear' ):
+    Call( 'prop_clear', 1, len( buf ), { 'bufnr': buf.number } )
+
+
+def HighlightTextSection( buf,
+                          hl,
+                          start_line,
+                          start_col,
+                          end_line,
+                          end_col ):
+
+  if not hl:
+    return
+
+  if Exists( '*prop_add' ):
+    text_property_type = f'vimspector-p-{hl}'
+    if int( vim.eval( f'empty( prop_type_get( "{text_property_type}" ) )' ) ):
+      Call( 'prop_type_add', text_property_type, {
+        'highlight': hl,
+        'start_incl': 0,
+        'end_incl': 0,
+        'priority': 10,
+        'combine': 1
+      } )
+
+    Call( 'prop_add', start_line, start_col, {
+      'bufnr': buf.number,
+      'type': text_property_type,
+      'end_lnum': end_line,
+      'end_col': end_col + 1
+    } )
+  elif VimIsNeovim():
+    global NVIM_NAMESPACE
+    if NVIM_NAMESPACE is None:
+      NVIM_NAMESPACE = int( Call( 'nvim_create_namespace', 'vimspector' ) )
+
+    Call( 'nvim_buf_set_extmark',
+          buf.number,
+          NVIM_NAMESPACE,
+          start_line - 1,
+          start_col - 1,
+          {
+            'hl_group': hl,
+            'end_row': ( end_line - 1 ),
+            'end_col': ( end_col - 1 ) + 1,
+            'priority': 10,
+          } )

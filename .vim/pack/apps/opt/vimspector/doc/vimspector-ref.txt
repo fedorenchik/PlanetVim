@@ -9,9 +9,10 @@ Contents ~
   1. Debug adapter configuration   |vimspector-ref-debug-adapter-configuration|
   2. Debug profile configuration   |vimspector-ref-debug-profile-configuration|
   3. Replacements and variables         |vimspector-ref-replacements-variables|
-   1. The splat operator                        |vimspector-ref-splat-operator|
-   2. Default values                            |vimspector-ref-default-values|
-   3. Coercing Types                            |vimspector-ref-coercing-types|
+   1. Macro functions                          |vimspector-ref-macro-functions|
+   2. The splat operator                        |vimspector-ref-splat-operator|
+   3. Default values                            |vimspector-ref-default-values|
+   4. Coercing Types                            |vimspector-ref-coercing-types|
  4. Configuration Format                  |vimspector-ref-configuration-format|
  5. Files and locations                        |vimspector-ref-files-locations|
  6. Adapter configurations              |vimspector-ref-adapter-configurations|
@@ -52,6 +53,7 @@ configuration for Vimspector.
   - Debug profile configuration
   - Replacements and variables
 
+    - Macro functions
     - The splat operator
     - Default values
     - Coercing Types
@@ -177,9 +179,9 @@ following are supported:
 - Anything else you like - the user will be asked to provide a value.
 
 If the latter 2 are confusing, for now, suffice to say that they are how
-Vimspector allows parameterisation of debug sessions. The [Vimspector
-website][website-getting-started] has a good example of where this sort of
-thing is useful: accepting the name of a test to run.
+Vimspector allows parameterisation of debug sessions. The Vimspector website
+[2] has a good example of where this sort of thing is useful: accepting the
+name of a test to run.
 
 But for now, consider the following example snippet:
 >
@@ -232,6 +234,42 @@ the following variable substitutions:
   and adapter configurations and can be either static strings or shell
   commands.
 
+-------------------------------------------------------------------------------
+                                               *vimspector-ref-macro-functions*
+Macro functions ~
+
+Vimspector also provides the following syntax for calling specific "macro"
+functions: '${Name(arg0,arg1,...)}'.
+
+The following macro functions are provided:
+
+- '${PickProcess(...)}': Ask the user to select a process and return its PID.
+  If a custom PID picker is installed, the arguments are passed to it.
+  Otherwise, a single (optional) argument is allowed, the name of the binary
+  to find processes for. See the main Vimspector README for examples of how
+  this is used.
+
+It's not possible to define your own macros or call any other functions.
+
+In detail: Syntax is same as a braced variable, but with trailing parentheses.
+The contents between the parentheses must result in the inner contents of a
+valid JSON list, that is it must be valid to take the inner contents of the
+parentheses and wrap them in '[' and ']', and the result must be a valid JSON
+list. This list is then used as arguments to the macro. Don't forget that as
+your expansion is actually part of some existing JSON string, you must escape
+any double quotes within the arguments!
+
+For example:
+>
+  "configurations": {
+    "Test": {
+      "configuration": {
+        // Just an example, there is no FooBar macro
+        "FooBar": "${FooBar(\"foo\", 10, {\"bar\": \"baz\"})}"
+      }
+    }
+  }
+<
 -------------------------------------------------------------------------------
                                                 *vimspector-ref-splat-operator*
 The splat operator ~
@@ -361,7 +399,7 @@ for that.
 Configuration Format ~
 
 All Vimspector configuration is defined in a JSON object. The complete
-specification of this object is available in the JSON Schema [2], but the basic
+specification of this object is available in the JSON Schema [3], but the basic
 format for the configuration object is:
 >
   {
@@ -380,7 +418,7 @@ The above configuration object is constructed from a number of configuration
 files, by merging objects in a specified order.
 
 In a minimal sense, the only file required is a '.vimspector.json' file in the
-root of your project which defines the full configuration object [2], but it is
+root of your project which defines the full configuration object [3], but it is
 usually useful to split the 'adapters' configuration into a separate file (or
 indeed one file per debug adapter).
 
@@ -436,7 +474,7 @@ you can't just override one option, you have to override the whole block.
 
 Adapter configurations are re-read at the start of each debug session.
 
-The specification for the gadget object is defined in the gadget schema [3].
+The specification for the gadget object is defined in the gadget schema [4].
 
 -------------------------------------------------------------------------------
                                             *vimspector-ref-extending-adapters*
@@ -497,7 +535,7 @@ override any that appear in the common configuration dir.
 Debug configurations are re-read at the start of each debug session, so
 modifications are picked up without any restarts of Vim.
 
-The specification for the gadget object is defined in the schema [2], but a
+The specification for the gadget object is defined in the schema [3], but a
 typical example looks like this:
 >
   {
@@ -549,7 +587,7 @@ Configuration selection ~
 When starting debugging, you can specify which debug configuration to launch
 with "call vimspector#LaunchWithSettings( #{ configuration: 'name here' } )".
 
-Otherwise, vimspector tries to work out which one to laucnh.
+Otherwise, vimspector tries to work out which one to launch.
 
 First it finds the configurations for the current filetype from the files, or
 ad-hoc dictionary, mentioned above. Configurations are ignored if they specify
@@ -613,7 +651,7 @@ Default per filetype ~
 
 If you have a number of different types of files, say some Python and some
 javascript/node, you can specify the 'filetypes' list in the 'configuration'
-section. As noted above, vimsepector will filter the list of configurations
+section. As noted above, vimspector will filter the list of configurations
 based on the filetypes of the current buffer. If the 'filetypes' entry is not
 provided, it's assume to apply to all buffer filetypes.
 
@@ -801,7 +839,7 @@ For example:
     }
   }
 <
-The resulting "derived" configuraition ends up like this:
+The resulting "derived" configuration ends up like this:
 >
   {
     "key1": "This key is unchanged",
@@ -845,9 +883,12 @@ Vimspector has in-built support for executing remote debuggers (such as
 where the development is done on one host and the runtime is some other host,
 account, container, etc.
 
-In order for it to work, you have to set up paswordless SSH between the local
-and remote machines/accounts. Then just tell Vimspector how to remotely launch
-and/or attach to the app.
+In order for it to work, it is preferred to have set up passwordless SSH
+between the local and remote machines/accounts. Then just tell Vimspector how
+to remotely launch and/or attach to the app. By default, 'ssh' command is being
+used. Optionally, the custom ssh command can be specified with cmd property
+which gives opportunity to use, e.g. sshpass, for non-interactive password
+passing to actual ssh client (see the Python (debugpy) Example below).
 
 This is presented as examples with commentary, as it's a fairly advanced/niche
 case. If you're not already familiar with remote debugging tools (such as
@@ -856,8 +897,8 @@ research that.
 
 Vimspector's tools are intended to automate your existing process for setting
 this up rather than to offer batteries-included approach. Ultimately, all
-Vimspector is going to do is run your commands over SSH, or docker, and
-co-ordinate with the adapter.
+Vimspector is going to do is run your commands over SSH, docker, or locally,
+and co-ordinate with the adapter.
 
 -------------------------------------------------------------------------------
                                                 *vimspector-ref-python-example*
@@ -880,11 +921,13 @@ Vimspector then orchestrates the various tools to set you up.
         "host": "${host}",
         "launch": {
           "remote": {
-            "host": "${host}",       // Remote host to ssh to (mandatory if not using container)
+            "host": "${host}", // Remote host to ssh to
+                               // If omitted, runCommand(s) is run locally
             "account": "${account}", // User to connect as (optional)
   
-            // Optional.... Manual additional arguments for ssh
+            // Optional.... Manual ssh client and additional arguments
             // "ssh": {
+            //   "cmd": [ "sshpass", "-p", "pa$$w0rd", "ssh" ],
             //   "args": [ "-o", "StrictHostKeyChecking=no" ]
             // },
   
@@ -914,14 +957,15 @@ Vimspector then orchestrates the various tools to set you up.
         },
         "attach": {
           "remote": {
-            "host": "${host}", // Remote host to ssh to (mandatory if not using container)
+            "host": "${host}", // Remote host to ssh to
+                               // If omitted, runCommand(s) is run locally
             "account": "${account}", // User to connect as (optional)
             // Command to get the PID of the process to attach  (mandatory)
             "pidCommand": [
               //
               // Remember that you can use ${var} to ask for input. I use this to
               // call a custom command to return the PID for a named service, so
-              // here's an examle:
+              // here's an example:
               //
               "/path/to/secret/script/GetPIDForService", "${ServiceName}"
             ],
@@ -945,8 +989,9 @@ Vimspector then orchestrates the various tools to set you up.
             //   /* optional command to run after initialized */
             // ]
   
-            // Optional.... Manual additional arguments for ssh
+            // Optional.... Manual ssh client and additional arguments
             // "ssh": {
+            //   "cmd": [ "sshpass", "-p", "pa$$w0rd", "ssh" ],
             //   "args": [ "-o", "StrictHostKeyChecking=no" ]
             // },
           }
@@ -1028,7 +1073,7 @@ gdbserver and have to tell cpptools a few more options.
               "gdbserver",
               "--once",
               "--no-startup-with-shell",
-              "--disable-randomisation",
+              "--disable-randomization",
               "0.0.0.0:${port}",
               "%CMD%"
             ]
@@ -1114,7 +1159,7 @@ port.
         "port": "${port}",
         "launch": {
           "remote": {
-            "container": "${container}", // Docker container id or name to exec into to.
+            "container": "${container}", // Docker container id or name to exec into.
   
             // Command to launch the debuggee and attach the debugger;
             // %CMD% replaced with the remote-cmdLine configured in the launch
@@ -1148,7 +1193,7 @@ port.
               //
               // Remember that you can use ${var} to ask for input. I use this to
               // call a custom command to return the PID for a named service, so
-              // here's an examle:
+              // here's an example:
               //
               "sh", "-c", "pgrep", "-f", "${filename}"
             ],
@@ -1237,10 +1282,10 @@ Comments are "c-style", i.e.:
 
 There is much debate about whether JSON files should contain comments. I have
 added them because they are useful in the context of configuration files.
-Unforutnately this may mean your editor doesn't like them (they are strictly
+Unfortunately this may mean your editor doesn't like them (they are strictly
 invalid JSON) so it's up to you if you use them.
 
-Technically, Vimspector uses JSON minify [4] to strip comments before parsing
+Technically, Vimspector uses JSON minify [5] to strip comments before parsing
 the JSON.
 
 ===============================================================================
@@ -1249,11 +1294,11 @@ Appendix: Editor configuration ~
 
 If you would like some assistance with writing the JSON files, and your editor
 of choice has a way to use a language server, you can use the VSCode JSON
-language server [5].
+language server [6].
 
 It is recommended to include the '$schema' declaration as in the above
 examples, but if that isn't present, the following JSON language server
-configuration [6] is recommended to load the schema from the Internet:
+configuration [7] is recommended to load the schema from the Internet:
 >
   {
     "json": {
@@ -1270,9 +1315,9 @@ configuration [6] is recommended to load the schema from the Internet:
     }
   }
 <
-If your language server client of choice happens to be YouCompleteMe [7], then
+If your language server client of choice happens to be YouCompleteMe [8], then
 the following '.ycm_extra_conf.py' is good enough to get you going, after
-following the instructions in the lsp-examples [8] repo to get the server set
+following the instructions in the lsp-examples [9] repo to get the server set
 up:
 >
   VIMSPECTOR_HOME = '/path/to/vimspector' # TODO: Change this
@@ -1306,12 +1351,13 @@ and is provided just as an example.
 References ~
 
 [1] https://microsoft.github.io/debug-adapter-protocol/
-[2] http://puremourning.github.io/vimspector/schema/vimspector.schema.json
-[3] http://puremourning.github.io/vimspector/schema/gadgets.schema.json
-[4] https://github.com/getify/JSON.minify
-[5] https://github.com/vscode-langservers/vscode-json-languageserver
-[6] https://github.com/vscode-langservers/vscode-json-languageserver#settings
-[7] https://github.com/ycm-core/YouCompleteMe
-[8] https://github.com/ycm-core/lsp-examples
+[2] https://puremourning.github.io/vimspector-web/#getting-started
+[3] https://puremourning.github.io/vimspector/schema/vimspector.schema.json
+[4] https://puremourning.github.io/vimspector/schema/gadgets.schema.json
+[5] https://github.com/getify/JSON.minify
+[6] https://github.com/vscode-langservers/vscode-json-languageserver
+[7] https://github.com/vscode-langservers/vscode-json-languageserver#settings
+[8] https://github.com/ycm-core/YouCompleteMe
+[9] https://github.com/ycm-core/lsp-examples
 
 vim: ft=help

@@ -11,7 +11,8 @@ function! SetUp_Test_Go_Simple()
 endfunction
 
 function! SkipUnsupported() abort
-  call SkipOn( 'arm64', 'Darwin' )
+  " Seems like netcoredbg just doesn't work properly on MacOS right now
+  call SkipOn( v:null, 'Darwin' )
 endfunction
 
 function! Test_CSharp_Simple_Adhoc_Config()
@@ -27,10 +28,14 @@ function! Test_CSharp_Simple_Adhoc_Config()
     \   'adapter': 'netcoredbg',
     \   'configuration': {
     \     'request': 'launch',
-    \     'program': '${workspaceRoot}/bin/Debug/netcoreapp5.0/csharp.dll',
+    \     'program': '${workspaceRoot}/bin/Debug/netcoreapp6.0/csharp.dll',
     \     'args': [],
     \     'stopAtEntry': v:false
-    \   }
+    \   },
+    \   'breakpoints': { 'exception': {
+    \     'user-unhandled': '',
+    \     'all': ''
+    \   } },
     \ }
   \ } )
   call vimspector#test#signs#AssertCursorIsAtLineInBuffer( fn, 31, 7 )
@@ -62,10 +67,14 @@ function! Test_CSharp_Simple_VimDict_Config()
   \     'configuration': {
   \       'request': 'launch',
   \       'default': v:true,
-  \       'program': '${workspaceRoot}/bin/Debug/netcoreapp5.0/csharp.dll',
+  \       'program': '${workspaceRoot}/bin/Debug/netcoreapp6.0/csharp.dll',
   \       'args': [],
   \       'stopAtEntry': v:false
-  \     }
+  \     },
+    \   'breakpoints': { 'exception': {
+    \     'user-unhandled': '',
+    \     'all': ''
+    \   } },
   \   },
   \   'ignored_configuration': { 'adapter': 'does_not_exist' }
   \ } )
@@ -106,10 +115,14 @@ function! Test_CSharp_Simple_VimDict_Config_TruthyDefault()
   \     'configuration': {
   \       'request': 'launch',
   \       'default': 1,
-  \       'program': '${workspaceRoot}/bin/Debug/netcoreapp5.0/csharp.dll',
+  \       'program': '${workspaceRoot}/bin/Debug/netcoreapp6.0/csharp.dll',
   \       'args': [],
   \       'stopAtEntry': v:false
-  \     }
+  \     },
+    \   'breakpoints': { 'exception': {
+  \       'user-unhandled': '',
+  \       'all': ''
+  \     } },
   \   },
   \   'ignored_configuration': { 'adapter': 'does_not_exist' }
   \ } )
@@ -149,10 +162,14 @@ function! Test_CSharp_Simple_VimDict_Config_Autoselect()
   \     'adapter': 'test_adapter',
   \     'configuration': {
   \       'request': 'launch',
-  \       'program': '${workspaceRoot}/bin/Debug/netcoreapp5.0/csharp.dll',
+  \       'program': '${workspaceRoot}/bin/Debug/netcoreapp6.0/csharp.dll',
   \       'args': [],
   \       'stopAtEntry': v:false
-  \     }
+  \     },
+  \     'breakpoints': { 'exception': {
+  \       'user-unhandled': '',
+  \       'all': ''
+  \     } },
   \   },
   \   'ignored_configuration': { 'adapter': 'does_not_exist', 'autoselect': 0 }
   \ } )

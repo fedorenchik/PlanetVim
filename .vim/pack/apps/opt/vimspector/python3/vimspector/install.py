@@ -15,7 +15,7 @@
 
 import platform
 import os
-from vimspector.core_utils import memoize
+from vimspector.core_utils import memoize, NormalizePath
 
 
 @memoize
@@ -43,6 +43,7 @@ def GetPlatform():
     ( 'X86_64', 64 ): 'x86_64',
     ( 'X86_32', 32 ): 'x86',
     ( 'ARM_8', 64 ): 'arm64',
+    ( 'ARM_7', 32 ): 'armv7'
   }
 
   try:
@@ -94,3 +95,11 @@ def GetConfigDirForFiletype( vimspector_base, filetype ):
                        'configurations',
                        GetOS(),
                        filetype )
+
+
+def GetSupportDir():
+  return NormalizePath(
+    os.path.join( os.path.dirname( __file__ ),
+                  '..',
+                  '..',
+                  'support' ) )

@@ -40,6 +40,8 @@ function! Test_DumpMemory_VariableWindow()
   call SkipNeovim()
   call s:StartDebugging()
 
+  let x000000000000000 = '0x[0-9A-F]\{16}'
+
   call WaitForAssert( {->
         \   AssertMatchList(
         \     [
@@ -64,10 +66,10 @@ function! Test_DumpMemory_VariableWindow()
   call WaitForAssert( {->
         \   AssertMatchList(
         \     [
-        \       '--------------------------------------------------------------------------------',
-        \       'Offset    Bytes                                             Text',
-        \       '--------------------------------------------------------------------------------',
-        \       '00000000: 00 00 00 00 00 00 00 00  00                       .........',
+        \       '--------------------------------------------------------------------------------------',
+        \       'Address             Bytes                                             Text',
+        \       '--------------------------------------------------------------------------------------',
+        \       x000000000000000..': 00 00 00 00 00 00 00 00  00                       .........',
         \     ],
         \     GetBufLine( winbufnr( g:vimspector_session_windows.code ),
         \                 -3,
@@ -92,10 +94,10 @@ function! Test_DumpMemory_VariableWindow()
   call WaitForAssert( {->
         \   AssertMatchList(
         \     [
-        \       '--------------------------------------------------------------------------------',
-        \       'Offset    Bytes                                             Text',
-        \       '--------------------------------------------------------------------------------',
-        \       '00000000: 01 00 00 00 63 00 00 00  00                       ....c....',
+        \       '--------------------------------------------------------------------------------------',
+        \       'Address             Bytes                                             Text',
+        \       '--------------------------------------------------------------------------------------',
+        \       x000000000000000..': 01 00 00 00 63 00 00 00  00                       ....c....',
         \     ],
         \     GetBufLine( winbufnr( g:vimspector_session_windows.code ),
         \                 -3,
@@ -109,12 +111,12 @@ function! Test_DumpMemory_VariableWindow()
   py3 <<EOF
 from unittest import mock
 with mock.patch( 'vimspector.utils.InputSave' ):
-  vim.eval( 'feedkeys( ",m\<C-u>5\<CR>\<CR>", "xt" )' )
+  vim.eval( r'feedkeys( ",m\<C-u>5\<CR>\<CR>", "xt" )' )
 EOF
   call WaitForAssert( {->
         \   AssertMatchList(
         \     [
-        \       '00000000: 01 00 00 00 63                                    ....c',
+        \       x000000000000000..': 01 00 00 00 63                                    ....c',
         \     ],
         \     GetBufLine( winbufnr( g:vimspector_session_windows.code ),
         \                 '$',
@@ -130,6 +132,8 @@ endfunction
 function! Test_DumpMemory_WatchWindow()
   call SkipNeovim()
   call s:StartDebugging()
+
+  let x000000000000000 = '0x[0-9A-F]\{16}'
 
   call WaitForAssert( {->
         \   AssertMatchList(
@@ -189,10 +193,10 @@ function! Test_DumpMemory_WatchWindow()
   call WaitForAssert( {->
         \   AssertMatchList(
         \     [
-        \       '--------------------------------------------------------------------------------',
-        \       'Offset    Bytes                                             Text',
-        \       '--------------------------------------------------------------------------------',
-        \       '00000000: 00 00 00 00 00 00 00 00  00                       .........',
+        \       '--------------------------------------------------------------------------------------',
+        \       'Address             Bytes                                             Text',
+        \       '--------------------------------------------------------------------------------------',
+        \       x000000000000000..': 00 00 00 00 00 00 00 00  00                       .........',
         \     ],
         \     GetBufLine( winbufnr( g:vimspector_session_windows.code ),
         \                 -3,
@@ -217,10 +221,10 @@ function! Test_DumpMemory_WatchWindow()
   call WaitForAssert( {->
         \   AssertMatchList(
         \     [
-        \       '--------------------------------------------------------------------------------',
-        \       'Offset    Bytes                                             Text',
-        \       '--------------------------------------------------------------------------------',
-        \       '00000000: 01 00 00 00 63 00 00 00  00                       ....c....',
+        \       '--------------------------------------------------------------------------------------',
+        \       'Address             Bytes                                             Text',
+        \       '--------------------------------------------------------------------------------------',
+        \       x000000000000000..': 01 00 00 00 63 00 00 00  00                       ....c....',
         \     ],
         \     GetBufLine( winbufnr( g:vimspector_session_windows.code ),
         \                 -3,
@@ -234,12 +238,12 @@ function! Test_DumpMemory_WatchWindow()
   py3 <<EOF
 from unittest import mock
 with mock.patch( 'vimspector.utils.InputSave' ):
-  vim.eval( 'feedkeys( ",m\<C-u>1\<CR>\<CR>", "xt" )' )
+  vim.eval( r'feedkeys( ",m\<C-u>1\<CR>\<CR>", "xt" )' )
 EOF
   call WaitForAssert( {->
         \   AssertMatchList(
         \     [
-        \       '00000000: 63                                                c',
+        \       x000000000000000..': 63                                                c',
         \     ],
         \     GetBufLine( winbufnr( g:vimspector_session_windows.code ),
         \                 '$',

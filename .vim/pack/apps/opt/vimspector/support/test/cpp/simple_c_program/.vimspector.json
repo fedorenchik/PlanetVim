@@ -1,11 +1,54 @@
 {
   "adapters": {
-    "CodeLLDB - StopOnEntry": {
+    "lldb-dap": {
+      "attach": {
+        "pidProperty": "pid",
+        "pidSelect": "ask"
+      },
+      "command": [
+        "/opt/homebrew/opt/llvm/bin/lldb-dap"
+      ],
+      "env": {
+        "LLDB_LAUNCH_FLAG_LAUNCH_IN_TTY": "YES"
+      },
+      "name": "lldb",
+      "configuration": {
+        "runInTerminal": true
+      }
+    },
+    "custom-lldb-dap": {
+      "extends": "lldb-dap",
+      "command": [
+        "$HOME/Development/llvm-project/build/bin/lldb-dap"
+      ]
+    },
+    "custom-codelldb": {
       "extends": "CodeLLDB",
+      "command": [
+        "$HOME/Development/vimspector/CodeLLDB/build/adapter/codelldb",
+        "--liblldb", "$HOME/Development/llvm-project/build/lib/liblldb.dylib"
+      ]
+    },
+    "CodeLLDB - StopOnEntry": {
+      "extends": "custom-codelldb",
       "name": "CoHostingLLDB"
+    },
+    "custom-cpptools": {
+      "extends": "vscode-cpptools",
+      "command": [
+        "$HOME/Development/vimspector/MIEngine/bin/Debug/vscode/OpenDebugAD7"
+      ]
     }
   },
   "configurations": {
+    "CodeLLDB-custom": {
+      "adapter": "custom-codelldb",
+      "configuration": {
+        "request": "launch",
+        "expressions": "native",
+        "program": "${workspaceRoot}/test"
+      }
+    },
     "CodeLLDB": {
       "adapter": "CodeLLDB",
       "variables": {
@@ -15,6 +58,7 @@
       },
       "configuration": {
         "request": "launch",
+        "expressions": "native",
         "program": "${workspaceRoot}/test"
       }
     },
@@ -31,6 +75,17 @@
         "stopOnEntry": true
       }
     },
+    "lldb-dap": {
+      "adapter": "lldb-dap",
+      "configuration": {
+        "request": "launch",
+        "program": "${workspaceRoot}/test"
+      }
+    },
+    "lldb-dap-custom": {
+      "extends": "lldb-dap",
+      "adapter": "custom-lldb-dap"
+    },
     "lldb-vscode": {
       "adapter": "lldb-vscode",
       "variables": {
@@ -44,18 +99,65 @@
         "stopAtEntry": true
       }
     },
-    "cpptools": {
+    "cpptools (lldb)": {
       "adapter": "vscode-cpptools",
       "variables": {
         "BUILDME": {
-          "shell": "g++ -o ${workspaceRoot}/test -g -std=c++17 ${workspaceRoot}/test_c.cpp"
+          "shell": "g++ -o ${workspaceRoot}/test -g -std=c++17 ${file}"
+        },
+        "arch": {
+          "shell": "uname -m"
         }
       },
       "configuration": {
         "request": "launch",
         "program": "${workspaceRoot}/test",
-        "stopOnEntry": true,
-        "MIMode": "lldb"
+        "stopAtEntry": true,
+        "MIMode": "lldb",
+        "MIDebuggerPath": "$HOME/.vim/vimspector-conf/gadgets/macos/vscode-cpptools/debugAdapters/lldb-mi/bin/lldb-mi",
+        "logging": {
+          "engineLogging": true
+        },
+        "targetArchitecture": "${arch}"
+      }
+    },
+    "cpptools (gdb)": {
+      "adapter": "vscode-cpptools",
+      "variables": {
+        "BUILDME": {
+          "shell": "g++ -o ${workspaceRoot}/test -g -std=c++17 ${file}"
+        }
+      },
+      "configuration": {
+        "request": "launch",
+        "program": "${workspaceRoot}/test",
+        "stopAtEntry": true,
+        "MIMode": "gdb"
+      }
+    },
+    "cpptools-attach": {
+      "extends": "cpptools (lldb)",
+      "configuration": {
+        "request": "attach"
+      },
+      "breakpoints": {
+        "exception": {
+          "cpp_throw": "",
+          "cpp_catch": ""
+        }
+      }
+    },
+    "CodeLLDB-attach": {
+      "extends": "CodeLLDB",
+      "configuration": {
+        "request": "attach",
+        "pid": "${PickProcess(\"test\")}"
+      },
+      "breakpoints": {
+        "exception": {
+          "cpp_throw": "",
+          "cpp_catch": ""
+        }
       }
     }
   }
