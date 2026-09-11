@@ -1,5 +1,5 @@
 if !exists('g:test#javascript#ava#file_pattern')
-  let g:test#javascript#ava#file_pattern = '\vtests?/.*\.(js|jsx|coffee)$'
+  let g:test#javascript#ava#file_pattern = '\vtests?/.*\.(js|jsx|ts|tsx|coffee)$'
 endif
 
 function! test#javascript#ava#test_file(file) abort
@@ -37,11 +37,7 @@ function! test#javascript#ava#build_args(args, color) abort
 endfunction
 
 function! test#javascript#ava#executable() abort
-  if filereadable('node_modules/.bin/ava')
-    return 'node_modules/.bin/ava'
-  else
-    return 'ava'
-  endif
+  return test#javascript#determine_executable('ava')
 endfunction
 
 function! s:nearest_test(position)

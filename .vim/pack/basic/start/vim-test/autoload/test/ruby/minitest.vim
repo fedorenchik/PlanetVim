@@ -43,6 +43,7 @@ function! test#ruby#minitest#build_args(args) abort
   endfor
 
   let kind = matchstr(test#base#executable('ruby#minitest'), 'ruby\|rake')
+  let kind = empty(kind) ? 'ruby' : kind
   return s:build_{kind}_args(get(l:, 'path'), a:args)
 endfunction
 
@@ -63,19 +64,11 @@ function! s:build_ruby_args(path, args) abort
 endfunction
 
 function! test#ruby#minitest#executable() abort
-  if filereadable('Rakefile') && system('cat Rakefile') =~# 'Rake::TestTask' ||
+  if filereadable('Rakefile') && match(readfile('Rakefile'), 'Rake::TestTask') != -1 ||
    \ (exists('b:rails_root') || filereadable('./bin/rails'))
-    if !empty(glob('.zeus.sock'))
-      return 'zeus rake test'
-    elseif filereadable('./bin/rake') && get(g:, 'test#ruby#use_binstubs', 1)
-      return './bin/rake test'
-    elseif filereadable('Gemfile') && get(g:, 'test#ruby#bundle_exec', 1)
-      return 'bundle exec rake test'
-    else
-      return 'rake test'
-    endif
+    return test#ruby#determine_executable('rake') . ' test'
   else
-    if filereadable('Gemfile') && get(g:, 'test#ruby#bundle_exec', 1)
+    if test#ruby#use_bundle_exec()
       return 'bundle exec ruby -Itest'
     else
       return 'ruby -Itest'
@@ -106,7 +99,7 @@ function! s:nearest_test(position) abort
 endfunction
 
 function! s:syntax(file) abort
-  let lines = split(system('cat '.a:file), '\n')
+  let lines = filereadable(a:file) ? readfile(a:file) : []
 
   if !empty(filter(copy(lines), "v:val =~# g:test#ruby#patterns['test'][1]"))
     return 'rails'

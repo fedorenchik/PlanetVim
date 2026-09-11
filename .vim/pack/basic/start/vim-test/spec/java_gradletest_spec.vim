@@ -105,6 +105,15 @@ describe "Gradle plain"
     Expect g:test#last_command == "gradle test --tests MathTest.testFailedAdd"
   end
 
+  it "runs nearest tests with custom test cmd"
+    let g:test#java#gradletest#test_cmd = 'integrationTest'
+    view +37 MathTest.java
+    TestNearest
+
+    Expect g:test#last_command == "gradle integrationTest --tests MathTest.testFailedAdd"
+    unlet g:test#java#gradletest#test_cmd
+  end
+
   it "runs a suite"
     view MathTest.java
     TestSuite
@@ -253,5 +262,24 @@ describe "Gradle multi module"
     TestSuite --info -b build.gradle -DcustomProperty=5
 
     Expect g:test#last_command == 'gradle test --info -b build.gradle -DcustomProperty=5  -p sample_module'
+  end
+end
+
+describe "Gradle multi module (deep)"
+  before
+    let g:test#java#runner = 'gradletest'
+    cd spec/fixtures/gradle/java/gradle_multi_module_deep
+  end
+
+  after
+    call Teardown()
+    cd -
+  end
+
+  it "runs tests"
+    view  hello/world/src/test/java/MessageServiceTest.java
+    TestFile
+
+    Expect g:test#last_command == 'gradle test --tests MessageServiceTest -p hello/world'
   end
 end

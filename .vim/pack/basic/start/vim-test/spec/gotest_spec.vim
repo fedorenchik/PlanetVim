@@ -71,6 +71,50 @@ describe "GoTest"
     Expect g:test#last_command == 'go test -run ''TestSomething$'' ./mypackage'
   end
 
+  it "runs nearest testify case"
+    view +18 testify_test.go
+    TestNearest
+
+    Expect g:test#last_command == 'go test ./. -run ''TestExampleTestSuite$'' -testify.m ''TestList'''
+
+    view +18 testify_test.go
+    TestNearest
+
+    Expect g:test#last_command == 'go test ./. -run ''TestExampleTestSuite$'' -testify.m ''TestList'''
+
+    view +23 testify_test.go
+    TestNearest
+
+    Expect g:test#last_command == 'go test ./. -run ''TestAnotherTestSuite$'' -testify.m ''TestAnother'''
+
+    view +30 testify_test.go
+    TestNearest
+
+    Expect g:test#last_command == 'go test -run ''TestOriginalTestcase$'' ./.'
+  end
+
+  it "runs nearest tests in subtest"
+    view +7 sub_test.go
+    TestNearest
+
+    Expect g:test#last_command == 'go test -run ''TestAdd$'' ./.'
+  
+    view +14 sub_test.go
+    TestNearest
+
+    Expect g:test#last_command == 'go test -run ''TestAdd/positive numbers'' ./.'
+
+    view +20 sub_test.go
+    TestNearest
+
+    Expect g:test#last_command == 'go test -run ''TestAdd/negative numbers'' ./.'
+
+    view +26 sub_test.go
+    TestNearest
+
+    Expect g:test#last_command == 'go test -run ''TestAdd/zero'' ./.'
+  end
+
   it "runs file test if nearest test couldn't be found"
     view +1 normal_test.go
     TestNearest
@@ -110,10 +154,37 @@ describe "GoTest"
     Expect g:test#last_command == 'go test -tags=foo,hello,world,!bar,red,black'
   end
 
+  it "runs tests in a file with only Go 1.17 build tags"
+    view +10 build_tags_117_test.go
+    TestNearest
+
+    Expect g:test#last_command == 'go test -tags=foo,hello,world,!bar,red,black -run ''TestNumbers$'' ./.'
+
+    TestFile
+
+    Expect g:test#last_command == 'go test -tags=foo,hello,world,!bar,red,black'
+  end
+
   it "runs test suite without tags"
     view +14 build_tags_test.go
     TestSuite
 
     Expect g:test#last_command == 'go test ./...'
+  end
+
+  it "runs test with args"
+    view +5 normal_test.go
+    let g:test#go#gotest#args = "a=b"
+    TestNearest
+
+    Expect g:test#last_command == 'go test -run ''TestNumbers$'' ./. -args a=b'
+  end
+
+  it "runs test suite with args"
+    view +14 build_tags_test.go
+    let g:test#go#gotest#args = "a=b"
+    TestSuite
+
+    Expect g:test#last_command == 'go test ./... -args a=b'
   end
 end

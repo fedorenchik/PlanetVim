@@ -7,20 +7,23 @@ function! test#javascript#jest#test_file(file) abort
       if exists('g:test#javascript#runner')
           return g:test#javascript#runner ==# 'jest'
       else
-        return test#javascript#has_package('jest')
+        return test#javascript#has_import(a:file, 'jest')
+            \ || !empty(glob('jest.config.*'))
+            \ || test#javascript#has_package('jest')
       endif
   endif
 endfunction
 
 function! test#javascript#jest#build_position(type, position) abort
+  let file = escape(a:position['file'], '()[]')
   if a:type ==# 'nearest'
     let name = s:nearest_test(a:position)
     if !empty(name)
-      let name = '-t '.shellescape(name, 1)
+      let name = '-t '.shellescape(escape(name, '()[]'), 1)
     endif
-    return ['--no-coverage', name, '--', a:position['file']]
+    return ['--runTestsByPath', name, '--', file]
   elseif a:type ==# 'file'
-    return ['--no-coverage', '--', a:position['file']]
+    return ['--runTestsByPath', '--', file]
   else
     return []
   endif
@@ -37,16 +40,18 @@ function! test#javascript#jest#build_args(args) abort
 endfunction
 
 function! test#javascript#jest#executable() abort
-  if filereadable('node_modules/.bin/jest')
-    return 'node_modules/.bin/jest'
-  else
-    return 'jest'
-  endif
+  return test#javascript#determine_executable('jest')
 endfunction
 
 function! s:nearest_test(position) abort
   let name = test#base#nearest_test(a:position, g:test#javascript#patterns)
+  let test_name = join(name['namespace'] + name['test'])
+  let has_printf = test_name =~# '\v\%[sdifojp#]'
+  if has_printf
+    let test_name = substitute(test_name, '\v\%[sdifojp#].*', '', '')
+    return (len(name['namespace']) ? '^' : '') . test_name
+  endif
   return (len(name['namespace']) ? '^' : '') .
-       \ test#base#escape_regex(join(name['namespace'] + name['test'])) .
+       \ test#base#escape_regex(test_name) .
        \ (len(name['test']) ? '$' : '')
 endfunction

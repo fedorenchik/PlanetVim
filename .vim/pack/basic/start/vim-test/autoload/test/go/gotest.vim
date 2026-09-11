@@ -7,16 +7,38 @@ function! test#go#gotest#test_file(file) abort
 endfunction
 
 function! test#go#gotest#build_position(type, position) abort
+  let l:gotest_args = ''
+  if exists('g:test#go#gotest#args')
+    let l:gotest_args = '-args ' . g:test#go#gotest#args
+  endif
+
   if a:type ==# 'suite'
-    return ['./...']
+    return ['./...', l:gotest_args]
   else
     let path = './'.fnamemodify(a:position['file'], ':h')
 
     if a:type ==# 'file'
       return path ==# './.' ? [] : [path . '/...']
     elseif a:type ==# 'nearest'
-      let name = s:nearest_test(a:position)
-      return empty(name) ? [] : ['-run '.shellescape(name.'$', 1), path]
+      let name = test#base#nearest_test(a:position, g:test#go#patterns)
+      if test#go#is_testify() == 1
+        let suite_name = test#go#nearest_suite_name(a:position)
+        if !empty(suite_name)
+          let suite_testcase_name = test#go#get_suite_testcase_name(suite_name)
+          let nearest = s:nearest_test(name)
+          return empty(nearest) ? [] : [path, '-run '.shellescape(suite_testcase_name.'$') . ' -testify.m ' .shellescape(nearest, 1)]
+        endif
+      endif
+      let nearest = s:nearest_test(name)
+      let table_name = s:table_subtest(name)
+      if empty(nearest)
+        let command = []
+      elseif !empty(table_name)
+        let command = ['-run '.shellescape(table_name, 1), path]
+      else
+        let command = ['-run '.shellescape(nearest.'$', 1), path]
+      endif
+      return add(command, l:gotest_args)
     endif
   endif
 endfunction
@@ -27,7 +49,7 @@ function! test#go#gotest#build_args(args) abort
   endif
   let tags = []
   let index = 1
-  let pattern = '^//\s*+build\s\+\(.\+\)'
+  let pattern = '^//\s*\%(go:build\|+build\)\s\+\(.\+\)'
   while index <= getbufinfo('%')[0]['linecount']
     let line = trim(getbufline('%', l:index)[0])
     if l:line =~# '^package '
@@ -36,8 +58,12 @@ function! test#go#gotest#build_args(args) abort
     let tag = substitute(line, l:pattern, '\1', '')
     if l:tag != l:line
       " replace OR tags with AND, since we are going to use all the tags anyway
-      let tag = substitute(l:tag, ' \+', ',', 'g')
-      call add(l:tags, l:tag)
+      let tag = substitute(l:tag, '\v\&\&|\|\||\(|\)', '', 'g')
+      for val in split(l:tag, '[, ]\+')
+        if index(l:tags, l:val) == -1
+          call add(l:tags, l:val)
+        endif
+      endfor
     endif
     let index += 1
   endwhile
@@ -53,10 +79,15 @@ function! test#go#gotest#executable() abort
   return 'go test'
 endfunction
 
-function! s:nearest_test(position) abort
-  let name = test#base#nearest_test(a:position, g:test#go#patterns)
-  let name = join(name['namespace'] + name['test'], '/')
+function! s:nearest_test(name) abort
+  let name = join(a:name['namespace'] + a:name['test'], '/')
   let without_spaces = substitute(name, '\s', '_', 'g')
   let escaped_regex = substitute(without_spaces, '\([\[\].*+?|$^()]\)', '\\\1', 'g')
   return escaped_regex
+endfunction
+
+function! s:table_subtest(name) abort
+  if a:name['test_line'] > 0 && getline(a:name['test_line']) =~# '\v^\s*name:\s*"'
+    return join(a:name['namespace'] + a:name['test'], '/')
+  endif
 endfunction

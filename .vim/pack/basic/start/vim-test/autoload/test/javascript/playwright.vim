@@ -7,7 +7,10 @@ function! test#javascript#playwright#test_file(file) abort
       if exists('g:test#javascript#runner')
           return g:test#javascript#runner ==# 'playwright'
       else
-        return test#javascript#has_package('@playwright/test')
+        return test#javascript#has_import(a:file, '@playwright/test')
+            \ || test#javascript#has_package('@playwright/test')
+            \ || filereadable('playwright.config.ts')
+            \ || filereadable('playwright.config.js')
       endif
   endif
 endfunction
@@ -37,11 +40,7 @@ function! test#javascript#playwright#build_args(args) abort
 endfunction
 
 function! test#javascript#playwright#executable() abort
-  if filereadable('node_modules/.bin/playwright')
-    return 'node_modules/.bin/playwright test'
-  else
-    return 'playwright test'
-  endif
+  return test#javascript#determine_executable('playwright') . ' test'
 endfunction
 
 let test#playwright#patterns = {

@@ -35,14 +35,15 @@ function! test#run_last(arguments) abort
   if exists('g:test#last_command')
     call s:before_run()
 
+    let env = s:extract_env_from_command(a:arguments)
     let strategy = s:extract_strategy_from_command(a:arguments)
 
     if empty(strategy)
       let strategy = g:test#last_strategy
     endif
 
-    let cmd = [g:test#last_command]
-    let cmd = cmd + a:arguments
+    let cmd = [env, g:test#last_command] + a:arguments
+    call filter(cmd, '!empty(v:val)')
 
     call test#shell(join(cmd), strategy)
 
@@ -65,6 +66,7 @@ function! test#visit() abort
 endfunction
 
 function! test#execute(runner, args, ...) abort
+  let env = s:extract_env_from_command(a:args)
   let strategy = s:extract_strategy_from_command(a:args)
   if empty(strategy)
     if !empty(a:000)
@@ -83,7 +85,7 @@ function! test#execute(runner, args, ...) abort
 
   let executable = test#base#executable(a:runner)
   let args = test#base#build_args(a:runner, args, strategy)
-  let cmd = [executable] + args
+  let cmd = [env, executable] + args
   call filter(cmd, '!empty(v:val)')
 
   call test#shell(join(cmd), strategy)
@@ -113,7 +115,7 @@ function! test#shell(cmd, strategy) abort
 endfunction
 
 function! test#determine_runner(file) abort
-  for [language, runners] in items(test#get_runners())
+  for [language, runners] in sort(items(test#get_runners()), 'i')
     for runner in runners
       let runner = tolower(language).'#'.tolower(runner)
       if exists("g:test#enabled_runners")
@@ -166,10 +168,26 @@ endfunction
 function! s:before_run() abort
   if &autowrite || &autowriteall
     silent! wall
+  elseif get(g:, 'test#prompt_for_unsaved_changes', 0)
+    let modified_buffers = len(getbufinfo({'bufmodified': 1}))
+    if l:modified_buffers
+      let answer = confirm(
+            \ "Warning: you have unsaved changes",
+            \ "&write\nwrite &all\n&continue", 3)
+      if l:answer == 1
+        write
+      elseif l:answer == 2
+        wall
+      endif
+    endif
   endif
 
   if exists('g:test#project_root')
-    execute 'cd' g:test#project_root
+    if type(g:test#project_root) == v:t_func
+      execute 'cd' g:test#project_root()
+    else
+      execute 'cd' g:test#project_root
+    endif
   endif
 endfunction
 
@@ -196,6 +214,12 @@ function! s:extract_strategy_from_command(arguments) abort
       return substitute(remove(a:arguments, idx), '-strategy=', '', '')
     endif
   endfor
+endfunction
+
+function! s:extract_env_from_command(arguments) abort
+  let env = filter(copy(a:arguments), 'v:val =~# ''^[A-Z_]\+=.\+''')
+  call filter(a:arguments, 'v:val !~# ''^[A-Z_]\+=.\+''')
+  return join(env)
 endfunction
 
 function! s:echo_failure(message) abort

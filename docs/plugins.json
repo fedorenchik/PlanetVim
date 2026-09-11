@@ -702,10 +702,9 @@
       "group": "basic",
       "license_evidence": {
         "paths": [
-          ".vim/pack/basic/start/vim-test/README.md",
-          ".vim/pack/basic/start/vim-test/doc/test.txt"
+          ".vim/pack/basic/start/vim-test/LICENSE.txt"
         ],
-        "status": "documentation_mentions"
+        "status": "notice_files_found"
       },
       "load": "start",
       "local_patches": "not_compared_with_upstream",
@@ -713,11 +712,11 @@
       "path": ".vim/pack/basic/start/vim-test",
       "provenance": {
         "branch": "master",
-        "commit": "e7150de777ef0c81a015972e4feb56c4b3137efd",
+        "commit": "2676d84c6901e484df00b5d728bd6a345d47ee12",
         "kind": "git-subrepo",
         "remote": "https://github.com/janko/vim-test.git"
       },
-      "snapshot_sha256": "b004d5c86b09cddfb5401bbbf22e2c9afcf7388c102028d7535611f17eca2603"
+      "snapshot_sha256": "14eb27c382fa2ac21a72a8f8fe04731624ad8d94112991428737992b05633658"
     },
     {
       "group": "basic",
