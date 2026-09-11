@@ -1930,11 +1930,11 @@
       "path": ".vim/pack/lsp/start/vim-lsp",
       "provenance": {
         "branch": "master",
-        "commit": "8fdaf4f78c94c6abba06a907520a5de157c5803b",
+        "commit": "bbffa60cb08a6a2d67e2086a89699ab00a084fe9",
         "kind": "git-subrepo",
         "remote": "https://github.com/prabirshrestha/vim-lsp.git"
       },
-      "snapshot_sha256": "35a2d1eada98b95ef3441931a6b25a1a6f72bccd01551f16156760aae5e9168b"
+      "snapshot_sha256": "b534a44bcaef5589fcaec7520bf356d09710a9e9a19a1f0bfb6d38b12a6b405c"
     },
     {
       "group": "lsp",

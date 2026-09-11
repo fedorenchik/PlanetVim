@@ -198,7 +198,8 @@ endfunction
 " @param {number} args.col 0-based indexing
 " @param {number} args.width
 " @param {number} args.height
-" @param {boolean?} args.border
+" @param {boolean|[string]?} args.border - boolean, or list of characters
+"        clockwise from top-left (same as nvim_open_win() in neovim)
 " @param {number?} args.topline
 " @param {string?} args.origin - topleft/topright/botleft/botright
 "
@@ -262,9 +263,22 @@ if has('nvim')
   endfunction
 else
   function! s:_open(bufnr, style, callback) abort
-    return popup_create(a:bufnr, extend(s:_style(a:style), {
+    let l:opts = extend(s:_style(a:style), {
     \  'callback': a:callback,
-    \ }, 'force'))
+    \ }, 'force')
+    let l:opacity = get(g:, 'lsp_popup_opacity', 100)
+    if l:opacity < 100
+      let l:opts['opacity'] = l:opacity
+    endif
+    let l:highlight = get(g:, 'lsp_popup_highlight', '')
+    if !empty(l:highlight)
+      let l:opts['highlight'] = l:highlight
+    endif
+    let l:borderchars = get(g:, 'lsp_popup_borderchars', [])
+    if !empty(l:borderchars)
+      let l:opts['borderchars'] = l:borderchars
+    endif
+    return popup_create(a:bufnr, l:opts)
   endfunction
 endif
 
@@ -305,6 +319,18 @@ else
       return s:_open(a:bufnr, a:style, { -> a:self._on_closed() })
     endif
     let l:style = s:_style(a:style)
+    let l:opacity = get(g:, 'lsp_popup_opacity', 100)
+    if l:opacity < 100
+      let l:style['opacity'] = l:opacity
+    endif
+    let l:highlight = get(g:, 'lsp_popup_highlight', '')
+    if !empty(l:highlight)
+      let l:style['highlight'] = l:highlight
+    endif
+    let l:borderchars = get(g:, 'lsp_popup_borderchars', [])
+    if !empty(l:borderchars)
+      let l:style['borderchars'] = l:borderchars
+    endif
     call popup_move(a:winid, l:style)
     call popup_setoptions(a:winid, l:style)
     return a:winid
@@ -400,7 +426,7 @@ else
     \   'pos': 'topleft',
     \   'wrap': v:false,
     \   'moved': [0, 0, 0],
-    \   'scrollbar': 0,
+    \   'scrollbar': 1,
     \   'maxwidth': l:style.width,
     \   'maxheight': l:style.height,
     \   'minwidth': l:style.width,
@@ -450,11 +476,14 @@ endfunction
 
 if has('nvim')
   function! s:_resolve_border(style) abort
-    if !empty(get(a:style, 'border', v:null))
-      if &ambiwidth ==# 'single'
-        let a:style.border = ['┌', '─', '┐', '│', '┘', '─', '└', '│']
-      else
-        let a:style.border = ['+', '-', '+', '|', '+', '-', '+', '|']
+    let l:border = get(a:style, 'border', v:null)
+    if !empty(l:border)
+      if type(l:border) != type([])
+        if &ambiwidth ==# 'single'
+          let a:style.border = ['┌', '─', '┐', '│', '┘', '─', '└', '│']
+        else
+          let a:style.border = ['+', '-', '+', '|', '+', '-', '+', '|']
+        endif
       endif
     elseif has_key(a:style, 'border')
       unlet a:style.border
@@ -463,11 +492,28 @@ if has('nvim')
   endfunction
 else
   function! s:_resolve_border(style) abort
+    let l:border = get(a:style, 'border', v:null)
     if !empty(get(a:style, 'border', v:null))
-      if &ambiwidth ==# 'single'
-        let a:style.border = ['─', '│', '─', '│', '┌', '┐', '┘', '└']
+      if type(l:border) != type([])
+        if &ambiwidth ==# 'single'
+          let a:style.border = ['─', '│', '─', '│', '┌', '┐', '┘', '└']
+        else
+          let a:style.border = ['-', '|', '-', '|', '+', '+', '+', '+']
+        endif
       else
-        let a:style.border = ['-', '|', '-', '|', '+', '+', '+', '+']
+        " Emulate nvim behavior for lists of 1/2/4 elements
+        let l:topleft     = l:border[0]
+        let l:top         = get(l:border, 1, l:topleft)
+        let l:topright    = get(l:border, 2, l:topleft)
+        let l:right       = get(l:border, 3, l:top)
+        let l:bottomright = get(l:border, 4, l:topleft)
+        let l:bottom      = get(l:border, 5, l:top)
+        let l:bottomleft  = get(l:border, 6, l:topright)
+        let l:left        = get(l:border, 7, l:right)
+        let a:style.border = [
+        \   l:top, l:right, l:bottom, l:left,
+        \   l:topleft, l:topright, l:bottomright, l:bottomleft,
+        \ ]
       endif
     elseif has_key(a:style, 'border')
       unlet a:style.border

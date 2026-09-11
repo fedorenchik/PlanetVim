@@ -15,13 +15,43 @@ function! lsp#internal#diagnostics#float#_enable() abort
     if s:enabled | return | endif
     let s:enabled = 1
 
+    " CursorMoved - Movement in normal or insert mode is expected to hide the
+    " float and, potentially, show it later after a delay of
+    " 'g:lsp_diagnostics_float_delay'.  So we always call 'hide_float()' for
+    " this event, and may call 'show_float()' later.
+    "
+    " CursorHold - If the cursor did not move long enough in the normal mode, we
+    " want to hide the float.  So we want to call 'hide_float()'.  Because of
+    " the 'curpos' check, 'show_float()' is not going to be called, but we could
+    " be more explicit and just not call it at all.
+    "
+    " InsertEnter - If insert mode is entered and we do not show floats in the
+    " insert mode (g:lsp_diagnostics_float_insert_mode_enabled) we want to hide
+    " the cursor.  Similar to |CursorHold| we do not show the float due to the
+    " "mode() is# 'n'" check, but it seems more like an accident than the
+    " intended action.
     let s:Dispose = lsp#callbag#pipe(
-        \ lsp#callbag#fromEvent('CursorMoved'),
+        \ lsp#callbag#merge(
+        \   lsp#callbag#fromEvent(['CursorMoved']),
+        \   lsp#callbag#pipe(
+        \       lsp#callbag#fromEvent(['InsertEnter']),
+        \       lsp#callbag#filter({_->!g:lsp_diagnostics_float_insert_mode_enabled}),
+        \       lsp#callbag#tap({_->s:hide_float()}),
+        \   )
+        \ ),
         \ lsp#callbag#filter({_->g:lsp_diagnostics_float_cursor}),
         \ lsp#callbag#tap({_->s:hide_float()}),
+        \ lsp#callbag#map({_->{
+        \   'bufnr': bufnr('%'),
+        \   'curpos': getcurpos()[0:2],
+        \   'changedtick': b:changedtick
+        \ }}),
         \ lsp#callbag#debounceTime(g:lsp_diagnostics_float_delay),
-        \ lsp#callbag#map({_->{'bufnr': bufnr('%'), 'curpos': getcurpos()[0:2], 'changedtick': b:changedtick }}),
-        \ lsp#callbag#distinctUntilChanged({a,b -> a['bufnr'] == b['bufnr'] && a['curpos'] == b['curpos'] && a['changedtick'] == b['changedtick']}),
+        \ lsp#callbag#distinctUntilChanged({a,b ->
+        \      a['bufnr'] == b['bufnr']
+        \   && a['curpos'] == b['curpos']
+        \   && a['changedtick'] == b['changedtick']
+        \ }),
         \ lsp#callbag#filter({_->mode() is# 'n'}),
         \ lsp#callbag#filter({_->getbufvar(bufnr('%'), '&buftype') !=# 'terminal' }),
         \ lsp#callbag#map({_->lsp#internal#diagnostics#under_cursor#get_diagnostic()}),
@@ -46,8 +76,15 @@ function! s:show_float(diagnostic) abort
         call setbufline(l:doc_win.get_bufnr(), 1, lsp#utils#_split_by_eol(a:diagnostic['message']))
 
         " Compute size. 
+        if g:lsp_float_max_width >= 1
+            let l:maxwidth = g:lsp_float_max_width
+        elseif g:lsp_float_max_width == 0
+            let l:maxwidth = &columns
+        else
+            let l:maxwidth = float2nr(&columns * 0.4)
+        endif
         let l:size = l:doc_win.get_size({
-        \   'maxwidth': float2nr(&columns * 0.4),
+        \   'maxwidth': l:maxwidth,
         \   'maxheight': float2nr(&lines * 0.4),
         \ })
 
@@ -90,14 +127,15 @@ function! s:get_doc_win() abort
     call setbufvar(s:doc_win.get_bufnr(), '&bufhidden', 'hide')
     call setbufvar(s:doc_win.get_bufnr(), '&buflisted', 0)
     call setbufvar(s:doc_win.get_bufnr(), '&swapfile', 0)
+    call setbufvar(s:doc_win.get_bufnr(), '&modifiable', 1)
+    call setbufvar(s:doc_win.get_bufnr(), '&readonly', 0)
     return s:doc_win
 endfunction
 
 function! s:compute_position(size) abort
     let l:pos = screenpos(0, line('.'), col('.'))
     if l:pos.row == 0 && l:pos.col == 0
-        " When the specified position is not visible
-        return []
+        let l:pos = {'curscol': screencol(), 'row': screenrow()}
     endif
     let l:pos = [l:pos.row + 1, l:pos.curscol + 1]
     if l:pos[0] + a:size.height > &lines

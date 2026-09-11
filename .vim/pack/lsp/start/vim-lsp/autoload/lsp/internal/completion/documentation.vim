@@ -83,13 +83,17 @@ function! s:show_floating_window(event, managed_user_data) abort
             let l:detail = s:MarkupContent.normalize({
             \     'language': &filetype,
             \     'value': l:completion_item['detail'],
+            \ }, {
+            \     'compact': !g:lsp_preview_fixup_conceal
             \ })
             let l:contents += [l:detail]
         endif
     endif
 
     " Add documentation filed if provided.
-    let l:documentation = s:MarkupContent.normalize(get(l:completion_item, 'documentation', ''))
+    let l:documentation = s:MarkupContent.normalize(get(l:completion_item, 'documentation', ''), {
+    \     'compact': !g:lsp_preview_fixup_conceal
+    \ })
     if !empty(l:documentation)
         let l:contents += [l:documentation]
     endif
@@ -105,8 +109,15 @@ function! s:show_floating_window(event, managed_user_data) abort
     call setbufline(l:doc_win.get_bufnr(), 1, lsp#utils#_split_by_eol(join(l:contents, "\n\n")))
 
     " Calculate layout.
+    if g:lsp_float_max_width >= 1
+        let l:maxwidth = g:lsp_float_max_width
+    elseif g:lsp_float_max_width == 0
+        let l:maxwidth = &columns
+    else
+        let l:maxwidth = float2nr(&columns * 0.4)
+    endif
     let l:size = l:doc_win.get_size({
-    \     'maxwidth': float2nr(&columns * 0.4),
+    \     'maxwidth': l:maxwidth,
     \     'maxheight': float2nr(&lines * 0.4),
     \ })
     let l:margin_right = &columns - 1 - (float2nr(a:event.col) + float2nr(a:event.width) + 1 + (a:event.scrollbar ? 1 : 0))
@@ -124,6 +135,17 @@ function! s:show_floating_window(event, managed_user_data) abort
         return
     endif
 
+    " Preserve scroll position when the window already exists.
+    let l:topline = 1
+    if l:doc_win.is_visible()
+        let l:winid = l:doc_win.get_winid()
+        if has('nvim')
+            let l:topline = line('w0', l:winid)
+        else
+            let l:topline = get(popup_getpos(l:winid), 'firstline', 1)
+        endif
+    endif
+
     " Show popupmenu and apply markdown syntax.
     call l:doc_win.open({
     \     'row': l:pos[0] + 1,
@@ -131,7 +153,7 @@ function! s:show_floating_window(event, managed_user_data) abort
     \     'width': l:size.width,
     \     'height': l:size.height,
     \     'border': v:true,
-    \     'topline': 1,
+    \     'topline': l:topline,
     \ })
     call s:Window.do(l:doc_win.get_winid(), { -> s:Markdown.apply() })
 endfunction
@@ -178,6 +200,7 @@ function! s:get_doc_win() abort
     \ })
     call s:doc_win.set_var('&wrap', 1)
     call s:doc_win.set_var('&conceallevel', 2)
+    call s:doc_win.set_var('&concealcursor', 'nvic')
     noautocmd silent let l:bufnr = s:Buffer.create()
     call s:doc_win.set_bufnr(l:bufnr)
     call setbufvar(s:doc_win.get_bufnr(), '&buftype', 'nofile')

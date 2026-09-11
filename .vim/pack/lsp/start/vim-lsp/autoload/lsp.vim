@@ -14,7 +14,7 @@ let s:notification_callbacks = [] " { name, callback }
 "        "bingo": [ "first-line", "next-line", ... ]
 "      },
 "      2: {
-"        "pyls": [ "first-line", "next-line", ... ]
+"        "pylsp": [ "first-line", "next-line", ... ]
 "      }
 "    }
 let s:file_content = {}
@@ -95,6 +95,10 @@ function! lsp#get_server_names() abort
     return keys(s:servers)
 endfunction
 
+function! lsp#is_valid_server_name(name) abort
+    return has_key(s:servers, a:name)
+endfunction
+
 function! lsp#get_server_info(server_name) abort
     return get(get(s:servers, a:server_name, {}), 'server_info', {})
 endfunction
@@ -128,6 +132,19 @@ function! s:server_status(server_name) abort
     return 'not running'
 endfunction
 
+function! lsp#is_server_running(name) abort
+    if !has_key(s:servers, a:name)
+      return 0
+    endif
+
+    let l:server = s:servers[a:name]
+
+    return has_key(l:server, 'init_result')
+        \ && !has_key(l:server, 'exited')
+        \ && !has_key(l:server, 'init_callbacks')
+        \ && !has_key(l:server, 'failed')
+endfunction
+
 " Returns the current status of all servers (if called with no arguments) or
 " the given server (if given an argument). Can be one of "unknown server",
 " "exited", "starting", "failed", "running", "not running"
@@ -148,7 +165,22 @@ let s:color_map = {
 \ 'not running': 'Comment'
 \}
 
-" Print the current status of all servers (if called with no arguments)
+" Collect the current status of all servers
+function! lsp#collect_server_status() abort
+    let l:results = {}
+    for l:k in keys(s:servers)
+        let l:status = s:server_status(l:k)
+        " Copy to prevent callers from corrupting our config.
+        let l:info = deepcopy(s:servers[l:k].server_info)
+        let l:results[l:k] = {
+            \ 'status': l:status,
+            \ 'info': l:info,
+            \ }
+    endfor
+    return l:results
+endfunction
+
+" Print the current status of all servers
 function! lsp#print_server_status() abort
     for l:k in sort(keys(s:servers))
         let l:status = s:server_status(l:k)
@@ -157,6 +189,15 @@ function! lsp#print_server_status() abort
         echon l:status
         echohl None
         echo ''
+        if &verbose
+            let l:cfg = { 'workspace_config': s:servers[l:k].server_info.workspace_config }
+            if get(g:, 'loaded_scriptease', 0)
+                call scriptease#pp_command(0, -1, l:cfg)
+            else
+                echo json_encode(l:cfg)
+            endif
+            echo ''
+        endif
     endfor
 endfunction
 
@@ -212,15 +253,14 @@ function! s:register_events() abort
         autocmd BufNewFile * call s:on_text_document_did_open()
         autocmd BufReadPost * call s:on_text_document_did_open()
         autocmd BufWritePost * call s:on_text_document_did_save()
-        autocmd BufWinLeave * call s:on_text_document_did_close()
-        autocmd BufWipeout * call s:on_buf_wipeout(expand('<afile>'))
+        autocmd BufDelete,BufWipeout * call s:on_text_document_did_close(str2nr(expand('<abuf>')))
         autocmd InsertLeave * call s:on_text_document_did_change()
         autocmd TextChanged * call s:on_text_document_did_change()
         if exists('##TextChangedP')
             autocmd TextChangedP * call s:on_text_document_did_change()
         endif
         if g:lsp_untitled_buffer_enabled
-            autocmd FileType * call s:on_filetype_changed(bufnr(expand('<afile>')))
+            autocmd FileType * call s:on_filetype_changed(str2nr(expand('<abuf>')))
         endif
     augroup END
 
@@ -239,9 +279,15 @@ function! s:unregister_events() abort
 endfunction
 
 function! s:on_filetype_changed(buf) abort
-  call s:on_buf_wipeout(a:buf)
+  if a:buf <= 0
+    return
+  endif
+  if !empty(bufname(a:buf))
+    return
+  endif
+  call s:on_buf_wipeout(a:buf, v:false)
   " TODO: stop unused servers
-  call s:on_text_document_did_open()
+  call s:on_text_document_did_open(a:buf)
 endfunction
 
 function! s:on_text_document_did_open(...) abort
@@ -325,10 +371,42 @@ function! s:call_did_save(buf, server_name, result, cb) abort
     call a:cb(l:msg)
 endfunction
 
-function! s:on_text_document_did_close() abort
-    let l:buf = bufnr('%')
+function! s:on_buf_wipeout(buf, send_did_close) abort
+    if a:buf <= 0
+        return
+    endif
+
+    let l:path = lsp#utils#get_buffer_uri(a:buf)
+    if !empty(l:path)
+        for [l:server_name, l:server] in items(s:servers)
+            if !has_key(l:server, 'buffers') || !has_key(l:server['buffers'], l:path)
+                continue
+            endif
+
+            if a:send_did_close && get(l:server, 'lsp_id', 0) > 0
+                call s:send_notification(l:server_name, {
+                    \ 'method': 'textDocument/didClose',
+                    \ 'params': {
+                    \   'textDocument': { 'uri': l:path },
+                    \ }
+                    \ })
+            endif
+
+            call remove(l:server['buffers'], l:path)
+        endfor
+    endif
+
+    if has_key(s:file_content, a:buf)
+        call remove(s:file_content, a:buf)
+    endif
+    call lsp#internal#listener#stop(a:buf)
+endfunction
+
+function! s:on_text_document_did_close(...) abort
+    let l:buf = a:0 > 0 ? a:1 : bufnr('%')
     if getbufvar(l:buf, '&buftype') ==# 'terminal' | return | endif
     call lsp#log('s:on_text_document_did_close()', l:buf)
+    call s:on_buf_wipeout(l:buf, v:true)
 endfunction
 
 function! s:get_last_file_content(buf, server_name) abort
@@ -346,13 +424,7 @@ function! s:update_file_content(buf, server_name, new) abort
     let s:file_content[a:buf][a:server_name] = a:new
 endfunction
 
-function! s:on_buf_wipeout(buf) abort
-    if has_key(s:file_content, a:buf)
-        call remove(s:file_content, a:buf)
-    endif
-endfunction
-
-function! s:ensure_flush_all(buf, server_names) abort
+function! lsp#ensure_flush_all(buf, server_names) abort
     for l:server_name in a:server_names
         call s:ensure_flush(a:buf, l:server_name, function('s:Noop'))
     endfor
@@ -425,13 +497,13 @@ function! s:ensure_start(buf, server_name, cb) abort
     let l:server_info = l:server['server_info']
     if l:server['lsp_id'] > 0
         let l:msg = s:new_rpc_success('server already started', { 'server_name': a:server_name })
-        call lsp#log(l:msg)
+        call lsp#log_verbose(l:msg)
         call a:cb(l:msg)
         return
     endif
 
     if has_key(l:server_info, 'tcp')
-        let l:tcp = l:server_info['tcp'](l:server_info)
+        let l:tcp = l:server_info['tcp']
         let l:lsp_id = lsp#client#start({
             \ 'tcp': l:tcp,
             \ 'on_stderr': function('s:on_stderr', [a:server_name]),
@@ -482,8 +554,11 @@ endfunction
 
 function! lsp#default_get_supported_capabilities(server_info) abort
     " Sorted alphabetically
-    return {
+    let l:capabilities = {
     \   'textDocument': {
+    \       'callHierarchy': {
+    \           'dynamicRegistration': v:false,
+    \       },
     \       'codeAction': {
     \         'dynamicRegistration': v:false,
     \         'codeActionLiteralSupport': {
@@ -501,9 +576,10 @@ function! lsp#default_get_supported_capabilities(server_info) abort
     \           'dynamicRegistration': v:false,
     \           'completionItem': {
     \              'documentationFormat': ['markdown', 'plaintext'],
+    \              'insertReplaceSupport': v:true,
     \              'snippetSupport': v:false,
     \              'resolveSupport': {
-    \                  'properties': ['additionalTextEdits']
+    \                  'properties': ['additionalTextEdits', 'detail']
     \              }
     \           },
     \           'completionItemKind': {
@@ -519,6 +595,9 @@ function! lsp#default_get_supported_capabilities(server_info) abort
     \           'linkSupport' : v:true
     \       },
     \       'documentHighlight': {
+    \           'dynamicRegistration': v:false,
+    \       },
+    \       'documentLink': {
     \           'dynamicRegistration': v:false,
     \       },
     \       'documentSymbol': {
@@ -548,11 +627,19 @@ function! lsp#default_get_supported_capabilities(server_info) abort
     \           'dynamicRegistration': v:false,
     \           'linkSupport' : v:true
     \       },
+    \       'publishDiagnostics': {
+    \           'relatedInformation': v:true,
+    \       },
     \       'rangeFormatting': {
     \           'dynamicRegistration': v:false,
     \       },
     \       'references': {
     \           'dynamicRegistration': v:false,
+    \       },
+    \       'rename': {
+    \           'dynamicRegistration': v:false,
+    \           'prepareSupport': v:true,
+    \           'prepareSupportDefaultBehavior': 1
     \       },
     \       'semanticTokens': {
     \           'dynamicRegistration': v:false,
@@ -576,8 +663,8 @@ function! lsp#default_get_supported_capabilities(server_info) abort
     \           'multilineTokenSupport': v:false,
     \           'serverCancelSupport': v:false
     \       },
-    \       'publishDiagnostics': {
-    \           'relatedInformation': v:true,
+    \       'signatureHelp': {
+    \           'dynamicRegistration': v:false,
     \       },
     \       'synchronization': {
     \           'didSave': v:true,
@@ -585,12 +672,12 @@ function! lsp#default_get_supported_capabilities(server_info) abort
     \           'willSave': v:false,
     \           'willSaveWaitUntil': v:false,
     \       },
-    \       'typeHierarchy': {
-    \           'dynamicRegistration': v:false
-    \       },
     \       'typeDefinition': {
     \           'dynamicRegistration': v:false,
     \           'linkSupport' : v:true
+    \       },
+    \       'typeHierarchy': {
+    \           'dynamicRegistration': v:false
     \       },
     \   },
     \   'window': {
@@ -599,9 +686,16 @@ function! lsp#default_get_supported_capabilities(server_info) abort
     \   'workspace': {
     \       'applyEdit': v:true,
     \       'configuration': v:true,
+    \       'symbol': {
+    \           'dynamicRegistration': v:false,
+    \       },
     \       'workspaceFolders': g:lsp_experimental_workspace_folders ? v:true : v:false,
     \   },
     \ }
+    if g:lsp_diagnostics_pull_enabled
+        let l:capabilities['textDocument']['diagnostic'] = { 'dynamicRegistration': v:false }
+    endif
+    return l:capabilities
 endfunction
 
 function! s:ensure_init(buf, server_name, cb) abort
@@ -609,7 +703,7 @@ function! s:ensure_init(buf, server_name, cb) abort
 
     if has_key(l:server, 'init_result')
         let l:msg = s:new_rpc_success('lsp server already initialized', { 'server_name': a:server_name, 'init_result': l:server['init_result'] })
-        call lsp#log(l:msg)
+        call lsp#log_verbose(l:msg)
         call a:cb(l:msg)
         return
     endif
@@ -678,12 +772,12 @@ function! s:ensure_conf(buf, server_name, cb) abort
         call s:send_notification(a:server_name, {
             \ 'method': 'workspace/didChangeConfiguration',
             \ 'params': {
-            \   'settings': l:server_info['workspace_config'],
+            \   'settings': lsp#utils#workspace_config#get(a:server_name),
             \ }
             \ })
     endif
     let l:msg = s:new_rpc_success('configuration sent', { 'server_name': a:server_name })
-    call lsp#log(l:msg)
+    call lsp#log_verbose(l:msg)
     call a:cb(l:msg)
 endfunction
 
@@ -695,19 +789,29 @@ function! s:text_changes(buf, server_name) abort
     endif
 
     " When syncKind is Incremental and previous content is saved.
-    if l:sync_kind == 2 && has_key(s:file_content, a:buf)
-        " compute diff
+    if l:sync_kind == 2 && has_key(s:file_content, a:buf) && has_key(s:file_content[a:buf], a:server_name)
+        " Use listener_add if available (O(changed lines) instead of O(total lines))
+        if lsp#internal#listener#is_enabled()
+            let l:listener_changes = lsp#internal#listener#flush(a:buf)
+            if !empty(l:listener_changes)
+                let l:new_content = lsp#internal#listener#get_lines_cached(a:buf)
+                call s:update_file_content(a:buf, a:server_name, l:new_content)
+            endif
+            return l:listener_changes
+        endif
+
+        " Fallback: compute diff (native diff() when available, else O(total lines))
         let l:old_content = s:get_last_file_content(a:buf, a:server_name)
-        let l:new_content = lsp#utils#buffer#_get_lines(a:buf)
-        let l:changes = lsp#utils#diff#compute(l:old_content, l:new_content)
-        if empty(l:changes.text) && l:changes.rangeLength ==# 0
+        let l:new_content = lsp#internal#listener#get_lines_cached(a:buf)
+        let l:changes = lsp#internal#listener#get_diff_cached(a:buf, l:old_content)
+        if empty(l:changes)
             return []
         endif
         call s:update_file_content(a:buf, a:server_name, l:new_content)
-        return [l:changes]
+        return l:changes
     endif
 
-    let l:new_content = lsp#utils#buffer#_get_lines(a:buf)
+    let l:new_content = lsp#internal#listener#get_lines_cached(a:buf)
     let l:changes = {'text': join(l:new_content, "\n")}
     call s:update_file_content(a:buf, a:server_name, l:new_content)
     return [l:changes]
@@ -730,7 +834,16 @@ function! s:ensure_changed(buf, server_name, cb) abort
 
     if l:buffer_info['changed_tick'] == l:changed_tick
         let l:msg = s:new_rpc_success('not dirty', { 'server_name': a:server_name, 'path': l:path })
-        call lsp#log(l:msg)
+        call lsp#log_verbose(l:msg)
+        call a:cb(l:msg)
+        return
+    endif
+
+    let l:content_changes = s:text_changes(a:buf, a:server_name)
+    if type(l:content_changes) == type([]) && empty(l:content_changes)
+        let l:buffer_info['changed_tick'] = l:changed_tick
+        let l:msg = s:new_rpc_success('not dirty', { 'server_name': a:server_name, 'path': l:path })
+        call lsp#log_verbose(l:msg)
         call a:cb(l:msg)
         return
     endif
@@ -742,9 +855,10 @@ function! s:ensure_changed(buf, server_name, cb) abort
         \ 'method': 'textDocument/didChange',
         \ 'params': {
         \   'textDocument': s:get_versioned_text_document_identifier(a:buf, l:buffer_info),
-        \   'contentChanges': s:text_changes(a:buf, a:server_name),
+        \   'contentChanges': l:content_changes,
         \ }
         \ })
+    call s:send_document_diagnostic_request(a:buf, a:server_name)
     call lsp#ui#vim#folding#send_request(a:server_name, a:buf, 0)
 
     let l:msg = s:new_rpc_success('textDocument/didChange sent', { 'server_name': a:server_name, 'path': l:path })
@@ -767,7 +881,7 @@ function! s:ensure_open(buf, server_name, cb) abort
 
     if has_key(l:buffers, l:path)
         let l:msg = s:new_rpc_success('already opened', { 'server_name': a:server_name, 'path': l:path })
-        call lsp#log(l:msg)
+        call lsp#log_verbose(l:msg)
         call a:cb(l:msg)
         return
     endif
@@ -777,6 +891,7 @@ function! s:ensure_open(buf, server_name, cb) abort
     endif
 
     call s:update_file_content(a:buf, a:server_name, lsp#utils#buffer#_get_lines(a:buf))
+    call lsp#internal#listener#start(a:buf)
 
     let l:buffer_info = { 'changed_tick': getbufvar(a:buf, 'changedtick'), 'version': 1, 'uri': l:path }
     let l:buffers[l:path] = l:buffer_info
@@ -788,6 +903,7 @@ function! s:ensure_open(buf, server_name, cb) abort
         \ },
         \ })
 
+    call s:send_document_diagnostic_request(a:buf, a:server_name)
     call lsp#ui#vim#folding#send_request(a:server_name, a:buf, 0)
 
     let l:msg = s:new_rpc_success('textDocument/open sent', { 'server_name': a:server_name, 'path': l:path, 'filetype': getbufvar(a:buf, '&filetype') })
@@ -896,7 +1012,8 @@ function! s:on_request(server_name, id, request) abort
         call lsp#utils#workspace_edit#apply_workspace_edit(a:request['params']['edit'])
         call s:send_response(a:server_name, { 'id': a:request['id'], 'result': { 'applied': v:true } })
     elseif a:request['method'] ==# 'workspace/configuration'
-        let l:response_items = map(a:request['params']['items'], { key, val -> lsp#utils#workspace_config#get_value(a:server_name, val) })
+        let l:config = lsp#utils#workspace_config#get(a:server_name)
+        let l:response_items = map(a:request['params']['items'], { key, val -> lsp#utils#workspace_config#projection(l:config, val) })
         call s:send_response(a:server_name, { 'id': a:request['id'], 'result': l:response_items })
     elseif a:request['method'] ==# 'workspace/workspaceFolders'
         let l:server_info = s:servers[a:server_name]['server_info']
@@ -905,6 +1022,18 @@ function! s:on_request(server_name, id, request) abort
         endif
     elseif a:request['method'] ==# 'window/workDoneProgress/create'
         call s:send_response(a:server_name, { 'id': a:request['id'], 'result': v:null})
+    elseif a:request['method'] ==# 'client/registerCapability'
+        call s:send_response(a:server_name, { 'id': a:request['id'], 'result': v:null})
+    elseif a:request['method'] ==# 'client/unregisterCapability'
+        call s:send_response(a:server_name, { 'id': a:request['id'], 'result': v:null})
+    elseif a:request['method'] ==# 'workspace/diagnostic/refresh'
+        call s:send_response(a:server_name, { 'id': a:request['id'], 'result': v:null})
+        for l:uri in keys(s:servers[a:server_name]['buffers'])
+            let l:refresh_buf = bufnr(lsp#utils#uri_to_path(l:uri))
+            if l:refresh_buf >= 0 && bufloaded(l:refresh_buf)
+                call s:send_document_diagnostic_request(l:refresh_buf, a:server_name)
+            endif
+        endfor
     else
         " TODO: for now comment this out until we figure out a better solution.
         " We need to comment this out so that others outside of vim-lsp can
@@ -1013,7 +1142,7 @@ endfunction
 function! s:get_text_document(buf, server_name, buffer_info) abort
     let l:server = s:servers[a:server_name]
     let l:server_info = l:server['server_info']
-    let l:language_id = has_key(l:server_info, 'languageId') ?  l:server_info['languageId'](l:server_info) : &filetype
+    let l:language_id = has_key(l:server_info, 'languageId') ?  l:server_info['languageId'](l:server_info) : getbufvar(a:buf, '&filetype')
     return {
         \ 'uri': lsp#utils#get_buffer_uri(a:buf),
         \ 'languageId': l:language_id,
@@ -1081,6 +1210,20 @@ function! lsp#request(server_name, request) abort
     return lsp#callbag#create(function('s:request_create', [l:ctx]))
 endfunction
 
+function! lsp#request_with_context(server_name, request) abort
+    let l:ctx = {
+        \ 'server_name': a:server_name,
+        \ 'request': copy(a:request),
+        \ 'request_id': 0,
+        \ 'done': 0,
+        \ 'cancelled': 0,
+        \ }
+    return {
+        \ 'callbag': lsp#callbag#create(function('s:request_create', [l:ctx])),
+        \ 'ctx': l:ctx,
+    \}
+endfunction
+
 function! s:request_create(ctx, next, error, complete) abort
     let a:ctx['next'] = a:next
     let a:ctx['error'] = a:error
@@ -1130,6 +1273,10 @@ function! s:request_cancel(ctx) abort
         \)
 endfunction
 
+function! lsp#cancel_request(ctx) abort
+    call s:request_cancel(a:ctx)
+endfunction
+
 function! lsp#send_request(server_name, request) abort
     let l:ctx = {
         \ 'server_name': a:server_name,
@@ -1176,6 +1323,41 @@ endfunction
 
 let s:didchange_queue = []
 let s:didchange_timer = -1
+
+function! s:on_document_diagnostic_response(server_name, client_id, data, event) abort
+    call lsp#internal#diagnostics#state#_handle_text_document_diagnostic(a:server_name, a:data['request'], a:data['response'])
+endfunction
+
+function! s:send_document_diagnostic_request(buf, server_name) abort
+    if !g:lsp_diagnostics_enabled || !lsp#capabilities#has_diagnostic_provider(a:server_name)
+        return
+    endif
+
+    let l:uri = lsp#utils#get_buffer_uri(a:buf)
+    if empty(l:uri)
+        return
+    endif
+
+    let l:provider = lsp#capabilities#get_diagnostic_provider(a:server_name)
+    let l:identifier = get(l:provider, 'identifier', '')
+    let l:params = {
+        \ 'textDocument': s:get_text_document_identifier(a:buf),
+        \ }
+    if !empty(l:identifier)
+        let l:params['identifier'] = l:identifier
+    endif
+
+    let l:previous_result_id = lsp#internal#diagnostics#state#_get_previous_result_id(l:uri, a:server_name, l:identifier)
+    if !empty(l:previous_result_id)
+        let l:params['previousResultId'] = l:previous_result_id
+    endif
+
+    call s:send_request(a:server_name, {
+        \ 'method': 'textDocument/diagnostic',
+        \ 'params': l:params,
+        \ 'on_notification': function('s:on_document_diagnostic_response', [a:server_name]),
+        \ })
+endfunction
 
 function! s:add_didchange_queue(buf) abort
     if g:lsp_use_event_queue == 0
@@ -1271,6 +1453,13 @@ function! lsp#update_workspace_config(server_name, workspace_config) abort
     let l:server = s:servers[a:server_name]
     let l:server_info = l:server['server_info']
     if has_key(l:server_info, 'workspace_config')
+        if type(l:server_info['workspace_config']) == v:t_func
+            call lsp#utils#error('''workspace_config'' is a function, so
+                  \ lsp#update_workspace_config() can not be used.  Either
+                  \ replace function with a dictionary, or adjust the value
+                  \ generated by the function as necessary.')
+            return
+        endif
         call s:merge_dict(l:server_info['workspace_config'], a:workspace_config)
     else
         let l:server_info['workspace_config'] = a:workspace_config
@@ -1281,6 +1470,13 @@ endfunction
 
 function! lsp#server_complete(lead, line, pos) abort
     return filter(sort(keys(s:servers)), 'stridx(v:val, a:lead)==0 && has_key(s:servers[v:val], "init_result")')
+endfunction
+
+function! lsp#server_complete_running(lead, line, pos) abort
+    let l:all_servers = sort(keys(s:servers))
+    return filter(l:all_servers, {idx, name ->
+        \ stridx(name, a:lead) == 0 && lsp#is_server_running(name)
+        \ })
 endfunction
 
 function! lsp#_new_command() abort

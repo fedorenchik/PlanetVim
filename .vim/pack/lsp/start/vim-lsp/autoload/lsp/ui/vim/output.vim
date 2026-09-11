@@ -102,6 +102,7 @@ function! s:get_float_positioning(height, width) abort
     let l:height = min([l:height, max([&lines - &cmdheight - l:row, &previewheight])])
 
     let l:style = 'minimal'
+    let l:border = 'double'
     " Positioning is not window but screen relative
     let l:opts = {
         \ 'relative': 'editor',
@@ -110,6 +111,7 @@ function! s:get_float_positioning(height, width) abort
         \ 'width': l:width,
         \ 'height': l:height,
         \ 'style': l:style,
+        \ 'border': l:border,
         \ }
     return l:opts
 endfunction
@@ -154,6 +156,19 @@ function! lsp#ui#vim#output#floatingpreview(data) abort
 
         if g:lsp_preview_max_height > 0
             let l:options['maxheight'] = g:lsp_preview_max_height
+        endif
+
+        let l:opacity = get(g:, 'lsp_popup_opacity', 100)
+        if l:opacity < 100
+            let l:options['opacity'] = l:opacity
+        endif
+        let l:highlight = get(g:, 'lsp_popup_highlight', '')
+        if !empty(l:highlight)
+            let l:options['highlight'] = l:highlight
+        endif
+        let l:borderchars = get(g:, 'lsp_popup_borderchars', [])
+        if !empty(l:borderchars)
+            let l:options['borderchars'] = l:borderchars
         endif
 
         let s:winid = popup_atcursor('...', l:options)
@@ -331,6 +346,15 @@ function! lsp#ui#vim#output#preview(server, data, options) abort
         return
     endif
 
+    let l:prev_topline = 1
+    if s:winid
+        if s:use_vim_popup
+            let l:prev_topline = get(popup_getpos(s:winid), 'firstline', 1)
+        else
+            let l:prev_topline = line('w0', s:winid)
+        endif
+    endif
+
     if s:winid && type(s:preview_data) ==# type(a:data)
         \ && s:preview_data ==# a:data
         \ && type(g:lsp_preview_doubletap) ==# 3
@@ -363,6 +387,8 @@ function! lsp#ui#vim#output#preview(server, data, options) abort
 
     call setbufvar(winbufnr(s:winid), 'lsp_syntax_highlights', l:syntax_lines)
     call setbufvar(winbufnr(s:winid), 'lsp_do_conceal', l:do_conceal)
+    call setwinvar(s:winid, '&conceallevel', l:do_conceal ? 2 : 0)
+    call setwinvar(s:winid, '&concealcursor', l:do_conceal ? 'nvic' : '')
     call lsp#ui#vim#output#setcontent(s:winid, l:lines, l:ft)
 
     let [l:bufferlines, l:maxwidth] = lsp#ui#vim#output#get_size_info(s:winid)
@@ -390,6 +416,13 @@ function! lsp#ui#vim#output#preview(server, data, options) abort
       elseif s:use_vim_popup
         " Vim popups
         call s:set_cursor(l:current_window_id, a:options)
+      endif
+      if l:prev_topline > 1
+        if s:use_vim_popup
+          call popup_setoptions(s:winid, {'firstline': l:prev_topline})
+        elseif s:use_nvim_float
+          call nvim_win_set_cursor(s:winid, [l:prev_topline, 0])
+        endif
       endif
       doautocmd <nomodeline> User lsp_float_opened
     endif
@@ -424,7 +457,8 @@ function! lsp#ui#vim#output#append(data, lines, syntax_lines) abort
         let l:new_lines = split(s:escape_string_for_display(a:data.value), '\n')
 
         let l:i = 1
-        while l:i <= len(l:new_lines)
+        let l:newlineslen = len(l:new_lines)
+        while l:i <= l:newlineslen
             call add(a:syntax_lines, { 'line': len(a:lines) + l:i, 'language': a:data.language })
             let l:i += 1
         endwhile
@@ -434,7 +468,9 @@ function! lsp#ui#vim#output#append(data, lines, syntax_lines) abort
     elseif type(a:data) ==# type({}) && has_key(a:data, 'kind')
         if a:data.kind ==? 'markdown'
             call s:import_modules()
-            let l:detail = s:MarkupContent.normalize(a:data.value)
+            let l:detail = s:MarkupContent.normalize(a:data.value, {
+            \     'compact': !g:lsp_preview_fixup_conceal
+            \ })
             call extend(a:lines, s:Text.split_by_eol(l:detail))
         else
             call extend(a:lines, split(s:escape_string_for_display(a:data.value), '\n', v:true))
