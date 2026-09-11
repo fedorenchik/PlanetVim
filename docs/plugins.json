@@ -2404,11 +2404,11 @@
       "path": ".vim/pack/yocto/start/vim-bitbake",
       "provenance": {
         "branch": "master",
-        "commit": "0a229746e4a8e9c5b3b4666e9452dec2cbe69c9b",
+        "commit": "e75f8ea12b4a0bcfe46c564a3a78ff7361b0a1c6",
         "kind": "git-subrepo",
         "remote": "https://github.com/kergoth/vim-bitbake.git"
       },
-      "snapshot_sha256": "4e541fbb5189bd2d3300ab15e568cd8718bb62faad7cc39572bd29c1f753b5f4"
+      "snapshot_sha256": "6894ae00163649df173ac1889c218ff8f171ebaa8d44bf60b001aeafd8e57300"
     },
     {
       "group": "yocto",

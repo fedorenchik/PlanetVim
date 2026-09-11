@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/kergoth/vim-bitbake.git
 	branch = master
-	commit = 0a229746e4a8e9c5b3b4666e9452dec2cbe69c9b
-	parent = e1c0d328ab4a1d6474ede2753274151a319b4315
+	commit = e75f8ea12b4a0bcfe46c564a3a78ff7361b0a1c6
+	parent = d5cd47745813905c63e14883bf0d423f79912a8f
 	method = merge
-	cmdver = 0.4.3
+	cmdver = 0.4.9
