@@ -1690,9 +1690,9 @@
       "group": "lsp",
       "license_evidence": {
         "paths": [
-          ".vim/pack/lsp/start/asyncomplete-lsp.vim/README.md"
+          ".vim/pack/lsp/start/asyncomplete-lsp.vim/LICENSE"
         ],
-        "status": "documentation_mentions"
+        "status": "notice_files_found"
       },
       "load": "start",
       "local_patches": "not_compared_with_upstream",
@@ -1700,11 +1700,11 @@
       "path": ".vim/pack/lsp/start/asyncomplete-lsp.vim",
       "provenance": {
         "branch": "master",
-        "commit": "f6d6a6354ff279ba707c20292aef0dfaadc436a3",
+        "commit": "7cf65e7661a6047f02bd1848ad30581d040896e5",
         "kind": "git-subrepo",
         "remote": "https://github.com/prabirshrestha/asyncomplete-lsp.vim.git"
       },
-      "snapshot_sha256": "2d48c04e5e4efc30b7b9456e9053a7bfd579ef4d6bd876be48c0f818a2808237"
+      "snapshot_sha256": "74d6f887a50bc1098fcde1339090cc967d3e89650828484109dc66b39a4f8a12"
     },
     {
       "group": "lsp",

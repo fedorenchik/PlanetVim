@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/prabirshrestha/asyncomplete-lsp.vim.git
 	branch = master
-	commit = f6d6a6354ff279ba707c20292aef0dfaadc436a3
-	parent = 0a9c7ce21efc8af8aa12096d4a7aeacfe9d7f840
+	commit = 7cf65e7661a6047f02bd1848ad30581d040896e5
+	parent = 11889b5291c5f0810cd59137de53f8cead58862b
 	method = merge
-	cmdver = 0.4.3
+	cmdver = 0.4.9
