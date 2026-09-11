@@ -429,11 +429,11 @@
       "path": ".vim/pack/basic/start/vim-capslock",
       "provenance": {
         "branch": "master",
-        "commit": "529b32877e144f7c1a6fabe357317c4b7d94a98e",
+        "commit": "2bd1d47d35ac489b150d284141b6dce743a307f5",
         "kind": "git-subrepo",
         "remote": "https://github.com/tpope/vim-capslock.git"
       },
-      "snapshot_sha256": "54e60abbb4df1c0c0a2e555a482579ab13348df322c79ed1fcc7f558ca63ff87"
+      "snapshot_sha256": "bac70ddc6dd762884dc19d311feec1fb95dc1f4f4f60157aff472544928997c5"
     },
     {
       "group": "basic",
