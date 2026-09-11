@@ -135,11 +135,11 @@
       "path": ".vim/pack/apps/start/presenting.vim",
       "provenance": {
         "branch": "master",
-        "commit": "e960e204d8e4526d2650c23eaea908317c6becb9",
+        "commit": "b5f24477718ee6fb6ae0fa888270c83baa81c9aa",
         "kind": "git-subrepo",
         "remote": "https://github.com/sotte/presenting.vim.git"
       },
-      "snapshot_sha256": "4db9922a022d023cfa8f18aaddfa56b278f663fa1a94eb98e76074057ddf566b"
+      "snapshot_sha256": "db980ea2050ead5acb85dd0082b6a77ada1740eebe426fe815942ad77e711c69"
     },
     {
       "group": "apps",
