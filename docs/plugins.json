@@ -2126,11 +2126,11 @@
       "path": ".vim/pack/web/start/dart-vim-plugin",
       "provenance": {
         "branch": "master",
-        "commit": "81e50e80329e5eac2c115f45585b1838a614d07a",
+        "commit": "13fa42674f1685a1c5a095c1dac74d94e43a9849",
         "kind": "git-subrepo",
         "remote": "https://github.com/dart-lang/dart-vim-plugin.git"
       },
-      "snapshot_sha256": "2b6301e42c83b49a31a66f92e8628a4a868ce59e0858d9f349050560180ca4dc"
+      "snapshot_sha256": "19402cb0e433c145c4b02378e61dfd9c66c6fc0e9cec827750a3dc90b03e2e95"
     },
     {
       "group": "web",
