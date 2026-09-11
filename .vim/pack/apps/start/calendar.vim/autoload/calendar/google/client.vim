@@ -2,7 +2,7 @@
 " Filename: autoload/calendar/google/client.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2020/11/30 20:02:44.
+" Last Change: 2022/12/04 19:07:10.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -44,15 +44,18 @@ function! calendar#google#client#access_token() abort
   return content.access_token
 endfunction
 
+let s:server_py_path = expand('<sfile>:p:h') . '/server.py'
 function! calendar#google#client#initialize_access_token() abort
+  if !executable('python3')
+    call calendar#echo#error('Python 3 is required.')
+    return
+  endif
   let client = s:client()
   let url = s:get_url()
+  echo printf(calendar#message#get('access_url_input_code'), url)
   call calendar#webapi#open_url(url)
-  try
-    let code = input(printf(calendar#message#get('access_url_input_code'), url) . "\n" . calendar#message#get('input_code'))
-  catch
-    return
-  endtry
+  call system('python3 ' . shellescape(s:server_py_path))
+  let code = input(calendar#message#get('input_code'))
   if code !=# ''
     let response = calendar#webapi#post_nojson(s:token_url, {}, {
           \ 'client_id': client.client_id,
@@ -60,7 +63,7 @@ function! calendar#google#client#initialize_access_token() abort
           \ 'code': code,
           \ 'redirect_uri': client.redirect_uri,
           \ 'grant_type': 'authorization_code'})
-    let content = calendar#webapi#decode(response.content)
+    let content = json_decode(response.content)
     if calendar#google#client#access_token_response(response, content)
       return
     endif
@@ -81,7 +84,7 @@ function! calendar#google#client#refresh_token() abort
           \ 'client_secret': client.client_secret,
           \ 'refresh_token': cache.refresh_token,
           \ 'grant_type': 'refresh_token'})
-    let content = calendar#webapi#decode(response.content)
+    let content = json_decode(response.content)
     if calendar#google#client#access_token_response(response, content)
       return 1
     endif
@@ -133,7 +136,7 @@ function! s:request(method, url, param, body) abort
   let param = extend(a:param, { 'oauth_token': access_token })
   let response = calendar#webapi#{a:method}(a:url, param, a:body)
   if response.status == 200
-    return calendar#webapi#decode(response.content)
+    return json_decode(response.content)
   elseif response.status == 401
     unlet! access_token
     let access_token = calendar#google#client#refresh_token()
@@ -143,7 +146,7 @@ function! s:request(method, url, param, body) abort
     let param = extend(a:param, { 'oauth_token': access_token })
     let response = calendar#webapi#{a:method}(a:url, param, a:body)
     if response.status == 200
-      return calendar#webapi#decode(response.content)
+      return json_decode(response.content)
     endif
   endif
   return 1

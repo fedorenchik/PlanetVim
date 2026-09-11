@@ -2,7 +2,7 @@
 " Filename: autoload/calendar/view/month.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2017/05/07 23:07:35.
+" Last Change: 2022/12/12 22:30:29.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -16,7 +16,7 @@ let s:self = {}
 
 function! s:self.width() dict abort
   let frame = calendar#setting#frame()
-  let width = calendar#string#strdisplaywidth(frame.vertical)
+  let width = strdisplaywidth(frame.vertical)
   let w = max([self.maxwidth() / 8, 3])
   let hh = self.height()
   let h = max([(hh - 3) / 6, 1])
@@ -46,7 +46,7 @@ function! s:self.on_resize() dict abort
     let self.view.height += 1
     let self.view.heightincr = 1
   endif
-  let self.frame.width = calendar#string#strdisplaywidth(self.frame.vertical)
+  let self.frame.width = strdisplaywidth(self.frame.vertical)
   let self.frame.strlen = len(self.frame.vertical)
   let self.element = {}
   let self.element.splitter = repeat(self.frame.horizontal, (self.view.width - self.frame.width) / self.frame.width)
@@ -73,7 +73,7 @@ function! s:self.set_day_name() dict abort
     return
   endif
   let day_name = copy(calendar#message#get('day_name_long'))
-  let maxlen = max(map(copy(day_name), 'calendar#string#strdisplaywidth(v:val)'))
+  let maxlen = max(map(copy(day_name), 'strdisplaywidth(v:val)'))
   if maxlen >= self.view.inner_width
     let day_name = copy(calendar#message#get('day_name'))
   endif
@@ -87,12 +87,12 @@ function! s:self.set_day_name() dict abort
       let s[2] .= (i > idx ? self.frame.junction : self.frame.left) . self.element.splitter
     endif
     let name = day_name[i % 7]
-    let wid = calendar#string#strdisplaywidth(name)
+    let wid = strdisplaywidth(name)
     if wid >= self.view.inner_width
       let name = calendar#string#truncate(name, max([2, self.view.inner_width]))
-      let wid = calendar#string#strdisplaywidth(name)
+      let wid = strdisplaywidth(name)
     endif
-    let len = calendar#string#strdisplaywidth(self.element.splitter)
+    let len = strdisplaywidth(self.element.splitter)
     let whiteleft = repeat(' ', (len - wid) / 2)
     let whiteright = repeat(' ', len - len(whiteleft) - wid)
     let weekstr = whiteleft . name . whiteright
@@ -207,9 +207,9 @@ function! s:self.set_contents() dict abort
           let trailing = repeat(longevt[longevtIndex].rest ==# '' ? '=' : ' ', v.inner_width - (lastday || nextweek) * 2)
           let eventtext = calendar#string#truncate(strpart . ' ' . trailing, v.inner_width - (lastday || nextweek) * 2) . (lastday ? '=]' : nextweek ? '=»' : '')
           if !lastday && !nextweek && strpart !=# eventtext && longevt[-1].rest !=# ''
-                \ && calendar#string#strdisplaywidth(matchstr(strpart, '.$')) == 2
-                \ && calendar#string#strdisplaywidth(matchstr(eventtext, '.$')) == 1
-                \ && calendar#string#strdisplaywidth(matchstr(longevt[-1].rest, '^.')) == 2
+                \ && strdisplaywidth(matchstr(strpart, '.$')) == 2
+                \ && strdisplaywidth(matchstr(eventtext, '.$')) == 1
+                \ && strdisplaywidth(matchstr(longevt[-1].rest, '^.')) == 2
                 \ && f.width == 2 && strpart =~# ' '
             let strpart = substitute(strpart, ' \ze[^\x32-\x7f]*$', '  ', '')
             let eventtext = calendar#string#truncate(strpart . trailing, v.inner_width)
@@ -259,9 +259,9 @@ function! s:self.set_contents() dict abort
           if is_long_event
             let longevt[-1].rest = eventorigtext[len(strpart):]
             if strpart !=# eventtext && longevt[-1].rest !=# ''
-                  \ && calendar#string#strdisplaywidth(matchstr(strpart, '.$')) == 2
-                  \ && calendar#string#strdisplaywidth(matchstr(eventtext, '.$')) == 1
-                  \ && calendar#string#strdisplaywidth(matchstr(longevt[-1].rest, '^.')) == 2
+                  \ && strdisplaywidth(matchstr(strpart, '.$')) == 2
+                  \ && strdisplaywidth(matchstr(eventtext, '.$')) == 1
+                  \ && strdisplaywidth(matchstr(longevt[-1].rest, '^.')) == 2
                   \ && f.width == 2 && strpart =~# ' '
               let strpart = substitute(strpart, ' \ze[^\x32-\x7f]*$', '  ', '')
               let eventtext = calendar#string#truncate(strpart . trailing, v.inner_width - nextweek * 2) . (nextweek ? '=»' : '')
@@ -412,44 +412,22 @@ function! s:self.timerange() dict abort
   if !b:calendar.visual_mode()
     return ''
   endif
-  let y = b:calendar.day()
-  let x = b:calendar.visual_start_day()
-  let recurrence = ''
+  let x = b:calendar.day()
   let xn = calendar#week#week_index(x)
+  let y = b:calendar.visual_start_day()
   let yn = calendar#week#week_index(y)
+  let recurrence = ''
+  if x.sub(y) > 0
+    let [x, xn, y, yn] = [y, yn, x, xn]
+  endif
   if b:calendar.is_line_visual()
-    if x.sub(y) >= 0
-      let y = y.add(-yn)
-      let x = x.add(-xn+6)
-    else
-      let x = x.add(-xn)
-      let y = y.add(-yn+6)
-    endif
+    let [x, y] = [x.add(-xn), y.add(-yn+6)]
   elseif b:calendar.is_block_visual()
-    let yh = y.add(-yn)
-    let xh = x.add(-xn)
-    if x.sub(y) >= 0
-      let recweek = xh.sub(yh) / 7 + 1
-      let x = y.add(-yn+xn)
-    else
-      let recweek = yh.sub(xh) / 7 + 1
-      let y = x.add(-xn+yn)
-    endif
+    let recweek = y.add(-yn).sub(x.add(-xn)) / 7 + 1
     let recurrence = recweek > 1 ? recweek . 'weeks ' : ''
+    let y = x.add(-xn+yn)
   endif
-  if x.sub(y) >= 0
-    if x.get_year() == y.get_year()
-      return printf('%d/%d - %d/%d ', y.get_month(), y.get_day(), x.get_month(), x.get_day()) . recurrence
-    else
-      return printf('%d/%d/%d - %d/%d/%d ', y.get_year(), y.get_month(), y.get_day(), x.get_year(), x.get_month(), x.get_day()) . recurrence
-    endif
-  else
-    if x.get_year() == y.get_year()
-      return printf('%d/%d - %d/%d ', x.get_month(), x.get_day(), y.get_month(), y.get_day()) . recurrence
-    else
-      return printf('%d/%d/%d - %d/%d/%d ', x.get_year(), x.get_month(), x.get_day(), y.get_year(), y.get_month(), y.get_day()) . recurrence
-    endif
-  endif
+  return calendar#day#join_date_range(x, y) . ' ' . recurrence
 endfunction
 
 function! s:self.action(action) dict abort

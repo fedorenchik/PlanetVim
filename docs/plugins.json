@@ -55,11 +55,11 @@
       "path": ".vim/pack/apps/start/calendar.vim",
       "provenance": {
         "branch": "master",
-        "commit": "fe13024cc3575d83f158339562f0e2d97fb44375",
+        "commit": "2ef5b0a2717d8a2ea24c55d11e426f25e6243282",
         "kind": "git-subrepo",
         "remote": "https://github.com/itchyny/calendar.vim.git"
       },
-      "snapshot_sha256": "5d295865f69aaa4a886c1f7b70fe45dd12b1273a86a9fb9324534dee580ae835"
+      "snapshot_sha256": "f85ebefb33fee68f58f0927cd57ca22095f3202386616be6b2f415b063348a8a"
     },
     {
       "group": "apps",

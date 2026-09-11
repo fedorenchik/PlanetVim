@@ -2,7 +2,7 @@
 " Filename: autoload/calendar/google/calendar.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2020/11/19 07:40:32.
+" Last Change: 2023/03/02 22:11:15.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -35,7 +35,7 @@ endfunction
 function! calendar#google#calendar#getCalendarList_response(id, response) abort
   let [_calendarlist, err; rest] = s:getdata(a:id)
   if a:response.status =~# '^2'
-    let cnt = calendar#webapi#decode(a:response.content)
+    let cnt = json_decode(a:response.content)
     let content = type(cnt) == type({}) ? cnt : {}
     if has_key(content, 'items') && type(content.items) == type([])
       let content.items = filter(deepcopy(content.items), 'get(v:val, "accessRole", "") ==# "owner"')
@@ -76,7 +76,7 @@ function! calendar#google#calendar#getColors_response(id, response) abort
   let [_calendarlist, err; rest] = s:getdata(a:id)
   let colors = s:cache.get('colors')
   if a:response.status =~# '^2'
-    let cnt = calendar#webapi#decode(a:response.content)
+    let cnt = json_decode(a:response.content)
     let content = type(cnt) == type({}) ? cnt : {}
     if has_key(content, 'event') && type(content.event) == type({})
       call s:cache.save('colors', content)
@@ -188,7 +188,7 @@ function! calendar#google#calendar#getEvents(year, month, ...) abort
           let ymd = calendar#time#datetime(get(itm.start, 'date', get(itm.start, 'dateTime', '')))
           let endymd = calendar#time#datetime(get(itm.end, 'date', get(itm.end, 'dateTime', '')))
           let isTimeEvent = (!has_key(itm.start, 'date')) && has_key(itm.start, 'dateTime') && (!has_key(itm.end, 'date')) && has_key(itm.end, 'dateTime')
-          if len(ymd) != 6 || len(endymd) != 6 || [a:year, a:month] != [ymd[0], ymd[1]]
+          if len(ymd) != 6 || len(endymd) != 6
             continue
           endif
           let date = join(ymd[:2], '-')
@@ -252,7 +252,7 @@ function! calendar#google#calendar#getEvents(year, month, ...) abort
     endif
   endfor
   for date in keys(events)
-    call sort(events[date].events, function('calendar#google#calendar#sorter'))
+    call sort(events[date].events, function('s:events_sorter'))
   endfor
   return events
 endfunction
@@ -262,11 +262,10 @@ function! s:extract_time_sec(summary) abort
   return ((xs[1] * 60) + xs[2]) * 60 + xs[3]
 endfunction
 
-function! calendar#google#calendar#sorter(x, y) abort
-  return a:x.calendarId ==# a:y.calendarId
-        \ ? (a:x.sec == a:y.sec
+function! s:events_sorter(x, y) abort
+  return a:x.sec == a:y.sec
         \   ? (get(a:x, 'summary', '') > get(a:y, 'summary', '') ? 1 : -1)
-        \ : a:x.sec > a:y.sec ? 1 : -1) : 0
+        \ : a:x.sec > a:y.sec ? 1 : -1
 endfunction
 
 function! s:moon_event(events) abort
@@ -402,7 +401,7 @@ function! calendar#google#calendar#response(id, response) abort
   let [_download, err, j, i, timemin, timemax, year, month, id; rest] = s:getdata(a:id)
   let opt = { 'timeMin': timemin, 'timeMax': timemax, 'singleEvents': 'true' }
   if a:response.status =~# '^2'
-    let cnt = calendar#webapi#decode(a:response.content)
+    let cnt = json_decode(a:response.content)
     let content = type(cnt) == type({}) ? cnt : {}
     if has_key(content, 'items')
       call s:event_cache.new(id).new(year).new(month).save(i, content)
@@ -597,9 +596,9 @@ function! s:set_timezone(calendarId, obj) abort
     let a:obj.timeZone = timezone
   endif
   if has_key(a:obj, 'dateTime')
-    let a:obj.date = function('calendar#webapi#null')
+    let a:obj.date = v:null
   elseif has_key(a:obj, 'date')
-    let a:obj.dateTime = function('calendar#webapi#null')
+    let a:obj.dateTime = v:null
   endif
 endfunction
 
