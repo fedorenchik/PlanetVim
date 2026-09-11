@@ -16,6 +16,9 @@ export def Init(): any
   if !has('python3')
     return LocalWarn('GVim needs +python3 support and its matching Python runtime.')
   endif
+  if !py3eval("__import__('sys').version_info >= (3, 10)")
+    return LocalWarn('Vimspector needs the GVim embedded Python runtime to be version 3.10 or newer.')
+  endif
   var path: any = planet#paths#Root() .. '/.vim/pack/apps/opt/vimspector'
   if !filereadable(path .. '/plugin/vimspector.vim')
     return LocalWarn('bundled Vimspector is missing.')
@@ -50,7 +53,7 @@ def _pv_import_utils(state_log, module_path):
             # warning filter to these imports; never change the user's filters.
             warnings.simplefilter('ignore', SyntaxWarning)
             utils = importlib.import_module('vimspector.utils')
-            importlib.import_module('vimspector.debug_session')
+            importlib.import_module('vimspector.session_manager')
     finally:
         logging.FileHandler = original_handler
         sys.dont_write_bytecode = original_bytecode
@@ -109,7 +112,8 @@ export def Configuration(language: any, program: any = ''): any
     command = get(g:, 'PV_gdb_command', ['gdb', '--quiet', '--nx', '--interpreter=dap'])
     return {adapters: {'planet-gdb': {command: command}}, configurations: {'C++': {adapter: 'planet-gdb',
          configuration: {request: 'launch', type: 'gdb', program: empty(program) ? '${workspaceRoot}/build/app' : program,
-         cwd: '${workspaceRoot}', stopAtBeginningOfMainSubprogram: v:true}}}}
+         cwd: '${workspaceRoot}', stopAtBeginningOfMainSubprogram: v:true},
+         breakpoints: {exception: {assert: 'N', exception: 'N', throw: 'N', rethrow: 'N', catch: 'N'}}}}}
   endif
   LocalWarn('setup supports python or cpp.')
   return {}
@@ -250,7 +254,7 @@ def _pv_detach_report(result):
         vim.command("echohl WarningMsg | echom 'PlanetVim detach: ' . g:PV_debug_detach_result.error | echohl None")
 _pv_detach_started = planetvim_debug.detach(
     globals().get('_vimspector_session'),
-    lambda kind: vim.eval('vimspector#internal#{}#StopDebugSession()'.format(kind)),
+    lambda kind, session_id: vim.eval('vimspector#internal#{}#StopDebugSession({})'.format(kind, int(session_id))),
     _pv_detach_report)
 EOF
     return py3eval('_pv_detach_started') ? 1 : 0

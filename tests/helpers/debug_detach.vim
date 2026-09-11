@@ -37,7 +37,7 @@ func! s:Disconnected() abort
 endfunc
 
 func! s:Running() abort
-  return py3eval("any(thread.State() == 'running' for thread in _vimspector_session._stackTraceView._threads)")
+  return py3eval("any(thread.State() == 'running' for state in _vimspector_session._stackTraceView._sessions if state.session is _vimspector_session for thread in state.threads)")
 endfunc
 
 try

@@ -33,7 +33,7 @@ endfunc
 
 func! s:Exited() abort
   let l:log = planet#paths#State('debugger') .. '/vimspector.log'
-  return filereadable(l:log) && match(readfile(l:log), 'The debuggee exited with status code: 0') >= 0
+  return filereadable(l:log) && match(readfile(l:log), "'event': 'exited'.*'exitCode': 0") >= 0
 endfunc
 
 try

@@ -18,27 +18,27 @@ class Connection:
 
 class DetachBridge(unittest.TestCase):
     def session(self, support=True):
-        return SimpleNamespace(_connection=Connection(), _connection_type='job',
+        return SimpleNamespace(session_id=7, _connection=Connection(), _connection_type='job',
                                _server_capabilities={'supportsTerminateDebuggee': support},
                                _launch_config={'request': 'launch'})
 
     def test_success_requires_ack_and_false_termination(self):
         session, stopped, results = self.session(), [], []
-        self.assertTrue(bridge.detach(session, stopped.append, results.append))
+        self.assertTrue(bridge.detach(session, lambda *args: stopped.append(args), results.append))
         self.assertEqual(stopped, [])
         self.assertEqual(session._connection.request, {'command': 'disconnect', 'arguments': {'terminateDebuggee': False}})
-        self.assertFalse(bridge.detach(session, stopped.append, results.append))
+        self.assertFalse(bridge.detach(session, lambda *args: stopped.append(args), results.append))
         session._connection.callback({})
-        self.assertEqual(stopped, ['job'])
+        self.assertEqual(stopped, [('job', 7)])
         self.assertEqual(results[-1]['status'], 'success')
 
     def test_failure_and_new_session_never_kill_adapter(self):
         session, stopped, results = self.session(), [], []
-        bridge.detach(session, stopped.append, results.append)
+        bridge.detach(session, lambda *args: stopped.append(args), results.append)
         session._connection.failed('rejected', {})
         self.assertEqual(stopped, [])
         self.assertEqual(results[-1]['status'], 'failed')
-        bridge.detach(session, stopped.append, results.append)
+        bridge.detach(session, lambda *args: stopped.append(args), results.append)
         old = session._connection
         session._connection = Connection()
         old.callback({})
@@ -54,27 +54,37 @@ class DetachBridge(unittest.TestCase):
     def test_gdb_releases_inferior_before_disconnect(self):
         session, stopped, results = self.session(), [], []
         session._adapter = {'command': ['gdb', '--quiet', '--nx', '--interpreter=dap']}
-        session._stackTraceView = SimpleNamespace(_threads=[SimpleNamespace(CanExpand=lambda: True)])
-        bridge.detach(session, stopped.append, results.append)
+        session._stackTraceView = SimpleNamespace(_sessions=[SimpleNamespace(session=session, threads=[SimpleNamespace(CanExpand=lambda: True)])])
+        bridge.detach(session, lambda *args: stopped.append(args), results.append)
         self.assertEqual(session._connection.request, {'command': 'evaluate', 'arguments': {'context': 'repl', 'expression': 'detach'}})
         session._connection.callback({})
         self.assertEqual(session._connection.request['command'], 'disconnect')
         self.assertIs(session._connection.request['arguments']['terminateDebuggee'], False)
         self.assertEqual(stopped, [])
         session._connection.callback({})
-        self.assertEqual(stopped, ['job'])
+        self.assertEqual(stopped, [('job', 7)])
 
     def test_running_gdb_pauses_before_detach_and_preserves_failed_session(self):
         session, stopped, results = self.session(), [], []
         session._adapter = {'command': ['gdb', '--interpreter=dap']}
-        session._stackTraceView = SimpleNamespace(_threads=[SimpleNamespace(CanExpand=lambda: False)])
-        bridge.detach(session, stopped.append, results.append)
+        session._stackTraceView = SimpleNamespace(_sessions=[SimpleNamespace(session=session, threads=[SimpleNamespace(CanExpand=lambda: False)])])
+        bridge.detach(session, lambda *args: stopped.append(args), results.append)
         self.assertEqual(session._connection.request['command'], 'pause')
         session._connection.callback({})
         self.assertEqual(session._connection.request['command'], 'evaluate')
         session._connection.failed('cannot detach', {})
         self.assertEqual(stopped, [])
         self.assertEqual(results[-1]['status'], 'failed')
+
+    def test_other_sessions_stopped_threads_do_not_skip_pause(self):
+        session = self.session()
+        session._adapter = {'command': ['gdb', '--interpreter=dap']}
+        session._stackTraceView = SimpleNamespace(_sessions=[
+            SimpleNamespace(session=self.session(), threads=[SimpleNamespace(CanExpand=lambda: True)]),
+            SimpleNamespace(session=session, threads=[SimpleNamespace(CanExpand=lambda: False)]),
+        ])
+        bridge.detach(session, lambda *args: self.fail('adapter stopped before acknowledgement'), lambda result: None)
+        self.assertEqual(session._connection.request['command'], 'pause')
 
 
 if __name__ == '__main__':

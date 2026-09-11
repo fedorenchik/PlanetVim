@@ -36,7 +36,7 @@ def detach(session, stop_adapter, report):
             report({'status': 'superseded', 'error': 'The active debug session changed.'})
             return
         try:
-            stop_adapter(connection_type)
+            stop_adapter(connection_type, session.session_id)
             report({'status': 'success', 'error': ''})
         except Exception as error:
             report({'status': 'failed', 'error': str(error)})
@@ -68,7 +68,9 @@ def detach(session, stop_adapter, report):
             view = getattr(session, '_stackTraceView', None)
             # Vimspector retains the old frame after Continue. Thread state,
             # not a stale frame, determines whether GDB needs to be paused.
-            if view and any(thread.CanExpand() for thread in getattr(view, '_threads', [])):
+            threads = [thread for state in getattr(view, '_sessions', [])
+                       if state.session is session for thread in state.threads]
+            if any(thread.CanExpand() for thread in threads):
                 detach_gdb()
             else:
                 # GDB accepts pause for all threads and evaluates REPL commands
