@@ -1036,11 +1036,11 @@
       "path": ".vim/pack/dev/start/direnv.vim",
       "provenance": {
         "branch": "master",
-        "commit": "4c858b8cd8cbfac998534096e6ffb710d7a07358",
+        "commit": "ab2a7e08dd630060cd81d7946739ac7442a4f269",
         "kind": "git-subrepo",
         "remote": "https://github.com/direnv/direnv.vim.git"
       },
-      "snapshot_sha256": "0c263ae41565861d58c64fb3d1f6f027c91cf90ff3061f9b124de40f234924c8"
+      "snapshot_sha256": "8ea620b85306f66a5b72155e629d1b43f58c9caa2fea8105e5a536b046bc332b"
     },
     {
       "group": "dev",
