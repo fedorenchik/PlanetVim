@@ -1,14 +1,15 @@
-#!/bin/bash
+#!/bin/sh
 
 set -e
-set -o pipefail
+#set -o pipefail
 
-version="0.5"
+version="v0.23.2"
+
 os="$(uname -s | tr "[:upper:]" "[:lower:]")"
 
 case "${os}" in
-darwin|linux)
-  url="https://github.com/nokia/ntt/releases/download/v${version}/ntt_${os}_x86_64.tar.gz"
+darwin | linux)
+  url="https://github.com/nokia/ntt/releases/download/${version}/ntt_${os}_x86_64.tar.gz"
   curl -L "$url" | tar xz ntt
   chmod +x ntt
   ;;

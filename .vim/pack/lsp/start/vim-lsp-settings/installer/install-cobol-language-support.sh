@@ -1,18 +1,19 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 set -e
 
-version="0.9.1"
-url="https://github.com/eclipse/che-che4z-lsp-for-cobol/releases/download/$version/cobol-language-support-$version.vsix"
+version="2.4.3"
+platform="linux-x64"
+url="https://github.com/eclipse/che-che4z-lsp-for-cobol/releases/download/$version/cobol-language-support-$platform-$version.vsix"
 filename="cobol-language-support-$version.vsix"
 curl -L "$url" -o "$filename"
 unzip "$filename"
 rm "$filename"
 
 cat <<EOF >./cobol-language-support
-#!/usr/bin/env bash
+#!/bin/sh
 DIR=\$(cd \$(dirname \$0); pwd)
-java "-Dline.speparator=\r\n" -jar "\$DIR/extension/server/lsp-service-cobol-$version.jar" pipeEnabled
+java "-Dline.speparator=\r\n" -jar "\$DIR/extension/server/jar/server.jar" pipeEnabled
 EOF
 
 chmod +x ./cobol-language-support

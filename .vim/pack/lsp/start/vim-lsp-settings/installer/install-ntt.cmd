@@ -1,5 +1,7 @@
 @echo off
 
 setlocal
-set VERSION=0.5
-curl -L "https://github.com/nokia/ntt/releases/download/v%VERSION%/ntt_windows_x86_64.tar.gz" | tar xz ntt.exe
+set VERSION=v0.23.2
+curl -LO "https://github.com/nokia/ntt/releases/download/%VERSION%/ntt_windows_x86_64.zip"
+unzip ntt_windows_x86_64.zip
+rm ntt_windows_x86_64.zip

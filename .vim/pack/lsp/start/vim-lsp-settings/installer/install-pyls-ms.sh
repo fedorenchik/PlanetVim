@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 set -e
 
@@ -17,7 +17,7 @@ darwin)
 *) ;;
 esac
 
-version="0.5.51"
+version="0.5.59"
 url="https://pvsc.azureedge.net/python-language-server-stable/Python-Language-Server-${system}-x64.${version}.nupkg"
 
 nupkg="./pyls.nupkg"
@@ -25,7 +25,7 @@ curl -L "$url" -o "$nupkg"
 unzip "$nupkg"
 
 cat <<EOF >pyls-ms
-#!/usr/bin/env bash
+#!/bin/sh
 
 DIR=\$(cd \$(dirname \$0); pwd)
 \$DIR/.dotnet/dotnet \$DIR/Microsoft.Python.LanguageServer.dll

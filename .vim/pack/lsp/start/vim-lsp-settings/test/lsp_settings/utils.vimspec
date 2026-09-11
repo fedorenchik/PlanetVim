@@ -1,9 +1,9 @@
 Describe lsp_settings#utils
     Describe lsp_settings#utils#first_one
         It should return first item in lines
-            Assert Equals(lsp_settings#utils#first_one("\nfoo"), fnamemodify('foo', ':p'))
-            Assert Equals(lsp_settings#utils#first_one('foo'), fnamemodify('foo', ':p'))
-            Assert Equals(lsp_settings#utils#first_one("foo\nbar\n"), fnamemodify('foo', ':p'))
+            Assert Equals(lsp_settings#utils#first_one("\nfoo"), lsp_settings#utils#normalize_path(fnamemodify('foo', ':p')))
+            Assert Equals(lsp_settings#utils#first_one('foo'), lsp_settings#utils#normalize_path(fnamemodify('foo', ':p')))
+            Assert Equals(lsp_settings#utils#first_one("foo\nbar\n"), lsp_settings#utils#normalize_path(fnamemodify('foo', ':p')))
         End
     End
 

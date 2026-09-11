@@ -1950,11 +1950,11 @@
       "path": ".vim/pack/lsp/start/vim-lsp-settings",
       "provenance": {
         "branch": "master",
-        "commit": "83b3a099a60273f429df20741bede3268fb6d3f1",
+        "commit": "c61a46e4cc31ec58159d3908e5b1f1003923990b",
         "kind": "git-subrepo",
         "remote": "https://github.com/mattn/vim-lsp-settings.git"
       },
-      "snapshot_sha256": "c9aa49b532ea0bbe090f7f901f1f83ef14262654fe0867d02c367c40897f361c"
+      "snapshot_sha256": "9bb13fd918c603d0ed406510b48e71b5bf4a449adca2faee59782f11f307725a"
     },
     {
       "group": "planet",

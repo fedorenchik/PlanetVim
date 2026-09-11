@@ -1,22 +1,37 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 set -e
 
 os=$(uname -s | tr "[:upper:]" "[:lower:]")
-version="0.8.0"
-filename="terraform-ls_${version}.zip"
+arch=$(uname -m | tr "[:upper:]" "[:lower:]")
 
 case $os in
-darwin | linux)
-  url="https://github.com/hashicorp/terraform-ls/releases/download/v${version}/terraform-ls_${version}_${os}_amd64.zip"
-  curl -L "$url" -o "$filename"
-  ;;
+darwin | linux) ;;
+
 *)
-  printf "%s doesn't supported" "$os"
+  printf "%s is not supported" "$os"
   exit 1
   ;;
-
 esac
+
+case $arch in
+x86_64*) arch=amd64 ;;
+386*) arch=386 ;;
+arm64*) arch=arm64 ;;
+aarch64*) arch=arm64 ;;
+*)
+  printf "%s is not supported" "$arch"
+  exit 1
+  ;;
+esac
+
+version=$(basename "$(curl -Ls -o /dev/null -w %\{url_effective\} https://github.com/hashicorp/terraform-ls/releases/latest)")
+short_version=$(echo "$version" | cut -c2-)
+filename="terraform-ls_${short_version}"
+url="https://releases.hashicorp.com/terraform-ls/${short_version}/${filename}_${os}_${arch}.zip"
+filename="${filename}.zip"
+
+curl -L --progress-bar "$url" -o "$filename"
 
 unzip "$filename"
 rm "$filename"

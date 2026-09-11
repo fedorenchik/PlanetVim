@@ -1,15 +1,16 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 set -e
 
-version="v0.6.2"
-url="https://github.com/elixir-lsp/elixir-ls/releases/download/$version/elixir-ls.zip"
-curl -LO "$url"
-unzip elixir-ls.zip
-rm elixir-ls.zip
+version="v0.30.0"
+zip="elixir-ls-$version.zip"
+url="https://github.com/elixir-lsp/elixir-ls/releases/download/$version/$zip"
+curl -L -o "$zip" "$url"
+unzip "$zip"
+rm "$zip"
 
 cat <<EOF >elixir-ls
-#!/usr/bin/env bash
+#!/bin/sh
 
 DIR=\$(cd \$(dirname \$0); pwd)
 \$DIR/language_server.sh \$*

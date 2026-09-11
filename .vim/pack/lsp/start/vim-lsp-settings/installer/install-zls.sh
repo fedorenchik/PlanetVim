@@ -1,9 +1,13 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
-git clone --recurse-submodules --depth=1 https://github.com/zigtools/zls .
+set -e
+
+git clone https://github.com/zigtools/zls .
+git checkout "refs/tags/$(git tag | grep "^$(zig version | sed -r 's/\.[0-9]+$//')")"
+git submodule update --init --recursive
 zig build
-mv zig-cache/bin/zls .
-rm -rf zig-cache src tests
-cat <<EOF > zls.json
-{"zig_lib_path":"$(dirname $(which zig))/lib/zig","enable_snippets":true,"warn_style":true,"enable_semantic_tokens":true}
+mv zig-out/bin/zls .
+rm -rf zig-cache zig-out src tests
+cat <<EOF >zls.json
+{"zig_lib_path":"$(dirname "$(which zig)")/lib/zig","enable_snippets":true,"warn_style":true,"enable_semantic_tokens":true}
 EOF

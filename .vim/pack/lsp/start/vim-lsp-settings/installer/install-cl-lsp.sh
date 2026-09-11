@@ -1,3 +1,5 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
-ros install cxxxr/cl-lsp
+set -e
+
+ros install cxxxr/lem cxxxr/cl-lsp

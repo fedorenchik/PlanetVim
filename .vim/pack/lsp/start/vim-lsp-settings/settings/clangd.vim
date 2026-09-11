@@ -1,17 +1,14 @@
-augroup vim_lsp_settings_clangd
-  au!
-  LspRegisterServer {
-      \ 'name': 'clangd',
-      \ 'cmd': {server_info->lsp_settings#get('clangd', 'cmd', [lsp_settings#exec_path('clangd')])},
-      \ 'root_uri':{server_info->lsp_settings#get('clangd', 'root_uri', lsp_settings#root_uri('clangd'))},
-      \ 'initialization_options': lsp_settings#get('clangd', 'initialization_options', v:null),
-      \ 'allowlist': lsp_settings#get('clangd', 'allowlist', ['c', 'cpp', 'objc', 'objcpp']),
-      \ 'blocklist': lsp_settings#get('clangd', 'blocklist', []),
-      \ 'config': lsp_settings#get('clangd', 'config', lsp_settings#server_config('clangd')),
-      \ 'workspace_config': lsp_settings#get('clangd', 'workspace_config', {}),
-      \ 'semantic_highlight': lsp_settings#get('clangd', 'semantic_highlight', {}),
-      \ }
-augroup END
+call lsp_settings#register_server({
+    \ 'name': 'clangd',
+    \ 'cmd': {server_info->lsp_settings#get('clangd', 'cmd', [lsp_settings#exec_path('clangd')]+lsp_settings#get('clangd', 'args', []))},
+    \ 'root_uri':{server_info->lsp_settings#get('clangd', 'root_uri', lsp_settings#root_uri('clangd'))},
+    \ 'initialization_options': lsp_settings#get('clangd', 'initialization_options', v:null),
+    \ 'allowlist': lsp_settings#get('clangd', 'allowlist', ['c', 'cpp', 'objc', 'objcpp', 'cuda']),
+    \ 'blocklist': lsp_settings#get('clangd', 'blocklist', []),
+    \ 'config': lsp_settings#get('clangd', 'config', lsp_settings#server_config('clangd')),
+    \ 'workspace_config': lsp_settings#get('clangd', 'workspace_config', {}),
+    \ 'semantic_highlight': lsp_settings#get('clangd', 'semantic_highlight', {}),
+    \ })
 
 function! s:handle_document_switch_source_header(ctx, server, type, has_extension, data) abort "ctx = {counter, list, last_command_id}
   if a:ctx['last_command_id'] != lsp#_last_command()
@@ -39,7 +36,7 @@ function! s:handle_document_switch_source_header(ctx, server, type, has_extensio
           \ 'col': 0,
           \ }
 
-      call lsp#utils#location#_open_vim_list_item(l:loc)
+      call lsp#utils#location#_open_vim_list_item(l:loc, '')
       echo 'Retrieved ' . a:type
       redraw
     endif
@@ -87,7 +84,7 @@ function! s:on_lsp_buffer_enabled() abort
   nnoremap <buffer> <plug>(lsp-switch-source-header) :<c-u>call <SID>document_switch_source_header()<cr>
 endfunction
 
-augroup lsp_install_clangd
+augroup vim_lsp_settings_clangd
   au!
   autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 augroup END

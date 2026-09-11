@@ -1,6 +1,29 @@
+function! s:filter_deny_keys(settings) abort
+  let l:deny_keys = get(g:, 'lsp_settings_deny_local_keys', ['cmd'])
+  if empty(l:deny_keys)
+    return
+  endif
+  for l:setting in values(a:settings)
+    if v:t_dict !=# type(l:setting)
+      continue
+    endif
+    for l:v in values(l:setting)
+      if v:t_dict !=# type(l:v)
+        continue
+      endif
+      for l:deny in l:deny_keys
+        if has_key(l:v, l:deny)
+          call remove(l:v, l:deny)
+        endif
+      endfor
+    endfor
+  endfor
+endfunction
+
 function! lsp_settings#profile#load_local() abort
   try
-    let l:root = finddir('.vim-lsp-settings', ';')
+    let l:dir = expand('%:p:h')
+    let l:root = finddir('.vim-lsp-settings', l:dir . ';')
     if empty(l:root)
       return
     endif
@@ -8,10 +31,11 @@ function! lsp_settings#profile#load_local() abort
       return
     endif
     let l:settings = json_decode(join(readfile(l:root . '/settings.json'), "\n"))
+    call s:filter_deny_keys(l:settings)
     if has_key(g:, 'lsp_settings')
       for [l:k, l:v] in items(l:settings)
         if has_key(g:lsp_settings, l:k)
-          let g:lsp_settings[l:k] = extend(g:lsp_settings[l:k], l:v)
+          let g:lsp_settings[l:k] = lsp_settings#utils#extend(g:lsp_settings[l:k], l:v)
         else
           let g:lsp_settings[l:k] = l:v
         endif
@@ -26,7 +50,7 @@ endfunction
 function! lsp_settings#profile#edit_global() abort
   let l:root = lsp_settings#global_settings_dir()
   if !isdirectory(l:root)
-    call mkdir(l:root)
+    call mkdir(l:root, 'p')
   endif
   exe 'new' l:root . '/settings.json'
   if !filereadable(l:root . '/settings.json')
@@ -52,7 +76,7 @@ function! lsp_settings#profile#edit_local(...) abort
   endif
   let l:root .= '/.vim-lsp-settings'
   if !isdirectory(l:root)
-    call mkdir(l:root)
+    call mkdir(l:root, 'p')
   endif
   exe 'new' l:root . '/settings.json'
   if !filereadable(l:root . '/settings.json')
@@ -92,5 +116,22 @@ function! lsp_settings#profile#status() abort
       echohl None
     endif
     echo ''
+  endfor
+endfunction
+
+function! lsp_settings#profile#servers() abort
+  let l:settings = lsp_settings#settings()
+  let l:active_servers = lsp#get_allowed_servers()
+
+  let l:servers = {}
+  for l:ft in keys(l:settings)
+    for l:v in l:settings[l:ft]
+      if lsp_settings#executable(l:v.command)
+        let l:servers[l:v.command] = 1
+      endif
+    endfor
+  endfor
+  for l:server in keys(l:servers)
+    echo l:server
   endfor
 endfunction

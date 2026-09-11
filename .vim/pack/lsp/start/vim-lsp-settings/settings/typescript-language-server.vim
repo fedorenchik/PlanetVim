@@ -1,14 +1,35 @@
-augroup vim_lsp_settings_typescript_language_server
-  au!
-  LspRegisterServer {
-      \ 'name': 'typescript-language-server',
-      \ 'cmd': {server_info->lsp_settings#get('typescript-language-server', 'cmd', [lsp_settings#exec_path('typescript-language-server'), '--stdio'])},
-      \ 'root_uri':{server_info->lsp_settings#get('typescript-language-server', 'root_uri', lsp_settings#root_uri('typescript-language-server'))},
-      \ 'initialization_options': lsp_settings#get('typescript-language-server', 'initialization_options', {'diagnostics': 'true'}),
-      \ 'allowlist': lsp_settings#get('typescript-language-server', 'allowlist', ['javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'typescript.tsx']),
-      \ 'blocklist': lsp_settings#get('typescript-language-server', 'blocklist', []),
-      \ 'config': lsp_settings#get('typescript-language-server', 'config', lsp_settings#server_config('typescript-language-server')),
-      \ 'workspace_config': lsp_settings#get('typescript-language-server', 'workspace_config', {}),
-      \ 'semantic_highlight': lsp_settings#get('typescript-language-server', 'semantic_highlight', {}),
-      \ }
-augroup END
+function! s:get_blocklist() abort
+    if empty(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'node_modules/')) &&
+    \  empty(lsp#utils#find_nearest_parent_file(lsp#utils#get_buffer_path(), 'package.json')) &&
+    \  empty(lsp#utils#find_nearest_parent_file(lsp#utils#get_buffer_path(), 'jsconfig.json')) &&
+    \  empty(lsp#utils#find_nearest_parent_file(lsp#utils#get_buffer_path(), 'tsconfig.json'))
+        return ['typescript', 'javascript', 'typescriptreact', 'javascriptreact']
+    endif
+    if !empty(lsp#utils#find_nearest_parent_file(lsp#utils#get_buffer_path(), 'deno.json'))
+        call timer_start(0, {->lsp_settings#utils#warning('server "typescript-language-server" is disabled since "deno.json" is found')}, {'repeat': 0})
+        return ['typescript', 'javascript', 'typescriptreact', 'javascriptreact']
+    endif
+    return []
+endfunction
+
+call lsp_settings#register_server({
+    \ 'name': 'typescript-language-server',
+    \ 'cmd': {server_info->lsp_settings#get('typescript-language-server', 'cmd', [lsp_settings#exec_path('typescript-language-server')]+lsp_settings#get('typescript-language-server', 'args', ['--stdio']))},
+    \ 'root_uri':{server_info->lsp_settings#get('typescript-language-server', 'root_uri', lsp_settings#root_uri('typescript-language-server'))},
+    \ 'initialization_options': lsp_settings#get('typescript-language-server', 'initialization_options', {
+    \   'preferences': {
+    \     'includeInlayParameterNameHintsWhenArgumentMatchesName': v:true,
+    \     'includeInlayParameterNameHints': 'all',
+    \     'includeInlayVariableTypeHints': v:true,
+    \     'includeInlayPropertyDeclarationTypeHints': v:true,
+    \     'includeInlayFunctionParameterTypeHints': v:true,
+    \     'includeInlayEnumMemberValueHints': v:true,
+    \     'includeInlayFunctionLikeReturnTypeHints': v:true
+    \   },
+    \ }),
+    \ 'allowlist': lsp_settings#get('typescript-language-server', 'allowlist', ['javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'typescript.tsx']),
+    \ 'blocklist': lsp_settings#get('typescript-language-server', 'blocklist', s:get_blocklist()),
+    \ 'config': lsp_settings#get('typescript-language-server', 'config', lsp_settings#server_config('typescript-language-server')),
+    \ 'workspace_config': lsp_settings#get('typescript-language-server', 'workspace_config', {}),
+    \ 'semantic_highlight': lsp_settings#get('typescript-language-server', 'semantic_highlight', {}),
+    \ })

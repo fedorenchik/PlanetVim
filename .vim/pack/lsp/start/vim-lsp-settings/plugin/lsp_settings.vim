@@ -14,5 +14,13 @@ let g:lsp_settings_root_markers = get(g:, 'lsp_settings_root_markers', [
 command! -nargs=0 LspSettingsStatus call lsp_settings#profile#status()
 command! -nargs=? LspSettingsLocalEdit call lsp_settings#profile#edit_local(<f-args>)
 command! -nargs=0 LspSettingsGlobalEdit call lsp_settings#profile#edit_global()
+command! -nargs=0 LspManageServers call lsp_settings#ui#open()
 
-call lsp_settings#init()
+if get(g:, 'lsp_settings_lazyload', 0)
+  augroup vim_lsp_settings_initialize
+     au!
+     autocmd VimEnter * call lsp_settings#init()
+  augroup END
+else
+  call lsp_settings#init()
+endif

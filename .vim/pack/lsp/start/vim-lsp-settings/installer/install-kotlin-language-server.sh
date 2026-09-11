@@ -1,8 +1,9 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 set -e
 
-version="0.5.2"
+version="1.3.13"
+
 curl -L -o server.zip "https://github.com/fwcd/kotlin-language-server/releases/download/$version/server.zip"
 unzip server.zip
 rm server.zip
