@@ -2164,11 +2164,11 @@
       "path": ".vim/pack/web/start/typescript-vim",
       "provenance": {
         "branch": "master",
-        "commit": "52f3ca3474d51f5021696ffb7297d989e49121ac",
+        "commit": "4740441db1e070ef8366c888c658000dd032e4cb",
         "kind": "git-subrepo",
         "remote": "https://github.com/leafgarland/typescript-vim.git"
       },
-      "snapshot_sha256": "bc1da3ca8aad124593139a377675c7c6ec94467ac54c748c8fd3f197841bfb98"
+      "snapshot_sha256": "2badacafe1407c3bd6403dc57a46f56a39606d4ce5387782022a968ecd1bc3f3"
     },
     {
       "group": "web",
