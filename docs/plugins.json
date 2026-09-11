@@ -1298,11 +1298,11 @@
       "path": ".vim/pack/file-manager/start/glyph-palette.vim",
       "provenance": {
         "branch": "master",
-        "commit": "c9b21e745b4fc11c410afbf4aa9dbe938c3d09c0",
+        "commit": "1ee16c232c5538f34bb47c3dd0f6b369fdd7c555",
         "kind": "git-subrepo",
         "remote": "https://github.com/lambdalisue/glyph-palette.vim.git"
       },
-      "snapshot_sha256": "8e5e04a30809ad400398ce668edc407f4c199b313e2fc6b03ab956c4462922f8"
+      "snapshot_sha256": "5aa88f1793f5ec331680fa24f5695d31eaafd704206296806c3ec4c7f3604ad6"
     },
     {
       "group": "file-manager",
