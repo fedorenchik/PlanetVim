@@ -173,7 +173,10 @@ export def Action(action: any, configuration: any = ''): any
   var names: any
   var choice: any
   var actions: any = {'continue': 'Continue', 'breakpoint': 'ToggleBreakpoint', 'step-over': 'StepOver',
-       'step-into': 'StepInto', 'step-out': 'StepOut', 'restart': 'Restart', 'pause': 'Pause', 'stop': 'Stop'}
+       'step-into': 'StepInto', 'step-out': 'StepOut', 'restart': 'Restart', 'pause': 'Pause', 'stop': 'Stop',
+       'disassembly': 'ShowDisassembly', 'instruction-over': 'StepIOver', 'instruction-into': 'StepIInto',
+       'instruction-out': 'StepIOut', 'data-breakpoint': 'AddDataBreakpoint',
+       'exception-breakpoints': 'ResetExceptionBreakpoints'}
   if action ==# 'detach'
     return planet#debug#Detach()
   elseif action !=# 'launch' && action !=# 'reset' && !has_key(actions, action)
@@ -258,6 +261,41 @@ _pv_detach_started = planetvim_debug.detach(
     _pv_detach_report)
 EOF
     return py3eval('_pv_detach_started') ? 1 : 0
+  catch
+    return LocalWarn(v:exception)
+  endtry
+enddef
+
+# Session names are passed as values, including spaces; never execute them.
+export def Session(action: string, supplied: any = v:null): number
+  if index(['new', 'switch', 'rename', 'close'], action) < 0
+    return LocalWarn('unknown session action: ' .. action)
+  endif
+  if !planet#debug#Init()
+    return 0
+  endif
+  var name = supplied
+  if name == v:null
+    if action ==# 'switch'
+      var names = split(vimspector#CompleteSessionName('', '', 0), "\n")
+      var choice = inputlist(['Debug session:'] + map(copy(names), (i, value) => (i + 1) .. '. ' .. value))
+      if choice < 1 || choice > len(names)
+        return 0
+      endif
+      name = names[choice - 1]
+    elseif action ==# 'close'
+      name = vimspector#GetSessionName()
+    else
+      name = input('Session name: ', action ==# 'rename' ? vimspector#GetSessionName() : '')
+    endif
+  endif
+  if empty(name)
+    return 0
+  endif
+  var methods = {new: 'NewSession', switch: 'SwitchToSession', rename: 'RenameSession', close: 'DestroySession'}
+  try
+    call('vimspector#' .. methods[action], [name])
+    return 1
   catch
     return LocalWarn(v:exception)
   endtry
