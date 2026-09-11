@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/rhysd/committia.vim.git
 	branch = master
-	commit = 0b4df1a7f48ffbc23b009bd14d58ee1be541917c
-	parent = ad5d872ef382b8f469eebad6e61604b379fbfc08
+	commit = c8c0f255e8090ed90dd9d5dd2e8672994f8e3671
+	parent = ef5ecb3f51c2c5a1d0d464546a87638a935ea1a3
 	method = merge
-	cmdver = 0.4.3
+	cmdver = 0.4.9

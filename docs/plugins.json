@@ -1359,11 +1359,11 @@
       "path": ".vim/pack/git/start/committia.vim",
       "provenance": {
         "branch": "master",
-        "commit": "0b4df1a7f48ffbc23b009bd14d58ee1be541917c",
+        "commit": "c8c0f255e8090ed90dd9d5dd2e8672994f8e3671",
         "kind": "git-subrepo",
         "remote": "https://github.com/rhysd/committia.vim.git"
       },
-      "snapshot_sha256": "bbdf26fc1add27d2a9763d58904e569f39441830e976fa9cff262f9a159e3d5c"
+      "snapshot_sha256": "31087c6034b4cd6e8245f0072a2d6571ba3d43a9484465ca9c352dd6477c1187"
     },
     {
       "group": "git",
