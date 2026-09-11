@@ -312,8 +312,7 @@ function! s:get_git_mode() abort
   if isdirectory(git_dir . '/rebase-apply') ||
         \ isdirectory(git_dir . '/rebase-merge')
     return 'rebase'
-  elseif s:fexists(git_dir . '/MERGE_HEAD') ||
-        \ !empty(s:git_cmd('diff --shortstat --diff-filter=U | tail -1', 0))
+  elseif s:fexists(git_dir . '/MERGE_HEAD')
     return 'merge'
   elseif s:fexists(git_dir . '/CHERRY_PICK_HEAD')
     return 'cherry-pick'
@@ -669,7 +668,7 @@ function! s:cherry_pick_view() abort
         \ "cherry pick in progress",
         \ "",
         \ "from this window:",
-        \ "  c to continue",
+        \ "  s to continue",
         \ "  a to abort"
         \ ]
 endfunction
@@ -839,7 +838,7 @@ function! s:Render() abort
   if !exists('t:twiggy_bufnr') || !(exists('t:twiggy_bufnr') && t:twiggy_bufnr ==# bufnr(''))
     let fname = 'twiggy://' . t:twiggy_git_dir . '/branches'
     if &filetype ==# 'twiggyqh'
-      exec "edit" fname
+      exec "silent keepalt edit" fname
     else
       if g:twiggy_split_direction ==# "horizontal"
         exec 'silent keepalt' g:twiggy_split_position g:twiggy_num_rows . 'split' fname
@@ -974,6 +973,9 @@ function! s:Render() abort
   call s:mapping('gc',      'CheckoutAs',       [])
   call s:mapping('go',      'CheckoutAs',       [])
   call s:mapping('dd',      'Delete',           [])
+  if g:twiggy_enable_remote_delete
+    call s:mapping('dP',    'DeleteRemote',     [])
+  endif
   call s:mapping('F',       'Fetch',            [0]) " deprecated
   call s:mapping('f',       'Fetch',            [0])
   call s:mapping('m',       'Merge',            [0, ''])
@@ -1052,7 +1054,6 @@ function! s:Render() abort
   highlight default link TwiggySortText Comment
 
   if exists('s:branches_not_in_reflog') && len(s:branches_not_in_reflog)
-    return
     exec "syntax match TwiggyNotInReflog '" .
           \ s:gsub(s:gsub(join(s:branches_not_in_reflog), '\(', ''), '\)', '') .
           \ "'"
@@ -1449,13 +1450,14 @@ function! s:Push(choose_upstream, force) abort
 endfunction
 
 function! TwiggyCompleteRemotes(A,L,P) abort
+  let remotes = ''
   for remote in s:git_cmd('remote', 0)
     if match(remote, '\v^' . a:A) >= 0
-      return remote
+      let remotes = remotes . remote . "\n"
     endif
   endfor
 
-  return ''
+  return remotes
 endfunction
 
 "     {{{3 Rename

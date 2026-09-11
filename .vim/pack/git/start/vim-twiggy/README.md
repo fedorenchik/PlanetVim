@@ -48,7 +48,7 @@ With your cursor on a branch, `m` merges it into the current branch.  With your
 cursor on a local branch, `M` will merge its tracked remote into the current
 branch.  Use `r` and `R` for rebasing.  `f` fetches the branch under the cursor.
 
-`u` aborts a merge or rebase.
+`a` aborts a merge or rebase.
 
 ### And finally...
 
@@ -66,7 +66,7 @@ Type `q` to quit.
 
 ### Example fetch and merge workflow
 
-Press `F` on the current branch to fetch from the upstream.  Without moving
+Press `f` on the current branch to fetch from the upstream.  Without moving
 your cursor, press `C` to checkout the remote branch in detached HEAD.  If
 everything looks good, move your cursor back to the original branch and press
 `c` to checkout, then press `M` to merge the upstream changes.

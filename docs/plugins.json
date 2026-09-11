@@ -1439,11 +1439,11 @@
       "path": ".vim/pack/git/start/vim-twiggy",
       "provenance": {
         "branch": "master",
-        "commit": "7a2161991722a811c4ff06b3ce0119dd180729fd",
+        "commit": "32a2b9a0222fa6afd374c8345f7cfa305f3b1655",
         "kind": "git-subrepo",
         "remote": "https://github.com/sodapopcan/vim-twiggy.git"
       },
-      "snapshot_sha256": "54d8ccd48ef66d11df76e1bd65ea874a6c292ee3ff427ae31b22be7a55c12d91"
+      "snapshot_sha256": "a64ea623ce8128f176e53458a45eccae83a856de111c17841c790ee0d691d545"
     },
     {
       "group": "go",
