@@ -48,7 +48,7 @@ let g:godot_executable = 'C:/Path/To/Godot/godot.exe'
 [source,vim]
 ------------------------------------------------------------------------------
 " OSX example
-let g:godot_executable = '/Applications/Godot.app'
+let g:godot_executable = '/Applications/Godot.app/Contents/MacOS/Godot'
 ------------------------------------------------------------------------------
 
 image::https://user-images.githubusercontent.com/234774/80359547-a5fc6c00-8886-11ea-9cdd-bc027d46db4c.gif[]
@@ -68,6 +68,7 @@ Good practice is to put your personal filetype specific settings into after dire
 ------------------------------------------------------------------------------
 " to use folding provided by plugin
 setlocal foldmethod=expr
+setlocal shiftwidth=4
 setlocal tabstop=4
 nnoremap <buffer> <F4> :GodotRunLast<CR>
 nnoremap <buffer> <F5> :GodotRun<CR>
@@ -171,7 +172,7 @@ let g:ycm_language_server += [
   \     'name': 'godot',
   \     'filetypes': [ 'gdscript' ],
   \     'project_root_files': [ 'project.godot' ],
-  \     'port': 6008
+  \     'port': 6005
   \   }
   \ ]
 ------------------------------------------------------------------------------
@@ -193,7 +194,7 @@ for me and hopefully would work for you.
         "godot": {
             "host": "127.0.0.1",
             "filetypes": ["gdscript"],
-            "port": 6008
+            "port": 6005
         }
     }
 }
@@ -202,6 +203,9 @@ for me and hopefully would work for you.
 
 NOTE: This is not a comprehensive `coc.nvim` setup guide. It just works for me
 and hopefully would work for you.
+
+* To find which port is correct for your version of the Godot Engine, go to
+  `Editor > Editor Settings > Network > Language Server`
 
 == Setting up ale for Godot 3.2.2+
 
@@ -313,21 +317,19 @@ Open menu `Editor/Editor Settings/` then navigate to `General/External/`:
 
 == Setup Neovim as an external editor for Godot
 
-All of the clientserver features were removed in Neovim so you have to install a python script to use them 
-
-https://github.com/mhinz/neovim-remote
-
-now navigate to the root of your godot project (where the project.godot is residing) and start a new Neovim like this
+Navigate to the root of your godot project (where the project.godot is residing) and start a new Neovim like this:
 
 [source]
 ------------------------------------------------------------------------------
-nvim --listen godothost .
+nvim --listen ./godothost
 ------------------------------------------------------------------------------
+
+(on Windows you might have to specify a IP:port combination instead, like "127.0.0.1:9696")
 
 Open menu `Editor/Editor Settings/` then navigate to `General/External/`:
 
 * Tick `Use external editor`
-* Add `nvr` to `Exec Path`
-* Add `--servername godothost --remote-send "<C-\><C-N>:n {file}<CR>:call cursor({line},{col})<CR>"` to `Exec Flags`
+* Add `nvim` to `Exec Path`
+* Add `--server ./godothost --remote-send "<C-\><C-N>:n {file}<CR>{line}G{col}|"` to `Exec Flags`
 
 now when you click on a script in godot it will open it in a new buffer in Neovim.

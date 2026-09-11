@@ -1480,11 +1480,11 @@
       "path": ".vim/pack/godot/start/vim-godot",
       "provenance": {
         "branch": "master",
-        "commit": "d1cde72d9ba5b8e811df7bb28b2606685453f375",
+        "commit": "2cecd0c83a7b3f012142a584d53a3a51be246c8e",
         "kind": "git-subrepo",
         "remote": "https://github.com/habamax/vim-godot.git"
       },
-      "snapshot_sha256": "58e3034664b5c6979766b4bccc031df6f7c7f298e7612f909c1ef8e363bb1c77"
+      "snapshot_sha256": "c69d40900598bb35474311c17fdf5d1ba838fd84c2a6f1097f006c484c8f7705"
     },
     {
       "group": "lib",
