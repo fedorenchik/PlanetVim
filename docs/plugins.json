@@ -2264,11 +2264,11 @@
       "path": ".vim/pack/writing/start/vim-SpellCheck",
       "provenance": {
         "branch": "master",
-        "commit": "fe5c9488d3082c246f73bfca137052930b13424f",
+        "commit": "c479d16c6682110237304796a8095c5eab0def12",
         "kind": "git-subrepo",
         "remote": "https://github.com/inkarkat/vim-SpellCheck.git"
       },
-      "snapshot_sha256": "0babf2a67936c53ce351ad6c5c277ed7580745bbbb5b90651d025122dd8770b3"
+      "snapshot_sha256": "d107ac734223997d81b78a13c2fb5ab7764d104835092f478e11626ad47e921e"
     },
     {
       "group": "writing",

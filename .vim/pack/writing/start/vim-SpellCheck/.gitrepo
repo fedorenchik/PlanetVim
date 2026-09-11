@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/inkarkat/vim-SpellCheck.git
 	branch = master
-	commit = fe5c9488d3082c246f73bfca137052930b13424f
-	parent = 90c874a9aaef8994dad5db653e7946c4ec7d352e
+	commit = c479d16c6682110237304796a8095c5eab0def12
+	parent = 4c468f476b1f888694cda004ebbab783d57f933e
 	method = merge
-	cmdver = 0.4.3
+	cmdver = 0.4.9
