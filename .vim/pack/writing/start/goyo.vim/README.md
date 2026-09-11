@@ -60,6 +60,8 @@ Configuration
 - `g:goyo_width` (default: 80)
 - `g:goyo_height` (default: 85%)
 - `g:goyo_linenr` (default: 0)
+- `g:goyo_decoration_elements` (default: ['~'])
+- `g:goyo_decoration_density` (default: 0.00, range 0.00-1.00)
 
 ### Callbacks
 

@@ -2224,11 +2224,11 @@
       "path": ".vim/pack/writing/start/goyo.vim",
       "provenance": {
         "branch": "master",
-        "commit": "7f5d35a65510083ea5c2d0941797244b9963d4a9",
+        "commit": "9c72fdf2d202914318581f9f0dd09fd102f8504d",
         "kind": "git-subrepo",
         "remote": "https://github.com/junegunn/goyo.vim.git"
       },
-      "snapshot_sha256": "9af5f74cf72e326ac43631220932b4da558762e147be5ecc04b77d4a5f806ca1"
+      "snapshot_sha256": "0740ab066d02456056c90bc7d2279621706cab91a3ccdad0156763f9dbf11365"
     },
     {
       "group": "writing",
