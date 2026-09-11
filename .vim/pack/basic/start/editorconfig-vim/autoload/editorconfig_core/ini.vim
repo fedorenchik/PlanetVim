@@ -1,6 +1,6 @@
 " autoload/editorconfig_core/ini.vim: Config-file parser for
 " editorconfig-core-vimscript and editorconfig-vim.
-" Modifed from the Python core's ini.py.
+" Modified from the Python core's ini.py.
 
 " Copyright (c) 2012-2019 EditorConfig Team {{{2
 " All rights reserved.
@@ -49,8 +49,8 @@ let s:SECTCRE = '\v^\s*\[(%([^\\#;]|\\.)+)\]'
 let s:OPTCRE = '\v\s*([^:=[:space:]][^:=]*)\s*([:=])\s*(.*)$'
 
 let s:MAX_SECTION_NAME = 4096
-let s:MAX_PROPERTY_NAME = 50
-let s:MAX_PROPERTY_VALUE = 255
+let s:MAX_PROPERTY_NAME = 1024
+let s:MAX_PROPERTY_VALUE = 4096
 
 lockvar s:SECTCRE s:OPTCRE s:MAX_SECTION_NAME s:MAX_PROPERTY_NAME s:MAX_PROPERTY_VALUE
 
@@ -60,23 +60,26 @@ lockvar s:SECTCRE s:OPTCRE s:MAX_SECTION_NAME s:MAX_PROPERTY_NAME s:MAX_PROPERTY
 " Read \p config_filename and return the options applicable to
 " \p target_filename.  This is the main entry point in this file.
 function! editorconfig_core#ini#read_ini_file(config_filename, target_filename)
-    let l:oldenc = &encoding
-
     if !filereadable(a:config_filename)
         return {}
     endif
 
-    try     " so &encoding will always be reset
-        let &encoding = 'utf-8'     " so readfile() will strip BOM
+    try
         let l:lines = readfile(a:config_filename)
+        if &encoding !=? 'utf-8'
+            " strip BOM
+            if len(l:lines) > 0 && l:lines[0][:2] ==# "\xEF\xBB\xBF"
+                let l:lines[0] = l:lines[0][3:]
+            endif
+            " convert from UTF-8 to 'encoding'
+            call map(l:lines, 'iconv(v:val, "utf-8", &encoding)')
+        endif
         let result = s:parse(a:config_filename, a:target_filename, l:lines)
     catch
-        let &encoding = l:oldenc
         " rethrow, but with a prefix since throw 'Vim...' fails.
         throw 'Could not read editorconfig file at ' . v:throwpoint . ': ' . string(v:exception)
     endtry
 
-    let &encoding = l:oldenc
     return result
 endfunction
 
@@ -152,18 +155,6 @@ function! s:parse(config_filename, target_filename, lines)
                     echom printf('Saw raw opt <%s>=<%s>', l:optname, l:optval)
                 endif
 
-                if l:optval =~# '\v[;#]'
-                    " ';' and '#' are comment delimiters only if
-                    " preceded by a spacing character
-                    let l:m = matchlist(l:optval, '\v(.{-})\s[;#]')
-                    if len(l:m)
-                        let l:optval = l:m[1]
-                    endif
-
-                    " ; and # can be escaped with backslash.
-                    let l:optval = substitute(l:optval, '\v\\([;#])', '\1', 'g')
-
-                endif
                 let l:optval = editorconfig_core#util#strip(l:optval)
                 " allow empty values
                 if l:optval ==? '""'
@@ -199,7 +190,7 @@ function! s:parse(config_filename, target_filename, lines)
     endif
 
     return {'root': l:is_root, 'options': l:options}
-endfunction!
+endfunction
 
 " }}}1
 " === Helpers =========================================================== {{{1

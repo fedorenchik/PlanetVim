@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/editorconfig/editorconfig-vim.git
 	branch = master
-	commit = d354117b72b3b43b75a29b8e816c0f91af10efe9
-	parent = 48c633380cd1bce3e635212477f1d89790a746f1
+	commit = 3c2813f2566d9392ff3614248c5db43c3fda9d5f
+	parent = c3b71fb59c9af471d6aa602ed19eb063b553aca2
 	method = merge
-	cmdver = 0.4.3
+	cmdver = 0.4.9
