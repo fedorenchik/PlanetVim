@@ -380,10 +380,9 @@
       "group": "basic",
       "license_evidence": {
         "paths": [
-          ".vim/pack/basic/start/undotree/README.md",
-          ".vim/pack/basic/start/undotree/doc/undotree.txt"
+          ".vim/pack/basic/start/undotree/LICENSE"
         ],
-        "status": "documentation_mentions"
+        "status": "notice_files_found"
       },
       "load": "start",
       "local_patches": "not_compared_with_upstream",
@@ -391,11 +390,11 @@
       "path": ".vim/pack/basic/start/undotree",
       "provenance": {
         "branch": "master",
-        "commit": "bf76bf2d1a097cda024699738286fa81fb6529ac",
+        "commit": "6fa6b57cda8459e1e4b2ca34df702f55242f4e4d",
         "kind": "git-subrepo",
         "remote": "https://github.com/mbbill/undotree.git"
       },
-      "snapshot_sha256": "70835a7d52a8858eb3615870046531c9b52ff696d328b4ee154f7632db156b33"
+      "snapshot_sha256": "13bbf4966d1b590e7aceed322f6d7dfbe4adb2067c7281cfae1cf0748fbdf4c0"
     },
     {
       "group": "basic",
