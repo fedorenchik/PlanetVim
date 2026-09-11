@@ -774,11 +774,11 @@
       "path": ".vim/pack/basic/start/vim-visualrepeat",
       "provenance": {
         "branch": "master",
-        "commit": "9488f66b80c6f9583cac25b03651725e2dcd7437",
+        "commit": "e8d632229bf581cad58ff5f832ef900307d099ef",
         "kind": "git-subrepo",
         "remote": "https://github.com/inkarkat/vim-visualrepeat.git"
       },
-      "snapshot_sha256": "41ff34ec93d942398558384568be07a109181343c393a53d68a1c30a673a9a43"
+      "snapshot_sha256": "a2ff2ed4f137f1d62d9edf70c9f6b150b2e399a40c1576a2cfc619d0dc3804aa"
     },
     {
       "group": "basic",

@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/inkarkat/vim-visualrepeat.git
 	branch = master
-	commit = 9488f66b80c6f9583cac25b03651725e2dcd7437
-	parent = 2ab3bdb5a7225007212dc402a49dafa7f2a94aa5
+	commit = e8d632229bf581cad58ff5f832ef900307d099ef
+	parent = e84b87e373c986adfc7a96ad6e59b69f80ec08ce
 	method = merge
-	cmdver = 0.4.3
+	cmdver = 0.4.9
