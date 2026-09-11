@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/mhinz/vim-startify.git
 	branch = master
-	commit = 81e36c352a8deea54df5ec1e2f4348685569bed2
-	parent = 4cc983d64721fd61b09530e3ddfd672e1c946727
+	commit = 4e089dffdad46f3f5593f34362d530e8fe823dcf
+	parent = 7dfc358d2610a1651d62e585ea446bd52af81e5b
 	method = merge
-	cmdver = 0.4.3
+	cmdver = 0.4.9

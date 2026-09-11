@@ -671,11 +671,11 @@
       "path": ".vim/pack/basic/start/vim-startify",
       "provenance": {
         "branch": "master",
-        "commit": "81e36c352a8deea54df5ec1e2f4348685569bed2",
+        "commit": "4e089dffdad46f3f5593f34362d530e8fe823dcf",
         "kind": "git-subrepo",
         "remote": "https://github.com/mhinz/vim-startify.git"
       },
-      "snapshot_sha256": "1c44245617aa239c8a594f251e10304831166433430abf023fd128dc98e7bf0c"
+      "snapshot_sha256": "7decf22ca8d83bf7fb57e97bface6e2527f2601f93db0c22502f1831a90d8ebb"
     },
     {
       "group": "basic",
