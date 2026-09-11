@@ -1810,11 +1810,11 @@
       "path": ".vim/pack/lsp/start/asyncomplete-tags.vim",
       "provenance": {
         "branch": "master",
-        "commit": "041af0565f2c16634277cd29d2429c573af1dac4",
+        "commit": "e458dc448b40d69eb1d4722fa30ce848521bd3d0",
         "kind": "git-subrepo",
         "remote": "https://github.com/prabirshrestha/asyncomplete-tags.vim.git"
       },
-      "snapshot_sha256": "443cdb3e6a850f28194c187df282b08b4e3b5546b92b6589711bf5a065b3dfb2"
+      "snapshot_sha256": "662d8f65af4149b5f82b5b4dbc935efc200815a6277616ad1125ab2879c5818b"
     },
     {
       "group": "lsp",
