@@ -331,11 +331,11 @@
       "path": ".vim/pack/basic/start/caw.vim",
       "provenance": {
         "branch": "master",
-        "commit": "3aefcb5a752a599a9200dd801d6bcb0b7606bf29",
+        "commit": "748f15cde4e9ba9ce4723fddf48703d2e97790de",
         "kind": "git-subrepo",
         "remote": "https://github.com/tyru/caw.vim.git"
       },
-      "snapshot_sha256": "ed8c161581bfd583af190bdc50ed5a1347cae8de6e59ab2948df4ca46ae3d8a4"
+      "snapshot_sha256": "e92fdbddc39f49a37b067aee68664aabc0c7d7b424557087b3c90445e632e22f"
     },
     {
       "group": "basic",
