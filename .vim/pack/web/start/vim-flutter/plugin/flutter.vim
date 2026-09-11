@@ -8,6 +8,10 @@ if !exists('g:flutter_command')
   let g:flutter_command='flutter'
 endif
 
+if !exists('g:flutter_split_height')
+    let g:flutter_split_height=''
+endif
+
 if !exists('g:flutter_autoscroll')
   let g:flutter_autoscroll=0
 endif
@@ -40,6 +44,10 @@ elseif type(g:flutter_show_log_on_attach) == v:t_number && g:flutter_show_log_on
   let g:flutter_show_log_on_attach="hidden"
 endif
 
+if !exists('g:flutter_close_on_quit')
+    let g:flutter_close_on_quit=0
+endif
+
 command! FlutterDevices call flutter#devices()
 command! FlutterEmulators call flutter#emulators()
 command! -nargs=1 FlutterEmulatorsLaunch call flutter#emulators_launch(<f-args>)
@@ -59,7 +67,7 @@ if g:flutter_hot_restart_on_save
   autocmd! BufWritePost *.dart call flutter#hot_restart_quiet()
 endif
 
-command! FlutterSplit :split __Flutter_Output__ | call flutter#scroll_to_bottom()
+command! FlutterSplit :execute g:flutter_split_height."split" "__Flutter_Output__" | call flutter#scroll_to_bottom()
 command! FlutterVSplit :vsplit __Flutter_Output__ | call flutter#scroll_to_bottom()
 command! FlutterTab :tabnew __Flutter_Output__ | call flutter#scroll_to_bottom()
 

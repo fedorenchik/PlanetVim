@@ -2183,11 +2183,11 @@
       "path": ".vim/pack/web/start/vim-flutter",
       "provenance": {
         "branch": "master",
-        "commit": "32b9fa0126a4a4994c296c69ad038dc78aa83d68",
+        "commit": "2c528672b0b8a21875689389bc3eb22678e8d983",
         "kind": "git-subrepo",
         "remote": "https://github.com/thosakwe/vim-flutter.git"
       },
-      "snapshot_sha256": "985c0edc1e5249f0ace6a7f2db62669e3ade3485ffcadfd0e1cfcbb8d60a9bd1"
+      "snapshot_sha256": "82f5e5290bf722e57363109c072c1f2f5c28d319276ed27180655b083adcda5f"
     },
     {
       "group": "web",

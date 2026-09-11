@@ -7,7 +7,7 @@ endfunction
 function! flutter#devices() abort
   new
   setlocal buftype=nofile
-  execute "read ! flutter devices"
+  execute "read !" . g:flutter_command . " devices"
   setlocal nomodifiable
 endfunction
 
@@ -61,7 +61,16 @@ function! flutter#hot_restart_quiet() abort
 endfunction
 
 function! flutter#quit() abort
-  return flutter#send('q')
+  let l:ret = flutter#send('q')
+  if g:flutter_close_on_quit
+    let l:bufinfo = getbufinfo('__Flutter_Output__')
+    if len(l:bufinfo) > 0
+      for l:win_id in l:bufinfo[0].windows
+        call win_execute(l:win_id, 'close')
+      endfor
+    endif
+  endif
+  return l:ret
 endfunction
 
 function! flutter#screenshot() abort
@@ -122,19 +131,22 @@ function! flutter#run_or_attach(type, show, use_last_option, args) abort
     return 0
   endif
 
-  if a:show == 'tab' || a:show == 'hidden'
-    " open new tab and move it before the current tab
-    tabnew __Flutter_Output__
-    tabm -1
-  else
-    split __Flutter_Output__
-  endif
-  normal! ggdG
-  setlocal buftype=nofile
-  setlocal bufhidden=hide
-  setlocal noswapfile
-  if a:show == 'hidden'
-    tabclose
+  let l:bufinfo = getbufinfo('__Flutter_Output__')
+  if len(l:bufinfo) == 0 || len(l:bufinfo[0].windows) == 0
+    if a:show == 'tab' || a:show == 'hidden'
+      " open new tab and move it before the current tab
+      tabnew __Flutter_Output__
+      tabm -1
+    else
+      execute g:flutter_split_height."split" "__Flutter_Output__"
+    endif
+    normal! ggdG
+    setlocal buftype=nofile
+    setlocal bufhidden=hide
+    setlocal noswapfile
+    if a:show == 'hidden'
+      tabclose
+    endif
   endif
 
   let cmd = []
