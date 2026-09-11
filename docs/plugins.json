@@ -214,11 +214,11 @@
       "path": ".vim/pack/arduino/start/vim-arduino",
       "provenance": {
         "branch": "master",
-        "commit": "bf371b96905958cfa7929ef40fd35a0d6a412d86",
+        "commit": "2ded67cdf09bb07c4805d9e93d478095ed3d8606",
         "kind": "git-subrepo",
         "remote": "https://github.com/stevearc/vim-arduino.git"
       },
-      "snapshot_sha256": "58a85cfa89e041fc839484e5a4a4f8041669bb8e5e1faf556eef5b339783f27e"
+      "snapshot_sha256": "bdeb8b4d3b4a09fdad17b87a06f14effa07cd5dda261294315ef241be6aa4739"
     },
     {
       "group": "asm",
