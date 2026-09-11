@@ -1418,12 +1418,12 @@
       "name": "vim-gitgutter",
       "path": ".vim/pack/git/start/vim-gitgutter",
       "provenance": {
-        "branch": "master",
-        "commit": "f19b6203191d69de955d91467a5707959572119b",
+        "branch": "main",
+        "commit": "90b75207bd9b55d8ac4af15f72b4e935462014d0",
         "kind": "git-subrepo",
         "remote": "https://github.com/airblade/vim-gitgutter.git"
       },
-      "snapshot_sha256": "6598a62ee83bffad72b57e22e970618390e0361b41399ce28a2dc4fbad4e6e56"
+      "snapshot_sha256": "7e658a6228a2f56d3900524c22fb41b115683d6022b687c56ceeca48ed414a89"
     },
     {
       "group": "git",

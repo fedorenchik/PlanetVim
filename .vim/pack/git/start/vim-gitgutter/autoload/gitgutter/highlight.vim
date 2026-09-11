@@ -106,7 +106,7 @@ function! gitgutter#highlight#define_highlights() abort
   highlight default link GitGutterAddLineNr          CursorLineNr
   highlight default link GitGutterChangeLineNr       CursorLineNr
   highlight default link GitGutterDeleteLineNr       CursorLineNr
-  highlight default link GitGutterChangeDeleteLineNr CursorLineNr
+  highlight default link GitGutterChangeDeleteLineNr GitGutterChangeLineNr
 
   " Highlights used intra line.
   highlight default GitGutterAddIntraLine    gui=reverse cterm=reverse
@@ -185,7 +185,7 @@ function! s:define_sign_line_highlights() abort
 endfunction
 
 function! s:define_sign_linenr_highlights() abort
-  if has('nvim-0.3.2')
+  if has('nvim-0.3.2') || has('patch-8.2.3874')
     try
       if g:gitgutter_highlight_linenrs
         sign define GitGutterLineAdded                 numhl=GitGutterAddLineNr

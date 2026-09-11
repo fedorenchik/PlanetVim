@@ -5,8 +5,8 @@
 ;
 [subrepo]
 	remote = https://github.com/airblade/vim-gitgutter.git
-	branch = master
-	commit = f19b6203191d69de955d91467a5707959572119b
-	parent = 080a0ac12cf899ea401e82c27dc868158ed229b1
+	branch = main
+	commit = 90b75207bd9b55d8ac4af15f72b4e935462014d0
+	parent = dab7f5c2b9daccf026541cdd2c4dde1d732e9ffd
 	method = merge
-	cmdver = 0.4.3
+	cmdver = 0.4.9

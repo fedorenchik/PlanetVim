@@ -18,7 +18,6 @@ function! gitgutter#debug#debug()
   call s:git_version()
   call s:separator()
 
-  call s:grep_version()
   call s:separator()
 
   call s:option('updatetime')
@@ -39,14 +38,6 @@ endfunction
 function! s:git_version()
   let v = system(g:gitgutter_git_executable.' --version')
   call s:output( substitute(v, '\n$', '', '') )
-endfunction
-
-function! s:grep_version()
-  let v = system(g:gitgutter_grep.' --version')
-  call s:output( substitute(v, '\n$', '', '') )
-
-  let v = system(g:gitgutter_grep.' --help')
-  call s:output( substitute(v, '\%x00', '', 'g') )
 endfunction
 
 function! s:option(name)
@@ -75,23 +66,21 @@ function! gitgutter#debug#log(message, ...) abort
       endif
     endif
 
-    execute 'redir >> '.s:log_file
-      if s:new_log_session
-        let s:start = reltime()
-        silent echo "\n==== start log session ===="
-      endif
+    if s:new_log_session
+      let s:start = reltime()
+      call writefile(['', '========== start log session '.strftime('%d.%m.%Y %H:%M:%S').' =========='], s:log_file, 'a')
+    endif
 
-      let elapsed = reltimestr(reltime(s:start)).' '
-      silent echo ''
-      " callers excluding this function
-      silent echo elapsed.expand('<sfile>')[:-22].':'
-      silent echo elapsed.s:format_for_log(a:message)
-      if a:0 && !empty(a:1)
-        for msg in a:000
-          silent echo elapsed.s:format_for_log(msg)
-        endfor
-      endif
-    redir END
+    let elapsed = reltimestr(reltime(s:start)).' '
+    call writefile([''], s:log_file, 'a')
+    " callers excluding this function
+    call writefile([elapsed.expand('<sfile>')[:-22].':'], s:log_file, 'a')
+    call writefile([elapsed.s:format_for_log(a:message)], s:log_file, 'a')
+    if a:0 && !empty(a:1)
+      for msg in a:000
+        call writefile([elapsed.s:format_for_log(msg)], s:log_file, 'a')
+      endfor
+    endif
 
     let s:new_log_session = 0
   endif

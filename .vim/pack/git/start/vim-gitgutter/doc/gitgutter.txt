@@ -41,7 +41,8 @@ one in 2013.
 ===============================================================================
 INSTALLATION                                           *gitgutter-installation*
 
-Use your favourite package manager, or use Vim's built-in package support.
+First, use your favourite package manager, or use Vim's built-in package
+support.
 
 Vim:~
 >
@@ -58,6 +59,16 @@ Neovim:~
   git clone https://github.com/airblade/vim-gitgutter.git
   nvim -u NONE -c "helptags vim-gitgutter/doc" -c q
 <
+
+Second, ensure your 'updatetime' and 'signcolumn' options are set appropriately.
+
+When you make a change to a file tracked by git, the diff markers should
+appear automatically after a short delay.  The delay is governed by vim's
+'updatetime' option; the default value is `4000`, i.e. 4 seconds, but I
+suggest reducing it to around 100ms (add `set updatetime=100` to your vimrc).
+Note 'updatetime' also controls the delay before vim writes its swap file.
+
+The 'signcolumn' option can have any value except "off".
 
 
 ===============================================================================
@@ -136,7 +147,7 @@ Commands for turning line highlighting on and off (defaults to off):~
 
 
 Commands for turning line number highlighting on and off (defaults to off):~
-NOTE: This feature requires Neovim 0.3.2 or higher.
+NOTE: This feature requires Vim 8.2.3874 or Neovim 0.3.2 or higher.
 
                                    *gitgutter-:GitGutterLineNrHighlightsEnable*
 :GitGutterLineNrHighlightsEnable  Turn on line highlighting.
@@ -190,11 +201,13 @@ Commands for operating on a hunk:~
 :GitGutterUndoHunk      Undo the hunk the cursor is in.
 
                                               *gitgutter-:GitGutterPreviewHunk*
-:GitGutterPreviewHunk   Preview the hunk the cursor is in.
+:GitGutterPreviewHunk   Preview the hunk the cursor is in or, if you are using
+                        floating preview windows in Neovim and the window is
+                        already open, move the cursor into the window.
 
                         To stage part of the hunk, move to the preview window,
-                        delete any lines you do not want to stage, and
-                        |GitGutterStageHunk|.
+                        delete any lines you do not want to stage, and |write|
+                        or |GitGutterStageHunk|.
 
                         To close a non-floating preview window use |:pclose|
                         or |CTRL-W_z| or |CTRL-W_CTRL-Z|; or normal window-
@@ -337,10 +350,6 @@ Git:~
     |g:gitgutter_diff_relative_to|
     |g:gitgutter_diff_base|
 
-Grep:~
-
-    |g:gitgutter_grep|
-
 Signs:~
 
     |g:gitgutter_signs|
@@ -432,23 +441,6 @@ via :0Gclog), gitgutter sets the diff base to the parent of the current revision
 
 This setting is ignore when the diff is relative to the working tree
 (|g:gitgutter_diff_relative_to|).
-
-                                                             *g:gitgutter_grep*
-Default: 'grep'
-
-The plugin pipes the output of git-diff into grep to minimise the amount of data
-vim has to process.  Set this option if grep is not on your path.
-
-grep must produce plain-text output without any ANSI escape codes or colours.
-Use this option to turn off colours if necessary.
->
-    let g:gitgutter_grep = 'grep --color=never'
-<
-If you do not want to use grep at all (perhaps to debug why signs are not
-showing), set this option to an empty string:
->
-    let g:gitgutter_grep = ''
-<
 
                                                             *g:gitgutter_signs*
 Default: 1
@@ -547,6 +539,13 @@ Default:
 This dictionary is passed directly to |popup_create()| (Vim) or
 |nvim_open_win()| (Neovim).
 
+If you simply want to override one or two of the default values, create a file
+in an after/ directory.  For example:
+>
+    " ~/.vim/after/vim-gitgutter/overrides.vim
+    let g:gitgutter_floating_window_options['border'] = 'single'
+<
+
                                           *g:gitgutter_close_preview_on_escape*
 Default: 0
 
@@ -628,7 +627,7 @@ colorscheme or |vimrc|:
     GitGutterAddLine          " default: links to DiffAdd
     GitGutterChangeLine       " default: links to DiffChange
     GitGutterDeleteLine       " default: links to DiffDelete
-    GitGutterChangeDeleteLine " default: links to GitGutterChangeLineDefault
+    GitGutterChangeDeleteLine " default: links to GitGutterChangeLine
 <
 
 For example, to use |hl-DiffText| instead of |hl-DiffChange|:
@@ -641,7 +640,7 @@ your colorscheme or |vimrc|:
     GitGutterAddLineNr          " default: links to CursorLineNr
     GitGutterChangeLineNr       " default: links to CursorLineNr
     GitGutterDeleteLineNr       " default: links to CursorLineNr
-    GitGutterChangeDeleteLineNr " default: links to CursorLineNr
+    GitGutterChangeDeleteLineNr " default: links to GitGutterChangeLineNr
 <
 For example, to use |hl-Underlined| instead of |hl-CursorLineNr|:
 >
@@ -714,33 +713,26 @@ TROUBLESHOOTING                                     *gitgutter-troubleshooting*
 
 When no signs are showing at all:~
 
-1. Try bypassing grep with:
->
-    let g:gitgutter_grep = ''
-<
-  If it works, the problem is grep outputting ANSI escape codes.  Use this
-  option to pass arguments to grep to turn off the escape codes.
-
-2. Verify git is on your path:
+1. Verify git is on your path:
 >
     :echo system('git --version')
 <
 
-3. Verify your git config is compatible with the version of git return by the
+2. Verify your git config is compatible with the version of git return by the
    command above.
 
-4. Verify your Vim supports signs.  The following should give 1:
+3. Verify your Vim supports signs.  The following should give 1:
 >
     :echo has('signs')
 <
 
-5. Check whether the plugin thinks git knows about your file:
+4. Check whether the plugin thinks git knows about your file:
 >
-    :echo getbufvar('','gitgutter').path
+    :echo b:gitgutter.path
 <
   If the result is -2, the plugin thinks your file is not tracked by git.
 
-6. Check whether the signs have been placed:
+5. Check whether the signs have been placed:
 >
     :sign place group=gitgutter
 <
