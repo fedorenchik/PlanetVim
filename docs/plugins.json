@@ -916,11 +916,11 @@
       "path": ".vim/pack/colors/start/gruvbox",
       "provenance": {
         "branch": "master",
-        "commit": "bf2885a95efdad7bd5e4794dd0213917770d79b7",
+        "commit": "5d15b2765f59754d7ac263c88a0f6e3e58124951",
         "kind": "git-subrepo",
         "remote": "https://github.com/morhetz/gruvbox.git"
       },
-      "snapshot_sha256": "7c405489dda0c76e029611efdfcaff447ce65ecc73b0096a339607db60a79769"
+      "snapshot_sha256": "371ff23e422ef670e06b0c999edf26abd913a69199c0bf77b9ea148733d75d76"
     },
     {
       "group": "colors",
