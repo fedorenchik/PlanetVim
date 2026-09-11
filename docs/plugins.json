@@ -814,11 +814,11 @@
       "path": ".vim/pack/basic/start/vista.vim",
       "provenance": {
         "branch": "master",
-        "commit": "9c3e31f67653a1d25147a8dd2a0b2724853d9923",
+        "commit": "1e90efad6e32c4f7d16b1ca8f49bf63d0693802e",
         "kind": "git-subrepo",
         "remote": "https://github.com/liuchengxu/vista.vim.git"
       },
-      "snapshot_sha256": "e5abff2ed33ee6f72bdb7779f45c0691bdd534e12d44cdd201733ef23a9d02cd"
+      "snapshot_sha256": "617a677237bc9e58af883a578d61ba140dbb53c3e4c36af1abd3aa456fc71810"
     },
     {
       "group": "ccpp",

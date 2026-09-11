@@ -4,7 +4,8 @@
 
 if exists('*bufwinid')
   function! s:GotoSourceWindow() abort
-    let winid = g:vista.source.get_winid()
+    let bufid = g:vista.source.bufnr
+    let winid = bufwinid(bufid)
     if winid != -1
       if win_getid() != winid
         " No use noautocmd here. Ref #362
@@ -27,6 +28,7 @@ else
 endif
 
 function! vista#source#GotoWin() abort
+  let g:vista.skip_once_flag = v:true
   call s:GotoSourceWindow()
 
   " Floating window relys on BufEnter event to be closed automatically.

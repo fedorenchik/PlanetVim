@@ -47,6 +47,7 @@ FEATURES                                                          *vista-feature
     [x] LanguageClient-neovim (https://github.com/autozimu/LanguageClient-neovim)
     [x] vim-lsc (https://github.com/natebosch/vim-lsc)
     [x] nvim-lsp (https://github.com/neovim/neovim)
+    [x] yegappan lsp (https://github.com/yegappan/lsp)
 [x] Finder for tags and LSP symbols.
     [x] fzf (https://github.com/junegunn/fzf)
 [x] Display decent detailed symbol info in cmdline.
@@ -123,6 +124,8 @@ Vista                                                                      *Vist
   `:Vista vim_lsc`   open vista window based on vim-lsc.
 
   `:Vista nvim_lsp`  open vista window based on nvim-lsp.
+
+  `:Vista yegappan_lsp`  open vista window based on yeagappan lsp.
 
                                                                     *vista-finder*
 
@@ -444,6 +447,14 @@ g:vista_highlight_whole_line                        *g:vista_highlight_whole_lin
 
   By default vista.vim will try to highlight the tag precisely in the vista window.
   Set this to `1` to always higlight the whole line.
+
+
+g:vista_floating_border                      *g:vista_floating_border*
+
+  Type: |String|
+  Default: `none`
+
+  See `nvim_open_win` for border options that may be used.
 
 g:vista_floating_delay                                    *g:vista_floating_delay*
 
