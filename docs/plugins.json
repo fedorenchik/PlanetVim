@@ -408,11 +408,11 @@
       "path": ".vim/pack/basic/start/vim-buffest",
       "provenance": {
         "branch": "master",
-        "commit": "900b1aadb6bc3e33e7cb1fd230c47f0134a28b4f",
+        "commit": "6ed80444d687cbcb11dcbe83dd94ec9888329f1b",
         "kind": "git-subrepo",
         "remote": "https://github.com/rbong/vim-buffest.git"
       },
-      "snapshot_sha256": "db54c0ab0c0a2feb1386de631b2d684460e93ee2de521e8979756299dc5ede6c"
+      "snapshot_sha256": "605811d530d0172f6cf3bd89f64794b0897d6c653776d09d0272992ef9985b0e"
     },
     {
       "group": "basic",

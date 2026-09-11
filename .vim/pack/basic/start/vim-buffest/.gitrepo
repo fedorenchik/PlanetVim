@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/rbong/vim-buffest.git
 	branch = master
-	commit = 900b1aadb6bc3e33e7cb1fd230c47f0134a28b4f
-	parent = 14e5f7b3a87cd6127e6c790e34b00cf09935b357
+	commit = 6ed80444d687cbcb11dcbe83dd94ec9888329f1b
+	parent = 29fd1096e5e16f1d4d8373ba301beed9baa24237
 	method = merge
-	cmdver = 0.4.3
+	cmdver = 0.4.9
