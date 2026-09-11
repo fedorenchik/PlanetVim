@@ -75,11 +75,11 @@
       "path": ".vim/pack/apps/start/codi.vim",
       "provenance": {
         "branch": "master",
-        "commit": "28983696f59f47221380b4f7d78237dc04f9c62f",
+        "commit": "83b9859aaf8066d95892e01eb9c01571a4b325dd",
         "kind": "git-subrepo",
         "remote": "https://github.com/metakirby5/codi.vim.git"
       },
-      "snapshot_sha256": "002d4abe26c7ea1f6de6c440a0a42339d70c6241afdd0973d33c1a3836e5be52"
+      "snapshot_sha256": "4b19e62c6c7725107900e1c593d7a9cbbb8a35f4ace9c6a9d709ad1c8038afce"
     },
     {
       "group": "apps",
