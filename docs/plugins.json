@@ -528,11 +528,11 @@
       "path": ".vim/pack/basic/start/vim-grepper",
       "provenance": {
         "branch": "master",
-        "commit": "2b93535752ffcb312f9fab73d90e80dc9f2e60fc",
+        "commit": "74284df0abf7c3f9d57e3416129dbeeba36dc86b",
         "kind": "git-subrepo",
         "remote": "https://github.com/mhinz/vim-grepper.git"
       },
-      "snapshot_sha256": "8df852f142729d665e9b54b08787067ff32987ab4b009544062766e149a2b57e"
+      "snapshot_sha256": "b0172b3db21a2abd1a877f10f29958de2764845b4e3c30f794c5774cdf69264b"
     },
     {
       "group": "basic",

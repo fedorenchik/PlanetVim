@@ -43,7 +43,7 @@ let s:defaults = {
       \ 'ag':            { 'grepprg':    'ag --vimgrep',
       \                    'grepformat': '%f:%l:%c:%m,%f:%l:%m,%f',
       \                    'escape':     '\^$.*+?()[]{}|' },
-      \ 'rg':            { 'grepprg':    'rg -H --no-heading --vimgrep' . (has('win32') ? ' $* .' : ''),
+      \ 'rg':            { 'grepprg':    'rg -H --no-heading --vimgrep',
       \                    'grepformat': '%f:%l:%c:%m,%f',
       \                    'escape':     '\^$.*+?()[]{}|' },
       \ 'pt':            { 'grepprg':    'pt --nogroup',
@@ -334,22 +334,47 @@ endfunction
 " s:restore_mapping() {{{2
 function! s:restore_mapping(mapping)
   if !empty(a:mapping)
-    execute printf('%s %s%s%s%s %s %s',
-          \ (a:mapping.noremap ? 'cnoremap' : 'cmap'),
-          \ (a:mapping.silent  ? '<silent>' : ''    ),
-          \ (a:mapping.buffer  ? '<buffer>' : ''    ),
-          \ (a:mapping.nowait  ? '<nowait>' : ''    ),
-          \ (a:mapping.expr    ? '<expr>'   : ''    ),
-          \  a:mapping.lhs,
-          \  substitute(a:mapping.rhs, '\c<sid>', '<SNR>'.a:mapping.sid.'_', 'g'))
+    if has('nvim') && has_key(a:mapping, 'callback')
+      " https://github.com/neovim/neovim/issues/23666
+      let opts = {
+            \ 'desc': get(a:mapping, 'desc', ''),
+            \ 'noremap': a:mapping.noremap,
+            \ 'silent': a:mapping.silent,
+            \ 'buffer': a:mapping.buffer ? 0 : -1,
+            \ 'nowait': a:mapping.nowait,
+            \}
+      call v:lua.vim.keymap.set(a:mapping.mode, a:mapping.lhs, a:mapping.callback, opts)
+    else
+      execute printf('%s %s%s%s%s %s %s',
+            \ (a:mapping.noremap ? 'cnoremap' : 'cmap'),
+            \ (a:mapping.silent  ? '<silent>' : ''    ),
+            \ (a:mapping.buffer  ? '<buffer>' : ''    ),
+            \ (a:mapping.nowait  ? '<nowait>' : ''    ),
+            \ (a:mapping.expr    ? '<expr>'   : ''    ),
+            \  a:mapping.lhs,
+            \  substitute(a:mapping.rhs, '\c<sid>', '<SNR>'.a:mapping.sid.'_', 'g'))
+    endif
   endif
+endfunction
+
+function! s:shellescape(query) abort
+    if &shell =~# 'fish$'
+        let l:shell = &shell
+        try
+            let &shell = 'sh'
+            return shellescape(a:query)
+        finally
+            let &shell = l:shell
+        endtry
+    endif
+    return shellescape(a:query)
 endfunction
 
 " s:escape_query() {{{2
 function! s:escape_query(flags, query)
   let tool = s:get_current_tool(a:flags)
   let a:flags.query_escaped = 1
-  return shellescape(has_key(tool, 'escape')
+  return s:shellescape(has_key(tool, 'escape')
         \ ? escape(a:query, tool.escape)
         \ : a:query)
 endfunction
@@ -401,7 +426,7 @@ function! s:escape_cword(flags, cword)
   endif
   let a:flags.query_orig = a:cword
   let a:flags.query_escaped = 1
-  return shellescape(escaped_cword)
+  return s:shellescape(escaped_cword)
 endfunction
 
 " s:compute_working_directory() {{{2
@@ -548,13 +573,25 @@ function! s:query2vimregexp(flags) abort
     endif
     let vim_query = '\V'. vim_query
   else
+    let tool = s:get_current_tool(a:flags)
+    " if tool escapes literal {} or () or | or ? or +, then unescape them
+    let chars = [ '{', '}', '(', ')', '|', '?', '+' ]
+    for c in chars
+      if match(tool.escape, c) != -1
+        let vim_query = escape(vim_query, c)
+        let vim_query = substitute(vim_query, '\\\\' . c, c, 'g')
+      endif
+    endfor
+    " # is escaped in Sift; not sure what it corresponds in Vim to though
+    if match(tool.escape, '#') != -1
+      let vim_query = substitute(vim_query, '\\#', '#', 'g')
+    endif
     " \bfoo\b -> \<foo\> Assume only one pair.
     let vim_query = substitute(vim_query, '\v\\b(.{-})\\b', '\\<\1\\>', '')
     " *? -> \{-}
     let vim_query = substitute(vim_query, '*\\\=?', '\\{-}', 'g')
     " +? -> \{-1,}
     let vim_query = substitute(vim_query, '\\\=+\\\=?', '\\{-1,}', 'g')
-    let vim_query = escape(vim_query, '+')
   endif
 
   return vim_query
@@ -706,7 +743,7 @@ function! s:process_flags(flags)
       " input() got empty input, so no query was added to the history.
       call histadd('input', a:flags.query)
     elseif a:flags.prompt_quote == 1
-      let a:flags.query = shellescape(a:flags.query)
+      let a:flags.query = s:shellescape(a:flags.query)
     endif
   else
     " input() was skipped, so add query to the history manually.
@@ -866,7 +903,7 @@ function! s:build_cmdline(flags) abort
       call map(a:flags.buflist, 'shellescape(escape(fnamemodify(v:val, ":."), "\\"))')
       let &shellslash = shellslash
     else
-      call map(a:flags.buflist, 'shellescape(fnamemodify(v:val, ":."))')
+      call map(a:flags.buflist, 's:shellescape(fnamemodify(v:val, ":."))')
     endif
   endif
 
@@ -1064,9 +1101,13 @@ function! s:side_create_window(flags) abort
   let errors = []
   let list = a:flags.quickfix ? getqflist() : getloclist(0)
 
+  " Count unique filenames
+  let filenames = {}
+
   " process quickfix entries
   for entry in list
     let bufname = bufname(entry.bufnr)
+    let filenames[bufname] = 1
     if !entry.valid
       " collect lines with error messages
       call add(errors, entry.text)
@@ -1114,9 +1155,11 @@ function! s:side_create_window(flags) abort
 
   silent 1delete _
 
-  let nummatches = len(getqflist())
-  let numfiles = len(uniq(map(getqflist(), 'bufname(v:val.bufnr)')))
-  let &l:statusline = printf(' Found %d matches in %d files.', nummatches, numfiles)
+  let b:grepper_side_status = {
+        \ 'matches': len(list),
+        \ 'files': len(filenames),
+        \ }
+  let &l:statusline = printf(' Found %d matches in %d files.', b:grepper_side_status.matches, b:grepper_side_status.files)
 endfunction
 
 " s:side_buffer_settings() {{{2
