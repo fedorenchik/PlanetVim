@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/yssl/QFEnter
 	branch = master
-	commit = df0a75b287c210f98ae353a12bbfdaf73d858beb
-	parent = 40cb79840439100c3200256a54c9f20b42819454
+	commit = fd5d378f97ee4847ce4fcb58b3719864228607da
+	parent = ca72eac16ec938b400df22e09655414e8eb0f0d3
 	method = merge
-	cmdver = 0.4.3
+	cmdver = 0.4.9

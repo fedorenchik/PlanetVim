@@ -311,11 +311,11 @@
       "path": ".vim/pack/basic/start/QFEnter",
       "provenance": {
         "branch": "master",
-        "commit": "df0a75b287c210f98ae353a12bbfdaf73d858beb",
+        "commit": "fd5d378f97ee4847ce4fcb58b3719864228607da",
         "kind": "git-subrepo",
         "remote": "https://github.com/yssl/QFEnter"
       },
-      "snapshot_sha256": "adf34e41f8517314bf413f06dfb4037df7d572e58423437504612520351d1071"
+      "snapshot_sha256": "99d8da2a7cb212a6370afb0d807421048ffa7dc2bab6dfb2bd63f824973d1f27"
     },
     {
       "group": "basic",

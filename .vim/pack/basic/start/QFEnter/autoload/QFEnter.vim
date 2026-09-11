@@ -137,6 +137,7 @@ function! s:OpenQFItem(tabwinfunc, qfopencmd, qflnum)
 			call s:JumpToWin(target_winnr)
 		endif
 	elseif g:qfenter_prevtabwin_policy==#'none'
+		" do nothing
 	elseif g:qfenter_prevtabwin_policy==#'legacy'
 		if target_newtabwin==#'nt'
 			if prev_qf_tabnr >= target_tabnr
@@ -148,18 +149,30 @@ function! s:OpenQFItem(tabwinfunc, qfopencmd, qflnum)
 		endif
 	else
 		echoerr 'QFEnter: '''.g:qfenter_prevtabwin_policy.''' is an undefined value for g:qfenter_prevtabwin_policy.'
+		call s:JumpToTab(prev_qf_tabnr)
+		call s:JumpToWin(prev_qf_winnr)
+		return
 	endif
 
-	let excluded = 0
-	for ft in g:qfenter_exclude_filetypes
-		if ft==#&filetype
-			let excluded = 1
-			break
+	if g:qfenter_excluded_action==#'next'
+		" if the selected window contains an excluded filetype, move to next usable window if possible
+		let c = 0
+		let wincount = winnr('$')
+		while ( index(g:qfenter_exclude_filetypes, &filetype) >= 0 && c < wincount )
+			wincmd w
+			let c = c + 1
+		endwhile
+	elseif g:qfenter_excluded_action==#'error'
+		" if the selected window contains an excluded filetype, show an error message and do not open the file.
+		if index(g:qfenter_exclude_filetypes, &filetype) >= 0
+			echo "QFEnter: Quickfix items cannot be opened in a '".&filetype."' window"
+			wincmd p
+			return
 		endif
-	endfor
-	if excluded
-		echo "QFEnter: Quickfix items cannot be opened in a '".&filetype."' window"
-		wincmd p
+	else
+		echoerr 'QFEnter: '''.g:qfenter_excluded_action.''' is an undefined value for g:qfenter_excluded_action.'
+		call s:JumpToTab(prev_qf_tabnr)
+		call s:JumpToWin(prev_qf_winnr)
 		return
 	endif
 
@@ -228,15 +241,29 @@ function! s:OpenQFItem(tabwinfunc, qfopencmd, qflnum)
 
 	" restore quickfix window when tab mode
 	if target_newtabwin==#'nt'
-		if g:qfenter_enable_autoquickfix
-			if isloclist
-				exec s:modifier 'lopen'
-			else
-				exec s:modifier 'copen'
+		if exists('g:qfenter_enable_autoquickfix')
+			echom "QFEnter: 'g:qfenter_enable_autoquickfix' is deprecated and will be removed from 2.5.0. Now the default setting of the new option g:qfenter_autoclose=0 will open a quickfix in a new tab (if g:qfenter_enable_autoquickfix is not 0 before 2.5.0). Please refer :help g:qfenter_autoclose."
+			if g:qfenter_enable_autoquickfix
+				if isloclist
+					exec s:modifier 'lopen'
+				else
+					exec s:modifier 'copen'
+				endif
+				exec s:qfresize
+				call winrestview(s:qfview)
+				wincmd p
 			endif
-			exec s:qfresize
-			call winrestview(s:qfview)
-			wincmd p
+		else
+			if !g:qfenter_autoclose
+				if isloclist
+					exec s:modifier 'lopen'
+				else
+					exec s:modifier 'copen'
+				endif
+				exec s:qfresize
+				call winrestview(s:qfview)
+				wincmd p
+			endif
 		endif
 	endif
 endfunction
@@ -251,9 +278,10 @@ function! QFEnter#OpenQFItem(tabwinfunc, qfopencmd, keepfocus, isvisual)
 
 	call s:OpenQFItem(a:tabwinfunc, a:qfopencmd, qflnum)
 
+	" keepfocus
 	if a:isvisual
 		if qflnum==vblnum2
-			if a:keepfocus==1
+			if a:keepfocus
 				redraw
 				let qfwinnr = bufwinnr(qfbufnr)
 				exec qfwinnr.'wincmd w'
@@ -263,12 +291,27 @@ function! QFEnter#OpenQFItem(tabwinfunc, qfopencmd, keepfocus, isvisual)
 			exec qfwinnr.'wincmd w'
 		endif
 	else
-		if a:keepfocus==1
+		if a:keepfocus
 			redraw
 			let qfwinnr = bufwinnr(qfbufnr)
 			exec qfwinnr.'wincmd w'
 		endif
 	endif
+
+	" g:qfenter_autoclose
+	if len(getloclist(0)) > 0
+		let isloclist = 1
+	else
+		let isloclist = 0
+	endif
+	if g:qfenter_autoclose
+		if isloclist
+			lclose
+		else
+			cclose
+		endif
+	endif
+
 endfunction
 
 fun! s:CloseCurrentWinAndJumpTo(return_winnr)

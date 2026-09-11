@@ -64,17 +64,30 @@ if !has_key(g:qfenter_keymap, 'topen')
 	let g:qfenter_keymap.topen = ['<Leader><Tab>']
 endif
 
-if !exists('g:qfenter_enable_autoquickfix')
-	let g:qfenter_enable_autoquickfix = 1
+" deprecated. will be removed from 2.5.0
+" Now the default setting of the new option g:qfenter_autoclose=0 will open a quickfix in a new tab (if g:qfenter_enable_autoquickfix is not 0 before 2.5.0).
+"if !exists('g:qfenter_enable_autoquickfix')
+	"let g:qfenter_enable_autoquickfix = 1
+"endif
+
+if !exists('g:qfenter_autoclose')
+	let g:qfenter_autoclose = 0
 endif
 
 if !exists('g:qfenter_exclude_filetypes')
 	let g:qfenter_exclude_filetypes = []
 endif
 
+if !exists('g:qfenter_excluded_action')
+	" Action to take when the selected window contains and exclude filetype
+	" 'next': Open the file in the next usable window, fall back to quickfix default if no usable windows (split above) (Default)
+	" 'error': Show an error message and do not open the file
+	let g:qfenter_excluded_action = 'next'
+endif
+
 if !exists('g:qfenter_prevtabwin_policy')
 	" This option determines which window on which tab should have focus when the `wincmd p` is executed after opening a quickfix item.
-	" 'qf': The previous window and tab are set to the quickfix window from which the QFEnter open command is invoked and the tab the window belongs to.
+	" 'qf': The previous window and tab are set to the quickfix window from which the QFEnter open command is invoked and the tab the window belongs to. (Default)
 	" 'none': Do nothing for the previous window and tab.
 	"         The previous window is the window that previously had focus before the target window, in the process of `tabwinfunc`.
 	"         For `v*` and `h*` predefined commands, the previous window is the window focused before the quickfix window.
