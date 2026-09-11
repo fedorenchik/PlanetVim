@@ -2,7 +2,7 @@
 """Run first-party Vimscript checks in isolated GVim processes.
 
 Use --gui under a real/virtual display to exercise the actual supported GUI.
-Without --gui, GVim's Ex mode provides quick engine checks, not terminal support.
+Without --gui, GVim's console mode provides engine checks, not terminal support.
 """
 import argparse
 from contextlib import contextmanager
@@ -88,7 +88,9 @@ def run(path, executable, gui, display=None, timeout=60):
         script.write_text("\n".join(lines) + "\n", encoding="utf-8")
         command = [executable, "-f", "-Nu", "NONE", "-U", "NONE", "-i", "NONE", "-n"]
         if not gui:
-            command += ["-v", "-es"]
+            # Keep Normal/Visual/Select mode semantics for mapping fixtures.
+            # Ex mode reports command-line context inside <Cmd> mappings.
+            command += ["-v", "--not-a-term"]
         command += ["-S", str(script)]
         environment = dict(os.environ)
         if display:

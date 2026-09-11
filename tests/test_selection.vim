@@ -110,8 +110,7 @@ for s:selection_mode in ['', 'mouse,key,cmd']
     call s:Buffer(['first', 'middle', 'last'])
     call cursor(2, 2)
     call feedkeys(s:entry_mode .. "\<F12>\<F11>\<Esc>", 'xt')
-    " Ex-mode reports 'c' while executing the same live selection callback.
-    let s:expected_mode = has('gui_running') ? (empty(s:selection_mode) ? 'V' : 'S') : 'c'
+    let s:expected_mode = empty(s:selection_mode) ? 'V' : 'S'
     call assert_equal([s:expected_mode, 1, 3], g:PV_selected_all)
     call assert_equal(['first', 'middle', 'last'], getline(1, '$'))
   endfor

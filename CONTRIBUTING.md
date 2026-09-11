@@ -1,6 +1,6 @@
 # Contributing to PlanetVim
 
-The supported product is Linux GVim first and Windows GVim second, version 9.1 or newer. Do not introduce macOS, terminal Vim, or Neovim branches without a separate scope decision. Keep menu actions enabled and implement the operation their labels describe. Missing optional tools need useful setup guidance.
+The supported product is Linux GVim first and Windows GVim second, version 9.1.0016 or newer. Do not introduce macOS, terminal Vim, or Neovim branches without a separate scope decision. Keep menu actions enabled and implement the operation their labels describe. Missing optional tools need useful setup guidance.
 
 ## Code layout
 
@@ -31,7 +31,7 @@ Borrowed syntax definitions and all upstream plugin sources remain unchanged.
 
 Vim9 checks all branches when compiling a function. Read optional post-9.1
 options with guarded `eval()` and invoke optional commands with `execute` so
-compilation also succeeds on GVim 9.1.0000. Preserve explicit buffer/window-local
+compilation also succeeds on GVim 9.1.0016. Preserve explicit buffer/window-local
 option scopes. Compare numeric counts and IDs with zero rather than treating
 arbitrary integers as booleans. Use `<script>` for the defining source path,
 and explicit arguments when crossing into Python or executing a ranged command;
@@ -97,7 +97,7 @@ python3 scripts/test.py --gui --xvfb /path/to/Xvfb
 python3 scripts/plugins.py inventory --check
 ```
 
-Engine checks use GVim's Ex mode for speed; they do not establish terminal-Vim support. Actual GUI checks must also pass. The workflow pins official Linux and Windows minimum/current GVim builds. Optional compiler/SDK checks report skips when tools are absent; record those limits.
+Engine checks use GVim's console mode with Normal/Visual mapping semantics; they do not establish terminal-Vim support. Ex mode cannot preserve the live selection context these fixtures need. Actual GUI checks must also pass. The workflow pins official Linux and Windows minimum/current GVim builds. Optional compiler/SDK checks report skips when tools are absent; record those limits.
 
 For language-server acceptance, set `PLANETVIM_TEST_PYLSP` to an installed pylsp and run `tests/integration/lsp.vim` with the GUI runner. The debugger, writing, transfer, and capture acceptance recipes are in [docs/ACCEPTANCE.md](docs/ACCEPTANCE.md). Never use a developer's private repositories or live hardware as a test fixture.
 
