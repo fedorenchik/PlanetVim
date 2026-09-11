@@ -1890,11 +1890,11 @@
       "path": ".vim/pack/lsp/start/neco-vim",
       "provenance": {
         "branch": "master",
-        "commit": "facc3db7c5836fe2424936e8dd06f227e20f96db",
+        "commit": "7b722cd13a44645e4ed9b1e4fe6ff8ad64f947f6",
         "kind": "git-subrepo",
         "remote": "https://github.com/Shougo/neco-vim.git"
       },
-      "snapshot_sha256": "7638d31d643e4b86549cde9f06c3e1152be74b4016e9824bb1fe94edf0e4228f"
+      "snapshot_sha256": "548650c1286990210d58094dd83ec16a308f68a42d3945146753419c24d6e6fb"
     },
     {
       "group": "lsp",

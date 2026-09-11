@@ -230,10 +230,10 @@ function! s:get_local_variables() abort
   while line_num <= end_line
     let line = getline(line_num)
 
-    if line =~# '\<\%(let\|for\)\s\+'
-      if line =~# '\<\%(let\|for\)\s\+s:' &&
-            \ has_key(s:script_candidates_list, bufnr('%'))
-            \ && has_key(s:script_candidates_list[bufnr('%')], 'variables')
+    if line =~# '\<\%(let\|const\|for\)\s\+'
+      if line =~# '\<\%(let\|const\|for\)\s\+s:'
+            \ && has_key(get(s:script_candidates_list,
+            \                bufnr('%'), {}), 'variables')
         let candidates_list = s:script_candidates_list[bufnr('%')].variables
       else
         let candidates_list = keyword_dict
@@ -352,6 +352,10 @@ function! s:make_cache_functions() abort
   let functions = []
   let start = match(lines, '^abs')
   let end = match(lines, '^abs', start, 2)
+  if end <= 0
+    " NOTE: In neovim 0.10+, |builtin-function-list| is removed.  Too bad.
+    let end = match(lines, '^xor', start)
+  endif
   for i in range(end - 1, start, -1)
     let func = matchstr(lines[i], '^\s*\zs\w\+(.\{-})')
     if func !=# ''
@@ -425,7 +429,7 @@ function! s:get_variablelist(dict, prefix) abort
   let list = []
   for [key, Val] in items(a:dict)
     let kind = '?'
-    silent! let kind = kind_dict[type(Val)]
+    silent! let kind = get(kind_dict, type(Val), '?')
     call add(list, {
           \ 'word' : a:prefix . key,
           \ 'kind' : kind,
@@ -499,11 +503,13 @@ function! s:analyze_function_line(line, keyword_dict, prototype) abort
   endif
 endfunction
 function! s:analyze_variable_line(line, keyword_dict) abort
-  if a:line =~# '\<\%(let\|for\)\s\+\a[[:alnum:]_:]*'
+  if a:line =~# '\<\%(let\|const\|for\)\s\+\a[[:alnum:]_:]*'
     " let var = pattern.
-    let word = matchstr(a:line, '\<\%(let\|for\)\s\+\zs\a[[:alnum:]_:]*')
-    let expression = matchstr(a:line, '\<let\s\+\a[[:alnum:]_:]*\s*=\s*\zs.*$')
-    if !has_key(a:keyword_dict, word) 
+    let word = matchstr(a:line,
+          \ '\<\%(let\|const\|for\)\s\+\zs\a[[:alnum:]_:]*')
+    let expression = matchstr(a:line,
+          \ '\<\%(let\|const\)\s\+\a[[:alnum:]_:]*\s*=\s*\zs.*$')
+    if !has_key(a:keyword_dict, word)
       let a:keyword_dict[word] = {
             \ 'word' : word,
             \ 'kind' : s:get_variable_type(expression)
@@ -512,51 +518,52 @@ function! s:analyze_variable_line(line, keyword_dict) abort
       " Update kind.
       let a:keyword_dict[word].kind = s:get_variable_type(expression)
     endif
-  elseif a:line =~# '\<\%(let\|for\)\s\+\[.\{-}\]'
+  elseif a:line =~# '\<\%(let\|const\|for\)\s\+\[.\{-}\]'
     " let [var1, var2] = pattern.
     let words = split(matchstr(a:line,
-          \'\<\%(let\|for\)\s\+\[\zs.\{-}\ze\]'), '[,[:space:]]\+')
-      let expressions = split(matchstr(a:line,
-            \'\<let\s\+\[.\{-}\]\s*=\s*\[\zs.\{-}\ze\]$'), '[,[:space:];]\+')
+          \'\<\%(let\|const\|for\)\s\+\[\zs.\{-}\ze\]'), '[,[:space:]]\+')
+    let expressions = split(matchstr(a:line,
+          \ '\<\%(let\|const\)\s\+\[.\{-}\]\s*=\s*\[\zs.\{-}\ze\]$'),
+          \ '[,[:space:];]\+')
 
-      let i = 0
-      while i < len(words)
-        let expression = get(expressions, i, '')
-        let word = words[i]
+    let i = 0
+    while i < len(words)
+      let expression = get(expressions, i, '')
+      let word = words[i]
 
-        if !has_key(a:keyword_dict, word) 
-          let a:keyword_dict[word] = {
-                \ 'word' : word,
-                \ 'kind' : s:get_variable_type(expression)
-                \}
-        elseif expression !=# '' && a:keyword_dict[word].kind ==# ''
-          " Update kind.
-          let a:keyword_dict[word].kind = s:get_variable_type(expression)
-        endif
-
-        let i += 1
-      endwhile
-    elseif a:line =~# '\<fu\%[nction]!\?\s\+'
-      " Get function arguments.
-      for arg in split(matchstr(a:line, '^[^(]*(\zs[^)]*'), '\s*,\s*')
-        let word = 'a:' . (arg ==# '...' ?  '000' : arg)
+      if !has_key(a:keyword_dict, word) 
         let a:keyword_dict[word] = {
               \ 'word' : word,
-              \ 'kind' : (arg ==# '...' ?  '[]' : '')
+              \ 'kind' : s:get_variable_type(expression)
               \}
-
-      endfor
-      if a:line =~# '\.\.\.)'
-        " Extra arguments.
-        for arg in range(5)
-          let word = 'a:' . arg
-          let a:keyword_dict[word] = {
-                \ 'word' : word,
-                \ 'kind' : (arg == 0 ?  '0' : '')
-                \}
-        endfor
+      elseif expression !=# '' && a:keyword_dict[word].kind ==# ''
+        " Update kind.
+        let a:keyword_dict[word].kind = s:get_variable_type(expression)
       endif
+
+      let i += 1
+    endwhile
+  elseif a:line =~# '\<fu\%[nction]!\?\s\+'
+    " Get function arguments.
+    for arg in split(matchstr(a:line, '^[^(]*(\zs[^)]*'), '\s*,\s*')
+      let word = 'a:' . (arg ==# '...' ?  '000' : matchstr(arg, '\w\+'))
+      let a:keyword_dict[word] = {
+            \ 'word' : word,
+            \ 'kind' : (arg ==# '...' ?  '[]' : '')
+            \}
+
+    endfor
+    if a:line =~# '\.\.\.)'
+      " Extra arguments.
+      for arg in range(5)
+        let word = 'a:' . arg
+        let a:keyword_dict[word] = {
+              \ 'word' : word,
+              \ 'kind' : (arg == 0 ?  '0' : '')
+              \}
+      endfor
     endif
+  endif
 endfunction
 function! s:analyze_dictionary_variable_line(line, keyword_dict, var_name) abort
   let let_pattern = '\<let\s\+'.a:var_name.'\.\h\w*'
