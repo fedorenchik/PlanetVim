@@ -1137,11 +1137,11 @@
       "path": ".vim/pack/doc/start/vim-cmake-help",
       "provenance": {
         "branch": "master",
-        "commit": "e3bca6977a710fed6bcf40137cb84cdf5fc975ec",
+        "commit": "db706c61eac8a073feea2469a3de1619da27b8f3",
         "kind": "git-subrepo",
         "remote": "https://github.com/bfrg/vim-cmake-help.git"
       },
-      "snapshot_sha256": "5c63572e432ccd85f2f50fe996053faddaad26847881778008532af3d4934088"
+      "snapshot_sha256": "a5e789c84a96fdda7e32badc78c9fd01710722ededa673e8b0d88df356bca906"
     },
     {
       "group": "file-manager",
