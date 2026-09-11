@@ -43,6 +43,7 @@ vim9script noclear
 
 planet#config#Initialize()
 planet#startup#ConfigureShell()
+planet#startup#LoadStatusline()
 planet#startup#DeferLanguage()
 
 # Git is optional for editor startup. Apply this after the user's config and

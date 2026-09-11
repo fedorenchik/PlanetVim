@@ -1,5 +1,21 @@
 vim9script
 
+export def LoadStatusline()
+  if fnamemodify(&shell, ':t') !=# 'fish' || exists('*crystalline#InitStatusline')
+    return
+  endif
+  # Crystalline sources its optimized module with an unescaped filename.
+  # Vim expands apostrophes through a POSIX shell function, invalid in Fish.
+  # Preload only that module with a compatible shell; keep user shell settings.
+  var saved = [&shell, &shellcmdflag, &shellquote, &shellxquote]
+  try
+    set shell=/bin/sh shellcmdflag=-c shellquote= shellxquote=
+    runtime autoload/crystalline.vim
+  finally
+    [&shell, &shellcmdflag, &shellquote, &shellxquote] = saved
+  endtry
+enddef
+
 export def DeferLanguage()
   if !exists('g:lsp_auto_enable')
     g:lsp_auto_enable = 0
@@ -8,11 +24,17 @@ export def DeferLanguage()
 enddef
 
 export def Language()
-  if !get(g:, 'PV_lsp_deferred', false) || empty(&filetype) || &buftype !=# ''
+  if empty(&filetype) || &buftype !=# ''
     return
   endif
-  g:PV_lsp_deferred = false
-  lsp#enable()
+  if get(g:, 'PV_lsp_deferred', false)
+    g:PV_lsp_deferred = false
+    lsp#enable()
+  elseif exists('#lsp#BufReadPost')
+    # vim-lsp now handles FileType only for unnamed buffers. A named file
+    # whose type is set after BufRead still needs its eligible servers attached.
+    lsp#ensure_flush_all(bufnr(), lsp#get_allowed_servers())
+  endif
 enddef
 
 export def ConfigureShell()

@@ -692,6 +692,7 @@ g:arduino_dir = '/usr/share/arduino'
 # This avoids CapsLock's standalone CTRL-L toggle; vendor mappings stay intact.
 # }}}
 # Plugin: vim-clap {{{
+g:clap_provider_tags_force_vista = 1
 g:clap_disable_bottom_top = 1
 g:clap_provider_yanks_history = planet#paths#State()  ..  '/clap_yanks.history'
 g:clap_provider_colors_ignore_default = v:true
@@ -716,7 +717,7 @@ nnoremap <silent> <Space>M :Clap maps<CR>
 nnoremap <silent> <Space>o :Clap tags vim_lsp<CR>
 nnoremap <silent> <Space>q :Clap quickfix<CR>
 nnoremap <silent> <Space>r :Clap history<CR>
-nnoremap <silent> <Space>s :Clap grep ++query=`expand('<cword>')`<CR>
+nnoremap <silent> <Space>s :Clap grep --query=`expand('<cword>')`<CR>
 nnoremap <silent> <Space>S :Clap grep<CR>
 nnoremap <silent> <Space>T :Clap filetypes<CR>
 nnoremap <silent> <Space>w :Clap windows<CR>
@@ -759,22 +760,22 @@ def g:StatusLine(current: any, width: any): any
   var s: any = ''
 
   if current
-    s ..= crystalline#mode()
+    s ..= crystalline#ModeHiItem('') .. crystalline#ModeLabel()
     #FIXME: not immediately updated (use :redrawstatus or fix window_mode)
     s ..= window_mode#lightlineComponent()
-    s ..= crystalline#right_mode_sep('')
+    s ..= crystalline#Sep(0, crystalline#ModeGroup(''), 'A')
   else
-    s ..= '%#CrystallineInactive#'
+    s ..= crystalline#HiItem('InactiveFill')
   endif
   s ..= ' %f%h%w%m%r '
   if current
-    s ..= crystalline#right_sep('', 'Fill')  ..  ' %{FugitiveHead()}'
+    s ..= crystalline#Sep(0, 'A', 'Fill')  ..  ' %{FugitiveHead()}'
   endif
 
   s ..= '%='
   if current
     s ..= ' %{NearestMethodOrFunction()}'
-    s ..= crystalline#left_sep('', 'Fill')  ..  ' %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
+    s ..= crystalline#Sep(1, 'Fill', 'A')  ..  ' %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
     if g:PV_mode == 'p'
       s ..= "|%{g:PV_p}"
       s ..= "|%{g:PV_pp}|"
@@ -783,7 +784,7 @@ def g:StatusLine(current: any, width: any): any
     s ..= "%{StatusLine_SearchCount()}"
     s ..= "%{exists('*CapsLockStatusline')?CapsLockStatusline():''}"
     s ..= ' %{grepper#statusline()}'
-    s ..= crystalline#left_mode_sep('')
+    s ..= crystalline#Sep(1, 'A', crystalline#ModeGroup(''))
   endif
   if width > 80
     s ..= ' %{&ft}'
@@ -803,7 +804,9 @@ def g:StatusLine(current: any, width: any): any
 enddef
 
 g:crystalline_enable_sep = 1
-g:crystalline_statusline_fn = 'StatusLine'
+def g:CrystallineStatuslineFn(window: number): string
+  return g:StatusLine(window == winnr(), winwidth(window))
+enddef
 g:crystalline_theme = 'molokai'
 
 set showtabline=2
@@ -814,7 +817,7 @@ g:dispatch_no_maps = 1
 # }}}
 # Plugin: vim-flog {{{
 augroup Flog
-  au FileType floggraph vnoremap <buffer> <silent> D :<C-U>call flog#run_tmp_command("vertical belowright Git diff %(h'>) %(h'<)")<CR>
+  au FileType floggraph vnoremap <buffer> <silent> D :<C-U>call flog#ExecTmp(flog#Format("vertical belowright Git diff %(h'>) %(h'<)"))<CR>
 augroup end
 # }}}
 # Plugin: vim-grammarous {{{
@@ -844,6 +847,8 @@ g:lsp_preview_keep_focus = 1
 g:lsp_preview_float = 1
 g:lsp_preview_autoclose = 1
 g:lsp_diagnostics_echo_cursor = 1
+# Request diagnostics from servers that advertise the pull protocol.
+g:lsp_diagnostics_pull_enabled = get(g:, 'lsp_diagnostics_pull_enabled', 1)
 # XXX: evaluate
 g:lsp_diagnostics_float_cursor = 0
 g:lsp_format_sync_timeout = 5000
