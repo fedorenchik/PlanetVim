@@ -1399,11 +1399,11 @@
       "path": ".vim/pack/git/start/vim-fugitive",
       "provenance": {
         "branch": "master",
-        "commit": "dd8107cabf5fe85df94d5eedcae52415e543f208",
+        "commit": "3b753cf8c6a4dcde6edee8827d464ba9b8c4a6f0",
         "kind": "git-subrepo",
         "remote": "https://github.com/tpope/vim-fugitive.git"
       },
-      "snapshot_sha256": "07414355a5a6482acba6565e1ff4082c843d1f512751a02290894a64e605811d"
+      "snapshot_sha256": "7394eb6d7f6fabf8a510bd838becff2446a7f734114176cd9d5dced791c25175"
     },
     {
       "group": "git",
