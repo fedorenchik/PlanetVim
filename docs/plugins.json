@@ -1561,11 +1561,11 @@
       "path": ".vim/pack/lib/start/vim-repeat",
       "provenance": {
         "branch": "master",
-        "commit": "24afe922e6a05891756ecf331f39a1f6743d3d5a",
+        "commit": "65846025c15494983dafe5e3b46c8f88ab2e9635",
         "kind": "git-subrepo",
         "remote": "https://github.com/tpope/vim-repeat.git"
       },
-      "snapshot_sha256": "c2bab01dd3e8d56806abe0dbef608b9094dbabcc044f11259a79d5a59d1dad73"
+      "snapshot_sha256": "463d48341423616dc71f0a3efdd1b728180ac0cb22fd07ec54f1e347cb55e599"
     },
     {
       "group": "lsp",
