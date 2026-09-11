@@ -74,6 +74,8 @@ plugin offers the following advantages over the original:
 - vim-highlight-hero ([vimscript #5922](http://www.vim.org/scripts/script.php?script_id=5922)) can also highlight the current word or
   selection, has some flexibility with regard to whitespace matching, is
   limited to the current window.
+- high-str (https://github.com/Pocco81/high-str.nvim) is a Neovim-only plugin
+  that can highlight the visual selection in multiple, configurable colors.
 
 USAGE
 ------------------------------------------------------------------------------
@@ -84,9 +86,12 @@ USAGE
                             command. The next free highlight group is used.
                             If already on a mark: Clear the mark, like
                             <Leader>n.
+    <Leader>gm              Variant of <Leader>m that marks the word under the
+                            cursor, but doesn't put "\<" and "\>" around the word,
+                            similar to the gstar command.
     {Visual}<Leader>m       Mark or unmark the visual selection.
     {N}<Leader>m            With {N}, mark the word under the cursor with the
-                            named highlight group {N}. When that group is not
+    {N}<Leader>gm           named highlight group {N}. When that group is not
                             empty, the word is added as an alternative match, so
                             you can highlight multiple words with the same color.
                             When the word is already contained in the list of
@@ -220,6 +225,16 @@ USAGE
     The marks can be kept and restored across Vim sessions, using the viminfo
     file. For this to work, the "!" flag must be part of the 'viminfo' setting:
         set viminfo^=!  " Save and restore global variables.
+    Marks can also be stored in |session-file|s with this setting:
+        set sessionoptions+=globals " Save and restore global variables.
+    If you've configured the session-files but not viminfo, :MarkLoad and
+    :MarkSave will default to a slot name that works with session files, i.e.
+    the variable g:MARK_marks, instead of g:MARK_MARKS. Alternatively, if you've
+    configured both but want to explicitly persist the marks into the session file
+    and have it restored when that session is loaded, use
+        :MarkSave marks
+    and either set g:mwAutoLoadMarks (automatic restore on session load) or use
+        :MarkLoad marks
 
     :MarkLoad               Restore the marks from the previous Vim session. All
                             current marks are discarded.
@@ -235,16 +250,22 @@ USAGE
                             persist without closing Vim, use :wviminfo; an
                             already running Vim session can import marks via
                             :rviminfo followed by :MarkLoad).
-                            If {slot} contains lowercase letters, you can just
-                            recall within the current session. When no marks are
-                            currently defined, the {slot} is cleared.
+                            If {slot} contains at least one lowercase letter, the
+                            marks are persisted to any user sessions created by
+                            :mksession.
+                            If variable persistence isn't configured or the above
+                            conditions for {slot} aren't met (e.g. when using
+                            numbered slots), you can just recall within the
+                            current session.
+                            When no marks are currently defined, the {slot} is
+                            cleared.
 
     By default, automatic persistence is enabled (so you don't need to explicitly
     :MarkSave), but you have to explicitly load the persisted marks in a new Vim
     session via :MarkLoad, to avoid that you accidentally drag along outdated
     highlightings from Vim session to session, and be surprised by the arbitrary
-    highlight groups and occasional appearance of forgotten marks. If you want
-    just that though and automatically restore any marks, set g:mwAutoLoadMarks.
+    highlight groups and occasional appearance of forgotten marks. If you want to
+    automatically restore any marks, set g:mwAutoLoadMarks.
 
     You can also initialize some marks (even using particular highlight groups) to
     static values, e.g. by including this in vimrc:
@@ -285,7 +306,7 @@ USAGE
     :Marks                  List all mark highlight groups and the search patterns
                             defined for them.
                             The group that will be used for the next :Mark or
-                            <Leader>m command (with [N]) is shown with a ">".
+                            <Leader>m command (without {N}) is shown with a ">".
                             The last mark used for a search (via <Leader>*) is
                             shown with a "/".
 
@@ -326,7 +347,7 @@ To uninstall, use the :RmVimball command.
 ### DEPENDENCIES
 
 - Requires Vim 7.1 with matchadd(), or Vim 7.2 or higher.
-- Requires the ingo-library.vim plugin ([vimscript #4433](http://www.vim.org/scripts/script.php?script_id=4433)), version 1.043 or
+- Requires the ingo-library.vim plugin ([vimscript #4433](http://www.vim.org/scripts/script.php?script_id=4433)), version 1.046 or
   higher.
 
 CONFIGURATION
@@ -468,14 +489,28 @@ would like to change their relative priorities. The default is negative to
 step back behind the default search highlighting.
 
 If you want no or only a few of the available mappings, you can completely
-turn off the creation of the default mappings by defining:
+turn off the creation of the default mappings by defining (before the plugin
+is loaded):
 
     :let g:mw_no_mappings = 1
 
 This saves you from mapping dummy keys to all unwanted mapping targets.
 
-You can use different mappings by mapping to the &lt;Plug&gt;Mark... mappings (use
-":map &lt;Plug&gt;Mark" to list them all) before this plugin is sourced.
+If you want to use different mappings, map your keys to the &lt;Plug&gt;Mark...
+mapping targets _before_ sourcing the script (e.g. in your vimrc):
+
+    nmap <Leader>m <Plug>MarkSet
+    nmap <Leader>gm <Plug>MarkPartialWord
+    xmap <Leader>m <Plug>MarkSet
+    nmap <Leader>r <Plug>MarkRegex
+    xmap <Leader>r <Plug>MarkRegex
+    nmap <Leader>n <Plug>MarkClear
+    nmap <Leader>* <Plug>MarkSearchCurrentNext
+    nmap <Leader># <Plug>MarkSearchCurrentPrev
+    nmap <Leader>/ <Plug>MarkSearchAnyNext
+    nmap <Leader>? <Plug>MarkSearchAnyPrev
+    nmap * <Plug>MarkSearchNext
+    nmap # <Plug>MarkSearchPrev
 
 There are no default mappings for toggling all marks and for the :MarkClear
 command, but you can define some yourself:
@@ -584,8 +619,20 @@ https://github.com/inkarkat/vim-mark/issues or email (address below).
 HISTORY
 ------------------------------------------------------------------------------
 
-##### 3.2.1   RELEASEME
+##### 3.4.0   10-Jun-2025
+- ENH: Support mark persistence to sessions created via :mksession, too.
+
+__You need to update to ingo-library ([vimscript #4433](http://www.vim.org/scripts/script.php?script_id=4433)) version 1.047!__
+
+##### 3.3.0   17-Jan-2025
 - Expose mark#mark#AnyMarkPattern().
+- Robustness: Place the ColorScheme initialization also in the
+  MarkInitialization autocommand group.
+- Robustness: Add check for existence and compatible version of ingo-library.
+- ENH: Add &lt;Leader&gt;gm mapping for non-whole word matching like gstar.
+  Contributed by Carl Smith.
+
+__You need to update to ingo-library ([vimscript #4433](http://www.vim.org/scripts/script.php?script_id=4433)) version 1.046!__
 
 ##### 3.2.0   15-Feb-2022
 - Add mark#GetMarkNumber(), based on feedback by Snorch in #36.
@@ -926,7 +973,7 @@ __PLEASE UPDATE THE
 - Initial version published by Yuheng Xie on vim.org.
 
 ------------------------------------------------------------------------------
-Copyright: (C) 2008-2022 Ingo Karkat -
+Copyright: (C) 2008-2025 Ingo Karkat -
            (C) 2005-2008 Yuheng Xie -
 The [VIM LICENSE](http://vimdoc.sourceforge.net/htmldoc/uganda.html#license) applies to this plugin.
 

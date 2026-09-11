@@ -1,7 +1,7 @@
 " Script Name: mark.vim
 " Description: Highlight several words in different colors simultaneously.
 "
-" Copyright:   (C) 2008-2021 Ingo Karkat
+" Copyright:   (C) 2008-2025 Ingo Karkat
 "              (C) 2005-2008 Yuheng Xie
 "   The VIM LICENSE applies to this script; see ':help copyright'.
 "
@@ -13,7 +13,7 @@
 "	- Requires Vim 7.1 with "matchadd()", or Vim 7.2 or higher.
 "	- ingo-library.vim plugin
 "
-" Version:     3.1.1
+" Version:     3.4.0
 
 " Avoid installing twice or when in unsupported Vim version.
 if exists('g:loaded_mark') || (v:version == 701 && ! exists('*matchadd')) || (v:version < 701)
@@ -114,7 +114,10 @@ function! s:DefineHighlightings( palette, isOverride )
 	return l:highlightingNum
 endfunction
 call s:DefineHighlightings(s:GetPalette(), 0)
-autocmd ColorScheme * call <SID>DefineHighlightings(<SID>GetPalette(), 0)
+augroup MarkInitialization
+	autocmd!
+	autocmd ColorScheme * call <SID>DefineHighlightings(<SID>GetPalette(), 0)
+augroup END
 
 " Default highlighting for the special search type.
 " You can override this by defining / linking the 'SearchSpecialSearchType'
@@ -129,12 +132,14 @@ if g:mwAutoLoadMarks
 	" As the viminfo is only processed after sourcing of the runtime files, the
 	" persistent global variables are not yet available here. Defer this until Vim
 	" startup has completed.
-	function! s:AutoLoadMarks()
-		if g:mwAutoLoadMarks && exists('g:MARK_MARKS') && ! empty(ingo#plugin#persistence#Load('MARK_MARKS', []))
+	function! s:AutoLoadMarks( marksVariable )
+		if g:mwAutoLoadMarks && exists('g:' . a:marksVariable) && ! empty(ingo#plugin#persistence#Load(a:marksVariable, []))
+			" Note: Avoid triggering the autoload unless there actually are persistent
+			" marks.
 			if ! exists('g:MARK_ENABLED') || g:MARK_ENABLED
 				" There are persistent marks and they haven't been disabled; we need to
 				" show them right now.
-				call mark#LoadCommand(0)
+				call mark#LoadCommand(0, a:marksVariable)
 			else
 				" Though there are persistent marks, they have been disabled. We avoid
 				" sourcing the autoload script and its invasive autocmds right now;
@@ -147,11 +152,8 @@ if g:mwAutoLoadMarks
 	endfunction
 
 	augroup MarkInitialization
-		autocmd!
-		" Note: Avoid triggering the autoload unless there actually are persistent
-		" marks. For that, we need to check that g:MARK_MARKS doesn't contain the
-		" empty list representation, and also :execute the :call.
-		autocmd VimEnter * call <SID>AutoLoadMarks()
+		autocmd! VimEnter        * call <SID>AutoLoadMarks(mark#early#GetMarksVariable())
+		autocmd! SessionLoadPost * call <SID>AutoLoadMarks('MARK_marks')
 	augroup END
 endif
 
@@ -169,7 +171,7 @@ endif
 command! -bar MarkClear call mark#ClearAll()
 command! -bar Marks call mark#List()
 
-command! -bar -nargs=? -complete=customlist,mark#MarksVariablesComplete MarkLoad if ! mark#LoadCommand(1, <f-args>) | echoerr ingo#err#Get() | endif
+command! -bar -nargs=? -complete=customlist,mark#MarksVariablesComplete MarkLoad if ! mark#LoadCommand(1, mark#early#GetMarksVariable(<f-args>)) | echoerr ingo#err#Get() | endif
 command! -bar -nargs=? -complete=customlist,mark#MarksVariablesComplete MarkSave if ! mark#SaveCommand(<f-args>) | echoerr ingo#err#Get() | endif
 command! -bar -register MarkYankDefinitions         if ! mark#YankDefinitions(0, <q-reg>) | echoerr ingo#err#Get()| endif
 command! -bar -register MarkYankDefinitionsOneLiner if ! mark#YankDefinitions(1, <q-reg>) | echoerr ingo#err#Get()| endif
@@ -206,6 +208,7 @@ unlet s:hasOtherArgumentAddressing
 "- mappings -------------------------------------------------------------------
 
 nnoremap <silent> <Plug>MarkSet               :<C-u>if ! mark#MarkCurrentWord(v:count)<Bar>execute "normal! \<lt>C-\>\<lt>C-n>\<lt>Esc>"<Bar>endif<CR>
+nnoremap <silent> <Plug>MarkPartialWord       :<C-u>if ! mark#MarkCurrentWord(v:count, 0)<Bar>execute "normal! \<lt>C-\>\<lt>C-n>\<lt>Esc>"<Bar>endif<CR>
 vnoremap <silent> <Plug>MarkSet               :<C-u>if ! mark#DoMark(v:count, mark#GetVisualSelectionAsLiteralPattern())[0]<Bar>execute "normal! \<lt>C-\>\<lt>C-n>\<lt>Esc>"<Bar>endif<CR>
 vnoremap <silent> <Plug>MarkIWhiteSet         :<C-u>if ! mark#DoMark(v:count, mark#GetVisualSelectionAsLiteralWhitespaceIndifferentPattern())[0]<Bar>execute "normal! \<lt>C-\>\<lt>C-n>\<lt>Esc>"<Bar>endif<CR>
 nnoremap <silent> <Plug>MarkRegex             :<C-u>if ! mark#MarkRegex(v:count, '')<Bar>execute "normal! \<lt>C-\>\<lt>C-n>\<lt>Esc>"<Bar>echoerr ingo#err#Get()<Bar>endif<CR>
@@ -262,6 +265,9 @@ endif
 
 if !hasmapto('<Plug>MarkSet', 'n')
 	nmap <unique> <Leader>m <Plug>MarkSet
+endif
+if !hasmapto('<Plug>MarkPartialWord', 'n')
+	nmap <unique> <Leader>gm <Plug>MarkPartialWord
 endif
 if !hasmapto('<Plug>MarkSet', 'x')
 	xmap <unique> <Leader>m <Plug>MarkSet

@@ -569,11 +569,11 @@
       "path": ".vim/pack/basic/start/vim-mark",
       "provenance": {
         "branch": "master",
-        "commit": "89274036663c3322c669ff499a128583018604d3",
+        "commit": "9a5d6c403d6eb7b842de27a158418740cef364ec",
         "kind": "git-subrepo",
         "remote": "https://github.com/inkarkat/vim-mark.git"
       },
-      "snapshot_sha256": "648fe45b44aec1c68e1c9a8a5596448193cab7de7591fe5020878a2d81be232b"
+      "snapshot_sha256": "27952a9c959b19fecff6c6d799a1f5dc437c7a34b93b2162a1603dbf2f4014a8"
     },
     {
       "group": "basic",
