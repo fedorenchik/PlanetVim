@@ -2146,11 +2146,11 @@
       "path": ".vim/pack/web/start/emmet-vim",
       "provenance": {
         "branch": "master",
-        "commit": "def5d57a1ae5afb1b96ebe83c4652d1c03640f4d",
+        "commit": "92ef2f74f4093edc99db5e9e4cf7e40116a85bd6",
         "kind": "git-subrepo",
         "remote": "https://github.com/mattn/emmet-vim.git"
       },
-      "snapshot_sha256": "3539a62e052504a1ffe827024f49ad11806fcceab18ee24bd484442a412faff3"
+      "snapshot_sha256": "7073ebc752c17a3f7195b290b508a48f9238d81e12a0e51896bb1224ce197481"
     },
     {
       "group": "web",

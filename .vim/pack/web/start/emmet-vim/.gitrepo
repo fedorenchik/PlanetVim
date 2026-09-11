@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/mattn/emmet-vim.git
 	branch = master
-	commit = def5d57a1ae5afb1b96ebe83c4652d1c03640f4d
-	parent = 9c446cc7947ffe7c6f2a7304660191ccd6b72dbe
+	commit = 92ef2f74f4093edc99db5e9e4cf7e40116a85bd6
+	parent = f5d83d8b34f411adefdbcd6bb55e025a2df69d75
 	method = merge
-	cmdver = 0.4.3
+	cmdver = 0.4.9
