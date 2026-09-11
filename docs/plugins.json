@@ -896,11 +896,11 @@
       "path": ".vim/pack/colors/start/dracula",
       "provenance": {
         "branch": "master",
-        "commit": "d7723a842a6cfa2f62cf85530ab66eb418521dc2",
+        "commit": "e7817b4baccfb3529f709ac048c621f35cdbc5b3",
         "kind": "git-subrepo",
         "remote": "https://github.com/dracula/vim.git"
       },
-      "snapshot_sha256": "772fdec875d6b38500a685b022fb9ad9140c4912eeba626b8e67d495d8457221"
+      "snapshot_sha256": "9d98cf88f33aba27b2d8628b290569271c3ba0eda39e81122d45df5240e3acc2"
     },
     {
       "group": "colors",
