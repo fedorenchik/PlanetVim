@@ -290,11 +290,11 @@
       "path": ".vim/pack/basic/start/FoldText",
       "provenance": {
         "branch": "master",
-        "commit": "d5aca5af6eae07ed825504ac2943d5d40c349c5f",
+        "commit": "bb17060d3373b63fc5b127136c10b6d1616ebcd9",
         "kind": "git-subrepo",
         "remote": "https://github.com/Konfekt/FoldText.git"
       },
-      "snapshot_sha256": "6e56343a651eb9418438a68b67938860679102072828b87619708b04c746e584"
+      "snapshot_sha256": "9b9faa51bc23490da2a52bd1d1e79b088e2c888e804098c33eb95c2b3bf19b27"
     },
     {
       "group": "basic",

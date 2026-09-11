@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/Konfekt/FoldText.git
 	branch = master
-	commit = d5aca5af6eae07ed825504ac2943d5d40c349c5f
-	parent = 20a8a40d155ee69b30bca4466bd316ab662a502b
+	commit = bb17060d3373b63fc5b127136c10b6d1616ebcd9
+	parent = f637c714eae79dbb7457a784914e4112553bfd3f
 	method = merge
-	cmdver = 0.4.3
+	cmdver = 0.4.9
