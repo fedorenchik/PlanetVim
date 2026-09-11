@@ -1199,7 +1199,12 @@ function! s:PreviewVimColors(submatch) "{{{2
     let color_Dict = {}
     let pat1 = '\%(\(cterm[fb]g\)\s*=\s*\)\@<=\<\(\d\+\)\>'
     let pat2 = '\%(\(gui[fb]g\)\s*=\s*\)\@<=#\(\x\{6}\)\>'
-    let pat3 = '\%#=1\%(\(gui[fb]g\)\s*=\s*\)\@<=\('.s:x11_color_pattern.'\)'
+    let x11_color_pattern = s:x11_color_pattern
+    if (s:x11_color_pattern[0:3] == '\%#=')
+      " Skip regexp engine
+      let x11_color_pattern = x11_color_pattern[5:]
+    endif
+    let pat3 = '\%#=1\%(\%(\(gui[fb]g\)\s*=\s*\)\@<=\('.x11_color_pattern.'\)\)'
 
     let cterm = matchlist(a:submatch, pat1)
     let gui   = matchlist(a:submatch, pat2)
@@ -1326,6 +1331,9 @@ function! s:GetPatternLiteral(pat) "{{{1
     return '\V'. substitute(escape(a:pat, '\\'), "\n", '\\n', 'g')
 endfu
 function! s:Term2RGB(index) "{{{1
+    if !exists("s:colortable")
+        call s:ColortableInit()
+    endif
     " Return index in colortable in RRGGBB form
     return join(map(copy(s:colortable[a:index]), 'printf("%02X", v:val)'),'')
 endfu
@@ -1344,6 +1352,24 @@ function! s:PrintColorStatistics() "{{{1
             echom printf("%15s: %ss", name, (value[-1] == [] ? '  0.000000' : reltimestr(value[-1])))
         endfor
         echohl Normal
+    endif
+endfu
+
+function! s:ColortableInit() "{{{1
+    " Only calculate the colortable when running
+    if &t_Co == 8
+        let s:colortable = map(range(0, 7), 's:Xterm2rgb16(v:val)')
+    elseif &t_Co == 16
+        let s:colortable = map(range(0, 15), 's:Xterm2rgb16(v:val)')
+    elseif &t_Co == 88
+        let s:colortable = map(range(0, 87), 's:Xterm2rgb88(v:val)')
+    " terminal with 256 colors or gVim
+    "elseif &t_Co == 256 || empty(&t_Co) || &t_Co == 16777216
+    else
+        let s:colortable = map(range(0, 255), 's:Xterm2rgb256(v:val)')
+    endif
+    if s:debug && exists("s:colortable")
+        let g:colortable = s:colortable
     endif
 endfu
 
@@ -1452,22 +1478,8 @@ function! s:ColorInit(...) "{{{1
         unlet! s:colortable
     endif
 
-    if !exists("s:init_css") || !exists("s:colortable") ||
-        \ empty(s:colortable)
-        " Only calculate the colortable when running
-        if &t_Co == 8
-            let s:colortable = map(range(0,7), 's:Xterm2rgb16(v:val)')
-        elseif &t_Co == 16
-            let s:colortable = map(range(0,15), 's:Xterm2rgb16(v:val)')
-        elseif &t_Co == 88
-            let s:colortable = map(range(0,87), 's:Xterm2rgb88(v:val)')
-        " terminal with 256 colors or gVim
-        elseif &t_Co == 256 || empty(&t_Co) || &t_Co == 16777216
-            let s:colortable = map(range(0,255), 's:Xterm2rgb256(v:val)')
-        endif
-        if s:debug && exists("s:colortable")
-            let g:colortable = s:colortable
-        endif
+    if !exists("s:init_css") || !exists("s:colortable") || empty(s:colortable)
+        call s:ColortableInit()
         let s:init_css = 1
     elseif s:force_hl
         call Colorizer#ColorOff()
@@ -1537,9 +1549,9 @@ function! s:ColorInit(...) "{{{1
         \ 'term': [ '\%(\%(\%x1b\|\\033\)\[0m\)\?\(\%(\%(\%x1b\|\\033\)\[\d\+\%([:;]\d\+\)*m\)\+\)\([^\e]*\)\(\%(\%x1b\|\\033\)\%(\[0m\|\[K\)\)\=',
             \ function("s:PreviewColorTerm"), 'colorizer_term', [] ],
         \ 'term_nroff': ['\%(\(.\)\%u8\1\)\|\%(_\%u8.\)', function("s:PreviewColorNroff"), 'colorizer_nroff', [] ],
-        \ 'term_conceal': [ ['\%(\(\%(\%x1b\[0m\)\?\%x1b\[[02-9]\+\%([;:]\d\+\)*\a\)\|\%x1b\[K$\)',
+        \ 'term_conceal': [ ['\%(\(\%(\%x1b\[0m\)\?\%x1b\[[01-9]\+\%([;:]\d\+\)*\a\)\|\%x1b\[K$\)',
           \ '\%d13', '\%(\%x1b\[K\)', '\%(\%x1b\]\d\+;\d\+;\)', '\%(\%x1b\\\)',
-          \ '\%x1b(B\%x1b\[m', '\%x1b\[m\%(\%x0f\)\?', '_\%u8.\@=', '\(.\)\%u8\%(\1\)\@=', '\%x1b\[[0-1]m'], 
+          \ '\%x1b(B\%x1b\[m', '\%x1b\[m\%(\%x0f\)\?', '_\%u8.\@=', '\(.\)\%u8\%(\1\)\@=', '\%x1b\[3\?[0-1]m'],
           \ '',
           \ 'colorizer_term_conceal', [] ]
         \ }
@@ -1550,28 +1562,106 @@ function! s:ColorInit(...) "{{{1
     endif
 endfu
 
-function! s:AddOffset(list) "{{{1
-    return a:list
-    let result=[]
-    for val in a:list
-        let val = ('0X'.val) + 0
-        if val < get(g:, 'colorizer_min_offset', 0)
-            let val = get(g:, 'colorizer_add_offset', 0)
-        endif
-        call add(result, val)
+function! s:ColorHighlight_1(force, line1, line2) "{{{1
+  let s_flags = s:use_virtual_text ? 'egi' : 'egin'
+  if &t_Co > 16 || s:HasGui()
+    for Pat in values(s:color_patterns)
+      let start = s:Reltime()
+      if !get(g:, Pat[2], 1) || (get(g:, Pat[2]. '_disable', 0) > 0)
+        let Pat[4] = s:Reltime(start)
+        " Coloring disabled
+        continue
+      endif
+
+      " 4th element in pattern is condition, that must be fullfilled,
+      " before we continue
+      if !empty(Pat[3]) && !eval(Pat[3])
+        let Pat[4] = s:Reltime(start)
+        continue
+      endif
+
+      " Check, the pattern isn't too costly...
+      if s:CheckTimeout(Pat[0], a:force) && !s:IsInComment()
+        let cmd = printf(':sil keeppatterns %d,%d%ss/%s/\=call(Pat[1], [submatch(0)])/'. s_flags,
+              \ a:line1, a:line2, s:color_unfolded, Pat[0])
+        try
+          if Pat[2] ==# 'colorizer_vimhighlight' && !empty(bufname(''))
+            " try to load the corresponding syntax file so the syntax
+            " groups will be defined
+            let s:extension = fnamemodify(expand('%'), ':t:r')
+            let s:old_syntax = exists("b:current_syntax") ? b:current_syntax : ''
+            call s:LoadSyntax(s:extension)
+          endif
+
+          exe cmd
+          let Pat[4] = s:Reltime(start)
+          if s:stop
+              break
+          endif
+        catch
+          " some error occurred, stop when finished (and don't setup auto
+          " comands
+          let s:error.=" Colorize: ". string(Pat)
+          break
+        finally
+          if exists("s:extension")
+            call s:LoadSyntax(&ft)
+            unlet! s:extension
+          endif
+        endtry
+      endif
     endfor
-    return result
-endfu
-function! s:SwapColors(list) "{{{1
-    if empty(a:list[0]) && empty(a:list[1])
-        return a:list
-    elseif s:swap_fg_bg > 0
-        return [a:list[1]] + ['NONE']
-    elseif s:swap_fg_bg == -1
-        return [a:list[1], a:list[0]]
-    else
-        return a:list
+  else
+    call s:Warn('Color configuration seems wrong, skipping colorization! Check t_Co setting!')
+  endif
+endfunc
+
+function! s:ColorHighlight_2(force, line1, line2) "{{{1
+  let s_flags = s:use_virtual_text ? 'egi' : 'egin'
+  for Pat in [ s:color_patterns_special.term,
+      \ s:color_patterns_special.term_nroff,
+      \ s:color_patterns_special.term_bold ]
+    " When force is not given, check if it is disabled
+    if empty(a:force) && (!get(g:, Pat[2], 1) || (get(g:, Pat[2]. '_disable', 0) > 0))
+      " Coloring disabled, skip
+      continue
     endif
+    let start = s:Reltime()
+    if (s:CheckTimeout(Pat[0], a:force)) && !s:IsInComment()
+      if Pat[2] is# 'colorizer_nroff'
+        let arg = '[submatch(0)]'
+      else
+        let arg = '[submatch(1), submatch(2), submatch(3)]'
+      endif
+      let cmd = printf(':sil keeppatterns %d,%d%ss/%s/\=call(Pat[1],%s)/'. s_flags,
+        \ a:line1, a:line2,  s:color_unfolded, Pat[0], arg)
+      try
+        exe cmd
+        let Pat[3] = s:Reltime(start)
+        " Hide ESC Terminal Chars
+        let start = s:Reltime()
+        call s:TermConceal(s:color_patterns_special.term_conceal[0])
+        let s:color_patterns_special.term_conceal[3] = s:Reltime(start)
+      catch
+        " some error occurred, stop when finished (and don't setup auto
+        " comands
+        let s:error=" ColorTerm "
+        break
+      endtry
+    endif
+  endfor
+endfu
+
+function! s:SwapColors(list) "{{{1
+  if empty(a:list[0]) && empty(a:list[1])
+    return a:list
+  elseif s:swap_fg_bg > 0
+    return [a:list[1]] + ['NONE']
+  elseif s:swap_fg_bg == -1
+    return [a:list[1], a:list[0]]
+  else
+    return a:list
+  endif
 endfu
 
 function! s:FGforBG(bg) "{{{1
@@ -1623,7 +1713,6 @@ function! s:DoHlGroup(group, Dict) "{{{1
     let fg = get(a:Dict, 'fg', '')
     let bg = get(a:Dict, 'bg', '')
     let [fg, bg] = s:SwapColors([fg, bg])
-    let [fg, bg] = s:AddOffset([fg, bg])
 
     if !empty(fg) && fg[0] !=# '#' && fg !=# 'NONE'
         let fg='#'.fg
@@ -2091,6 +2180,9 @@ function! s:ApplyAlphaValue(rgb) "{{{1
     if empty(bg)
         return a:rgb[0:3]
     else
+        if !exists("s:colortable")
+            call s:ColortableInit()
+        endif
         if (bg =~? '\d\{1,3}') && bg < 256
             " Xterm color code
             " (add dummy in front of it, will be split later)
@@ -2170,7 +2262,7 @@ function! s:Rgb2xterm(color) "{{{1
         return a:color
     endif
     if !exists("s:colortable")
-        call s:ColorInit('')
+        call s:ColortableInit()
     endif
     let color = (a:color[0] == '#' ? a:color[1:] : a:color)
     if ( color == '000000')
@@ -2344,135 +2436,29 @@ function! Colorizer#DoColor(force, line1, line2, ...) "{{{1
                     \ 'found in the current buffer!')
         return
     endtry
-    let error = ""
+    let s:error = ""
 
     let _a   = winsaveview()
     let save = s:SaveRestoreOptions(1, {},
             \ ['mod', 'ro', 'ma', 'lz', 'ed', 'gd', '@/'])
     let s:relstart = s:Reltime()
-    let s_flags = s:use_virtual_text ? 'egi' : 'egin'
 
-    " highlight Hex Codes:
-    "
-    " The :%s command is a lot faster than this:
-    ":g/#\x\{3,6}\>/call s:ColorMatchingLines(line('.'))
-    " Should color #FF0000
-    "              #F0F
-    "              #FFF
-    "
-    if &t_Co > 16 || s:HasGui()
-    " Also support something like
-    " CSS rgb(255,0,0)
-    "     rgba(255,0,0,1)
-    "     rgba(255,0,0,0.8)
-    "     rgba(255,0,0,0.2)
-    "     rgb(10%,0,100%)
-    "     hsl(0,100%,50%) -> hsl2rgb conversion RED
-    "     hsla(120,100%,50%,1) Lime
-    "     hsl(120,100%,25%) Darkgreen
-    "     hsl(120, 100%, 75%) lightgreen
-    "     hsl(120, 75%, 75%) pastelgreen
-    " highlight rgb(X,X,X) values
-        for Pat in values(s:color_patterns)
-            let start = s:Reltime()
-            if !get(g:, Pat[2], 1) || (get(g:, Pat[2]. '_disable', 0) > 0)
-                let Pat[4] = s:Reltime(start)
-                " Coloring disabled
-                continue
-            endif
-
-            " 4th element in pattern is condition, that must be fullfilled,
-            " before we continue
-            if !empty(Pat[3]) && !eval(Pat[3])
-                let Pat[4] = s:Reltime(start)
-                continue
-            endif
-
-            " Check, the pattern isn't too costly...
-            if s:CheckTimeout(Pat[0], a:force) && !s:IsInComment()
-                let cmd = printf(':sil keeppatterns %d,%d%ss/%s/\=call(Pat[1], [submatch(0)])/'. s_flags,
-                    \ a:line1, a:line2, s:color_unfolded, Pat[0])
-                try
-                    if Pat[2] ==# 'colorizer_vimhighlight' && !empty(bufname(''))
-                        " try to load the corresponding syntax file so the syntax
-                        " groups will be defined
-                        let s:extension = fnamemodify(expand('%'), ':t:r')
-                        let s:old_syntax = exists("b:current_syntax") ? b:current_syntax : ''
-                        call s:LoadSyntax(s:extension)
-                    endif
-
-                    exe cmd
-                    let Pat[4] = s:Reltime(start)
-
-                    if s:stop
-                        break
-                    endif
-
-                catch
-                    " some error occurred, stop when finished (and don't setup auto
-                    " comands
-                    let error.=" Colorize: ". string(Pat)
-                    break
-
-                finally
-                    if exists("s:extension")
-                        call s:LoadSyntax(&ft)
-                        unlet! s:extension
-                    endif
-                endtry
-            endif
-        endfor
-    else
-        call s:Warn('Color configuration seems wrong, skipping colorization! Check t_Co setting!')
-    endif
-
-    for Pat in [ s:color_patterns_special.term,
-          \ s:color_patterns_special.term_nroff,
-          \ s:color_patterns_special.term_bold ]
-        if !get(g:, Pat[2], 1) || (get(s:, Pat[2]. '_disable', 0) > 0)
-            " Coloring disabled, skip
-            continue
-        endif
-        let start = s:Reltime()
-        if (s:CheckTimeout(Pat[0], a:force)) && !s:IsInComment()
-
-
-            if Pat[2] is# 'colorizer_nroff'
-              let arg = '[submatch(0)]'
-            else
-              let arg = '[submatch(1), submatch(2), submatch(3)]'
-            endif
-            let cmd = printf(':sil keeppatterns %d,%d%ss/%s/\=call(Pat[1],%s)/'. s_flags,
-                \ a:line1, a:line2,  s:color_unfolded, Pat[0], arg)
-            try
-                exe cmd
-                let Pat[3] = s:Reltime(start)
-                " Hide ESC Terminal Chars
-                let start = s:Reltime()
-                call s:TermConceal(s:color_patterns_special.term_conceal[0])
-                let s:color_patterns_special.term_conceal[3] = s:Reltime(start)
-            catch
-                " some error occurred, stop when finished (and don't setup auto
-                " comands
-                let error=" ColorTerm "
-                break
-            endtry
-        endif
-    endfor
+    call s:ColorHighlight_1(a:force, a:line1, a:line2)
+    call s:ColorHighlight_2(a:force, a:line1, a:line2)
 
     " convert matches into synatx highlighting, so TOhtml can display it
     " correctly
     call s:SyntaxMatcher(s:color_syntax)
-    if !exists("#FTColorizer#BufWinEnter#<buffer>") && empty(error)
+    if !exists("#FTColorizer#BufWinEnter#<buffer>") && empty(s:error)
         " Initialise current window.
         call Colorizer#LocalFTAutoCmds(1)
         call Colorizer#ColorWinEnter(1, 1) " don't call DoColor recursively!
     endif
     let s:relstop = s:Reltime(s:relstart)
-    if !empty(error)
+    if !empty(s:error)
         " Some error occurred, stop trying to color the file
         call Colorizer#ColorOff()
-        call s:Warn("Some error occurred here: ". error)
+        call s:Warn("Some error occurred here: ". s:error)
         if exists("s:position")
             call s:Warn("Position: ". string(s:position))
             call matchadd('Color_Error', '\%'.s:position[1].'l\%'.s:position[2].'c.*\>')
@@ -2520,7 +2506,6 @@ function! Colorizer#Term2RGB(arg) "{{{1
     echohl None
     let &t_Co = _t_Co
 endfu
-
 
 function! Colorizer#HSL2Term(arg) "{{{1
     let hsl = s:StripParentheses(a:arg)

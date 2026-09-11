@@ -252,11 +252,11 @@
       "path": ".vim/pack/basic/start/Colorizer",
       "provenance": {
         "branch": "master",
-        "commit": "715c91303f0f7a59b21af39c9d168d975ca2c831",
+        "commit": "f5d69c0dea9f36e2eb025c7d86cc62b5a0d8af62",
         "kind": "git-subrepo",
         "remote": "https://github.com/chrisbra/Colorizer.git"
       },
-      "snapshot_sha256": "d40fce54ad532c3d0b100975f63bff16bfa107515a1af54bd1e3c3bbedf3277d"
+      "snapshot_sha256": "46a9eac4c31da1256ccd8e54eb187b7ed64304fa37b5597aa2e413cb9aa19969"
     },
     {
       "group": "basic",
