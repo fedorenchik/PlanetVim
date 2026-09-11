@@ -329,6 +329,15 @@ export def Update(): number
     # Writing
     execute planet#menu_help#Entry('an 715.10  ', '🔤&\..Writing', '<Nop>')
     an disable 🔤&\..Writing
+    execute planet#menu_help#Entry('an 715.10  ', '🔤&\..LaTeX.Toggle\ Continuous\ Compilation<Tab>:VimtexCompile', '<Cmd>call planet#writing#Tex(''compile'')<CR>')
+    execute planet#menu_help#Entry('an 715.10  ', '🔤&\..LaTeX.Compile\ Once<Tab>:VimtexCompileSS', '<Cmd>call planet#writing#Tex(''once'')<CR>')
+    execute planet#menu_help#Entry('an 715.10  ', '🔤&\..LaTeX.Compile\ Selected\ Lines<Tab>:VimtexCompileSelected', '<Cmd>call planet#writing#Tex(''selected'')<CR>')
+    execute planet#menu_help#Entry('an 715.10  ', '🔤&\..LaTeX.View\ PDF<Tab>:VimtexView', '<Cmd>call planet#writing#Tex(''view'')<CR>')
+    execute planet#menu_help#Entry('an 715.10  ', '🔤&\..LaTeX.Show\ Errors<Tab>:VimtexErrors', '<Cmd>call planet#writing#Tex(''errors'')<CR>')
+    execute planet#menu_help#Entry('an 715.10  ', '🔤&\..LaTeX.Table\ of\ Contents<Tab>:VimtexTocToggle', '<Cmd>call planet#writing#Tex(''toc'')<CR>')
+    execute planet#menu_help#Entry('an 715.10  ', '🔤&\..LaTeX.Toggle\ Itemize\ and\ Enumerate<Tab>tse', '<Cmd>call planet#writing#Tex(''environment'')<CR>')
+    execute planet#menu_help#Entry('an 715.10  ', '🔤&\..LaTeX.Toggle\ Starred\ Environment<Tab>tss', '<Cmd>call planet#writing#Tex(''star'')<CR>')
+    execute planet#menu_help#Entry('an 715.10  ', '🔤&\..LaTeX.Toggle\ Command\ Line\ Break<Tab>tsb', '<Cmd>call planet#writing#Tex(''break'')<CR>')
     execute planet#menu_help#Entry('an 715.10  ', '🔤&\..Swap\ Words', '<Cmd>call planet#prose#Swap(-1)<CR>')
     execute planet#menu_help#Entry('an 715.10  ', '🔤&\..Swap\ Words\ After', '<Cmd>call planet#prose#Swap(1)<CR>')
     execute planet#menu_help#Entry('an 715.10  ', '🔤&\..--1--', '<Nop>')

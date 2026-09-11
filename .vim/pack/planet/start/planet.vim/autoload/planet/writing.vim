@@ -265,3 +265,34 @@ export def GrammarCheck(): any
   endif
   return planet#prose#Grammar('check')
 enddef
+
+export def Tex(action: string): number
+  if !exists('b:vimtex') || index(['tex', 'plaintex'], &filetype) < 0
+    return LocalError('Open a TeX document with VimTeX enabled before using this action')
+  endif
+  var commands = {compile: 'VimtexCompile', once: 'VimtexCompileSS', selected: 'VimtexCompileSelected',
+    view: 'VimtexView', errors: 'VimtexErrors', toc: 'VimtexTocToggle'}
+  var functions = {environment: 'vimtex#env#toggle', star: 'vimtex#env#toggle_star', break: 'vimtex#cmd#toggle_break'}
+  try
+    if has_key(functions, action)
+      call(functions[action], [])
+    elseif has_key(commands, action)
+      var command = commands[action]
+      if !exists(':' .. command)
+        return LocalError(command .. ' is unavailable; enable its VimTeX compiler/viewer module')
+      endif
+      if action ==# 'selected'
+        var selection = planet#selection#Current()
+        var lines = sort([selection.start[1], selection.end[1]], 'n')
+        execute lines[0] .. ',' .. lines[1] .. command
+      else
+        execute command
+      endif
+    else
+      return LocalError('Unknown TeX action: ' .. action)
+    endif
+    return 1
+  catch
+    return LocalError(v:exception)
+  endtry
+enddef
