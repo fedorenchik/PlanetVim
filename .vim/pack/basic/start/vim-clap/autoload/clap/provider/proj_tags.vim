@@ -9,32 +9,14 @@ let s:proj_tags = {}
 let s:support_json_format =
       \ len(filter(systemlist('ctags --list-features'), 'v:val =~# ''^json''')) > 0
 
-function! clap#provider#proj_tags#support_json_format() abort
-  return s:support_json_format
-endfunction
-
 if !s:support_json_format
   call clap#helper#echo_error('Ensure ctags executable is in your PATH and has the JSON output feature')
   finish
 endif
 
-if g:__clap_development
-  function! s:proj_tags.on_typed() abort
-    call clap#client#call('on_typed', v:null, {'query': g:clap.input.get()})
-  endfunction
-else
-  function! s:proj_tags.on_typed() abort
-    call clap#filter#async#dyn#start_ctags_recursive()
-  endfunction
-
-  function! s:proj_tags.init() abort
-    let g:__clap_match_scope_enum = 'TagName'
-    if clap#maple#is_available()
-      call clap#rooter#try_set_cwd()
-      call clap#job#regular#forerunner#start_command(clap#maple#command#tags(v:true))
-    endif
-  endfunction
-endif
+function! s:proj_tags.init() abort
+  call clap#client#notify_on_init()
+endfunction
 
 function! s:extract(tag_row) abort
   let lnum = matchstr(a:tag_row, '^.*:\zs\(\d\+\)')
@@ -52,15 +34,11 @@ function! s:proj_tags.on_move() abort
   call clap#preview#file_at(path, lnum)
 endfunction
 
-function! s:proj_tags.on_exit() abort
-  if exists('g:__clap_match_scope_enum')
-    unlet g:__clap_match_scope_enum
-  endif
-endfunction
-
 let s:proj_tags.on_move_async = function('clap#impl#on_move#async')
+let s:proj_tags.on_typed = { -> clap#client#notify_provider('on_typed') }
 let s:proj_tags.enable_rooter = v:true
 let s:proj_tags.support_open_action = v:true
+let s:proj_tags.icon = 'ProjTags'
 let s:proj_tags.syntax = 'clap_proj_tags'
 
 let g:clap#provider#proj_tags# = s:proj_tags

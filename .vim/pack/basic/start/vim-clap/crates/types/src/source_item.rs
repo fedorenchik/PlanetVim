@@ -1,11 +1,12 @@
-use std::sync::Arc;
-use std::{any::Any, borrow::Cow};
-
+use crate::matcher::{MatchResult, Rank};
 use icon::Icon;
 use pattern::{extract_file_name, extract_grep_pattern, extract_tag_name};
+use std::any::Any;
+use std::borrow::Cow;
+use std::cmp::Ordering;
+use std::sync::Arc;
 
-use crate::{MatchResult, Score};
-
+/// Helper trait to convert Arc<dyn ClapItem> to the original concrete type.
 pub trait AsAny {
     fn as_any(&self) -> &dyn Any;
     fn as_any_mut(&mut self) -> &mut dyn Any;
@@ -40,21 +41,16 @@ impl<'a> FuzzyText<'a> {
 /// The location that a match should look in.
 ///
 /// Given a query, the match scope can refer to a full string or a substring.
-#[derive(Debug, Clone, Copy)]
+#[derive(Default, Debug, Clone, Copy)]
 pub enum MatchScope {
+    #[default]
     Full,
     /// `:Clap tags`, `:Clap proj_tags`
     TagName,
     /// `:Clap files`
     FileName,
-    /// `:Clap grep2`
+    /// `:Clap grep`
     GrepLine,
-}
-
-impl Default for MatchScope {
-    fn default() -> Self {
-        Self::Full
-    }
 }
 
 impl std::str::FromStr for MatchScope {
@@ -77,7 +73,7 @@ impl<T: AsRef<str>> From<T> for MatchScope {
 }
 
 /// This trait represents the items used in the entire filter pipeline.
-pub trait ClapItem: AsAny + std::fmt::Debug + Send + Sync + 'static {
+pub trait ClapItem: AsAny + std::fmt::Debug + Send + Sync {
     /// Initial raw text.
     fn raw_text(&self) -> &str;
 
@@ -89,7 +85,7 @@ pub trait ClapItem: AsAny + std::fmt::Debug + Send + Sync + 'static {
     }
 
     /// Text specifically for performing the fuzzy matching, part of the entire
-    /// mathcing pipeline.
+    /// matching pipeline.
     ///
     /// The fuzzy matching process only happens when Some(_) is returned.
     fn fuzzy_text(&self, match_scope: MatchScope) -> Option<FuzzyText> {
@@ -123,6 +119,13 @@ pub trait ClapItem: AsAny + std::fmt::Debug + Send + Sync + 'static {
     fn icon(&self, icon: icon::Icon) -> Option<icon::IconType> {
         icon.icon_kind()
             .map(|icon_kind| icon_kind.icon(&self.output_text()))
+    }
+
+    /// Offset in chars for the truncation.
+    ///
+    /// Used by `blines` to not strip out the line_number during the truncation.
+    fn truncation_offset(&self) -> Option<usize> {
+        None
     }
 }
 
@@ -303,8 +306,8 @@ pub fn extract_fuzzy_text(full: &str, match_scope: MatchScope) -> Option<FuzzyTe
 pub struct MatchedItem {
     /// Tuple of (matched line text, filtering score, indices of matched elements)
     pub item: Arc<dyn ClapItem>,
-    /// Filtering score.
-    pub score: Score,
+    /// Item rank.
+    pub rank: Rank,
     /// Indices of matched elements.
     ///
     /// The indices may be truncated when truncating the text.
@@ -313,25 +316,66 @@ pub struct MatchedItem {
     ///
     /// Usually in a truncated form for fitting into the display window.
     pub display_text: Option<String>,
+    /// Untruncated display text.
+    pub output_text: Option<String>,
+}
+
+impl PartialEq for MatchedItem {
+    fn eq(&self, other: &Self) -> bool {
+        self.rank.eq(&other.rank)
+    }
+}
+
+impl Eq for MatchedItem {}
+
+impl Ord for MatchedItem {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.rank.cmp(&other.rank)
+    }
+}
+
+impl PartialOrd for MatchedItem {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl From<Arc<dyn ClapItem>> for MatchedItem {
+    fn from(item: Arc<dyn ClapItem>) -> Self {
+        Self {
+            item,
+            rank: Rank::default(),
+            indices: Vec::new(),
+            display_text: None,
+            output_text: None,
+        }
+    }
 }
 
 impl MatchedItem {
-    pub fn new(item: Arc<dyn ClapItem>, score: Score, indices: Vec<usize>) -> Self {
+    pub fn new(item: Arc<dyn ClapItem>, rank: Rank, indices: Vec<usize>) -> Self {
         Self {
             item,
-            score,
+            rank,
             indices,
             display_text: None,
+            output_text: None,
         }
     }
 
     /// Maybe truncated display text.
     pub fn display_text(&self) -> Cow<str> {
-        if let Some(ref text) = self.display_text {
-            text.into()
-        } else {
-            self.item.output_text()
-        }
+        self.display_text
+            .as_ref()
+            .map(Into::into)
+            .unwrap_or_else(|| self.item.output_text())
+    }
+
+    pub fn output_text(&self) -> Cow<str> {
+        self.output_text
+            .as_ref()
+            .map(Into::into)
+            .unwrap_or_else(|| self.item.output_text())
     }
 
     /// Returns the match indices shifted by `offset`.

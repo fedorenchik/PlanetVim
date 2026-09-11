@@ -3,27 +3,17 @@ name: ci
 on: [push, pull_request]
 
 jobs:
-  cpoptions_checker:
-    name: Check cpoptions
+  vimscript:
+    name: VimScript
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
     - name: Ensure each vim source file declares cpoptions
       run: test/autoload_should_check_cpo.sh
-
-  vint:
-    name: Vint
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
     - name: Run vint with reviewdog
       uses: reviewdog/action-vint@v1
       with:
@@ -34,31 +24,23 @@ jobs:
     name: Rustfmt
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
         with:
             toolchain: nightly
             components: rustfmt
-            override: true
-      - uses: actions-rs/cargo@v1
-        with:
-          cmd: fmt
-          args: --all -- --check
+      - name: Run fmt
+        run: cargo +nightly fmt --all -- --check
 
   clippy:
     name: Clippy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-            toolchain: nightly
-            components: clippy
-            override: true
-      - uses: actions-rs/clippy-check@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          args: --all-features
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Run clippy
+        run: |
+          cargo clippy --locked --all-features --all-targets --manifest-path Cargo.toml -- -D warnings
 
   crates:
     name: Rust Tests
@@ -68,8 +50,8 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
-    - uses: actions/cache@v2
+      uses: actions/checkout@v4
+    - uses: actions/cache@v4
       with:
         path: |
           ~/.cargo/registry
@@ -87,8 +69,8 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
-    - uses: actions/cache@v2
+      uses: actions/checkout@v4
+    - uses: actions/cache@v4
       with:
         path: |
           ~/.cargo/registry
@@ -98,6 +80,17 @@ jobs:
     - name: Build maple
       run: cargo build --release
 
+  docs:
+    name: Docs Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - run: (test -x $HOME/.cargo/bin/mdbook || cargo install --vers "^0.4" mdbook)
+      - run: mdbook test docs
+
   python_dynamic_module:
     name: Python Dynamic Module
     runs-on: ubuntu-latest
@@ -106,7 +99,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
     - name: Run Cargo test
       run: |
         cd pythonx/clap/fuzzymatch-rs

@@ -1,0 +1,12 @@
+[package]
+name = "paths"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+dunce = "1.0"
+itertools = { workspace = true }
+serde = { workspace = true }
+shellexpand = { workspace = true }
+
+dirs = { workspace = true }

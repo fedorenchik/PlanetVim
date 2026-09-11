@@ -1,0 +1,60 @@
+[package]
+name = "maple_core"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+homepage.workspace = true
+description = "Core of vim-clap Rust backend"
+
+[dependencies]
+async-trait = { workspace = true }
+base64 = { workspace = true }
+chrono = { workspace = true }
+chrono-humanize = { workspace = true }
+clap = { workspace = true }
+colors-transform = { workspace = true }
+content_inspector = { workspace = true }
+copypasta = { version = "0.10.0", default-features = false, features = [ "x11" ] }
+futures = { workspace = true }
+# ripgrep for global search
+grep-searcher = { workspace = true }
+grep-matcher = { workspace = true }
+ignore = { workspace = true }
+itertools = { workspace = true }
+tokio = { workspace = true, features = ["fs", "rt", "process", "macros", "rt-multi-thread", "sync", "time"] }
+once_cell = { workspace = true }
+parking_lot = { workspace = true }
+rayon = { workspace = true }
+regex = { workspace = true }
+rgb2ansi256 = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+strsim = { workspace = true }
+subprocess = { workspace = true }
+thiserror = { workspace = true }
+toml = { workspace = true }
+tracing = { workspace = true }
+webbrowser = { workspace = true }
+
+code_tools = { workspace = true }
+dirs = { workspace = true }
+maple_config = { workspace = true }
+maple_derive = { workspace = true }
+maple_markdown = { workspace = true }
+filter = { workspace = true }
+icon = { workspace = true }
+maple_lsp = { workspace = true }
+matcher = { workspace = true }
+paths = { workspace = true }
+pattern = { workspace = true }
+printer = { workspace = true }
+rpc = { workspace = true }
+sublime_syntax = { workspace = true }
+types = { workspace = true }
+tree_sitter = { workspace = true }
+utils = { workspace = true }
+
+[dev-dependencies]
+git = { package = "git2", version = "0.15" }

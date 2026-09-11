@@ -16,19 +16,21 @@ function! s:padding(origin, target_width) abort
 endfunction
 
 function! s:format_buffer(b) abort
-  let name = bufname(a:b)
-  let name = empty(name) ? '[No Name]' : fnamemodify(name, ':p:~:.')
+  let buffer_name = bufname(a:b)
+  let fullpath = empty(buffer_name) ? '[No Name]' : fnamemodify(buffer_name, ':p:~:.')
+  let filename = empty(fullpath) ? '[No Name]' : fnamemodify(fullpath, ':t')
   let flag = a:b == bufnr('')  ? '%' : (a:b == bufnr('#') ? '#' : ' ')
   let modified = getbufvar(a:b, '&modified') ? ' [+]' : ''
   let readonly = getbufvar(a:b, '&modifiable') ? '' : ' [RO]'
 
+  let filename = s:padding(filename, 25)
   let bp = s:padding('['.a:b.']', 5)
-  let fsize = s:padding(clap#util#getfsize(name), 6)
-  let icon = g:clap_enable_icon ? s:padding(clap#icon#for(name), 3) : ''
+  let fsize = s:padding(clap#util#getfsize(fullpath), 6)
+  let icon = g:clap_enable_icon ? s:padding(clap#icon#for(fullpath), 3) : ''
   let extra = join(filter([modified, readonly], '!empty(v:val)'), '')
   let line = s:padding(get(s:line_info, a:b, ''), 10)
 
-  return trim(printf('%s %s %s %s %s %s %s', bp, fsize, icon, line, name, flag, extra))
+  return trim(printf('%s %s %s %s %s %s %s %s', bp, filename, fsize, icon, line, fullpath, flag, extra))
 endfunction
 
 function! s:buffers() abort
@@ -77,11 +79,24 @@ function! s:buffers_on_move() abort
   call clap#preview#highlight_header()
 endfunction
 
+function! clap#provider#buffers#preview_target() abort
+  let curline = g:clap.display.getcurline()
+  if empty(curline)
+    return []
+  endif
+  let bufnr = str2nr(s:extract_bufnr(curline))
+  if !has_key(s:line_info, bufnr)
+    return []
+  endif
+  let lnum = matchstr(s:line_info[bufnr], '\d\+')
+  return [expand('#'.bufnr.':p'), lnum]
+endfunction
+
 function! s:action_delete() abort
   let current_matches = g:clap.display.line_count()
   execute 'bdelete' s:current_bufnr
   call g:clap.display.deletecurline()
-  call clap#indicator#update_matches_on_deletecurline()
+  call clap#indicator#update_on_deletecurline()
   call g:clap.preview.hide()
   call g:clap#display_win.shrink_if_undersize()
 endfunction
@@ -95,6 +110,7 @@ let s:buffers = {}
 let s:buffers.sink = function('s:buffers_sink')
 let s:buffers.source = function('s:buffers')
 let s:buffers.on_move = function('s:buffers_on_move')
+let s:buffers.on_move_async = { -> clap#client#notify_provider('on_move') }
 let s:buffers.syntax = 'clap_buffers'
 let s:buffers.support_open_action = v:true
 let s:buffers.action = {

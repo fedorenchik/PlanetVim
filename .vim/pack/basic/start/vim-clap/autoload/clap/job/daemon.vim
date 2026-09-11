@@ -27,7 +27,7 @@ if has('nvim')
         if line =~# '^Content-length:'
           let s:content_length = str2nr(matchstr(line, '\d\+$'))
         else
-          call clap#helper#echo_error('This should not happen, unknown message:'.line)
+          call clap#helper#echo_error('Unknown message sent from server:'.line)
         endif
         continue
       endif
@@ -81,7 +81,7 @@ if has('nvim')
           \ })
   endfunction
 
-  function! clap#job#daemon#send_message(msg) abort
+  function! clap#job#daemon#send_raw(msg) abort
     call chansend(s:job_id, a:msg."\n")
   endfunction
 else
@@ -117,7 +117,7 @@ else
     call clap#job#track(s:job_id, s:job)
   endfunction
 
-  function! clap#job#daemon#send_message(msg) abort
+  function! clap#job#daemon#send_raw(msg) abort
     call ch_sendraw(s:job, a:msg."\n")
   endfunction
 endif
@@ -133,16 +133,12 @@ function! clap#job#daemon#is_running() abort
   return s:job_id != -1
 endfunction
 
-function! clap#job#daemon#start(MessageHandler) abort
-  let s:MessageHandler = a:MessageHandler
+function! clap#job#daemon#start() abort
+  if !clap#maple#is_available()
+    return
+  endif
+  let s:MessageHandler = function('clap#client#handle')
   call s:start_service_job(clap#maple#build_cmd('rpc'))
-  call clap#client#notify('initialize_global_env', {
-      \   'is_nvim': has('nvim') ? v:true : v:false,
-      \   'enable_icon': g:clap_enable_icon ? v:true : v:false,
-      \   'clap_preview_size': g:clap_preview_size,
-      \ })
-  call clap#client#call('init_ext_map', v:null, {'autocmd_filetypedetect': execute('autocmd filetypedetect')})
-  return
 endfunction
 
 let &cpoptions = s:save_cpo

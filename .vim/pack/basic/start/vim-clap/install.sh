@@ -2,11 +2,8 @@
 
 set -u
 
-version=v0.36
-
+REPO=https://github.com/liuchengxu/vim-clap
 APP=maple
-
-DOWNLOAD_URL="https://github.com/liuchengxu/vim-clap/releases/download/$version"
 
 exists() {
   command -v "$1" >/dev/null 2>&1
@@ -25,7 +22,17 @@ download() {
   fi
 }
 
+remote_latest_tag() {
+  git -c 'versionsort.suffix=-' ls-remote --exit-code --refs --sort='version:refname' --tags "$REPO" 'v0.*' \
+    | tail --lines=1 \
+    | awk -F "/" '{print $NF}'
+}
+
 try_download() {
+  local remote_latest_tag=$(remote_latest_tag)
+  echo "bin/$APP is empty, try downloading the latest prebuilt binary $APP $remote_latest_tag from GitHub ..."
+
+  local DOWNLOAD_URL="$REPO/releases/download/$remote_latest_tag"
   local asset=$1
   if [ -z "${TMPDIR+x}" ]; then
     rm -f bin/$APP
@@ -38,18 +45,27 @@ try_download() {
   chmod a+x "bin/$APP"
 }
 
-main() {
+download_prebuilt_binary() {
   arch=$(uname -sm)
   case "${arch}" in
       "Linux x86_64")
         try_download "$APP"-x86_64-unknown-linux-musl ;;
+      "Linux aarch64")
+        try_download "$APP"-aarch64-unknown-linux-musl ;;
       "Darwin x86_64")
         try_download "$APP"-x86_64-apple-darwin ;;
+      "Darwin arm64")
+        try_download "$APP"-aarch64-apple-darwin ;;
       *)
-        echo "No prebuilt maple binary available for ${arch}."
+        echo "No prebuilt maple binary available for this platform ${arch}."
+        echo "You can compile the binary locally by running `make` or `cargo build --release` if Rust has been installed."
         exit 1
         ;;
   esac
 }
 
-main
+if [ ! -f "bin/$APP" ]; then
+  download_prebuilt_binary
+else
+  "bin/$APP" upgrade
+fi

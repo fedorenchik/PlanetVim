@@ -69,14 +69,6 @@ function! clap#util#nvim_buf_get_lines(bufnr) abort
   return nvim_buf_get_lines(a:bufnr, 0, -1, 0)
 endfunction
 
-function! clap#util#nvim_buf_set_lines(bufnr, lines) abort
-  call nvim_buf_set_lines(a:bufnr, 0, -1, 0, a:lines)
-endfunction
-
-function! clap#util#nvim_buf_clear(bufnr) abort
-  call nvim_buf_set_lines(a:bufnr, 0, -1, 0, [])
-endfunction
-
 function! clap#util#nvim_buf_is_empty(bufnr) abort
   return nvim_buf_line_count(a:bufnr) == 1 && empty(getbufline(a:bufnr, 1)[0])
 endfunction
@@ -159,16 +151,9 @@ function! clap#util#getfsize(fname) abort
   return size
 endfunction
 
+" For backward-compatibility
 function! clap#util#open_quickfix(qf_entries) abort
-  let entries_len = len(a:qf_entries)
-  call setqflist(a:qf_entries)
-  " If there are only a few items, open the qf window at exact size.
-  if entries_len < 15
-    execute 'copen' entries_len
-  else
-    copen
-  endif
-  cc
+  return clap#sink#open_quickfix(a:qf_entries)
 endfunction
 
 function! clap#util#get_visual_selection() abort
@@ -179,6 +164,21 @@ function! clap#util#get_visual_selection() abort
   finally
     let @a = a_save
   endtry
+endfunction
+
+function! clap#util#reload_current_file() abort
+  let save_cursor = getpos('.')
+
+  " Reload the file
+  edit!
+
+  noautocmd call setpos('.', save_cursor)
+endfunction
+
+function! clap#util#sink_open(cmd, file) abort
+  call g:clap.start.goto_win()
+  execute a:cmd a:file
+  call clap#_exit_provider()
 endfunction
 
 let &cpoptions = s:save_cpo

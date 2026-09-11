@@ -1,0 +1,12 @@
+[package]
+name = "sublime_syntax"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+colors-transform = { workspace = true }
+rgb2ansi256 = { workspace = true }
+serde = { workspace = true,  features = ["derive"] }
+syntect = { workspace = true }
+
+utils = { workspace = true }

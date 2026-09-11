@@ -4,8 +4,6 @@
 let s:save_cpo = &cpoptions
 set cpoptions&vim
 
-let s:ALWAYS_ASYNC = exists('g:clap_builtin_fuzzy_filter_threshold') && g:clap_builtin_fuzzy_filter_threshold == 0
-
 let s:blines = {}
 
 function! s:format(lines) abort
@@ -39,18 +37,18 @@ endfunction
 
 function! s:lines_on_empty() abort
   if !exists('s:lines_on_empty_query')
-    let s:lines_on_empty_query = getbufline(g:clap.start.bufnr, 1, g:clap.display.preload_capacity)
+    let lines = getbufline(g:clap.start.bufnr, 1, g:clap.display.preload_capacity)
+    let s:lines_on_empty_query = s:format(lines)
   endif
   return copy(s:lines_on_empty_query)
 endfunction
 
 if clap#maple#is_available()
-  function! clap#provider#blines#initialize(lines) abort
-    let s:lines_on_empty_query = a:lines
-    call g:clap.display.set_lines_lazy(s:format(a:lines))
-  endfunction
   function! s:blines.init() abort
-    call clap#client#notify_on_init('on_init', {})
+    if exists('s:lines_on_empty_query')
+      unlet s:lines_on_empty_query
+    endif
+    call clap#client#notify_on_init()
   endfunction
 else
   function! s:blines.init() abort
@@ -62,7 +60,7 @@ else
       let s:lines_on_empty_query = lines
       call g:clap.display.set_lines_lazy(s:format(lines))
       call g:clap#display_win.shrink_if_undersize()
-      call clap#indicator#set_matches_number(line_count)
+      call clap#indicator#update_matched(line_count)
       call clap#sign#toggle_cursorline()
     endif
   endfunction
@@ -78,28 +76,37 @@ function! s:into_qf_entry(line) abort
 endfunction
 
 function! s:blines_sink_star(lines) abort
-  call clap#util#open_quickfix(map(a:lines, 's:into_qf_entry(v:val)'))
+  call clap#sink#open_quickfix(map(a:lines, 's:into_qf_entry(v:val)'))
 endfunction
 
 function! s:blines.on_typed() abort
   call g:clap.display.clear_highlight()
   let l:cur_input = g:clap.input.get()
 
-  if empty(l:cur_input)
-    call g:clap.display.set_lines_lazy(s:lines_on_empty())
-    call clap#indicator#set_matches_number(g:clap.display.initial_size)
-    call clap#sign#toggle_cursorline()
-    call g:clap#display_win.shrink_if_undersize()
-    call g:clap.preview.hide()
-  else
-    if clap#maple#is_available() && filereadable(expand('#'.g:clap.start.bufnr.':p'))
-      call clap#filter#async#dyn#start_blines()
+  if clap#maple#is_available()
+    if filereadable(expand('#'.g:clap.start.bufnr.':p'))
+      call clap#client#notify_provider('on_typed')
+    elseif empty(l:cur_input)
+      call g:clap.display.set_lines_lazy(s:lines_on_empty())
+      call clap#indicator#update_matched(g:clap.display.initial_size)
+      call clap#sign#toggle_cursorline()
+      call g:clap#display_win.shrink_if_undersize()
+      call g:clap.preview.hide()
     else
       let l:raw_lines = s:format(g:clap.start.get_lines())
-      call clap#filter#on_typed(g:clap.provider.filter(), l:cur_input, l:raw_lines)
+      call clap#legacy#filter#on_typed(g:clap.provider.filter(), l:cur_input, l:raw_lines)
     endif
-
-    call clap#spinner#set_busy()
+  else
+    if empty(l:cur_input)
+      call g:clap.display.set_lines_lazy(s:lines_on_empty())
+      call clap#indicator#update_matched(g:clap.display.initial_size)
+      call clap#sign#toggle_cursorline()
+      call g:clap#display_win.shrink_if_undersize()
+      call g:clap.preview.hide()
+    else
+      let l:raw_lines = s:format(g:clap.start.get_lines())
+      call clap#legacy#filter#on_typed(g:clap.provider.filter(), l:cur_input, l:raw_lines)
+    endif
   endif
 endfunction
 
@@ -107,6 +114,7 @@ endfunction
 " `blines` provider, so we did a hard code for blines provider here.
 let s:blines.source_type = g:__t_func_list
 let s:blines.syntax = 'clap_blines'
+let s:blines.icon = 'Null'
 let s:blines['sink*'] = function('s:blines_sink_star')
 let s:blines.on_move_async = function('clap#impl#on_move#async')
 let g:clap#provider#blines# = s:blines

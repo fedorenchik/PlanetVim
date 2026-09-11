@@ -1,20 +1,18 @@
 [package]
 name = "filter"
-version = "0.1.0"
-authors = ["Liu-Cheng Xu <xuliuchengxlc@gmail.com>"]
-edition = "2021"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
 
 [dependencies]
-anyhow = "1.0"
-parking_lot = "0.12"
-rayon = "1.5"
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-subprocess = { git = "https://github.com/hniksic/rust-subprocess" }
+parking_lot = { workspace = true }
+rayon = { workspace = true }
+subprocess = { workspace = true }
+tracing = { workspace = true }
+thiserror = { workspace = true }
+serde_json = { workspace = true }
 
-icon = { path = "../icon" }
-matcher = { path = "../matcher" }
-pattern = { path = "../pattern" }
-printer = { path = "../printer" }
-types = { path = "../types" }
-utility = { path = "../utility" }
+icon = { workspace = true }
+matcher = { workspace = true }
+printer = { workspace = true }
+types = { workspace = true }

@@ -2,189 +2,153 @@
 //!
 //! The matcher result consists of the score and the indices of matched items.
 //!
-//! There two steps to match a line:
+//! Matching flow:
 //!
-//! //     arc<dyn ClapItem>
-//! //        |
-//! //        |
-//! //        |
-//! //        ↓
-//! //    Apply InverseSearchTerms
-//! //        |
-//! //        |
-//! //        |
-//! //        ↓
-//! //    Apply ExactSearchTerms
-//! //        |
-//! //        |
-//! //        |
-//! //        ↓
-//! //    Apply FuzzyTerms
-//! //        |
-//! //        |  MatchScope: extract the content to match.
-//! //        |  FuzzyAlgorithm: run the match algorithm on FuzzyText.
-//! //        |
-//! //        ↓
-//! //   MatchResult
+//! //        arc<dyn ClapItem>
+//! //               |
+//! //               ↓
+//! //    +----------------------+
+//! //    |    InverseMatcher    |
+//! //    +----------------------+
+//! //               |
+//! //               ↓
+//! //    +----------------------+
+//! //    |    WordMatcher       |
+//! //    +----------------------+
+//! //               |
+//! //               ↓
+//! //    +----------------------+
+//! //    |    ExactMatcher      |
+//! //    +----------------------+
+//! //               |
+//! //               ↓
+//! //    +----------------------+
+//! //    |    FuzzyMatcher      |
+//! //    +----------------------+
+//! //               |      MatchScope: extract the content to match.
+//! //               |  FuzzyAlgorithm: run the match algorithm on FuzzyText.
+//! //               ↓
+//! //    +----------------------+
+//! //    |    BonusMatcher      |
+//! //    +----------------------+
+//! //               |
+//! //               ↓
+//! //  MatchResult { score, indices }
 //!
 
 mod algo;
-mod bonus;
+mod matchers;
+#[cfg(test)]
+mod tests;
 
-use std::sync::Arc;
-
-pub use self::algo::{fzy, skim, substring, FuzzyAlgorithm};
-pub use self::bonus::cwd::Cwd;
-pub use self::bonus::language::Language;
-pub use self::bonus::Bonus;
-use types::{CaseMatching, MatchedItem};
-// Re-export types
-pub use types::{
-    ClapItem, ExactTerm, ExactTermType, FuzzyTermType, MatchResult, MatchScope, Query, Score,
-    SearchTerm, SourceItem, TermType,
+pub use self::algo::{substring, FuzzyAlgorithm};
+pub use self::matchers::{
+    Bonus, BonusMatcher, ExactMatcher, FuzzyMatcher, InverseMatcher, WordMatcher,
 };
+use std::path::Path;
+use std::sync::Arc;
+use types::{CaseMatching, ClapItem, FuzzyText, MatchedItem, Rank, RankCalculator, RankCriterion};
 
-/// Returns an optional tuple of (score, indices) if all the exact searching terms are satisfied.
-pub fn match_exact_terms<'a>(
-    terms: impl Iterator<Item = &'a ExactTerm>,
-    full_search_line: &str,
-    case_matching: CaseMatching,
-) -> Option<(Score, Vec<usize>)> {
-    use ExactTermType::*;
+// Re-export types
+pub use types::{MatchResult, MatchScope, Query, Score};
 
-    let mut indices = Vec::<usize>::new();
-    let mut exact_score = Score::default();
-
-    for term in terms {
-        let sub_query = &term.word;
-
-        match term.ty {
-            Exact => {
-                if let Some((score, sub_indices)) =
-                    substring::substr_indices(full_search_line, sub_query, case_matching)
-                {
-                    indices.extend_from_slice(&sub_indices);
-                    exact_score += score.max(sub_query.len() as Score);
-                } else {
-                    return None;
-                }
-            }
-            PrefixExact => {
-                let trimmed = full_search_line.trim_start();
-                let white_space_len = full_search_line.len().saturating_sub(trimmed.len());
-                if trimmed.starts_with(sub_query) {
-                    let mut match_start = -1i32 + white_space_len as i32;
-                    let new_len = indices.len() + sub_query.len();
-                    indices.resize_with(new_len, || {
-                        match_start += 1;
-                        match_start as usize
-                    });
-                    exact_score += sub_query.len() as Score;
-                } else {
-                    return None;
-                }
-            }
-            SuffixExact => {
-                let total_len = full_search_line.len();
-                let trimmed = full_search_line.trim_end();
-                let white_space_len = total_len.saturating_sub(trimmed.len());
-                if trimmed.ends_with(sub_query) {
-                    // In case of underflow, we use i32 here.
-                    let mut match_start =
-                        total_len as i32 - sub_query.len() as i32 - 1i32 - white_space_len as i32;
-                    let new_len = indices.len() + sub_query.len();
-                    indices.resize_with(new_len, || {
-                        match_start += 1;
-                        match_start as usize
-                    });
-                    exact_score += sub_query.len() as Score;
-                } else {
-                    return None;
-                }
-            }
-        }
-    }
-
-    // Exact search term bonus
-    //
-    // The shorter search line has a higher score.
-    exact_score += (512 / full_search_line.len()) as Score;
-
-    Some((exact_score, indices))
-}
-
-/// `Matcher` is composed of two components:
-///
-///   * `match_scope`: represents the way of extracting the matching piece from the raw line.
-///   * `algo`: algorithm used for matching the text.
-///   * `bonus`: add a bonus to the result of base `algo`.
 #[derive(Debug, Clone, Default)]
-pub struct Matcher {
+pub struct MatcherBuilder {
     bonuses: Vec<Bonus>,
     fuzzy_algo: FuzzyAlgorithm,
     match_scope: MatchScope,
     case_matching: CaseMatching,
+    rank_criteria: Vec<RankCriterion>,
 }
 
-impl Matcher {
-    /// Constructs a new instance of [`Matcher`].
-    pub fn new(bonus: Bonus, fuzzy_algo: FuzzyAlgorithm, match_scope: MatchScope) -> Self {
-        Self {
-            bonuses: vec![bonus],
-            fuzzy_algo,
-            match_scope,
-            case_matching: Default::default(),
-        }
+impl MatcherBuilder {
+    /// Create a new matcher builder with a default configuration.
+    pub fn new() -> Self {
+        Self::default()
     }
 
-    /// Constructs a new instance of [`Matcher`] with multiple bonuses.
-    pub fn with_bonuses(
-        bonuses: Vec<Bonus>,
-        fuzzy_algo: FuzzyAlgorithm,
-        match_scope: MatchScope,
-    ) -> Self {
-        Self {
-            bonuses,
-            fuzzy_algo,
-            match_scope,
-            case_matching: Default::default(),
-        }
-    }
-
-    pub fn set_bonuses(mut self, bonuses: Vec<Bonus>) -> Self {
+    pub fn bonuses(mut self, bonuses: Vec<Bonus>) -> Self {
         self.bonuses = bonuses;
         self
     }
 
-    pub fn match_scope(&self) -> MatchScope {
-        self.match_scope
+    pub fn fuzzy_algo(mut self, algo: FuzzyAlgorithm) -> Self {
+        self.fuzzy_algo = algo;
+        self
     }
 
-    pub fn set_match_scope(mut self, match_scope: MatchScope) -> Self {
+    pub fn match_scope(mut self, match_scope: MatchScope) -> Self {
         self.match_scope = match_scope;
         self
     }
 
-    pub fn set_case_matching(mut self, case_matching: CaseMatching) -> Self {
+    pub fn case_matching(mut self, case_matching: CaseMatching) -> Self {
         self.case_matching = case_matching;
         self
     }
 
-    /// Returns the sum of bonus score.
-    fn calc_bonus(
-        &self,
-        item: &Arc<dyn ClapItem>,
-        base_score: Score,
-        base_indices: &[usize],
-    ) -> Score {
-        self.bonuses
-            .iter()
-            .map(|b| b.bonus_score(item, base_score, base_indices))
-            .sum()
+    pub fn rank_criteria(mut self, sort_criteria: Vec<RankCriterion>) -> Self {
+        self.rank_criteria = sort_criteria;
+        self
+    }
+
+    pub fn build(self, query: Query) -> Matcher {
+        let Self {
+            bonuses,
+            fuzzy_algo,
+            match_scope,
+            case_matching,
+            rank_criteria,
+        } = self;
+
+        let Query {
+            word_terms,
+            fuzzy_terms,
+            exact_terms,
+            inverse_terms,
+        } = query;
+
+        let inverse_matcher = InverseMatcher::new(inverse_terms);
+        let word_matcher = WordMatcher::new(word_terms);
+        let exact_matcher = ExactMatcher::new(exact_terms, case_matching);
+        let fuzzy_matcher = FuzzyMatcher::new(match_scope, fuzzy_algo, fuzzy_terms, case_matching);
+        let bonus_matcher = BonusMatcher::new(bonuses);
+
+        let rank_calculator = if rank_criteria.is_empty() {
+            RankCalculator::default()
+        } else {
+            RankCalculator::new(rank_criteria)
+        };
+
+        Matcher {
+            inverse_matcher,
+            word_matcher,
+            exact_matcher,
+            fuzzy_matcher,
+            bonus_matcher,
+            rank_calculator,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct Matcher {
+    inverse_matcher: InverseMatcher,
+    word_matcher: WordMatcher,
+    exact_matcher: ExactMatcher,
+    fuzzy_matcher: FuzzyMatcher,
+    bonus_matcher: BonusMatcher,
+    rank_calculator: RankCalculator,
+}
+
+impl Matcher {
+    // TODO: refactor this.
+    pub fn match_scope(&self) -> MatchScope {
+        self.fuzzy_matcher.match_scope
     }
 
     /// Actually performs the matching algorithm.
-    pub fn match_item(&self, item: Arc<dyn ClapItem>, query: &Query) -> Option<MatchedItem> {
+    pub fn match_item(&self, item: Arc<dyn ClapItem>) -> Option<MatchedItem> {
         let match_text = item.match_text();
 
         if match_text.is_empty() {
@@ -192,261 +156,163 @@ impl Matcher {
         }
 
         // Try the inverse terms against the full search line.
-        for inverse_term in query.inverse_terms.iter() {
-            if inverse_term.match_full_line(match_text) {
-                return None;
-            }
+        if self.inverse_matcher.match_any(match_text) {
+            return None;
         }
 
-        // Try the exact terms against the full search line.
-        let (exact_score, mut indices) =
-            match_exact_terms(query.exact_terms.iter(), match_text, self.case_matching)?;
+        let (word_score, word_indices) = if !self.word_matcher.is_empty() {
+            self.word_matcher.find_matches(match_text)?
+        } else {
+            (Score::default(), Vec::new())
+        };
 
-        // Try the fuzzy terms against the matched text.
-        let mut fuzzy_indices = Vec::with_capacity(query.fuzzy_len());
-        let mut fuzzy_score = Score::default();
+        let (exact_score, mut exact_indices) = self.exact_matcher.find_matches(match_text)?;
+        let (fuzzy_score, mut fuzzy_indices) = self.fuzzy_matcher.find_matches(&item)?;
 
-        if let Some(ref fuzzy_text) = item.fuzzy_text(self.match_scope) {
-            for term in query.fuzzy_terms.iter() {
-                let query = &term.word;
-                if let Some(MatchResult { score, indices }) =
-                    self.fuzzy_algo
-                        .fuzzy_match(query, fuzzy_text, self.case_matching)
-                {
-                    fuzzy_indices.extend_from_slice(&indices);
-                    fuzzy_score += score;
-                } else {
-                    return None;
-                }
-            }
-        }
+        // Merge the results from multi matchers.
+        let mut match_result = if fuzzy_indices.is_empty() {
+            exact_indices.sort_unstable();
+            exact_indices.dedup();
 
-        let match_result = if fuzzy_indices.is_empty() {
-            let bonus_score = self.calc_bonus(&item, exact_score, &indices);
+            let bonus_score =
+                self.bonus_matcher
+                    .calc_item_bonus(&item, exact_score, &exact_indices);
 
-            indices.sort_unstable();
-            indices.dedup();
-
-            MatchResult::new(exact_score + bonus_score, indices)
+            MatchResult::new(exact_score + bonus_score, exact_indices)
         } else {
             fuzzy_indices.sort_unstable();
             fuzzy_indices.dedup();
 
-            let bonus_score = self.calc_bonus(&item, fuzzy_score, &fuzzy_indices);
+            let bonus_score =
+                self.bonus_matcher
+                    .calc_item_bonus(&item, fuzzy_score, &fuzzy_indices);
 
-            indices.extend_from_slice(fuzzy_indices.as_slice());
+            let mut indices = exact_indices;
+
+            indices.extend(fuzzy_indices);
             indices.sort_unstable();
             indices.dedup();
 
             MatchResult::new(exact_score + bonus_score + fuzzy_score, indices)
         };
 
+        if !word_indices.is_empty() {
+            match_result.add_score(word_score);
+            match_result.extend_indices(word_indices);
+        }
+
         let MatchResult { score, indices } = item.match_result_callback(match_result);
 
-        Some(MatchedItem::new(item, score, indices))
+        let begin = indices.first().copied().unwrap_or(0);
+        let end = indices.last().copied().unwrap_or(0);
+        let length = item.raw_text().len();
+
+        let rank = self
+            .rank_calculator
+            .calculate_rank(score, begin, end, length);
+
+        Some(MatchedItem::new(item, rank, indices))
+    }
+
+    /// Actually performs the matching algorithm.
+    pub fn match_file_result(&self, path: &Path, line: &str) -> Option<MatchedFileResult> {
+        if line.is_empty() {
+            return None;
+        }
+
+        let path = path.to_str()?;
+
+        // Try the inverse terms against the full search line.
+        if self.inverse_matcher.match_any(line) || self.inverse_matcher.match_any(path) {
+            return None;
+        }
+
+        let (word_score, word_indices) = if !self.word_matcher.is_empty() {
+            self.word_matcher.find_matches(line)?
+        } else {
+            (Score::default(), Vec::new())
+        };
+
+        let ((exact_score, exact_indices), exact_indices_in_path) =
+            match self.exact_matcher.find_matches(path) {
+                Some((score, indices)) => ((score, indices), true),
+                None => (self.exact_matcher.find_matches(line)?, false),
+            };
+
+        let fuzzy_text = FuzzyText::new(line, 0);
+        let (mut fuzzy_score, mut fuzzy_indices) =
+            self.fuzzy_matcher.match_fuzzy_text(&fuzzy_text)?;
+
+        // Apply the word matcher against the line content.
+        if !word_indices.is_empty() {
+            fuzzy_score += word_score;
+            fuzzy_indices.extend(word_indices)
+        }
+
+        // Merge the results from multi matchers.
+        let (score, exact_indices, fuzzy_indices) = if fuzzy_indices.is_empty() {
+            let bonus_score = self
+                .bonus_matcher
+                .calc_text_bonus(line, exact_score, &exact_indices);
+
+            let mut exact_indices = exact_indices;
+            exact_indices.sort_unstable();
+            exact_indices.dedup();
+
+            let score = exact_score + bonus_score;
+
+            if exact_indices_in_path {
+                (score, exact_indices, Vec::new())
+            } else {
+                (score, Vec::new(), exact_indices)
+            }
+        } else {
+            fuzzy_indices.sort_unstable();
+            fuzzy_indices.dedup();
+
+            let bonus_score = self
+                .bonus_matcher
+                .calc_text_bonus(line, fuzzy_score, &fuzzy_indices);
+
+            let score = exact_score + bonus_score + fuzzy_score;
+
+            if exact_indices_in_path {
+                (score, exact_indices, fuzzy_indices)
+            } else {
+                let mut indices = exact_indices;
+                indices.extend_from_slice(fuzzy_indices.as_slice());
+                indices.sort_unstable();
+                indices.dedup();
+
+                (score, Vec::new(), indices)
+            }
+        };
+
+        let begin = exact_indices
+            .first()
+            .copied()
+            .unwrap_or_else(|| fuzzy_indices.first().copied().unwrap_or(0));
+        let end = fuzzy_indices
+            .last()
+            .copied()
+            .unwrap_or_else(|| exact_indices.last().copied().unwrap_or(0));
+        let length = line.len();
+
+        let rank = self
+            .rank_calculator
+            .calculate_rank(score, begin, end, length);
+
+        Some(MatchedFileResult {
+            rank,
+            exact_indices,
+            fuzzy_indices,
+        })
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::fzy;
-
-    #[test]
-    fn test_resize() {
-        let total_len = 100;
-        let sub_query = "hello";
-
-        let new_indices1 = {
-            let mut indices = [1, 2, 3].to_vec();
-            let sub_indices = (total_len - sub_query.len()..total_len).collect::<Vec<_>>();
-            indices.extend_from_slice(&sub_indices);
-            indices
-        };
-
-        let new_indices2 = {
-            let mut indices = [1, 2, 3].to_vec();
-            let mut start = total_len - sub_query.len() - 1;
-            let new_len = indices.len() + sub_query.len();
-            indices.resize_with(new_len, || {
-                start += 1;
-                start
-            });
-            indices
-        };
-
-        assert_eq!(new_indices1, new_indices2);
-    }
-
-    #[test]
-    fn test_match_scope_grep_line() {
-        let query = "rules";
-        let line = "crates/maple_cli/src/lib.rs:2:1:macro_rules! println_json {";
-        let matched_item1 = fzy::fuzzy_indices(line, query, CaseMatching::Smart).unwrap();
-
-        let item = SourceItem::from(line.to_string());
-        let fuzzy_text = item.fuzzy_text(MatchScope::GrepLine).unwrap();
-        let matched_item2 = FuzzyAlgorithm::Fzy
-            .fuzzy_match(query, &fuzzy_text, CaseMatching::Smart)
-            .unwrap();
-
-        assert_eq!(matched_item1.indices, matched_item2.indices);
-        assert!(matched_item2.score > matched_item1.score);
-    }
-
-    #[test]
-    fn test_match_scope_filename() {
-        let query = "lib";
-        let line = "crates/extracted_fzy/src/lib.rs";
-        let matched_item1 = fzy::fuzzy_indices(line, query, CaseMatching::Smart).unwrap();
-
-        let item = SourceItem::from(line.to_string());
-        let fuzzy_text = item.fuzzy_text(MatchScope::FileName).unwrap();
-        let matched_item2 = FuzzyAlgorithm::Fzy
-            .fuzzy_match(query, &fuzzy_text, CaseMatching::Smart)
-            .unwrap();
-
-        assert_eq!(matched_item1.indices, matched_item2.indices);
-        assert!(matched_item2.score > matched_item1.score);
-    }
-
-    #[test]
-    fn test_filename_bonus() {
-        let lines = vec![
-            "autoload/clap/filter.vim",
-            "autoload/clap/provider/files.vim",
-            "lua/fzy_filter.lua",
-        ];
-        let matcher = Matcher::new(Bonus::FileName, FuzzyAlgorithm::Fzy, MatchScope::Full);
-        let query = "fil";
-        for line in lines {
-            let item: Arc<dyn ClapItem> = Arc::new(SourceItem::from(line.to_string()));
-            let fuzzy_text = item.fuzzy_text(matcher.match_scope).unwrap();
-            let match_result_base = matcher
-                .fuzzy_algo
-                .fuzzy_match(query, &fuzzy_text, matcher.case_matching)
-                .unwrap();
-            let match_result_with_bonus = matcher.match_item(item, &query.into()).unwrap();
-            assert!(match_result_base.indices == match_result_with_bonus.indices);
-            assert!(match_result_with_bonus.score > match_result_base.score);
-        }
-    }
-
-    #[test]
-    fn test_language_keyword_bonus() {
-        let lines = vec!["hellorsr foo", "function foo"];
-        let matcher = Matcher::new(
-            Bonus::Language("vim".into()),
-            FuzzyAlgorithm::Fzy,
-            MatchScope::Full,
-        );
-        let query: Query = "fo".into();
-        let matched_item1 = matcher
-            .match_item(Arc::new(lines[0]) as Arc<dyn ClapItem>, &query)
-            .unwrap();
-        let matched_item2 = matcher
-            .match_item(Arc::new(lines[1]) as Arc<dyn ClapItem>, &query)
-            .unwrap();
-        assert!(matched_item1.indices == matched_item2.indices);
-        assert!(matched_item1.score < matched_item2.score);
-    }
-
-    #[test]
-    fn test_exact_search_term_bonus() {
-        let lines = vec!["function foo qwer", "function foo"];
-        let matcher = Matcher::new(Default::default(), FuzzyAlgorithm::Fzy, MatchScope::Full);
-        let query: Query = "'fo".into();
-        let matched_item1 = matcher
-            .match_item(Arc::new(lines[0]) as Arc<dyn ClapItem>, &query)
-            .unwrap();
-        let matched_item2 = matcher
-            .match_item(Arc::new(lines[1]) as Arc<dyn ClapItem>, &query)
-            .unwrap();
-        assert!(matched_item1.indices == matched_item2.indices);
-        assert!(matched_item1.score < matched_item2.score);
-    }
-
-    #[test]
-    fn test_search_syntax() {
-        let items = vec![
-            Arc::new("autoload/clap/provider/search_history.vim"),
-            Arc::new("autoload/clap/provider/files.vim"),
-            Arc::new("vim-clap/crates/matcher/src/algo.rs"),
-            Arc::new("pythonx/clap/scorer.py"),
-        ];
-
-        let matcher = Matcher::new(Bonus::FileName, FuzzyAlgorithm::Fzy, MatchScope::Full);
-
-        let match_with_query = |query: &Query| {
-            items
-                .clone()
-                .into_iter()
-                .map(|item| {
-                    let item: Arc<dyn ClapItem> = item;
-                    matcher.match_item(item, &query)
-                })
-                .map(|maybe_matched_item| {
-                    if let Some(matched_item) = maybe_matched_item {
-                        Some(MatchResult::new(matched_item.score, matched_item.indices))
-                    } else {
-                        None
-                    }
-                })
-                .collect::<Vec<_>>()
-        };
-
-        let query: Query = "clap .vim$ ^auto".into();
-        let match_results: Vec<_> = match_with_query(&query);
-        assert_eq!(
-            vec![
-                Some(MatchResult::new(
-                    763,
-                    [0, 1, 2, 3, 9, 10, 11, 12, 37, 38, 39, 40].to_vec()
-                )),
-                Some(MatchResult::new(
-                    776,
-                    [0, 1, 2, 3, 9, 10, 11, 12, 28, 29, 30, 31].to_vec()
-                )),
-                None,
-                None
-            ],
-            match_results
-        );
-
-        let query: Query = ".rs$".into();
-        let match_results: Vec<_> = match_with_query(&query);
-        assert_eq!(
-            vec![
-                None,
-                None,
-                Some(MatchResult::new(24, [32, 33, 34].to_vec())),
-                None
-            ],
-            match_results
-        );
-
-        let query: Query = "py".into();
-        let match_results: Vec<_> = match_with_query(&query);
-        assert_eq!(
-            vec![
-                Some(MatchResult::new(138, [14, 36].to_vec())),
-                None,
-                None,
-                Some(MatchResult::new(383, [0, 1].to_vec()))
-            ],
-            match_results
-        );
-
-        let query: Query = "'py".into();
-        let match_results: Vec<_> = match_with_query(&query);
-        assert_eq!(
-            vec![
-                None,
-                None,
-                None,
-                Some(MatchResult::new(25, [0, 1].to_vec()))
-            ],
-            match_results
-        );
-    }
+#[derive(Debug)]
+pub struct MatchedFileResult {
+    pub rank: Rank,
+    pub exact_indices: Vec<usize>,
+    pub fuzzy_indices: Vec<usize>,
 }

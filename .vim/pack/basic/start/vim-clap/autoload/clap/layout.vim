@@ -7,33 +7,57 @@ set cpoptions&vim
 let s:is_nvim = has('nvim')
 let s:layout_keys = ['width', 'height', 'row', 'col', 'relative']
 
-if !clap#preview#is_enabled()
-  let s:default_layout = {
-            \ 'width': '70%',
-            \ 'height': '67%',
-            \ 'row': '25%',
-            \ 'col': '15%',
-            \ }
-elseif clap#preview#direction() ==# 'LR'
-  let s:default_layout = {
-            \ 'width': '40%',
-            \ 'height': '67%',
-            \ 'row': '20%',
-            \ 'col': '10%',
-            \ }
-else
-  let s:default_layout = {
-            \ 'width': '67%',
-            \ 'height': '33%',
-            \ 'row': '33%',
-            \ 'col': '17%',
-            \ }
-endif
-
 if s:is_nvim
   call add(s:layout_keys, 'win')
-  let s:default_layout.relative = 'editor'
 endif
+
+" Returns the default layout for the display window, other windows will be
+" ancored to the display window.
+function! s:get_base_layout() abort
+  if g:clap.provider.mode()  ==# 'quick_pick'
+    " Increase the default width if the screen is not large.
+    if &columns < 150
+      let base_layout = {
+                  \ 'width': '60%',
+                  \ 'height': '67%',
+                  \ 'row': '20%',
+                  \ 'col': '20%',
+                  \ }
+    else
+      let base_layout = {
+                  \ 'width': '40%',
+                  \ 'height': '67%',
+                  \ 'row': '20%',
+                  \ 'col': '30%',
+                  \ }
+    endif
+  elseif !clap#preview#is_enabled()
+    let base_layout = {
+              \ 'width': '70%',
+              \ 'height': '67%',
+              \ 'row': '25%',
+              \ 'col': '15%',
+              \ }
+  elseif clap#preview#direction() ==# 'LR'
+    let base_layout = {
+              \ 'width': '40%',
+              \ 'height': '67%',
+              \ 'row': '20%',
+              \ 'col': '10%',
+              \ }
+  else
+    let base_layout = {
+              \ 'width': '67%',
+              \ 'height': '33%',
+              \ 'row': '33%',
+              \ 'col': '17%',
+              \ }
+  endif
+  if s:is_nvim
+    let base_layout.relative = 'editor'
+  endif
+  return base_layout
+endfunction
 
 function! s:validate(layout) abort
   for key in keys(a:layout)
@@ -64,14 +88,11 @@ function! s:adjust_indicator_width() abort
 endfunction
 
 function! s:layout() abort
-  if !exists('s:layout')
-    if exists('g:clap_layout')
-      let s:layout = extend(copy(s:default_layout), g:clap_layout)
-    else
-      let s:layout = s:default_layout
-    endif
+  let layout = s:get_base_layout()
+  if exists('g:clap_layout')
+    call extend(layout, g:clap_layout)
   endif
-  return s:layout
+  return layout
 endfunction
 
 function! clap#layout#indicator_width() abort
@@ -105,21 +126,25 @@ if s:is_nvim
       let opts = {'relative': 'win', 'win': g:clap.start.winid}
       call s:adjust_indicator_width()
     endif
-    return extend(opts, {
-          \ 'width': s:calc(width, layout.width),
-          \ 'height': s:calc(height, layout.height),
-          \ 'row': s:calc(height, layout.row),
-          \ 'col': s:calc(width, layout.col),
-          \ })
+    let width = s:calc(width, layout.width)
+    let height = s:calc(height, layout.height)
+    let row = s:calc(height, layout.row)
+    let col = s:calc(width, layout.col)
+    if opts.relative ==# 'editor' && g:clap.provider.mode()  ==# 'quick_pick'
+      let adjustment = (&columns - col - width) / 2
+      let col += adjustment
+    endif
+    return extend(opts, { 'width': width, 'height': height, 'row': row, 'col': col })
   endfunction
 
   function! s:calc_default() abort
     let [width, height] = [winwidth(g:clap.start.winid), winheight(g:clap.start.winid)]
+    let base_layout = s:get_base_layout()
     return {
-          \ 'width': s:calc(width, s:default_layout.width),
-          \ 'height': s:calc(height, s:default_layout.height),
-          \ 'row': s:calc(height, s:default_layout.row),
-          \ 'col': s:calc(width, s:default_layout.col),
+          \ 'width': s:calc(width, base_layout.width),
+          \ 'height': s:calc(height, base_layout.height),
+          \ 'row': s:calc(height, base_layout.row),
+          \ 'col': s:calc(width, base_layout.col),
           \ 'win': g:clap.start.winid,
           \ 'relative': 'win',
           \ }
@@ -127,7 +152,8 @@ if s:is_nvim
 else
   function! s:user_layout() abort
     let layout = s:layout()
-    if has_key(layout, 'relative') && layout.relative ==# 'editor'
+    let relative_to_editor = has_key(layout, 'relative') && layout.relative ==# 'editor'
+    if relative_to_editor
       let [row, col] = [0, 0]
       let width = &columns
       let height = &lines
@@ -137,22 +163,31 @@ else
       let height = winheight(g:clap.start.winid)
       call s:adjust_indicator_width()
     endif
+    let width = s:calc(width, layout.width)
+    let col = s:calc(width, layout.col) + col
+
+    if relative_to_editor && g:clap.provider.mode()  ==# 'quick_pick'
+      let adjustment = (&columns - col - width) / 2
+      let col += adjustment
+    endif
+
     return {
-          \ 'width': s:calc(width, layout.width),
+          \ 'width': width,
           \ 'height': s:calc(height, layout.height),
           \ 'row': s:calc(height, layout.row) + row,
-          \ 'col': s:calc(width, layout.col) + col,
+          \ 'col': col
           \ }
   endfunction
 
   function! s:calc_default() abort
     let [width, height] = [winwidth(g:clap.start.winid), winheight(g:clap.start.winid)]
     let [row, col] = win_screenpos(g:clap.start.winid)
+    let base_layout = s:get_base_layout()
     return {
-          \ 'width': s:calc(width, s:default_layout.width),
-          \ 'height': s:calc(height, s:default_layout.height),
-          \ 'row': s:calc(height, s:default_layout.row) + row,
-          \ 'col': s:calc(width, s:default_layout.col) + col,
+          \ 'width': s:calc(width, base_layout.width),
+          \ 'height': s:calc(height, base_layout.height),
+          \ 'row': s:calc(height, base_layout.row) + row,
+          \ 'col': s:calc(width, base_layout.col) + col,
           \ }
   endfunction
 endif

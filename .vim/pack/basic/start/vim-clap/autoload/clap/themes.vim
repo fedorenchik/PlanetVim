@@ -7,7 +7,7 @@ set cpoptions&vim
 let s:is_nvim = has('nvim')
 
 let s:input_default_hi_group = 'Visual'
-let s:display_default_hi_group = 'Pmenu'
+let s:display_default_hi_group = 'ClapDefaultPreview'
 let s:preview_default_hi_group = 'PmenuSel'
 
 function! s:extract(group, what, gui_or_cterm) abort
@@ -46,6 +46,20 @@ function! s:hi_clap_symbol() abort
         \ input_ctermbg,
         \ normal_ctermfg,
         \ normal_guifg,
+        \ )
+endfunction
+
+function! s:hi_clap_float_title() abort
+  let preview_ctermbg = s:extract_or('ClapPreview', 'bg', 'cterm', '60')
+  let preview_guibg = s:extract_or('ClapPreview', 'bg', 'gui', '#544a65')
+  let title_ctermfg = s:extract_or('Title', 'fg', 'cterm', '170')
+  let title_guifg = s:extract_or('Title', 'fg', 'gui', '#bc6ec5')
+  execute printf(
+        \ 'hi FloatTitle guifg=%s ctermfg=%s ctermbg=%s guibg=%s',
+        \ title_guifg,
+        \ title_ctermfg,
+        \ preview_ctermbg,
+        \ preview_guibg,
         \ )
 endfunction
 
@@ -166,6 +180,7 @@ endfunction
 function! s:init_theme() abort
   hi ClapDefaultShadow guibg=#000000
   hi default link ClapShadow ClapDefaultShadow
+  hi default link FloatBorder ClapPreview
 
   if &background ==# 'dark'
     hi ClapDefaultPreview ctermbg=237 guibg=#3E4452
@@ -183,17 +198,16 @@ function! s:init_theme() abort
   endif
 
   call s:hi_clap_symbol()
+  call s:hi_clap_float_title()
   call s:make_display_EndOfBuffer_invisible()
   call s:make_preview_EndOfBuffer_invisible()
-  call clap#icon#def_color_components()
+  call clap#icon#define_normal_color_components()
 endfunction
 
 function! clap#themes#init() abort
-  hi default link ClapMatches Search
+  hi default link ClapMatches        Search
   hi default link ClapNoMatchesFound ErrorMsg
-  hi default link ClapPopupCursor Type
-
-  hi default link FloatBorder ClapPreview
+  hi default link ClapPopupCursor    Type
 
   if exists('g:clap_theme')
     " If anything is wrong, just use the default theme.

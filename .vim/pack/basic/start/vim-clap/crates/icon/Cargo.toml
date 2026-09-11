@@ -1,18 +1,19 @@
 [package]
 name = "icon"
-version = "0.1.0"
-authors = ["Liu-Cheng Xu <xuliuchengxlc@gmail.com>"]
-edition = "2021"
-license = "MIT"
-publish = false
-homepage = "https://github.com/liuchengxu/vim-clap"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+include = ["/Cargo.toml", "src/*.rs"]
+homepage.workspace = true
 description = """
 icon is a tool for drawing an icon according to the path name for vim-clap.
 """
 
 [dependencies]
-pattern = { path = "../pattern" }
+pattern = { workspace = true }
 
 [build-dependencies]
-serde_json = "1.0"
-itertools = "0.10"
+itertools = { workspace = true }
+serde_json = { workspace = true }

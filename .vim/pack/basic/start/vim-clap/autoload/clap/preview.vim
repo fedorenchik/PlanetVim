@@ -1,10 +1,12 @@
 " Author: liuchengxu <xuliuchengxlc@gmail.com>
 " Description: Various preview support.
 
+scriptencoding utf-8
+
 let s:save_cpo = &cpoptions
 set cpoptions&vim
 
-let s:path_seperator = has('win32') ? '\' : '/'
+let s:path_separator = has('win32') ? '\' : '/'
 let s:default_size = 5
 
 function! clap#preview#direction() abort
@@ -73,7 +75,7 @@ function! clap#preview#file(fname) abort
     call s:peek_file(a:fname, fpath)
     return
   elseif exists('g:__clap_provider_cwd')
-    let fpath_with_cwd = g:__clap_provider_cwd.s:path_seperator.fpath
+    let fpath_with_cwd = g:__clap_provider_cwd.s:path_separator.fpath
     if filereadable(fpath_with_cwd)
       call s:peek_file(a:fname, fpath_with_cwd)
       return
@@ -88,8 +90,8 @@ function! clap#preview#file_at(fpath, lnum) abort
     let lines = readfile(a:fpath)[start : end]
   else
     let cwd = clap#rooter#working_dir()
-    if filereadable(cwd.s:path_seperator.a:fpath)
-      let lines = readfile(cwd.s:path_seperator.a:fpath)[start : end]
+    if filereadable(cwd.s:path_separator.a:fpath)
+      let lines = readfile(cwd.s:path_separator.a:fpath)[start : end]
     else
       return
     endif
@@ -130,21 +132,25 @@ function! clap#preview#show_lines(lines, syntax, hi_lnum) abort
 endfunction
 
 let s:preview_timer = -1
-let s:last_preview_line = ''
 let s:preview_delay = get(g:, 'clap_preview_delay', 100)
 
 let s:PREVIEW_DISABLED = tolower(g:clap_open_preview) ==# 'never'
 let s:ALWAYS_OPEN_PREVIEW = tolower(g:clap_open_preview) ==# 'always'
 
 function! clap#preview#is_enabled() abort
-  return !s:PREVIEW_DISABLED
+  if g:clap.provider.mode() ==# 'quick_pick'
+    " Must return 0 as the return value is interpreted as usize on the Rust side.
+    return 0
+  else
+    return !s:PREVIEW_DISABLED
+  endif
 endfunction
 
 function! clap#preview#is_always_open() abort
   return s:ALWAYS_OPEN_PREVIEW
 endfunction
 
-function! clap#preview#async_open_with_delay() abort
+function! clap#preview#update_with_delay() abort
   if s:PREVIEW_DISABLED
     return
   endif
@@ -152,16 +158,7 @@ function! clap#preview#async_open_with_delay() abort
   if s:preview_timer != -1
     call timer_stop(s:preview_timer)
   endif
-  let curline = g:clap.display.getcurline()
-  if s:last_preview_line ==# curline
-    return
-  endif
-  let s:last_preview_line = curline
   let s:preview_timer = timer_start(s:preview_delay, { -> clap#impl#on_move#invoke_async()})
-endfunction
-
-function! clap#preview#clear() abort
-  let s:last_preview_line = ''
 endfunction
 
 function! clap#preview#maple_opts(extra) abort
@@ -178,6 +175,32 @@ function! clap#preview#maple_opts(extra) abort
         \ })
   endif
   return type(a:extra) == v:t_dict ? extend(opts, a:extra) : opts
+endfunction
+
+function! clap#preview#inject_title_opt(opts, width) abort
+  let opts = a:opts
+  let should_enable_title = ['grep', 'live_grep', 'dumb_jump', 'files', 'git_files', 'proj_tags', 'coc_location', 'recent_files']
+  if index(should_enable_title, g:clap.provider.id) > -1
+    let working_dir = clap#rooter#working_dir()
+    let working_dir = fnamemodify(working_dir, ':~')
+    if has('nvim')
+      let opts.title = ' '.working_dir.' '
+      let opts.title_pos = 'center'
+    else
+      let working_dir_len = strwidth(working_dir)
+      if a:width > working_dir_len
+        let spaces_len = (a:width - working_dir_len) / 2
+      else
+        let spaces_len = 0
+      endif
+      if g:clap_popup_border !=? 'nil'
+        let opts.title = repeat('─', spaces_len).' '.working_dir.' '
+      else
+        let opts.title = repeat(' ', spaces_len).' '.working_dir.' '
+      endif
+    endif
+  endif
+  return opts
 endfunction
 
 if has('nvim')

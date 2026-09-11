@@ -1,0 +1,20 @@
+[package]
+name = "maple_lsp"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+futures-util = "0.3.29"
+lsp = { workspace = true }
+parking_lot = { workspace = true }
+rpc = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true, features = ["rt", "process", "macros", "sync", "time"] }
+toml = { workspace = true }
+tracing = { workspace = true }
+which = { workspace = true }
+
+dirs = { workspace = true }
+paths = { workspace = true }

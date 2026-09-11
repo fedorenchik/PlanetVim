@@ -15,11 +15,12 @@ function! s:sync_run_with_delay() abort
 endfunction
 
 if clap#maple#is_available()
+  " Deprecated.
   function! clap#impl#on_move#handler(result, error) abort
     if a:error isnot v:null
       return
     endif
-    call clap#state#process_preview_result(a:result)
+    call clap#picker#update_preview(has_key(a:result, 'result') ? a:result.result : a:result)
   endfunction
 
   function! s:dispatch_on_move_impl() abort
@@ -31,7 +32,7 @@ if clap#maple#is_available()
   endfunction
 
   function! clap#impl#on_move#async() abort
-    call clap#client#call_on_move('on_move', function('clap#impl#on_move#handler'))
+    call clap#client#notify_provider('on_move')
   endfunction
 else
   function! s:dispatch_on_move_impl() abort

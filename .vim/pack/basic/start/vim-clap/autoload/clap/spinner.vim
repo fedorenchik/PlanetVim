@@ -8,7 +8,7 @@ set cpoptions&vim
 
 let s:frames = get(g:, 'clap_spinner_frames', ['⠋', '⠙', '⠚', '⠞', '⠖', '⠦', '⠴', '⠲', '⠳', '⠓'])
 let s:frames_len = len(s:frames)
-let s:prompt_format = get(g:, 'clap_prompt_format', ' %spinner%%forerunner_status%%provider_id%:')
+let s:prompt_format = get(g:, 'clap_prompt_format', ' %spinner%%forerunner_status%%title%:')
 let s:IDLE = ' '
 
 let s:frame_index = 0
@@ -19,14 +19,14 @@ let s:spinner = s:IDLE
 function! s:fill_in_placeholders(prompt_format) abort
   let l:prompt = a:prompt_format
 
-  let l:provider_id = g:clap.provider.id
+  let l:title = has_key(g:clap.provider._(), 'title') ? g:clap.provider._().title : g:clap.provider.id
   let l:forerunner_status = get(g:, '__clap_current_forerunner_status', ' ')
 
   " Replace special markers with certain information.
   " \=l:variable is used to avoid escaping issues.
   let l:prompt = substitute(l:prompt, '\V%spinner%', '\=s:spinner', 'g')
   let l:prompt = substitute(l:prompt, '\V%forerunner_status%', '\=l:forerunner_status', 'g')
-  let l:prompt = substitute(l:prompt, '\V%provider_id%', '\=l:provider_id', 'g')
+  let l:prompt = substitute(l:prompt, '\V%title%', '\=l:title', 'g')
 
   return l:prompt
 endfunction
@@ -59,12 +59,6 @@ if has('nvim')
     call g:clap#floating_win#spinner.shrink()
   endfunction
 
-  function! clap#spinner#set_raw(text) abort
-    let s:current_prompt = a:text
-    call setbufline(g:clap.spinner.bufnr, 1, s:current_prompt)
-    call g:clap#floating_win#spinner.shrink()
-  endfunction
-
   function! s:set_spinner() abort
     let s:current_prompt = s:generate_prompt()
     call clap#spinner#set(s:current_prompt)
@@ -72,18 +66,12 @@ if has('nvim')
 else
   function! clap#spinner#set(text) abort
     let s:current_prompt = s:fill_in_placeholders(a:text)
-    call popup_settext(g:clap_spinner_winid, s:current_prompt)
-    call clap#popup#shrink_spinner()
-  endfunction
-
-  function! clap#spinner#set_raw(text) abort
-    let s:current_prompt = a:text
-    call popup_settext(g:clap_spinner_winid, s:current_prompt)
+    call popup_settext(g:__clap_spinner_winid, s:current_prompt)
     call clap#popup#shrink_spinner()
   endfunction
 
   function! s:set_spinner() abort
-    if exists('g:clap_spinner_winid')
+    if exists('g:__clap_spinner_winid')
       let s:current_prompt = s:generate_prompt()
       call clap#spinner#set(s:current_prompt)
     endif

@@ -41,14 +41,11 @@ to work everywhere out of the box, with fast response.
 2. Features                                                      *clap-features*
 
 
-- Pure vimscript.
-- Work out of the box, without any extra dependency.
-- Extensible, easy to add new source providers.
-- Find or dispatch anything on the fly, with smart cache strategy.
-- Untouch your current window layout, less eye movement.
-- Support multi-selection, use vim's regexp as filter by default.
-- Support the preview functionality when navigating the result list.
-- Support builtin match and external fuzzy filter tools.
+- Blazingly fast thanks to the powerful Rust backend.
+- Consistent command interface with [clap-rs/clap](https://github.com/clap-rs/clap)
+- Support writing new providers in both Vimscript and Rust.
+- Support [the search syntax borrowed from fzf](https://github.com/junegunn/fzf#search-syntax) and more.
+- Flexible UI layout.
 
 
 ===============================================================================
@@ -63,6 +60,14 @@ Checkout |write-clap-provider| for the details.
 
 ===============================================================================
 5. Global Options                                                 *clap-options*
+
+g:clap_start_server_on_startup                  *g:clap_start_server_on_startup*
+
+  Type: |Number|
+  Default: `1`
+
+  Start the Rust backend on startup. Recommended, otherwise the recent files
+  tracking may won't be started until the server is initialized.
 
 
 g:clap_provider_alias                                    *g:clap_provider_alias*
@@ -176,15 +181,6 @@ g:clap_popup_move_manager                            *g:clap_popup_move_manager*
   the example at |change-clap-default-keybindings| .
 
 
-g:clap_maple_delay                                          *g:clap_maple_delay*
-
-  Type: |Number|
-  Default: `100`
-
-  This variable controls the milliseconds delay after which `maple` will be
-  run in case of you have 1 million items.
-
-
 g:clap_popup_cursor_shape                            *g:clap_popup_cursor_shape*
 
   Type: |String|
@@ -203,7 +199,7 @@ g:clap_on_move_delay                                      *g:clap_on_move_delay*
   provider will be run when you navigate the result list.
 
 
-g:clap_forerunner_status_sign          *g:clap_forerunner_status_sign*
+g:clap_forerunner_status_sign                    *g:clap_forerunner_status_sign*
 
   Type: |Dict|
   Default: `{ 'running': '!', 'done': '•', 'using_cache': '*' }`
@@ -228,49 +224,12 @@ g:clap_disable_bottom_top                            *g:clap_disable_bottom_top*
   at the bottom/top of the results.
 
 
-g:clap_disable_optional_async                    *g:clap_disable_optional_async*
-
-  Type: |Bool|
-  Default: `v:false`
-
-  For the non-pure-async providers, vim-clap provides an optional async way to
-  filter/find the candidates and will enable it automatically in these cases:
-
-  - the default `source_async` implementation is doable
-  - `g:clap.context.async` is v:true
-  - the `source` of provider is |String|
-  - the `source` of provider is |List| and the size of source exceeds the
-    threshold
-  - the `source` of provider is a |Funcref| that returns a |String| or
-    returns a |List| that exceeds the threshold.
-
-  If the provider does not provide the `source_async` implementation explictily
-  and vim-clap fails to inject the default async external filter implementation,
-  this variable has no effect, the sync filter implementation will always be
-  used.
-
-
 g:clap_no_matches_msg                                    *g:clap_no_matches_msg*
 
   Type: |String|
   Default: `"NO MATCHES FOUND"`
 
   This message will be used when there is no matches found.
-
-
-g:clap_dispatcher_drop_cache                      *g:clap_dispatcher_drop_cache*
-
-  Type: |Bool|
-  Default: `v:true`
-
-  Normally when the external async job returns thousands of results, we won't
-  view them all. By default only the first N items will be actually remembered
-  and the others will only be counted.
-
-  Set this variable to `v:true` to save all the results, and then when you
-  reach the end of the display window, the cached results will be loaded
-  automatically. However, it may have some performance loss to cache all the
-  results especially when there are hundreds of thousands of results.
 
 
 g:clap_insert_mode_only                            *g:clap_insert_mode_only*
@@ -341,6 +300,15 @@ g:clap_selected_sign                                     *g:clap_selected_sign*
   Default: `{ 'text': ' >', 'texthl': 'ClapSelectedSign', 'linehl': 'ClapSelected' }`
 
 
+g:clap_preview                                                 *g:clap_preview*
+
+  Type: |Dict|
+  Default: `{ 'scrollbar': { 'fill_char': '▌' } }`
+
+  This variable controls the scrollbar for preview window, available for
+  neovim only.
+
+
 g:clap_open_preview                                       *g:clap_open_preview*
 
   Type: |String|
@@ -379,6 +347,24 @@ g:clap_preview_direction                             *g:clap_preview_direction*
 
   - `UD` means the display window is up and the preview window is down.
 
+
+g:clap_preview_size                                         *g:clap_preview_size*
+
+  Type: |Number| or |Dict|
+  Default: `5`
+
+  This variable controls the size of preview, normally the number of preview
+  lines is `2 * g:clap_preview_size` .
+
+  If |g:clap_preview_size| is a |Number|, all providers use the same size.
+
+  If |g:clap_preview_size| is a |Dict|, you can use different size for various
+  providers, use provider id as the key, `*` is a special key for the default size.
+  >
+  " 20 preview lines for files provider, 10 lines for the other providers.
+  let g:clap_preview_size = { '*': 5, 'files': 10 }
+<
+
 g:clap_open_action                                         *g:clap_open_action*
 
   Type: |Dict|
@@ -412,20 +398,6 @@ g:clap_search_box_border_style                  *g:clap_search_box_border_style*
   window.
 
   Set this variable to `nil` to disable the search box border symbol.
-
-
-g:clap_default_external_filter                  *g:clap_default_external_filter*
-
-  Type: |String| or |v:null|
-  Default: `'maple' | 'fzy' | 'fzf' | 'sk' | v:null`
-
-  The default provider's async implementation is based on these external
-  filter programs in the following order:
-
-  `maple` - actually using the algorithm of skim, with the highlight of matched indices.
-  `fzy` - no highlight of matched indices.
-  `fzf` - no highlight of matched indices.
-  `sk` - no highlight of matched indices.
 
 
 g:clap_prompt_format                             *g:clap_prompt_format*
@@ -490,7 +462,18 @@ g:clap_enable_icon                               *g:clap_enable_icon*
   render these icons properly.
 
   This variable is indended for all the providers by default. It has no effect
-  if some clap provider already has its own icon flag, e.g., |g:clap_provider_grep_enable_icon| .
+  if some clap provider already has its own icon flag, e.g.,
+  |g:clap_provider_live_grep_enable_icon| .
+
+
+g:clap_preserve_selections_on_query_change *g:clap_preserve_selections_on_query_change*
+
+  Type: |Bool|
+  Default: `v:false`
+
+  When set to `v:true`, the current selections will be preserved when the
+  input query changes, the items selected from multiple queries will be
+  combined for the final processing.
 
 
 g:clap_fuzzy_match_hl_groups                      *g:clap_fuzzy_match_hl_groups*
@@ -517,58 +500,6 @@ g:clap_fuzzy_match_hl_groups                      *g:clap_fuzzy_match_hl_groups*
   item of |g:clap_fuzzy_match_hl_groups| is `[ctermfg, guifg]` .
 
 
-g:clap_builtin_fuzzy_filter_threshold     *g:clap_builtin_fuzzy_filter_threshold*
-
-  Type: |Number|
-  Default: `10000`(no Python dylib), `100000`(with Python dylib)
-
-  Vim-clap will try to spawn a asynchronous job to get the total possible
-  results on entering the main window, instead of dispatching with the
-  user's input later, to get the total result number and use the built-in
-  fuzzy filter which uses the fzy algorithm.
-
-  The benefit of the built-in fzy filter is that no redraw that happens in the
-  async job, that means no flicker on your every input. Its drawback is that
-  the built-in filter is synchoronous that will block the UI if you have a
-  monster of candidates.
-
-  Set the value to `0` to always use the full-featured async implementation
-  powerd by Rust backend.
-  >
-  let g:clap_builtin_fuzzy_filter_threshold = 0
-<
-
-g:clap_cache_threshold                                   *g:clap_cache_threshold*
-
-  Type: |Number|
-  Default: `100000`
-
-  When the number of execution results of some command exceeds this variable,
-  the output will be wrote to a cache file, which will be reused next time
-  when you invoke the same command against the same directory.
-
-  If you want to run the command without using the cache or want to rebuild
-  the cache, append `!` to the provider argument in `:Clap` command, e.g.,
-  `:Clap files!` .
-
-
-g:clap_preview_size                                         *g:clap_preview_size*
-
-  Type: |Number| or |Dict|
-  Default: `5`
-
-  This variable controls the size of preview, normally the number of preview
-  lines is `2 * g:clap_preview_size` .
-
-  If |g:clap_preview_size| is a |Number|, all providers use the same size.
-
-  If |g:clap_preview_size| is a |Dict|, you can use different size for various
-  providers, use provider id as the key, `*` is a special key for the default size.
-  >
-  " 20 preview lines for files provider, 10 lines for the other providers.
-  let g:clap_preview_size = { '*': 5, 'files': 10 }
-<
-
 g:clap_enable_background_shadow                 *g:clap_enable_background_shadow*
 
   Type: |Bool|
@@ -584,6 +515,7 @@ g:clap_enable_background_shadow                 *g:clap_enable_background_shadow
   - https://github.com/liuchengxu/vim-clap/issues/670,
   - https://github.com/liuchengxu/vim-clap/issues/836
 
+
 g:clap_background_shadow_blend                  *g:clap_background_shadow_blend*
 
   Type: |Number|
@@ -594,27 +526,6 @@ g:clap_background_shadow_blend                  *g:clap_background_shadow_blend*
   >
   " Lighter shadow
   let g:clap_background_shadow_blend = 75
-<
-
-g:clap_force_matchfuzzy                                *g:clap_force_matchfuzzy*
-
-  Type: |Number|
-  Default: `Undefined`
-
-  Force use |matchfuzzypos()| as the sync filter engine, otherwise vim-clap
-  will try to use the other sync implementation in the order of Lua>Python>VimL.
-
-
-g:clap_force_python                                        *g:clap_force_python*
-
-  Type: |Bool|
-  Default: `Undefined`
-
-  Force use Python as the sync filter engine. Some matching improvements are
-  only implemented on the Rust end, you also need to compile the Python dynamic
-  module to use that.
-
-  Ref https://github.com/liuchengxu/vim-clap/pull/614
 
 
 -------------------------------------------------------------------------------
@@ -623,23 +534,17 @@ g:clap_force_python                                        *g:clap_force_python*
 
 ClapInput                                                            *ClapInput*
 
-  Default: `hi default link ClapInput Visual`
-
-  The highlight for input window.
+  Highlight for input window. Default: `hi default link ClapInput Visual`
 
 
 ClapDisplay                                                         *ClapDisplay*
 
-  Default: `hi default link ClapDisplay Pmenu`
-
-  The highlight for display window.
+  Highlight for display window. Default: `hi default link ClapDisplay Pmenu`
 
 
 ClapPreview                                                         *ClapPreview*
 
-  Default: `hi default link ClapPreview PmenuSel`
-
-  The highlight for preview window.
+  Highlight for preview window. Default: `hi default link ClapPreview PmenuSel`
 
 
 ClapDefaultSelected                                          *ClapDefaultSelected*
@@ -693,20 +598,20 @@ The option naming convention for provider is `g:clap_provider_{provider_id}_{opt
 
 
 -------------------------------------------------------------------------------
-6.1. Clap Grep Options                                      *clap-grep-options*
+6.1. Clap Live Grep Options                              *clap-live-grep-options*
 
-g:clap_provider_grep_executable                   *g:clap_provider_grep_executable*
+g:clap_provider_live_grep_executable       *g:clap_provider_live_grep_executable*
 
   Type: |String|
   Default: `'rg'`
 
   The grep tool to be used. If you change it, you may need to adjust the
-  g:clap_provider_grep_opts as well. Please make sure grep_tool has an output
-  or a flag similar to the --vimgrep flag in ag/rg. Otherwise you may
+  g:clap_provider_live_grep_opts as well. Please make sure grep_tool has an
+  output or a flag similar to the --vimgrep flag in ag/rg. Otherwise you may
   encounter issues.
 
 
-g:clap_provider_grep_delay                         *g:clap_provider_grep_delay*
+g:clap_provider_live_grep_delay                 *g:clap_provider_live_grep_delay*
 
   Type: |Number|
   Default: `300`
@@ -715,7 +620,7 @@ g:clap_provider_grep_delay                         *g:clap_provider_grep_delay*
   will be spawned in the background.
 
 
-g:clap_provider_grep_blink                         *g:clap_provider_grep_blink*
+g:clap_provider_live_grep_blink                 *g:clap_provider_live_grep_blink*
 
   Type: |List|
   Default: `[2, 100]`
@@ -725,7 +630,7 @@ g:clap_provider_grep_blink                         *g:clap_provider_grep_blink*
   Set it to `[0, 0]` to disable this blink.
 
 
-g:clap_provider_grep_opts                          *g:clap_provider_grep_opts*
+g:clap_provider_live_grep_opts                   *g:clap_provider_live_grep_opts*
 
   Type: |String|
   Default: `'-H --no-heading --vimgrep --smart-case'`
@@ -740,7 +645,7 @@ g:clap_provider_grep_opts                          *g:clap_provider_grep_opts*
   similar option exists.
 
 
-g:clap_provider_grep_enable_icon              *g:clap_provider_grep_enable_icon*
+g:clap_provider_live_grep_enable_icon     *g:clap_provider_live_grep_enable_icon*
 
   Type: |Number|
   Default: `exists('g:loaded_webdevicons') || get(g:, 'spacevim_nerd_fonts', 0)`
@@ -748,7 +653,7 @@ g:clap_provider_grep_enable_icon              *g:clap_provider_grep_enable_icon*
   Set this variable to `0` to disable drawing an icon for the returned result.
 
 
-g:clap_provider_grep_cmd_format             *g:clap_provider_grep_cmd_format*
+g:clap_provider_live_grep_cmd_format       *g:clap_provider_live_grep_cmd_format*
 
   Type: |String|
   Default: `'%s %s "%s"'.(has('win32') ? ' .' : '')`
@@ -756,8 +661,8 @@ g:clap_provider_grep_cmd_format             *g:clap_provider_grep_cmd_format*
   The format used to create the command. 3 strings will be passed to the
   format in that order:
 
-  1. |g:clap_provider_grep_executable|
-  2. |g:clap_provider_grep_opts|
+  1. |g:clap_provider_live_grep_executable|
+  2. |g:clap_provider_live_grep_opts|
   3. |g:clap.input.get()|, the query string that the user has entered to search
 
   In most cases this option does not have to be adjusted for tools like Ag &
@@ -861,22 +766,8 @@ g:clap_provider_tags_force_vista           *g:clap_provider_tags_force_vista*
 7. Commands                                                     *clap-commands*
 
   >
-  :Clap[!] [provider_id_or_alias] [++opt] [+opt]
+  :Clap [provider_id_or_alias]
 <
-
-All the opts are accessible via `g:clap.context[opt]`.
-
-The form of `[++opt]` is `++{optname}={value}`, where {optname} is one of:
-
-  - `++externalfilter=fzf` or `++ef=fzf`.
-
-`[+opt]` is used for the bool arguments:
-
- - `+async`
- - `+ignorecase`: case-insensitive search.
-
-`Clap! [provider_id_or_alias]` is equal to `Clap [provider_id_or_alias] +async` .
-
 
 ===============================================================================
 8. Movement/Keybindings                                       *clap-movement*
@@ -935,8 +826,8 @@ Change default keybindings                      *change-clap-default-keybindings
   `clap_input`, e.g,
   >
   " For example, use <C-n>/<C-p> instead of <C-j>/<C-k> to navigate the result.
-  autocmd FileType clap_input inoremap <silent> <buffer> <C-n> <C-R>=clap#navigation#linewise('down')<CR>
-  autocmd FileType clap_input inoremap <silent> <buffer> <C-p> <C-R>=clap#navigation#linewise('up')<CR>
+  autocmd FileType clap_input inoremap <silent> <buffer> <C-n> <C-R>=clap#navigation#linewise_scroll('down')<CR>
+  autocmd FileType clap_input inoremap <silent> <buffer> <C-p> <C-R>=clap#navigation#linewise_scroll('up')<CR>
 <
   For Vim, please use |g:clap_popup_move_manager|.
   >

@@ -1,0 +1,11 @@
+[package]
+name = "utils"
+authors.workspace = true
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+bytecount = { workspace = true }
+memchr = { workspace = true }
+memmap2 = { workspace = true }
+simdutf8 = { workspace = true }

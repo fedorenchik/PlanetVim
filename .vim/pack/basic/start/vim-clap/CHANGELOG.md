@@ -2,6 +2,117 @@
 
 ## [unreleased]
 
+## [0.55] 2025-5-3
+
+- Remove the duplicate entries by using the canonicalized file path in `recent_files` provider.
+
+## [0.54] 2024-5-20
+
+- Fixes the regression of frozen UI caused by the blocking operations in OnMove implementation. #1081
+- Fixes the build for Android. #1079
+
+## [0.53] 2024-5-2
+
+- Introduce `remote_sink` in provider in order to implement the sink function on the Rust side, particularly useful for the providers with static list of source like lsp.
+- Add `multi_select` property explicitly in provider, useful for the provider lsp.
+- Add `:ClapAction diagnostics.{first,last,next,prev}` for navigating between all kinds of the diagnostics.
+- Add `:ClapAction diagnostics.{firstHint,lastHint,nextHint,prevHint}` for navigating between the Hint diagnostics.
+- Optimize the grep search performance significantly, 2x performance has been achieved compared to the last release.
+
+### Breaking changes
+
+- Rename plugin `cursorword` to `word-highlighter` and added the new feature of highlighting keywords like TODO.
+
+## [0.52] 2024-2-29
+
+### Plugins
+
+- Change the naming convention of plugin action from `plugin/foo-action` to `plugin.fooAction` for the compatibility with tools like coc.nvim.
+- Use different highlight groups for the span of error and warn diagnostics.
+- Added diagnostics plugin in order to conveniently inspect the collected diagnostics from both the linter and lsp plugin.
+  Now you should use `:ClapAction diagnostics.firstError` instead of `:ClapAction linter.firstError` to jump to the position of first error.
+
+### Internal
+
+- Improve the robustness of the publish pipeline by migrating Bash and Python scripts to `cargo xtask`.
+
+## [0.51] 2024-02-18
+
+## Added
+
+- Input history of providers are now persistent.
+- Added experimental winbar support (neovim-only).
+```
+[winbar]
+enable = true
+```
+- Added project-specific ignore configs for more providers. You can use
+
+```toml
+# Ignore the results from the certain files/folders.
+# For example, ignore the test files when searching in the folder ~/src/github.com/bitcoin/bitcoin.
+[provider.project-ignores."~/src/github.com/bitcoin/bitcoin"]
+ignore-file-path-pattern = ["test"]
+ignore-file-name-pattern = ["test"]
+```
+
+## Fixed
+
+- Make the behaviour on empty query consistent across the providers.
+
+## [0.50] 2024-01-02
+
+## [0.49] 2023-11-19
+
+- Added `quick_pick` to provider, which is suitable for the providers like `:Clap clap_actions` without a preview.
+- Refine the tree-sitter highlighting for Rust.
+- Various Fixes
+
+## [0.48] 2023-11-18
+
+### Added
+
+The highlight of this release is the integration of tree-sitter highlighting, use `:ClapAction syntax/tree-sitter-highlight` to have a try.
+
+## [0.47] 2023-10-28
+
+## [0.46] 2023-08-29
+
+## [0.45] 2023-07-01
+
+### Removed
+
+- Remove a bunch of deprecated flags: `g:clap_maple_delay`, `g:clap_dispatcher_drop_cache`, `g:clap_default_external_filter`, `g:clap_builtin_fuzzy_filter_threshold`, `g:clap_cache_threshold`, `g:clap_force_matchfuzzy`, `g:clap_force_python`. They are unused now and I believe most of them are hardly really used by users.
+
+### Changed
+
+- `++opt` and `+opt` have been replaced with `--opt value`/`--opt=value` and `--opt` in a consistent way. Ref to #981 for upgrade guide.
+
+## [0.44] 2023-05-27
+
+## [0.43] 2023-04-16
+
+## [0.42] 2023-03-11
+
+## [0.41] 2023-02-10
+
+## [0.40] 2023-01-27
+
+## [0.39] 2023-01-13
+
+## [0.38] 2023-01-08
+
+### Added
+
+- Build executables for more platforms. #901
+- Rework the bridge between the Rust backend and Vim, some commonly used providers such as `grep`, `files`, `blines` are reimplemented to be significantly faster and reponsive without using any caching tricks. #872
+
+## [0.37] 2022-10-16
+
+### Changed
+
+- Rename the provider `grep` and `grep2`. `:Clap grep` becomes `:Clap live_grep`, `:Clap grep2` becomes `:Clap grep`. If you have some grep variables like `g:clap_provider_grep_foo` before, now you need to rename them to `g:clap_provider_live_grep_foo`. #879
+
 ### Fixed
 
 - Fix the filer preview on backend. #863

@@ -6,17 +6,6 @@ set cpoptions&vim
 
 let s:is_nvim = has('nvim')
 
-function! clap#api#setbufvar_batch(bufnr, dict) abort
-  call map(a:dict, 'setbufvar(a:bufnr, v:key, v:val)')
-endfunction
-
-" If the user has specified the externalfilter option in the context.
-" If so, we should not use the built-in fuzzy filter then.
-function! clap#api#has_externalfilter() abort
-  return has_key(g:clap.context, 'ef')
-        \ || has_key(g:clap.context, 'externalfilter')
-endfunction
-
 " Returns the original full line with icon if it was added by maple given
 " the lnum of display buffer.
 function! clap#api#get_origin_line_at(lnum) abort
@@ -28,7 +17,11 @@ function! clap#api#get_origin_line_at(lnum) abort
   endif
 endfunction
 
-if s:is_nvim
+if exists('*win_execute')
+  function! clap#api#win_execute(winid, command) abort
+    return win_execute(a:winid, a:command)
+  endfunction
+else
   function! clap#api#win_execute(winid, command) abort
     let cur_winid = bufwinid('')
     if cur_winid != a:winid
@@ -42,19 +35,205 @@ if s:is_nvim
       return execute(a:command)
     endif
   endfunction
+endif
 
-  function! clap#api#floating_win_is_valid(winid) abort
+function! clap#api#update_winbar(winid, winbar, winbar_hl) abort
+  if winheight(a:winid) < 2
+    return 0
+  endif
+  if empty(a:winbar)
+    let l:winbar = ''
+  else
+    let l:winbar = escape(a:winbar, ' ')
+  endif
+  call clap#api#win_execute(a:winid, 'setlocal winbar='.l:winbar)
+  if !exists('s:winbar_hl_initialized')
+    call execute('hi! link WinBar '.a:winbar_hl)
+    call execute('hi! link WinBarNC '.a:winbar_hl)
+    let s:winbar_hl_initialized = v:true
+  endif
+endfunction
+
+function! clap#api#on_click_function_tag(minwid, clicks, button, mods) abort
+  call clap#client#notify('ctags.__onClickFunctionTag', {})
+endfunction
+
+let s:api = {}
+
+if s:is_nvim
+  function! clap#api#buf_set_lines(bufnr, lines) abort
+    call nvim_buf_set_lines(a:bufnr, 0, -1, 0, a:lines)
+  endfunction
+
+  function! clap#api#buf_clear(bufnr) abort
+    call nvim_buf_set_lines(a:bufnr, 0, -1, 0, [])
+  endfunction
+
+  function! s:api.win_is_valid(winid) abort
     return nvim_win_is_valid(a:winid)
   endfunction
-else
-  function! clap#api#win_execute(winid, command) abort
-    return win_execute(a:winid, a:command)
+
+  function! s:api.buf_is_valid(buf) abort
+    return nvim_buf_is_valid(a:buf)
   endfunction
 
-  function! clap#api#floating_win_is_valid(winid) abort
-    return !empty(popup_getpos(a:winid))
+  function! s:api.get_var(name) abort
+    return nvim_get_var(a:name)
+  endfunction
+else
+  function! clap#api#buf_set_lines(bufnr, lines) abort
+    " silent is required to avoid the annoying --No lines in buffer--.
+    silent call deletebufline(a:bufnr, 1, '$')
+
+    call appendbufline(a:bufnr, 0, a:lines)
+    " Delete the last possible empty line.
+    " Is there a better solution in vim?
+    if empty(getbufline(a:bufnr, '$')[0])
+      silent call deletebufline(a:bufnr, '$')
+    endif
+  endfunction
+
+  function! clap#api#buf_clear(bufnr) abort
+    silent call deletebufline(a:bufnr, 1, '$')
+  endfunction
+
+  function! s:api.win_is_valid(winid) abort
+    return win_screenpos(a:winid) != [0, 0]
+  endfunction
+
+  function! s:api.buf_is_valid(buf) abort
+    return bufexists(a:buf) ? v:true : v:false
+  endfunction
+
+  function! s:api.get_var(name) abort
+    return get(g:, a:name, v:null)
   endfunction
 endif
+
+function! s:api.get_screen_lines_range() abort
+  return [win_getid(), line('w0'), line('w$')]
+endfunction
+
+function! s:api.get_cursor_pos() abort
+  let [_, row, column, _] = getpos('.')
+  return [bufnr(), row, column]
+endfunction
+
+" The leading icon is stripped.
+function! s:api.display_getcurline() abort
+  return [g:clap.display.getcurline(), get(g:, '__clap_icon_added_by_maple', v:false)]
+endfunction
+
+function! s:api.display_set_lines(lines) abort
+  call g:clap.display.set_lines(a:lines)
+endfunction
+
+function! s:api.provider_source() abort
+  if has_key(g:clap.provider, 'source_type') && has_key(g:clap.provider._(), 'source')
+    if g:clap.provider.source_type == g:__t_string
+      return [g:clap.provider._().source]
+    elseif g:clap.provider.source_type == g:__t_func_string
+      return [g:clap.provider._().source()]
+    elseif g:clap.provider.source_type == g:__t_list
+      return [g:clap.provider._().source]
+    elseif g:clap.provider.source_type == g:__t_func_list
+      " Note that this function call should always be pretty fast and not slow down Vim.
+      return [g:clap.provider._().source()]
+    endif
+  endif
+  return []
+endfunction
+
+function! s:api.provider_source_cmd() abort
+  if has_key(g:clap.provider, 'source_type') && has_key(g:clap.provider._(), 'source')
+    if g:clap.provider.source_type == g:__t_string
+      return [g:clap.provider._().source]
+    elseif g:clap.provider.source_type == g:__t_func_string
+      return [g:clap.provider._().source()]
+    endif
+  endif
+  return []
+endfunction
+
+function! s:api.provider_args() abort
+  return get(g:clap.provider, 'args', [])
+endfunction
+
+function! s:api.input_set(value) abort
+  call g:clap.input.set(a:value)
+endfunction
+
+function! s:api.set_var(name, value) abort
+  execute 'let '.a:name.'= a:value'
+endfunction
+
+function! s:api.current_buffer_path() abort
+  return expand('#'.bufnr('%').':p')
+endfunction
+
+function! s:api.matchdelete_batch(match_ids, winid) abort
+  silent! call map(a:match_ids, 'matchdelete(v:val, a:winid)')
+endfunction
+
+function! s:api.curbufline(lnum) abort
+  return get(getbufline(bufnr(''), a:lnum), 0, v:null)
+endfunction
+
+function! s:api.append_and_write(lnum, text) abort
+  call append(a:lnum, a:text)
+  silent noautocmd write
+endfunction
+
+function! s:api.show_lines_in_preview(lines) abort
+  if type(a:lines) is v:t_string
+    call g:clap.preview.show([a:lines])
+  else
+    call g:clap.preview.show(a:lines)
+  endif
+endfunction
+
+function! s:api.echomsg(msg) abort
+  echomsg a:msg
+endfunction
+
+function! s:api.verbose(cmd) abort
+  redir => l:output
+  silent execute ':verbose' a:cmd
+  redir END
+  return l:output
+endfunction
+
+function! s:api.set_initial_query(query) abort
+  if a:query ==# '@visual'
+    let query = clap#util#get_visual_selection()
+  else
+    let query = clap#util#expand(a:query)
+  endif
+
+  if s:is_nvim
+    call feedkeys(query)
+  else
+    call g:clap.input.set(query)
+    " Move the cursor to the end.
+    call feedkeys("\<C-E>", 'xt')
+  endif
+
+  return query
+endfunction
+
+function! clap#api#call(method, args) abort
+  " Catch all the exceptions
+  try
+    if has_key(s:api, a:method)
+      return call(s:api[a:method], a:args)
+    else
+      return call(a:method, a:args)
+    endif
+  catch /^Vim:Interrupt$/ " catch interrupts (CTRL-C)
+  catch
+    echoerr printf('[clap#api#call] method: %s, args: %s, exception: %s', a:method, string(a:args), v:exception)
+  endtry
+endfunction
 
 let &cpoptions = s:save_cpo
 unlet s:save_cpo

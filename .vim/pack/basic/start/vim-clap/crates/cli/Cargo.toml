@@ -1,0 +1,39 @@
+[package]
+name = "cli"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+homepage.workspace = true
+description = "CLI for vim-clap Rust backend"
+
+[dependencies]
+anyhow = { workspace = true }
+clap = { workspace = true }
+itertools = { workspace = true }
+num_cpus = { workspace = true }
+tokio = { workspace = true, features = ["fs", "rt", "process", "macros", "rt-multi-thread", "sync", "time"] }
+rayon = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+subprocess = { workspace = true }
+tracing = { workspace = true }
+tracing-appender = { workspace = true }
+tracing-subscriber = { workspace = true, features = ["env-filter"] }
+
+filter = { workspace = true }
+icon = { workspace = true }
+matcher = { workspace = true }
+maple_config = { workspace = true }
+maple_core = { workspace = true }
+printer = { workspace = true }
+types = { workspace = true }
+utils = { workspace = true }
+
+[dev-dependencies]
+criterion = { workspace = true }
+
+[[bench]]
+name = "benchmark"
+harness = false

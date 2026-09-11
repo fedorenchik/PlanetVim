@@ -467,11 +467,11 @@
       "path": ".vim/pack/basic/start/vim-clap",
       "provenance": {
         "branch": "master",
-        "commit": "dc7089bef1e9759a219dc7df7efe39053f20fad3",
+        "commit": "8d5ed041c8f583193c5268ee2fd5b46e3694b2fc",
         "kind": "git-subrepo",
         "remote": "https://github.com/liuchengxu/vim-clap.git"
       },
-      "snapshot_sha256": "82d24698e404964bdc6daf2157f2b1d9ffdb43003728a56da6e4000c4f3cbb79"
+      "snapshot_sha256": "9c18d078d88f4591f025dd2e5baac853758d5f03a0afe84523e0c04a9296bb9e"
     },
     {
       "group": "basic",

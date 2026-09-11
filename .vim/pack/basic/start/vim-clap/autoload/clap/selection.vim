@@ -17,7 +17,13 @@ function! clap#selection#get_sink_or_sink_star_params() abort
     let Sink = g:clap.provider.sink
     let sink_args = g:clap.display.getcurline()
   endif
+  let g:__clap_provider_did_sink = v:true
   return [Sink, sink_args]
+endfunction
+
+function! clap#selection#line_numbers() abort
+  let selected = clap#sign#get()
+  return s:multi_select_enabled && !empty(selected) ? selected : [g:clap.display.getcurlnum()]
 endfunction
 
 function! clap#selection#get_action_or_action_star_params() abort
@@ -49,8 +55,8 @@ function! clap#selection#toggle() abort
   endif
 
   noautocmd call clap#sign#toggle_cursorline_multi()
-  call clap#navigation#line_down()
-  redraw
+  call clap#navigation#linewise_scroll_down()
+  call clap#indicator#render()
 
   let s:multi_select_enabled = v:true
 
@@ -62,14 +68,21 @@ function! s:get_opaque_lines() abort
   let selected = clap#sign#get()
   " User can already press the Tab or not.
   if s:multi_select_enabled && !empty(selected)
-    return map(copy(selected), 'clap#api#get_origin_line_at(v:val)')
+    let lines = map(copy(selected), 'clap#api#get_origin_line_at(v:val)')
   else
-    return [g:clap.display.getcurline()]
+    let lines = [g:clap.display.getcurline()]
   endif
+  return extend(clap#sign#preserved_selections(), lines)
 endfunction
 
 " Apply the open action specified by `g:clap_open_action` given the (selected) lines.
 function! clap#selection#try_open(action) abort
+  " ctrl-t/ctrl-x/ctrl-v are handled on the Rust side for filer.
+  if g:clap.provider.id ==# 'filer'
+    call clap#client#notify_provider(a:action)
+    return
+  endif
+
   if !has_key(g:clap_open_action, a:action)
         \ || g:clap.display.get_lines() == [g:clap_no_matches_msg]
     return
@@ -85,7 +98,7 @@ function! clap#selection#try_open(action) abort
     for line in s:get_opaque_lines()
       execute open_cmd line
     endfor
-    call clap#_exit()
+    call clap#_exit_provider()
 
   elseif g:clap.provider.support_open_action()
 
@@ -95,7 +108,7 @@ function! clap#selection#try_open(action) abort
       call g:clap.provider.sink(line)
     endfor
     call remove(g:clap, 'open_action')
-    call clap#_exit()
+    call clap#_exit_provider()
 
   endif
   silent doautocmd <nomodeline> User ClapOnExit

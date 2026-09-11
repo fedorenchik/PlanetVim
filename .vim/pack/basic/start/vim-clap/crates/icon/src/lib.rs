@@ -3,7 +3,6 @@
 // pub use constants::*;
 include!(concat!(env!("OUT_DIR"), "/constants.rs"));
 
-use std::fmt::Display;
 use std::path::Path;
 
 /// The type used to represent icons.
@@ -16,31 +15,35 @@ pub const DEFAULT_ICON: IconType = '';
 pub const FOLDER_ICON: IconType = '';
 pub const DEFAULT_FILER_ICON: IconType = '';
 
-// Each added icon length is 4 bytes.
-pub const ICON_LEN: usize = 4;
+/// Patched icon length in chars.
+///
+/// One char icon plus one space.
+///
+/// Matcher returns the indices in chars, but both Vim and Neovim add highlights
+/// using the byte index, hence printer converts the char indices to the byte indices
+/// before sending the final result to Vim/Neovim.
+pub const ICON_CHAR_LEN: usize = 2;
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Default)]
 pub enum Icon {
+    #[default]
     Null,
     Enabled(IconKind),
-}
-
-impl Default for Icon {
-    fn default() -> Self {
-        Self::Null
-    }
+    /// This variant is a mere flag indicating the icon is enabled but actually does not
+    /// do anything on rendering the icon, which will be handled by ClapItem provider internally.
+    ClapItem,
 }
 
 impl Icon {
     pub fn icon_kind(&self) -> Option<IconKind> {
         match self {
-            Self::Null => None,
             Self::Enabled(icon_kind) => Some(*icon_kind),
+            _ => None,
         }
     }
 
     pub fn enabled(&self) -> bool {
-        matches!(self, Self::Enabled(_))
+        matches!(self, Self::Enabled(_) | Self::ClapItem)
     }
 }
 
@@ -113,9 +116,9 @@ impl IconKind {
 
 /// Return appropriate icon for the path. If no icon matched, return the specified default one.
 ///
-/// Try matching the exactmatch map against the file name, and then the extension map.
-#[inline]
-pub fn get_icon_or<P: AsRef<Path>>(path: P, default: IconType) -> IconType {
+/// First try matching the [`EXACTMATCH_ICON_TABLE`] using the file name, and then finding the
+/// [`EXTENSION_ICON_TABLE`] using the file extension.
+fn get_icon_or<P: AsRef<Path>>(path: P, default: IconType) -> IconType {
     path.as_ref()
         .file_name()
         .and_then(std::ffi::OsStr::to_str)
@@ -135,34 +138,14 @@ pub fn get_icon_or<P: AsRef<Path>>(path: P, default: IconType) -> IconType {
         })
 }
 
-pub fn file_icon(line: &str) -> IconType {
-    let path = Path::new(line);
-    get_icon_or(&path, DEFAULT_ICON)
-}
-
-pub fn tags_kind_icon(kind: &str) -> IconType {
-    bsearch_icon_table(kind, TAGKIND_ICON_TABLE)
-        .map(|idx| TAGKIND_ICON_TABLE[idx].1)
-        .unwrap_or(DEFAULT_ICON)
+pub fn icon_or_default(path: &Path) -> IconType {
+    get_icon_or(path, DEFAULT_ICON)
 }
 
 fn buffer_tags_icon(line: &str) -> IconType {
     pattern::extract_buffer_tags_kind(line)
         .map(tags_kind_icon)
         .unwrap_or(DEFAULT_ICON)
-}
-
-#[inline]
-pub fn filer_icon<P: AsRef<Path>>(path: P) -> IconType {
-    if path.as_ref().is_dir() {
-        FOLDER_ICON
-    } else {
-        get_icon_or(path, DEFAULT_FILER_ICON)
-    }
-}
-
-pub fn prepend_filer_icon<P: AsRef<Path>>(path: P, line: impl Display) -> String {
-    format!("{} {}", filer_icon(path), line)
 }
 
 fn proj_tags_icon(line: &str) -> IconType {
@@ -180,9 +163,14 @@ fn grep_icon(line: &str) -> IconType {
         .unwrap_or(DEFAULT_ICON)
 }
 
-/// Prepend an icon to the output line of ripgrep.
-pub fn prepend_grep_icon(line: &str) -> String {
-    format!("{} {}", grep_icon(line), line)
+pub fn file_icon(line: &str) -> IconType {
+    get_icon_or(Path::new(line), DEFAULT_ICON)
+}
+
+pub fn tags_kind_icon(kind: &str) -> IconType {
+    bsearch_icon_table(kind, TAGKIND_ICON_TABLE)
+        .map(|idx| TAGKIND_ICON_TABLE[idx].1)
+        .unwrap_or(DEFAULT_ICON)
 }
 
 #[cfg(test)]
@@ -200,8 +188,10 @@ mod tests {
     fn test_icon_length() {
         for table in [EXTENSION_ICON_TABLE, EXACTMATCH_ICON_TABLE].iter() {
             for (_, i) in table.iter() {
-                let icon = format!("{} ", i);
+                let icon = format!("{i} ");
+                // 4 bytes, 2 chars.
                 assert_eq!(icon.len(), 4);
+                assert_eq!(icon.chars().count(), 2);
             }
         }
     }

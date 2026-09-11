@@ -23,31 +23,24 @@ function! s:into_qf_item(line) abort
 endfunction
 
 function! s:dumb_jump_sink_star(lines) abort
-  call clap#util#open_quickfix(map(a:lines, 's:into_qf_item(v:val)'))
+  call clap#sink#open_quickfix(map(a:lines, 's:into_qf_item(v:val)'))
 endfunction
 
 function! s:dumb_jump.on_typed() abort
   let query = g:clap.input.get()
   if empty(query)
-    call clap#highlight#clear()
-    return
+    call clap#highlighter#clear_display()
+  else
+    call clap#client#notify_provider('on_typed')
   endif
-  call clap#client#call('dumb_jump/on_typed', function('clap#state#handle_response_on_typed'), {
-        \ 'provider_id': g:clap.provider.id,
-        \ 'query': query,
-        \ 'extension': fnamemodify(bufname(g:clap.start.bufnr), ':e'),
-        \ 'cwd': clap#rooter#working_dir(),
-        \ })
 endfunction
 
 function! s:dumb_jump.init() abort
-  let extension = fnamemodify(bufname(g:clap.start.bufnr), ':e')
-  call clap#client#call_on_init(
-        \ 'dumb_jump/on_init', function('clap#state#handle_response_on_typed'), clap#client#init_params({'extension': extension}))
+  call clap#client#notify_on_init()
 endfunction
 
 function! s:dumb_jump.on_move_async() abort
-  call clap#client#call_with_lnum('dumb_jump/on_move', function('clap#impl#on_move#handler'))
+  call clap#client#notify_provider('on_move')
 endfunction
 
 let s:dumb_jump['sink*'] = function('s:dumb_jump_sink_star')

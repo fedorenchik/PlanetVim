@@ -1,31 +1,65 @@
-//! This crate provides the feature of diplaying the information of filtered lines
+//! This crate provides the feature of displaying the information of filtered lines
 //! by printing them to stdout in JSON format.
 
 mod trimmer;
 mod truncation;
 
-use icon::{Icon, ICON_LEN};
+use self::truncation::LinesTruncatedMap;
+use icon::{Icon, ICON_CHAR_LEN};
+use serde::Serialize;
+use serde_json::Value;
+use std::path::PathBuf;
+use truncation::truncate_grep_results;
 use types::MatchedItem;
-use utility::{println_json, println_json_with_length};
+use utils::char_indices_to_byte_indices;
 
+pub use self::trimmer::v1::{trim_text, TrimInfo, TrimmedText};
 pub use self::truncation::{
-    truncate_grep_lines, truncate_long_matched_lines, truncate_long_matched_lines_v0,
-    LinesTruncatedMap,
+    truncate_grep_lines, truncate_item_output_text, truncate_item_output_text_v0,
 };
 
-/// 1. Truncate the line.
-/// 2. Add an icon.
-#[derive(Debug, Clone)]
+/// Combine json and println macro.
+#[macro_export]
+macro_rules! println_json {
+  ( $( $field:expr ),+ ) => {
+    {
+      println!("{}", serde_json::json!({ $(stringify!($field): $field,)* }))
+    }
+  }
+}
+
+/// Combine json and println macro.
+///
+/// Neovim needs Content-length info when using stdio-based communication.
+#[macro_export]
+macro_rules! println_json_with_length {
+  ( $( $field:expr ),+ ) => {
+    {
+      let msg = serde_json::json!({ $(stringify!($field): $field,)* });
+      if let Ok(s) = serde_json::to_string(&msg) {
+          println!("Content-length: {}\n\n{}", s.len(), s);
+      }
+    }
+  }
+}
+
+/// This structure holds the data that can be easily used to update the UI on the Vim side.
+///
+/// Potential processing to the display text:
+///
+/// 1. Truncate the line if the window can't fit it.
+/// 2. Add an icon to the beginning.
+#[derive(Debug, Clone, Default, Serialize)]
 pub struct DisplayLines {
     /// Lines to display, maybe truncated.
     pub lines: Vec<String>,
-    /// Position of highlights in the lines above.
+    /// Byte position of highlights in the lines above.
     pub indices: Vec<Vec<usize>>,
     /// A map of the line number to the original untruncated line.
     pub truncated_map: LinesTruncatedMap,
-    /// An icon is added to the head of line.
+    /// Whether an icon is added to the head of line.
     ///
-    /// The icon is added after the truncating processing.
+    /// The icon is added after the truncation.
     pub icon_added: bool,
 }
 
@@ -44,93 +78,14 @@ impl DisplayLines {
         }
     }
 
-    pub fn print_on_session_create(&self) {
-        let Self {
-            lines,
-            truncated_map,
-            icon_added,
-            ..
-        } = self;
-        #[allow(non_upper_case_globals)]
-        const method: &str = "s:init_display";
-        println_json_with_length!(method, lines, icon_added, truncated_map);
+    // line_number is 1-based.
+    pub fn get_line(&self, line_number: usize) -> &str {
+        self.truncated_map
+            .get(&line_number)
+            .unwrap_or_else(|| &self.lines[line_number - 1])
     }
 
-    pub fn print_on_typed(&self, total: usize) {
-        let Self {
-            lines,
-            indices,
-            truncated_map,
-            icon_added,
-        } = self;
-
-        #[allow(non_upper_case_globals)]
-        const method: &str = "s:process_filter_message";
-        println_json_with_length!(total, lines, indices, truncated_map, icon_added, method);
-    }
-
-    pub fn print_on_dyn_run(&self, matched: usize, processed: usize) {
-        let Self {
-            lines,
-            indices,
-            truncated_map,
-            icon_added,
-        } = self;
-
-        #[allow(non_upper_case_globals)]
-        const method: &str = "s:process_filter_message";
-        if truncated_map.is_empty() {
-            println_json_with_length!(method, lines, indices, icon_added, matched, processed);
-        } else {
-            println_json_with_length!(
-                method,
-                lines,
-                indices,
-                icon_added,
-                matched,
-                processed,
-                truncated_map
-            );
-        }
-    }
-
-    fn print_on_dyn_run_finished(
-        &self,
-        total_matched: usize,
-        maybe_total_processed: Option<usize>,
-    ) {
-        let Self {
-            lines,
-            indices,
-            truncated_map,
-            icon_added,
-        } = self;
-
-        #[allow(non_upper_case_globals)]
-        const method: &str = "s:process_filter_message";
-        if let Some(total_processed) = maybe_total_processed {
-            println_json_with_length!(
-                method,
-                lines,
-                indices,
-                icon_added,
-                truncated_map,
-                total_matched,
-                total_processed
-            );
-        } else {
-            println_json_with_length!(
-                method,
-                lines,
-                indices,
-                icon_added,
-                truncated_map,
-                total_matched
-            );
-        }
-    }
-
-    fn print_json(&self, total: usize) {
+    pub fn print_json(&self, total: usize) {
         let Self {
             lines,
             indices,
@@ -142,91 +97,166 @@ impl DisplayLines {
     }
 }
 
-/// Returns the info of the truncated top items ranked by the filtering score.
-pub fn decorate_lines(
-    matched_items: Vec<MatchedItem>,
-    winwidth: usize,
+#[derive(Debug, Clone, Default, Serialize)]
+pub struct PickerUpdateInfo {
+    pub matched: usize,
+    pub processed: usize,
+    #[serde(flatten)]
+    pub display_lines: DisplayLines,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_syntax: Option<String>,
+    pub preview: Option<Value>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct PickerUpdateInfoRef<'a> {
+    pub matched: usize,
+    pub processed: usize,
+    #[serde(flatten)]
+    pub display_lines: &'a DisplayLines,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_syntax: Option<String>,
+}
+
+fn convert_truncated_matched_items_to_display_lines(
+    matched_items: impl IntoIterator<Item = MatchedItem>,
     icon: Icon,
+    mut truncated_map: LinesTruncatedMap,
 ) -> DisplayLines {
-    let mut matched_items = matched_items;
-    let mut truncated_map = truncate_long_matched_lines(matched_items.iter_mut(), winwidth, None);
-    if let Some(icon_kind) = icon.icon_kind() {
-        let (lines, indices): (Vec<_>, Vec<Vec<usize>>) = matched_items
-            .into_iter()
-            .enumerate()
-            .map(|(idx, matched_item)| {
-                let display_text = matched_item.display_text();
-                let iconized = if let Some(output_text) = truncated_map.get_mut(&(idx + 1)) {
+    match icon {
+        Icon::Null => {
+            let (lines, indices): (Vec<_>, Vec<_>) = matched_items
+                .into_iter()
+                .map(|matched_item| {
+                    let (line, indices) = (
+                        matched_item.display_text().to_string(),
+                        matched_item.indices,
+                    );
+                    let indices = char_indices_to_byte_indices(&line, &indices);
+                    (line, indices)
+                })
+                .unzip();
+
+            DisplayLines::new(lines, indices, truncated_map, false)
+        }
+        Icon::Enabled(icon_kind) => {
+            let (lines, indices): (Vec<_>, Vec<Vec<usize>>) = matched_items
+                .into_iter()
+                .enumerate()
+                .map(|(idx, matched_item)| {
+                    let display_text = matched_item.display_text();
+                    let iconized = if let Some(output_text) = truncated_map.get_mut(&(idx + 1)) {
+                        let icon = matched_item
+                            .item
+                            .icon(icon)
+                            .expect("Icon must be provided if specified");
+                        *output_text = format!("{icon} {output_text}");
+                        format!("{icon} {display_text}")
+                    } else {
+                        icon_kind.add_icon_to_text(&display_text)
+                    };
+                    let (line, indices) = (iconized, matched_item.shifted_indices(ICON_CHAR_LEN));
+                    let indices = char_indices_to_byte_indices(&line, &indices);
+                    (line, indices)
+                })
+                .unzip();
+
+            DisplayLines::new(lines, indices, truncated_map, true)
+        }
+        Icon::ClapItem => {
+            let (lines, indices): (Vec<_>, Vec<Vec<usize>>) = matched_items
+                .into_iter()
+                .enumerate()
+                .map(|(idx, matched_item)| {
                     let icon = matched_item
                         .item
                         .icon(icon)
-                        .expect("Icon must be provided if specified");
-                    *output_text = format!("{icon} {output_text}");
-                    format!("{icon} {display_text}")
-                } else {
-                    icon_kind.add_icon_to_text(&display_text)
-                };
-                (iconized, matched_item.shifted_indices(ICON_LEN))
-            })
-            .unzip();
+                        .expect("Icon must be provided by ClapItem");
+                    if let Some(output_text) = truncated_map.get_mut(&(idx + 1)) {
+                        *output_text = format!("{icon} {output_text}");
+                    }
+                    let display_text = matched_item.display_text();
+                    let iconized = format!("{icon} {display_text}");
+                    let (line, indices) = (iconized, matched_item.shifted_indices(ICON_CHAR_LEN));
+                    let indices = char_indices_to_byte_indices(&line, &indices);
+                    (line, indices)
+                })
+                .unzip();
 
-        DisplayLines::new(lines, indices, truncated_map, true)
-    } else {
-        let (lines, indices): (Vec<_>, Vec<_>) = matched_items
-            .into_iter()
-            .map(|matched_item| {
-                (
-                    matched_item.display_text().to_string(),
-                    matched_item.indices,
-                )
-            })
-            .unzip();
-
-        DisplayLines::new(lines, indices, truncated_map, false)
+            DisplayLines::new(lines, indices, truncated_map, true)
+        }
     }
 }
 
-/// Prints the results of filter::sync_run() to stdout.
-pub fn print_sync_filter_results(
-    matched_items: Vec<MatchedItem>,
-    number: Option<usize>,
-    winwidth: usize,
-    icon: Icon,
-) {
-    if let Some(number) = number {
-        let total_matched = matched_items.len();
-        let mut matched_items = matched_items;
-        matched_items.truncate(number);
-        decorate_lines(matched_items, winwidth, icon).print_json(total_matched);
-    } else {
-        matched_items.iter().for_each(|matched_item| {
-            let indices = &matched_item.indices;
-            let text = matched_item.display_text();
-            println_json!(text, indices);
-        });
+#[derive(Debug, Clone)]
+pub struct Printer {
+    pub line_width: usize,
+    pub icon: Icon,
+    pub truncate_text: bool,
+}
+
+impl Printer {
+    /// Constructs a new instance of `[Printer]` with text truncation enabled.
+    pub fn new(line_width: usize, icon: Icon) -> Self {
+        Self {
+            line_width,
+            icon,
+            truncate_text: true,
+        }
+    }
+
+    pub fn to_display_lines(&self, mut matched_items: Vec<MatchedItem>) -> DisplayLines {
+        let Self {
+            line_width,
+            icon,
+            truncate_text,
+        } = self;
+
+        let truncated_map = if *truncate_text {
+            truncate_item_output_text(matched_items.iter_mut(), *line_width, None)
+        } else {
+            Default::default()
+        };
+
+        let mut display_lines =
+            convert_truncated_matched_items_to_display_lines(matched_items, *icon, truncated_map);
+
+        // The indices are empty on the empty query.
+        display_lines.indices.retain(|i| !i.is_empty());
+
+        display_lines
     }
 }
 
-/// Prints the results of filter::dyn_run() to stdout.
-pub fn print_dyn_matched_items(
-    matched_items: Vec<MatchedItem>,
-    total_matched: usize,
-    total_processed: Option<usize>,
-    winwidth: usize,
+#[derive(Debug)]
+pub struct GrepResult {
+    pub matched_item: MatchedItem,
+    /// File path in the final grep line, might be relative path.
+    pub path: PathBuf,
+    pub line_number: usize,
+    pub column: usize,
+    pub column_end: usize,
+}
+
+pub fn grep_results_to_display_lines(
+    mut grep_results: Vec<GrepResult>,
+    line_width: usize,
     icon: Icon,
-) {
-    decorate_lines(matched_items, winwidth, icon)
-        .print_on_dyn_run_finished(total_matched, total_processed);
+) -> DisplayLines {
+    let truncated_map = truncate_grep_results(grep_results.iter_mut(), line_width, None);
+    convert_truncated_matched_items_to_display_lines(
+        grep_results.into_iter().map(|i| i.matched_item),
+        icon,
+        truncated_map,
+    )
 }
 
 #[cfg(test)]
 pub(crate) mod tests {
     use super::*;
-    use filter::{
-        matcher::{Bonus, FuzzyAlgorithm, MatchScope, Matcher},
-        Source, SourceItem,
-    };
-    use rayon::prelude::*;
+    use crate::trimmer::UnicodeDots;
+    use filter::matcher::{Bonus, MatcherBuilder};
+    use filter::{filter_sequential, SequentialSource, SourceItem};
     use std::sync::Arc;
     use types::{ClapItem, Query};
 
@@ -271,14 +301,15 @@ pub(crate) mod tests {
         line: impl Into<SourceItem>,
         query: impl Into<Query>,
     ) -> Vec<MatchedItem> {
-        let matcher = Matcher::new(Bonus::FileName, FuzzyAlgorithm::Fzy, MatchScope::Full);
+        let matcher = MatcherBuilder::new()
+            .bonuses(vec![Bonus::FileName])
+            .build(query.into());
 
-        let mut ranked = Source::List(std::iter::once(Arc::new(line.into()) as Arc<dyn ClapItem>))
-            .run_and_collect(matcher, &query.into())
-            .unwrap();
-        ranked.par_sort_unstable_by(|v1, v2| v2.score.partial_cmp(&v1.score).unwrap());
-
-        ranked
+        filter_sequential(
+            SequentialSource::Iterator(std::iter::once(Arc::new(line.into()) as Arc<dyn ClapItem>)),
+            matcher,
+        )
+        .unwrap()
     }
 
     fn run(params: TestParams) {
@@ -292,7 +323,7 @@ pub(crate) mod tests {
         } = params;
 
         let mut ranked = filter_single_line(text, &query);
-        let _truncated_map = truncate_long_matched_lines(ranked.iter_mut(), winwidth, skipped);
+        let _truncated_map = truncate_item_output_text(ranked.iter_mut(), winwidth, skipped);
 
         let MatchedItem { indices, .. } = ranked[0].clone();
         let truncated_indices = indices;
@@ -335,11 +366,13 @@ pub(crate) mod tests {
         };
     }
 
+    const DOTS: char = UnicodeDots::DOTS;
+
     #[test]
     fn test_grep_line() {
         test_printer!(
             " bin/node/cli/src/command.rs:127:1:                          let PartialComponents { client, task_manager, ..}",
-            " ..           let PartialComponents { client, task_manager, ..}",
+            format!(" {DOTS}            let PartialComponents {{ client, task_manager, ..}}"),
             ("PartialComponents", "PartialComponents", Some(2), 64)
         );
     }
@@ -348,28 +381,51 @@ pub(crate) mod tests {
     fn starting_point_should_work() {
         const QUERY: &str = "srlisrlisrsr";
 
+        // TODO: revisit the tests, may not be accurate.
+
         test_printer!(
             " crates/fuzzy_filter/target/debug/deps/librustversion-15764ff2535f190d.dylib.dSYM/Contents/Resources/DWARF/librustversion-15764ff2535f190d.dylib",
-            " ..s/fuzzy_filter/target/debug/deps/librustvers..",
+            format!(" {DOTS}s/fuzzy_filter/target/debug/deps/librustversio{DOTS}"),
             (QUERY, "srlisr", Some(2), 50)
         );
 
         test_printer!(
             " crates/fuzzy_filter/target/debug/deps/libstructopt_derive-5cce984f248086cc.dylib.dSYM/Contents/Resources/DWARF/libstructopt_derive-5cce984f248086cc.dylib",
-            " ..s/fuzzy_filter/target/debug/deps/libstructop..",
+            format!(" {DOTS}s/fuzzy_filter/target/debug/deps/libstructopt_{DOTS}"),
             (QUERY, "srlis", Some(2), 50)
         );
 
         test_printer!(
             "crates/fuzzy_filter/target/debug/deps/librustversion-15764ff2535f190d.dylib.dSYM/Contents/Resources/DWARF/librustversion-15764ff2535f190d.dylib",
-            "..s/fuzzy_filter/target/debug/deps/librustversio..",
+            format!("{DOTS}s/fuzzy_filter/target/debug/deps/librustversion-{DOTS}"),
             (QUERY, "srlisr", None, 50)
         );
 
         test_printer!(
-          "crates/fuzzy_filter/target/debug/deps/libstructopt_derive-5cce984f248086cc.dylib.dSYM/Contents/Resources/DWARF/libstructopt_derive-5cce984f248086cc.dylib",
-          "..s/fuzzy_filter/target/debug/deps/libstructopt_..",
+            "crates/fuzzy_filter/target/debug/deps/libstructopt_derive-5cce984f248086cc.dylib.dSYM/Contents/Resources/DWARF/libstructopt_derive-5cce984f248086cc.dylib",
+            format!("{DOTS}s/fuzzy_filter/target/debug/deps/libstructopt_de{DOTS}"),
             (QUERY, "srlis", None, 50)
         );
+    }
+
+    #[test]
+    fn test_char_position_to_byte_position() {
+        let line = "1 # 存储项目";
+        let char_pos = vec![4, 5];
+        let expected_byte_pos = vec![4, 7];
+
+        assert_eq!(
+            expected_byte_pos,
+            char_indices_to_byte_indices(line, &char_pos)
+        );
+
+        let line = "abcdefg";
+        let char_pos = vec![4, 5];
+        let expected_byte_pos = vec![4, 5];
+
+        assert_eq!(
+            expected_byte_pos,
+            char_indices_to_byte_indices(line, &char_pos)
+        )
     }
 }

@@ -38,7 +38,7 @@ function! s:scroll(direction) abort
   call clap#sign#toggle_cursorline()
 endfunction
 
-function! s:navigate(direction) abort
+function! s:linewise_scroll(direction) abort
   let curlnum = line('.')
   let lastlnum = line('$')
 
@@ -77,10 +77,14 @@ function! s:navigate(direction) abort
   call clap#sign#toggle_cursorline()
 endfunction
 
-function! s:on_move_safe() abort
+function! s:trigger_on_move() abort
   " try
   if g:clap.display.win_is_valid()
-    call g:clap.provider.on_move()
+    if has_key(g:clap.provider._(), 'on_move_async')
+      call g:clap.provider._().on_move_async()
+    else
+      call g:clap.provider.on_move()
+    endif
   endif
   " catch
     " call g:clap.preview.show([v:exception])
@@ -88,47 +92,67 @@ function! s:on_move_safe() abort
 endfunction
 
 if has('nvim')
-  function! s:wrap_move(Move, args) abort
-    noautocmd call g:clap.display.goto_win()
+  if exists('*win_execute')
+    function! clap#navigation#scroll(direction) abort
+      call win_execute(g:clap.display.winid, 'noautocmd call s:scroll(a:direction)')
+      call s:trigger_on_move()
+      return ''
+    endfunction
 
-    call call(a:Move, a:args)
+    function! clap#navigation#linewise_scroll(direction) abort
+      call win_execute(g:clap.display.winid, 'noautocmd call s:linewise_scroll(a:direction)')
+      call s:trigger_on_move()
+      return ''
+    endfunction
 
-    noautocmd call g:clap.input.goto_win()
-    call s:on_move_safe()
+    function! clap#navigation#linewise_scroll_down() abort
+      call win_execute(g:clap.display.winid, 'noautocmd call s:linewise_scroll("down")')
+    endfunction
+  else
+    function! s:scroll_and_trigger_on_move(Scroll, args) abort
+      noautocmd call g:clap.display.goto_win()
 
-    " Must return '' explicitly
+      call call(a:Scroll, a:args)
+
+      noautocmd call g:clap.input.goto_win()
+      call s:trigger_on_move()
+
+      " Must return '' explicitly
+      return ''
+    endfunction
+
+    function! clap#navigation#scroll(direction) abort
+      return s:scroll_and_trigger_on_move(function('s:scroll'), [a:direction])
+    endfunction
+
+    function! clap#navigation#linewise_scroll(direction) abort
+      return s:scroll_and_trigger_on_move(function('s:linewise_scroll'), [a:direction])
+    endfunction
+
+    function! clap#navigation#linewise_scroll_down() abort
+      call g:clap.display.goto_win()
+      call s:linewise_scroll('down')
+      call g:clap.input.goto_win()
+    endfunction
+  endif
+
+else
+  function! clap#navigation#scroll(direction) abort
+    call win_execute(g:clap.display.winid, 'noautocmd call s:scroll(a:direction)')
+    call s:trigger_on_move()
     return ''
   endfunction
 
-  function! clap#navigation#linewise(direction) abort
-    return s:wrap_move(function('s:navigate'), [a:direction])
-  endfunction
-
-  function! clap#navigation#scroll(direction) abort
-    return s:wrap_move(function('s:scroll'), [a:direction])
-  endfunction
-
-  function! clap#navigation#line_down() abort
-    call g:clap.display.goto_win()
-    call s:navigate('down')
-    call g:clap.input.goto_win()
-  endfunction
-
-else
-  function! clap#navigation#linewise(direction) abort
-    call s:navigate(a:direction)
+  function! clap#navigation#linewise_scroll(direction) abort
+    call s:linewise_scroll(a:direction)
     " redraw is neccessary!
     " FIXME: redraw is too slow!
     redraw
-    call s:on_move_safe()
+    call s:trigger_on_move()
   endfunction
 
-  function! clap#navigation#scroll(direction) abort
-    call win_execute(g:clap.display.winid, 'call s:scroll(a:direction)')
-  endfunction
-
-  function! clap#navigation#line_down() abort
-    call win_execute(g:clap.display.winid, 'call s:navigate("down")')
+  function! clap#navigation#linewise_scroll_down() abort
+    call win_execute(g:clap.display.winid, 'call s:linewise_scroll("down")')
   endfunction
 endif
 

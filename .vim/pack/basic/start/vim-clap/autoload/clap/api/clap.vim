@@ -71,12 +71,8 @@ function! s:init_display() abort
       call nvim_win_set_cursor(self.winid, [a:lnum, a:col])
     endfunction
 
-    function! display.set_lines(lines) abort
-      call clap#util#nvim_buf_set_lines(self.bufnr, a:lines)
-    endfunction
-
     function! display.clear() abort
-      call clap#util#nvim_buf_clear(self.bufnr)
+      call clap#api#buf_clear(self.bufnr)
     endfunction
 
     function! display.append_lines(lines) abort
@@ -91,45 +87,39 @@ function! s:init_display() abort
       return clap#util#nvim_buf_get_first_line(self.bufnr)
     endfunction
 
-    function! display.clear_highlight() abort
-      noautocmd call self.goto_win()
-      " Clear all matches added in the display window
-      "
-      " We should not use clearmatches() as it will clear the
-      " ClapNoMatchesFound highlight as well.
-      "
-      " call clearmatches()
-      call self.matchdelete()
-      noautocmd call g:clap.input.goto_win()
-    endfunction
+    if exists('*win_execute')
+      function! display.clear_highlight() abort
+        call win_execute(self.winid, 'noautocmd call self.matchdelete()')
+      endfunction
 
-    " Argument: list, multiple pattern to be highlighed
-    function! display._apply_matchadd(patterns) abort
-      call g:clap.display.goto_win()
-      call clap#highlight#matchadd_substr(a:patterns)
-      call g:clap.input.goto_win()
-    endfunction
+      function! display.legacy_apply_matchadd(patterns) abort
+        call win_execute(self.winid, 'call clap#legacy#highlighter#highlight_substring(a:patterns)')
+      endfunction
+    else
+      function! display.clear_highlight() abort
+        noautocmd call self.goto_win()
+        " Clear all matches added in the display window
+        "
+        " We should not use clearmatches() as it will clear the
+        " ClapNoMatchesFound highlight as well.
+        "
+        " call clearmatches()
+        call self.matchdelete()
+        noautocmd call g:clap.input.goto_win()
+      endfunction
+
+      " Argument: list, multiple pattern to be highlighed
+      function! display.legacy_apply_matchadd(patterns) abort
+        call g:clap.display.goto_win()
+        call clap#legacy#highlighter#highlight_substring(a:patterns)
+        call g:clap.input.goto_win()
+      endfunction
+    endif
 
   else
 
     function! display.set_cursor(lnum, col) abort
       call win_execute(self.winid, 'call cursor(a:lnum, a:col)')
-    endfunction
-
-    function! display.set_lines(lines) abort
-      " silent is required to avoid the annoying --No lines in buffer--.
-      silent call deletebufline(self.bufnr, 1, '$')
-
-      call appendbufline(self.bufnr, 0, a:lines)
-      " Delete the last possible empty line.
-      " Is there a better solution in vim?
-      if empty(getbufline(self.bufnr, '$')[0])
-        silent call deletebufline(self.bufnr, '$')
-      endif
-    endfunction
-
-    function! display.clear() abort
-      silent call deletebufline(self.bufnr, 1, '$')
     endfunction
 
     " Due to the smart cache strategy, this should not be expensive.
@@ -166,11 +156,19 @@ function! s:init_display() abort
       call win_execute(self.winid, 'call g:clap.display.matchdelete()')
     endfunction
 
-    function! display._apply_matchadd(patterns) abort
-      call win_execute(self.winid, 'call clap#highlight#matchadd_substr(a:patterns)')
+    function! display.legacy_apply_matchadd(patterns) abort
+      call win_execute(self.winid, 'call clap#legacy#highlighter#highlight_substring(a:patterns)')
     endfunction
 
   endif
+
+  function! display.set_lines(lines) abort
+    call clap#api#buf_set_lines(self.bufnr, a:lines)
+  endfunction
+
+  function! display.clear() abort
+    call clap#api#buf_clear(self.bufnr)
+  endfunction
 
   function! display.set_lines_lazy(raw_lines) abort
     if len(a:raw_lines) >= g:clap.display.preload_capacity
@@ -208,15 +206,15 @@ function! s:init_display() abort
 
   " Optional argument: pattern to match
   " Default: input
-  function! display.add_highlight(...) abort
-    let pattern = a:0 > 0 ? a:1 : clap#filter#sync#viml#matchadd_pattern()
+  function! display.legacy_add_highlight(...) abort
+    let pattern = a:0 > 0 ? a:1 : clap#legacy#filter#sync#viml#matchadd_pattern()
     if empty(pattern)
       return
     endif
     if type(pattern) != v:t_list
       let pattern = [pattern]
     endif
-    call self._apply_matchadd(pattern)
+    call self.legacy_apply_matchadd(pattern)
   endfunction
 
   function! display.matchdelete() abort
@@ -245,7 +243,7 @@ function! s:init_input() abort
     endfunction
 
     function! input.clear() abort
-      call clap#util#nvim_buf_clear(self.bufnr)
+      call clap#api#buf_clear(self.bufnr)
     endfunction
   else
     function! input.goto_win() abort
@@ -297,11 +295,11 @@ function! s:init_provider() abort
   endfunction
 
   function! provider.sink(selected) abort
-    call clap#rooter#run_heuristic(self._apply_sink, a:selected)
+    call clap#rooter#run_sink_or_sink_star(self._apply_sink, a:selected)
   endfunction
 
   function! provider.sink_star(lines) abort
-    call clap#rooter#run_heuristic(self._()['sink*'], a:lines)
+    call clap#rooter#run_sink_or_sink_star(self._()['sink*'], a:lines)
   endfunction
 
   function! provider.on_enter() abort
@@ -317,9 +315,9 @@ function! s:init_provider() abort
       return
     endif
     try
-      call clap#sign#reset_selected()
+      call clap#sign#reset_on_query_change()
       call self._().on_typed()
-      call clap#preview#async_open_with_delay()
+      call clap#preview#update_with_delay()
     catch
       let l:error_info = ['provider.on_typed:'] + split(v:throwpoint, '\[\d\+\]\zs') + split(v:exception, "\n")
       call g:clap.display.set_lines(l:error_info)
@@ -350,7 +348,7 @@ function! s:init_provider() abort
   endfunction
 
   function! provider.support_multi_select() abort
-    return has_key(self._(), 'sink*')
+    return has_key(self._(), 'multi_select') || has_key(self._(), 'sink*') || has_key(get(self._(), 'mappings', {}), "<Tab>")
   endfunction
 
   function! provider.support_open_action() abort
@@ -367,112 +365,21 @@ function! s:init_provider() abort
     endif
   endfunction
 
-  function! provider.apply_query() abort
-    if has_key(g:clap.context, 'query')
-      if s:is_nvim
-        call feedkeys(g:clap.context.query)
-      else
-        call g:clap.input.set(g:clap.context.query)
-        " Move the cursor to the end.
-        call feedkeys("\<C-E>", 'xt')
-      endif
-      call clap#indicator#set_none()
-      call g:clap.provider.on_typed()
-    endif
-  endfunction
-
-  " Reading from a cached file should be faster than running the command again.
-  " Currently only maple extension supports --input option, for the other
-  " external filter, use cat instead.
-  function! s:read_from_file_or_pipe(ext_filter_cmd, input_file) abort
-    if clap#filter#async#external#using_maple()
-      let cmd = printf('%s --input %s', a:ext_filter_cmd, a:input_file)
-    else
-      let cmd = printf('%s %s | %s', s:cat_or_type, a:input_file, a:ext_filter_cmd)
-    endif
-    return cmd
-  endfunction
-
-  " Pipe the source into the external filter
-  function! s:wrap_async_cmd(source_cmd) abort
-    let ext_filter_cmd = clap#filter#async#external#get_cmd_or_default()
-    if exists('g:__clap_forerunner_tempfile')
-      let cmd = s:read_from_file_or_pipe(ext_filter_cmd, g:__clap_forerunner_tempfile)
-    else
-      " FIXME Does it work well in Windows?
-      " Run the source command and pipe into the external filter.
-      let cmd = a:source_cmd.' | '.ext_filter_cmd
-    endif
-    return cmd
-  endfunction
-
-  function! provider.source_async_or_default() abort
-    if has_key(self._(), 'source_async')
-      return self._().source_async()
-    else
-
-      let Source = self._().source
-
-      if self.source_type == g:__t_string
-        return s:wrap_async_cmd(Source)
-      elseif self.source_type == g:__t_func_string
-        return s:wrap_async_cmd(Source())
-      endif
-
-      if self.source_type == g:__t_list
-        let lines = copy(Source)
-      " This optimization has been moved to on_typed_async_impl()
-      " elseif self.id ==# 'blines'
-        " Do not call Source() but use the raw content for blines when it's huge.
-        " let lines = []
-      elseif self.source_type == g:__t_func_list
-        let lines = copy(Source())
-      endif
-
-      let ext_filter_cmd = clap#filter#async#external#get_cmd_or_default()
-
-      let tmp = clap#state#into_tempfile(lines)
-      let cmd = s:read_from_file_or_pipe(ext_filter_cmd, tmp)
-
-      return cmd
-    endif
-  endfunction
-
-  function! provider.source_async() abort
-    if has_key(self._(), 'source_async')
-      return self._().source_async()
-    else
-      call g:clap.abort('source_async is unavailable')
-    endif
-  endfunction
-
   function! provider._apply_source() abort
-    let Source = self._().source
+    let ClapProviderSource = self._().source
 
     if self.source_type == g:__t_string
-      return s:_system(Source)
+      return s:_system(ClapProviderSource)
     elseif self.source_type == g:__t_list
       " Use copy here, otherwise it could be one-off List.
-      return copy(Source)
+      return copy(ClapProviderSource)
     elseif self.source_type == g:__t_func_string
-      return s:_system(Source())
+      return s:_system(ClapProviderSource())
     elseif self.source_type == g:__t_func_list
-      return copy(Source())
+      return copy(ClapProviderSource())
     else
       return ['source() must return a List or a String if it is a Funcref']
     endif
-  endfunction
-
-  function! provider.get_source() abort
-    let provider_info = self._()
-    " Catch any exceptions and show them in the display window.
-    try
-      return has_key(provider_info, 'source') ? clap#rooter#run(self._apply_source) : []
-    catch
-      call clap#spinner#set_idle()
-      let tps = split(v:throwpoint, '\[\d\+\]\zs')
-      return ['provider.get_source:'] + tps + [v:exception]
-    endtry
   endfunction
 
   function! provider.is_sync() abort
@@ -483,97 +390,17 @@ function! s:init_provider() abort
     return !has_key(self._(), 'source')
   endfunction
 
-  " A provider can be async if it's pure async or sync provider with `source_async`
-  " Since now we have the default source_async implementation, everything
-  " could be async theoretically.
-  "
-  " But the default async impl may not work in Windows at the moment, and
-  " peple may not have installed the required external filter(fzy, fzf,
-  " etc.),
-  " So we should detect if the default async is doable or otherwise better
-  " have a flag to disable it.
-  function! provider.can_async() abort
-    " The default async implementation is not doable and the provider does not
-    " provide a source_async implementation explicitly.
-    if !clap#filter#async#external#has_default() && !has_key(self._(), 'source_async')
-      return v:false
-    else
-      return !g:clap_disable_optional_async
-    endif
-  endfunction
-
-  function! provider.init_default_impl() abort
-    " TODO: remove the forerunner job
-    if g:__clap_development
-      let return_directly = self.is_pure_async()
-            \ || self.source_type == g:__t_string
-            \ || self.source_type == g:__t_func_string
-      if return_directly
-        return
-      endif
-    endif
-
-    if self.is_pure_async()
-      return
-    elseif self.source_type == g:__t_string
-      call clap#job#regular#forerunner#start(self._().source)
-      return
-    elseif self.source_type == g:__t_func_string
-      call clap#job#regular#forerunner#start(self._().source())
-      return
-    endif
-
-    " Even for the syn providers that could have 10,000+ lines, it's ok to show it now.
-    if self.source_type == g:__t_list
-      let lines = self._().source
-    elseif self.source_type == g:__t_func_list
-      let lines = self._().source()
-    endif
-
-    let initial_size = len(lines)
-    let g:clap.display.initial_size = initial_size
-    if initial_size > 0
-      call g:clap.display.set_lines_lazy(lines)
-      call g:clap#display_win.shrink_if_undersize()
-      call clap#indicator#set_matches_number(initial_size)
-      call clap#sign#toggle_cursorline()
-
-      " For the providers that return a relatively huge List
-      if self.can_async() && clap#filter#beyond_capacity(initial_size)
-        let g:__clap_forerunner_tempfile = tempname()
-        call writefile(lines, g:__clap_forerunner_tempfile)
-      endif
-    endif
-  endfunction
-
   function! provider.init_display_win() abort
     if has_key(self._(), 'init')
       call self._().init()
     else
-      call self.init_default_impl()
+      " Still create a new session on the Rust side for the general on_move impl.
+      call clap#client#notify_on_init()
     endif
-    let s:pure_rust_backed = ['filer', 'dumb_jump', 'recent_files']
-    " FIXME: remove the vim forerunner job once on_init is supported on the Rust side.
-    if clap#maple#is_available() && index(s:pure_rust_backed, self.id) == -1
-      let extra = {}
-      if g:__clap_development
-        if has_key(self, 'source_type') && has_key(self._(), 'source')
-          if self.source_type == g:__t_string
-            let extra = { 'source_cmd': self._().source }
-          elseif self.source_type == g:__t_func_string
-            let extra = { 'source_cmd': self._().source() }
-          endif
-        endif
-      endif
-      if self.id ==# 'tags'
-        let extra['debounce'] = v:false
-      endif
-      call clap#client#notify_on_init('on_init', extra)
-    endif
-    " Try to fill the preview window.
-    if clap#preview#is_enabled()
-      call timer_start(30, { -> clap#impl#on_move#invoke() })
-    endif
+  endfunction
+
+  function! provider.mode() abort
+    return get(self._(), 'mode', 'full')
   endfunction
 
   return provider
@@ -590,11 +417,19 @@ function! s:inject_base_api(dict) abort
   let dict.setbufvar_batch = function('s:_setbufvar_batch')
 endfunction
 
-function! s:matchaddpos(lnum) abort
+function! s:matchaddpos(highlight_line) abort
   if exists('w:clap_preview_hi_id')
     call matchdelete(w:clap_preview_hi_id)
   endif
-  let w:clap_preview_hi_id = matchaddpos('Search', [[a:lnum]])
+  if type(a:highlight_line) == v:t_number
+    let w:clap_preview_hi_id = matchaddpos('Search', [[a:highlight_line]])
+  else
+    if has_key(a:highlight_line, 'column_range')
+      let w:clap_preview_hi_id = matchaddpos('Search', [[a:highlight_line.line_number, a:highlight_line.column_range.start, a:highlight_line.column_range.end - a:highlight_line.column_range.start]])
+    else
+      let w:clap_preview_hi_id = matchaddpos('Search', [[a:highlight_line.line_number]])
+    endif
+  endif
 endfunction
 
 function! clap#api#clap#init() abort
@@ -614,23 +449,11 @@ function! clap#api#clap#init() abort
 
   if s:is_nvim
     let g:clap.preview = g:clap#floating_win#preview
-
-    function! g:clap.preview.add_highlight(lnum) abort
-      noautocmd call win_gotoid(g:clap.preview.winid)
-      call s:matchaddpos(a:lnum)
-      noautocmd call win_gotoid(g:clap.input.winid)
-    endfunction
-
     let g:clap#display_win = g:clap#floating_win#display
     let g:clap.open_win = function('clap#floating_win#open')
     let g:clap.close_win = function('clap#floating_win#close')
   else
     let g:clap.preview = g:clap#popup#preview
-
-    function! g:clap.preview.add_highlight(lnum) abort
-      call win_execute(g:clap.preview.winid, 'noautocmd call s:matchaddpos(a:lnum)')
-    endfunction
-
     let g:clap#display_win = g:clap#popup#display
     let g:clap.open_win = function('clap#popup#open')
     let g:clap.close_win = function('clap#popup#close')
@@ -639,6 +462,18 @@ function! clap#api#clap#init() abort
   function! g:clap.preview.set_syntax(syntax) abort
     call g:clap.preview.setbufvar('&syntax', a:syntax)
   endfunction
+
+  if exists('*win_execute')
+    function! g:clap.preview.add_highlight(highlight_line) abort
+      call win_execute(g:clap.preview.winid, 'noautocmd call s:matchaddpos(a:highlight_line)')
+    endfunction
+  else
+    function! g:clap.preview.add_highlight(highlight_line) abort
+      noautocmd call win_gotoid(g:clap.preview.winid)
+      call s:matchaddpos(a:highlight_line)
+      noautocmd call win_gotoid(g:clap.input.winid)
+    endfunction
+  endif
 
   call s:inject_base_api(g:clap.preview)
 endfunction

@@ -27,6 +27,11 @@ function! s:execute_in_display() abort
   setlocal signcolumn=yes norelativenumber
 endfunction
 
+function! s:display_callback(_id, _result) abort
+  unlet s:display_winid
+  call clap#handler#exit()
+endfunction
+
 function! s:create_display() abort
   if !exists('s:display_winid') || empty(popup_getpos(s:display_winid))
     let s:display_opts = clap#layout#calc()
@@ -36,7 +41,7 @@ function! s:create_display() abort
           \ 'filter': function('clap#popup#move_manager#filter'),
           \ 'zindex': 1000,
           \ 'mapping': v:false,
-          \ 'callback': function('s:callback'),
+          \ 'callback': function('s:display_callback'),
           \ 'scrollbar': 0,
           \ 'highlight': 'ClapDisplay',
           \ 'cursorline': 0,
@@ -115,10 +120,7 @@ function! s:create_preview() abort
           \ 'maxwidth': pos.width,
           \ 'posinvert': v:false,
           \ }
-    let should_enable_title = ['grep', 'grep2', 'dumb_jump', 'files', 'git_files', 'proj_tags']
-    if index(should_enable_title, g:clap.provider.id) > -1
-      let preview_opts.title = ' '.clap#rooter#working_dir().' '
-    endif
+    let preview_opts = clap#preview#inject_title_opt(preview_opts, pos.width)
     if clap#preview#direction() ==# 'LR'
       let preview_opts['line'] = pos.line - 1
       let preview_opts['height'] = pos.height
@@ -150,6 +152,8 @@ function! s:create_preview() abort
     call win_execute(s:preview_winid, 'setlocal nonumber')
     let g:clap#popup#preview.winid = s:preview_winid
     let g:clap#popup#preview.bufnr = winbufnr(s:preview_winid)
+    let g:clap.preview.winid = s:preview_winid
+    let g:clap.preview.bufnr = winbufnr(s:preview_winid)
   endif
 endfunction
 
@@ -217,7 +221,7 @@ function! s:create_spinner() abort
     let s:spinner_winid = popup_create(clap#spinner#get(), pos)
     call popup_hide(s:spinner_winid)
     call win_execute(s:spinner_winid, 'setlocal nonumber')
-    let g:clap_spinner_winid = s:spinner_winid
+    let g:__clap_spinner_winid = s:spinner_winid
   endif
 endfunction
 
@@ -270,10 +274,11 @@ function! s:create_input() abort
       call deoplete#custom#buffer_option('auto_complete', v:false)
     endif
     let g:clap.input.winid = s:input_winid
+    let g:clap.input.bufnr = winbufnr(s:input_winid)
   endif
 endfunction
 
-" Depreacted: Now we don't choose the hide way for the benefit of reusing the popup buffer,
+" Deprecated: Now we don't choose the hide way for the benefit of reusing the popup buffer,
 " for it could be very problematic.
 function! s:hide_all() abort
   call popup_hide(s:display_winid)
@@ -283,26 +288,6 @@ function! s:hide_all() abort
   call popup_hide(s:indicator_winid)
   call popup_hide(s:input_winid)
   call popup_hide(s:spinner_winid)
-endfunction
-
-function! s:close_others() abort
-  if exists('s:preview_winid')
-    noautocmd call popup_close(s:preview_winid)
-  endif
-  noautocmd call popup_close(s:indicator_winid)
-  noautocmd call popup_close(s:input_winid)
-  noautocmd call popup_close(s:spinner_winid)
-  if exists('s:symbol_left_winid')
-    noautocmd call popup_close(s:symbol_left_winid)
-  endif
-  if exists('s:symbol_right_winid')
-    noautocmd call popup_close(s:symbol_right_winid)
-  endif
-endfunction
-
-function! s:callback(_id, _result) abort
-  unlet s:display_winid
-  call clap#handler#exit()
 endfunction
 
 function! g:clap#popup#preview.show(lines) abort
@@ -336,6 +321,19 @@ function! g:clap#popup#preview.clear() abort
   endif
 endfunction
 
+function! s:show_all() abort
+  call popup_show(s:display_winid)
+  call popup_show(s:indicator_winid)
+  call popup_show(s:input_winid)
+  call popup_show(s:spinner_winid)
+  if exists('s:symbol_left_winid')
+    call popup_show(s:symbol_left_winid)
+  endif
+  if exists('s:symbol_right_winid')
+    call popup_show(s:symbol_right_winid)
+  endif
+endfunction
+
 function! s:open_popup() abort
   call s:create_display()
 
@@ -353,18 +351,22 @@ function! s:open_popup() abort
   call clap#popup#move_manager#mock_input()
 
   call s:show_all()
+
+  call s:adjust_spinner()
 endfunction
 
-function! s:show_all() abort
-  call popup_show(s:display_winid)
-  call popup_show(s:indicator_winid)
-  call popup_show(s:input_winid)
-  call popup_show(s:spinner_winid)
+function! s:close_popup() abort
+  if exists('s:preview_winid')
+    noautocmd call popup_close(s:preview_winid)
+  endif
+  noautocmd call popup_close(s:indicator_winid)
+  noautocmd call popup_close(s:input_winid)
+  noautocmd call popup_close(s:spinner_winid)
   if exists('s:symbol_left_winid')
-    call popup_show(s:symbol_left_winid)
+    noautocmd call popup_close(s:symbol_left_winid)
   endif
   if exists('s:symbol_right_winid')
-    call popup_show(s:symbol_right_winid)
+    noautocmd call popup_close(s:symbol_right_winid)
   endif
 endfunction
 
@@ -384,9 +386,8 @@ function! clap#popup#open() abort
   let s:indicator_width = clap#layout#indicator_width()
 
   call s:open_popup()
-  call s:adjust_spinner()
 
-  let g:clap_indicator_winid = s:indicator_winid
+  let g:__clap_indicator_winid = s:indicator_winid
 
   call clap#_init()
 
@@ -400,8 +401,6 @@ function! clap#popup#open() abort
   call g:clap.provider.on_enter()
 
   silent doautocmd <nomodeline> User ClapOnEnter
-
-  call g:clap.provider.apply_query()
 endfunction
 
 function! clap#popup#close() abort
@@ -420,7 +419,7 @@ function! clap#popup#close() abort
     call deoplete#custom#buffer_option('auto_complete', v:true)
   endif
 
-  call s:close_others()
+  call s:close_popup()
 
   silent autocmd! ClapEnsureAllClosed
 endfunction

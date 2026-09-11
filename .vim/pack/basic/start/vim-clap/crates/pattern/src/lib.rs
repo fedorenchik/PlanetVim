@@ -1,7 +1,5 @@
 //! Regex patterns and utilities used for manipulating the line.
 
-use std::path::PathBuf;
-
 use once_cell::sync::Lazy;
 use regex::Regex;
 
@@ -10,15 +8,15 @@ static GREP_POS: Lazy<Regex> = Lazy::new(|| Regex::new(r"^(.*?):(\d+):(\d+):(.*)
 static DUMB_JUMP_LINE: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"^\[(.*)\](.*?):(\d+):(\d+):").unwrap());
 
-// match the file path and line number of grep line.
+// Match the file path and line number of grep line.
 static GREP_STRIP_FPATH: Lazy<Regex> = Lazy::new(|| Regex::new(r"^.*?:\d+:\d+:").unwrap());
 
-// match the tag_name:lnum of tag line.
+// Match the tag_name:lnum of tag line.
 static TAG_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"^(.*:\d+)").unwrap());
 
-static BUFFER_TAGS: Lazy<Regex> = Lazy::new(|| Regex::new(r"^.*:(\d+).*\[(.*)\]").unwrap());
-
 static PROJ_TAGS: Lazy<Regex> = Lazy::new(|| Regex::new(r"^(.*):(\d+).*\[(.*)@(.*?)\]").unwrap());
+
+static BUFFER_TAGS: Lazy<Regex> = Lazy::new(|| Regex::new(r"^.*:(\d+).*\[(.*)\]").unwrap());
 
 static COMMIT_RE: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"^.*\d{4}-\d{2}-\d{2}\s+([0-9a-z]+)\s+").unwrap());
@@ -57,10 +55,10 @@ pub fn extract_grep_pattern(line: &str) -> Option<(&str, usize)> {
         .map(|mat| (&line[mat.end()..], mat.end()))
 }
 
-/// Returns a tuple of (fpath, lnum, col).
-pub fn extract_grep_position(line: &str) -> Option<(PathBuf, usize, usize, &str)> {
+/// Returns a tuple of (fpath, lnum, col, line_content).
+pub fn extract_grep_position(line: &str) -> Option<(&str, usize, usize, &str)> {
     let cap = GREP_POS.captures(line)?;
-    let fpath = cap.get(1).map(|x| x.as_str().into())?;
+    let fpath = cap.get(1).map(|x| x.as_str())?;
     let str2nr = |idx: usize| cap.get(idx).map(|x| x.as_str()).and_then(parse_lnum);
     let lnum = str2nr(2)?;
     let col = str2nr(3)?;
@@ -87,19 +85,18 @@ pub fn parse_grep_item(line: &str) -> Option<(usize, usize)> {
 }
 
 /// Returns a tuple of (fpath, lnum, col).
-pub fn extract_jump_line_info(line: &str) -> Option<(&str, PathBuf, usize, usize)> {
+pub fn extract_jump_line_info(line: &str) -> Option<(&str, &str, usize, usize)> {
     let cap = DUMB_JUMP_LINE.captures(line)?;
     let def_kind = cap.get(1).map(|x| x.as_str())?;
-    let fpath = cap.get(2).map(|x| x.as_str().into())?;
+    let fpath = cap.get(2).map(|x| x.as_str())?;
     let str2nr = |idx: usize| cap.get(idx).map(|x| x.as_str()).and_then(parse_lnum);
     let lnum = str2nr(3)?;
     let col = str2nr(4)?;
     Some((def_kind, fpath, lnum, col))
 }
 
-pub fn extract_grep_file_path(line: &str) -> Option<String> {
-    let cap = GREP_POS.captures(line)?;
-    cap.get(1).map(|x| x.as_str().into())
+pub fn extract_grep_file_path(line: &str) -> Option<&str> {
+    GREP_POS.captures(line)?.get(1).map(|x| x.as_str())
 }
 
 /// Returns fpath part in grep line.
@@ -111,18 +108,10 @@ pub fn extract_fpath_from_grep_line(line: &str) -> Option<&str> {
 
 /// Returns the file name as well as its offset from the complete file path.
 pub fn extract_file_name(file_path: &str) -> Option<(&str, usize)> {
-    // TODO: extract the file name efficiently
-    let fpath: std::path::PathBuf = file_path.into();
-
-    fpath
-        .file_name()
-        .map(|x| x.to_string_lossy().into_owned())
-        .map(|fname| {
-            (
-                &file_path[file_path.len() - fname.len()..],
-                file_path.len() - fname.len(),
-            )
-        })
+    std::path::Path::new(file_path).file_name().map(|fname| {
+        let file_name_start = file_path.len() - fname.len();
+        (&file_path[file_name_start..], file_name_start)
+    })
 }
 
 #[inline]
@@ -130,7 +119,7 @@ fn parse_lnum(lnum: &str) -> Option<usize> {
     lnum.parse::<usize>().ok()
 }
 
-pub fn parse_rev(line: &str) -> Option<&str> {
+pub fn extract_commit_rev(line: &str) -> Option<&str> {
     let cap = COMMIT_RE.captures(line)?;
     cap.get(1).map(|x| x.as_str())
 }
@@ -171,7 +160,7 @@ mod tests {
     fn test_grep_regex() {
         let line = "install.sh:1:5:#!/usr/bin/env bash";
         let e = extract_grep_position(line).unwrap();
-        assert_eq!(("install.sh".into(), 1, 5, "#!/usr/bin/env bash"), e);
+        assert_eq!(("install.sh", 1, 5, "#!/usr/bin/env bash"), e);
 
         let path = extract_grep_file_path(line).unwrap();
         assert_eq!(path, "install.sh");
@@ -201,7 +190,7 @@ mod tests {
             info,
             (
                 "variable",
-                "crates/maple_cli/src/stdio_server/session/context.rs".into(),
+                "crates/maple_cli/src/stdio_server/session/context.rs",
                 36,
                 8
             )
@@ -211,7 +200,7 @@ mod tests {
             extract_jump_line_info(line).unwrap(),
             (
                 "variable",
-                "crates/maple_cli/src/stdio_server/session/providers/dumb_jump.rs".into(),
+                "crates/maple_cli/src/stdio_server/session/providers/dumb_jump.rs",
                 9,
                 8
             )
@@ -256,11 +245,11 @@ mod tests {
     fn test_parse_rev() {
         let line =
             "* 2019-10-18 8ed4391 Rename sign and rooter related options (#65) (Liu-Cheng Xu)";
-        assert_eq!(parse_rev(line), Some("8ed4391"));
+        assert_eq!(extract_commit_rev(line), Some("8ed4391"));
         let line = "2019-10-18 8ed4391 Rename sign and rooter related options (#65) (Liu-Cheng Xu)";
-        assert_eq!(parse_rev(line), Some("8ed4391"));
+        assert_eq!(extract_commit_rev(line), Some("8ed4391"));
         let line = "2019-12-29 3f0d00c Add forerunner job status sign and a delay timer for running maple (#184) (Liu-Cheng Xu)";
-        assert_eq!(parse_rev(line), Some("3f0d00c"));
+        assert_eq!(extract_commit_rev(line), Some("3f0d00c"));
     }
 
     #[test]

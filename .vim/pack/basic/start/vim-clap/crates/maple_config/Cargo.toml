@@ -1,0 +1,14 @@
+[package]
+name = "maple_config"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+dirs = { workspace = true }
+once_cell = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+toml = { workspace = true }
+
+paths = { workspace = true }
+types = { workspace = true }

@@ -1,0 +1,13 @@
+[package]
+name = "xtask"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+anyhow = { workspace = true }
+clap = { workspace = true }
+chrono = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+xshell = "0.2.5"
+write-json = "0.1.4"

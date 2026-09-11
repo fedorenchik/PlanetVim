@@ -32,6 +32,8 @@ let s:preview_bufnr = nvim_create_buf(v:false, v:true)
 let s:indicator_bufnr = nvim_create_buf(v:false, v:true)
 let g:__clap_indicator_bufnr = s:indicator_bufnr
 
+let s:preview_scrollbar_buf = nvim_create_buf(v:false, v:true)
+
 let s:exists_deoplete = exists('*deoplete#custom#buffer_option')
 
 let s:symbol_left = g:__clap_search_box_border_symbol.left
@@ -41,6 +43,25 @@ let s:symbol_width = strdisplaywidth(s:symbol_right)
 let s:shadow_winhl = 'Normal:ClapShadow,NormalNC:ClapShadow,EndOfBuffer:ClapShadow'
 let s:display_winhl = 'Normal:ClapDisplay,EndOfBuffer:ClapDisplayInvisibleEndOfBuffer,SignColumn:ClapDisplay,ColorColumn:ClapDisplay'
 let s:preview_winhl = 'Normal:ClapPreview,EndOfBuffer:ClapPreviewInvisibleEndOfBuffer,SignColumn:ClapPreview,ColorColumn:ClapPreview'
+let s:preview_scrollbar_winhl = 'Normal:ClapPreviewScrollbar,EndOfBuffer:ClapPreviewInvisibleEndOfBuffer,SignColumn:ClapPreviewScrollbar,ColorColumn:ClapPreviewScrollbar'
+
+if &background ==# 'dark'
+  if empty(get(g:clap_preview.scrollbar, 'fill_char', ''))
+    hi ClapDefaultPreviewScrollbar ctermbg=237 guibg=#3E4452 ctermfg=173 guifg=#e18254 cterm=bold,reverse gui=bold,reverse
+  else
+    let s:preview_scrollbar_fill_char = g:clap_preview.scrollbar.fill_char
+    hi ClapDefaultPreviewScrollbar ctermbg=237 guibg=#3E4452 ctermfg=173 guifg=#e18254 cterm=bold gui=bold
+  endif
+else
+  if empty(get(g:clap_preview.scrollbar, 'fill_char', ''))
+    hi ClapDefaultPreviewScrollbar ctermbg=7 guibg=#ecf5ff ctermfg=173 guifg=#e18254 cterm=bold,reverse gui=bold,reverse
+  else
+    let s:preview_scrollbar_fill_char = g:clap_preview.scrollbar.fill_char
+    hi ClapDefaultPreviewScrollbar ctermbg=7 guibg=#ecf5ff ctermfg=173 guifg=#e18254 cterm=bold gui=bold
+  endif
+endif
+
+hi default link ClapPreviewScrollbar ClapDefaultPreviewScrollbar
 
 " shadow
 "  -----------------------------
@@ -65,7 +86,7 @@ function! g:clap#floating_win#display.open() abort
 
   call setwinvar(s:display_winid, '&winhl', s:display_winhl)
   call setwinvar(s:display_winid, '&spell', 0)
-  call matchadd('ClapNoMatchesFound', g:__clap_no_matches_pattern, 10, 1001, {'window': s:display_winid})
+  call matchadd('ClapNoMatchesFound', g:__clap_no_matches_pattern, 10, -1, {'window': s:display_winid})
   " call setwinvar(s:display_winid, '&winblend', 15)
 
   let g:clap.display.winid = s:display_winid
@@ -76,12 +97,7 @@ function! g:clap#floating_win#display.open() abort
   " Is there a better solution?
 
   call g:clap.display.setbufvar_batch({
-        \ '&wrap': 0,
-        \ '&number': 0,
-        \ '&relativenumber': 0,
-        \ '&cursorline': 0,
-        \ '&signcolumn': 'yes',
-        \ '&foldcolumn': 0,
+        \ '&filetype': 'clap_display',
         \ 'autopairs_enabled': 0,
         \ 'ale_enabled': 0,
         \ })
@@ -355,6 +371,11 @@ function! s:get_config_preview(height) abort
       let opts.height -= 2
     endif
   endif
+
+  if has('nvim-0.9') && g:clap_popup_border !=? 'nil'
+    let opts = clap#preview#inject_title_opt(opts, opts.width)
+  endif
+
   return opts
 endfunction
 
@@ -378,6 +399,62 @@ function! s:create_preview_win(height) abort
   let g:clap#floating_win#preview.bufnr = s:preview_bufnr
 endfunction
 
+function! clap#floating_win#show_preview_scrollbar(top_position, length) abort
+  if exists('s:preview_scrollbar_winid') && nvim_win_is_valid(s:preview_scrollbar_winid)
+    let config = nvim_win_get_config(s:preview_scrollbar_winid)
+    let config.row = nvim_win_get_config(s:preview_winid).row + a:top_position
+    let config.height = a:length
+    call nvim_win_set_config(s:preview_scrollbar_winid, config)
+    if exists('s:preview_scrollbar_fill_char')
+      call s:update_preview_scrollbar(a:length)
+    endif
+  else
+    call s:create_preview_scrollbar_win(a:top_position, a:length)
+  endif
+endfunction
+
+function! s:update_preview_scrollbar(length) abort
+  let lines = repeat([s:preview_scrollbar_fill_char], a:length)
+  call clap#api#buf_set_lines(s:preview_scrollbar_buf, lines)
+endfunction
+
+function! s:create_preview_scrollbar_win(top_position, length) abort
+  if !exists('s:preview_winid') || !nvim_win_is_valid(s:preview_winid) || !exists('s:preview_scrollbar_fill_char')
+    return
+  endif
+
+  let config = nvim_win_get_config(s:preview_winid)
+  let config.focusable = v:false
+  let config.border = 'none'
+  let config.row += a:top_position
+  let config.col += config.width + 1
+  let config.width = 1
+  let config.height = a:length
+
+  let preview_config = nvim_win_get_config(s:preview_winid)
+  if config.row + config.height > preview_config.row + preview_config.height
+    let config.row -= preview_config.row + preview_config.height - config.row - config.height
+  endif
+
+  let config.style = 'minimal'
+  let config.zindex = 1000
+  if has_key(config, 'title')
+    unlet config.title
+  endif
+  if has_key(config, 'title_pos')
+    unlet config.title_pos
+  endif
+
+  if !nvim_buf_is_valid(s:preview_scrollbar_buf)
+    let s:preview_scrollbar_buf = nvim_create_buf(v:false, v:true)
+  endif
+  silent let s:preview_scrollbar_winid = nvim_open_win(s:preview_scrollbar_buf, v:false, config)
+
+  call setwinvar(s:preview_scrollbar_winid, '&winhl', s:preview_scrollbar_winhl)
+
+  call s:update_preview_scrollbar(a:length)
+endfunction
+
 function! s:max_preview_size() abort
   if clap#preview#direction() ==# 'LR'
     return s:display_opts.height
@@ -394,7 +471,7 @@ function! clap#floating_win#preview.show(lines) abort
 
   let max_size = s:max_preview_size()
   if max_size <= 0
-    call g:clap#floating_win#preview.close()
+    call self.close()
     return
   endif
   let lines = a:lines[:max_size]
@@ -405,12 +482,11 @@ function! clap#floating_win#preview.show(lines) abort
     if clap#preview#direction() !=# 'LR'
       let opts = nvim_win_get_config(s:preview_winid)
       if opts.height != height
-        let opts.height = height
-        call nvim_win_set_config(s:preview_winid, opts)
+        call nvim_win_set_height(s:preview_winid, height)
       endif
     endif
   endif
-  call clap#util#nvim_buf_set_lines(s:preview_bufnr, lines)
+  call clap#api#buf_set_lines(s:preview_bufnr, lines)
 endfunction
 
 function! clap#floating_win#preview.close() abort
@@ -418,16 +494,19 @@ function! clap#floating_win#preview.close() abort
     call clap#util#nvim_win_close_safe(s:preview_winid)
     unlet s:preview_winid
   endif
+  if exists('s:preview_scrollbar_winid')
+    call s:win_close(s:preview_scrollbar_winid)
+  endif
 endfunction
 
 function! clap#floating_win#preview.hide() abort
   if !clap#preview#is_always_open()
-    call g:clap#floating_win#preview.close()
+    call self.close()
   endif
 endfunction
 
 function! clap#floating_win#preview.clear() abort
-  call clap#util#nvim_buf_clear(s:preview_bufnr)
+  call clap#api#buf_clear(s:preview_bufnr)
 endfunction
 
 function! s:ensure_closed() abort
@@ -453,6 +532,8 @@ function! clap#floating_win#open() abort
   let g:__clap_display_curlnum = 1
 
   let s:save_winheight = &winheight
+  let s:save_winminheight = &winminheight
+  let &winminheight = 1
   let &winheight = 1
 
   let s:indicator_width = clap#layout#indicator_width()
@@ -462,7 +543,7 @@ function! clap#floating_win#open() abort
   call s:open_win_border_left()
   call g:clap#floating_win#spinner.open()
   call g:clap#floating_win#input.open()
-  if clap#preview#is_enabled() && clap#preview#direction() ==# 'LR'
+  if clap#preview#is_enabled()
     call s:create_preview_win(s:display_opts.height)
   endif
 
@@ -501,8 +582,6 @@ function! clap#floating_win#open() abort
   startinsert
 
   let g:clap.context.visible = v:true
-
-  call g:clap.provider.apply_query()
 endfunction
 
 function! s:win_close(winid) abort
@@ -513,6 +592,7 @@ endfunction
 
 function! clap#floating_win#close() abort
   let &winheight = s:save_winheight
+  let &winminheight = s:save_winminheight
   silent! autocmd! ClapEnsureAllClosed
 
   if s:symbol_width > 0
