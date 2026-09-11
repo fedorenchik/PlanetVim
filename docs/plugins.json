@@ -1580,11 +1580,11 @@
       "path": ".vim/pack/lsp/start/asyncomplete-buffer.vim",
       "provenance": {
         "branch": "master",
-        "commit": "018bcf0f712ce0fde3f1f2eaabd7004fccb2d34a",
+        "commit": "a7afcf4f1f0ee8beaec4b3a20d814160ab097d8d",
         "kind": "git-subrepo",
         "remote": "https://github.com/prabirshrestha/asyncomplete-buffer.vim.git"
       },
-      "snapshot_sha256": "9bf64510eded16e54424217fbae9d0dcb96614ce35c327b2ffe6adc3734cefe3"
+      "snapshot_sha256": "1191b6ed1ccf8b6d54fdcd2520ca6230129bff7ddfe760d315ffd174bc0945db"
     },
     {
       "group": "lsp",
