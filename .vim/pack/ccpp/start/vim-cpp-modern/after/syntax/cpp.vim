@@ -1,13 +1,10 @@
 " ==============================================================================
 " Vim syntax file
-" Language:        C++ (Standard library including C++11/14/17/20)
+" Language:        C++ Additions
 " Original Author: Jon Haggblad <https://github.com/octol>
 " Maintainer:      bfrg <https://github.com/bfrg>
-" Website:         https://github.com/bfrg/vim-cpp-modern
-" Last Change:     Sep 15, 2022
-"
-" This syntax file is based on:
-" https://github.com/octol/vim-cpp-enhanced-highlight
+" Website:         https://github.com/bfrg/vim-c-cpp-modern
+" Last Change:     Dec 25, 2025
 " ==============================================================================
 
 " C++ attributes {{{1
@@ -103,7 +100,7 @@ if !exists('cpp_no_cpp14')
     syntax keyword cppSTLfunction make_unique
 
     syntax keyword cppSTLtype
-            \ index_sequence index_sequence_for integer_sequence make_index_sequence make_integer_sequence shared_lock shared_timed_mutex is_null_pointer
+            \ index_sequence index_sequence_for integer_sequence make_index_sequence make_integer_sequence shared_lock shared_timed_mutex is_final is_null_pointer
 
     syntax keyword cppSTLtypedef
             \ tuple_element_t add_const_t add_cv_t add_lvalue_reference_t add_pointer_t add_rvalue_reference_t add_volatile_t aligned_storage_t aligned_union_t common_type_t conditional_t decay_t enable_if_t make_signed_t make_unsigned_t remove_all_extents_t remove_const_t remove_cv_t remove_extent_t remove_pointer_t remove_reference_t remove_volatile_t result_of_t underlying_type_t
@@ -115,19 +112,19 @@ if !exists('cpp_no_cpp17')
     syntax keyword cppSTLnamespace filesystem execution string_view_literals
 
     syntax keyword cppSTLtype
-            \ any byte is_execution_policy parallel_policy parallel_unsequenced_policy sequenced_policy directory_entry directory_iterator file_status file_time_type path recursive_directory_iterator space_info default_order default_searcher boyer_moore_searcher boyer_moore_horspool_searcher memory_resource monotonic_buffer_resource polymorphic_allocator pool_options synchronized_pool_resource unsynchronized_pool_resource scoped_lock optional shared_mutex basic_string_view string_view u16string_view u32string_view wstring_view bool_constant conjunction disjunction has_unique_object_representations invoke_result is_aggregate is_callable is_invocable is_invocable_r is_nothrow_invocable is_nothrow_invocable_r is_nothrow_swappable is_nothrow_swappable_with is_nowthrow_callable is_swappable is_swappable_with negation node_type insert_return_type in_place_tag monostate variant variant_size variant_alternative from_chars_result to_chars_result chars_format
+            \ any byte is_execution_policy parallel_policy parallel_unsequenced_policy sequenced_policy directory_entry directory_iterator file_status file_time_type path recursive_directory_iterator space_info default_order default_searcher boyer_moore_searcher boyer_moore_horspool_searcher memory_resource monotonic_buffer_resource polymorphic_allocator pool_options synchronized_pool_resource unsynchronized_pool_resource scoped_lock optional shared_mutex basic_string_view string_view u16string_view u32string_view wstring_view bool_constant conjunction disjunction has_unique_object_representations invoke_result is_aggregate is_callable is_invocable is_invocable_r is_nothrow_invocable is_nothrow_invocable_r is_nothrow_swappable is_nothrow_swappable_with is_nowthrow_callable is_swappable is_swappable_with negation node_type insert_return_type in_place_tag monostate variant variant_size variant_alternative from_chars_result to_chars_result chars_format in_place_t in_place_type_t in_place_index_t
 
     syntax keyword cppSTLtypedef
-            \ invoke_result_t default_order_t nullopt_t void_t in_place_t in_place_type_t in_place_index_t variant_alternative_t
+            \ invoke_result_t default_order_t nullopt_t void_t variant_alternative_t
 
     syntax keyword cppSTLexception
             \ bad_any_cast filesystem_error bad_optional_access bad_variant_access
 
     syntax keyword cppSTLconstant
-            \ is_always_lock_free seq par par_unseq copy_symlinks auto_format create_hard_links create_symlinks directories_only follow_directory_symlink generic_format group_all group_exec group_read group_write native_format others_all others_exec others_read others_write overwrite_existing owner_all owner_exec owner_read owner_write preferred_separator recursive set_gid set_uid skip_existing skip_permission_denied skip_symlinks sticky_bit update_existing hardware_destructive_interference_size hardware_constructive_interference_size tuple_size_v nullopt alignment_of_v rank_v extent_v variant_npos variant_size_v
+            \ is_always_lock_free seq par par_unseq copy_symlinks auto_format create_hard_links create_symlinks directories_only follow_directory_symlink generic_format group_all group_exec group_read group_write native_format others_all others_exec others_read others_write overwrite_existing owner_all owner_exec owner_read owner_write preferred_separator recursive set_gid set_uid skip_existing skip_permission_denied skip_symlinks sticky_bit update_existing hardware_destructive_interference_size hardware_constructive_interference_size tuple_size_v nullopt alignment_of_v rank_v extent_v in_place in_place_type in_place_index variant_npos variant_size_v
 
     syntax keyword cppSTLbool
-            \ treat_as_floating_point_v is_execution_policy_v is_bind_expression_v is_placeholder_v is_error_code_enum_v is_error_condition_enum_v uses_allocator_v conjunction_v disjunction_v has_unique_object_representations_v has_virtual_destructor_v is_abstract_v is_aggregate_v is_arithmetic_v is_array_v is_assignable_v is_base_of_v is_callable_v is_class_v is_compound_v is_const_v is_constructible_v is_convertible_v is_copy_assignable_v is_copy_constructible_v is_default_constructible_v is_destructible_v is_empty_v is_enum_v is_floating_point_v is_function_v is_fundamental_v is_integral_v is_invocable_r_v is_invocable_v is_literal_type_v is_lvalue_reference_v is_member_function_pointer_v is_member_object_pointer_v is_member_pointer_v is_move_assignable_v is_move_constructible_v is_nothrow_assignable_v is_nothrow_constructible_v is_nothrow_copy_assignable_v is_nothrow_copy_constructible_v is_nothrow_default_constructible_v is_nothrow_destructible_v is_nothrow_invocable_r_v is_nothrow_invocable_v is_nothrow_move_assignable_v is_nothrow_move_constructible_v is_nothrow_swappable_v is_nothrow_swappable_with_v is_nowthrow_callable_v is_null_pointer_v is_object_v is_pod_v is_pointer_v is_polymorphic_v is_reference_v is_rvalue_reference_v is_same_v is_scalar_v is_signed_v is_standard_layout_v is_swappable_v is_swappable_with_v is_trivial_v is_trivially_assignable_v is_trivially_constructible_v is_trivially_copy_assignable_v is_trivially_copy_constructible_v is_trivially_copyable_v is_trivially_default_constructible_v is_trivially_destructible_v is_trivially_move_assignable_v is_trivially_move_constructible_v is_union_v is_unsigned_v is_void_v is_volatile_v negation_v
+            \ treat_as_floating_point_v is_execution_policy_v is_bind_expression_v is_placeholder_v is_error_code_enum_v is_error_condition_enum_v uses_allocator_v conjunction_v disjunction_v has_unique_object_representations_v has_virtual_destructor_v is_abstract_v is_aggregate_v is_arithmetic_v is_array_v is_assignable_v is_base_of_v is_callable_v is_class_v is_compound_v is_const_v is_constructible_v is_convertible_v is_copy_assignable_v is_copy_constructible_v is_default_constructible_v is_destructible_v is_empty_v is_enum_v is_final_v is_floating_point_v is_function_v is_fundamental_v is_integral_v is_invocable_r_v is_invocable_v is_literal_type_v is_lvalue_reference_v is_member_function_pointer_v is_member_object_pointer_v is_member_pointer_v is_move_assignable_v is_move_constructible_v is_nothrow_assignable_v is_nothrow_constructible_v is_nothrow_copy_assignable_v is_nothrow_copy_constructible_v is_nothrow_default_constructible_v is_nothrow_destructible_v is_nothrow_invocable_r_v is_nothrow_invocable_v is_nothrow_move_assignable_v is_nothrow_move_constructible_v is_nothrow_swappable_v is_nothrow_swappable_with_v is_nowthrow_callable_v is_null_pointer_v is_object_v is_pod_v is_pointer_v is_polymorphic_v is_reference_v is_rvalue_reference_v is_same_v is_scalar_v is_signed_v is_standard_layout_v is_swappable_v is_swappable_with_v is_trivial_v is_trivially_assignable_v is_trivially_constructible_v is_trivially_copy_assignable_v is_trivially_copy_constructible_v is_trivially_copyable_v is_trivially_default_constructible_v is_trivially_destructible_v is_trivially_move_assignable_v is_trivially_move_constructible_v is_union_v is_unsigned_v is_void_v is_volatile_v negation_v
 
     syntax keyword cppSTLfunction
             \ reinterpret_pointer_cast make_from_tuple make_optional any_cast
@@ -155,10 +152,10 @@ if !exists('cpp_no_cpp20')
     syntax keyword cppSTLexception format_error
 
     syntax keyword cppSTLtype
-            \ atomic_ref endian weak_ordering strong_ordering partial_ordering weak_equality strong_equality common_comparison_category contract_violation coroutine_traits coroutine_handle noop_coroutine_handle noop_coroutine_promise suspend_never suspend_always remove_cvref is_bounded_array is_layout_compatible is_unbounded_array is_nothrow_convertible has_strong_structural_equality is_pointer_interconvertible_base_of unwrap_reference unwrap_ref_decay basic_common_reference common_reference dangling ref_view filter_view transform_view iota_view join_view empty_view single_view split_view common_view reverse_view view_interface span basic_syncbuf basic_osyncstream syncbuf wsyncbuf osyncstream wosyncstream jthread latch barrier stop_token stop_source stop_callback counting_semaphore binary_semaphore source_location compare_three_way_result contiguous_iterator_tag incrementable_traits indirectly_readable_traits move_sentinel common_iterator counted_iterator projected type_identity formatter basic_format_context basic_format_args basic_format_string basic_format_parse_context
+            \ atomic_ref endian weak_ordering strong_ordering partial_ordering weak_equality strong_equality common_comparison_category coroutine_traits coroutine_handle noop_coroutine_promise suspend_never suspend_always remove_cvref is_bounded_array is_layout_compatible is_unbounded_array is_nothrow_convertible has_strong_structural_equality is_pointer_interconvertible_base_of unwrap_reference unwrap_ref_decay basic_common_reference common_reference dangling ref_view filter_view transform_view iota_view join_view empty_view single_view split_view common_view reverse_view view_interface span basic_syncbuf basic_osyncstream syncbuf wsyncbuf osyncstream wosyncstream jthread latch barrier stop_token stop_source stop_callback counting_semaphore binary_semaphore source_location compare_three_way_result contiguous_iterator_tag incrementable_traits indirectly_readable_traits move_sentinel common_iterator counted_iterator projected type_identity formatter basic_format_context basic_format_args basic_format_string basic_format_parse_context
 
     syntax keyword cppSTLtypedef
-            \ common_comparison_category_t remove_cvref_t unwrap_reference_t unwrap_ref_decay_t common_reference_t iterator_t sentinel_t safe_iterator_t safe_subrange_t compare_three_way_result_t iter_value_t iter_reference_t iter_difference_t iter_rvalue_reference_t iter_common_reference_t default_sentinel_t unreachable_sentinel_t indirect_result_t type_identity_t format_context wformat_context format_args wformat_args format_string wformat_string format_parse_context wformat_parse_context
+            \ common_comparison_category_t remove_cvref_t unwrap_reference_t unwrap_ref_decay_t common_reference_t iterator_t sentinel_t safe_iterator_t safe_subrange_t compare_three_way_result_t iter_value_t iter_reference_t iter_difference_t iter_rvalue_reference_t iter_common_reference_t default_sentinel_t unreachable_sentinel_t indirect_result_t type_identity_t format_context wformat_context format_args wformat_args format_string wformat_string format_parse_context wformat_parse_context noop_coroutine_handle
 
     syntax keyword cppSTLfunction
             \ make_unique_default_init make_shared_default_init allocate_shared_default_init uses_allocator_construction_args make_obj_using_allocator is_corresponding_member subspan in_range is_pointer_interconvertible_with_class
@@ -173,19 +170,18 @@ endif
 
 " C++23 extensions {{{1
 if !exists('cpp_no_cpp23')
-    syntax keyword cppSTLtype basic_stacktrace stacktrace_entry is_scoped_enum
-    syntax keyword cppSTLtypedef stacktrace
-    syntax keyword cppSTLbool is_scoped_enum_v
+    syntax keyword cppSTLtype basic_stacktrace stacktrace_entry is_scoped_enum mdspan extents default_accessor layout_left layout_right layout_stride flat_set flat_map flat_multiset flat_multimap is_implicit_lifetime reference_constructs_from_temporary reference_converts_from_temporary move_only_function sorted_unique_t sorted_equivalent_t from_range_t generator
+    syntax keyword cppSTLtypedef stacktrace dextents float16_t float32_t float64_t float128_t bfloat16_t
+    syntax keyword cppSTLbool is_implicit_lifetime_v is_scoped_enum_v reference_constructs_from_temporary_v reference_converts_from_temporary_v
     syntax keyword cppSTLfunction invoke_r
     syntax keyword cppSTLtype expected unexpected unexpect_t bad_expected_access
-    syntax keyword cppSTLvariable unexpect
+    syntax keyword cppSTLvariable unexpect sorted_equivalent from_range sorted_unique
 endif
 
 
-" Boost {{{1
-if !exists('cpp_no_boost')
-    syntax keyword cppSTLnamespace boost
-    syntax keyword cppSTLfunction lexical_cast
+" C++26 extensions {{{1
+if !exists('cpp_no_cpp26')
+    syntax keyword cppSTLtype function_ref copyable_function inplace_vector contract_violation
 endif
 " }}}
 
@@ -209,6 +205,13 @@ hi def link cppSTLvariable     Identifier
 " The keywords {inline, virtual, explicit, export, override, final} are
 " standard C++ keywords and NOT types!
 hi! def link cppModifier Statement
+
+
+" Highlight C++ builtin types as Statement
+if get(g:, 'cpp_builtin_types_as_statement', 0)
+    syntax keyword cppBuiltinType auto bool
+    hi def link cppBuiltinType Statement
+endif
 
 
 " Highlight all standard C++ keywords as Statement

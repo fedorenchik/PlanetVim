@@ -1,13 +1,10 @@
 " ==============================================================================
 " Vim syntax file
 " Language:        C Additions
-" Original Author: Mikhail Wolfson <mywolfson@gmail.com>
+" Original Author: Mikhail Wolfson, Jon Haggblad <https://github.com/octol>
 " Maintainer:      bfrg <https://github.com/bfrg>
-" Website:         https://github.com/bfrg/vim-cpp-modern
-" Last Change:     Jul 24, 2021
-"
-" This syntax file is based on:
-" https://github.com/octol/vim-cpp-enhanced-highlight
+" Website:         https://github.com/bfrg/vim-c-cpp-modern
+" Last Change:     Dec 25, 2025
 " ==============================================================================
 
 
@@ -17,8 +14,17 @@ syn keyword cTodo contained BUG NOTE
 
 " Highlight function names
 if get(g:, 'cpp_function_highlight', 1)
-    syn match cUserFunction "\<\h\w*\>\(\s\|\n\)*("me=e-1 contains=cParen,cCppParen
+    syn match cUserFunction "\<\h\w*\ze\_s\{-}(\%(\*\h\w*)\_s\{-}(\)\@!"
+    syn match cUserFunctionPointer "\%((\s*\*\s*\)\@6<=\h\w*\ze\s*)\_s\{-}(.*)"
     hi def link cUserFunction Function
+    hi def link cUserFunctionPointer Function
+endif
+
+
+" Highlight C builtin types as Statement
+if get(g:, 'cpp_builtin_types_as_statement', 0)
+    syntax keyword cBuiltinType int long short char void signed unsigned float double
+    hi def link cBuiltinType Statement
 endif
 
 
@@ -35,6 +41,27 @@ if get(g:, 'cpp_member_highlight', 0)
         syn keyword cppTemplateKeyword template
         hi def link cppTemplateKeyword cppStructure
     endif
+endif
+
+
+" Highlight names in struct, union and enum declarations
+if get(g:, 'cpp_type_name_highlight', 1)
+    syn match cTypeName "\%(\<\%(struct\|union\|enum\)\s\+\)\@8<=\h\w*"
+    hi def link cTypeName Type
+
+    if &filetype ==# 'cpp'
+        syn match cTypeName "\%(\<\%(class\|using\|concept\|requires\)\s\+\)\@10<=\h\w*"
+    endif
+endif
+
+
+" Highlight operators
+if get(g:, 'cpp_operator_highlight', 0)
+    syn match cOperator "[?!~*&%<>^|=,+]"
+    syn match cOperator "[][]"
+    syn match cOperator "[^:]\@1<=:[^:]\@="
+    syn match cOperator "-[^>]"me=e-1
+    syn match cOperator "/[^/*]"me=e-1
 endif
 
 

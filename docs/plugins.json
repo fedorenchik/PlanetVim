@@ -875,11 +875,11 @@
       "path": ".vim/pack/ccpp/start/vim-cpp-modern",
       "provenance": {
         "branch": "master",
-        "commit": "0f0529bf2a336a4e824a26b733220548d32697a6",
+        "commit": "b194a25209ed99ae73175cc5cbc94b2d5684f657",
         "kind": "git-subrepo",
         "remote": "https://github.com/bfrg/vim-cpp-modern.git"
       },
-      "snapshot_sha256": "fe36bc1333a7fa375469129970dcfdd2fdbe7fafeb5600585a723b88f6d2701a"
+      "snapshot_sha256": "5ce623b8c5ec822eb81855e0a94899129651fa13d086c269e08936a109959f3b"
     },
     {
       "group": "colors",
