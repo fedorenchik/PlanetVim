@@ -1850,11 +1850,11 @@
       "path": ".vim/pack/lsp/start/asyncomplete.vim",
       "provenance": {
         "branch": "master",
-        "commit": "9c7651894c2c6d656c0dc71e87cfabbbb71b9c78",
+        "commit": "17b654a87a834d4e835fb7467e562b4421ad9310",
         "kind": "git-subrepo",
         "remote": "https://github.com/prabirshrestha/asyncomplete.vim.git"
       },
-      "snapshot_sha256": "476b1a83c6437336fd8db15ecedd81b8a549ca9ba849a8e8ba3f192e7f7c7089"
+      "snapshot_sha256": "f12a7534181bdc401f2f4b13d20a0feb9516b3f966932e8fcdf0bd016350270f"
     },
     {
       "group": "lsp",
