@@ -1076,11 +1076,11 @@
       "path": ".vim/pack/dev/start/vim-glsl",
       "provenance": {
         "branch": "master",
-        "commit": "bfd330a271933c3372fcfa8ce052970746c8e9dd",
+        "commit": "40dd0b143ef93f3930a8a409f60c1bb85e28b727",
         "kind": "git-subrepo",
         "remote": "https://github.com/tikhomirov/vim-glsl.git"
       },
-      "snapshot_sha256": "47ee807326e52af815ed08baaf25b35a9a7d79160bd9d4f831a3b627f334828f"
+      "snapshot_sha256": "f19dd9ea3af776c6c8e90e3bb641b11a737e5ad96eaa25c75be4878f9b607e8d"
     },
     {
       "group": "dev",
