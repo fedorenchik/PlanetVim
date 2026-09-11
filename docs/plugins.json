@@ -85,9 +85,9 @@
       "group": "apps",
       "license_evidence": {
         "paths": [
-          ".vim/pack/apps/start/csv.vim/doc/ft-csv.txt"
+          ".vim/pack/apps/start/csv.vim/LICENSE"
         ],
-        "status": "documentation_mentions"
+        "status": "notice_files_found"
       },
       "load": "start",
       "local_patches": "not_compared_with_upstream",
@@ -95,11 +95,11 @@
       "path": ".vim/pack/apps/start/csv.vim",
       "provenance": {
         "branch": "master",
-        "commit": "2fcac7660734223f6cc57a3c5ec5d87e5a52d2e2",
+        "commit": "375c1a81a4f186ce8949824f3b87ddc6727a63af",
         "kind": "git-subrepo",
         "remote": "https://github.com/chrisbra/csv.vim.git"
       },
-      "snapshot_sha256": "6f2112c0ce02e576a0f30acd751631d36c253de001b2c83c4d4a8bdc43b3167f"
+      "snapshot_sha256": "4e947823081e12e12fa6750580065d6c72e8e33b3ae0e60b0f57cf2c43977e5a"
     },
     {
       "group": "apps",
