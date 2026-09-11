@@ -589,11 +589,11 @@
       "path": ".vim/pack/basic/start/vim-qf",
       "provenance": {
         "branch": "master",
-        "commit": "65f115c350934517382ae45198a74232a9069c2a",
+        "commit": "7cafff6a9e0a1b54364b26a87f1efe749f8fb96b",
         "kind": "git-subrepo",
         "remote": "https://github.com/romainl/vim-qf.git"
       },
-      "snapshot_sha256": "95c0911f9fbba752fb858cab95d6e5e2f57bfa0e8265f34c424b51a9632ce4a4"
+      "snapshot_sha256": "3b8a5f20fb0ac66febf4e4309c6da6b46e15eda7691b61b296b2fb82fe2d3de5"
     },
     {
       "group": "basic",
