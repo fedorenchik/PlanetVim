@@ -92,7 +92,7 @@ def LocalIntegrationItems(items: any): any
     endfor
   endfor
   # Dynamic dispatchers, SDK prerequisites, and feature providers.
-  for item_name in ['git', 'cmake', 'ctest', 'ccmake', 'cmake-gui', 'cc', 'c++', 'git-subrepo', 'git-extras', 'gdb', 'lldb', 'rr', 'live-record', 'r2', 'cutter', 'picocom', 'plink', 'ffmpeg', 'python3', 'python', 'py', 'node', 'java', 'cargo', 'ctags', 'rg', 'fd', 'fzf', 'docker', 'conda', 'aqt', 'emcc', 'em++', 'arduino-cli', 'pio', 'flutter', 'ngrok', 'nmap', 'socat', 'websocat', 'pandoc', 'latexmk', 'languagetool', 'xxd', 'x11vnc', 'vncviewer', 'Xvfb', 'xvfb-run', 'xclip', 'wl-copy']
+  for item_name in ['git', 'direnv', 'cmake', 'ctest', 'ccmake', 'cmake-gui', 'cc', 'c++', 'git-subrepo', 'git-extras', 'gdb', 'lldb', 'rr', 'live-record', 'r2', 'cutter', 'picocom', 'plink', 'ffmpeg', 'python3', 'python', 'py', 'node', 'java', 'cargo', 'ctags', 'rg', 'fd', 'fzf', 'docker', 'conda', 'aqt', 'emcc', 'em++', 'arduino-cli', 'pio', 'flutter', 'ngrok', 'nmap', 'socat', 'websocat', 'pandoc', 'latexmk', 'languagetool', 'xxd', 'x11vnc', 'vncviewer', 'Xvfb', 'xvfb-run', 'xclip', 'wl-copy']
     name = item_name
     if !has_key(tools, name)
       tools[name] = {qt: 0, actions: ['optional workflow']}
@@ -196,7 +196,7 @@ export def Check(): any
     platform_ok = false
   endif
   add(items, {name: 'Platform', ok: platform_ok, help: 'Linux first; Windows secondary; GVim only.'})
-  add(items, {name: 'GVim version', ok: has('patch-9.1.0000'), help: 'GVim 9.1 or newer is required.'})
+  add(items, {name: 'GVim version', ok: has('patch-9.1.0016'), help: 'GVim 9.1.0016 or newer is required.'})
   for feature in ['gui', 'menu', 'terminal', 'job', 'channel', 'timers', 'popupwin', 'persistent_undo']
     add(items, {name: '+' .. feature, ok: has(feature), help: 'Install a full GVim build.'})
   endfor
@@ -218,7 +218,8 @@ export def Check(): any
   LocalConfigured(items, 'Document viewer', 'PV_document_viewer_argv', has('win32') ? ['explorer.exe'] : ['xdg-open'],
        'Select the viewer used for generated previews.')
   LocalConfigured(items, 'HEX conversion', 'xxdprogram', 'xxd', 'xxd provides reversible HEX conversion.')
-  add(items, {name: 'Python debugger provider', ok: has('python3'), optional: 1, help: 'Vimspector needs GVim +python3 and its compatible shared library.'})
+  add(items, {name: 'Python debugger provider', ok: has('python3') && py3eval('__import__("sys").version_info >= (3, 10)'), optional: 1, help: 'Vimspector needs GVim +python3 with Python 3.10 or newer.'})
+  add(items, {name: 'Flog Lua runtime', ok: get(g:, 'flog_use_internal_lua', 0) ? has('lua') : executable(get(g:, 'flog_lua_bin', 'luajit')), optional: 1, help: 'Flog 3 needs LuaJIT 2.1 (g:flog_lua_bin); alternatively enable g:flog_use_internal_lua in a GVim built with LuaJIT.'})
   LocalAdapterItems(items, root)
   LocalIntegrationItems(items)
   for variable in ['CC', 'CXX', 'CROSS_COMPILE', 'ANDROID_HOME', 'ANDROID_NDK_HOME', 'EMSDK', 'QTDIR']
@@ -239,9 +240,12 @@ export def Check(): any
          optional: 1, help: empty(value) ? 'Vim built-in/default behavior.' : value .. '; shell command arguments are not executed or validated by Doctor.'})
   endfor
   var clap: any = root .. '/.vim/pack/basic/start/vim-clap'
-  var maple: any = get(g:, 'clap_maple_binary', clap .. '/bin/maple' .. (has('win32') ? '.exe' : ''))
-  if !executable(maple) && executable(clap .. '/target/release/maple')
-    maple = clap .. '/target/release/maple'
+  var maple: any = clap .. '/target/release/maple' .. (has('win32') ? '.exe' : '')
+  if !executable(maple)
+    maple = clap .. '/bin/maple' .. (has('win32') ? '.exe' : '')
+  endif
+  if !executable(maple) && executable('maple')
+    maple = exepath('maple')
   endif
   add(items, {name: 'Clap native Maple', ok: executable(maple), optional: 1, help: maple .. '; optional native Clap providers require this component. Build/install it explicitly; core fallback pickers remain available.'})
   add(items, {name: 'Font', ok: !empty(&guifont), optional: 1, help: &guifont .. '; use Unicode/emoji fallback or :PlanetPlainMenus.'})

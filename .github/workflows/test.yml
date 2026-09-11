@@ -16,8 +16,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - version: 9.1.0000
-            commit: b4ddc6c11e95cef4b372e239871fae1c8d4f72b6
+          - version: 9.1.0016
+            commit: 124371c5a149a8c0c75c04b6c90ac11e71a0aa97
           - version: 9.2.1046
             commit: 4e5ac0d68a3e35602b63fba7b334baa9dc7cc22e
     steps:
@@ -28,9 +28,9 @@ jobs:
       - name: Install build and display dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential gdb cmake pkg-config libgtk-3-dev libglfw3-dev libglew-dev libsdl2-dev libsfml-dev libvulkan-dev libncurses-dev libxt-dev libx11-dev libxpm-dev python3-dev xvfb xauth
-      - name: Install pinned Python debugger
-        run: python -m pip install debugpy==1.8.21
+          sudo apt-get install -y build-essential gdb cmake pkg-config libgtk-3-dev libglfw3-dev libglew-dev libsdl2-dev libsfml-dev libvulkan-dev libncurses-dev libxt-dev libx11-dev libxpm-dev python3-dev xvfb xauth luajit ripgrep
+      - name: Install pinned Python debugger and image-test dependency
+        run: python -m pip install debugpy==1.8.21 Pillow==12.3.0
       - name: Check out pinned official Vim source
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
@@ -60,9 +60,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - version: 9.1.0
+          - version: 9.1.0016
             directory: vim91
-            sha256: 8e7676fe62d94f23199c8b238e06896d19c6d9bc7728afad3297324b4fb2d144
+            sha256: 6e370def5e0fa7b51da34f70177875c99e289915f365ef7c7420c091a08b6324
           - version: 9.2.1046
             directory: vim92
             sha256: a1030dc9a270befed19c8327b1b86ee938e673444d4d9e6aadc512666f27c046

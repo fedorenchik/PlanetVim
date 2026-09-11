@@ -45,6 +45,9 @@ planet#config#Initialize()
 planet#startup#ConfigureShell()
 planet#startup#LoadStatusline()
 planet#startup#DeferLanguage()
+# Keep manual Direnv commands available without warning on every buffer switch
+# when the optional executable is absent. Explicit user settings take priority.
+g:direnv_auto = get(g:, 'direnv_auto', executable(get(g:, 'direnv_cmd', 'direnv')))
 
 # Git is optional for editor startup. Apply this after the user's config and
 # before bundled GitGutter loads; explicit preferences remain authoritative.

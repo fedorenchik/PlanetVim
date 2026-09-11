@@ -4,8 +4,8 @@ if has('mac') || has('macunix')
   echoerr 'PlanetVim supports Linux and Windows GVim; macOS is not supported.'
   finish
 endif
-if !has('gui') || !has('patch-9.1.0000')
-  echoerr 'PlanetVim requires GVim 9.1 or newer.'
+if !has('gui') || !has('patch-9.1.0016')
+  echoerr 'PlanetVim requires GVim 9.1.0016 or newer.'
   finish
 endif
 " Keep the feature check readable by older Vim before it encounters Vim9.
