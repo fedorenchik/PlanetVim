@@ -816,6 +816,9 @@ set laststatus=2
 g:dispatch_no_maps = 1
 # }}}
 # Plugin: vim-flog {{{
+# Avoid an interactive Fugitive job before the graph has opened. Its cache
+# can be built explicitly from Git > Log; Git maintenance also manages it.
+g:flog_write_commit_graph = get(g:, 'flog_write_commit_graph', 0)
 augroup Flog
   au FileType floggraph vnoremap <buffer> <silent> D :<C-U>call flog#ExecTmp(flog#Format("vertical belowright Git diff %(h'>) %(h'<)"))<CR>
 augroup end

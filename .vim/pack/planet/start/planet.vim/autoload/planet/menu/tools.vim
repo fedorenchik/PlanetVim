@@ -55,6 +55,8 @@ export def Update(): number
     execute planet#menu_help#Entry('an 700.10  ', '🔀&g.&Log.&File\ (LL)', ':0Gllog!<CR>')
     execute planet#menu_help#Entry('an 700.10  ', '🔀&g.&Log.Log\ (GUI)', '<Cmd>call planet#term#RunCmdGui(''Flog -max-count=1000'')<CR>')
     execute planet#menu_help#Entry('an 700.10  ', '🔀&g.&Log.Log\ All\ (GUI)', '<Cmd>call planet#term#RunCmdGui(''Flog -max-count=1000 -all'')<CR>')
+    execute planet#menu_help#Entry('an 700.10  ', '🔀&g.&Log.History\ in\ Split<Tab>:Flogsplit', '<Cmd>Flogsplit -max-count=1000<CR>')
+    execute planet#menu_help#Entry('an 700.10  ', '🔀&g.&Log.Build\ Commit\ Graph\ Cache', '<Cmd>call planet#integrations#Command([''git'', ''commit-graph'', ''write'', ''--reachable''])<CR>')
     # an 700.10  🔀&g.&Log.Log\ (GUI)                               :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +'Flog -max-count=1000' +tabo<CR>
     # an 700.10  🔀&g.&Log.Log\ All\ (GUI)                          :silent !gvim --cmd 'let g:startify_disable_at_vimenter = 1' +'Flog -max-count=1000 -all' +tabo<CR>
     execute planet#menu_help#Entry('an 700.10  ', '🔀&g.&Tag.List', '<Cmd>call planet#gittools#Run([''tag'', ''-l''])<CR>')
