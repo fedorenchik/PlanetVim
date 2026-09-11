@@ -3,7 +3,7 @@ on: [push, pull_request]
 jobs:
   lint:
     name: lint
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
     - name: set up python
       uses: actions/setup-python@v2.1.4
@@ -23,12 +23,12 @@ jobs:
       run: $GITHUB_WORKSPACE/scripts/lint vim-8.2
   test:
     name: test
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
-        go: ['1.18','1.19']
-        vim: ['vim-8.0', 'vim-8.2', 'nvim']
+        go: ['1.23','1.24']
+        vim: ['vim-8.1', 'vim-8.2', 'nvim']
     steps:
     - name: setup Go
       uses: actions/setup-go@v2.1.3

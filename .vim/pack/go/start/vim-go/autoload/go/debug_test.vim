@@ -23,23 +23,25 @@ function! Test_GoDebugStart_Errors() abort
     return
   endif
 
+  let l:wd = getcwd()
   try
+    let g:go_gopls_enabled = 0
     let l:tmp = gotest#load_fixture('debug/compilerror/main.go')
 
     let l:expected = [
           \ {'lnum': 0, 'bufnr': 0, 'col': 0, 'valid': 0, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': '# vim-go.test/debug/compilerror'},
           \ {'lnum': 6, 'bufnr': bufnr('%'), 'col': 22, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': ' syntax error: unexpected newline in argument list; possibly missing comma or )'},
-          \ {'lnum': 0, 'bufnr': 0, 'col': 0, 'valid': 0, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exit status 2'}
+          \ {'lnum': 0, 'bufnr': 0, 'col': 0, 'valid': 0, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exit status 1'}
           \]
   let [l:goversion, l:err] = go#util#Exec(['go', 'env', 'GOVERSION'])
   let l:goversion = split(l:goversion, "\n")[0]
-  if l:goversion < 'go1.19'
-    let expected = [
-          \ {'lnum': 0, 'bufnr': 0, 'col': 0, 'valid': 0, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': '# vim-go.test/debug/compilerror'},
-          \ {'lnum': 6, 'bufnr': bufnr('%'), 'col': 22, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': ' syntax error: unexpected newline, expecting comma or )'},
-          \ {'lnum': 0, 'bufnr': 0, 'col': 0, 'valid': 0, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exit status 2'}
-        \ ]
-  endif
+"  if l:goversion < 'go1.20'
+"    let expected = [
+"          \ {'lnum': 0, 'bufnr': 0, 'col': 0, 'valid': 0, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': '# vim-go.test/debug/compilerror'},
+"          \ {'lnum': 6, 'bufnr': bufnr('%'), 'col': 22, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': ' syntax error: unexpected newline in argument list; possibly missing comma or )'},
+"          \ {'lnum': 0, 'bufnr': 0, 'col': 0, 'valid': 0, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'exit status 2'}
+"        \ ]
+"  endif
     call setqflist([], 'r')
 
     call assert_false(exists(':GoDebugStop'))
@@ -59,6 +61,7 @@ function! Test_GoDebugStart_Errors() abort
     call assert_false(exists(':GoDebugStop'))
 
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:tmp, 'rf')
     " clear the quickfix lists
     call setqflist([], 'r')
@@ -70,7 +73,9 @@ function! Test_GoDebugModeRemapsAndRestoresKeys() abort
     return
   endif
 
+  let l:wd = getcwd()
   try
+    let g:go_gopls_enabled = 0
     let g:go_debug_mappings = {'(go-debug-continue)': {'key': 'q', 'arguments': '<nowait>'}}
     let l:tmp = gotest#load_fixture('debug/debugmain/debugmain.go')
 
@@ -94,6 +99,7 @@ function! Test_GoDebugModeRemapsAndRestoresKeys() abort
     endwhile
     call assert_equal('', maparg('q'))
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:tmp, 'rf')
   endtry
 endfunction
@@ -103,7 +109,9 @@ function! Test_GoDebugStopRemovesPlugMappings() abort
     return
   endif
 
+  let l:wd = getcwd()
   try
+    let g:go_gopls_enabled = 0
     let l:tmp = gotest#load_fixture('debug/debugmain/debugmain.go')
 
     call assert_false(exists(':GoDebugStop'))
@@ -126,6 +134,7 @@ function! Test_GoDebugStopRemovesPlugMappings() abort
     endwhile
     call assert_equal('', maparg('<Plug>(go-debug-stop'))
   finally
+    call go#util#Chdir(l:wd)
     call delete(l:tmp, 'rf')
   endtry
 endfunction
@@ -138,7 +147,9 @@ function! s:debug(...) abort
     return
   endif
 
+  let l:wd = getcwd()
   try
+    let g:go_gopls_enabled = 0
     let $oldgopath = $GOPATH
     let l:tmp = gotest#load_fixture('debug/debugmain/debugmain.go')
 
@@ -175,6 +186,7 @@ function! s:debug(...) abort
 
   finally
     call go#debug#Breakpoint(6)
+    call go#util#Chdir(l:wd)
     call delete(l:tmp, 'rf')
   endtry
 endfunction

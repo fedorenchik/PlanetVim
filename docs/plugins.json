@@ -1460,11 +1460,11 @@
       "path": ".vim/pack/go/start/vim-go",
       "provenance": {
         "branch": "master",
-        "commit": "22b2273cfe562ac1c1af976ce77f18a3b1776f3c",
+        "commit": "afdc93535605efaa4624b4dde296961add89750f",
         "kind": "git-subrepo",
         "remote": "https://github.com/fatih/vim-go.git"
       },
-      "snapshot_sha256": "215531f05b8112f5b675477da20c4f1f54febf9585787904a4db3df800fcbbd3"
+      "snapshot_sha256": "bf7daaf367ae508a72ed9ce301c10e3a6017f0eaa60e0d18ae5c5c4e358bbe88"
     },
     {
       "group": "godot",
