@@ -228,7 +228,7 @@ enddef
 # @on_exit optional Funcref(result, bufnr); result.status must be checked before
 #          starting success-only followups. Callback errors do not change the
 #          original process status.
-export def RunCmd(cmd: any, this_window: any = v:false, close_on_exit: any = v:false, start_hidden: any = v:false, cd: any = '', on_exit: any = v:null, input_file: any = ''): any
+export def RunCmd(cmd: any, this_window: any = v:false, close_on_exit: any = v:false, start_hidden: any = v:false, cd: any = '', on_exit: any = v:null, input_file: any = '', options: dict<any> = {}): any
   var command: any
   var winnr: any
   var ret: any
@@ -249,7 +249,12 @@ export def RunCmd(cmd: any, this_window: any = v:false, close_on_exit: any = v:f
     return LocalError('input file is not readable: ' .. input_file)
   endif
   try
+    var project = has_key(options, 'context') ? options.context : planet#project#Context()
     command = type(cmd) == v:t_list ? {argv: copy(cmd), script_file: ''} : LocalShellCommand(cmd)
+    command.native = planet#project_env#Native(command.argv, project, cwd)
+    command.environment = planet#project_env#Values(project)
+    command.project = project.root
+    command.configuration = project.configuration
   catch
     return LocalError(v:exception)
   endtry
@@ -265,10 +270,10 @@ export def RunCmd(cmd: any, this_window: any = v:false, close_on_exit: any = v:f
   endif
   var context: any = {buffer: 0, cancel_requested: v:false, close_on_exit: close_on_exit, script_file: command.script_file,
        on_exit: on_exit, result: {status: 'running', exit_code: v:null, signal: '', cwd: cwd, command: LocalLabel(cmd),
-       argv: copy(command.argv)}}
+       argv: copy(command.argv), project: command.project, configuration: command.configuration}}
   # Omitting term_finish retains the terminal on all supported Vim 9.1 builds;
   # early 9.1 rejects the later explicit 'noclose' option value.
-  var term_opts: any = {cwd: cwd, exit_cb: function(LocalExited, [context])}
+  var term_opts: any = {cwd: cwd, env: command.environment, exit_cb: function(LocalExited, [context])}
   if !empty(input_file)
     term_opts.in_io = 'file'
     term_opts.in_name = fnamemodify(input_file, ':p')
@@ -285,7 +290,7 @@ export def RunCmd(cmd: any, this_window: any = v:false, close_on_exit: any = v:f
   term_opts.norestore = v:true
   term_opts.term_kill = ''
   try
-    ret = term_start(LocalNativeCommand(command.argv), term_opts)
+    ret = term_start(LocalNativeCommand(command.native), term_opts)
   catch
     LocalDeleteScript(command)
     win_gotoid(origin)
@@ -377,7 +382,8 @@ export def RunGuiApp(app: any, cd: any = ''): any
   endif
   try
     command = type(app) == v:t_list ? {argv: app, script_file: ''} : LocalShellCommand(app)
-    job = job_start(command.argv, {cwd: cwd, stoponexit: '', in_io: 'null', out_io: 'null', err_io: 'null', exit_cb: function(LocalDeleteScript, [command])})
+    var project = planet#project#Context()
+    job = job_start(planet#project_env#Native(command.argv, project, cwd), {cwd: cwd, env: planet#project_env#Values(project), stoponexit: '', in_io: 'null', out_io: 'null', err_io: 'null', exit_cb: function(LocalDeleteScript, [command])})
     if job_status(job) ==# 'fail'
       LocalDeleteScript(command)
     endif

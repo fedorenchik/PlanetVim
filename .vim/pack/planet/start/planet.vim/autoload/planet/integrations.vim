@@ -3,7 +3,7 @@ vim9script
 var script_runtime = expand('<script>:p:h:h:h')
 var script_specs = json_decode(join(readfile(script_runtime .. '/data/integrations.json'), "\n"))
 var script_display_jobs = {}
-var script_environment_stack = []
+var script_environment_stack = {}
 var script_initial_display = $DISPLAY
 
 def LocalError(message: any): any
@@ -35,7 +35,9 @@ enddef
 export def Tool(name: any, qt: any = v:false): any
   var sdk: any
   var found: any
-  var override: any = get(get(g:, 'PV_integration_tools', {}), name, name)
+  var context = planet#project#Context()
+  var environment = planet#project_env#Values(context)
+  var override: any = get(get(context, 'tools', {}), name, get(get(g:, 'PV_integration_tools', {}), name, name))
   var argv: any = type(override) == v:t_list ? copy(override) : [override]
   if empty(argv) || ! empty(filter(copy(argv), (_, lambda_v) => type(lambda_v) != v:t_string))
     throw 'invalid executable override for ' .. name
@@ -44,12 +46,12 @@ export def Tool(name: any, qt: any = v:false): any
   if argv[0] ==# name
     candidates += [planet#run#Project().root .. '/node_modules/.bin/' .. argv[0]]
   endif
-  if qt && ! empty($QTDIR)
-    candidates += [$QTDIR .. '/bin/' .. argv[0], $QTDIR .. '/libexec/' .. argv[0]]
+  if qt && ! empty(get(environment, 'QTDIR', ''))
+    candidates += [environment.QTDIR .. '/bin/' .. argv[0], environment.QTDIR .. '/libexec/' .. argv[0]]
   endif
   add(candidates, argv[0])
   if index(['sdkmanager', 'avdmanager'], name) >= 0
-    sdk = ! empty($ANDROID_HOME) ? $ANDROID_HOME : $ANDROID_SDK_ROOT
+    sdk = get(environment, 'ANDROID_HOME', get(environment, 'ANDROID_SDK_ROOT', ''))
     if ! empty(sdk)
       candidates += [sdk .. '/cmdline-tools/latest/bin/' .. name]
     endif
@@ -58,7 +60,7 @@ export def Tool(name: any, qt: any = v:false): any
     candidates += ['/usr/lib/qt6/bin/' .. argv[0], '/usr/lib/qt6/' .. argv[0],  '/usr/lib/qt6/libexec/' .. argv[0]]
   endif
   for entry in candidates
-    found = exepath(entry)
+    found = planet#project_env#Find(entry, context)
     if ! empty(found)
       argv[0] = found
       if has('win32') && found =~? '\.\%(cmd\|bat\)$'
@@ -236,13 +238,12 @@ export def Compiler(name: any, arg_prefix: any = v:null): any
     if len(cc) != 1 || len(cxx) != 1
       return LocalError('compiler environment values must be single executable paths')
     endif
-    $CC = cc[0]
-    $CXX = cxx[0]
+    var variables = {CC: cc[0], CXX: cxx[0]}
     if !empty(prefix)
-      $CROSS_COMPILE = prefix
+      variables.CROSS_COMPILE = prefix
     endif
-    echomsg 'Compiler selected for new build configurations: CC=' .. $CC .. ', CXX=' .. $CXX
-    return 1
+    echomsg 'Project compiler selected: CC=' .. cc[0] .. ', CXX=' .. cxx[0]
+    return planet#project_env#Set(variables)
   catch
     return LocalError(v:exception)
   endtry
@@ -338,7 +339,7 @@ def LocalHelper(): any
   return planet#generate#Python() + [script_runtime .. '/bin/integration-tool.py']
 enddef
 
-def LocalEnvironmentReady(filename: any, result: any, buffer: any): any
+def LocalEnvironmentReady(state: any, context: any, filename: any, result: any, buffer: any): any
   var new: any
   var previous: any
   var applied: any
@@ -348,19 +349,28 @@ def LocalEnvironmentReady(filename: any, result: any, buffer: any): any
       return 0
     endif
     new = json_decode(join(readfile(filename), "\n"))
-    previous = {}
+    state.environments = get(state, 'environments', {})
+    previous = deepcopy(get(state.environments, context.configuration, {}))
+    var before = planet#project_env#Values(context)
     applied = {}
-    for key in uniq(sort(keys(environ()) + keys(new)))
+    for key in uniq(sort(keys(before) + keys(new)))
       value = get(new, key, v:null)
       if key =~# '^\h\w*$' && (type(value) == v:t_string || value == null) && index(['HOME', 'CODEX_HOME',
-           'USERPROFILE', 'PWD', 'OLDPWD', 'SHLVL', '_'], key) < 0 && getenv(key) !=# value
-        previous[key] = getenv(key)
+           'USERPROFILE', 'PWD', 'OLDPWD', 'SHLVL', '_'], key) < 0 && get(before, key, null) !=# value
         applied[key] = value
-        setenv(key, value)
       endif
     endfor
-    add(script_environment_stack, {previous: previous, applied: applied})
-    echomsg 'PlanetVim: SDK environment applied to this GVim and subsequent tool jobs.'
+    var id = context.root .. "\n" .. context.configuration
+    if !has_key(script_environment_stack, id)
+      script_environment_stack[id] = []
+    endif
+    state.environments[context.configuration] = planet#project#Merge(previous, applied)
+    if !planet#run#Save(state)
+      state.environments[context.configuration] = previous
+      return 0
+    endif
+    add(script_environment_stack[id], previous)
+    echomsg 'PlanetVim: SDK environment saved for ' .. context.root .. ' [' .. context.configuration .. '].'
   finally
     delete(filename)
   endtry
@@ -368,17 +378,14 @@ def LocalEnvironmentReady(filename: any, result: any, buffer: any): any
 enddef
 
 export def RestoreEnvironment(): any
-  if empty(script_environment_stack)
-    return LocalError('no SDK environment activated by PlanetVim in this GVim')
+  var state = planet#run#Project()
+  var context = planet#project#Context()
+  var id = context.root .. "\n" .. context.configuration
+  if empty(get(script_environment_stack, id, []))
+    return LocalError('no SDK environment to restore in this project configuration')
   endif
-  var entry: any = remove(script_environment_stack, -1)
-  for [key, previous] in items(entry.previous)
-    # Keep values the user changed after activation.
-    if getenv(key) ==# entry.applied[key]
-      setenv(key, previous)
-    endif
-  endfor
-  return 1
+  state.environments[context.configuration] = remove(script_environment_stack[id], -1)
+  return planet#run#Save(state)
 enddef
 
 export def Environment(kind: any, filename: any = v:null, arguments: any = [], options: any = {}): any
@@ -393,9 +400,11 @@ export def Environment(kind: any, filename: any = v:null, arguments: any = [], o
     return LocalError('SDK setup script not found: ' .. file .. '. Install/select the SDK first.')
   endif
   var result: any = tempname() .. '.json'
+  var state = planet#run#Project()
+  var context = planet#project#Context()
   return planet#term#RunArgv(LocalHelper() + ['source-env', result, fnamemodify(file, ':p')] + arguments,
-       v:false, v:false, get(options, 'hidden', v:false), planet#run#Project().root, function(LocalEnvironmentReady,
-       [result]))
+       v:false, v:false, get(options, 'hidden', v:false), context.root, function(LocalEnvironmentReady,
+       [state, context, result]), '', {context: context})
 enddef
 
 export def Conda(arg_name: any = v:null): any
@@ -411,8 +420,10 @@ export def Conda(arg_name: any = v:null): any
       return LocalError('Conda activation requires a single native conda executable')
     endif
     result = tempname() .. '.json'
+    var state = planet#run#Project()
+    var context = planet#project#Context()
     return planet#term#RunArgv(LocalHelper() + ['conda-env', result, conda[0], name], v:false, v:false,
-         v:false, planet#run#Project().root, function(LocalEnvironmentReady, [result]))
+         v:false, context.root, function(LocalEnvironmentReady, [state, context, result]), '', {context: context})
   catch
     return LocalError(v:exception)
   endtry

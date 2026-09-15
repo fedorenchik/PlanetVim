@@ -83,8 +83,7 @@ export def Project(): any
   return project
 enddef
 
-export def Save(): any
-  var project: any = planet#run#Project()
+export def Save(project: any = planet#run#Project()): any
   var file: any = LocalStateFile(project.root)
   var temporary: any = file .. '.' .. getpid() .. '.tmp'
   try

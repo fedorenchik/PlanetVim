@@ -69,7 +69,7 @@ try
   call s:Wait(s:buffer)
   call assert_equal(s:argv, planet#term#Result(s:buffer).argv)
   if !has('win32')
-    call assert_equal(s:argv, job_info(s:job).cmd)
+    call assert_equal([exepath(s:argv[0])] + s:argv[1:], job_info(s:job).cmd)
   endif
   call assert_equal('success', planet#term#Result(s:buffer).status)
   let s:record = json_decode(readfile(s:json)[0])

@@ -11,6 +11,7 @@ command! PlanetSemanticScopes call planet#semantic#Show()
 
 augroup PlanetVimIntelligence
   autocmd!
+  autocmd BufEnter,TabEnter,DirChanged * call planet#intelligence#Refresh()
   autocmd VimEnter,BufEnter * call planet#completion#Buffer()
   autocmd TextChanged,TextChangedI,InsertEnter * call planet#lsp_display#Invalidate()
   autocmd CursorHold,InsertLeave,BufEnter * call planet#lsp_display#Hints()

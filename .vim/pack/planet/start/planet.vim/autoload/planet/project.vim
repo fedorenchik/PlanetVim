@@ -76,6 +76,7 @@ export def Context(): dict<any>
   config.cwd = planet#run#Path(get(config, 'cwd', '.'), state.root)
   config.target = get(get(state, 'targets', {}), selected, get(config, 'target', ''))
   config.environment = Merge(get(config, 'environment', {}), get(get(state, 'environments', {}), selected, {}))
+  config.env_snapshot = planet#project_env#Values(config)
   return config
 enddef
 
