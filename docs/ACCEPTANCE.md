@@ -2,6 +2,36 @@
 
 This record covers PlanetVim **0.1.0-rc.1**, implemented on **2026-09-08** from baseline `f75c805a`. The source is a release candidate. Native Windows hosted CI and external SDK/target acceptance remain release gates; checked-in automation is not evidence that those jobs ran.
 
+## Vim9 project settings and native sessions — 2026-09-15
+
+Project configuration exports a Vim9 Dictionary from `.planetvim.vim` and
+personal `.vim` overrides. Runtime implementation: `517faeed3`. The existing
+session helpers use native `:mksession` and `:source`; project identity follows
+the restored tab's `:tcd`. See [the workflow guide](IDE.md) for configuration,
+explicit shared-script approval, reload behavior, sessions and views.
+
+Validation on Linux with the same tool environment described below:
+
+- **84/84 default GUI files passed, zero skips**, on both current **GVim
+  9.2.1011** and minimum **GVim 9.1.0016**. This includes real CMake, GDB and
+  Python debugger workflows, menu teaching, installed startup and Vim9
+  compilation. The additional real clangd/pylsp integration fixture also
+  passed on both versions.
+- Settings checks exercise compiled configuration helpers, shared/private
+  merging, execution caching, independent returned values, approval before
+  execution, renewed approval for changed content, persistent approval,
+  visible cached failures, invalid scripts and generated Vim9 templates.
+  Paths include spaces, apostrophes, Unicode and symlinks, including a target
+  previously sourced under another name. Language-server registration rejects
+  unapproved settings without retaining another project's eligible servers.
+- A native session round trip restores two project tabs, distinct selected
+  build configurations, tab working directories, window-local directories
+  and cursor positions. The restored roots select their settings and private
+  configuration state through the existing APIs.
+- **108 Python tests run: 107 passed, one skipped** for the existing missing
+  SFML/OpenGL development dependencies. **121 package inventory records
+  match**; all runtime changes are first-party. `git diff --check` passes.
+
 ## Integrated IDE workflows — 2026-09-15
 
 IDE-01 through IDE-05 are implemented in first-party code. Tested runtime and
