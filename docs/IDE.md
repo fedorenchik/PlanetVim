@@ -50,6 +50,7 @@ false` opts out). One chain per project runs at a time, with at most two project
 chains by default (`g:PV_task_concurrency`). `jobs` sets CMake build parallelism
 (default 2). `timeout` is seconds per step; zero means no time limit. Cancellation
 signals the child process group on Linux and escalates to KILL after two seconds.
+The project remains occupied until the cancelled command finishes.
 
 Define or replace named tasks in a configuration's `tasks` object:
 
@@ -103,6 +104,8 @@ Use `tools` to map tool names to executable paths or argv arrays, `python` for t
 project interpreter argv, and `lsp` to override `clangd`/`pylsp` argv (an empty
 array disables a server). Configured projects receive separate first-party LSP
 registrations and environments; switching buffers selects the applicable pair.
+For configured projects, vim-lsp change dispatch runs immediately rather than
+using its delayed event queue, so a later tab switch cannot redirect an edit.
 
 ## CMake presets and targets
 
@@ -144,4 +147,5 @@ actions remain available and the file is never overwritten.
 - IDE-04: diagnostic adapters and retained per-invocation quickfix results.
 - IDE-05: CMake presets, target discovery and build/run/debug context.
 
-Acceptance results are recorded after validating the complete implementation.
+See [the acceptance record](ACCEPTANCE.md) for tested GVim/tool versions,
+real workflows and remaining external/platform limits.

@@ -135,7 +135,39 @@ PROJECTS, BUILD, RUN, TEST                                  *planetvim-projects*
 
 A tab's working directory identifies its project. Set it with :tcd. A window's
 :lcd does not select a different build/run profile. Build → CMake creates/selects
-a build directory, configures, builds, and exports compile_commands.json.
+a build directory, selects presets/targets, configures, builds, and exports
+compile_commands.json. CMake File API target discovery uses CMake 3.20+.
+
+Run → Project manages .planetvim.json shared settings and private overrides:
+    :PlanetProjectEdit          :PlanetProjectLocal
+    :PlanetProjectSelect        :PlanetProjectInfo
+
+Settings merge recursively; arrays replace arrays. `defaults` apply to named
+`configurations`; `default` selects the initial configuration. Useful fields:
+source_dir, build_dir, preset, target, build_type, program, args, cwd, environment,
+tools, python, lsp and tasks. Environment null values remove inherited variables.
+SDK/compiler choices affect the selected project, not GVim's process environment.
+See docs/IDE.md for the schema, examples and task conventions.
+
+Run → Tasks provides :PlanetTask build-run, build-test and build-debug. Named
+tasks can use native argv or an explicit shell command, dependencies and timeout
+seconds. Failed prerequisites stop the chain. :PlanetTaskCancel cancels its child
+process group; :PlanetTaskRerun repeats the last task using current settings.
+:PlanetTasks shows outcomes. Modified source buffers in the project are saved
+before starting unless `save` is false. The default is one chain per project and
+two across projects (g:PV_task_concurrency); CMake `jobs` defaults to 2.
+
+:PlanetCmakePreset, :PlanetCmakeTarget and :PlanetCmakeConfiguration select the
+configure preset, target and build configuration. :PlanetCmakeInfo lists actual
+artifacts. Run/Debug use the selected executable unless `program` is explicit.
+Build and Test builds all targets before CTest. Selected-target debugging uses
+an ephemeral configuration; existing .vimspector.json actions remain available.
+
+:PlanetCommandDiagnostics opens source-linked quickfix entries from the selected
+output or latest project command; :PlanetCommandLog opens its retained raw log.
+Compiler/linker/CMake and Python adapters parse the last 50,000 log lines. Full
+logs remain under the private state task-logs directory; remove old logs there
+when no longer needed.
 
 File → New Project creates projects in a new or empty destination. Existing
 nonempty files/directories are preserved; cancellation creates nothing. File
@@ -170,9 +202,11 @@ Restart after changing an already registered server command. Pylsp diagnostics
 and formatting need its corresponding plugins; python-lsp-server[all] includes
 the defaults used by the acceptance fixture.
 
-C++ projects need compile_commands.json. For an out-of-tree database, include
---compile-commands-dir=/absolute/build/path in the clangd argv. Server roots are
-found from language/build markers and Git directories.
+CMake Configure requests compile_commands.json. When present, the selected build
+directory is passed to clangd automatically. Explicit --compile-commands-dir argv
+wins. Project lsp/python/environment settings create separate server registrations;
+revisit the source buffer after changing them. Configured roots use source_dir;
+otherwise roots are found from language/build markers and Git directories.
 
 :PlanetLspStatus describes configured servers. Actions:
     :PlanetDefinition    :PlanetReferences    :PlanetHover

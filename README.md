@@ -101,7 +101,7 @@ For Python: select **File → New Project → Python**, then open `test_main.py`
 
 For writing: save a Markdown document and run `:PlanetMarkdownPreview` with Pandoc installed. Save a LaTeX document and use `:PlanetLatexBuild` with latexmk and a TeX distribution. `:PlanetWritingErrors` opens source diagnostics. Personal spell words and generated previews live outside the project.
 
-See [the complete guide](docs/GUIDE.md) for configuration, language intelligence, debugging, writing, sessions, recovery, and troubleshooting. [Development integrations](docs/INTEGRATIONS.md) describes SDK activation, packaging, analyzers, and their external prerequisites. The integration catalog includes the original Linux/Windows ecosystem: Anaconda/Conda, Arduino, Autotools, C++/CMake, Docker, Electron, Flutter, Godot/SCons, GTK, Make/Kbuild, Meson, Ninja, Node/Nuxt/Vue, PlatformIO, Python, Qt, ROS, Vim, WebAssembly, Yocto, and kernel tooling.
+See [integrated project workflows](docs/IDE.md) for shared settings, environments, task chains, diagnostics and CMake presets/targets. See [the complete guide](docs/GUIDE.md) for configuration, language intelligence, debugging, writing, sessions, recovery, and troubleshooting. [Development integrations](docs/INTEGRATIONS.md) describes SDK activation, packaging, analyzers, and their external prerequisites. The integration catalog includes the original Linux/Windows ecosystem: Anaconda/Conda, Arduino, Autotools, C++/CMake, Docker, Electron, Flutter, Godot/SCons, GTK, Make/Kbuild, Meson, Ninja, Node/Nuxt/Vue, PlatformIO, Python, Qt, ROS, Vim, WebAssembly, Yocto, and kernel tooling.
 
 ## Contributing and validation
 

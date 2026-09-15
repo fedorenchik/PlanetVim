@@ -2,6 +2,11 @@
 
 ## Unreleased — Linux GVim menus, Vim9 runtime and plugin refresh
 
+- Add shared/private project configurations, isolated tool and language-server
+  environments, dependency tasks with cancellation/timeouts, per-command raw
+  logs and quickfix diagnostics, and CMake preset/File API target workflows.
+  Build and Run/Test/Debug share the selected project context and stop after
+  failed prerequisites. See [the workflow guide](docs/IDE.md).
 - Use Vim's built-in EditorConfig package and remove the redundant vendored
   copy. Preserve project settings, existing menu commands and buffer opt-out.
 - Audit all 118 third-party packages and update 68 to their latest stable tags

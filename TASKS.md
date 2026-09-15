@@ -9,6 +9,19 @@ follow-up tasks (MD-01 through MD-22) for discoverability, missing core actions 
 recent Vim features. Those tasks are proposals; the completed milestones below do
 not imply that menu coverage is exhaustive.
 
+## IDE workflow integration — Linux GVim
+
+The owner approved IDE-01 through IDE-05. Implemented:
+
+- [x] IDE-01: shared project settings and private overrides.
+- [x] IDE-02: isolated project environments for tools and language servers.
+- [x] IDE-03: named tasks and Configure → Build → Run/Test/Debug chains.
+- [x] IDE-04: retained raw logs and source-linked diagnostics.
+- [x] IDE-05: CMake configure presets, File API targets and executable discovery.
+
+See [the workflow guide](docs/IDE.md) and its acceptance record. IDE-06 and later
+remain deferred; this phase changes first-party integration only.
+
 ## Agreed platform and dependency policy
 
 - GVim only. Terminal Vim and Neovim are outside the product scope.

@@ -117,9 +117,11 @@ Private state includes backups, swap, undo, views, sessions, project build/run c
 
 A tab's working directory identifies its project. Select it with `:tcd /path/to/project`. A window-local `:lcd` does not switch the tab's build/run profile. CMake build directories and run profiles are stored per project, so switching tabs/projects does not reuse another project's output tree.
 
+Run → Project provides shared `.planetvim.json` settings, private overrides and named configurations. Run → Tasks connects Configure, Build, Run, Test and Debug with failure handling, cancellation and navigable diagnostics. See [Integrated project workflows](IDE.md) for the schema and a CMake preset/target walkthrough.
+
 The File menu creates a template only in a new or empty destination. Cancel creates nothing. Hidden files and binary files are copied; existing nonempty output is preserved. Electron/Vue dependency installation is explicit. Nuxt invokes an installed creator and reports its result. Generated README/build files describe the next steps.
 
-Build → CMake can create/select a directory, configure, build/rebuild, open GUI/TUI configuration, and generate a compilation database. Build prerequisites must succeed before dependent steps run. Run → Add Configuration accepts an object such as:
+Build → CMake can select a configure preset, build configuration and target, inspect actual executable artifacts, configure/build/rebuild, open GUI/TUI configuration, and generate a compilation database. Build prerequisites must succeed before dependent steps run. Run → Add Configuration accepts an object such as:
 
 ```json
 {"name":"application","argv":["./build/hello","argument with spaces","a,b"],"cwd":"."}
@@ -133,9 +135,9 @@ Each output buffer shows the command, cwd, and real exit status. It remains open
 
 ## Language intelligence
 
-C/C++ use clangd and Python uses pylsp by default, with asyncomplete's LSP, buffer, and file sources. A missing server leaves buffer/path completion available. Configure `g:PV_clangd_argv` or `g:PV_pylsp_argv` as an argv List; an empty List opts out of that server. Restart GVim after changing a registered server command. `g:PV_pylsp_settings` supplies pylsp workspace settings. Install `python-lsp-server[all]` in a separate environment if its diagnostics and formatting plugins are needed.
+C/C++ use clangd and Python uses pylsp by default, with asyncomplete's LSP, buffer, and file sources. A missing server leaves buffer/path completion available. Configure `g:PV_clangd_argv` or `g:PV_pylsp_argv` as an argv List; an empty List opts out of that server. Project `lsp` and `python` settings select separate server processes and environments; revisit a source buffer after changing them. Restart GVim after changing an unscoped global server command. `g:PV_pylsp_settings` supplies pylsp workspace settings. Install `python-lsp-server[all]` in a separate environment if its diagnostics and formatting plugins are needed.
 
-Create `compile_commands.json` for C++ projects and make it discoverable by clangd. For an out-of-tree database, configure clangd's `--compile-commands-dir=/absolute/build/path` in its argv. Project roots are detected from language/build markers and Git directories.
+CMake Configure requests `compile_commands.json` and automatically supplies the selected build directory to clangd when the generator produces it. An explicit `--compile-commands-dir` in clangd's argv takes priority. Configured project servers use the selected source directory; otherwise roots are detected from language/build markers and Git directories.
 
 Supported actions are `:PlanetDefinition`, `:PlanetReferences`, `:PlanetHover`, `:PlanetRename`, `:PlanetFormat`, and `:PlanetDiagnostics`. C/C++/Python buffers also get local `gd`, `gr`, `gi`, `gy`, `K`, `<leader>rn`, `<leader>f`, `[d`, and `]d` mappings. Their cleanup restores previous buffer-local mappings. Other bundled language plugins retain their own setup and commands.
 
@@ -181,7 +183,7 @@ For crash recovery, start GVim through PlanetVim and use `:recover /absolute/pat
 
 GUI transfer copies the complete buffer, including unsaved text, to a new GVim process and waits for acknowledgement. Move closes the original view only after successful transfer; the original buffer remains hidden for recovery. A failed or timed-out transfer keeps the source.
 
-Environment → Edit Environment uses the current process environment, and applies edited `NAME=value` lines when its scratch buffer closes. Removing a line does not unset a variable; set an empty value explicitly if desired. SDK activation affects only this GVim and its future children. See [INTEGRATIONS.md](INTEGRATIONS.md) for compiler, SDK, kernel, deployment, and analyzer workflows.
+Environment → Edit Environment uses the current process environment, and applies edited `NAME=value` lines when its scratch buffer closes. Removing a line does not unset a variable; set an empty value explicitly if desired. SDK activation and compiler selection save environment overrides for the selected project/configuration; other projects and GVim's own environment retain their values. See [INTEGRATIONS.md](INTEGRATIONS.md) for compiler, SDK, kernel, deployment, and analyzer workflows.
 
 ## Startup and plugin loading
 
