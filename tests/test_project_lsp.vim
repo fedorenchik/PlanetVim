@@ -1,3 +1,4 @@
+execute 'source ' .. fnameescape(g:PV_root .. '/tests/helpers/project_settings.vim')
 let g:PV_clangd_argv = [exepath('python3'), g:PV_root .. '/tests/fixtures/lsp/scoped_server.py']
 let g:PV_pylsp_argv = []
 execute 'source ' .. fnameescape(g:PV_root .. '/tests/fixtures/lsp/load.vim')
@@ -16,7 +17,7 @@ for s:name in ['A', 'B']
   call add(s:roots, s:root)
   tabnew
   execute 'tcd ' .. fnameescape(s:root)
-  call writefile([json_encode({'defaults': {'environment': {'PV_PROJECT': s:name, 'PV_LSP_LOG': s:root .. '/log.jsonl'}}})], planet#project#File())
+  call PlanetTestProjectSettings({'defaults': {'environment': {'PV_PROJECT': s:name, 'PV_LSP_LOG': s:root .. '/log.jsonl'}}})
   call writefile(['int main() { return 0; }'], s:root .. '/main.cpp')
   execute 'edit ' .. fnameescape(s:root .. '/main.cpp')
   let s:allowed = lsp#get_allowed_servers()

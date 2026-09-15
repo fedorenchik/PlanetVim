@@ -1,3 +1,4 @@
+execute 'source ' .. fnameescape(g:PV_root .. '/tests/helpers/project_settings.vim')
 set hidden
 let s:root = g:PV_test_dir .. '/cmake project 工作'
 let s:build = g:PV_test_dir .. '/out of tree 工作'
@@ -19,7 +20,7 @@ call writefile([json_encode({'version': 6, 'include': ['presets/base.json'],
       \ 'configurePresets': [{'name': 'development', 'inherits': 'base'},
       \ {'name': 'unavailable', 'inherits': 'base', 'condition': v:false}]})], s:root .. '/CMakePresets.json')
 call writefile([json_encode({'version': 6, 'configurePresets': [{'name': 'private', 'inherits': 'development'}]})], s:root .. '/CMakeUserPresets.json')
-call writefile([json_encode({'defaults': {'hidden': v:true, 'build_type': 'Debug', 'args': [s:root .. '/ran.txt', 'literal $argument 工作']}})], planet#project#File())
+call PlanetTestProjectSettings({'defaults': {'hidden': v:true, 'build_type': 'Debug', 'args': [s:root .. '/ran.txt', 'literal $argument 工作']}})
 call assert_equal(['development', 'private'], sort(planet#cmake#Preset(planet#project#Context()).names))
 call assert_equal(1, planet#cmake#Select('preset', 'development'))
 call assert_equal(s:build, planet#project#Context().build_dir)

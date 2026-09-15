@@ -117,7 +117,7 @@ Private state includes backups, swap, undo, views, sessions, project build/run c
 
 A tab's working directory identifies its project. Select it with `:tcd /path/to/project`. A window-local `:lcd` does not switch the tab's build/run profile. CMake build directories and run profiles are stored per project, so switching tabs/projects does not reuse another project's output tree.
 
-Run → Project provides shared `.planetvim.json` settings, private overrides and named configurations. Run → Tasks connects Configure, Build, Run, Test and Debug with failure handling, cancellation and navigable diagnostics. See [Integrated project workflows](IDE.md) for the schema and a CMake preset/target walkthrough.
+Run → Project provides shared `.planetvim.vim` settings, private Vim9 overrides and named configurations. Review shared code before Trust and Load Shared Settings; Reload Settings applies saved edits. Native tab directories select projects and native sessions restore their layouts. Run → Tasks connects Configure, Build, Run, Test and Debug with failure handling, cancellation and navigable diagnostics. See [Integrated project workflows](IDE.md) for examples and a CMake preset/target walkthrough.
 
 The File menu creates a template only in a new or empty destination. Cancel creates nothing. Hidden files and binary files are copied; existing nonempty output is preserved. Electron/Vue dependency installation is explicit. Nuxt invokes an installed creator and reports its result. Generated README/build files describe the next steps.
 

@@ -46,7 +46,7 @@ The fixtures intentionally retain legacy syntax to check interoperability.
 
 1. Define the requested operation, required files/SDKs, output, cancellation, and failure behavior. Use an existing public plugin API when it matches.
 2. Add first-party glue under `autoload/planet/`. For a standard external tool, add its contract to `data/integrations.json`; specialized workflows belong in a focused helper module.
-3. Pass a List of executable/arguments to `planet#term#RunArgv`. Set an explicit validated cwd. Use `RunShell` only for an intentional shell script. Do not join argv into shell text, evaluate project configuration, or run a command after a failed prerequisite.
+3. Pass a List of executable/arguments to `planet#term#RunArgv`. Set an explicit validated cwd. Use `RunShell` only for an intentional shell script. Do not join argv into shell text or run a command after a failed prerequisite. Load project Vim9 configuration only through `planet#project#Settings()`, which checks shared-file approval and caches execution.
 4. Store config/state/cache through `planet#paths#Config/State/Cache`. Personal data belongs outside the installation and project. Do not write generated state to a vendored package.
 5. Connect the existing enabled menu entry. Update help and prerequisite guidance. Keep global mappings out of filetype hooks; provide undo for buffer-local changes.
 6. Test literal arguments, success/failure, cancellation, and preservation of prior data. Use disposable recorders for network, hardware, deployment, or privileged workflows; include a separate real-tool recipe and state what was executed.

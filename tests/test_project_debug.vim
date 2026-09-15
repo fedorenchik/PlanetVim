@@ -1,3 +1,4 @@
+execute 'source ' .. fnameescape(g:PV_root .. '/tests/helpers/project_settings.vim')
 runtime plugin/development.vim
 execute 'source ' .. fnameescape(g:PV_root .. '/tests/helpers/debug_prerequisites.vim')
 if !PlanetDebugTestAvailable('cpp') || !PlanetDebugTestAvailable('python')
@@ -30,7 +31,7 @@ call writefile(['#include <stdio.h>', '#include <stdlib.h>', 'int main(int argc,
 call writefile(['# preserved custom debugger settings'], s:root .. '/.vimspector.json')
 let s:settings = {'defaults': {'hidden': v:true, 'build_type': 'Debug', 'environment': {'PV_DEBUG_ENV': 'selected'},
       \ 'args': [s:root .. '/cpp.txt', 'literal argument 工作']}}
-call writefile([json_encode(s:settings)], planet#project#File())
+call PlanetTestProjectSettings(s:settings)
 execute 'edit ' .. fnameescape(s:root .. '/main.c')
 try
   let s:id = planet#task#Start('build-debug')
@@ -48,7 +49,7 @@ try
   let s:settings.defaults.program = s:source
   let s:settings.defaults.python = get(g:, 'PV_python', [exepath('python3')])
   let s:settings.defaults.args = [s:root .. '/python.txt']
-  call writefile([json_encode(s:settings)], planet#project#File())
+  call PlanetTestProjectSettings(s:settings)
   execute 'edit ' .. fnameescape(s:source)
   let s:id = planet#task#Start('debug')
   call s:Wait('planet#task#Status(s:id).status !=# "running"', 'Python launch timed out')

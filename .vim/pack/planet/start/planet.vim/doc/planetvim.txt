@@ -138,16 +138,33 @@ A tab's working directory identifies its project. Set it with :tcd. A window's
 a build directory, selects presets/targets, configures, builds, and exports
 compile_commands.json. CMake File API target discovery uses CMake 3.20+.
 
-Run → Project manages .planetvim.json shared settings and private overrides:
+Run → Project manages .planetvim.vim shared settings and private Vim9 overrides:
     :PlanetProjectEdit          :PlanetProjectLocal
     :PlanetProjectSelect        :PlanetProjectInfo
+    :PlanetProjectReload        :PlanetProjectReload!
 
-Settings merge recursively; arrays replace arrays. `defaults` apply to named
+Both files start with vim9script and export var config: dict<any> = {...}.
+Review shared code before Trust and Load Shared Settings (:PlanetProjectReload!).
+Approval covers the shared file's current contents for this project. Personal
+overrides load as normal user configuration. Scripts have normal Vim permissions.
+Settings are cached until Reload Settings; changed shared code requires fresh
+approval. Reload also refreshes language-server selection. A failed load is
+reported and not retried until reload.
+
+Settings merge recursively; Lists replace Lists. `defaults` apply to named
 `configurations`; `default` selects the initial configuration. Useful fields:
 source_dir, build_dir, preset, target, build_type, program, args, cwd, environment,
 tools, python, lsp and tasks. Environment null values remove inherited variables.
 SDK/compiler choices affect the selected project, not GVim's process environment.
 See docs/IDE.md for the schema, examples and task conventions.
+
+Different tabs can use different :tcd project roots, with shared buffers and
+global Vim options. Keep project values inside the config Dictionary. Sessions
+already use native :mksession and :source to restore tabs, splits, directories
+and positions; project settings follow the restored tab directories. Views
+(:mkview/:loadview) save individual windows' positions and folds. No separate
+workspace format is required. Native 'exrc' loads local vimrc files at startup,
+not on tab changes; PlanetVim keeps noexrc for this reason.
 
 Run → Tasks provides :PlanetTask build-run, build-test and build-debug. Named
 tasks can use native argv or an explicit shell command, dependencies and timeout

@@ -5,39 +5,83 @@ plugins remain available.
 
 ## Project settings
 
-A tab's working directory remains its project identity. Optional `.planetvim.json`
-contains declarative shared settings; **Run → Project → Edit Private Settings**
-opens a private override under PlanetVim's config directory. Both files use the
-same structure and merge recursively; arrays replace arrays. No command runs
-merely because a settings file is read. Run, build and debug actions remain explicit.
+A tab's working directory identifies its project. Optional `.planetvim.vim`
+exports a Vim9 `config` Dictionary; **Run → Project → Edit Private Settings**
+opens a `.vim` override under PlanetVim's personal config directory. Both files
+use the same structure and merge recursively; Lists replace Lists.
 
-```json
-{
-  "version": 1,
-  "default": "debug",
-  "defaults": {
-    "source_dir": ".",
-    "cwd": ".",
-    "args": ["argument with spaces"],
-    "environment": {"APP_MODE": "development"}
+```vim
+vim9script
+
+export var config: dict<any> = {
+  default: 'debug',
+  defaults: {
+    source_dir: '.',
+    cwd: '.',
+    args: ['argument with spaces'],
+    environment: {APP_MODE: 'development'},
   },
-  "configurations": {
-    "debug": {"build_dir": "out/debug", "build_type": "Debug"},
-    "release": {"build_dir": "out/release", "build_type": "Release"}
-  }
+  configurations: {
+    debug: {build_dir: 'out/debug', build_type: 'Debug'},
+    release: {build_dir: 'out/release', build_type: 'Release'},
+  },
 }
 ```
 
 Use `:PlanetProjectSelect` to choose a configuration and `:PlanetProjectInfo` to
 inspect it. `:PlanetProjectEdit` opens shared settings and `:PlanetProjectLocal`
-opens private settings. The menu exposes all four commands. Environment values
-are Strings; `null` removes an inherited variable. Keep secrets in private
-configuration. Project Info displays environment variable names only.
+opens private settings. Save the shared file, review its code, then use
+**Run → Project → Trust and Load Shared Settings** (`:PlanetProjectReload!`).
+This explicitly allows execution of that file's current contents for this
+project, including subsequent GVim launches. A changed shared file requires
+fresh approval. Private overrides load as normal personal Vim configuration.
+Scripts have normal Vim permissions; approve only code you trust.
+
+Settings execute once per loaded file, and subsequent requests receive copies
+of the cached Dictionary. After editing, **Reload Settings**
+(`:PlanetProjectReload`) reloads the current project's shared and private files
+and refreshes its language-server selection. A changed shared script needs the
+Trust and Load action again. Loading errors are reported and cached until reload;
+they do not silently select default settings or repeatedly execute broken code.
+Use script-local variables and compiled `def` helpers to compute `config`.
+Keep project-specific values inside the exported Dictionary: changing global
+Vim options or process environment affects other tabs too.
+
+Environment values are Strings; `null` removes an inherited variable. Keep
+secrets in private configuration. Project Info displays environment variable
+names only. Defining a task does not run it; Run, Build and Debug actions remain
+explicit.
 
 Relative directories resolve from the tab's project root. A selected build
 directory overrides that configuration's `build_dir` and is saved in private
 state. Previous build directories and run profiles remain supported for projects
 without these settings. A window-local `:lcd` does not change project identity.
+
+## Tabs, sessions and views
+
+Use native `:tabnew` and `:tcd /path/to/project` to work on different projects
+in different tabs. The project root is the tab's working directory, not an
+automatic search for a parent Git repository or settings file. Open a tab at
+the intended root before selecting project tools. Tabs are window layouts;
+their buffers and global Vim options remain shared within the GVim process.
+
+The Sessions menu already uses Vim's `:mksession` and `:source` through the
+session helpers and Startify. Save a session to preserve the projects' tabs,
+splits, files, working directories and editing positions. With PlanetVim's
+default `sessionoptions` (`tabpages` and `curdir` included), restoring it
+reselects project settings by each restored tab directory. Selected build/run
+configurations persist in private state. A session can contain one or several
+projects; no separate workspace file is needed. Native `:mkview` and `:loadview`
+store an individual window's cursor, folds and other `viewoptions`, rather than
+the whole project layout.
+
+Vim's `'exrc'` option loads directory-local `.vimrc`, `.exrc` and `.gvimrc`
+during startup; it does not switch configurations on `:tcd` or tab changes.
+PlanetVim keeps `noexrc` and uses `.planetvim.vim` for the per-project tool,
+environment and task data that sessions and views do not describe. Ordinary
+editor preferences still belong in personal Vim configuration, filetype
+settings or EditorConfig. See `:help :tcd`, `:help 'exrc'`, `:help :mksession`
+and `:help :mkview` for the native behavior.
 
 ## Tasks
 
@@ -52,16 +96,22 @@ chains by default (`g:PV_task_concurrency`). `jobs` sets CMake build parallelism
 signals the child process group on Linux and escalates to KILL after two seconds.
 The project remains occupied until the cancelled command finishes.
 
-Define or replace named tasks in a configuration's `tasks` object:
+Define or replace named tasks in a configuration's `tasks` Dictionary:
 
-```json
-{
-  "defaults": {
-    "tasks": {
-      "generate": {"argv": ["python3", "tools/generate.py"]},
-      "check": {"depends": ["generate"], "argv": ["python3", "-m", "unittest"], "timeout": 120}
-    }
-  }
+```vim
+vim9script
+
+export var config: dict<any> = {
+  defaults: {
+    tasks: {
+      generate: {argv: ['python3', 'tools/generate.py']},
+      check: {
+        depends: ['generate'],
+        argv: ['python3', '-m', 'unittest'],
+        timeout: 120,
+      },
+    },
+  },
 }
 ```
 
@@ -98,11 +148,11 @@ previous activation in that configuration during this GVim session. Manual proce
 environment editing remains available separately. `${root}` and `${env:NAME}` in
 environment values expand the project root and inherited process value. They are
 literal substitutions, not shell expressions. For example,
-`"PATH": "${root}/.venv/bin:${env:PATH}"` selects a Linux virtual environment.
+`PATH: '${root}/.venv/bin:${env:PATH}'` selects a Linux virtual environment.
 
-Use `tools` to map tool names to executable paths or argv arrays, `python` for the
+Use `tools` to map tool names to executable paths or argv Lists, `python` for the
 project interpreter argv, and `lsp` to override `clangd`/`pylsp` argv (an empty
-array disables a server). Configured projects receive separate first-party LSP
+List disables a server). Configured projects receive separate first-party LSP
 registrations and environments; switching buffers selects the applicable pair.
 For configured projects, vim-lsp change dispatch runs immediately rather than
 using its delayed event queue, so a later tab switch cannot redirect an edit.

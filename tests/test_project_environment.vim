@@ -1,3 +1,4 @@
+execute 'source ' .. fnameescape(g:PV_root .. '/tests/helpers/project_settings.vim')
 let s:a = g:PV_test_dir .. '/project A'
 let s:b = g:PV_test_dir .. '/project B'
 call mkdir(s:a .. '/bin', 'p')
@@ -9,11 +10,11 @@ call writefile(['import json, os, sys', 'open(sys.argv[1], "w").write(json.dumps
 call writefile(['#!/bin/sh', 'exec ' .. shellescape(s:python) .. ' ' .. shellescape(s:script) .. ' "$@"'], s:a .. '/bin/planet-env-test')
 call setfperm(s:a .. '/bin/planet-env-test', 'rwx------')
 execute 'tcd ' .. fnameescape(s:a)
-call writefile([json_encode({'defaults': {'environment': {'PLANET_ENV': 'A', 'PLANET_ENV_REMOVED': v:null, 'PATH': '${root}/bin:${env:PATH}'}}})], planet#project#File())
+call PlanetTestProjectSettings({'defaults': {'environment': {'PLANET_ENV': 'A', 'PLANET_ENV_REMOVED': v:null, 'PATH': '${root}/bin:${env:PATH}'}}})
 let s:context = planet#project#Context()
 tabnew
 execute 'tcd ' .. fnameescape(s:b)
-call writefile([json_encode({'defaults': {'environment': {'PLANET_ENV': 'B'}}})], planet#project#File())
+call PlanetTestProjectSettings({'defaults': {'environment': {'PLANET_ENV': 'B'}}})
 let s:output = s:a .. '/captured.json'
 let s:buffer = planet#term#RunArgv(['planet-env-test', s:output], v:false, v:false, v:true, s:a, v:null, '', {'context': s:context})
 for s:i in range(300)
@@ -42,4 +43,18 @@ call assert_equal('A', lsp#get_server_info(s:server_a).env.PLANET_ENV)
 call assert_equal('B', lsp#get_server_info(s:server_b).env.PLANET_ENV)
 call assert_equal([], lsp#get_server_info(s:server_b).allowlist)
 call assert_equal(['c', 'cpp'], lsp#get_server_info(s:server_a).allowlist)
+
+" Settings errors must not reuse the previous project's server environment.
+tabnew
+let s:unapproved = g:PV_test_dir .. '/unapproved project'
+call mkdir(s:unapproved, 'p')
+execute 'tcd ' .. fnameescape(s:unapproved)
+call writefile(['vim9script', 'export var config: dict<any> = {}'], planet#project#File())
+try
+  call planet#intelligence#Register()
+  call assert_report('unapproved shared settings accepted by LSP registration')
+catch /review .* then run :PlanetProjectReload!/
+endtry
+call assert_equal([], lsp#get_server_info(s:server_a).allowlist)
+call assert_equal([], lsp#get_server_info(s:server_b).allowlist)
 unlet $PLANET_ENV_REMOVED

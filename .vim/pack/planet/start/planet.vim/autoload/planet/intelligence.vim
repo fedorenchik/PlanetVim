@@ -93,15 +93,16 @@ export def Register(): any
   if !get(g:, 'PV_intelligence_enabled', 1)
     return 0
   endif
+  # A settings error must not leave another project's servers eligible.
+  for registered in values(registrations)
+    registered.allowlist = []
+  endfor
   var context = planet#project#Context()
   if Scoped(context)
     # Resolve changes while their buffer is current. vim-lsp's delayed queue
     # otherwise chooses servers after a possible project/configuration switch.
     g:lsp_use_event_queue = 0
   endif
-  for registered in values(registrations)
-    registered.allowlist = []
-  endfor
   for [name, server] in items(script_servers)
     argv = LocalArgv(name, context)
     var id = ServerName(name, context)

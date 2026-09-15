@@ -1,9 +1,11 @@
 vim9script
+
+var settings_cache: dict<any> = {}
+
 export def CopyFile(file: any): any
   return planet#generate#CopyFile(file)
 enddef
 
-# Project files contain data only. Opening a project never executes a task.
 export def Root(): string
   return fnamemodify(resolve(getcwd(-1, 0)), ':p:h')
 enddef
@@ -18,22 +20,77 @@ export def Merge(base: dict<any>, extra: dict<any>): dict<any>
 enddef
 
 export def File(private: bool = false, root: string = Root()): string
-  return private ? planet#paths#Config('projects') .. '/' .. sha256(root) .. '.json' : root .. '/.planetvim.json'
+  return private ? planet#paths#Config('projects') .. '/' .. sha256(root) .. '.vim' : root .. '/.planetvim.vim'
 enddef
 
-def Read(path: string): dict<any>
+def TrustFile(root: string): string
+  return planet#paths#State('project-trust') .. '/' .. sha256(root) .. '.sha256'
+enddef
+
+def Digest(path: string): string
+  return sha256(join(readfile(path, 'b'), "\n"))
+enddef
+
+def Read(path: string, root: string, private: bool): dict<any>
+  if has_key(settings_cache, path)
+    var cached = settings_cache[path]
+    if has_key(cached, 'error')
+      throw cached.error
+    endif
+    return deepcopy(cached.config)
+  endif
   if !filereadable(path)
     return {}
   endif
-  var data = json_decode(join(readfile(path), "\n"))
-  if type(data) != v:t_dict || get(data, 'version', 1) != 1
-    throw 'PlanetVim: invalid project settings: ' .. path
-  endif
-  return data
+  # Cache failures too: buffer events must not repeatedly execute a broken file.
+  settings_cache[path] = {error: 'PlanetVim: recursive project settings load: ' .. path}
+  try
+    if !private
+      var trust = TrustFile(root)
+      if !filereadable(trust) || readfile(trust) != [Digest(path)]
+        throw 'Shared settings need approval; review ' .. path .. ' then run :PlanetProjectReload!'
+      endif
+    endif
+    execute 'source ' .. fnameescape(path)
+    var scripts = getscriptinfo({name: '^\V' .. escape(fnamemodify(path, ':p'), '\') .. '\m$'})
+    if empty(scripts)
+      throw 'Could not inspect settings script'
+    endif
+    var script = scripts[-1]
+    var info = getscriptinfo({sid: script.sourced > 0 ? script.sourced : script.sid})[0]
+    var data = get(info.variables, 'config', null)
+    if info.version != 999999 || type(data) != v:t_dict
+      throw 'Expected vim9script with export var config: dict<any>'
+    endif
+    settings_cache[path] = {config: deepcopy(data)}
+  catch
+    var message = 'PlanetVim: cannot load project settings ' .. path .. ': ' .. v:exception
+    settings_cache[path] = {error: message}
+    throw message
+  endtry
+  return deepcopy(settings_cache[path].config)
 enddef
 
 export def Settings(root: string = Root()): dict<any>
-  return Merge(Read(File(false, root)), Read(File(true, root)))
+  return Merge(Read(File(false, root), root, false), Read(File(true, root), root, true))
+enddef
+
+export def Reload(trust: bool = false): dict<any>
+  var root = Root()
+  var shared = File(false, root)
+  if trust && filereadable(shared)
+    var record = TrustFile(root)
+    writefile([Digest(shared)], record)
+    setfperm(record, 'rw-------')
+  endif
+  for path in [shared, File(true, root)]
+    if has_key(settings_cache, path)
+      remove(settings_cache, path)
+    endif
+  endfor
+  var context = Context()
+  planet#intelligence#Refresh()
+  return context
 enddef
 
 export def Context(): dict<any>
@@ -52,13 +109,13 @@ export def Context(): dict<any>
   endfor
   for key in ['environment', 'tools', 'lsp', 'tasks']
     if type(get(config, key, {})) != v:t_dict
-      throw 'PlanetVim: project ' .. key .. ' must be an Object'
+      throw 'PlanetVim: project ' .. key .. ' must be a Dictionary'
     endif
   endfor
   for key in ['args', 'python', 'configure_args']
     var value = get(config, key, [])
     if type(value) != v:t_list || !empty(filter(copy(value), (_, item) => type(item) != v:t_string))
-      throw 'PlanetVim: project ' .. key .. ' must be a String array'
+      throw 'PlanetVim: project ' .. key .. ' must be a List of Strings'
     endif
   endfor
   for [key, value] in items(get(config, 'environment', {}))
@@ -106,9 +163,9 @@ export def Edit(private: bool = false)
   var path = File(private)
   execute 'edit ' .. fnameescape(path)
   if !filereadable(path) && line('$') == 1 && getline(1) == ''
-    setline(1, ['{', '  "version": 1,', '  "defaults": {},', '  "configurations": {}', '}'])
+    setline(1, ['vim9script', '', 'export var config: dict<any> = {', '  defaults: {},', '  configurations: {},', '}'])
   endif
-  setlocal filetype=json
+  setlocal filetype=vim
 enddef
 
 export def Show()

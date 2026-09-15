@@ -1,3 +1,4 @@
+execute 'source ' .. fnameescape(g:PV_root .. '/tests/helpers/project_settings.vim')
 set hidden
 let s:root = g:PV_test_dir .. '/tasks 工作'
 call mkdir(s:root, 'p')
@@ -14,7 +15,7 @@ let s:tasks = {
       \ 'blocked': {'depends': ['bad'], 'argv': [s:python, s:script, s:record, 'must not run', '0', '0']},
       \ 'slow': {'timeout': 1, 'argv': [s:python, s:script, s:record, 'late', '10', '0']},
       \ 'cycle': {'depends': ['cycle']}}
-call writefile([json_encode({'defaults': {'tasks': s:tasks, 'hidden': v:true}})], planet#project#File())
+call PlanetTestProjectSettings({'defaults': {'tasks': s:tasks, 'hidden': v:true}})
 func! s:Wait(id) abort
   for l:i in range(600)
     if planet#task#Status(a:id).status !=# 'running' | return planet#task#Status(a:id) | endif

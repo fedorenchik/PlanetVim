@@ -1,10 +1,11 @@
+execute 'source ' .. fnameescape(g:PV_root .. '/tests/helpers/project_settings.vim')
 let s:root = g:PV_test_dir .. '/workspace 工作'
 call mkdir(s:root, 'p')
 execute 'tcd ' .. fnameescape(s:root)
-let s:settings = {'version': 1, 'default': 'debug', 'defaults': {'environment': {'COMMON': 'shared'}, 'args': ['a b']},
+let s:settings = {'default': 'debug', 'defaults': {'environment': {'COMMON': 'shared'}, 'args': ['a b']},
       \ 'configurations': {'debug': {'build_dir': 'out/debug', 'program': 'out/debug/app'}, 'release': {'build_dir': 'out/release'}}}
-call writefile([json_encode(s:settings)], planet#project#File())
-call writefile([json_encode({'defaults': {'environment': {'LOCAL': 'private'}}, 'configurations': {'debug': {'args': ['local arg']}}})], planet#project#File(v:true))
+call PlanetTestProjectSettings(s:settings)
+call PlanetTestProjectSettings({'defaults': {'environment': {'LOCAL': 'private'}}, 'configurations': {'debug': {'args': ['local arg']}}}, v:true)
 let s:context = planet#project#Context()
 call assert_equal(s:root .. '/out/debug', s:context.build_dir)
 call assert_equal({'COMMON': 'shared', 'LOCAL': 'private'}, s:context.environment)
@@ -26,10 +27,3 @@ execute 'tcd ' .. fnameescape(g:PV_test_dir)
 call assert_equal('', planet#project#Context().configuration)
 tabclose
 call assert_equal(s:root, planet#project#Context().root)
-call writefile(['{"version": 2}'], planet#project#File())
-try
-  call planet#project#Context()
-  call assert_report('unsupported settings version accepted')
-catch /invalid project settings/
-endtry
-call writefile([json_encode(s:settings)], planet#project#File())
