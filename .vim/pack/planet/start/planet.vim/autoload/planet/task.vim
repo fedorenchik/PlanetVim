@@ -60,12 +60,28 @@ export def Plan(name: string, context: dict<any> = planet#project#Context()): li
   return ordered
 enddef
 
+def Token(name: string, context: dict<any>): string
+  if name ==# 'program' | return Program(context) | endif
+  if name ==# 'build'
+    if empty(context.build_dir) | planet#cmake#Prepare(context, false) | endif
+    return context.build_dir
+  endif
+  return get(context, name, '')
+enddef
+
 export def Expand(value: any, context: dict<any>): any
   if type(value) == v:t_list
     return map(copy(value), (_, item) => Expand(item, context))
   endif
-  return substitute(value, '${\(root\|build\|program\|file\)}', (m) => get(context,
-    m[1] ==# 'build' ? 'build_dir' : m[1], ''), 'g')
+  # Resolve paths before entering substitute(): autoloading from its expression
+  # callback can invalidate Vim's active substitution state.
+  var replacements: dict<string> = {}
+  for name in ['root', 'build', 'program', 'file']
+    if stridx(value, '${' .. name .. '}') >= 0
+      replacements[name] = Token(name, context)
+    endif
+  endfor
+  return substitute(value, '${\(root\|build\|program\|file\)}', (m) => replacements[m[1]], 'g')
 enddef
 
 export def Program(context: dict<any>): string
@@ -178,7 +194,7 @@ enddef
 
 export def Start(name: string, supplied: dict<any> = {}): number
   var context = empty(supplied) ? planet#project#Context() : deepcopy(supplied)
-  context.file = expand('%:p')
+  context.file = get(context, 'file', expand('%:p'))
   context.filetype = &filetype
   var steps = Plan(name, context)
   if type(get(context, 'timeout', 0)) != v:t_number || get(context, 'timeout', 0) < 0
@@ -249,7 +265,9 @@ export def Rerun(): number
     throw 'PlanetVim: no task to rerun in this project'
   endif
   sort(matching, (a, b) => b.id - a.id)
-  return Start(matching[0].name)
+  var context = planet#project#Context()
+  context.file = matching[0].context.file
+  return Start(matching[0].name, context)
 enddef
 
 export def Show()

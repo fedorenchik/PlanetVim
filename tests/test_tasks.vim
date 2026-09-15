@@ -53,3 +53,12 @@ catch /already has a running task/
 endtry
 call assert_equal('cancelled', planet#task#Status(s:id).status)
 call assert_equal(['first', 'second', 'failed'], readfile(s:record))
+for s:i in range(400)
+  if !get(planet#task#Status(s:id), 'pending', 0) | break | endif
+  sleep 10m
+endfor
+call assert_false(get(planet#task#Status(s:id), 'pending', 0))
+
+let s:context = planet#project#Context()
+let s:context.program = 'script with spaces.py'
+call assert_equal([s:root .. '/script with spaces.py', s:root .. '/build'], planet#task#Expand(['${program}', '${build}'], s:context))

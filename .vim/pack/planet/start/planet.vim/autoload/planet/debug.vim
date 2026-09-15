@@ -78,14 +78,16 @@ def LocalPython(): any
 enddef
 
 # A read-only capability probe, using argv and bounded job execution.
-def LocalProbe(argv: any): any
+def LocalProbe(argv: any, context: dict<any> = {}): any
   var job: any
-  if empty(argv) || !executable(argv[0])
+  if empty(argv) || (empty(context) ? !executable(argv[0]) : empty(planet#project_env#Find(argv[0], context)))
     return 0
   endif
   var output: any = tempname()
   try
-    job = job_start(argv, {out_io: 'file', out_name: output, err_io: 'out'})
+    job = empty(context) ? job_start(argv, {out_io: 'file', out_name: output, err_io: 'out'})
+      : job_start(planet#project_env#Native(argv, context), {env: context.env_snapshot, cwd: context.cwd,
+        out_io: 'file', out_name: output, err_io: 'out'})
     for i in range(300)
       if job_status(job) !=# 'run'
         return job_status(job) ==# 'dead' && get(job_info(job), 'exitval', -1) == 0
@@ -122,6 +124,9 @@ enddef
 export def Project(context: dict<any>): number
   var program = planet#task#Program(context)
   var language = get(context, 'language', program =~# '\.py$' ? 'python' : 'cpp')
+  if !filereadable(program) || !isdirectory(context.cwd)
+    return LocalWarn('build/select an existing program and working directory before debugging.')
+  endif
   var config = planet#debug#Configuration(language, program)
   if empty(config) || !planet#debug#Init()
     return 0
@@ -130,6 +135,13 @@ export def Project(context: dict<any>): number
   var adapter = deepcopy(config.adapters[selected.adapter])
   if language ==# 'python' && !empty(get(context, 'python', []))
     adapter.command = context.python + ['-m', 'debugpy.adapter']
+  endif
+  var command = planet#project_env#Command(adapter.command, context)
+  var probe = language ==# 'python' && len(command) == 3 && command[1 :] ==# ['-m', 'debugpy.adapter']
+    ? [command[0], '-c', 'import debugpy.adapter']
+    : language ==# 'python' ? [] : [command[0], '--nx', '--quiet', '--batch', '-ex', 'python import gdb.dap']
+  if empty(planet#project_env#Find(command[0], context)) || (!empty(probe) && !LocalProbe(probe, context))
+    return LocalWarn('install debugpy in the selected Python interpreter or a Python DAP-capable GDB 14+; check project tools settings.')
   endif
   adapter.command = planet#project_env#Native(adapter.command, context, context.root)
   adapter.env = context.env_snapshot
