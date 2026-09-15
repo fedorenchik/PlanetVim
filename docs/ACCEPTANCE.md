@@ -2,6 +2,78 @@
 
 This record covers PlanetVim **0.1.0-rc.1**, implemented on **2026-09-08** from baseline `f75c805a`. The source is a release candidate. Native Windows hosted CI and external SDK/target acceptance remain release gates; checked-in automation is not evidence that those jobs ran.
 
+## Integrated IDE workflows — 2026-09-15
+
+IDE-01 through IDE-05 are implemented in first-party code. Tested runtime and
+startup snapshot: `241ec37a8`; the following acceptance commit changes only this
+record. See [the workflow guide](IDE.md) for the settings schema, menu entry
+points, supported CMake configure presets and task conventions.
+
+Validation on Linux x86-64, Manjaro 6.18.49 / glibc 2.44:
+
+- **82/82 default GUI files passed** on current **GVim 9.2.1011**. The initial
+  image-preview dependency failure was corrected by adding Pillow to the
+  disposable test environment and rerunning that file. Final task/debugger
+  changes received focused GUI and compilation reruns.
+- **83/83 GUI files passed, zero skips**, on minimum **GVim 9.1.0016**: all 82
+  default files plus `tests/integration/lsp.vim`. The minimum executable was
+  built from unmodified official Vim commit
+  `124371c5a149a8c0c75c04b6c90ac11e71a0aa97`, with GTK3 and embedded Python
+  **3.12.14**, under `/tmp/planetvim-ide-tools/gvim-minimum312`. An earlier test
+  build using host Python 3.14 failed embedding; these passing results use the
+  corrected Python 3.12 build, without patching Vim or bundled plugins.
+- The additional **real clangd/pylsp integration fixture passed on current
+  GVim** too, including definitions, completion, rename, formatting and
+  diagnostics. A separate protocol-recorder fixture checks isolated process
+  environments and prevents cross-project document delivery during rapid tab
+  switches, including pending edit notifications.
+- Python suite: **108 run, 107 passed, one skipped**. The skip is the existing
+  SFML template build, because `sfml-window`, `sfml-system`, `glew` and `gl`
+  development packages are absent. CMake preset inheritance/environment/macro
+  and cycle tests pass.
+- **121 package inventory records match**. No upstream plugin files changed.
+  `git diff --check` passes.
+
+Real tool versions: CMake **4.4.3**, Ninja **1.13.2**, GDB **17.2**, clangd
+**22.1.8**, debugpy **1.8.21**, pylsp **1.15.0**, external test Python **3.14.7**.
+Debugpy/pylsp/Pillow were installed in a disposable `/tmp` environment; the
+system Python installation and personal PlanetVim installation were not changed.
+
+The new fixtures configure and build real C/C++ programs, resolve inherited and
+private presets, exercise out-of-tree paths with spaces/Unicode, select targets
+and multi-configuration artifacts, run CTest, pass literal arguments/environment,
+and reject running stale executables after a failed rebuild. Actual GDB and
+Python debugger launches use the selected executable/interpreter and preserve an
+existing `.vimspector.json`. Task fixtures cover dependency ordering, cycles,
+failure suppression, cancellation, timeouts, project switching and literal
+artifact placeholders. Compiler/Python diagnostics retain raw logs and point
+back to the originating source. Existing home-install, installed-startup,
+menu-teaching, Vim9 compilation and plugin API checks are included above.
+
+### Startup comparison
+
+Clean-tree measurements used the same current GVim, private Xvfb, a populated
+hint cache, one excluded warmup and five fresh processes per checkout. No
+PlanetVim compiler or test suite ran concurrently with these measurements:
+
+- Before IDE changes, `9dfde0943`: **1.210 seconds median to first screen**,
+  range **1.107–1.215**; pre-vimrc-to-event-loop median **1.125 seconds**.
+- After IDE changes, `241ec37a8`: **1.152 seconds median to first screen**,
+  range **1.063–1.308**; pre-vimrc-to-event-loop median **1.072 seconds**.
+
+These samples do not demonstrate a startup regression; their variation does
+not establish a dependable speedup. **The 1.0-second target remains unmet on
+this host.** Do not compare these numbers directly with the older GVim 9.2.0849
+optimization measurements below. Both checkouts retain the same pre-existing
+`E329: No menu "&GUI Windows"` last-error marker in the benchmark capture.
+Local artifacts: `dist/startup-ide-before.json` and `dist/startup-ide-after.json`.
+Reproduce with `python3 scripts/benchmark.py --runs 5 --xvfb /path/to/Xvfb`.
+
+This phase validates Linux GVim and the stated local workflows. Windows,
+IDE-06 and later work, remote/hardware/commercial SDK acceptance, publishing and
+hosted CI remain outside this phase. New settings and tool probes do not run
+project tasks or start SDK installation merely by opening a project.
+
 ## Linux startup optimization — 2026-09-10
 
 Validated runtime and benchmark commit `edaf1eb`. Fixed menu declarations call
