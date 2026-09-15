@@ -39,8 +39,6 @@ directory overrides that configuration's `build_dir` and is saved in private
 state. Previous build directories and run profiles remain supported for projects
 without these settings. A window-local `:lcd` does not change project identity.
 
-## Implementation milestones
-
 ## Tasks
 
 Run → Tasks exposes configure/build/run/test/debug chains, task selection, last
@@ -90,6 +88,8 @@ their raw output and exit status. Custom tasks can set `parser` to `compiler` or
 `python`; an empty String disables parsing. No successful build inherits the
 previous build's error list.
 
+## Environments
+
 Tool jobs and GUI launches receive a captured project environment. SDK activation
 and compiler selection save overrides for the originating project/configuration,
 even if another tab is active when activation finishes. Deactivation restores the
@@ -103,6 +103,40 @@ Use `tools` to map tool names to executable paths or argv arrays, `python` for t
 project interpreter argv, and `lsp` to override `clangd`/`pylsp` argv (an empty
 array disables a server). Configured projects receive separate first-party LSP
 registrations and environments; switching buffers selects the applicable pair.
+
+## CMake presets and targets
+
+Build → CMake offers Choose Preset, Choose Target, Choose Build Configuration
+and Show Targets and Artifacts. `:PlanetCmakePreset`, `:PlanetCmakeTarget`,
+`:PlanetCmakeConfiguration` and `:PlanetCmakeInfo` expose the same actions.
+Configuration, preset, build directory and target selections persist privately.
+A project configuration can also declare `preset`, `target` and `build_type`.
+
+Use CMake 3.20+ for these workflows and Python 3 for preset discovery. CMake
+validates and lists available configure presets from `CMakePresets.json`,
+`CMakeUserPresets.json` and their includes. Preset inheritance, environment
+references and path macros determine the build directory. Configure passes the
+selected preset to CMake; explicit selected build directories override its
+`binaryDir`. Preset environments apply to the following build/run/test/debug
+steps. Build/test preset objects and CMake workflow presets are not imported as
+PlanetVim tasks; define custom tasks when those additional preset options matter.
+
+Configure places a File API query in the build tree. Target selection and
+Run/Debug read CMake's returned artifact paths, including multi-configuration
+and custom runtime-output directories. If several executables exist, select
+one; a library target cannot run. An explicit `program` overrides discovery.
+Build and Test builds all targets before CTest, since test executables may be
+separate from the selected application. Build and Run/Debug build the selected
+target. A failed prerequisite prevents launching an old executable.
+
+Configure requests `compile_commands.json`; generators supporting it provide
+clangd with the selected build directory automatically. No database is copied
+into the source tree. Re-enter a source buffer after configuring to activate
+its updated language-server registration. The selected-target debugger launch
+uses an ephemeral Vimspector configuration; existing manual `.vimspector.json`
+actions remain available and the file is never overwritten.
+
+## Implementation milestones
 
 - IDE-01: shared settings, private overrides and selected configuration.
 - IDE-02: project environments for tool jobs and language servers.

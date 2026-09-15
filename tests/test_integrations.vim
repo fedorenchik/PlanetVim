@@ -81,8 +81,8 @@ try
   let g:PV_integration_tools.cmake = s:python + [s:stub]
   call assert_equal(7, s:Wait(planet#integrations#CmakeConfigure(v:true)).exit_code)
   let s:recorded = json_decode(join(readfile(s:record), "\n"))
-  call assert_equal(['-S', planet#run#Project().root, '-B', planet#build#GetBuildDir(),
-        \ '-DCMAKE_SYSROOT=' .. s:sysroot, '-DCMAKE_EXPORT_COMPILE_COMMANDS=ON'], s:recorded.argv)
+  call assert_equal(['-S', planet#run#Project().root, '-B', s:root .. '/build',
+        \ '-DCMAKE_EXPORT_COMPILE_COMMANDS=ON', '-DCMAKE_SYSROOT=' .. s:sysroot], s:recorded.argv)
   let g:PV_integration_tools[planet#run#Project().root .. '/configure'] = s:python + [s:stub]
   call assert_equal(7, s:Wait(planet#integrations#Configure(['--enable-fixture'])).exit_code)
   let s:recorded = json_decode(join(readfile(s:record), "\n"))

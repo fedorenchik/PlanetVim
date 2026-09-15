@@ -1,15 +1,20 @@
 vim9script
 
 export def Plan(action: string, context: dict<any>): dict<any>
-  var directory = empty(context.build_dir) ? context.root .. '/build' : context.build_dir
+  planet#cmake#Prepare(context, action ==# 'configure')
+  var directory = context.build_dir
   var argv = ['cmake']
   if action ==# 'configure'
+    if !empty(get(context, 'preset', ''))
+      argv += ['--preset', context.preset]
+    endif
     argv += ['-S', context.source_dir, '-B', directory, '-DCMAKE_EXPORT_COMPILE_COMMANDS=ON']
     if !empty(get(context, 'build_type', ''))
       add(argv, '-DCMAKE_BUILD_TYPE=' .. context.build_type)
     endif
     argv += get(context, 'configure_args', [])
   else
+    if has_key(context, 'preset_environment') | context.env_snapshot = context.preset_environment | endif
     argv += ['--build', directory]
     if !empty(context.target)
       argv += ['--target', context.target]
@@ -23,7 +28,7 @@ export def Plan(action: string, context: dict<any>): dict<any>
     endif
     argv += ['--parallel', string(jobs)]
   endif
-  return {argv: argv, cwd: context.root, parser: 'compiler'}
+  return {argv: argv, cwd: context.source_dir, parser: 'compiler'}
 enddef
 def LocalError(message: any): any
   echohl ErrorMsg
@@ -126,37 +131,55 @@ export def GetBuildDir(create_default: any = v:false): any
   return project.build_dir
 enddef
 
+def Configured(context: dict<any>, state: dict<any>, Callback: any, result: dict<any>, buffer: number)
+  if result.status ==# 'success'
+    try
+      planet#cmake#Configured(context, state)
+    catch
+      result.status = 'failed'
+      result.error = v:exception
+      echom result.error
+    endtry
+  endif
+  if type(Callback) == v:t_func | call(Callback, [result, buffer]) | endif
+enddef
+
 export def Configure(export_compile_commands: any = v:false, on_exit: any = v:null): any
-  var directory: any = planet#build#GetBuildDir(v:true)
-  if empty(directory)
-    return 0
-  endif
-  var project: any = planet#run#Project()
-  var argv: any = ['cmake', '-S', project.root, '-B', directory]
-  if export_compile_commands
-    add(argv, '-DCMAKE_EXPORT_COMPILE_COMMANDS=ON')
-  endif
-  return planet#term#RunArgv(argv, v:false, v:false, v:false, directory, on_exit)
+  try
+    var context = planet#project#Context()
+    var command = Plan('configure', context)
+    var sysroot = get(get(t:, 'PV_configure_values', {}), 'sysroot', '')
+    if !empty(sysroot) | add(command.argv, '-DCMAKE_SYSROOT=' .. sysroot) | endif
+    return planet#term#RunCmd(command.argv, false, false, get(context, 'hidden', false), command.cwd,
+      function(Configured, [context, planet#run#Project(), on_exit]), '', {context: context, parser: 'compiler'})
+  catch
+    return LocalError(v:exception)
+  endtry
 enddef
 
 export def Build(target: any = '', on_exit: any = v:null): any
-  var directory: any = planet#build#GetBuildDir()
-  if empty(directory)
-    return LocalError('configure or select this project build directory first')
-  endif
-  var argv: any = ['cmake', '--build', directory]
-  if ! empty(target)
-    argv += ['--target', target]
-  endif
-  return planet#term#RunArgv(argv, v:false, v:false, v:false, directory, on_exit)
+  try
+    var context = planet#project#Context()
+    if empty(context.build_dir) && empty(context.preset)
+      return LocalError('configure or select this project build directory first')
+    endif
+    if !empty(target) | context.target = target | endif
+    var command = Plan('build', context)
+    return planet#term#RunCmd(command.argv, false, false, get(context, 'hidden', false), command.cwd,
+      on_exit, '', {context: context, parser: 'compiler'})
+  catch
+    return LocalError(v:exception)
+  endtry
 enddef
 
 export def Rebuild(): any
-  var directory: any = planet#build#GetBuildDir()
-  if empty(directory)
+  var context = planet#project#Context()
+  if empty(context.build_dir) && empty(context.preset)
     return LocalError('configure or select this project build directory first')
   endif
-  return planet#term#RunArgv(['cmake', '--build', directory, '--clean-first'], v:false, v:false, v:false, directory)
+  var command = Plan('build', context)
+  return planet#term#RunCmd(command.argv + ['--clean-first'], false, false, get(context, 'hidden', false),
+    command.cwd, null, '', {context: context, parser: 'compiler'})
 enddef
 
 export def Browse(): any

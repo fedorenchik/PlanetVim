@@ -20,3 +20,8 @@ command! PlanetCommandLog call planet#diagnostics#Log()
 
 g:test#custom_strategies = get(g:, 'test#custom_strategies', {})
 g:test#custom_strategies.planet = function('planet#test#Strategy')
+
+command! -nargs=? PlanetCmakePreset call planet#cmake#Select('preset', <q-args>)
+command! -nargs=? PlanetCmakeTarget call planet#cmake#Select('target', <q-args>)
+command! -nargs=? PlanetCmakeConfiguration call planet#cmake#Select('configuration', <q-args>)
+command! PlanetCmakeInfo call planet#cmake#Show()

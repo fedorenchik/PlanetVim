@@ -5,8 +5,9 @@ var next_id = 0
 
 def Definitions(context: dict<any>): dict<any>
   var tasks = {configure: {builtin: 'configure'}, build: {builtin: 'build', depends: ['configure']},
+    'test-build': {builtin: 'build', all_targets: true, depends: ['configure']},
     run: {builtin: 'run'}, test: {builtin: 'test'}, debug: {builtin: 'debug'},
-    'build-run': {depends: ['build', 'run']}, 'build-test': {depends: ['build', 'test']},
+    'build-run': {depends: ['build', 'run']}, 'build-test': {depends: ['test-build', 'test']},
     'build-debug': {depends: ['build', 'debug']}}
   return extend(tasks, deepcopy(get(context, 'tasks', {})), 'force')
 enddef
@@ -70,7 +71,7 @@ enddef
 export def Program(context: dict<any>): string
   var program = get(context, 'program', '')
   if empty(program)
-    throw 'PlanetVim: select a program in project settings before running or debugging'
+    return planet#cmake#Program(context)
   endif
   return program =~# '^/' ? program : context.root .. '/' .. program
 enddef
@@ -78,6 +79,11 @@ enddef
 def Command(task: dict<any>, context: dict<any>): dict<any>
   var builtin = get(task, 'builtin', '')
   if index(['configure', 'build'], builtin) >= 0
+    if get(task, 'all_targets', false)
+      var complete = deepcopy(context)
+      complete.target = ''
+      return planet#build#Plan(builtin, complete)
+    endif
     return planet#build#Plan(builtin, context)
   elseif builtin ==# 'test'
     return {argv: ['ctest', '--output-on-failure'] + (empty(get(context, 'build_type', '')) ? [] : ['-C', context.build_type]), cwd: context.build_dir}
@@ -106,6 +112,15 @@ def Finished(run: dict<any>, result: dict<any>, buffer: number)
   if result.status !=# 'success'
     run.status = result.status
     return
+  endif
+  if get(run.steps[run.index], 'builtin', '') ==# 'configure'
+    try
+      planet#cmake#Configured(run.context, run.project)
+    catch
+      run.status = 'failed'
+      run.error = v:exception
+      return
+    endtry
   endif
   run.index += 1
   timer_start(0, (_) => Next(run))
@@ -159,9 +174,6 @@ enddef
 
 export def Start(name: string, supplied: dict<any> = {}): number
   var context = empty(supplied) ? planet#project#Context() : deepcopy(supplied)
-  if empty(context.build_dir)
-    context.build_dir = context.root .. '/build'
-  endif
   context.file = expand('%:p')
   context.filetype = &filetype
   var steps = Plan(name, context)
@@ -194,7 +206,7 @@ export def Start(name: string, supplied: dict<any> = {}): number
   endif
   next_id += 1
   var run = {id: next_id, name: name, context: context, steps: steps, index: 0,
-    window: win_getid(), status: 'running', results: [], buffer: 0, timer: -1}
+    project: planet#run#Project(), window: win_getid(), status: 'running', results: [], buffer: 0, timer: -1}
   runs[string(next_id)] = run
   Next(run)
   return next_id

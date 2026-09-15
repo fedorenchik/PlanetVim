@@ -66,6 +66,7 @@ export def Context(): dict<any>
       throw 'PlanetVim: environment values must be Strings or null'
     endif
   endfor
+  config.tools = Merge(get(g:, 'PV_integration_tools', {}), get(config, 'tools', {}))
   config.root = state.root
   config.configuration = selected
   config.source_dir = planet#run#Path(get(config, 'source_dir', '.'), state.root)
@@ -75,6 +76,8 @@ export def Context(): dict<any>
   endif
   config.cwd = planet#run#Path(get(config, 'cwd', '.'), state.root)
   config.target = get(get(state, 'targets', {}), selected, get(config, 'target', ''))
+  config.preset = get(get(state, 'presets', {}), selected, get(config, 'preset', ''))
+  config.build_type = get(get(state, 'build_types', {}), selected, get(config, 'build_type', ''))
   config.environment = Merge(get(config, 'environment', {}), get(get(state, 'environments', {}), selected, {}))
   config.env_snapshot = planet#project_env#Values(config)
   return config

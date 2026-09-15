@@ -479,20 +479,7 @@ export def Configure(arguments: any = v:null): any
 enddef
 
 export def CmakeConfigure(export_compile_commands: any = v:false): any
-  var build: any
-  var sysroot: any = get(get(t:, 'PV_configure_values', {}), 'sysroot', '')
-  if empty(sysroot)
-    return planet#build#Configure(export_compile_commands)
-  endif
-  build = planet#build#GetBuildDir(v:true)
-  if empty(build)
-    return 0
-  endif
-  var argv: any = ['cmake', '-S', planet#run#Project().root, '-B', build, '-DCMAKE_SYSROOT=' .. sysroot]
-  if export_compile_commands
-    add(argv, '-DCMAKE_EXPORT_COMPILE_COMMANDS=ON')
-  endif
-  return planet#integrations#Command(argv)
+  return planet#build#Configure(export_compile_commands)
 enddef
 
 export def ConfigureOptions(arg_value: any = v:null): any
