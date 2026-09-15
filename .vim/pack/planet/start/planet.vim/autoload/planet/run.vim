@@ -46,7 +46,7 @@ export def Project(): any
   var project: any
   var file: any
   var saved: any
-  var root: any = fnamemodify(resolve(getcwd(-1, 0)), ':p:h')
+  var root: any = planet#project#Root()
   if ! exists('t:PV_projects')
     t:PV_projects = {}
   endif
@@ -125,9 +125,10 @@ export def Run(index: any): any
     return LocalError('run profile does not exist in this project')
   endif
   profile = project.profiles[index]
+  var context = planet#project#Context()
   var cwd: any = get(profile, 'cwd', '')
   if empty(cwd)
-    cwd = empty(project.build_dir) ? project.root : project.build_dir
+    cwd = empty(context.build_dir) ? project.root : context.build_dir
   elseif cwd !~# '^[/\\]\|^\a:[/\\]'
     cwd = project.root .. '/' .. cwd
   endif
@@ -180,6 +181,10 @@ export def UpdateRunMenu(): any
   PlanetMenu an 510.500 ▶️&r.--1-- <Nop>
   PlanetMenu an 510.500 ▶️&r.Add\ Run\ Configuration <Cmd>call planet#run#AddConfig()<CR>
   PlanetMenu an 510.500 ▶️&r.Edit\ Run\ Configurations <Cmd>call planet#run#EditConfig()<CR>
+  PlanetMenu an 510.510 ▶️&r.Project.Select\ Configuration <Cmd>PlanetProjectSelect<CR>
+  PlanetMenu an 510.520 ▶️&r.Project.Show\ Configuration <Cmd>PlanetProjectInfo<CR>
+  PlanetMenu an 510.530 ▶️&r.Project.Edit\ Shared\ Settings <Cmd>PlanetProjectEdit<CR>
+  PlanetMenu an 510.540 ▶️&r.Project.Edit\ Private\ Settings <Cmd>PlanetProjectLocal<CR>
   return 0
 enddef
 

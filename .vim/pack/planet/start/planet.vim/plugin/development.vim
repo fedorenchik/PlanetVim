@@ -7,6 +7,10 @@ g:loaded_planet_development = 1
 command! -nargs=1 PlanetTest call planet#test#Test(<q-args>)
 command! -nargs=+ PlanetDebug call planet#debug#Action(<f-args>)
 command! -nargs=1 PlanetDebugSetup call planet#debug#Setup(<q-args>)
+command! -nargs=? PlanetProjectSelect call planet#project#Select(<q-args>)
+command! PlanetProjectEdit call planet#project#Edit()
+command! PlanetProjectLocal call planet#project#Edit(v:true)
+command! PlanetProjectInfo call planet#project#Show()
 
 g:test#custom_strategies = get(g:, 'test#custom_strategies', {})
 g:test#custom_strategies.planet = function('planet#test#Strategy')

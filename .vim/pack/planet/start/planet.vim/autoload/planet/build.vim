@@ -72,9 +72,16 @@ export def NewBuildDir(build_dir: any): any
     return LocalError('cannot use build directory: ' .. v:exception)
   endtry
   var previous: any = project.build_dir
+  var previous_dirs = deepcopy(get(project, 'build_dirs', {}))
+  var selected = planet#project#Context().configuration
+  if !empty(selected)
+    project.build_dirs = get(project, 'build_dirs', {})
+    project.build_dirs[selected] = directory
+  endif
   project.build_dir = directory
   if ! planet#run#Save()
     project.build_dir = previous
+    project.build_dirs = previous_dirs
     g:PV_build_dir = previous
     return 0
   endif
@@ -83,11 +90,12 @@ export def NewBuildDir(build_dir: any): any
 enddef
 
 export def GetBuildDir(create_default: any = v:false): any
-  var project: any = planet#run#Project()
+  var project: any = planet#project#Context()
   if empty(project.build_dir) && create_default
     if ! planet#build#NewInTreeBuildDir()
       return ''
     endif
+    project = planet#project#Context()
   endif
   return project.build_dir
 enddef
