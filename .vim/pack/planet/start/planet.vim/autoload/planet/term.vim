@@ -216,6 +216,8 @@ export def Cancel(bufnr: any = bufnr('%')): any
     context.cancel_requested = v:false
     return 0
   endif
+  # Unix job_stop signals the process group; escalate if a child ignores TERM.
+  timer_start(2000, (_) => job_status(context.job) ==# 'run' ? job_stop(context.job, 'kill') : 0)
   return 1
 enddef
 

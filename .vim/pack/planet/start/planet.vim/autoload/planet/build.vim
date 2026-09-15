@@ -1,4 +1,30 @@
 vim9script
+
+export def Plan(action: string, context: dict<any>): dict<any>
+  var directory = empty(context.build_dir) ? context.root .. '/build' : context.build_dir
+  var argv = ['cmake']
+  if action ==# 'configure'
+    argv += ['-S', context.source_dir, '-B', directory, '-DCMAKE_EXPORT_COMPILE_COMMANDS=ON']
+    if !empty(get(context, 'build_type', ''))
+      add(argv, '-DCMAKE_BUILD_TYPE=' .. context.build_type)
+    endif
+    argv += get(context, 'configure_args', [])
+  else
+    argv += ['--build', directory]
+    if !empty(context.target)
+      argv += ['--target', context.target]
+    endif
+    if !empty(get(context, 'build_type', ''))
+      argv += ['--config', context.build_type]
+    endif
+    var jobs = get(context, 'jobs', 2)
+    if type(jobs) != v:t_number || jobs < 1
+      throw 'PlanetVim: jobs must be a positive integer'
+    endif
+    argv += ['--parallel', string(jobs)]
+  endif
+  return {argv: argv, cwd: context.root, parser: 'compiler'}
+enddef
 def LocalError(message: any): any
   echohl ErrorMsg
   echomsg 'PlanetVim: ' .. message

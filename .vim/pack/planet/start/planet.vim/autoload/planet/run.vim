@@ -184,6 +184,13 @@ export def UpdateRunMenu(): any
   PlanetMenu an 510.520 ▶️&r.Project.Show\ Configuration <Cmd>PlanetProjectInfo<CR>
   PlanetMenu an 510.530 ▶️&r.Project.Edit\ Shared\ Settings <Cmd>PlanetProjectEdit<CR>
   PlanetMenu an 510.540 ▶️&r.Project.Edit\ Private\ Settings <Cmd>PlanetProjectLocal<CR>
+  PlanetMenu an 510.600 ▶️&r.Tasks.Choose\ Task <Cmd>PlanetTask<CR>
+  PlanetMenu an 510.610 ▶️&r.Tasks.Build\ and\ Run <Cmd>PlanetTask build-run<CR>
+  PlanetMenu an 510.620 ▶️&r.Tasks.Build\ and\ Test <Cmd>PlanetTask build-test<CR>
+  PlanetMenu an 510.630 ▶️&r.Tasks.Build\ and\ Debug <Cmd>PlanetTask build-debug<CR>
+  PlanetMenu an 510.640 ▶️&r.Tasks.Rerun\ Last <Cmd>PlanetTaskRerun<CR>
+  PlanetMenu an 510.650 ▶️&r.Tasks.Cancel <Cmd>PlanetTaskCancel<CR>
+  PlanetMenu an 510.660 ▶️&r.Tasks.Show\ Results <Cmd>PlanetTasks<CR>
   return 0
 enddef
 

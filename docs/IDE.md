@@ -41,6 +41,38 @@ without these settings. A window-local `:lcd` does not change project identity.
 
 ## Implementation milestones
 
+## Tasks
+
+Run → Tasks exposes configure/build/run/test/debug chains, task selection, last
+task rerun, cancellation and results. `:PlanetTask build-run`, `build-test` and
+`build-debug` stop immediately after an unsuccessful prerequisite. A task captures
+project settings and environment; changing tabs cannot redirect later steps.
+Tasks save modified source buffers within the project before starting (`save:
+false` opts out). One chain per project runs at a time, with at most two project
+chains by default (`g:PV_task_concurrency`). `jobs` sets CMake build parallelism
+(default 2). `timeout` is seconds per step; zero means no time limit. Cancellation
+signals the child process group on Linux and escalates to KILL after two seconds.
+
+Define or replace named tasks in a configuration's `tasks` object:
+
+```json
+{
+  "defaults": {
+    "tasks": {
+      "generate": {"argv": ["python3", "tools/generate.py"]},
+      "check": {"depends": ["generate"], "argv": ["python3", "-m", "unittest"], "timeout": 120}
+    }
+  }
+}
+```
+
+Dependencies are checked for cycles before any process starts; shared dependencies
+run once. `cwd` defaults to the project root. In native `argv` and `cwd`, `${root}`,
+`${build}`, `${program}` and `${file}` expand as literal values. A deliberate shell
+task may use `command` instead of `argv`; its text is passed unchanged to the
+configured shell. Built-in Run/Debug use `program`, `args`, `cwd`, `python` and
+`language` (`cpp` or `python`) from the selected project configuration.
+
 Tool jobs and GUI launches receive a captured project environment. SDK activation
 and compiler selection save overrides for the originating project/configuration,
 even if another tab is active when activation finishes. Deactivation restores the

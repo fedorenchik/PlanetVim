@@ -119,6 +119,28 @@ export def Configuration(language: any, program: any = ''): any
   return {}
 enddef
 
+export def Project(context: dict<any>): number
+  var language = get(context, 'language', get(context, 'filetype', 'cpp'))
+  var program = planet#task#Program(context)
+  var config = planet#debug#Configuration(language, program)
+  if empty(config) || !planet#debug#Init()
+    return 0
+  endif
+  var selected = values(config.configurations)[0]
+  var adapter = deepcopy(config.adapters[selected.adapter])
+  if language ==# 'python' && !empty(get(context, 'python', []))
+    adapter.command = context.python + ['-m', 'debugpy.adapter']
+  endif
+  adapter.command = planet#project_env#Native(adapter.command, context, context.root)
+  adapter.env = context.env_snapshot
+  selected.adapter = adapter
+  selected.configuration.cwd = context.cwd
+  selected.configuration.args = get(context, 'args', [])
+  selected.configuration.env = context.env_snapshot
+  vimspector#LaunchWithConfigurations({'PlanetVim selected target': selected})
+  return 1
+enddef
+
 export def Setup(language: any, program: any = ''): any
   var config: any = planet#debug#Configuration(language, program)
   if empty(config)
