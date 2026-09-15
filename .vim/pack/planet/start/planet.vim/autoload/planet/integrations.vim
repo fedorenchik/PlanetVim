@@ -137,12 +137,13 @@ export def Plan(id: any, arg_values: any = {}): any
     endif
   endfor
   argv = planet#integrations#Tool(argv[0], get(spec, 'qt', v:false)) + argv[1 : ]
-  return {argv: argv, cwd: context.root, values: values, note: get(spec, 'note', ''), then_build: get(spec, 'then_build', v:false)}
+  return {argv: argv, cwd: context.root, context: planet#project#Context(), values: values, note: get(spec, 'note', ''), then_build: get(spec, 'then_build', v:false)}
 enddef
 
 def LocalConfigured(plan: any, options: any, result: any, buffer: any): any
   if result.status ==# 'success'
-    planet#term#RunArgv(planet#integrations#Tool('cmake') + ['--build', plan.values.directory],  v:false, v:false, get(options, 'hidden', v:false), plan.cwd,  get(options, 'on_exit', v:null))
+    planet#term#RunCmd(['cmake', '--build', plan.values.directory], false, false, get(options, 'hidden', false),
+      plan.cwd, get(options, 'on_exit', null), '', {context: plan.context})
   elseif type(get(options, 'on_exit', v:null)) == v:t_func
     call(options.on_exit, [result, buffer])
   endif
@@ -162,7 +163,7 @@ export def Run(id: any, values: any = {}, options: any = {}): any
       planet#integrations#Tool('vncviewer')
       plan.argv = LocalHelper() + ['view-display', plan.values.display,  plan.values.password, plan.values.port, script_initial_display]
     endif
-    return planet#term#RunArgv(plan.argv, v:false, v:false, get(options, 'hidden', v:false), plan.cwd, Callback)
+    return planet#term#RunCmd(plan.argv, false, false, get(options, 'hidden', false), plan.cwd, Callback, '', {context: plan.context})
   catch
     return v:exception ==# 'cancelled' ? 0 : LocalError(v:exception)
   endtry

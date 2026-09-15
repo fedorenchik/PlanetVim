@@ -30,10 +30,21 @@ def ServerName(name: string, context: any): string
     ? '-' .. sha256(context.root .. context.configuration .. string(LocalArgv(name, context)) .. string(sort(items(context.env_snapshot))))[ : 15] : '')
 enddef
 
+export def PrepareBuffer()
+  if exists('*lsp#get_server_names')
+    try
+      Register()
+    catch
+      echom 'PlanetVim language setup: ' .. v:exception
+    endtry
+  endif
+enddef
+
 export def Refresh()
   if exists('*lsp#get_server_names') && !empty(expand('%:p')) && !empty(LocalName())
     try
       Register()
+      lsp#activate()
     catch
       echom 'PlanetVim language setup: ' .. v:exception
     endtry
@@ -83,6 +94,11 @@ export def Register(): any
     return 0
   endif
   var context = planet#project#Context()
+  if Scoped(context)
+    # Resolve changes while their buffer is current. vim-lsp's delayed queue
+    # otherwise chooses servers after a possible project/configuration switch.
+    g:lsp_use_event_queue = 0
+  endif
   for registered in values(registrations)
     registered.allowlist = []
   endfor

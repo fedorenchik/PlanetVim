@@ -11,6 +11,7 @@ command! PlanetSemanticScopes call planet#semantic#Show()
 
 augroup PlanetVimIntelligence
   autocmd!
+  autocmd BufReadPre,BufNewFile * call planet#intelligence#PrepareBuffer()
   autocmd BufEnter,TabEnter,DirChanged * call planet#intelligence#Refresh()
   autocmd VimEnter,BufEnter * call planet#completion#Buffer()
   autocmd TextChanged,TextChangedI,InsertEnter * call planet#lsp_display#Invalidate()
@@ -22,5 +23,5 @@ augroup PlanetVimIntelligence
   autocmd User asyncomplete_setup call planet#intelligence#CompletionSources()
   autocmd User lsp_buffer_enabled call planet#intelligence#Attach()
   autocmd VimEnter,FileType * call planet#startup#Language()
-  autocmd FileType c,cpp,python call planet#intelligence#SetupBuffer()
+  autocmd FileType c,cpp,python call planet#intelligence#Refresh() | call planet#intelligence#SetupBuffer()
 augroup END

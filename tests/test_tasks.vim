@@ -40,7 +40,16 @@ catch /dependency cycle/
 endtry
 let s:id = planet#task#Start('slow')
 call assert_equal('timed-out', s:Wait(s:id).status)
+for s:i in range(400)
+  if !get(planet#task#Status(s:id), 'pending', 0) | break | endif
+  sleep 10m
+endfor
 let s:id = planet#task#Start('slow')
 call assert_equal(1, planet#task#Cancel(s:id))
+try
+  call planet#task#Start('first')
+  call assert_report('second task started before cancellation finished')
+catch /already has a running task/
+endtry
 call assert_equal('cancelled', planet#task#Status(s:id).status)
 call assert_equal(['first', 'second', 'failed'], readfile(s:record))

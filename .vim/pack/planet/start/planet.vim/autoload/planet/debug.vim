@@ -120,8 +120,8 @@ export def Configuration(language: any, program: any = ''): any
 enddef
 
 export def Project(context: dict<any>): number
-  var language = get(context, 'language', get(context, 'filetype', 'cpp'))
   var program = planet#task#Program(context)
+  var language = get(context, 'language', program =~# '\.py$' ? 'python' : 'cpp')
   var config = planet#debug#Configuration(language, program)
   if empty(config) || !planet#debug#Init()
     return 0

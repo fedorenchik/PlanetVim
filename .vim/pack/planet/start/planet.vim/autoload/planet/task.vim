@@ -101,6 +101,7 @@ def Command(task: dict<any>, context: dict<any>): dict<any>
 enddef
 
 def Finished(run: dict<any>, result: dict<any>, buffer: number)
+  run.pending = false
   if get(run, 'timer', -1) >= 0
     timer_stop(run.timer)
     run.timer = -1
@@ -155,10 +156,12 @@ def Next(run: dict<any>)
       return
     endif
     var command = Command(task, run.context)
+    run.pending = true
     run.buffer = planet#term#RunCmd(get(command, 'argv', get(command, 'command', '')), false, false,
       get(run.context, 'hidden', false), command.cwd, function(Finished, [run]), '',
       {context: run.context, parser: get(command, 'parser', ''), task_id: run.id})
     if run.buffer <= 0
+      run.pending = false
       throw 'command could not start'
     endif
     var seconds = get(task, 'timeout', get(run.context, 'timeout', 0))
@@ -166,6 +169,7 @@ def Next(run: dict<any>)
       run.timer = timer_start(seconds * 1000, (_) => Timeout(run))
     endif
   catch
+    run.pending = false
     run.status = 'failed'
     run.error = v:exception
     echom 'PlanetVim task failed: ' .. v:exception
@@ -180,11 +184,15 @@ export def Start(name: string, supplied: dict<any> = {}): number
   if type(get(context, 'timeout', 0)) != v:t_number || get(context, 'timeout', 0) < 0
     throw 'PlanetVim: timeout must be nonnegative seconds'
   endif
-  if len(filter(values(runs), (_, run) => run.status ==# 'running')) >= get(g:, 'PV_task_concurrency', 2)
+  var limit = get(g:, 'PV_task_concurrency', 2)
+  if type(limit) != v:t_number || limit < 1
+    throw 'PlanetVim: task concurrency must be a positive integer'
+  endif
+  if len(filter(values(runs), (_, run) => run.status ==# 'running' || get(run, 'pending', false))) >= limit
     throw 'PlanetVim: task concurrency limit reached; cancel a task or wait'
   endif
   for run in values(runs)
-    if run.context.root ==# context.root && run.status ==# 'running'
+    if run.context.root ==# context.root && (run.status ==# 'running' || get(run, 'pending', false))
       throw 'PlanetVim: this project already has a running task; cancel it or wait'
     endif
   endfor
