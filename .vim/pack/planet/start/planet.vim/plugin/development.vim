@@ -15,6 +15,8 @@ command! -nargs=? PlanetTask call empty(<q-args>) ? planet#task#Choose() : plane
 command! PlanetTaskCancel call planet#task#Cancel()
 command! PlanetTaskRerun call planet#task#Rerun()
 command! PlanetTasks call planet#task#Show()
+command! PlanetCommandDiagnostics call planet#diagnostics#Show()
+command! PlanetCommandLog call planet#diagnostics#Log()
 
 g:test#custom_strategies = get(g:, 'test#custom_strategies', {})
 g:test#custom_strategies.planet = function('planet#test#Strategy')

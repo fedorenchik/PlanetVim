@@ -73,6 +73,23 @@ task may use `command` instead of `argv`; its text is passed unchanged to the
 configured shell. Built-in Run/Debug use `program`, `args`, `cwd`, `python` and
 `language` (`cpp` or `python`) from the selected project configuration.
 
+## Command diagnostics
+
+Compiler/build commands and Python commands capture raw output before terminal
+wrapping. Each invocation retains a private log under state `task-logs/` and a
+separate quickfix list tagged with its project, configuration and output buffer.
+Run → Tasks → Show Diagnostics opens the latest project result, or the selected
+output buffer's result. Open Raw Log retains the full original output even after
+terminal scrollback has been discarded. Parsing examines the last 50,000 log
+lines to bound memory; the raw log is complete.
+
+The initial adapters handle GCC/Clang-style diagnostics (including tools such as
+Clang-Tidy), source-located linker errors, CMake source errors, recursive Make
+directories and Python traceback frames. Commands with other output formats keep
+their raw output and exit status. Custom tasks can set `parser` to `compiler` or
+`python`; an empty String disables parsing. No successful build inherits the
+previous build's error list.
+
 Tool jobs and GUI launches receive a captured project environment. SDK activation
 and compiler selection save overrides for the originating project/configuration,
 even if another tab is active when activation finishes. Deactivation restores the

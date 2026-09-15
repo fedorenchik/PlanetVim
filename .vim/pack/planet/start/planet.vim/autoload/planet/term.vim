@@ -183,9 +183,20 @@ def LocalExited(context: any, job: any, status: any): any
   if result.exit_code != null
     return 0
   endif
+  # Drain the pty before parsing diagnostics or invoking dependent commands.
+  if bufexists(context.buffer) && term_getstatus(context.buffer) !~# 'finished'
+    timer_start(10, (_) => LocalExited(context, job, status))
+    return 0
+  endif
   result.exit_code = status
   result.signal = get(job_info(job), 'termsig', '')
   result.status = context.cancel_requested ? 'cancelled'  :  status == 0 && empty(result.signal) ? 'success' :  'failed'
+  try
+    planet#diagnostics#Finish(context)
+  catch
+    result.diagnostic_error = v:exception
+    LocalError('could not parse command output: ' .. v:exception)
+  endtry
   if bufexists(context.buffer)
     setbufvar(context.buffer, 'planet_result', result)
   endif
@@ -273,9 +284,20 @@ export def RunCmd(cmd: any, this_window: any = v:false, close_on_exit: any = v:f
   var context: any = {buffer: 0, cancel_requested: v:false, close_on_exit: close_on_exit, script_file: command.script_file,
        on_exit: on_exit, result: {status: 'running', exit_code: v:null, signal: '', cwd: cwd, command: LocalLabel(cmd),
        argv: copy(command.argv), project: command.project, configuration: command.configuration}}
+  context.parser = get(options, 'parser', planet#diagnostics#Auto(cmd))
+  context.log_file = ''
+  if !empty(context.parser) || has_key(options, 'task_id')
+    context.log_file = planet#paths#State('task-logs') .. '/' .. sha256(tempname()) .. '.log'
+    writefile([], context.log_file)
+    setfperm(context.log_file, 'rw-------')
+    context.result.log_file = context.log_file
+  endif
   # Omitting term_finish retains the terminal on all supported Vim 9.1 builds;
   # early 9.1 rejects the later explicit 'noclose' option value.
   var term_opts: any = {cwd: cwd, env: command.environment, exit_cb: function(LocalExited, [context])}
+  if !empty(context.log_file)
+    term_opts.out_cb = function('planet#diagnostics#Capture', [context])
+  endif
   if !empty(input_file)
     term_opts.in_io = 'file'
     term_opts.in_name = fnamemodify(input_file, ':p')

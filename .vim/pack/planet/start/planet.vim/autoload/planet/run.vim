@@ -191,6 +191,8 @@ export def UpdateRunMenu(): any
   PlanetMenu an 510.640 ▶️&r.Tasks.Rerun\ Last <Cmd>PlanetTaskRerun<CR>
   PlanetMenu an 510.650 ▶️&r.Tasks.Cancel <Cmd>PlanetTaskCancel<CR>
   PlanetMenu an 510.660 ▶️&r.Tasks.Show\ Results <Cmd>PlanetTasks<CR>
+  PlanetMenu an 510.670 ▶️&r.Tasks.Show\ Diagnostics <Cmd>PlanetCommandDiagnostics<CR>
+  PlanetMenu an 510.680 ▶️&r.Tasks.Open\ Raw\ Log <Cmd>PlanetCommandLog<CR>
   return 0
 enddef
 
