@@ -32,6 +32,11 @@ call assert_match('PlanetToggleComment', execute('tmenu ✏️m.Toggle\ Comment'
 " Rebuilding with translated roots keeps tips and dynamic menu metadata.
 call planet#menu#Style('descriptive')
 call assert_match(':undo', execute('tmenu Edit.Undo'))
+call planet#menu#Group('editing')
+call assert_true(!empty(menu_info('Highlights.TextProp.Add Virtual Text.After Line')))
+call assert_match(':call planet#textprop#Note', execute('tmenu Highlights.TextProp.Add\ Virtual\ Text.After\ Line'))
+call assert_match('m{A-Z}$', menu_info('Bookmarks.Set / Replace').accel)
+call assert_match(':call planet#bookmark#Jump', execute('tmenu Bookmarks.Choose\ Exact\ Position'))
 call planet#menu#Group('nav')
 call assert_match(':suspend', execute('tmenu GUI.Minimize'))
 new

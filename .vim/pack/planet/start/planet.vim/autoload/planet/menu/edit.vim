@@ -156,7 +156,15 @@ export def Update(): number
     # Bookmarks: Upper-case marks (mA-mZ)
     execute planet#menu_help#Entry('an 240.10  ', '📎&k.Bookmarks', '<Nop>')
     an disable 📎&k.Bookmarks
-    execute planet#menu_help#Entry('an 240.10  ', '📎&k.Open\ LocList', ':SignatureListGlobalMarks<CR>')
+    execute planet#menu_help#Entry('an 240.20  ', '📎&k.Set\ /\ Replace<Tab>m{A-Z}', '<Cmd>call planet#bookmark#Set()<CR>')
+    execute planet#menu_help#Entry('an 240.30  ', '📎&k.Add\ Next\ Free', '<Cmd>call planet#bookmark#Set(v:null, v:true)<CR>')
+    execute planet#menu_help#Entry('an 240.40  ', '📎&k.Choose\ Exact\ Position<Tab>`{A-Z}', '<Cmd>call planet#bookmark#Jump()<CR>')
+    execute planet#menu_help#Entry('an 240.50  ', '📎&k.Choose\ Line<Tab>''{A-Z}', '<Cmd>call planet#bookmark#Jump(v:null, v:true)<CR>')
+    execute planet#menu_help#Entry('an 240.60  ', '📎&k.Open\ LocList', '<Cmd>call planet#bookmark#List()<CR>')
+    execute planet#menu_help#Entry('an 240.70  ', '📎&k.--1--', '<Nop>')
+    execute planet#menu_help#Entry('an 240.80  ', '📎&k.Delete', '<Cmd>call planet#bookmark#Delete()<CR>')
+    execute planet#menu_help#Entry('an 240.90  ', '📎&k.Delete\ All<Tab>:delmarks\ A-Z', '<Cmd>delmarks A-Z<CR>')
+    execute planet#menu_help#Entry('an 240.100 ', '📎&k.Help', '<Cmd>help mark-motions<CR>')
 
     # Folds
     execute planet#menu_help#Entry('an 250.10  ', '📜&z.Folds', '<Nop>')
