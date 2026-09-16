@@ -286,15 +286,6 @@ export def EmergencyExit(): any
   return 0
 enddef
 
-export def CheckExitSaveSession(): any
-  if empty(v:this_session) || v:exiting != 0
-    return 0
-  endif
-  #TODO: auto-save and auto-load quickfix/loclist files (up to 10 of each, loclists: for each window)
-  exe 'SSave! ' .. fnamemodify(v:this_session, ":t")
-  return 0
-enddef
-
 export def EditVimVar(var_name: any): any
   var var_value: any = inputdialog(var_name .. '=', eval(var_name), 'CANCELLED')
   if var_value == 'CANCELLED'

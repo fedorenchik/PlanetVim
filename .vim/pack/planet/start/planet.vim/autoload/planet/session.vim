@@ -1,67 +1,368 @@
 vim9script
 
-var script_menu_sessions = []
+var script_menu_sessions: list<string> = []
+var active_file = ''
+var active_root = ''
+var active_options = ''
+var startup_root = ''
+var loading = false
+var timer = -1
+var last_error = ''
 
-export def Save(): any
-  if ! empty(v:this_session)
-    if fnamemodify(v:this_session, ':p:h') ==# fnamemodify(get(g:, 'startify_session_dir', planet#paths#State('sessions')), ':p:h')
-      startify#session_save(1, fnamemodify(v:this_session, ':t'))
-    else
-      execute 'mksession! ' .. fnameescape(v:this_session)
+def Canonical(path: string): string
+  var result = substitute(resolve(fnamemodify(path, ':p')), '[/\\]\+$', '', '')
+  return empty(result) ? '/' : result
+enddef
+
+export def Directory(): string
+  var base = empty($XDG_DATA_HOME) ? expand('~/.local/share') : $XDG_DATA_HOME
+  var path = get(g:, 'PV_sessions_dir', get(g:, 'startify_session_dir',
+    empty($PLANETVIM_SESSIONS_DIR) ? base .. '/planetvim/.vim/sessions' : $PLANETVIM_SESSIONS_DIR))
+  return fnamemodify(path, ':p')->substitute('[/\\]\+$', '', '')
+enddef
+
+export def PathForDirectory(directory: string): string
+  var root = Canonical(directory)
+  var name = substitute(fnamemodify(root, ':t'), '[^[:alnum:]_-]', '_', 'g')
+  return Directory() .. '/' .. name .. '-' .. sha256(root)[: 15] .. '.vim'
+enddef
+
+def HistoryFile(): string
+  return planet#paths#State() .. '/sessions.vim'
+enddef
+
+export def Recent(): list<dict<string>>
+  var path = HistoryFile()
+  var history: list<dict<string>> = []
+  if filereadable(path)
+    try
+      # This private index contains only generated Vim9 data, never project code.
+      execute 'source ' .. fnameescape(path)
+      history = get(g:, 'PV_session_history', [])
+    finally
+      unlet! g:PV_session_history
+    endtry
+  endif
+  return filter(history, (_, item) => filereadable(get(item, 'file', '')))
+enddef
+
+def Remember()
+  if empty(active_file) || !filereadable(active_file)
+    return
+  endif
+  var history = filter(Recent(), (_, item) => item.file !=# active_file)
+  insert(history, {file: active_file, root: active_root, options: active_options})
+  var path = HistoryFile()
+  var temporary = path .. '.' .. getpid() .. '.tmp'
+  try
+    writefile(['vim9script', 'g:PV_session_history = ' .. string(history)], temporary)
+    setfperm(temporary, 'rw-------')
+    if rename(temporary, path) != 0
+      throw 'PlanetVim: could not update recent sessions'
     endif
-  else
-    startify#session_save(0, fnamemodify(getcwd(-1), ':t'))
-  endif
-  planet#session#SetCurrent()
-  planet#session#MenuList()
-  return 0
+  finally
+    delete(temporary)
+  endtry
 enddef
 
-export def Load(name: any): any
-  if !empty(getbufinfo({'bufmodified': 1}))
-    throw 'PlanetVim: save or discard modified buffers before opening a session'
-  endif
-  if empty(name)
-    startify#session_load(0)
-  else
-    startify#session_load(0, name)
-  endif
-  planet#session#SetCurrent()
-  return 0
+def Label(item: dict<string>): string
+  var directory = fnamemodify(item.root, ':~')
+  return item.file ==# PathForDirectory(item.root) ? directory
+    : fnamemodify(item.file, ':t') .. ' — ' .. directory
 enddef
 
-export def LoadByIndex(index: any): any
-  if index >= 0 && index < len(script_menu_sessions)
-    planet#session#Load(script_menu_sessions[index])
-  endif
-  return 0
+export def StartifyList(): list<dict<string>>
+  return map(Recent()[: 9], (_, item) => ({
+    line: Label(item),
+    cmd: 'call planet#session#OpenPath(' .. string(item.file) .. ')'}))
 enddef
 
-export def SetCurrent(): any
+def CurrentMenu()
   if exists('g:last_session')
-    exe 'silent! aun 📚&s.Current:\ ' .. planet#menu#MenuifyName(g:last_session)
+    execute 'silent! aun 📚&s.Current:\ ' .. planet#menu#MenuifyName(g:last_session)
     unlet g:last_session
   endif
-  if ! empty(v:this_session)
-    writefile([fnamemodify(v:this_session, ':p')], planet#paths#State() .. '/last-session')
-    if planet#menu#Visible('nav')
-      exe 'PlanetMenu an 840.20  📚&s.Current:\ ' .. planet#menu#MenuifyName(fnamemodify(v:this_session, ':t')) .. ' <Nop>'
-    endif
-    g:last_session = fnamemodify(v:this_session, ":t")
+  if !empty(v:this_session) && planet#menu#Visible('nav')
+    g:last_session = fnamemodify(v:this_session, ':t')
+    execute 'PlanetMenu an 840.20 📚&s.Current:\ ' .. planet#menu#MenuifyName(g:last_session) .. ' <Nop>'
   endif
+enddef
+
+export def SetCurrent(): number
+  if loading || empty(v:this_session)
+    return 0
+  endif
+  var file = fnamemodify(v:this_session, ':p')
+  if file !=# active_file
+    active_file = file
+    active_root = Canonical(getcwd(-1))
+    active_options = &sessionoptions
+    for item in Recent()
+      if item.file ==# file
+        active_root = item.root
+        active_options = item.options
+        break
+      endif
+    endfor
+  endif
+  Remember()
+  CurrentMenu()
   return 0
 enddef
 
-export def MenuList(): any
+export def MenuList(): number
   if !planet#menu#Visible('nav')
     return 0
   endif
+  CurrentMenu()
   silent! aun 📚&s.Ope&n\ Session
-  script_menu_sessions = startify#session_list('')
+  script_menu_sessions = mapnew(Recent(), (_, item) => item.file)
   for index in range(len(script_menu_sessions))
-    exe 'PlanetMenu an 840.125 📚&s.Ope&n\ Session.' .. planet#menu#MenuifyName(script_menu_sessions[index]) .. ' <Cmd>call planet#session#LoadByIndex(' .. index .. ')<CR>'
+    var path = script_menu_sessions[index]
+    var label = fnamemodify(path, ':t') .. ' — ' .. fnamemodify(fnamemodify(path, ':h'), ':~')
+    execute 'PlanetMenu an 840.125 📚&s.Ope&n\ Session.' .. planet#menu#MenuifyName(label)
+      .. ' <Cmd>call planet#session#LoadByIndex(' .. index .. ')<CR>'
   endfor
   return 0
+enddef
+
+export def LoadByIndex(index: number): number
+  if index >= 0 && index < len(script_menu_sessions)
+    OpenPath(script_menu_sessions[index])
+  endif
+  return 0
+enddef
+
+# mksession writes to the same directory, then rename replaces the old snapshot.
+# v:this_session and the previous snapshot survive a failed write.
+def Write(path: string, options: string)
+  var previous = v:this_session
+  var original_options = &sessionoptions
+  var temporary = fnamemodify(path, ':h') .. '/.' .. fnamemodify(path, ':t') .. '.' .. getpid() .. '.tmp.vim'
+  try
+    &sessionoptions = options
+    execute 'mksession! ' .. fnameescape(temporary)
+    setfperm(temporary, 'rw-------')
+    if rename(temporary, path) != 0
+      throw 'PlanetVim: could not replace session ' .. path
+    endif
+    v:this_session = path
+  catch
+    v:this_session = previous
+    throw 'PlanetVim: ' .. v:exception
+  finally
+    &sessionoptions = original_options
+    delete(temporary)
+  endtry
+  if active_file !=# path
+    active_root = Canonical(getcwd(-1))
+  endif
+  active_file = path
+  active_options = options
+  Remember()
+enddef
+
+export def Save(): number
+  var path = empty(v:this_session) ? PathForDirectory(getcwd(-1)) : fnamemodify(v:this_session, ':p')
+  if empty(v:this_session)
+    mkdir(Directory(), 'p', 0o700)
+  endif
+  var options = path ==# active_file ? active_options : &sessionoptions
+  Write(path, options)
+  MenuList()
+  return 1
+enddef
+
+export def SaveAs(path: string = '', overwrite: bool = false): number
+  var destination = empty(path) ? browse(1, 'Save session as', getcwd(-1), 'Session.vim') : path
+  if empty(destination)
+    return 0
+  endif
+  destination = fnamemodify(destination, ':p')
+  if filereadable(destination) && !overwrite
+      && confirm('Replace session ' .. destination .. '?', "&Replace\n&Cancel", 2) != 1
+    return 0
+  endif
+  Write(destination, &sessionoptions)
+  MenuList()
+  return 1
+enddef
+
+export def AutoSave(): number
+  if loading || exists('g:SessionLoad') || empty(v:this_session)
+    return 0
+  endif
+  # A welcome screen alone must not replace an editing layout. An intentionally
+  # emptied existing session can still be saved.
+  if (&filetype ==# 'startify' || !filereadable(v:this_session))
+      && empty(filter(getbufinfo({'buflisted': 1}), (_, b) => !empty(b.name) && getbufvar(b.bufnr, '&buftype') ==# ''))
+    return 0
+  endif
+  try
+    var refresh = !filereadable(v:this_session) || fnamemodify(v:this_session, ':p') !=# active_file
+    if fnamemodify(v:this_session, ':p') !=# active_file
+      SetCurrent()
+    endif
+    Write(active_file, active_options)
+    if refresh
+      MenuList()
+    endif
+    last_error = ''
+    return 1
+  catch
+    if last_error !=# v:exception
+      last_error = v:exception
+      echohl WarningMsg
+      echomsg 'PlanetVim: session autosave failed: ' .. last_error
+      echohl None
+    endif
+  endtry
+  return 0
+enddef
+
+export def OnExit()
+  if v:exiting == 0
+    AutoSave()
+  endif
+enddef
+
+export def Init()
+  startup_root = Canonical(getcwd(-1))
+  augroup PlanetAutoSession
+    autocmd!
+    autocmd VimEnter * ++nested call planet#session#Startup()
+    autocmd VimLeavePre * call planet#session#OnExit()
+  augroup END
+enddef
+
+export def Startup()
+  if timer != -1
+    timer_stop(timer)
+  endif
+  timer = timer_start(get(g:, 'PV_session_interval', 30000), (_) => AutoSave(), {repeat: -1})
+  if !empty(v:this_session)
+    SetCurrent()
+    g:startify_disable_at_vimenter = 1
+    return
+  endif
+  if empty(startup_root)
+    startup_root = Canonical(getcwd(-1))
+  endif
+  if startup_root ==# Canonical(expand('~')) || argc() != 0 || &diff
+      || get(g:, 'startify_disable_at_vimenter', 0) || get(g:, 'PV_session_auto', 1) == 0
+      || !empty(expand('%')) || &modified || line('$') != 1 || getline(1) !=# ''
+    return
+  endif
+  var path = PathForDirectory(startup_root)
+  for item in Recent()
+    if item.root ==# startup_root
+      path = item.file
+      break
+    endif
+  endfor
+  if filereadable(path)
+    # A broken session must neither open Startify nor be overwritten on exit.
+    g:startify_disable_at_vimenter = 1
+    try
+      OpenPath(path)
+    catch
+      echohl WarningMsg
+      echomsg 'PlanetVim: could not restore session: ' .. v:exception
+      echohl None
+    endtry
+  else
+    mkdir(Directory(), 'p', 0o700)
+    v:this_session = path
+    active_file = path
+    active_root = startup_root
+    active_options = &sessionoptions
+  endif
+enddef
+
+export def Load(name: string = ''): number
+  var path = empty(name) ? browse(0, 'Open session', Directory(), '') : name
+  if empty(path)
+    return 0
+  endif
+  if !filereadable(path)
+    path = Directory() .. '/' .. path
+  endif
+  return OpenPath(path)
+enddef
+
+export def OpenPath(path: string): number
+  if !empty(getbufinfo({'bufmodified': 1}))
+    throw 'PlanetVim: save or discard modified buffers before opening a session'
+  endif
+  var file = fnamemodify(path, ':p')
+  if !filereadable(file)
+    throw 'PlanetVim: session file not found: ' .. file
+  endif
+  if file !=# active_file && !empty(v:this_session) && !empty(active_file)
+    if AutoSave() == 0 && last_error !=# ''
+      throw 'PlanetVim: could not save the current session; keeping it open'
+    endif
+  endif
+  loading = true
+  try
+    # Replace the instance's buffer list as well as its layout.
+    silent :%bdelete
+    execute 'source ' .. fnameescape(file)
+    v:this_session = file
+  catch
+    v:this_session = ''
+    active_file = ''
+    unlet! g:SessionLoad
+    throw 'PlanetVim: ' .. v:exception
+  finally
+    loading = false
+  endtry
+  SetCurrent()
+  MenuList()
+  return 1
+enddef
+
+export def Close(to_home: bool = false): number
+  if !empty(getbufinfo({'bufmodified': 1}))
+    throw 'PlanetVim: save or discard modified buffers before closing a session'
+  endif
+  if !empty(v:this_session)
+    Save()
+  endif
+  v:this_session = ''
+  active_file = ''
+  active_root = ''
+  active_options = ''
+  silent :%bdelete
+  if to_home
+    cd
+  endif
+  MenuList()
+  if exists(':Startify') == 2
+    execute 'Startify'
+  endif
+  return 1
+enddef
+
+export def Delete(): number
+  var history = Recent()
+  var choice = inputlist(['Delete saved session:'] + mapnew(history, (i, item) => (i + 1) .. '. ' .. item.file))
+  if choice < 1 || choice > len(history)
+    return 0
+  endif
+  var path = history[choice - 1].file
+  if confirm('Delete session ' .. path .. '?', "&Delete\n&Cancel", 2) != 1
+    return 0
+  endif
+  if delete(path) != 0
+    throw 'PlanetVim: could not delete session ' .. path
+  endif
+  if fnamemodify(v:this_session, ':p') ==# path
+    v:this_session = ''
+    active_file = ''
+  endif
+  MenuList()
+  return 1
 enddef
 
 export def SetCwdSession(): any
@@ -100,25 +401,13 @@ export def SaveVariant(variant: any, ...args: list<any>): any
     else
       set sessionoptions-=globals
     endif
-    execute 'mksession' .. (overwrite ? '! ' : ' ') .. fnameescape(path)
+    Write(path, &sessionoptions)
   finally
     &sessionoptions = options
     execute (local == 1 ? 'lcd ' : local == 2 ? 'tcd ' : 'cd ') .. fnameescape(cwd)
   endtry
-  planet#session#SetCurrent()
+  MenuList()
   return 1
-enddef
-
-export def OpenPath(path: any): any
-  if !empty(getbufinfo({'bufmodified': 1}))
-    throw 'PlanetVim: save or discard modified buffers before opening a session'
-  endif
-  if !filereadable(path)
-    throw 'PlanetVim: session file not found: ' .. path
-  endif
-  execute 'source ' .. fnameescape(path)
-  planet#session#SetCurrent()
-  return 0
 enddef
 
 # action: 0 - add
@@ -221,18 +510,10 @@ export def DesktopEntry(action: any, where: any, arg_session: any): any
 enddef
 
 export def LoadLast(): any
-  var last: any
-  var file: any = planet#paths#State() .. '/last-session'
-  last = filereadable(file) ? get(readfile(file), 0, '') : ''
-  if empty(last)
+  var recent = Recent()
+  if empty(recent)
     echomsg 'PlanetVim: no previous session is available.'
     return 0
   endif
-  if filereadable(last)
-    planet#session#OpenPath(last)
-  else
-    # Read the earlier format, which stored only a Startify session name.
-    planet#session#Load(last)
-  endif
-  return 0
+  return OpenPath(recent[0].file)
 enddef

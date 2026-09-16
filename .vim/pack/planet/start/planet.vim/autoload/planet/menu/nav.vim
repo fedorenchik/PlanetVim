@@ -213,7 +213,7 @@ export def Update(): number
     an disable 📚&s.Sessions
     execute planet#menu_help#Entry('an 840.20  ', '📚&s.--1--', '<Nop>')
     execute planet#menu_help#Entry('an 840.30  ', '📚&s.&Save', '<Cmd>call planet#session#Save()<CR>')
-    execute planet#menu_help#Entry('an 840.40  ', '📚&s.Save\ &As\.\.\.', '<Cmd>SSave<CR>')
+    execute planet#menu_help#Entry('an 840.40  ', '📚&s.Save\ &As\.\.\.', '<Cmd>call planet#session#SaveAs()<CR>')
     execute planet#menu_help#Entry('an 840.60  ', '📚&s.Ad&vanced\ Save.Save\ with\ Relative\ Paths', '<Cmd>call planet#session#SaveVariant(''relative'')<CR>')
     execute planet#menu_help#Entry('an 840.70  ', '📚&s.Ad&vanced\ Save.Save\ with\ Local\ Options', '<Cmd>call planet#session#SaveVariant(''local'')<CR>')
     execute planet#menu_help#Entry('an 840.80  ', '📚&s.Ad&vanced\ Save.Save\ with\ All\ Options', '<Cmd>call planet#session#SaveVariant(''all'')<CR>')
@@ -226,12 +226,12 @@ export def Update(): number
     execute planet#menu_help#Entry('an 840.120 ', '📚&s.Open\ &Last\ Session', '<Cmd>call planet#session#LoadLast()<CR>')
     execute planet#menu_help#Entry('an 840.130 ', '📚&s.&Reopen', '<Cmd>call planet#session#OpenPath(v:this_session)<CR>')
     execute planet#menu_help#Entry('an 840.140 ', '📚&s.--4--', '<Nop>')
-    execute planet#menu_help#Entry('an 840.150 ', '📚&s.&Close', '<Cmd>SClose<CR>')
+    execute planet#menu_help#Entry('an 840.150 ', '📚&s.&Close', '<Cmd>call planet#session#Close()<CR>')
     execute planet#menu_help#Entry('an 840.160 ', '📚&s.--5--', '<Nop>')
     execute planet#menu_help#Entry('an 840.160 ', '📚&s.Remove\ Menu\ Entry', '<Cmd>call planet#session#ManageDesktopFile(1, 0)<CR>')
     execute planet#menu_help#Entry('an 840.160 ', '📚&s.Remove\ Desktop\ Entry', '<Cmd>call planet#session#ManageDesktopFile(1, 1)<CR>')
     execute planet#menu_help#Entry('an 840.160 ', '📚&s.--6--', '<Nop>')
-    execute planet#menu_help#Entry('an 840.170 ', '📚&s.&Delete', '<Cmd>SDelete<CR>')
+    execute planet#menu_help#Entry('an 840.170 ', '📚&s.&Delete', '<Cmd>call planet#session#Delete()<CR>')
 
     # Vim Apps: Open in new GUI window
     execute planet#menu_help#Entry('an 850.10  ', '🗄️&x.GUI', '<Nop>')

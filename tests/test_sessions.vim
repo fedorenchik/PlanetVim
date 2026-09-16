@@ -93,7 +93,7 @@ call planet#tab#OpenFrom(g:PV_test_dir .. '/saved tab.tab.vim')
 call assert_equal(s:session, v:this_session)
 call assert_equal(s:ssop, &sessionoptions)
 
-" Exercise actual Startify persistence; all session state remains under /tmp.
+" Native named sessions and the Startify screen share one current session.
 call s:Stage('Startify setup')
 let g:startify_session_dir = planet#paths#State('sessions')
 let g:startify_session_persistence = 0
@@ -104,11 +104,12 @@ call mkdir(g:PV_test_dir .. '/session name with spaces', 'p')
 execute 'cd ' .. fnameescape(g:PV_test_dir .. '/session name with spaces')
 let v:this_session = ''
 call s:Stage('Startify save')
-call planet#session#Save()
 let s:saved_session = s:Native(g:startify_session_dir .. '/session name with spaces')
+call mkdir(g:startify_session_dir, 'p')
+call planet#session#SaveAs(s:saved_session)
 call assert_true(filereadable(s:saved_session))
 call assert_equal(s:saved_session, v:this_session)
-call assert_false(empty(menu_info('📚s.Open Session.session name with spaces')))
+call assert_match('session name with spaces', string(menu_info('📚s.Open Session')))
 call planet#session#MenuList()
 call assert_false(empty(menu_info('📚s.Current: session name with spaces')))
 call setline(1, 'unsaved edit')

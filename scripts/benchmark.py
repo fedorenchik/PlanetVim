@@ -32,6 +32,7 @@ def sample(executable, display, cache=None):
             'set viminfofile=NONE',
             'let g:PV_config_dir = ' + vim_string(directory / 'config'),
             'let g:PV_state_dir = ' + vim_string(directory / 'state'),
+            'let g:PV_sessions_dir = ' + vim_string(directory / 'sessions'),
             'let g:PV_cache_dir = ' + vim_string(cache or directory / 'cache'),
             'let g:startify_disable_at_vimenter = 1',
             'let g:PV_benchmark_start = reltime()',

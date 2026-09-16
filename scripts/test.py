@@ -97,6 +97,7 @@ def run(path, executable, gui, display=None, timeout=60):
             environment['DISPLAY'] = display
         for kind in ("CONFIG", "STATE", "CACHE"):
             environment[f"PLANETVIM_{kind}_DIR"] = str(temp / kind.lower())
+        environment['PLANETVIM_SESSIONS_DIR'] = str(temp / 'sessions')
         try:
             process = subprocess.run(command, cwd=temp, env=environment,
                                      capture_output=True, text=True, timeout=timeout)

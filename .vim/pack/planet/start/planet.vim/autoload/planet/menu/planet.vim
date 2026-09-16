@@ -32,7 +32,7 @@ export def Update(): number
     execute planet#menu_help#Entry('an 100.80  ', '🌐&P.--4--', '<Nop>')
     execute planet#menu_help#Entry('an 100.90  ', '🌐&P.Ed&it\ Settings', '<Cmd>execute ''tabedit '' .. fnameescape(g:PV_config)<CR>')
     execute planet#menu_help#Entry('an 100.100 ', '🌐&P.--5--', '<Nop>')
-    execute planet#menu_help#Entry('an 100.110 ', '🌐&P.&Close\ Everything', '<Cmd>cd<CR><Cmd>SClose<CR>')
+    execute planet#menu_help#Entry('an 100.110 ', '🌐&P.&Close\ Everything', '<Cmd>call planet#session#Close(v:true)<CR>')
     execute planet#menu_help#Entry('an 100.120 ', '🌐&P.--6--', '<Nop>')
     execute planet#menu_help#Entry('an 100.130 ', '🌐&P.Save\ &&\ E&xit\ PlanetVim', '<Cmd>call planet#planet#SaveExit()<CR>')
   else

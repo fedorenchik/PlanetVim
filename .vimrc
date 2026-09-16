@@ -284,7 +284,6 @@ au StdinReadPost * set nomodified
 au TerminalWinOpen * setlocal foldcolumn=0 signcolumn=no nonumber norelativenumber winfixheight winfixwidth
 au BufWinEnter * if &buftype == 'terminal' | setlocal foldcolumn=0 signcolumn=no nonumber norelativenumber winfixheight winfixwidth | endif
 au VimEnter * if expand("%") != "" && getcwd() == expand("~") | cd %:h | endif
-au VimLeavePre * call planet#planet#CheckExitSaveSession()
 aug END
 endif
 # }}}
@@ -1012,7 +1011,7 @@ nnoremap ]0 :call signature#marker#Goto('next', 0, v:count)<CR>
 # Plugin: vim-startify {{{
 g:startify_lists = [
    { 'type': 'commands' },
-   { 'type': 'sessions',  'header': ['   Sessions']       },
+   { 'type': function('planet#session#StartifyList'), 'header': ['   Recent Sessions'] },
    { 'type': 'dir',       'header': ['   MRU ' .. getcwd()] },
    { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
    ]
@@ -1029,7 +1028,10 @@ g:startify_commands = [
 g:startify_change_to_vcs_root = 1
 g:startify_fortune_use_unicode = 1
 g:startify_enable_unsafe = 0
-g:startify_session_dir = planet#paths#State('sessions')
+g:startify_session_dir = planet#session#Directory()
+g:startify_session_autoload = 0
+g:startify_session_persistence = 0
+planet#session#Init()
 g:startify_session_sort = 1
 g:startify_custom_indices = ['d', 'g', 'h', 'l', 'm', 'n', 'p', 'r', 'u', 'w', 'x', 'y', 'z']
 g:startify_use_env = 1

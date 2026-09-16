@@ -79,7 +79,7 @@ let s:external_session = s:Native(s:project .. '/session local.vim')
 let v:this_session = s:external_session
 call planet#session#Save()
 call assert_equal(s:external_session, v:this_session)
-call assert_equal([s:external_session], readfile(planet#paths#State() .. '/last-session'))
+call assert_equal(s:external_session, planet#session#Recent()[0].file)
 try
   call planet#session#SaveVariant('all', s:project .. '/absent/session.vim')
   call assert_report('Session write should fail for a missing destination directory')

@@ -7,7 +7,6 @@ vim9script noclear
 # TODO: Use $VIMRUNTIME/tools/demoserver.py for controlling Vim
 # TODO: Add Buffer Cmdline Window: Input commands and ouput results in
 # TODO:    'prompt' buffer.
-# TODO: Add sessions inside project dir support
 # Custom config file: $HOME/.vim/planetvimrc.vim
 #TODO: Add function to follow DE night mode & theme settings (auto switch
 #TODO: guioptions+=d when dark theme, auto switch to dark colorscheme variant)
