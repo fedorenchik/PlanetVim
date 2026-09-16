@@ -117,6 +117,7 @@ export def NewBuildDir(build_dir: any): any
     return 0
   endif
   echo 'Build Directory: ' .. directory
+  planet#intelligence#Refresh()
   return 1
 enddef
 
@@ -148,7 +149,7 @@ export def Configure(export_compile_commands: any = v:false, on_exit: any = v:nu
   try
     var context = planet#project#Context()
     var command = Plan('configure', context)
-    var sysroot = get(get(t:, 'PV_configure_values', {}), 'sysroot', '')
+    var sysroot = get(get(g:, 'PV_configure_values', {}), 'sysroot', '')
     if !empty(sysroot) | add(command.argv, '-DCMAKE_SYSROOT=' .. sysroot) | endif
     return planet#term#RunCmd(command.argv, false, false, get(context, 'hidden', false), command.cwd,
       function(Configured, [context, planet#run#Project(), on_exit]), '', {context: context, parser: 'compiler'})

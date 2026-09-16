@@ -36,7 +36,7 @@ def LocalCompleted(context: any, result: any, bufnr: any): any
       execute 'tabedit ' .. fnameescape(context.destination)
     else
       tabnew
-      execute 'tcd ' .. fnameescape(context.destination)
+      execute 'cd ' .. fnameescape(context.destination)
       if exists(':Fern') == 2
         execute 'Fern . -drawer'
       else

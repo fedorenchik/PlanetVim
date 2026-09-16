@@ -65,7 +65,7 @@ export def MenuList(): any
 enddef
 
 export def SetCwdSession(): any
-  var project: any = 'projects/' .. sha256(fnamemodify(getcwd(), ':p'))[ : 15]
+  var project: any = 'projects/' .. sha256(fnamemodify(getcwd(-1), ':p'))[ : 15]
   &undodir = escape(planet#paths#State(project .. '/undo'), ',')
   &viminfofile = planet#paths#State(project) .. '/viminfo'
   &viewdir = planet#paths#State(project .. '/views')

@@ -1,6 +1,6 @@
 let s:root = g:PV_test_dir .. '/diagnostics 工作'
 call mkdir(s:root, 'p')
-execute 'tcd ' .. fnameescape(s:root)
+execute 'cd ' .. fnameescape(s:root)
 let s:source = s:root .. '/source with spaces.c'
 call writefile(['int main(void) {', '  broken syntax;', '}'], s:source)
 let s:buffer = planet#term#RunArgv(['cc', '-c', s:source, '-o', s:root .. '/out.o'], v:false, v:false, v:true, s:root)

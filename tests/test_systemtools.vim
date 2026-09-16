@@ -1,6 +1,6 @@
 let s:root = g:PV_test_dir .. '/system tools'
 call mkdir(s:root, 'p')
-execute 'tcd ' .. fnameescape(s:root)
+execute 'cd ' .. fnameescape(s:root)
 let s:python = executable('python3') ? 'python3' : 'python'
 call assert_equal(0, planet#systemtools#Run(['planetvim_missing_system_tool']))
 call assert_equal(0, planet#systemtools#Port('9000; invalid'))

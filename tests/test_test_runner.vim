@@ -2,7 +2,7 @@ runtime plugin/development.vim
 let s:root = g:PV_test_dir .. '/test project 工作'
 call mkdir(s:root, 'p')
 let s:original = getcwd()
-execute 'tcd ' .. fnameescape(s:root)
+execute 'cd ' .. fnameescape(s:root)
 call writefile(['import unittest', '', 'class Example(unittest.TestCase):',
       \ '    def test_pass(self):', '        self.assertEqual(2 + 2, 4)', '',
       \ '    def test_fail(self):', '        self.assertEqual(2 + 2, 5)'], s:root .. '/test_sample.py')
@@ -63,8 +63,9 @@ try
   let s:other = g:PV_test_dir .. '/another project'
   call mkdir(s:other, 'p')
   execute 'tcd ' .. fnameescape(s:other)
-  call assert_equal(0, planet#test#Test('last'), 'test history must not leak across project tabs')
-  call assert_equal(0, planet#test#Test('visit'))
+  call assert_equal('failed', get(s:Wait(planet#test#Test('last')), 'status', ''), 'last test is shared by tabs')
+  call assert_equal(1, planet#test#Test('visit'))
+  call assert_equal(s:root .. '/test_sample.py', expand('%:p'))
   tabclose
 finally
   for s:buffer in s:buffers

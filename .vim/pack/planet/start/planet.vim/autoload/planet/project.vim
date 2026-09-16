@@ -1,13 +1,14 @@
 vim9script
 
 var settings_cache: dict<any> = {}
+var settings_root = ''
 
 export def CopyFile(file: any): any
   return planet#generate#CopyFile(file)
 enddef
 
 export def Root(): string
-  return fnamemodify(resolve(getcwd(-1, 0)), ':p:h')
+  return fnamemodify(resolve(getcwd(-1)), ':p:h')
 enddef
 
 export def Merge(base: dict<any>, extra: dict<any>): dict<any>
@@ -72,6 +73,10 @@ def Read(path: string, root: string, private: bool): dict<any>
 enddef
 
 export def Settings(root: string = Root()): dict<any>
+  if settings_root !=# root
+    settings_cache = {}
+    settings_root = root
+  endif
   return Merge(Read(File(false, root), root, false), Read(File(true, root), root, true))
 enddef
 
@@ -156,7 +161,9 @@ export def Select(name: string = ''): number
   endif
   var state = planet#run#Project()
   state.configuration = selected
-  return planet#run#Save()
+  var saved = planet#run#Save()
+  if saved | planet#intelligence#Refresh() | endif
+  return saved
 enddef
 
 export def Edit(private: bool = false)

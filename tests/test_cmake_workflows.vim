@@ -3,7 +3,7 @@ set hidden
 let s:root = g:PV_test_dir .. '/cmake project 工作'
 let s:build = g:PV_test_dir .. '/out of tree 工作'
 call mkdir(s:root .. '/presets', 'p')
-execute 'tcd ' .. fnameescape(s:root)
+execute 'cd ' .. fnameescape(s:root)
 call writefile(['cmake_minimum_required(VERSION 3.20)', 'project(PVWorkflow C)',
       \ 'set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/applications")',
       \ 'add_executable(one main.c)', 'add_executable(two main.c)',
@@ -39,7 +39,7 @@ tabnew
 execute 'tcd ' .. fnameescape(g:PV_test_dir)
 let s:run = s:Wait(s:id)
 call assert_equal('success', s:run.status, get(s:run, 'error', ''))
-call assert_equal('', planet#project#Context().build_dir, 'configure callback leaves other project alone')
+call assert_equal(s:build, planet#project#Context().build_dir, 'configure result is shared by every tab')
 tabclose
 let s:model = planet#cmake#Model(planet#project#Context())
 call assert_equal(s:build, s:model.build_dir)
@@ -70,7 +70,7 @@ call assert_false(filereadable(s:root .. '/ran.txt'))
 call assert_equal(['configure', 'build'], map(copy(s:run.results), 'v:val.task'))
 call assert_true(len(s:run.results[-1].result.diagnostics) > 0)
 " Selected state survives reloading the project and is used by clangd.
-unlet t:PV_projects
+execute 'source ' .. fnameescape(g:PV_root .. '/.vim/pack/planet/start/planet.vim/autoload/planet/run.vim')
 call assert_equal('development', planet#project#Context().preset)
 call assert_equal('two', planet#project#Context().target)
 execute 'source ' .. fnameescape(g:PV_root .. '/tests/fixtures/lsp/load.vim')

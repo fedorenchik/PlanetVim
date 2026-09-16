@@ -1,12 +1,8 @@
 vim9script
 
 var script_servers = { 'clangd': {'types': ['c', 'cpp'], 'default': ['clangd', '--background-index'],
-     'markers': ['compile_commands.json', 'compile_flags.txt', '.clangd', 'CMakeLists.txt', '.git/'],
      'help': 'Install clangd and put it on PATH, or set g:PV_clangd_argv to its executable and arguments. Generate compile_commands.json for project include paths.'},
-     'pylsp': {'types': ['python'], 'default': ['pylsp'], 'markers': ['pyproject.toml', 'setup.cfg', 'setup.py',
-     'requirements.txt', '.git/'], 'help': 'Install python-lsp-server[all] in your Python environment and set g:PV_pylsp_argv to its pylsp executable. The all extras provide diagnostics and autopep8 formatting.'}}
-
-var registrations: dict<any> = {}
+     'pylsp': {'types': ['python'], 'default': ['pylsp'], 'help': 'Install python-lsp-server[all] in your Python environment and set g:PV_pylsp_argv to its pylsp executable. The all extras provide diagnostics and autopep8 formatting.'}}
 
 def LocalArgv(name: any, context: any = planet#project#Context()): any
   var fallback = name ==# 'pylsp' && !empty(get(context, 'python', []))
@@ -20,31 +16,11 @@ def LocalArgv(name: any, context: any = planet#project#Context()): any
   return argv
 enddef
 
-def Scoped(context: any): bool
-  return !empty(context.configuration) || !empty(context.environment)
-    || filereadable(planet#project#File(false, context.root)) || filereadable(planet#project#File(true, context.root))
-enddef
-
-def ServerName(name: string, context: any): string
-  return 'planet-' .. name .. (Scoped(context)
-    ? '-' .. sha256(context.root .. context.configuration .. string(LocalArgv(name, context)) .. string(sort(items(context.env_snapshot))))[ : 15] : '')
-enddef
-
-export def PrepareBuffer()
+export def Refresh()
   if exists('*lsp#get_server_names')
     try
       Register()
-    catch
-      echom 'PlanetVim language setup: ' .. v:exception
-    endtry
-  endif
-enddef
-
-export def Refresh()
-  if exists('*lsp#get_server_names') && !empty(expand('%:p')) && !empty(LocalName())
-    try
-      Register()
-      lsp#activate()
+      if !empty(LocalName()) | lsp#activate() | endif
     catch
       echom 'PlanetVim language setup: ' .. v:exception
     endtry
@@ -65,68 +41,50 @@ def LocalName(): any
 enddef
 
 export def Root(name: any, ...args: list<any>): any
-  var candidate: any
-  var parent: any
-  var path: any = !empty(args) ? args[0] : expand('%:p')
-  var start: any = fnamemodify(path, ':p:h')
-  var directory: any = start
-  # Walk literal paths: findfile() treats commas/spaces as path separators.
-  while !empty(directory)
-    for marker in script_servers[name].markers
-      candidate = directory .. '/' .. marker
-      if filereadable(candidate) || isdirectory(candidate)
-        return lsp#utils#path_to_uri(directory)
-      endif
-    endfor
-    parent = fnamemodify(directory, ':h')
-    if parent ==# directory
-      break
-    endif
-    directory = parent
-  endwhile
-  return lsp#utils#path_to_uri(start)
+  return lsp#utils#path_to_uri(planet#project#Context().source_dir)
 enddef
 
 export def Register(): any
-  var argv: any
-  var info: any
-  if !get(g:, 'PV_intelligence_enabled', 1)
-    return 0
-  endif
-  # A settings error must not leave another project's servers eligible.
-  for registered in values(registrations)
-    registered.allowlist = []
+  # Failed settings cannot leave a previous environment active.
+  for name in keys(script_servers)
+    var previous = lsp#get_server_info('planet-' .. name)
+    if !empty(previous) | previous.allowlist = [] | endif
   endfor
   var context = planet#project#Context()
-  if Scoped(context)
-    # Resolve changes while their buffer is current. vim-lsp's delayed queue
-    # otherwise chooses servers after a possible project/configuration switch.
-    g:lsp_use_event_queue = 0
-  endif
   for [name, server] in items(script_servers)
-    argv = LocalArgv(name, context)
-    var id = ServerName(name, context)
-    if has_key(registrations, id)
-      registrations[id].allowlist = copy(server.types)
+    var id = 'planet-' .. name
+    var argv = LocalArgv(name, context)
+    var enabled = get(g:, 'PV_intelligence_enabled', 1) && LocalValid(argv)
+      && !empty(planet#project_env#Find(argv[0], context))
+    var settings = {root: context.source_dir,
+      cmd: enabled ? planet#project_env#Native(argv, context) : [],
+      env: context.env_snapshot, enabled: enabled,
+      workspace: name ==# 'pylsp' ? get(context, 'pylsp_settings', get(g:, 'PV_pylsp_settings', {})) : {}}
+    var previous = lsp#get_server_info(id)
+    if empty(previous) && !enabled | continue | endif
+    if get(previous, 'planet_settings', {}) ==# settings
+      previous.allowlist = enabled ? copy(server.types) : []
       continue
     endif
-    if !LocalValid(argv) || empty(planet#project_env#Find(argv[0], context)) || index(lsp#get_server_names(), id) >= 0
-      continue
+    if index(['starting', 'running'], lsp#get_server_status(id)) >= 0
+      # A fixed registration must outlive its old process's exit callback.
+      # This runs only on explicit setup/configuration changes, never tab entry.
+      lsp#stop_server(id)
+      for attempt in range(100)
+        if lsp#get_server_status(id) ==# 'exited' | break | endif
+        sleep 10m
+      endfor
+      if lsp#get_server_status(id) !=# 'exited'
+        throw 'PlanetVim: language server is still stopping; retry :PlanetLspSetup'
+      endif
     endif
-    info = {'name': id, 'cmd': planet#project_env#Native(argv, context), 'env': context.env_snapshot,
-      'allowlist': copy(server.types), 'root_uri': Scoped(context)
-      ? (_) => lsp#utils#path_to_uri(context.source_dir) : function(LocalRoot, [name])}
-    if name ==# 'pylsp'
-      info.workspace_config = {'pylsp':  get(context, 'pylsp_settings', get(g:, 'PV_pylsp_settings', {}))}
-    endif
-    registrations[id] = info
+    var info = {name: id, cmd: settings.cmd, env: settings.env,
+      allowlist: enabled ? copy(server.types) : [], planet_settings: deepcopy(settings),
+      root_uri: (server_info) => lsp#utils#path_to_uri(server_info.planet_settings.root)}
+    if name ==# 'pylsp' | info.workspace_config = {pylsp: settings.workspace} | endif
     lsp#register_server(info)
   endfor
   return 0
-enddef
-
-def LocalRoot(name: any, server: any): any
-  return planet#intelligence#Root(name)
 enddef
 
 export def Status(): any
@@ -136,7 +94,7 @@ export def Status(): any
   var context = planet#project#Context()
   for [name, server] in items(script_servers)
     argv = LocalArgv(name, context)
-    status = !get(g:, 'PV_intelligence_enabled', 1) || (type(argv) == v:t_list && empty(argv)) ? 'disabled' : !LocalValid(argv) ? 'invalid command (expected an argv List)' : empty(planet#project_env#Find(argv[0], context)) ? 'executable missing' : lsp#get_server_status(ServerName(name, context))
+    status = !get(g:, 'PV_intelligence_enabled', 1) || (type(argv) == v:t_list && empty(argv)) ? 'disabled' : !LocalValid(argv) ? 'invalid command (expected an argv List)' : empty(planet#project_env#Find(argv[0], context)) ? 'executable missing' : lsp#get_server_status('planet-' .. name)
     result[name] = {'status':  status, 'command':  argv, 'help':  server.help}
   endfor
   return result

@@ -22,7 +22,7 @@ func! s:Frame() abort
 endfunc
 let s:root = g:PV_test_dir .. '/selected debugger 工作'
 call mkdir(s:root, 'p')
-execute 'tcd ' .. fnameescape(s:root)
+execute 'cd ' .. fnameescape(s:root)
 call writefile(['cmake_minimum_required(VERSION 3.20)', 'project(DebugTarget C)',
       \ 'set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/custom bin")', 'add_executable(selected main.c)'], s:root .. '/CMakeLists.txt')
 call writefile(['#include <stdio.h>', '#include <stdlib.h>', 'int main(int argc, char **argv) {',

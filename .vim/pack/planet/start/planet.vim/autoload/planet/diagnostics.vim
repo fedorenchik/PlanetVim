@@ -82,16 +82,15 @@ export def Finish(context: dict<any>)
     output: context.buffer, log_file: context.log_file, status: result.status}})
   result.quickfix_id = getqflist({id: 0}).id
   result.diagnostics = items
-  latest[result.project] = {title: title, items: items, log_file: context.log_file}
+  latest = {title: title, items: items, log_file: context.log_file}
 enddef
 
 export def Show()
   var result = planet#term#Result(bufnr())
-  var root = planet#project#Root()
   if has_key(result, 'diagnostics')
     setqflist([], ' ', {title: result.command, items: result.diagnostics})
-  elseif has_key(latest, root)
-    setqflist([], ' ', {title: latest[root].title, items: latest[root].items})
+  elseif !empty(latest)
+    setqflist([], ' ', {title: latest.title, items: latest.items})
   else
     echom 'PlanetVim: no parsed command diagnostics in this project yet.'
     return
@@ -100,7 +99,7 @@ export def Show()
 enddef
 
 export def Log()
-  var path = get(planet#term#Result(bufnr()), 'log_file', get(get(latest, planet#project#Root(), {}), 'log_file', ''))
+  var path = get(planet#term#Result(bufnr()), 'log_file', get(latest, 'log_file', ''))
   if empty(path) || !filereadable(path)
     echom 'PlanetVim: no retained command log available.'
     return

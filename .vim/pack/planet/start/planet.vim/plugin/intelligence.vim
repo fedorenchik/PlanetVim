@@ -1,6 +1,6 @@
 vim9script noclear
 command! PlanetLspStatus call planet#intelligence#ShowStatus()
-command! PlanetLspSetup call planet#intelligence#Register()
+command! PlanetLspSetup call planet#intelligence#Refresh()
 command! PlanetDefinition call planet#intelligence#Action('LspDefinition')
 command! PlanetReferences call planet#intelligence#Action('LspReferences')
 command! PlanetHover call planet#intelligence#Action('LspHover')
@@ -11,8 +11,8 @@ command! PlanetSemanticScopes call planet#semantic#Show()
 
 augroup PlanetVimIntelligence
   autocmd!
-  autocmd BufReadPre,BufNewFile * call planet#intelligence#PrepareBuffer()
-  autocmd BufEnter,TabEnter,DirChanged * call planet#intelligence#Refresh()
+  autocmd DirChanged global call planet#intelligence#Refresh()
+  autocmd SessionLoadPost * call planet#intelligence#Refresh()
   autocmd VimEnter,BufEnter * call planet#completion#Buffer()
   autocmd TextChanged,TextChangedI,InsertEnter * call planet#lsp_display#Invalidate()
   autocmd CursorHold,InsertLeave,BufEnter * call planet#lsp_display#Hints()
@@ -23,5 +23,5 @@ augroup PlanetVimIntelligence
   autocmd User asyncomplete_setup call planet#intelligence#CompletionSources()
   autocmd User lsp_buffer_enabled call planet#intelligence#Attach()
   autocmd VimEnter,FileType * call planet#startup#Language()
-  autocmd FileType c,cpp,python call planet#intelligence#Refresh() | call planet#intelligence#SetupBuffer()
+  autocmd FileType c,cpp,python call planet#intelligence#SetupBuffer()
 augroup END

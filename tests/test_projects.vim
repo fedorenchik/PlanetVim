@@ -4,7 +4,7 @@ let s:other = s:base .. '/project B'
 call mkdir(s:root, 'p')
 call mkdir(s:other, 'p')
 let s:original_tab = tabpagenr()
-let s:original_cwd = getcwd(-1, 0)
+let s:original_cwd = getcwd(-1)
 let s:buffers = []
 
 func! s:Wait(buffer) abort
@@ -26,7 +26,7 @@ func! s:Wait(buffer) abort
 endfunc
 
 try
-  execute 'tcd ' .. fnameescape(s:root)
+  execute 'cd ' .. fnameescape(s:root)
   call assert_equal('', planet#build#GetBuildDir())
   call assert_equal(1, planet#build#NewBuildDir('build space'))
   let s:first_build = s:root .. '/build space'
@@ -42,19 +42,19 @@ try
   call assert_equal(0, planet#run#SetProfiles([#{name: 'invalid', argv: []}]))
   call assert_equal([s:profile], planet#run#Project().profiles)
   call assert_equal(0, planet#run#Run(99))
-  unlet t:PV_projects
+  execute 'source ' .. fnameescape(g:PV_root .. '/.vim/pack/planet/start/planet.vim/autoload/planet/run.vim')
   call planet#run#InitRunConfigurations()
   call assert_equal([s:profile], planet#run#Project().profiles)
   call assert_equal(s:first_build, planet#build#GetBuildDir())
 
   tabnew
   execute 'tcd ' .. fnameescape(s:other)
-  call assert_equal('', planet#build#GetBuildDir(), 'other project has no inherited build tree')
-  call assert_equal([], planet#run#Project().profiles, 'other project has no inherited commands')
-  call assert_equal(0, planet#build#Build())
+  call assert_equal(s:first_build, planet#build#GetBuildDir(), 'tab cwd is navigation only')
+  call assert_equal([s:profile], planet#run#Project().profiles, 'run profiles are shared by tabs')
   call assert_equal(1, planet#build#NewBuildDir('build other'))
   tabclose
-  call assert_equal(s:first_build, planet#build#GetBuildDir())
+  call assert_equal(s:root .. '/build other', planet#build#GetBuildDir())
+  call planet#build#NewBuildDir('build space')
   call assert_equal([s:profile], planet#run#Project().profiles)
 
   call assert_true(executable('cmake'), 'CMake is required for the project integration fixture')
@@ -112,5 +112,5 @@ finally
     endif
   endfor
   execute 'tabnext ' .. s:original_tab
-  execute 'tcd ' .. fnameescape(s:original_cwd)
+  execute 'cd ' .. fnameescape(s:original_cwd)
 endtry

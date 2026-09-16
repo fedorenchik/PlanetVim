@@ -44,6 +44,7 @@ endfunc
 
 let s:project = g:PV_test_dir .. '/real language project'
 call mkdir(s:project, 'p')
+execute 'cd ' .. fnameescape(s:project)
 call writefile(['-std=c++17'], s:project .. '/compile_flags.txt')
 call writefile(['[project]', 'name = "planetvim-lsp-fixture"', 'version = "0.0.0"'], s:project .. '/pyproject.toml')
 

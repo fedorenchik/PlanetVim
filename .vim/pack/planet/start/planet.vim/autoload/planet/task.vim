@@ -200,16 +200,9 @@ export def Start(name: string, supplied: dict<any> = {}): number
   if type(get(context, 'timeout', 0)) != v:t_number || get(context, 'timeout', 0) < 0
     throw 'PlanetVim: timeout must be nonnegative seconds'
   endif
-  var limit = get(g:, 'PV_task_concurrency', 2)
-  if type(limit) != v:t_number || limit < 1
-    throw 'PlanetVim: task concurrency must be a positive integer'
-  endif
-  if len(filter(values(runs), (_, run) => run.status ==# 'running' || get(run, 'pending', false))) >= limit
-    throw 'PlanetVim: task concurrency limit reached; cancel a task or wait'
-  endif
   for run in values(runs)
-    if run.context.root ==# context.root && (run.status ==# 'running' || get(run, 'pending', false))
-      throw 'PlanetVim: this project already has a running task; cancel it or wait'
+    if run.status ==# 'running' || get(run, 'pending', false)
+      throw 'PlanetVim: this instance already has a running task; cancel it or wait'
     endif
   endfor
   # Save all modified source buffers in this project before any prerequisite.
@@ -241,9 +234,8 @@ export def Status(id: number): dict<any>
 enddef
 
 export def Cancel(id: number = 0): number
-  var root = planet#project#Root()
   for run in values(runs)
-    if (id == run.id || (id == 0 && run.context.root ==# root)) && run.status ==# 'running'
+    if (id == run.id || id == 0) && run.status ==# 'running'
       run.status = 'cancelled'
       if run.timer >= 0 | timer_stop(run.timer) | endif
       planet#term#Cancel(run.buffer)
@@ -260,9 +252,9 @@ export def Choose(): number
 enddef
 
 export def Rerun(): number
-  var matching = filter(values(runs), (_, run) => run.context.root ==# planet#project#Root())
+  var matching = values(runs)
   if empty(matching)
-    throw 'PlanetVim: no task to rerun in this project'
+    throw 'PlanetVim: no task to rerun in this instance'
   endif
   sort(matching, (a, b) => b.id - a.id)
   var context = planet#project#Context()
@@ -273,13 +265,11 @@ enddef
 export def Show()
   var lines = ['Project tasks: ' .. planet#project#Root(), '']
   for run in values(runs)
-    if run.context.root ==# planet#project#Root()
-      add(lines, printf('%d  %s  %s', run.id, run.status, run.name))
-      if has_key(run, 'error') | add(lines, '  ' .. run.error) | endif
-      for entry in run.results
-        add(lines, printf('  %s: %s (output buffer %d)', entry.task, entry.result.status, entry.buffer))
-      endfor
-    endif
+    add(lines, printf('%d  %s  %s', run.id, run.status, run.name))
+    if has_key(run, 'error') | add(lines, '  ' .. run.error) | endif
+    for entry in run.results
+      add(lines, printf('  %s: %s (output buffer %d)', entry.task, entry.result.status, entry.buffer))
+    endfor
   endfor
   planet#health#Scratch('PlanetVim Tasks', lines)
 enddef

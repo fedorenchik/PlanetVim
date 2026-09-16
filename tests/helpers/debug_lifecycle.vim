@@ -6,7 +6,7 @@ if !PlanetDebugTestAvailable(g:PV_debug_test_language)
 endif
 let s:root = g:PV_test_dir .. '/debug lifecycle'
 call mkdir(s:root, 'p')
-execute 'tcd ' .. fnameescape(s:root)
+execute 'cd ' .. fnameescape(s:root)
 let s:python = g:PV_debug_test_language ==# 'python'
 let s:source = s:root .. '/debug_sample.' .. (s:python ? 'py' : 'cpp')
 call writefile(readfile(g:PV_root .. '/tests/fixtures/development/debug_sample.' .. (s:python ? 'py' : 'cpp')), s:source)

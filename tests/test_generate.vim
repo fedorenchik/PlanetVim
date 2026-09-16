@@ -123,7 +123,8 @@ try
   call assert_equal('success', s:Wait(planet#generate#Template('sample', s:opened,
         \ extend(copy(s:options), #{open: v:true}))).status)
   call assert_equal(s:tabs + 1, tabpagenr('$'))
-  call assert_equal(s:Native(s:opened), s:Native(getcwd()))
+  call assert_equal(s:Native(s:opened), s:Native(getcwd(-1)))
+  call assert_equal(s:Native(s:opened), s:Native(planet#project#Root()))
   tabclose!
 finally
   for s:buffer in s:buffers

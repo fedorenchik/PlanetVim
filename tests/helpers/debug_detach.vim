@@ -5,7 +5,7 @@ if !PlanetDebugTestAvailable(g:PV_debug_test_language)
 endif
 let s:root = g:PV_test_dir .. '/debug detach'
 call mkdir(s:root, 'p')
-execute 'tcd ' .. fnameescape(s:root)
+execute 'cd ' .. fnameescape(s:root)
 let s:python = g:PV_debug_test_language ==# 'python'
 let s:source = s:root .. '/detached.' .. (s:python ? 'py' : 'cpp')
 let s:marker = s:root .. '/continued.txt'

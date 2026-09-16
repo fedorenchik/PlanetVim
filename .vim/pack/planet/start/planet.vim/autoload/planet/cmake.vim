@@ -101,7 +101,7 @@ export def Program(context: dict<any>): string
   return targets[0].artifacts[0]
 enddef
 
-# Use the originating state, never the tab selected when CMake finishes.
+# Preserve the selected configuration throughout an asynchronous build.
 export def Configured(context: dict<any>, state: dict<any>)
   var model = Model(context)
   context.build_dir = model.build_dir

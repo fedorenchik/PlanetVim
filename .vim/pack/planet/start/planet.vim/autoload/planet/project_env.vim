@@ -10,6 +10,7 @@ export def Set(values: dict<any>): number
     state.environments[context.configuration] = previous
     return 0
   endif
+  planet#intelligence#Refresh()
   return 1
 enddef
 

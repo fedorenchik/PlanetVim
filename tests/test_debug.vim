@@ -1,7 +1,7 @@
 runtime plugin/development.vim
 let s:root = g:PV_test_dir .. '/debug config project'
 call mkdir(s:root, 'p')
-execute 'tcd ' .. fnameescape(s:root)
+execute 'cd ' .. fnameescape(s:root)
 call assert_equal(2, exists(':PlanetDebug'))
 call assert_equal(2, exists(':PlanetDebugSetup'))
 call assert_equal(0, planet#debug#Action('not-an-action'))

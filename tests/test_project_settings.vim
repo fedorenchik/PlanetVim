@@ -2,7 +2,7 @@ runtime plugin/development.vim
 set hidden noexrc
 let s:root = g:PV_test_dir .. "/settings user's 工作"
 call mkdir(s:root, 'p')
-execute 'tcd ' .. fnameescape(s:root)
+execute 'cd ' .. fnameescape(s:root)
 let s:file = planet#project#File()
 call assert_equal(s:root .. '/.planetvim.vim', s:file)
 call assert_match('/projects/.*\.vim$', planet#project#File(v:true))

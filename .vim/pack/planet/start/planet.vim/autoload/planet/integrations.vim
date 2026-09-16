@@ -372,6 +372,7 @@ def LocalEnvironmentReady(state: any, context: any, filename: any, result: any, 
     endif
     add(script_environment_stack[id], previous)
     echomsg 'PlanetVim: SDK environment saved for ' .. context.root .. ' [' .. context.configuration .. '].'
+    planet#intelligence#Refresh()
   finally
     delete(filename)
   endtry
@@ -386,7 +387,9 @@ export def RestoreEnvironment(): any
     return LocalError('no SDK environment to restore in this project configuration')
   endif
   state.environments[context.configuration] = remove(script_environment_stack[id], -1)
-  return planet#run#Save(state)
+  var saved = planet#run#Save(state)
+  if saved | planet#intelligence#Refresh() | endif
+  return saved
 enddef
 
 export def Environment(kind: any, filename: any = v:null, arguments: any = [], options: any = {}): any
@@ -446,7 +449,7 @@ export def ExportRequirements(dev: any = v:false, filename: any = v:null): any
 enddef
 
 export def ConfigureValue(name: any, arg_value: any = v:null): any
-  var values: any = get(t:, 'PV_configure_values', {})
+  var values: any = get(g:, 'PV_configure_values', {})
   var value: any = arg_value == null ? inputdialog('Configure ' .. name .. ': ', get(values, name, ''), '') : arg_value
   if empty(value)
     return 0
@@ -455,7 +458,7 @@ export def ConfigureValue(name: any, arg_value: any = v:null): any
     return LocalError('sysroot directory does not exist')
   endif
   values[name] = value
-  t:PV_configure_values = values
+  g:PV_configure_values = values
   if name ==# 'sysroot'
     $SYSROOT = fnamemodify(value, ':p')
   endif
@@ -465,8 +468,8 @@ enddef
 
 export def Configure(arguments: any = v:null): any
   var flag: any
-  var args: any = copy(arguments == null ? get(t:, 'PV_configure_arguments', []) : arguments)
-  var values: any = get(t:, 'PV_configure_values', {})
+  var args: any = copy(arguments == null ? get(g:, 'PV_configure_arguments', []) : arguments)
+  var values: any = get(g:, 'PV_configure_values', {})
   for key in ['build', 'host', 'target']
     if has_key(values, key)
       args += ['--' .. key .. '=' .. values[key]]
@@ -485,7 +488,7 @@ enddef
 
 export def ConfigureOptions(arg_value: any = v:null): any
   var args: any
-  var value: any = arg_value == null ? inputdialog('Configure arguments (JSON array): ', json_encode(get(t:, 'PV_configure_arguments', [])), '') : arg_value
+  var value: any = arg_value == null ? inputdialog('Configure arguments (JSON array): ', json_encode(get(g:, 'PV_configure_arguments', [])), '') : arg_value
   if empty(value)
     return 0
   endif
@@ -494,7 +497,7 @@ export def ConfigureOptions(arg_value: any = v:null): any
     if type(args) != v:t_list || ! empty(filter(copy(args), (_, lambda_arg) => type(lambda_arg) != v:t_string))
       return LocalError('configure arguments must be a JSON array of Strings')
     endif
-    t:PV_configure_arguments = args
+    g:PV_configure_arguments = args
     return 1
   catch
     return LocalError(v:exception)

@@ -1,6 +1,7 @@
 vim9script
 
 var script_legacy_imported = v:false
+var instance_project: dict<any> = {}
 
 def LocalError(message: any): any
   echohl ErrorMsg
@@ -40,17 +41,13 @@ def LocalValidate(profiles: any): any
   return 0
 enddef
 
-# Tab cwd is the project identity; window-local cwd changes do not select a
-# different project. Profiles live in user state, never executable project files.
+# One active project follows Vim's global cwd, including native session restore.
 export def Project(): any
-  var project: any
+  var project = instance_project
   var file: any
   var saved: any
   var root: any = planet#project#Root()
-  if ! exists('t:PV_projects')
-    t:PV_projects = {}
-  endif
-  if ! has_key(t:PV_projects, root)
+  if get(project, 'root', '') !=# root
     project = {root: root, build_dir: '', profiles: []}
     file = LocalStateFile(root)
     if filereadable(file)
@@ -74,9 +71,8 @@ export def Project(): any
       endfor
     endif
     script_legacy_imported = v:true
-    t:PV_projects[root] = project
+    instance_project = project
   endif
-  project = t:PV_projects[root]
   g:PV_build_dir = project.build_dir
   # Keep the legacy variables readable; all new commands use structured state.
   g:PV_run_configurations = join(map(copy(project.profiles), (_, lambda_profile) => lambda_profile.name), ',')
@@ -198,7 +194,7 @@ export def UpdateRunMenu(): any
   return 0
 enddef
 
-augroup PlanetVimRunProjects
+augroup PlanetVimRun
   autocmd!
-  autocmd TabEnter,DirChanged * call planet#run#UpdateRunMenu()
+  autocmd DirChanged global call planet#run#UpdateRunMenu()
 augroup END

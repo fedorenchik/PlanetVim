@@ -9,12 +9,13 @@ let s:script = s:a .. '/record.py'
 call writefile(['import json, os, sys', 'open(sys.argv[1], "w").write(json.dumps(dict(os.environ)))'], s:script)
 call writefile(['#!/bin/sh', 'exec ' .. shellescape(s:python) .. ' ' .. shellescape(s:script) .. ' "$@"'], s:a .. '/bin/planet-env-test')
 call setfperm(s:a .. '/bin/planet-env-test', 'rwx------')
-execute 'tcd ' .. fnameescape(s:a)
+execute 'cd ' .. fnameescape(s:a)
 call PlanetTestProjectSettings({'defaults': {'environment': {'PLANET_ENV': 'A', 'PLANET_ENV_REMOVED': v:null, 'PATH': '${root}/bin:${env:PATH}'}}})
 let s:context = planet#project#Context()
 tabnew
 execute 'tcd ' .. fnameescape(s:b)
-call PlanetTestProjectSettings({'defaults': {'environment': {'PLANET_ENV': 'B'}}})
+call writefile(['vim9script', "throw 'tab-local settings must not execute'"], s:b .. '/.planetvim.vim')
+call planet#project_env#Set({'PLANET_ENV': 'B'})
 let s:output = s:a .. '/captured.json'
 let s:buffer = planet#term#RunArgv(['planet-env-test', s:output], v:false, v:false, v:true, s:a, v:null, '', {'context': s:context})
 for s:i in range(300)
@@ -29,32 +30,29 @@ call assert_equal('B', planet#project#Context().env_snapshot.PLANET_ENV)
 call assert_equal('inherited', $PLANET_ENV_REMOVED)
 call assert_equal(s:a, planet#term#Result(s:buffer).project)
 
-" Distinct project servers retain their own environment and root; only the
-" current project's registrations participate in filetype actions.
+" Every tab shares the instance's current language-server environment.
 let g:PV_clangd_argv = [s:python]
 let g:PV_pylsp_argv = []
 execute 'source ' .. fnameescape(g:PV_root .. '/tests/fixtures/lsp/load.vim')
 call planet#intelligence#Register()
-let s:server_b = filter(lsp#get_server_names(), 'v:val =~# "^planet-clangd"')[0]
+let s:server = 'planet-clangd'
 tabprevious
-call planet#intelligence#Register()
-let s:server_a = filter(lsp#get_server_names(), 'v:val !=# s:server_b')[0]
-call assert_equal('A', lsp#get_server_info(s:server_a).env.PLANET_ENV)
-call assert_equal('B', lsp#get_server_info(s:server_b).env.PLANET_ENV)
-call assert_equal([], lsp#get_server_info(s:server_b).allowlist)
-call assert_equal(['c', 'cpp'], lsp#get_server_info(s:server_a).allowlist)
+call assert_equal([s:server], lsp#get_server_names())
+call assert_equal('B', lsp#get_server_info(s:server).env.PLANET_ENV)
+call planet#project_env#Set({'PLANET_ENV': 'C'})
+call assert_equal('C', lsp#get_server_info(s:server).env.PLANET_ENV)
+call assert_equal(['c', 'cpp'], lsp#get_server_info(s:server).allowlist)
 
 " Settings errors must not reuse the previous project's server environment.
 tabnew
 let s:unapproved = g:PV_test_dir .. '/unapproved project'
 call mkdir(s:unapproved, 'p')
-execute 'tcd ' .. fnameescape(s:unapproved)
+execute 'cd ' .. fnameescape(s:unapproved)
 call writefile(['vim9script', 'export var config: dict<any> = {}'], planet#project#File())
 try
   call planet#intelligence#Register()
   call assert_report('unapproved shared settings accepted by LSP registration')
 catch /review .* then run :PlanetProjectReload!/
 endtry
-call assert_equal([], lsp#get_server_info(s:server_a).allowlist)
-call assert_equal([], lsp#get_server_info(s:server_b).allowlist)
+call assert_equal([], lsp#get_server_info(s:server).allowlist)
 unlet $PLANET_ENV_REMOVED

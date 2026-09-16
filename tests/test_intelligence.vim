@@ -34,6 +34,6 @@ call assert_match('custom_definition', maparg('gd', 'n'))
 let s:project = g:PV_test_dir .. '/language project'
 call mkdir(s:project .. '/src', 'p')
 call writefile(['-std=c++17'], s:project .. '/compile_flags.txt')
-call assert_equal(lsp#utils#path_to_uri(s:project), planet#intelligence#Root('clangd', s:project .. '/src/one.cpp'))
+call assert_equal(lsp#utils#path_to_uri(g:PV_test_dir), planet#intelligence#Root('clangd', s:project .. '/src/one.cpp'))
 call writefile(['[project]', 'name = "fixture"'], g:PV_test_dir .. '/pyproject.toml')
 call assert_equal(lsp#utils#path_to_uri(g:PV_test_dir), planet#intelligence#Root('pylsp', g:PV_test_dir .. '/single.py'))

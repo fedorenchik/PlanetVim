@@ -1,6 +1,6 @@
 vim9script
 export def ProjectDirectory(arg_directory: any = v:null): any
-  var directory: any = arg_directory == null ? inputdialog('Project directory: ', getcwd(-1, 0)) : arg_directory
+  var directory: any = arg_directory == null ? inputdialog('Project directory: ', getcwd(-1)) : arg_directory
   if empty(directory)
     return 0
   endif
@@ -8,7 +8,7 @@ export def ProjectDirectory(arg_directory: any = v:null): any
     echomsg 'PlanetVim: project directory does not exist: ' .. directory
     return 0
   endif
-  execute 'tcd ' .. fnameescape(directory)
+  execute 'cd ' .. fnameescape(directory)
   return 1
 enddef
 
@@ -25,7 +25,7 @@ export def Git(arguments: any): any
   var root: any = planet#git#Repository(empty(expand('%:p')) ? getcwd() : expand('%:p:h'))
   if empty(root)
     if arguments ==# ['init']
-      root = getcwd(-1, 0)
+      root = getcwd(-1)
     else
       echomsg 'PlanetVim: open a Git project first.'
       return 0

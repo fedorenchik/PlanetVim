@@ -94,7 +94,7 @@ try
   call assert_equal(0, planet#integrations#ConfigureOptions(''))
   call assert_equal(s:count, len(term_list()), 'cancelled configure prompts launch no process')
   call setenv('SYSROOT', s:old_sysroot)
-  unlet! t:PV_configure_values
+  unlet! g:PV_configure_values
 
   " A real installed Qt tool compiles a small form; this exercises output-file
   " creation with spaces and quote characters, beyond the argv fixture.

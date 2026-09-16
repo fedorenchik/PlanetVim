@@ -1,7 +1,7 @@
 execute 'source ' .. fnameescape(g:PV_root .. '/tests/helpers/project_settings.vim')
 let s:root = g:PV_test_dir .. '/workspace 工作'
 call mkdir(s:root, 'p')
-execute 'tcd ' .. fnameescape(s:root)
+execute 'cd ' .. fnameescape(s:root)
 let s:settings = {'default': 'debug', 'defaults': {'environment': {'COMMON': 'shared'}, 'args': ['a b']},
       \ 'configurations': {'debug': {'build_dir': 'out/debug', 'program': 'out/debug/app'}, 'release': {'build_dir': 'out/release'}}}
 call PlanetTestProjectSettings(s:settings)
@@ -16,7 +16,7 @@ call assert_equal(1, planet#build#NewBuildDir('custom release'))
 call assert_equal(s:root .. '/custom release', planet#build#GetBuildDir())
 call planet#project#Select('debug')
 call assert_equal(s:root .. '/out/debug', planet#build#GetBuildDir())
-unlet t:PV_projects
+execute 'source ' .. fnameescape(g:PV_root .. '/.vim/pack/planet/start/planet.vim/autoload/planet/run.vim')
 call assert_equal('debug', planet#project#Context().configuration)
 call assert_equal('debug', s:context.configuration, 'captured context is independent of selection')
 call mkdir(s:root .. '/sub', 'p')
@@ -24,6 +24,9 @@ execute 'lcd ' .. fnameescape(s:root .. '/sub')
 call assert_equal(s:root, planet#project#Context().root, 'window-local cwd cannot change project')
 tabnew
 execute 'tcd ' .. fnameescape(g:PV_test_dir)
-call assert_equal('', planet#project#Context().configuration)
+call assert_equal('debug', planet#project#Context().configuration)
+call assert_equal(s:root, planet#project#Root(), 'tab-local cwd cannot change the instance project')
+call planet#project#Select('release')
 tabclose
 call assert_equal(s:root, planet#project#Context().root)
+call assert_equal('release', planet#project#Context().configuration, 'configuration selection is shared by tabs')

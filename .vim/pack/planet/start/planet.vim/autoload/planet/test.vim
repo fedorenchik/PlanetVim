@@ -23,17 +23,6 @@ export def Init(): any
   return 1
 enddef
 
-def LocalHistory(): any
-  if !exists('t:PV_test_history')
-    t:PV_test_history = {}
-  endif
-  var root: any = planet#run#Project().root
-  if !has_key(t:PV_test_history, root)
-    t:PV_test_history[root] = {}
-  endif
-  return t:PV_test_history[root]
-enddef
-
 def LocalFinished(result: any, buffer: any): any
   if result.exit_code == 127 || result.exit_code == 9009
     LocalWarn('test runner was not found. Install the runner or configure its vim-test executable; see retained output.')
@@ -43,23 +32,15 @@ enddef
 
 # vim-test deliberately supplies a shell program; retain it byte-for-byte.
 export def Strategy(command: any): any
-  var history: any = LocalHistory()
-  history.command = command
-  history.cwd = planet#run#Project().root
   if exists('g:test#last_position')
-    history.position = deepcopy(g:test#last_position)
-    history.position.file = fnamemodify(history.position.file, ':p')
+    g:test#last_position.file = fnamemodify(g:test#last_position.file, ':p')
   endif
-  var buffer: any = planet#term#RunShell(command, v:false, v:false, v:false, history.cwd, function(LocalFinished))
-  if buffer > 0
-    t:PV_test_history = {[history.cwd]:  history}
-  endif
+  var buffer: any = planet#term#RunShell(command, v:false, v:false, v:false, planet#project#Root(), function(LocalFinished))
   script_last_buffer = buffer
   return buffer
 enddef
 
 export def Test(action: any): any
-  var buffer: any
   var cwd: any
   var name: any
   if index(['nearest', 'file', 'class', 'suite', 'last', 'visit'], action) < 0
@@ -68,24 +49,16 @@ export def Test(action: any): any
   if !planet#test#Init()
     return 0
   endif
-  var history: any = LocalHistory()
   if action ==# 'visit'
-    if !has_key(history, 'position')
-      return LocalWarn('no test has run in this project tab.')
+    if !exists('g:test#last_position')
+      return LocalWarn('no test has run in this instance.')
     endif
-    execute 'edit ' .. fnameescape(history.position.file)
-    cursor(history.position.line, history.position.col)
+    execute 'edit ' .. fnameescape(g:test#last_position.file)
+    cursor(g:test#last_position.line, g:test#last_position.col)
     return 1
   endif
-  if action ==# 'last'
-    if !has_key(history, 'command')
-      return LocalWarn('no test has run in this project tab.')
-    endif
-    buffer = planet#term#RunShell(history.command, v:false, v:false, v:false, history.cwd, function(LocalFinished))
-    if buffer > 0
-      t:PV_test_history = {[history.cwd]:  history}
-    endif
-    return buffer
+  if action ==# 'last' && !exists('g:test#last_command')
+    return LocalWarn('no test has run in this instance.')
   endif
   if &buftype ==# '' && &modified
     try
@@ -94,9 +67,9 @@ export def Test(action: any): any
       return LocalWarn('cannot save the test buffer: ' .. v:exception)
     endtry
   endif
-  # Isolate vim-test's global history and cwd handling from other project tabs.
+  # Run from the instance project, preserving the source window's navigation.
   var saved: any = {}
-  for item_name in ['test#last_position', 'test#project_root', 'test#strategy']
+  for item_name in ['test#project_root', 'test#strategy']
     name = item_name
     if has_key(g:, name)
       saved[name] = g:[name]
@@ -112,15 +85,18 @@ export def Test(action: any): any
   try
     set noautowrite noautowriteall
     execute 'lcd ' .. fnameescape(planet#run#Project().root)
-    if has_key(history, 'position')
-      g:test#last_position = deepcopy(history.position)
-    endif
     g:test#strategy = 'planet'
-    test#run(action, [])
+    g:test#project_root = planet#project#Root()
+    if action ==# 'last'
+      g:test#last_strategy = 'planet'
+      test#run_last([])
+    else
+      test#run(action, [])
+    endif
   catch
     LocalWarn(v:exception)
   finally
-    for item_name in ['test#last_position', 'test#project_root', 'test#strategy']
+    for item_name in ['test#project_root', 'test#strategy']
       name = item_name
       if has_key(g:, name)
         unlet g:[name]

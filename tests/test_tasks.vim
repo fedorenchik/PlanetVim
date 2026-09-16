@@ -2,7 +2,7 @@ execute 'source ' .. fnameescape(g:PV_root .. '/tests/helpers/project_settings.v
 set hidden
 let s:root = g:PV_test_dir .. '/tasks 工作'
 call mkdir(s:root, 'p')
-execute 'tcd ' .. fnameescape(s:root)
+execute 'cd ' .. fnameescape(s:root)
 let s:python = exepath('python3')
 let s:record = s:root .. '/order.txt'
 let s:script = s:root .. '/step.py'

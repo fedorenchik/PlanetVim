@@ -1,6 +1,6 @@
 let s:root = g:PV_test_dir .. '/git tools 工作'
 call mkdir(s:root, 'p')
-execute 'tcd ' .. fnameescape(s:root)
+execute 'cd ' .. fnameescape(s:root)
 let s:buffers = []
 
 func! s:Wait(buffer) abort
