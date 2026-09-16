@@ -25,7 +25,7 @@ SCHEMA = 2
 READABLE_SCHEMAS = (1, SCHEMA)
 STARTUP_KEY = "__home_vimrc__"  # Journal key, never a path in the payload.
 STARTUP_MARKER = b'" PlanetVim managed GVim startup\n'
-STATE_NAMES = {"session", "undo", "view", "viminfo", "tab"}
+STATE_NAMES = {"session", "sessions", "undo", "view", "viminfo", "tab"}
 USER_FILES = {"planetvimrc.vim", "fern-bookmark.json", "clap_yanks.history"}
 
 

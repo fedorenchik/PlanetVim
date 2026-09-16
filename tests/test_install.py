@@ -36,6 +36,7 @@ class InstallerTests(unittest.TestCase):
     def test_clean_repeat_and_uninstall_preserve_unmanaged_files(self):
         self.write(self.prefix / "notes.txt", "keep me")
         self.write(self.prefix / ".vim/plugin/personal.vim", "personal plugin")
+        self.write(self.prefix / ".vim/sessions/project.vim", "personal session")
         first = self.installer().run("install")
         self.assertEqual((self.prefix / ".vimrc").read_text(), 'let g:distribution = 1\n')
         self.assertEqual(first, self.installer().run("install"))
@@ -43,6 +44,7 @@ class InstallerTests(unittest.TestCase):
         self.assertFalse((self.prefix / ".vimrc").exists())
         self.assertEqual((self.prefix / "notes.txt").read_text(), "keep me")
         self.assertEqual((self.prefix / ".vim/plugin/personal.vim").read_text(), "personal plugin")
+        self.assertEqual((self.prefix / ".vim/sessions/project.vim").read_text(), "personal session")
         self.assertTrue((self.prefix / ".planetvim/backups").is_dir())
 
     def test_dry_run_does_not_create_destination(self):
@@ -203,10 +205,10 @@ class InstallerTests(unittest.TestCase):
         self.assertEqual((self.prefix / ".vimrc").read_text(), "updated rc")
 
     def test_checkout_state_is_not_distributed(self):
-        for relative in (".vim/planetvimrc.vim", ".vim/session/private.vim", ".vim/fern-bookmark.json"):
+        for relative in (".vim/planetvimrc.vim", ".vim/session/private.vim", ".vim/sessions/private.vim", ".vim/fern-bookmark.json"):
             self.write(self.source / relative, "private")
         self.installer().run("install")
-        for relative in (".vim/planetvimrc.vim", ".vim/session/private.vim", ".vim/fern-bookmark.json"):
+        for relative in (".vim/planetvimrc.vim", ".vim/session/private.vim", ".vim/sessions/private.vim", ".vim/fern-bookmark.json"):
             self.assertFalse((self.prefix / relative).exists())
 
     @unittest.skipIf(os.name == "nt", "POSIX executable launcher")
