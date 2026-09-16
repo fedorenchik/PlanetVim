@@ -18,9 +18,10 @@ aug END
 aug AugPv_TabPages
 au!
 au TabEnter * call planet#tab#Track()
-au TabLeave * call planet#tab#SaveTmp()
 if exists('##TabClosedPre')
   au TabClosedPre * call planet#tab#BeforeClose()
+else
+  au TabLeave * call planet#tab#SaveTmp()
 endif
 au TabClosed * call planet#tab#Closed()
 au VimLeavePre * call planet#tab#Cleanup()
