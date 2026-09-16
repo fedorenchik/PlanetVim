@@ -52,7 +52,6 @@ set noequalalways
 set noerrorbells
 set esckeys
 set noexpandtab
-set noexrc
 set fileformats=unix,dos,mac
 set nofileignorecase
 set fillchars=stl:\ ,stlnc:\ ,vert:\ ,fold:\ ,diff:\ 

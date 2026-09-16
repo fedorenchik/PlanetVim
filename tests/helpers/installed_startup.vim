@@ -51,6 +51,12 @@ let s:child = g:PV_test_dir .. '/installed-startup.vim'
 let s:config = g:PV_test_dir .. "/child config, 'quoted' 工作"
 let s:state = g:PV_test_dir .. "/child state, 'quoted' 工作"
 let s:cache = g:PV_test_dir .. "/child cache, 'quoted' 工作"
+let s:project = g:PV_test_dir .. '/native project'
+call mkdir(s:project .. '/sub', 'p')
+if g:PV_test_default_gvim
+  call writefile(['vim9script', 'g:PV_local_vimrc = get(g:, "PV_local_vimrc", 0) + 1'], s:project .. '/.vimrc')
+  call writefile(['vim9script', 'g:PV_local_gvimrc = get(g:, "PV_local_gvimrc", 0) + 1', 'set textwidth=73'], s:project .. '/.gvimrc')
+endif
 call writefile([
       \ 'set encoding=utf-8 nomore nomodeline',
       \ 'set guioptions+=c',
@@ -71,6 +77,18 @@ call writefile([
       \ '    call assert_equal(fnamemodify(' .. string(s:prefix) .. ', ":p"), fnamemodify(g:PV_root, ":p"))',
       \ '    call assert_equal(fnamemodify(' .. string(s:config .. '/planetvimrc.vim') .. ', ":p"), fnamemodify(g:PV_config, ":p"))',
       \ '    call assert_true(len(menu_info("").submenus) > 0)',
+      \ '    if ' .. g:PV_test_default_gvim,
+      \ '      call assert_true(&exrc, "explicit native local vimrc opt-in is preserved")',
+      \ '      call assert_equal(73, &textwidth)',
+      \ '      tabnew',
+      \ '      execute "tcd " .. fnameescape(' .. string(s:project .. '/sub') .. ')',
+      \ '      tabprevious',
+      \ '      tabnext',
+      \ '      call assert_equal(' .. string(s:project) .. ', planet#project#Root())',
+      \ '      call assert_equal(1, g:PV_local_vimrc)',
+      \ '      call assert_equal(1, g:PV_local_gvimrc)',
+      \ '      tabclose',
+      \ '    endif',
       \ '    enew',
       \ '    setfiletype pvfixture',
       \ '    call assert_equal(["ftplugin", "after-ftplugin"], b:PV_startup_ft)',
@@ -91,6 +109,7 @@ call writefile([
 " name so this verifies plain gvim, without adding -g or an explicit vimrc.
 let s:program = has('win32') ? v:progpath : g:PV_test_gvim
 let s:argv = [s:program, '-f', '-N', '-n', '-i', 'NONE']
+if g:PV_test_default_gvim | let s:argv += ['--cmd', 'set exrc secure'] | endif
 if !g:PV_test_default_gvim
   let s:argv += ['-U', 'NONE', '-u', s:prefix .. '/scripts/planetvim.vim']
 endif
@@ -103,7 +122,7 @@ let s:env = extend(copy(s:home_env), #{PLANETVIM_CONFIG_DIR:s:config,
 " Keep an actual fish installation visible: its unmatched-glob behavior exposed
 " the original failure. Other hosts retain their existing shell environment.
 if !has('win32') && executable('fish') | let s:env.SHELL = exepath('fish') | endif
-let s:job = job_start(s:argv, #{out_io:'file', out_name:s:log, err_io:'out', env:s:env})
+let s:job = job_start(s:argv, #{out_io:'file', out_name:s:log, err_io:'out', env:s:env, cwd:s:project})
 if !s:Wait(s:job, 'installed GVim startup', s:log) | finish | endif
 call assert_true(filereadable(s:result), 'installed startup wrote its result')
 if filereadable(s:result)
