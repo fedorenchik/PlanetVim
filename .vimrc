@@ -222,8 +222,8 @@ vnoremap # y/\V<C-R>"\><CR>
 # }}}
 # Command-line (Cmdline) Mode: {{{
 # Subcommands & submodes: Ctrl-R, Ctrl-\
-cnoremap <expr> <C-u> ((getcmdtype() is# ":" && getcmdline() is# "") ? ("<Esc>") : ("<C-u>"))
-cnoremap <expr> <Tab> ((getcmdtype() is# ":" && getcmdline() is# "") ? ("<Esc>") : ("<C-z>"))
+cnoremap <expr> <C-u> ((getcmdtype() ==# ":" && getcmdline() ==# "") ? ("<Esc>") : ("<C-u>"))
+cnoremap <expr> <Tab> ((getcmdtype() ==# ":" && getcmdline() ==# "") ? ("<Esc>") : ("<C-z>"))
 # }}}
 # Terminal Window: {{{
 tno <C-j> <C-w><C-j>
@@ -253,7 +253,7 @@ lnoremap <Tab> <Esc>
 # Abbreviations: {{{
 inoreabbrev teh the
 def g:SetupCommandAlias(input: any, output: any): any
-  exec 'cabbrev <expr> ' .. input   .. ' ((getcmdtype() is# ":" && getcmdline() is# "' .. input .. '")'   .. '? ("' .. output .. '") : ("' .. input .. '"))'
+  exec 'cabbrev <expr> ' .. input .. ' ((getcmdtype() ==# ":" && getcmdline() ==# "' .. input .. '")' .. ' ? ("' .. output .. '") : ("' .. input .. '"))'
   return 0
 enddef
 g:SetupCommandAlias("f", "find")
