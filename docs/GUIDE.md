@@ -310,15 +310,17 @@ files that are not open. Delete removes a chosen bookmark; Delete All runs
 file-mark settings control persistence. The Marks menu remains available for
 local marks and the existing signature-plugin actions.
 
-Highlights → TextProp adds manual highlights at the cursor, over a line or over
-selected characters, lines or a block. In Normal mode, Add to Selection uses the
-current word. Create a named buffer-local type and choose its highlight group,
-then reuse it for highlights or virtual text: inline, after, right-aligned, above
-or below a line. Types → Change Highlight updates existing annotations of that
-type. List, Next/Previous and Remove operate on manual properties; Clear Manual
-Properties leaves plugin properties, including LSP displays, intact. Inspect
-All Properties and Types → Inspect All include plugin-created properties/types.
-Deleting a manual type also removes its properties.
+The Highlights menu's TextProp section adds manual highlights at the cursor,
+over a line or over selected characters, lines or a block. In Normal mode,
+Add Property to Selection uses the current word. Create a named buffer-local
+type and choose its highlight group, then reuse it for highlights or virtual
+text: inline, after, right-aligned, above or below a line. Change Property Type
+Highlight updates existing annotations
+of that type. List, Next/Previous and Remove operate on manual properties;
+Clear Manual Properties leaves plugin properties, including LSP displays,
+intact. Inspect All Properties and Inspect All Property Types include
+plugin-created properties/types. Deleting a manual type also removes its
+properties.
 
 Text properties follow native `prop_add()`/`prop_add_list()` behavior: positions
 move with edits, but the annotations are not file contents and disappear when

@@ -29,8 +29,9 @@ call assert_equal(3, len(getloclist(0)))
 call assert_match('Bookmark A', getloclist(0)[0].text)
 lclose
 call win_gotoid(s:window)
-call assert_match('m{A-Z}$', menu_info('📎k.Set / Replace').accel)
-call assert_match('`{A-Z}$', menu_info('📎k.Choose Exact Position').accel)
+call assert_equal('m{A-Z}', menu_info('📎k.Set / Replace').accel)
+call assert_equal('`{A-Z}', menu_info('📎k.Choose Exact Position').accel)
+call assert_equal("'{A-Z}", menu_info('📎k.Choose Line').accel)
 call assert_match(':call planet#bookmark#Jump()', execute('tmenu 📎k.Choose\ Exact\ Position'))
 call assert_match(':delmarks A-Z', execute('tmenu 📎k.Delete\ All'))
 

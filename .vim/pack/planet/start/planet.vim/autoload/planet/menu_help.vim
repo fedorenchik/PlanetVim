@@ -279,6 +279,10 @@ def Accelerator(rhs: string, annotations: list<string>, command: string): string
   if empty(secondary)
     secondary = command
   endif
+  # Function calls belong in tips even when a short call fits beside a key.
+  if secondary =~? '^:cal\%[l]\>'
+    secondary = ''
+  endif
   if empty(primary)
     var existing = filter(copy(annotations), (_, v) => v =~# '^:')
     primary = empty(existing) ? command : substitute(existing[-1], '\\\(.\)', '\1', 'g')

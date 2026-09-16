@@ -1,5 +1,10 @@
 runtime plugin/globals.vim
 call planet#menu#edit#Update()
+call assert_false(get(menu_info('🖌️h.TextProp', 'n'), 'enabled', 1))
+call assert_equal([], get(menu_info('🖌️h.TextProp'), 'submenus', []))
+call assert_true(!empty(menu_info('🖌️h.Add Property at Cursor')))
+call assert_true(!empty(menu_info('🖌️h.Add Virtual Text After Line')))
+call assert_true(!empty(menu_info('🖌️h.Create Property Type')))
 highlight Todo ctermfg=Yellow guifg=Yellow
 highlight Search ctermfg=Red guifg=Red
 highlight Comment ctermfg=Blue guifg=Blue
@@ -78,19 +83,19 @@ call cursor(2, 1)
 call planet#textprop#Add('line', 'Note')
 call assert_equal(1, len(planet#textprop#Items()))
 call assert_equal(2, len(planet#textprop#Items(v:false)))
-emenu n 🖌️h.TextProp.List\ Manual\ Properties
+emenu n 🖌️h.List\ Manual\ Properties
 call assert_equal(1, len(getloclist(0)))
 lclose
 call win_gotoid(s:source_window)
-emenu n 🖌️h.TextProp.Inspect\ All\ Properties
+emenu n 🖌️h.Inspect\ All\ Properties
 call assert_equal(2, len(getloclist(0)))
 lclose
 call win_gotoid(s:source_window)
 call cursor(1, 1)
-emenu n 🖌️h.TextProp.Next\ Manual\ Property
+emenu n 🖌️h.Next\ Manual\ Property
 call assert_equal(2, line('.'))
 call cursor(3, 1)
-emenu n 🖌️h.TextProp.Previous\ Manual\ Property
+emenu n 🖌️h.Previous\ Manual\ Property
 call assert_equal(2, line('.'))
 call planet#textprop#Clear()
 call assert_equal('PluginHint', prop_list(1)[0].type)
@@ -135,8 +140,8 @@ call planet#textprop#Clear()
 vunmap <F11>
 
 " Menu tips expose the actual callable function; dialogs can cancel safely.
-call assert_match(':call planet#textprop#Add', execute('tmenu 🖌️h.TextProp.Add\ at\ Cursor'))
-call assert_match(':help text-properties', execute('tmenu 🖌️h.TextProp.Help'))
+call assert_match(':call planet#textprop#Add', execute('tmenu 🖌️h.Add\ Property\ at\ Cursor'))
+call assert_match(':help text-properties', execute('tmenu 🖌️h.Text\ Property\ Help'))
 call timer_start(20, {-> feedkeys("0\<CR>", 't')})
 call planet#textprop#Add('character')
 call assert_equal([], planet#textprop#Items())

@@ -2,6 +2,10 @@
 
 ## Unreleased — Linux GVim menus, Vim9 runtime and plugin refresh
 
+- Fix Vim9 command-line expressions so Tab completion, Ctrl-U and command
+  aliases no longer raise `E15`; preserve empty-prompt cancellation behavior.
+- Display TextProp as a flat Highlights section with a label and separator.
+  Keep function calls in menu tips, leaving Bookmark shortcut labels compact.
 - Complete Highlights → TextProp with manual highlights, virtual text, property
   type management, inspection, navigation and removal. Complete Bookmarks with
   native A–Z file-mark creation, cross-file jumps, listing and deletion.

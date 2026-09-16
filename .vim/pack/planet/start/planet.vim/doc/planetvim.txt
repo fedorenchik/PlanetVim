@@ -101,7 +101,7 @@ Style and selected group are saved across restarts.
 Menu hints prefer keyboard shortcuts. The primary shortcut is on the far right;
 a second short shortcut, or a short command, appears before it. At most two
 shortcuts are shown. For example, Undo shows :undo then u; Next Tab shows
-<C-PgDown> then gt. A long command or function call stays in the menu tip.
+<C-PgDown> then gt. Function calls and long commands stay in the menu tip.
 Hover over an entry to read its tip in GVim's bottom command area: a leading
 colon introduces its command/function, and a leading double quote introduces
 an explanation of a key-based action. Tips use Normal mode when an item also
@@ -116,13 +116,15 @@ Delete All (:delmarks A-Z). The marks work across files and use native viminfo
 persistence; lowercase and numbered marks are preserved by Delete All.
 See |mark-motions| and |viminfo-file-marks|.
 
-Highlights -> TextProp creates manual character, line or Visual/Select-region
-highlights, including blocks. Add to Selection selects the current word in
-Normal mode. Virtual text can appear inline, after, right-aligned, above or
-below a line. Types are buffer-local; create one with a highlight group, change
-its highlight, or delete it together with its properties. List, navigation,
-removal and clearing affect manual properties. Inspect All Properties / Types
-also show properties created by plugins. Manual clearing preserves LSP display.
+The TextProp section of Highlights creates manual character, line or
+Visual/Select-region highlights, including blocks. Add Property to Selection
+selects the current word in Normal mode. Virtual text can appear inline,
+after, right-aligned, above or below a line. Types are buffer-local; create one
+with a highlight group, change its highlight, or delete it together with its
+properties. List, navigation,
+removal and clearing affect manual properties. Inspect All Properties and
+Inspect All Property Types also show plugin properties. Manual clearing
+preserves LSP display.
 Properties move with text edits but disappear when the buffer is unloaded;
 they are not saved in files or sessions. Partial tabs/wide characters in a block
 are highlighted whole. See |text-properties| and |text-prop-functions|.
