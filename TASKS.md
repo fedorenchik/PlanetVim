@@ -22,6 +22,14 @@ The owner approved IDE-01 through IDE-05. Implemented:
 See [the workflow guide](docs/IDE.md) and its acceptance record. IDE-06 and later
 remain deferred; this phase changes first-party integration only.
 
+## Future idea — projects per tab (deferred)
+
+- [ ] Reconsider optional projects per tab for small related projects, such as
+  several Blender add-ons. Await further owner consideration before planning
+  or implementation. Any proposal must address shared global Vim/plugin settings
+  and keep frequent tab switching inexpensive. The current model is one project
+  per GVim instance, using native sessions, views and local vimrc support.
+
 ## Agreed platform and dependency policy
 
 - GVim only. Terminal Vim and Neovim are outside the product scope.

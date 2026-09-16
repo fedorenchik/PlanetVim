@@ -2,6 +2,10 @@
 
 ## Unreleased — Linux GVim menus, Vim9 runtime and plugin refresh
 
+- Use one active project per GVim instance, with native global-directory/session
+  identity and shared build/run/test state. Remove project switching on tab and
+  buffer entry, retain fixed language-server registrations, and preserve native
+  local vimrc opt-in. Record projects per tab as a deferred idea.
 - Add shared/private Vim9 project configurations, isolated tool and language-server
   environments, dependency tasks with cancellation/timeouts, per-command raw
   logs and quickfix diagnostics, and CMake preset/File API target workflows.

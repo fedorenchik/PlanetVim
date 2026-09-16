@@ -5,7 +5,8 @@ plugins remain available.
 
 ## Project settings
 
-A tab's working directory identifies its project. Optional `.planetvim.vim`
+Each GVim instance has one active project, identified by Vim's global working
+directory (`:pwd` after a global `:cd`). Optional `.planetvim.vim`
 exports a Vim9 `config` Dictionary; **Run → Project → Edit Private Settings**
 opens a `.vim` override under PlanetVim's personal config directory. Both files
 use the same structure and merge recursively; Lists replace Lists.
@@ -44,44 +45,60 @@ and refreshes its language-server selection. A changed shared script needs the
 Trust and Load action again. Loading errors are reported and cached until reload;
 they do not silently select default settings or repeatedly execute broken code.
 Use script-local variables and compiled `def` helpers to compute `config`.
-Keep project-specific values inside the exported Dictionary: changing global
-Vim options or process environment affects other tabs too.
+All tabs share this configuration. Native local vimrc files can set editor
+options for the whole instance; the exported Dictionary describes tool and task
+settings.
 
 Environment values are Strings; `null` removes an inherited variable. Keep
 secrets in private configuration. Project Info displays environment variable
 names only. Defining a task does not run it; Run, Build and Debug actions remain
 explicit.
 
-Relative directories resolve from the tab's project root. A selected build
+Relative directories resolve from the instance's project root. A selected build
 directory overrides that configuration's `build_dir` and is saved in private
 state. Previous build directories and run profiles remain supported for projects
-without these settings. A window-local `:lcd` does not change project identity.
+without these settings. Tab-local `:tcd` and window-local `:lcd` do not change project identity.
 
 ## Tabs, sessions and views
 
-Use native `:tabnew` and `:tcd /path/to/project` to work on different projects
-in different tabs. The project root is the tab's working directory, not an
-automatic search for a parent Git repository or settings file. Open a tab at
-the intended root before selecting project tools. Tabs are window layouts;
-their buffers and global Vim options remain shared within the GVim process.
+Start a separate GVim process from each unrelated project's root directory.
+Use tabs and splits freely for files and views within that project. Native
+`:tcd` and `:lcd` provide local navigation; all tabs retain the same build
+configuration, run profiles, test history, tool environment and language servers.
+A global `:cd` changes the active root for the entire instance. New Project
+adopts its generated directory for the whole instance too; create a new GVim
+window first when keeping the current project open.
 
-The Sessions menu already uses Vim's `:mksession` and `:source` through the
-session helpers and Startify. Save a session to preserve the projects' tabs,
-splits, files, working directories and editing positions. With PlanetVim's
-default `sessionoptions` (`tabpages` and `curdir` included), restoring it
-reselects project settings by each restored tab directory. Selected build/run
-configurations persist in private state. A session can contain one or several
-projects; no separate workspace file is needed. Native `:mkview` and `:loadview`
-store an individual window's cursor, folds and other `viewoptions`, rather than
-the whole project layout.
+The Sessions menu uses Vim's `:mksession` and `:source` through the session helpers
+and Startify. With the default `sessionoptions` (`curdir` and `tabpages` included),
+a session restores the global project directory, tabs, splits, files and editing
+positions. Tab/window-local navigation directories are preserved independently.
+Native `:mkview` and `:loadview` save individual windows' cursor positions, folds
+and other `viewoptions`. Use a separate process when reopening an unrelated
+project's session, so global editor and plugin settings start fresh.
 
-Vim's `'exrc'` option loads directory-local `.vimrc`, `.exrc` and `.gvimrc`
-during startup; it does not switch configurations on `:tcd` or tab changes.
-PlanetVim keeps `noexrc` and uses `.planetvim.vim` for the per-project tool,
-environment and task data that sessions and views do not describe. Ordinary
-editor preferences still belong in personal Vim configuration, filetype
-settings or EditorConfig. See `:help :tcd`, `:help 'exrc'`, `:help :mksession`
-and `:help :mkview` for the native behavior.
+Vim can load project-local `.vimrc` and `.gvimrc` files once at startup. For a
+trusted project, opt into that native behavior before vimrc processing:
+
+```sh
+cd /path/to/project
+gvim --cmd 'set exrc secure'
+```
+
+PlanetVim preserves this explicit `exrc` setting. `.vimrc` can configure plugin
+globals before plugins load; `.gvimrc` can apply GUI/editor options afterwards.
+Local vimrc files are executable configuration: enable them only for trusted
+projects. Launch from the project root even when passing `-S Session.vim`, since
+native local vimrc loading precedes session restoration. `:cd` and tab switches
+do not source local vimrc files again. Optional `.planetvim.vim` remains the
+Vim9 tool/task configuration described above, with its own explicit load action.
+
+Language-server setup and run-menu rebuilding do not run on tab or buffer entry.
+Configuration changes and global directory/session changes refresh the instance
+as needed. Closed-tab recovery captures on close when Vim provides
+`TabClosedPre`; the minimum supported version retains its `TabLeave` fallback
+for native tab-close recovery. Projects per tab are a deferred idea in
+[TASKS.md](../TASKS.md), awaiting further owner consideration.
 
 ## Tasks
 
@@ -90,8 +107,8 @@ task rerun, cancellation and results. `:PlanetTask build-run`, `build-test` and
 `build-debug` stop immediately after an unsuccessful prerequisite. A task captures
 project settings and environment; changing tabs cannot redirect later steps.
 Tasks save modified source buffers within the project before starting (`save:
-false` opts out). One chain per project runs at a time, with at most two project
-chains by default (`g:PV_task_concurrency`). `jobs` sets CMake build parallelism
+false` opts out). One task chain runs at a time in the GVim instance; its history, rerun and
+cancellation actions are shared by all tabs. `jobs` sets CMake build parallelism
 (default 2). `timeout` is seconds per step; zero means no time limit. Cancellation
 signals the child process group on Linux and escalates to KILL after two seconds.
 The project remains occupied until the cancelled command finishes.
@@ -152,10 +169,13 @@ literal substitutions, not shell expressions. For example,
 
 Use `tools` to map tool names to executable paths or argv Lists, `python` for the
 project interpreter argv, and `lsp` to override `clangd`/`pylsp` argv (an empty
-List disables a server). Configured projects receive separate first-party LSP
-registrations and environments; switching buffers selects the applicable pair.
-For configured projects, vim-lsp change dispatch runs immediately rather than
-using its delayed event queue, so a later tab switch cannot redirect an edit.
+List disables a server). The instance uses one `planet-clangd` registration and
+one `planet-pylsp` registration, rooted at `source_dir` (the project root by
+default). The native upstream event queue remains enabled. Tab switching does
+not register or restart servers. Configuration selection, settings reload and
+SDK/build-directory changes update the same registrations and restart their
+processes only when needed. Use `:PlanetLspSetup` after manually changing server
+command globals or an external environment.
 
 ## CMake presets and targets
 
@@ -184,8 +204,8 @@ target. A failed prerequisite prevents launching an old executable.
 
 Configure requests `compile_commands.json`; generators supporting it provide
 clangd with the selected build directory automatically. No database is copied
-into the source tree. Re-enter a source buffer after configuring to activate
-its updated language-server registration. The selected-target debugger launch
+into the source tree. Successful configuration refreshes the
+instance's language-server command when its compilation database changes. The selected-target debugger launch
 uses an ephemeral Vimspector configuration; existing manual `.vimspector.json`
 actions remain available and the file is never overwritten.
 

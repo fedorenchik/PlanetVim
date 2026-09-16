@@ -80,7 +80,7 @@ The PlanetVim menu selects **Easy**, **Standard**, or **Supercharged** mode. Sta
 
 - **File** creates projects/files, saves, exports exact selections, and changes directories.
 - **View** opens the Fern file browser, LSP/tags views, quickfix, and window-bar controls.
-- **Build / Run / Debug / Test / Analyze** operate on the current tab's project. Use `:tcd /path/to/project` to select it.
+- **Build / Run / Debug / Test / Analyze** operate on the GVim instance's project, rooted at its global working directory. Start GVim from the project root or use `:cd /path/to/project`; tabs share the same project.
 - **Git** operates on the saved file's repository. Network, commit, deployment, and installation actions run only when selected.
 - **Writing / Spell Check** provide Markdown/LaTeX builds, prose tools, translation, spelling, and grammar checking.
 - **Sessions** saves and reopens layouts; closing and reopening a tab restores its own snapshot.
@@ -95,7 +95,7 @@ For C++: select **File → New Project → CMake**, choose a new directory, then
 {"name":"hello","argv":["./build/hello"],"cwd":"."}
 ```
 
-On Windows, use the actual `.exe` output path, including the configuration subdirectory for a multi-configuration generator. Run profiles belong to the tab's project and are stored in private state.
+On Windows, use the actual `.exe` output path, including the configuration subdirectory for a multi-configuration generator. Run profiles belong to the instance's project and are stored in private state.
 
 For Python: select **File → New Project → Python**, then open `test_main.py` and run `:PlanetTest file`. Install `python-lsp-server[all]` in your chosen Python environment for completion, diagnostics, and formatting; point `g:PV_pylsp_argv` to its executable. `:PlanetDebugSetup python` creates a reviewable `.vimspector.json`; install debugpy into the configured adapter's Python environment before launching.
 

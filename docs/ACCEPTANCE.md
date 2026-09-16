@@ -2,6 +2,43 @@
 
 This record covers PlanetVim **0.1.0-rc.1**, implemented on **2026-09-08** from baseline `f75c805a`. The source is a release candidate. Native Windows hosted CI and external SDK/target acceptance remain release gates; checked-in automation is not evidence that those jobs ran.
 
+## One project per GVim instance — 2026-09-16
+
+The active project follows Vim's global working directory, shared by all tabs.
+Native `:tcd` and `:lcd` remain navigation tools; native sessions restore the
+global project directory and local navigation. Per-tab project state and
+language-server setup on tab/buffer entry have been removed. This model
+supersedes the per-tab architecture described in the historical records below.
+Projects per tab are a deferred idea in [the task list](../TASKS.md).
+Validated runtime commits: `cc8467d4e`, `7f6dc6107` and `8f22780c1`.
+
+Validation on Linux with the tool environment described below:
+
+- **All 84 default GUI files passed on both GVim 9.2.1011 and minimum GVim
+  9.1.0016, zero skips**, across full runs and focused reruns. Each initial full
+  run passed 78/84 files; six debugger fixtures still selected their project
+  using `:tcd`. Their shared helpers were corrected to use `:cd`, and all six
+  files passed on both versions. The final language-server fixture and real
+  clangd/pylsp integration also passed on both versions.
+- Project tests verify shared configuration and build/run selection across
+  tabs, unchanged identity after `:tcd`/`:lcd`, captured task environments,
+  native vim-test history and a native session round trip with tab/window-local
+  navigation. Explicit environment changes restart the instance's fixed
+  language-server registration with the new environment.
+- Profiling **40 tab switches** recorded **zero calls** to PlanetVim's
+  language-server registration and run-menu rebuilding functions. This checks
+  removal of project setup from tab switching; startup time and overall tab
+  latency were not benchmarked in this phase.
+- Installed home-startup checks verify that explicit startup
+  `--cmd 'set exrc secure'` is preserved, native project `.vimrc` and `.gvimrc`
+  execute once, and the local GUI options apply. Native local vimrc loading
+  remains opt-in. Closed-tab recovery passes on both versions: modern Vim
+  captures its snapshot before closing, while minimum Vim retains its required
+  `TabLeave` fallback.
+- **108 Python tests run: 107 passed, one skipped** for the existing missing
+  SFML/OpenGL development dependencies. **121 package inventory records
+  match**; no third-party sources changed. `git diff --check` passes.
+
 ## Vim9 project settings and native sessions — 2026-09-15
 
 Project configuration exports a Vim9 Dictionary from `.planetvim.vim` and

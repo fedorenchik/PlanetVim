@@ -133,8 +133,9 @@ popup/status-line controls. Status-line changes are window-local and reversible.
 ==============================================================================
 PROJECTS, BUILD, RUN, TEST                                  *planetvim-projects*
 
-A tab's working directory identifies its project. Set it with :tcd. A window's
-:lcd does not select a different build/run profile. Build → CMake creates/selects
+One GVim instance has one active project, rooted at the global working directory.
+Start GVim there or use :cd. Tab :tcd and window :lcd provide navigation while
+all tabs share build/run settings and test history. Build → CMake creates/selects
 a build directory, selects presets/targets, configures, builds, and exports
 compile_commands.json. CMake File API target discovery uses CMake 3.20+.
 
@@ -158,21 +159,22 @@ tools, python, lsp and tasks. Environment null values remove inherited variables
 SDK/compiler choices affect the selected project, not GVim's process environment.
 See docs/IDE.md for the schema, examples and task conventions.
 
-Different tabs can use different :tcd project roots, with shared buffers and
-global Vim options. Keep project values inside the config Dictionary. Sessions
-already use native :mksession and :source to restore tabs, splits, directories
-and positions; project settings follow the restored tab directories. Views
-(:mkview/:loadview) save individual windows' positions and folds. No separate
-workspace format is required. Native 'exrc' loads local vimrc files at startup,
-not on tab changes; PlanetVim keeps noexrc for this reason.
+Native :mksession/:source restore the global project directory, tabs, splits
+and positions. :mkview/:loadview save individual windows' positions and folds.
+Use separate GVim processes for unrelated projects and their sessions.
+For trusted project-local .vimrc/.gvimrc files, launch from the project root
+with: gvim --cmd 'set exrc secure'
+PlanetVim preserves this opt-in. Vim sources these files once at startup;
+changing tabs does not rerun configuration or rebuild project menus/servers.
+Projects per tab are a deferred idea recorded in TASKS.md.
 
 Run → Tasks provides :PlanetTask build-run, build-test and build-debug. Named
 tasks can use native argv or an explicit shell command, dependencies and timeout
 seconds. Failed prerequisites stop the chain. :PlanetTaskCancel cancels its child
 process group; :PlanetTaskRerun repeats the last task using current settings.
 :PlanetTasks shows outcomes. Modified source buffers in the project are saved
-before starting unless `save` is false. The default is one chain per project and
-two across projects (g:PV_task_concurrency); CMake `jobs` defaults to 2.
+before starting unless `save` is false. One task chain runs at a time per GVim
+instance; CMake `jobs` defaults to 2.
 
 :PlanetCmakePreset, :PlanetCmakeTarget and :PlanetCmakeConfiguration select the
 configure preset, target and build configuration. :PlanetCmakeInfo lists actual
@@ -215,15 +217,16 @@ LANGUAGE INTELLIGENCE                                          *planetvim-lsp*
 
 C/C++ use clangd; Python uses pylsp. Install the servers separately. Configure
 g:PV_clangd_argv and g:PV_pylsp_argv as executable/argument Lists. Use [] to opt out.
-Restart after changing an already registered server command. Pylsp diagnostics
+Use :PlanetLspSetup after changing a server command global. Pylsp diagnostics
 and formatting need its corresponding plugins; python-lsp-server[all] includes
 the defaults used by the acceptance fixture.
 
 CMake Configure requests compile_commands.json. When present, the selected build
 directory is passed to clangd automatically. Explicit --compile-commands-dir argv
-wins. Project lsp/python/environment settings create separate server registrations;
-revisit the source buffer after changing them. Configured roots use source_dir;
-otherwise roots are found from language/build markers and Git directories.
+wins. All tabs use the same planet-clangd/planet-pylsp registrations, rooted at
+source_dir (the instance project root by default). Explicit configuration,
+SDK/environment and build-directory changes refresh these registrations as
+needed. Tab/buffer entry does not register or restart servers.
 
 :PlanetLspStatus describes configured servers. Actions:
     :PlanetDefinition    :PlanetReferences    :PlanetHover
