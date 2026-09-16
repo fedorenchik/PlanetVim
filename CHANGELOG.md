@@ -2,6 +2,9 @@
 
 ## Unreleased — Linux GVim menus, Vim9 runtime and plugin refresh
 
+- Automatically restore folder sessions and save them every 30 seconds and on
+  normal exit. Save As selects a persistent custom file; the welcome screen
+  lists recent sessions. Home-directory launches require explicit session use.
 - Fix Vim9 command-line expressions so Tab completion, Ctrl-U and command
   aliases no longer raise `E15`; preserve empty-prompt cancellation behavior.
 - Display TextProp as a flat Highlights section with a label and separator.

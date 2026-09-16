@@ -365,11 +365,33 @@ $XDG_CACHE_HOME/planetvim or ~/.cache/planetvim. Windows uses state/cache under
 projects. Writing spelling defaults to state/spell; ordinary spelling defaults
 to config/spell. Both survive installation updates.
 
-Sessions saves layouts/file references. Save edits before opening another
-session; modified buffers block session loading. Save variants control relative
-paths and local/global option capture. Session files are executable Vim scripts:
-load sessions you created or trust. Reopen Closed Tab restores its own per-process
-snapshot, including windows and cwd.
+Plain GVim launches from a directory resume its last saved session. New folder
+sessions start automatically and save every 30 seconds and on normal exit.
+Files live in ~/.local/share/planetvim/.vim/sessions (under $XDG_DATA_HOME when
+set). g:PV_sessions_dir or $PLANETVIM_SESSIONS_DIR overrides that directory.
+Directory hashes distinguish folders with the same name. Recent-session history
+is state/sessions.vim; updates/uninstall preserve session files and history.
+
+Sessions -> Save As... chooses any directory and filename. That file becomes
+the autosave destination and is remembered for later launches from the project
+directory. Save writes immediately and starts a session if none is active.
+Open selects a file; Open Last Session uses the latest available recent entry.
+Close saves and stops management in this instance. The welcome screen lists
+the ten most recent available sessions, including externally saved files.
+
+Launching from $HOME never starts directory session management; explicitly
+save or open a session to opt in. Native :mksession and gvim -S file.vim also
+opt in. Explicit file arguments and special tool launches keep their requested
+layout. An explicit -S session takes precedence over directory restoration.
+g:PV_session_auto = 0 disables automatic directory activation; manual sessions
+still autosave. g:PV_session_interval is the save interval in milliseconds
+(default 30000). Emergency Exit (:cquit) skips the final save.
+
+Sessions save layout/file references, not unsaved text. Autosave does not write
+edited files. Modified buffers block opening/closing another session. Advanced
+Save retains relative paths and local/global option capture during autosave.
+Session files are executable Vim scripts: load sessions you created or trust.
+Reopen Closed Tab restores its own per-process snapshot, including windows/cwd.
 
 After a crash, start PlanetVim and use :recover /absolute/path/to/file. Inspect
 recovered content and write it separately first. Never remove swap files owned

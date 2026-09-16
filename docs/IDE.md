@@ -69,8 +69,14 @@ A global `:cd` changes the active root for the entire instance. New Project
 adopts its generated directory for the whole instance too; create a new GVim
 window first when keeping the current project open.
 
-The Sessions menu uses Vim's `:mksession` and `:source` through the session helpers
-and Startify. With the default `sessionoptions` (`curdir` and `tabpages` included),
+Plain GVim launches from a project directory automatically resume its last
+session and save every 30 seconds and on normal exit. Sessions → Save As… chooses
+a named file to use for future autosaves and launches from that directory.
+The startup screen lists recent sessions; `$HOME` launches stay unmanaged until
+you explicitly save or open one. See [session management](GUIDE.md#sessions-recovery-and-environment).
+
+The Sessions menu uses Vim's `:mksession` and `:source`. With the default
+`sessionoptions` (`curdir` and `tabpages` included),
 a session restores the global project directory, tabs, splits, files and editing
 positions. Tab/window-local navigation directories are preserved independently.
 Native `:mkview` and `:loadview` save individual windows' cursor positions, folds

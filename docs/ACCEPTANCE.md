@@ -2,6 +2,36 @@
 
 This record covers PlanetVim **0.1.0-rc.1**, implemented on **2026-09-08** from baseline `f75c805a`. The source is a release candidate. Native Windows hosted CI and external SDK/target acceptance remain release gates; checked-in automation is not evidence that those jobs ran.
 
+## Automatic folder sessions — 2026-09-16
+
+Plain GVim launches resume the last native session associated with their startup
+directory. New sessions save every 30 seconds and on normal exit under
+`~/.local/share/planetvim/.vim/sessions`; Save As selects a custom autosave file.
+Startify shows recent sessions from both locations. Home-directory launches
+remain unmanaged until an explicit save/open, and file arguments retain their
+requested startup layout. The runtime and private history use Vim9; session
+contents use the installed Vim's native `:mksession` format.
+
+Linux validation:
+
+- **90/90 GUI test files passed on GVim 9.2.1011, zero skips.** Final focused
+  engine checks also cover the subsequent Close Everything save-order fix and
+  first-save menu refresh.
+- **8/8 final focused GUI files passed on minimum GVim 9.1.0016, zero skips:**
+  automatic sessions, real process startup, tab/session recovery, project
+  sessions, navigation, all first-party Vim9 compilation, menu styles and tips.
+- Separate GVim processes verify first-save/reopen, split/cursor restore,
+  custom file persistence across launches, HOME exclusion, recent-session
+  selection, explicit file and `-S` precedence, timer saves and emergency exit.
+  Unit checks include duplicate folder names, symlinks, quoted paths, failed
+  writes/loads, modified-buffer protection and retained advanced-save policies.
+- **108 Python tests ran: 107 passed, one existing skip** for unavailable
+  SFML/OpenGL development dependencies. The **25 installer tests** also passed
+  after adding explicit session-file preservation coverage.
+- The actual HOME startup screen was inspected on a private Xvfb display:
+  automatic project paths and custom session names appear under Recent Sessions.
+  All test state used temporary directories; third-party sources are unchanged.
+
 ## TextProp and Bookmarks menus — 2026-09-16
 
 Highlights → TextProp now supports manual character/line/selection highlights,
