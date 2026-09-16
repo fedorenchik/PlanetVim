@@ -7,7 +7,7 @@ export def Ask(prompt: string, default: string = '', completion: string = ''): a
       value = inputdialog(prompt, default, "\x1b")
       return value ==# "\x1b" ? v:null : value
     endif
-    return input(prompt, default, completion)
+    return empty(completion) ? input(prompt, default) : input(prompt, default, completion)
   catch /^Vim:Interrupt$/
     return v:null
   finally
