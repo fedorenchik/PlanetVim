@@ -110,6 +110,23 @@ Command-line mode does not display menu tips (see |:tmenu|).
 Undo/Redo traverse the undo tree; Earlier/Later Change (g-/g+) follow the
 chronological change history. These can differ after editing an undone buffer.
 
+Bookmarks manages native A-Z file marks: Set / Replace (m{A-Z}), Add Next Free,
+Choose Exact Position (`{A-Z}), Choose Line ('{A-Z}), Open LocList, Delete and
+Delete All (:delmarks A-Z). The marks work across files and use native viminfo
+persistence; lowercase and numbered marks are preserved by Delete All.
+See |mark-motions| and |viminfo-file-marks|.
+
+Highlights -> TextProp creates manual character, line or Visual/Select-region
+highlights, including blocks. Add to Selection selects the current word in
+Normal mode. Virtual text can appear inline, after, right-aligned, above or
+below a line. Types are buffer-local; create one with a highlight group, change
+its highlight, or delete it together with its properties. List, navigation,
+removal and clearing affect manual properties. Inspect All Properties / Types
+also show properties created by plugins. Manual clearing preserves LSP display.
+Properties move with text edits but disappear when the buffer is unloaded;
+they are not saved in files or sessions. Partial tabs/wide characters in a block
+are highlighted whole. See |text-properties| and |text-prop-functions|.
+
 Find Menu Action searches the actual menu tree, including hidden groups. Type
 words to filter, arrows to choose, Enter to run, F1 for help, or Esc to cancel.
 The action runs in the original editing window with its insertion point or

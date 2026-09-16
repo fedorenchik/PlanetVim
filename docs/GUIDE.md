@@ -300,6 +300,32 @@ Registers → Guided Macros prompts for a register, records, stops, previews and
 replays it. Apply to Selected Lines shows the register contents, repeat count
 and line range before running. Original register and macro shortcuts remain.
 
+Bookmarks manages Vim's uppercase **A–Z file marks**. Set / Replace remembers
+the cursor position (`mA` through `mZ`); Add Next Free chooses an unused letter
+and leaves existing bookmarks alone when all 26 slots are occupied. Choose Exact
+Position jumps to the saved column (`` `A ``); Choose Line jumps to the first
+nonblank character (`'A`). Open LocList shows bookmarks across files, including
+files that are not open. Delete removes a chosen bookmark; Delete All runs
+`:delmarks A-Z`, preserving lowercase and numbered marks. Vim's normal viminfo
+file-mark settings control persistence. The Marks menu remains available for
+local marks and the existing signature-plugin actions.
+
+Highlights → TextProp adds manual highlights at the cursor, over a line or over
+selected characters, lines or a block. In Normal mode, Add to Selection uses the
+current word. Create a named buffer-local type and choose its highlight group,
+then reuse it for highlights or virtual text: inline, after, right-aligned, above
+or below a line. Types → Change Highlight updates existing annotations of that
+type. List, Next/Previous and Remove operate on manual properties; Clear Manual
+Properties leaves plugin properties, including LSP displays, intact. Inspect
+All Properties and Types → Inspect All include plugin-created properties/types.
+Deleting a manual type also removes its properties.
+
+Text properties follow native `prop_add()`/`prop_add_list()` behavior: positions
+move with edits, but the annotations are not file contents and disappear when
+the buffer is unloaded. They are not saved in sessions. Block highlights use
+whole characters if a selection cuts through a tab or wide character. These
+menus use the native `prop_*()` APIs; Help opens Vim's text-properties reference.
+
 Diff/Patch offers source/target selection when more than two diff buffers are
 open, transfers for selected lines, refresh and stop controls. Rendering choices
 preserve unrelated settings: choose whitespace policy, algorithm, context,

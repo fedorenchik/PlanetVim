@@ -2,6 +2,10 @@
 
 ## Unreleased — Linux GVim menus, Vim9 runtime and plugin refresh
 
+- Complete Highlights → TextProp with manual highlights, virtual text, property
+  type management, inspection, navigation and removal. Complete Bookmarks with
+  native A–Z file-mark creation, cross-file jumps, listing and deletion.
+  Fix text-input prompts without completion when command-line dialogs are used.
 - Use one active project per GVim instance, with native global-directory/session
   identity and shared build/run/test state. Remove project switching on tab and
   buffer entry, retain fixed language-server registrations, and preserve native

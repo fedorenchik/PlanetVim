@@ -2,6 +2,36 @@
 
 This record covers PlanetVim **0.1.0-rc.1**, implemented on **2026-09-08** from baseline `f75c805a`. The source is a release candidate. Native Windows hosted CI and external SDK/target acceptance remain release gates; checked-in automation is not evidence that those jobs ran.
 
+## TextProp and Bookmarks menus — 2026-09-16
+
+Highlights → TextProp now supports manual character/line/selection highlights,
+all five virtual-text placements, buffer-local type creation/highlight changes,
+inspection, navigation, removal and clearing. Manual operations preserve
+plugin-owned properties. Bookmarks uses native A–Z file marks for set/replace,
+next-free allocation, exact/linewise cross-file jumps, location-list display and
+deletion, retaining native viminfo persistence. Menu tips and hints follow the
+existing teaching conventions. The shared prompt helper also handles an empty
+completion argument without Vim's `E180` error.
+
+Linux validation on **GVim 9.2.1011** and minimum **GVim 9.1.0016**:
+
+- **11 focused GUI test files passed on each version, zero skips**, across the
+  ten-file menu/compilation run and final focused reruns for the new prompt
+  regression test and updated property/bookmark fixtures. These cover menu
+  teaching, styles, action search, cache, menu repairs and first-party Vim9
+  compilation; the entire distribution suite was not rerun for this change.
+- Property checks cover Unicode, reversed/multiline/exclusive/block selections,
+  tabs, short and empty lines, annotation IDs across Vim versions, identical
+  virtual annotations moving with edits, cancellation and separation from
+  plugin-owned properties. Bookmark checks cover files with spaces/Unicode,
+  viminfo reload, unopened files, a full A–Z allocation, cancellation and
+  preservation of lowercase marks.
+- Real GUI menu interaction on a private Xvfb display passed on both versions:
+  Add at Cursor, Add to Selection in Visual mode, and Bookmarks → Set / Replace,
+  including their type-selection and text-input prompts.
+- **Four static menu-contract tests passed**; **121 package inventory records
+  match**. Third-party sources remain unchanged. `git diff --check` passes.
+
 ## One project per GVim instance — 2026-09-16
 
 The active project follows Vim's global working directory, shared by all tabs.
