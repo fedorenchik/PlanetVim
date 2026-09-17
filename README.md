@@ -36,7 +36,13 @@ loader at `~/.vimrc`. An existing startup file or symlink is backed up first;
 undoes the most recent operation. Use `PREFIX="/your/private/PlanetVim"` with each
 command for a custom distribution location. Do not use your home itself as PREFIX.
 
-The equivalent Python command is `python3 scripts/install.py install`.
+On Linux, `make install` also builds an optional richer native GTK tab menu when
+a C compiler, `pkg-config` and GTK3 development headers are available. Use
+`NATIVE_TABS=1` to require it or `NATIVE_TABS=0` to omit it. See the
+[native tab-menu guide](docs/NATIVE_TABS.md).
+
+The equivalent Python command is `python3 scripts/install.py install`; it
+includes an already built native helper without compiling it.
 On Windows use `py -3 scripts/install.py install`; the loader is
 installed at `$HOME/_vimrc` (normally your user profile), or an existing `.vimrc`.
 An already managed PlanetVim installation is updated without replacing its

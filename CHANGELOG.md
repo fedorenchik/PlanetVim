@@ -2,6 +2,9 @@
 
 ## Unreleased — Linux GVim menus, Vim9 runtime and plugin refresh
 
+- Add an optional Linux GTK3 helper for richer native tab-label context menus.
+  Keep persistent tab identity across reordering, preserve edits and closed-tab
+  recovery, and support mode-aware Vim9 actions and managed helper installation.
 - Add context-sensitive native right-click menus for files, selections, language
   servers, file trees, help, diagnostics, diffs, terminals and the welcome screen.
   Preserve clicked-window/selection semantics, spelling suggestions and mode-

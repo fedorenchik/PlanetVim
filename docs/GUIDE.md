@@ -43,7 +43,13 @@ The menu adapts to the buffer and editing mode:
 
 Hints and bottom tips teach the keys and commands for the current mode. The
 context builder loads on the first right-click and does not start tools merely
-by opening the menu. The native GTK tab-label menu remains Vim's built-in menu.
+by opening the menu.
+
+With the optional Linux GTK3 helper, right-click a native tab label for close,
+move, duplicate, recovery and layout actions, plus file actions for that tab.
+Copying its path leaves the active tab unchanged. `make install` builds the
+helper when its development prerequisites exist; `:PlanetNativeTabs off`
+restores Vim's stock tab menu. See [native tab menus](NATIVE_TABS.md).
 
 ## Home startup and recovery
 

@@ -6,8 +6,9 @@ This record covers PlanetVim **0.1.0-rc.1**, implemented on **2026-09-08** from 
 
 The native editor popup adapts to selections, editing mode, writable state,
 filetype, language-server capabilities and special buffers. The builder is
-autoloaded on use; GTK tab labels retain their native menu. Third-party plugin
-sources are unchanged.
+autoloaded on use. At this stage GTK tab labels retained the stock menu; the
+subsequent helper is recorded under Native GTK tab menus below. Third-party
+plugin sources are unchanged.
 
 Linux validation:
 
@@ -449,3 +450,34 @@ These focused checks extend the earlier full-suite record; a new full native
 Windows GUI acceptance run is still required.
 
 Before a public release, require successful hosted minimum/current Linux and native Windows jobs, a native Windows GUI acceptance run, resolution of the 22 upstream evidence items in [LICENSE_REVIEW.md](LICENSE_REVIEW.md), and live acceptance for any external SDK/target workflow advertised as fully validated. Keep those limitations visible in release notes. No public tag, push, or release publication is claimed by this local record.
+
+## Native GTK tab menus — 2026-09-17
+
+The optional Linux helper (runtime commit `a9ec89fa5`) was exercised with GTK3
+GVim **9.2.1011** and the current minimum **9.1.0016**, using private Xvfb
+displays. Real mouse acceptance
+covers inactive-tab targeting, native drag/reorder identity, actual GTK menu
+selection, Insert/Visual/Select/terminal path copying, command-line fallback,
+on/off/reconnect, and lazy loading of the menu builder. Vim fixtures cover
+reordered/stale actions, shared-buffer duplication, close cancellation, recovery,
+relative moves on both Vim versions, and missing/incompatible helper fallback.
+Installer fixtures cover ownership, update, opt-out, uninstall and symlink
+rejection. The C build passes `-Wall -Wextra -Werror` and retains ELF `NODELETE`.
+
+The full current-GVim regression suite passed **89/92 files**, with three debugpy
+fixtures explicitly skipped because the adapter was unavailable. The Python
+suite completed **112 tests with two skips**: an unavailable optional template
+dependency and the separately run opt-in native mouse test. Focused minimum-Vim
+menu, Vim9 compilation, help, session and editor-popup checks passed. These
+results extend the historical records above; they do not claim a new full
+minimum-version or Windows acceptance run. Native Wayland, HiDPI and overflow
+tab layouts still need desktop acceptance.
+
+An alternating helper-on/off benchmark used five warm samples each after one
+excluded warmup per setting, a shared menu-hint cache, fresh GVim processes and
+private Xvfb. Median first-screen time was **1.388 seconds enabled** versus
+**1.386 seconds disabled**, within sample variation (enabled 1.361–1.456 seconds;
+disabled 1.365–1.427 seconds). This run does not demonstrate the earlier
+1.0-second startup target. The local raw samples are in
+`/tmp/planetvim-native-tabs/startup-comparison.json`; the measurement uses
+`scripts/benchmark.py` with only `g:PV_native_tabs` varied.

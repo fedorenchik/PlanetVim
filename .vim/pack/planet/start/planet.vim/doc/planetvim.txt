@@ -122,7 +122,7 @@ and terminal buffers have specialized actions. List-history actions operate on
 the clicked list. Terminal hiding leaves the job running; stopping asks first.
 Shift-right-click passes the click through to the terminal application.
 The builder loads only when needed, with no tool launches just to show a menu.
-Native GTK tab labels retain their built-in menu; see |gui-tabline|.
+Native GTK tab labels can use the optional Linux helper; see |planetvim-native-tabs|.
 
 Undo/Redo traverse the undo tree; Earlier/Later Change (g-/g+) follow the
 chronological change history. These can differ after editing an undone buffer.
@@ -165,6 +165,27 @@ Optional local image previews require GTK GVim image support, Python and Pillow.
 The decoder runs only on request with bounded input, pixels and memory; closing
 the preview cancels pending decoding. Advanced Display contains optional newer
 popup/status-line controls. Status-line changes are window-local and reversible.
+
+Native tab menus                                        *planetvim-native-tabs*
+The optional GTK3 helper adds close-other/left/right, move, duplicate, layout
+save/open and closed-tab recovery actions to native tab labels. File tabs add
+save/save-as, copy paths, reveal in Fern and open a terminal here. Right-click
+does not activate the tab; path copying keeps focus and mode. Close actions
+retain Vim's modified-buffer protections and stop the batch on cancellation.
+
+Build with `make native-tabs`, or let `make install` build it when a C compiler,
+pkg-config and GTK3 development headers are installed. NATIVE_TABS=1 requires
+the helper; NATIVE_TABS=0 omits it. Restart GVim after installing/updating.
+    :PlanetNativeTabs on
+    :PlanetNativeTabs off
+    :PlanetNativeTabs status
+Set g:PV_native_tabs = false in the private Vim9 configuration to disable it.
+g:PV_native_tabs_library can select an absolute library path. :PlanetDoctor
+reports setup status. Missing helpers keep Vim's native menu (|gui-tabline|).
+Custom guitablabel expressions work; a custom guitabtooltip uses the stock
+menu, since PlanetVim's tooltip callback associates stable IDs with GTK tabs.
+Command-line input, completion/popups and command windows retain stock behavior.
+The maintained guide is docs/NATIVE_TABS.md in the distribution.
 
 ==============================================================================
 PROJECTS, BUILD, RUN, TEST                                  *planetvim-projects*

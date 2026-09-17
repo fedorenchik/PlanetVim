@@ -30,19 +30,18 @@ remain deferred; this phase changes first-party integration only.
   and keep frequent tab switching inexpensive. The current model is one project
   per GVim instance, using native sessions, views and local vimrc support.
 
-## Future idea — native tab context menu (deferred)
+## Native GTK tab context menu
 
-- [ ] Add a richer right-click menu on native GTK tab labels, with actions such
+- [x] Add a richer right-click menu on native GTK tab labels, with actions such
   as Close Others, Close Tabs to the Left/Right, Move and Reopen Closed Tab.
   Actions must target the clicked tab and retain modified-buffer protection.
   The owner chose to keep native GTK tabs on 2026-09-17; do not replace them
   with a Vim-rendered tab bar for this feature. Vim currently hardcodes the
   native menu to Close Tab, New Tab and Open Tab in
   [gui_gtk_x11.c](https://github.com/vim/vim/blob/master/src/gui_gtk_x11.c).
-  The [native-helper experiment](experiments/native-tabs/README.md) demonstrates
-  interception on Linux GTK3 without changing the GVim executable. Full
-  integration remains deferred pending stable clicked-tab identity, input-mode
-  coverage and packaging; an upstream customization hook is another route.
+  Implemented through an optional Linux GTK3 helper with persistent clicked-tab
+  IDs, compiled Vim9 actions, mode guards and managed installation. See the
+  [native tab-menu guide](docs/NATIVE_TABS.md) for setup and acceptance limits.
 
 ## Agreed platform and dependency policy
 
