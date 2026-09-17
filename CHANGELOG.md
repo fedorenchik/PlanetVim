@@ -2,6 +2,10 @@
 
 ## Unreleased — Linux GVim menus, Vim9 runtime and plugin refresh
 
+- Add context-sensitive native right-click menus for files, selections, language
+  servers, file trees, help, diagnostics, diffs, terminals and the welcome screen.
+  Preserve clicked-window/selection semantics, spelling suggestions and mode-
+  appropriate learning hints; load the builder only when the menu is used.
 - Automatically restore folder sessions and save them every 30 seconds and on
   normal exit. Save As selects a persistent custom file; the welcome screen
   lists recent sessions. Home-directory launches require explicit session use.

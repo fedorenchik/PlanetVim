@@ -2,6 +2,32 @@
 
 This record covers PlanetVim **0.1.0-rc.1**, implemented on **2026-09-08** from baseline `f75c805a`. The source is a release candidate. Native Windows hosted CI and external SDK/target acceptance remain release gates; checked-in automation is not evidence that those jobs ran.
 
+## Contextual right-click menus — 2026-09-17
+
+The native editor popup adapts to selections, editing mode, writable state,
+filetype, language-server capabilities and special buffers. The builder is
+autoloaded on use; GTK tab labels retain their native menu. Third-party plugin
+sources are unchanged.
+
+Linux validation:
+
+- **91/91 GUI test files passed on GVim 9.2.1011, zero skips.** The final
+  terminal mouse handling and teaching-hint changes also passed the seven-file
+  focused suite on both the host and minimum **GVim 9.1.0016**.
+- New checks cover mode/selection/view preservation, clipboard behavior,
+  read-only buffers, independent location-list history, links/diffs, hidden
+  terminal jobs, lazy loading and mode-specific hints. Existing plugin fixtures
+  now exercise file-tree reveal/copy and actual LSP navigation and formatting
+  through the popup, including selection formatting and absent capabilities.
+- Actual GTK mouse interaction verified inactive-split targeting, Visual and
+  Select copying, Insert pasting, terminal input pasting, terminal-to-editor
+  targeting, hiding jobs with one or multiple windows, and cancellation of the
+  native Stop Job confirmation. All GUI state and jobs used temporary fixtures.
+- A simple file popup took **32 ms** on first use and **28 ms median** across
+  25 subsequent rebuilds on this host. This measures menu construction without
+  spelling suggestions, not application startup or display latency.
+- The four static menu-contract tests and `git diff --check` passed.
+
 ## Automatic folder sessions — 2026-09-16
 
 Plain GVim launches resume the last native session associated with their startup

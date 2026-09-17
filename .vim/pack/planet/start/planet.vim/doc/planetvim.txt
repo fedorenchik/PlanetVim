@@ -107,6 +107,23 @@ colon introduces its command/function, and a leading double quote introduces
 an explanation of a key-based action. Tips use Normal mode when an item also
 has Insert/Visual variants; right-click tips follow the current editing mode.
 Command-line mode does not display menu tips (see |:tmenu|).
+
+Right-click menus                                            *planetvim-popup*
+Right-click acts on the clicked window and text. Clicking inside a selection
+preserves it; clicking outside ends it (|'mousemodel'|, popup_setpos).
+The menu adapts to Normal/Insert/Visual/Select mode, filetype, read-only state,
+spelling errors, links and diff windows. Selections provide clipboard actions,
+literal search, export, indentation, comments and transformations. File actions
+include copying paths, revealing the file in Fern, opening a terminal in its
+directory, saving and splitting windows.
+Initialized language servers add their supported navigation, hover, refactoring
+and formatting actions. Fern, help, quickfix/location lists, the welcome screen
+and terminal buffers have specialized actions. List-history actions operate on
+the clicked list. Terminal hiding leaves the job running; stopping asks first.
+Shift-right-click passes the click through to the terminal application.
+The builder loads only when needed, with no tool launches just to show a menu.
+Native GTK tab labels retain their built-in menu; see |gui-tabline|.
+
 Undo/Redo traverse the undo tree; Earlier/Later Change (g-/g+) follow the
 chronological change history. These can differ after editing an undone buffer.
 

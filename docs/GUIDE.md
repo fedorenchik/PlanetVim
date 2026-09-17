@@ -19,6 +19,32 @@ selected action's help and mapping, or Esc to cancel.
 The picker keeps your insertion point or current selection and opens a hidden
 group when needed. The existing Clap providers and command picker remain available.
 
+## Right-click menus
+
+Right-click in the editor to act on the clicked text or window. Clicking inside
+a selection keeps that selection; clicking outside it selects the new position.
+The menu adapts to the buffer and editing mode:
+
+- Ordinary files offer editing, word search, comments when the filetype supplies
+  a comment format, file paths, file-tree reveal, a terminal in the file's
+  directory, and window splits. Links, file references, spelling errors and diff
+  windows add their relevant actions.
+- Selections offer copy/cut/paste, literal search, export, indentation, comments
+  and text transformations. Read-only buffers retain copying and navigation.
+- Running language servers add supported definition/reference navigation,
+  hover, rename, code actions and document or selection formatting.
+- The file tree offers opening, preview, expansion and file operations. Help
+  offers tag navigation; quickfix and location lists offer entry navigation,
+  independent list histories and filtering. The welcome screen offers opening
+  entries, files and sessions.
+- Terminals offer paste, output browsing/copying, hiding and confirmed job
+  stopping. Shift-right-click passes the click through to the terminal
+  application. Command-line mode offers copying, pasting and clearing input.
+
+Hints and bottom tips teach the keys and commands for the current mode. The
+context builder loads on the first right-click and does not start tools merely
+by opening the menu. The native GTK tab-label menu remains Vim's built-in menu.
+
 ## Home startup and recovery
 
 `make install` (or `python3 scripts/install.py install`)
