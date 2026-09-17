@@ -14,6 +14,7 @@ static GtkGesture *gesture;
 static int listener = -1, client = -1;
 static char socket_path[sizeof(((struct sockaddr_un *)0)->sun_path)];
 static unsigned serial;
+static int pressed_tab;
 static gboolean enabled;
 static gint64 event_time;
 #define TAB_ID "planetvim-tab-id"
@@ -23,6 +24,7 @@ int pv_tabs_abi(int unused) { (void)unused; return 1; }
 int pv_tabs_enable(int value)
 {
     enabled = value != 0;
+    if (!enabled) pressed_tab = 0;
     return 1;
 }
 
@@ -75,11 +77,29 @@ static int clicked_tab(double x, double y)
 static void pressed(GtkGestureMultiPress *source, int n, double x, double y, gpointer unused)
 {
     (void)n; (void)unused;
+    pressed_tab = 0;
     if (!enabled || !book || listener < 0 || gtk_grab_get_current()) goto fallback;
     int target = clicked_tab(x, y);
     if (target == 0) goto fallback; /* Let Vim handle blank space and tab padding. */
     if (client < 0) client = accept4(listener, NULL, NULL, SOCK_NONBLOCK | SOCK_CLOEXEC);
     if (client < 0) goto fallback;
+    pressed_tab = target;
+    gtk_gesture_set_state(GTK_GESTURE(source), GTK_EVENT_SEQUENCE_CLAIMED);
+    return;
+fallback:
+    /* A recognized capture gesture otherwise stops legacy button handlers. */
+    gtk_gesture_set_state(GTK_GESTURE(source), GTK_EVENT_SEQUENCE_DENIED);
+}
+
+static void released(GtkGestureMultiPress *source, int n, double x, double y, gpointer unused)
+{
+    (void)source; (void)n; (void)x; (void)y; (void)unused;
+    int target = pressed_tab;
+    pressed_tab = 0;
+    if (!target || !enabled || !book || client < 0) return;
+    /* :popup! uses a synthetic button-0 event. Opening it before button 3 is
+     * released makes GTK dismiss it on that release. Notify Vim only now,
+     * retaining the tab identity captured on press, including after a drag. */
     /* Only numbers cross this channel. Never call Vim from a GTK callback. */
     char message[80];
     /* libcallnr takes an int; keep the serial in its positive range. */
@@ -87,20 +107,17 @@ static void pressed(GtkGestureMultiPress *source, int n, double x, double y, gpo
     int size = snprintf(message, sizeof message, "%u %d\n", serial, target);
     if (send(client, message, size, MSG_NOSIGNAL | MSG_DONTWAIT) == size) {
         event_time = g_get_monotonic_time();
-        gtk_gesture_set_state(GTK_GESTURE(source), GTK_EVENT_SEQUENCE_CLAIMED);
         return;
     }
     close(client);
     client = -1;
-fallback:
-    /* A recognized capture gesture otherwise stops legacy button handlers. */
-    gtk_gesture_set_state(GTK_GESTURE(source), GTK_EVENT_SEQUENCE_DENIED);
 }
 
 int pv_tabs_stop(int unused)
 {
     (void)unused;
     enabled = FALSE;
+    pressed_tab = 0;
     event_time = 0;
     g_clear_object(&gesture);
     if (book) {
@@ -142,5 +159,6 @@ int pv_tabs_start(const char *path)
     /* Capture runs before Vim's ordinary notebook button-press handler. */
     gtk_event_controller_set_propagation_phase(GTK_EVENT_CONTROLLER(gesture), GTK_PHASE_CAPTURE);
     g_signal_connect(gesture, "pressed", G_CALLBACK(pressed), NULL);
+    g_signal_connect(gesture, "released", G_CALLBACK(released), NULL);
     return 1;
 }

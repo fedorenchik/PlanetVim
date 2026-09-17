@@ -97,7 +97,9 @@ class NativeTabMouseTests(unittest.TestCase):
     def click(self, x, button=3):
         if button == 3:
             self.ex("if !empty(menu_info(']PVTab')) | execute (get(menu_info(']PVTab'), 'modes', '') ==# 'tl' ? 'tlunmenu' : 'aunmenu') .. ' ]PVTab' | endif")
-        subprocess.run(["xdotool", "mousemove", str(x), "44", "click", str(button)], env=self.env, check=True)
+        subprocess.run(["xdotool", "mousemove", str(x), "44", "mousedown", str(button)], env=self.env, check=True)
+        time.sleep(.1)
+        subprocess.run(["xdotool", "mouseup", str(button)], env=self.env, check=True)
         time.sleep(.2)
 
     def menu(self, label, mode="n"):
@@ -109,6 +111,25 @@ class NativeTabMouseTests(unittest.TestCase):
             if time.monotonic() >= deadline:
                 self.fail("Missing menu " + label + ": " + self.expr("string([mode(1), g:PV_native_tabs_status, v:errmsg, execute('messages'), map(getscriptinfo({'sid': filter(getscriptinfo(), {_,s -> s.name =~ 'autoload/planet/native_tabs.vim$'})[0].sid}), {_,s -> get(s.variables, 'armed', -1)})])"))
             time.sleep(.05)
+
+    def test_right_click_release_keeps_menu_open(self):
+        # :popup! has no originating mouse button. Opening it on press lets
+        # the subsequent release dismiss it; an instantaneous click misses this.
+        for delay, drag in [(0, False), (.05, False), (.2, False), (.8, False), (.2, True)]:
+            with self.subTest(hold_seconds=delay, drag=drag):
+                self.ex("call setreg('+', 'not copied')")
+                subprocess.run(["xdotool", "mousemove", "180", "44", "mousedown", "3"],
+                               env=self.env, check=True)
+                time.sleep(delay)
+                if drag:
+                    subprocess.run(["xdotool", "mousemove", "300", "44"], env=self.env, check=True)
+                subprocess.run(["xdotool", "mouseup", "3"], env=self.env, check=True)
+                time.sleep(.4)
+                # Actual GTK selection proves the menu remains visible. Its
+                # Vim menu_info() definition also exists after it has closed.
+                self.key("End", "Up", "Up", "Up", "Return")
+                self.assertEqual(str(self.directory / "two.txt"), self.expr("getreg('+')"))
+                self.assertEqual("1", self.expr("tabpagenr()"))
 
     def test_native_identity_modes_and_lifecycle(self):
         self.assertEqual("0", self.expr("exists('*planet#tab_menu#Show')"))
