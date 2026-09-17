@@ -13,7 +13,6 @@ vim9script noclear
 
 #TODO: add setting 'equalprg' for formatting wih == (clang-format, etc.)
 #TODO: Choise between text, emoji, symbols, nerdicons menus
-#TODO: Customize tabline-menu when vim bug #7991 is fixed
 #TODO: Add prompt buffer to exec viml commands
 #TODO: menus:
 #TODO:    C++

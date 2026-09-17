@@ -391,6 +391,10 @@ class Installer:
             source = self.source / relative
             if regular_or_absent(source):
                 incoming[relative] = source
+        native = self.source / "build/native/planetvim-tabmenu.so"
+        if self.platform.startswith("linux") and os.environ.get("PLANETVIM_NATIVE_TABS") != "0":
+            if regular_or_absent(native):
+                incoming["lib/planetvim-tabmenu.so"] = native
         runtime = self.source / ".vim"
         if runtime.is_symlink() or not runtime.is_dir():
             raise InstallError("Distribution source is missing an ordinary .vim directory.")

@@ -1,6 +1,9 @@
 vim9script
 
 def! g:GuiTabTooltip(): string
+  if get(g:, 'PV_native_tabs_active', false)
+    planet#native_tabs#Tag(v:lnum)
+  endif
   var tooltip = '[' .. v:lnum .. '/' .. tabpagenr('$') .. ']'
   tooltip ..= '[#:' .. tabpagewinnr(v:lnum, '$') .. ']'
   if haslocaldir(-1) == 2

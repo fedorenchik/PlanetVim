@@ -207,6 +207,8 @@ export def Check(): any
       add(items, {name: kind .. ' directory', ok: 0, help: v:exception})
     endtry
   endfor
+  add(items, {name: 'Native GTK tab menu', ok: get(g:, 'PV_native_tabs_active', false), optional: 1,
+    help: get(g:, 'PV_native_tabs_status', 'not initialized') .. '. Build with make native-tabs, then make install. :PlanetNativeTabs status; g:PV_native_tabs = false disables it.'})
   var python: any = executable('python3') ? ['python3'] : has('win32') && executable('py') ? ['py', '-3'] : has('win32') ? ['python'] : ['python3']
   LocalConfigured(items, 'Generation Python', 'PV_python', python, 'Python 3 runs the bundled generators.')
   LocalConfigured(items, 'C++ language server', 'PV_clangd_argv', ['clangd'], 'Generate compile_commands.json for project include paths.')

@@ -207,6 +207,10 @@ export def Update(): number
     execute planet#menu_help#Entry('an 830.10  ', '🗂️&t.&Close<Tab>:tabclose', '<Cmd>call planet#tab#Close()<CR>')
     execute planet#menu_help#Entry('an 830.10  ', '🗂️&t.Reopen\ Closed\ Tab', '<Cmd>call planet#tab#Reopen()<CR>')
     execute planet#menu_help#Entry('an 830.10  ', '🗂️&t.Close\ &Other\ Tabs<Tab>:tabonly', '<Cmd>call planet#tab#CloseOthers()<CR>')
+    execute planet#menu_help#Entry('an 830.20  ', '🗂️&t.--native--', '<Nop>')
+    execute planet#menu_help#Entry('an 830.20  ', '🗂️&t.Enable\ Rich\ Tab\ Menu', '<Cmd>PlanetNativeTabs on<CR>')
+    execute planet#menu_help#Entry('an 830.20  ', '🗂️&t.Use\ Stock\ Tab\ Menu', '<Cmd>PlanetNativeTabs off<CR>')
+    execute planet#menu_help#Entry('an 830.20  ', '🗂️&t.Tab\ Menu\ Status', '<Cmd>PlanetNativeTabs status<CR>')
 
     # Sessions
     execute planet#menu_help#Entry('an 840.10  ', '📚&s.Sessions', '<Nop>')

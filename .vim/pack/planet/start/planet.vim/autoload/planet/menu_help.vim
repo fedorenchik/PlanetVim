@@ -117,13 +117,13 @@ enddef
 
 export def Begin()
   # Root menus will be rebuilt; keep independent context and window-bar tips.
-  filter(registry, (_, item) => item.path =~# '^\%(PopUp\|WinBar\)\.')
+  filter(registry, (_, item) => item.path =~# '^\%(PopUp\|WinBar\|]PVTab\)\.')
   Reset()
 enddef
 
-export def ForgetPopup()
+export def ForgetPopup(root: string = 'PopUp')
   # Context entries (including spelling suggestions) are replaced on each click.
-  filter(registry, (_, item) => item.path !~# '^PopUp\.')
+  filter(registry, (_, item) => stridx(item.path, root .. '.') != 0)
 enddef
 
 export def Reset()
@@ -341,7 +341,7 @@ export def Entry(head: string, original: string, rhs: string): string
     return spec .. PopupRefresh(original)
   endif
   var cacheable = !empty(cache_key) && rhs !~? '<SID>\|<SNR>'
-      && path !~# '^\%(WinBar\|PopUp\)\.'
+      && path !~# '^\%(WinBar\|PopUp\|]PVTab\)\.'
   var cached: any = cacheable ? get(hint_cache[cache_key], spec, {}) : {}
   var tip: string
   var accelerator: string

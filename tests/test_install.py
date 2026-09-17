@@ -52,6 +52,36 @@ class InstallerTests(unittest.TestCase):
         self.assertFalse(self.prefix.exists())
         self.assertTrue(any(message.startswith("CREATE ") for message in self.messages))
 
+    def test_native_helper_install_update_uninstall(self):
+        helper = self.source / "build/native/planetvim-tabmenu.so"
+        self.write(helper, "native ABI 1")
+        with mock.patch.dict(os.environ, {"PLANETVIM_NATIVE_TABS": "auto"}):
+            self.installer().run("install")
+            installed = self.prefix / "lib/planetvim-tabmenu.so"
+            self.assertEqual(installed.read_text(), "native ABI 1")
+            self.write(helper, "updated native helper")
+            self.installer().run("update")
+            self.assertEqual(installed.read_text(), "updated native helper")
+            self.installer().run("uninstall")
+            self.assertFalse(installed.exists())
+
+    def test_native_helper_opt_out_removes_previous_install(self):
+        self.write(self.source / "build/native/planetvim-tabmenu.so", "optional")
+        with mock.patch.dict(os.environ, {"PLANETVIM_NATIVE_TABS": "auto"}):
+            self.installer().run("install")
+        self.assertTrue((self.prefix / "lib/planetvim-tabmenu.so").exists())
+        with mock.patch.dict(os.environ, {"PLANETVIM_NATIVE_TABS": "0"}):
+            self.installer().run("update")
+        self.assertFalse((self.prefix / "lib/planetvim-tabmenu.so").exists())
+
+    def test_native_helper_symlink_rejected(self):
+        helper = self.source / "build/native/planetvim-tabmenu.so"
+        helper.parent.mkdir(parents=True)
+        helper.symlink_to(self.source / ".vimrc")
+        with mock.patch.dict(os.environ, {"PLANETVIM_NATIVE_TABS": "auto"}):
+            with self.assertRaisesRegex(install.InstallError, "non-regular"):
+                self.installer().run("install")
+
     def test_optional_metadata_and_documentation_exclude_bytecode(self):
         for name in ("LICENSE", "VERSION", "CHANGELOG.md", "README.md", "CONTRIBUTING.md", "docs/guide.md"):
             self.write(self.source / name, "document " + name)

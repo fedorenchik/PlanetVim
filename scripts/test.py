@@ -44,6 +44,7 @@ def virtual_display(executable):
         os.close(read_fd)
         server.terminate()
         server.wait(timeout=10)
+        server.stderr.close()
 
 
 def run(path, executable, gui, display=None, timeout=60):

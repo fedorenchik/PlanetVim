@@ -23,15 +23,31 @@ export def Track(): any
   endif
   script_order = []
   for tab in range(1, tabpagenr('$'))
-    id = gettabvar(tab, 'PV_tab_id', '')
-    if empty(id)
-      script_sequence += 1
-      id = string(script_sequence)
-      settabvar(tab, 'PV_tab_id', id)
-    endif
+    id = planet#tab#Id(tab)
     add(script_order, id)
   endfor
   return 0
+enddef
+
+export def Id(tab: number): string
+  var id = gettabvar(tab, 'PV_tab_id', '')
+  if empty(id)
+    script_sequence += 1
+    id = string(script_sequence)
+    settabvar(tab, 'PV_tab_id', id)
+  endif
+  return id
+enddef
+
+export def Find(id: string): number
+  for tab in gettabinfo()
+    if get(tab.variables, 'PV_tab_id', '') ==# id | return tab.tabnr | endif
+  endfor
+  return 0
+enddef
+
+export def CanReopen(): bool
+  return !empty(script_closed) && filereadable(script_closed)
 enddef
 
 # Save only this tab, without changing the active full-session identity/options.
