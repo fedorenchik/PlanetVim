@@ -14,10 +14,22 @@ func! s:Wait(expression) abort
   call assert_report('Timed out: ' .. a:expression)
   return 0
 endfunc
-execute 'Fern ' .. fnameescape(s:root)
+execute 'edit ' .. fnameescape(s:root .. '/fern-file.txt')
+call planet#popup#Build('n')
+emenu PopUp.File.Reveal\ in\ File\ Tree
 call s:Wait('search("fern-file.txt", "nw") > 0')
 call search('fern-file.txt', 'w')
 let s:fernwin = win_getid()
+call planet#popup#Build('n')
+call assert_false(empty(menu_info('PopUp.Files.New File', 'n')))
+call assert_equal('<Plug>(fern-action-new-file)', maparg(menu_info('PopUp.Files.New File', 'n').accel, 'n'))
+call assert_false(empty(menu_info('PopUp.Files.Paste Files', 'n')))
+call assert_equal({}, menu_info('PopUp.Paste', 'n'), 'file tree must not offer text paste')
+call assert_equal({}, menu_info('PopUp.Undo', 'n'))
+emenu PopUp.Copy\ Path
+call feedkeys('', 'x')
+call assert_equal(s:root .. '/fern-file.txt', getreg('+'))
+call assert_match(':call', execute('tmenu PopUpn.Files.New\ File'))
 call assert_equal(1, planet#fern#Action('preview'))
 call feedkeys('', 'x')
 call s:Wait('!empty(filter(getwininfo(), {_, w -> getwinvar(w.winid, "&previewwindow")}))')

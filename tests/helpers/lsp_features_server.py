@@ -29,6 +29,9 @@ while True:
     result = None
     if method == "initialize":
         result = {"capabilities": {"textDocumentSync": 1,
+                  "definitionProvider": True,
+                  "documentFormattingProvider": {},
+                  "documentRangeFormattingProvider": True,
                   "documentLinkProvider": {},
                   "diagnosticProvider": {"interFileDependencies": False, "workspaceDiagnostics": False}}}
     elif method == "textDocument/diagnostic":
@@ -36,6 +39,10 @@ while True:
             {"range": span, "severity": 2, "message": "pulled fixture warning"}]}
     elif method == "textDocument/documentLink":
         result = [{"range": span, "target": target.as_uri()}]
+    elif method == "textDocument/definition":
+        result = {"uri": target.as_uri(), "range": span}
+    elif method in ("textDocument/formatting", "textDocument/rangeFormatting"):
+        result = [{"range": span, "newText": "LINK"}]
     elif method == "exit":
         sys.exit(0)
     if "id" in message:

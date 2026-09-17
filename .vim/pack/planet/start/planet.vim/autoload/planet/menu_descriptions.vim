@@ -205,6 +205,33 @@ enddef
 
 export def Context(rhs: string, path: string, mode: string): string
   var keys = substitute(rhs, '<[^>]\+>', (m) => toupper(m[0]), 'g')
+  if mode ==# 's' | keys = substitute(keys, '^<C-G>', '', '') | endif
+  if index(['x', 's'], mode) >= 0
+    var selected = {
+      '>gv': 'Indent the selected lines and keep them selected.',
+      '<LT>gv': 'Remove one level of indentation from the selected lines and keep them selected.',
+      '=gv': 'Reindent the selected lines using this filetype\x27s indent rules and keep them selected.',
+      'U': 'Convert letters in the selection to uppercase.',
+      'u': 'Convert letters in the selection to lowercase.',
+      '~': 'Reverse the case of letters in the selection.',
+      'gq': 'Reformat the selected text using the current textwidth and formatting settings.'}
+    if has_key(selected, keys)
+      return substitute(selected[keys], '\\x27', "'", 'g')
+    endif
+  endif
+  var common = {
+    '"+yy': 'Copy the current line into the system clipboard.',
+    '"+dd': 'Cut the current line into the system clipboard.',
+    'ggVG': 'Select every line in this buffer.',
+    '<C-W>F': 'Open the file under the cursor in a split, using its line number if present.',
+    '<CR>': 'Open the entry on the clicked line.',
+    '<C-W><CR>': 'Open the diagnostic on the clicked line in a new split.',
+    '<C-W>N': 'Enter Terminal-Normal mode to browse output and select text for copying.',
+    '<C-W>"+': 'Send the system clipboard to the terminal job as input.',
+    '<C-R><C-P>+': 'Insert the system clipboard literally, without changing indentation.',
+    '<C-U>': 'Remove command-line text from the cursor back to its start.',
+    '<ESC>': 'Cancel the pending operator without modifying text.'}
+  if has_key(common, keys) | return common[keys] | endif
   if mode ==# 't' && keys ==# '<C-W><C-C>'
     return 'Force the job running in this terminal buffer to end.'
   elseif mode ==# 'c' && keys ==# '<C-R>+'
@@ -216,5 +243,5 @@ export def Context(rhs: string, path: string, mode: string): string
   elseif keys ==# '"+x'
     return 'Cut the selected text into the system clipboard register.'
   endif
-  return Describe(substitute(rhs, '\c^<C-O>', '', ''), path)
+  return Describe(substitute(mode ==# 's' ? substitute(rhs, '\c^<C-G>', '', '') : rhs, '\c^<C-O>', '', ''), path)
 enddef

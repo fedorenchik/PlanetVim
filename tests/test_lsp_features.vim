@@ -25,6 +25,31 @@ try
   call s:Wait('lsp#internal#diagnostics#state#_get_diagnostics_count_for_buffer(bufnr()).warning == 1')
   let s:initialize = json_decode(readfile(s:trace)[0])
   call assert_true(has_key(s:initialize.params.capabilities.textDocument, 'diagnostic'))
+  " Popup offers the initialized server's capabilities, including empty options
+  " dictionaries; actions execute through the real client protocol.
+  call planet#popup#Build('n')
+  call assert_false(empty(menu_info('PopUp.Go to Definition', 'n')))
+  call assert_false(empty(menu_info('PopUp.Format Document', 'n')))
+  call assert_equal({}, menu_info('PopUp.Rename Symbol', 'n'))
+  call assert_equal({}, menu_info('PopUp.Code Actions', 'n'))
+  emenu PopUp.Format\ Document
+  call s:Wait('getline(1) ==# "LINK"')
+  emenu PopUp.Go\ to\ Definition
+  call s:Wait('expand("%:p") ==# s:target')
+  execute 'edit ' .. fnameescape(s:source)
+  call planet#popup#Build('v')
+  call assert_false(empty(menu_info('PopUp.Format Selection', 'x')))
+  call assert_equal({}, menu_info('PopUp.Go to Definition', 'x'))
+  call setline(1, 'link')
+  xnoremap <F11> <Cmd>emenu PopUp.Format\ Selection<CR>
+  call feedkeys("gg0v3l\<F11>\<Esc>", 'xt')
+  call s:Wait('getline(1) ==# "LINK"')
+  xunmap <F11>
+  setlocal readonly
+  call planet#popup#Build('n')
+  call assert_equal({}, menu_info('PopUp.Format Document', 'n'))
+  call assert_false(empty(menu_info('PopUp.Go to Definition', 'n')))
+  setlocal noreadonly
   LspDocumentLink
   call s:Wait('!empty(getqflist())')
   call assert_equal(lsp#utils#path_to_uri(s:target), getqflist()[0].text)
@@ -35,6 +60,8 @@ try
   call assert_equal(['linked document'], getline(1, '$'))
   LspStopServer!
   call s:Wait('lsp#get_server_status("planet-features-fixture") ==# "exited"')
+  call planet#popup#Build('n')
+  call assert_equal({}, menu_info('PopUp.Go to Definition', 'n'))
 finally
   call lsp#stop_server('planet-features-fixture')
 endtry

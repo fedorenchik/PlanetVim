@@ -121,6 +121,11 @@ export def Begin()
   Reset()
 enddef
 
+export def ForgetPopup()
+  # Context entries (including spelling suggestions) are replaced on each click.
+  filter(registry, (_, item) => item.path !~# '^PopUp\.')
+enddef
+
 export def Reset()
   reverse_maps = {}
   alternate_maps = {}
@@ -237,7 +242,7 @@ export def Explain(rhs: string, path: string, remap: bool = false): dict<string>
   return {command: command, tip: empty(command) ? '" ' .. Describe(rhs, path) : command}
 enddef
 
-def Accelerator(rhs: string, annotations: list<string>, command: string): string
+def Accelerator(rhs: string, annotations: list<string>, command: string, mode: string = ''): string
   var direct = rhs !~? '<Cmd>\|<Plug>\|<SNR>' && rhs !~# ':' && !empty(rhs)
   if !direct && empty(annotations) && stridx(command, ':call ') == 0 && !has_key(reverse_maps, command)
     return ''
@@ -250,7 +255,8 @@ def Accelerator(rhs: string, annotations: list<string>, command: string): string
       add(keys, key)
     endif
   endfor
-  var primary = direct ? rhs : Shortcut(command)
+  var normal_keys = mode == '' || mode ==# 'n'
+  var primary = direct ? rhs : normal_keys ? Shortcut(command) : ''
   primary = substitute(primary, '\c<Leader>', escape(get(g:, 'mapleader', '\'), '\&'), 'g')
   if primary =~? '<CR>'
     primary = ''
@@ -268,7 +274,7 @@ def Accelerator(rhs: string, annotations: list<string>, command: string): string
     primary = remove(keys, -1)
   endif
   var secondary = empty(keys) ? '' : keys[0]
-  if empty(secondary) && !empty(primary) && !empty(command)
+  if normal_keys && empty(secondary) && !empty(primary) && !empty(command)
     for mapped in [Shortcut(command), get(alternate_maps, command, ''), get(native_shortcuts, command, '')]
       if !empty(mapped) && CanonicalKeys(mapped) !=# CanonicalKeys(primary)
         secondary = mapped
@@ -345,9 +351,10 @@ export def Entry(head: string, original: string, rhs: string): string
     accelerator = cached[1]
     cache_hits += 1
   else
-    var info = Explain(rhs, path, remap)
+    var popup_mode = path =~# '^PopUp\.' ? (name =~# '^tl' ? 't' : name[0]) : ''
+    var info = empty(popup_mode) ? Explain(rhs, path, remap) : PopupInfo(rhs, path, popup_mode, remap)
     tip = info.tip
-    accelerator = Accelerator(rhs, parts[1 :], info.command)
+    accelerator = Accelerator(rhs, parts[1 :], info.command, popup_mode)
     if cacheable && tip !~? '<SNR>'
       hint_cache[cache_key][spec] = [tip, accelerator]
       cache_changed = true
@@ -405,6 +412,16 @@ def PopupRefresh(path: string): string
   return stridx(path, 'PopUp.') == 0 ? "\ncall planet#menu_help#PopupTips(" .. string(path) .. ')' : ''
 enddef
 
+def PopupInfo(rhs: string, path: string, mode: string, remap: bool): dict<string>
+  # u means lowercase in Visual mode and literal text in Insert mode. Only
+  # Normal-mode actions (and Insert's explicit CTRL-O) have native equivalents.
+  var command = index(['n', 'a'], mode) >= 0 ? ResolvedCommand(rhs, remap)
+    : mode ==# 'i' && rhs =~? '^<C-O>' ? ResolvedCommand(strpart(rhs, 5), false)
+    : ExCommand(rhs)
+  return {command: command, tip: empty(command)
+    ? '" ' .. planet#menu_descriptions#Context(rhs, PlainPath(path), mode) : command}
+enddef
+
 export def PopupTips(path: string)
   # GVim displays a separate native PopUp menu for each editing mode. tmenu on
   # PopUp alone does not propagate to those copies, unlike action definitions.
@@ -414,8 +431,7 @@ export def PopupTips(path: string)
     if empty(actual) || empty(get(actual, 'rhs', ''))
       continue
     endif
-    var command = mode ==# 'n' ? ResolvedCommand(actual.rhs, !actual.noremenu) : ExCommand(actual.rhs)
-    var tip = empty(command) ? '" ' .. planet#menu_descriptions#Context(actual.rhs, PlainPath(clone), mode) : command
-    execute 'tmenu ' .. clone .. ' ' .. TipText(tip)
+    var info = PopupInfo(actual.rhs, clone, mode, !actual.noremenu)
+    execute 'tmenu ' .. clone .. ' ' .. TipText(info.tip)
   endfor
 enddef

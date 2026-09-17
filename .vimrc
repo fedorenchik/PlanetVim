@@ -49,11 +49,6 @@ if exists("g:loaded_home_vimrc")
   finish
 endif
 g:loaded_home_vimrc = 1
-var script_state: dict<any> = {}
-var script_additem: any
-var script_fromword: any
-var script_ignoreitem: any
-var script_suglist: any
 runtime plugin/menu_help.vim
 # }}}
 # Basics: {{{
@@ -294,118 +289,27 @@ endif
 command -bar -nargs=? -complete=help HelpCurwin execute planet#help#Curwin(<q-args>)
 # }}}
 # PopUp Menus: {{{
-
-#TODO: <RightMouse>, <C-RightMouse>, <S-RightMouse>, <A-RightMouse> menus
-#TODO: <C-MiddleMouse>, <S-MiddleMouse>, <A-MiddleMouse> menus
-if has("spell")
-  # Spell suggestions in the popup menu.  Note that this will slow down the
-  # appearance of the menu!
-def LocalSpellPopup(): any
-  var curcol: any
-  var w: any
-  var a: any
-  var pri: any
-  var cpo_save: any
-  if has_key(script_state, 'changeitem') && script_state.changeitem != ''
-    LocalSpellDel()
+# Seed the native mode menus without loading the context builder at startup.
+PlanetMenu nnoremenu PopUp.Paste "+gP
+PlanetMenu vnoremenu PopUp.Copy "+y
+PlanetMenu inoremenu PopUp.Close <Cmd>confirm close<CR>
+PlanetMenu cnoremenu PopUp.Copy <Cmd>call setreg("+", getcmdline())<CR>
+PlanetMenu cnoremenu PopUp.Paste <C-r>+
+# Replace the stock spelling hook too when loaded after Vim's default menus.
+augroup SpellPopupMenu
+  autocmd! MenuPopup
+augroup END
+augroup PlanetVimContextMenu
+  autocmd!
+  autocmd MenuPopup * call planet#popup#Build(expand('<amatch>'))
+augroup END
+# Terminal input normally sends mouse clicks to the job or modeless selection.
+if empty(maparg('<RightMouse>', 't'))
+  tnoremap <silent> <RightMouse> <Cmd>call planet#popup#TerminalMouse()<CR>
+  if empty(maparg('<S-RightMouse>', 't'))
+    tnoremap <S-RightMouse> <RightMouse>
   endif
-
-  # Return quickly if spell checking is not enabled.
-  if !&spell || &spelllang == ''
-    return 0
-  endif
-
-  curcol = col('.')
-  [w, a] = spellbadword()
-  if col('.') > curcol	# don't use word after the cursor
-    w = ''
-  endif
-  if w != ''
-    if a == 'caps'
-      script_suglist = [substitute(w, '.*', '\u&', '')]
-    else
-      script_suglist = spellsuggest(w, 10)
-    endif
-    if len(script_suglist) > 0
-      if !exists("g:menutrans_spell_change_ARG_to")
-        g:menutrans_spell_change_ARG_to = 'Change\ "%s"\ to'
-      endif
-      script_state.changeitem = printf(g:menutrans_spell_change_ARG_to, escape(w, ' .'))
-      script_fromword = w
-      pri = 1
-      # set 'cpo' to include the <CR>
-      cpo_save = &cpo
-      set cpo&vim
-      for sug in script_suglist
-        exe 'PlanetMenu anoremenu 1.5.'  ..  pri  ..  ' PopUp.'  ..  script_state.changeitem  ..  '.'  ..  escape(sug, ' .')   ..  ' :call <SID>LocalSpellReplace('  ..  pri  ..  ')<CR>'
-        pri += 1
-      endfor
-
-      if !exists("g:menutrans_spell_add_ARG_to_word_list")
-        g:menutrans_spell_add_ARG_to_word_list = 'Add\ "%s"\ to\ Word\ List'
-      endif
-      script_additem = printf(g:menutrans_spell_add_ARG_to_word_list, escape(w, ' .'))
-      exe 'PlanetMenu anoremenu 1.6 PopUp.'  ..  script_additem  ..  ' :spellgood '  ..  w  ..  '<CR>'
-
-      if !exists("g:menutrans_spell_ignore_ARG")
-        g:menutrans_spell_ignore_ARG = 'Ignore\ "%s"'
-      endif
-      script_ignoreitem = printf(g:menutrans_spell_ignore_ARG, escape(w, ' .'))
-      exe 'PlanetMenu anoremenu 1.7 PopUp.'  ..  script_ignoreitem  ..  ' :spellgood! '  ..  w  ..  '<CR>'
-
-      PlanetMenu anoremenu 1.8 PopUp.-SpellSep- :
-      &cpo = cpo_save
-    endif
-  endif
-  cursor(0, curcol)	# put the cursor back where it was
-  return 0
-enddef
-
-def LocalSpellReplace(n: any): any
-  var l: any
-  l = getline('.')
-  # Move the cursor to the start of the word.
-  spellbadword()
-  setline('.', strpart(l, 0, col('.') - 1)  ..  script_suglist[n - 1]   ..  strpart(l, col('.') + len(script_fromword) - 1))
-  return 0
-enddef
-
-def LocalSpellDel(): any
-  exe "aunmenu PopUp."  ..  script_state.changeitem
-  exe "aunmenu PopUp."  ..  script_additem
-  exe "aunmenu PopUp."  ..  script_ignoreitem
-  aunmenu PopUp.-SpellSep-
-  script_state.changeitem = ''
-  return 0
-enddef
-
-  augroup SpellPopupMenu
-    au! MenuPopup * call LocalSpellPopup()
-  augroup END
 endif
-
-# Normal Mode:
-PlanetMenu nnoremenu 1.10 PopUp.&Paste                  "+gP
-PlanetMenu nnoremenu 1.10 PopUp.Close                   <C-w>c
-# Operator Pending Mode: text objects
-PlanetMenu onoremenu PopUp.Word                         w
-# Visual:
-PlanetMenu vnoremenu 1.10 PopUp.Cu&t                    "+x
-PlanetMenu vnoremenu 1.10 PopUp.&Copy                   "+y
-PlanetMenu vnoremenu 1.10 PopUp.&Yank                   y
-PlanetMenu vnoremenu 1.10 PopUp.&Replace                "_x"+gP
-PlanetMenu vnoremenu 1.10 PopUp.&Paste                  "_x"+gP
-PlanetMenu vnoremenu 1.10 PopUp.&Delete                 "_x
-# Select Mode:
-PlanetMenu snoremenu 1.10 PopUp.Cut                     "+d
-# Insert Mode:
-PlanetMenu inoremenu 1.10 PopUp.&Paste                  <C-o>"+gP
-PlanetMenu inoremenu 1.10 PopUp.Close                   <Cmd>close<CR>
-# Cmdline Mode: cmdline completion
-PlanetMenu cnoremenu 1.10 PopUp.&Copy                  <Cmd>call setreg("+", getcmdline())<CR>
-PlanetMenu cnoremenu 1.10 PopUp.&Paste                 <C-r>+
-# Terminal Mode:
-PlanetMenu tlnoremenu 1.10 PopUp.Close                  <C-w><C-c>
 # }}}
 # WinBar Menus: {{{
 # TODO: Auto for LL, QF, Terminals, W3m
