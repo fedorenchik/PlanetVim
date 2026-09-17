@@ -39,7 +39,10 @@ remain deferred; this phase changes first-party integration only.
   with a Vim-rendered tab bar for this feature. Vim currently hardcodes the
   native menu to Close Tab, New Tab and Open Tab in
   [gui_gtk_x11.c](https://github.com/vim/vim/blob/master/src/gui_gtk_x11.c).
-  Revisit when Vim exposes a supported native-menu customization interface.
+  The [native-helper experiment](experiments/native-tabs/README.md) demonstrates
+  interception on Linux GTK3 without changing the GVim executable. Full
+  integration remains deferred pending stable clicked-tab identity, input-mode
+  coverage and packaging; an upstream customization hook is another route.
 
 ## Agreed platform and dependency policy
 
