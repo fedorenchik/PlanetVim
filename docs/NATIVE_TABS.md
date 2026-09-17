@@ -4,6 +4,8 @@ On Linux GTK3 GVim, right-click a native tab label for actions on that tab:
 activate, create/open/duplicate, reopen closed tabs, close others or tabs to
 either side, move, and save/open tab layouts. File tabs also offer save/save-as,
 path copying, file-tree reveal and a terminal in the file's directory.
+The menu opens after releasing the right mouse button and stays open for
+selection, whether the click is brief or the button is held before release.
 
 Right-clicking does not select the tab. Copying paths and saving its file retain
 the active window. Move/close/layout-save operations restore the original window
@@ -23,11 +25,14 @@ packages are `build-essential pkg-config libgtk-3-dev` on Debian/Ubuntu, or
 `+gui_gtk3`, `+libcall` and `+channel`.
 
 ```sh
-make install                    # builds the helper when prerequisites exist
-make install NATIVE_TABS=1       # require the helper; fail if prerequisites are absent
+make install                    # builds and enables the helper by default
 make install NATIVE_TABS=0       # install with Vim's stock tab menu
 make native-tabs                # build only, also works for checkout launches
 ```
+
+Default installation fails with setup guidance if build prerequisites are
+missing. `NATIVE_TABS=0` explicitly installs with the stock menu; disabling the
+helper at runtime does not require reinstalling.
 
 The compiled library is `build/native/planetvim-tabmenu.so`; installation copies
 it to `lib/planetvim-tabmenu.so` inside the PlanetVim installation. It participates
@@ -42,8 +47,9 @@ so already running processes retain their original mapped code.
 
 ## Configuration and fallback
 
-The helper starts automatically after GUI initialization when its library is
-available. It needs PlanetVim's `guitabtooltip` expression to associate persistent
+Native tab menus are enabled by default. The helper starts after GUI
+initialization when its library is available. It needs PlanetVim's
+`guitabtooltip` expression to associate persistent
 tab IDs with native GTK widgets. Custom `guitablabel` expressions are supported.
 A custom tooltip or disabled native tab strip uses Vim's stock behavior.
 
@@ -73,9 +79,10 @@ on tab padding or overflow controls outside a label also retain stock behavior.
 
 ## Implementation and validation
 
-The small C bridge in `native/tabmenu.c` uses GTK's capture phase and sends only
-numeric notifications over a private Unix socket. Vim's channel callback builds
-the menu on demand in compiled Vim9script. There is no background helper process,
+The small C bridge in `native/tabmenu.c` uses GTK's capture phase, remembers the
+clicked tab on button press and sends its numeric notification on release over
+a private Unix socket. Vim's channel callback builds the menu on demand in
+compiled Vim9script. There is no background helper process,
 polling timer or call into Vim's private C functions/structs.
 
 PlanetVim tags each notebook page with its persistent tab ID during the actual
@@ -87,9 +94,11 @@ the clicked window and buffer before running.
 
 The library uses ELF `NODELETE` because `libcallnr()` releases its dynamic-library
 handle after each call. Stop removes the gesture, closes the socket and clears
-widget IDs. Failed sends explicitly deny the GTK gesture to allow the stock
-handler to process the click. This still depends on Vim's GTK notebook layout
-and tooltip redraw behavior; it is not an upstream Vim extension API.
+widget IDs. Ineligible presses or an unavailable connection explicitly deny the
+GTK gesture to allow the stock handler to process the click. A failed send closes
+the connection; subsequent clicks fall back to the stock handler. This still
+depends on Vim's GTK notebook layout and tooltip redraw behavior; it is not an
+upstream Vim extension API.
 
 Focused tests cover action identity after reordering/closing, inactive-tab
 operations, shared-buffer duplication, close cancellation, recovery, and installer

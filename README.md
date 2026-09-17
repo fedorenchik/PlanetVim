@@ -36,9 +36,10 @@ loader at `~/.vimrc`. An existing startup file or symlink is backed up first;
 undoes the most recent operation. Use `PREFIX="/your/private/PlanetVim"` with each
 command for a custom distribution location. Do not use your home itself as PREFIX.
 
-On Linux, `make install` also builds an optional richer native GTK tab menu when
-a C compiler, `pkg-config` and GTK3 development headers are available. Use
-`NATIVE_TABS=1` to require it or `NATIVE_TABS=0` to omit it. See the
+On Linux, `make install` builds and enables richer native GTK tab menus by
+default. A C compiler, `pkg-config` and GTK3 development headers are required.
+Use `NATIVE_TABS=0` to omit the helper, or set `g:PV_native_tabs = false` in your
+private Vim9 configuration to disable it at runtime. See the
 [native tab-menu guide](docs/NATIVE_TABS.md).
 
 The equivalent Python command is `python3 scripts/install.py install`; it

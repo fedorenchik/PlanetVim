@@ -122,7 +122,7 @@ and terminal buffers have specialized actions. List-history actions operate on
 the clicked list. Terminal hiding leaves the job running; stopping asks first.
 Shift-right-click passes the click through to the terminal application.
 The builder loads only when needed, with no tool launches just to show a menu.
-Native GTK tab labels can use the optional Linux helper; see |planetvim-native-tabs|.
+Native GTK tab labels use the Linux helper by default; see |planetvim-native-tabs|.
 
 Undo/Redo traverse the undo tree; Earlier/Later Change (g-/g+) follow the
 chronological change history. These can differ after editing an undone buffer.
@@ -167,15 +167,16 @@ the preview cancels pending decoding. Advanced Display contains optional newer
 popup/status-line controls. Status-line changes are window-local and reversible.
 
 Native tab menus                                        *planetvim-native-tabs*
-The optional GTK3 helper adds close-other/left/right, move, duplicate, layout
+The GTK3 helper adds close-other/left/right, move, duplicate, layout
 save/open and closed-tab recovery actions to native tab labels. File tabs add
 save/save-as, copy paths, reveal in Fern and open a terminal here. Right-click
 does not activate the tab; path copying keeps focus and mode. Close actions
 retain Vim's modified-buffer protections and stop the batch on cancellation.
+The menu opens after the right button is released and stays open for selection.
 
-Build with `make native-tabs`, or let `make install` build it when a C compiler,
-pkg-config and GTK3 development headers are installed. NATIVE_TABS=1 requires
-the helper; NATIVE_TABS=0 omits it. Restart GVim after installing/updating.
+`make install` builds and enables the helper by default. A C compiler, pkg-config
+and GTK3 development headers are required; NATIVE_TABS=0 explicitly omits it.
+Use `make native-tabs` to build only. Restart GVim after installing/updating.
     :PlanetNativeTabs on
     :PlanetNativeTabs off
     :PlanetNativeTabs status

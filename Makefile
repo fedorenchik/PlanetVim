@@ -1,6 +1,6 @@
 PYTHON ?= python3
 PREFIX ?=
-NATIVE_TABS ?= auto
+NATIVE_TABS ?= 1
 export PLANETVIM_PREFIX = $(PREFIX)
 export PLANETVIM_NATIVE_TABS = $(NATIVE_TABS)
 NATIVE_TAB_LIBRARY = build/native/planetvim-tabmenu.so
@@ -20,9 +20,9 @@ help:
 	@echo 'restore    Undo the most recent install, update, or uninstall'
 	@echo 'test       Run the distribution tests'
 	@echo 'test-gui   Run Vimscript checks in GVim (requires a display)'
-	@echo 'native-tabs  Build the optional Linux GTK3 tab-menu helper (requires cc, pkg-config, GTK3 headers)'
+	@echo 'native-tabs  Build the Linux GTK3 tab-menu helper (requires cc, pkg-config, GTK3 headers)'
 	@echo 'test-native-tabs  Exercise native GTK mouse events in private Xvfb (also requires xdotool)'
-	@echo 'NATIVE_TABS=0 skips native helper installation; =1 requires it; default auto builds when available'
+	@echo 'Native tab menus are enabled by default; NATIVE_TABS=0 skips helper installation'
 
 $(NATIVE_TAB_LIBRARY): native/tabmenu.c
 	mkdir -p $(@D)
@@ -41,7 +41,7 @@ native-tabs-auto:
 	elif [ "$$(uname -s)" = Linux ] && command -v $(CC) >/dev/null 2>&1 && pkg-config --atleast-version=3.14 gtk+-3.0 2>/dev/null; then \
 	  $(MAKE) native-tabs; \
 	elif [ "$(NATIVE_TABS)" = 1 ]; then \
-	  echo 'Native tab menus require Linux, a C compiler, pkg-config and GTK3 development headers.' >&2; exit 1; \
+	  echo 'Native tab menus require Linux, a C compiler, pkg-config and GTK3 development headers. Use NATIVE_TABS=0 to opt out.' >&2; exit 1; \
 	else echo 'Optional GTK tab-menu helper not built; install GTK3 development headers to enable it.'; fi
 
 install update install-home install-private: native-tabs-auto

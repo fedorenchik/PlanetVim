@@ -4,7 +4,9 @@ import io
 import json
 import os
 from pathlib import Path
+import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 from unittest import mock
@@ -81,6 +83,28 @@ class InstallerTests(unittest.TestCase):
         with mock.patch.dict(os.environ, {"PLANETVIM_NATIVE_TABS": "auto"}):
             with self.assertRaisesRegex(install.InstallError, "non-regular"):
                 self.installer().run("install")
+
+    @unittest.skipUnless(sys.platform.startswith("linux") and shutil.which("make"), "Linux make required")
+    def test_make_requires_native_helper_by_default_and_allows_opt_out(self):
+        # Missing build tools must stop before any installation writes. With
+        # explicit opt-out, the same request must reach the installer instead.
+        marker = self.directory / "installer-called"
+        recorder = self.directory / "record-python"
+        recorder.write_text('#!/bin/sh\nprintf "%s\\n" "$PLANETVIM_NATIVE_TABS" > "' + str(marker) + '"\n')
+        recorder.chmod(0o755)
+        makefile = Path(__file__).resolve().parents[1] / "Makefile"
+        args = ["make", "--no-print-directory", "-f", str(makefile), "install-private",
+                "CC=" + str(self.directory / "missing-compiler"), "PYTHON=" + str(recorder)]
+        environment = dict(os.environ)
+        for key in ("MAKEFLAGS", "MFLAGS", "MAKEOVERRIDES", "NATIVE_TABS"):
+            environment.pop(key, None)
+        required = subprocess.run(args, cwd=self.directory, env=environment, text=True, capture_output=True)
+        self.assertNotEqual(0, required.returncode)
+        self.assertIn("NATIVE_TABS=0", required.stderr)
+        self.assertFalse(marker.exists())
+        disabled = subprocess.run(args + ["NATIVE_TABS=0"], cwd=self.directory, env=environment, text=True, capture_output=True)
+        self.assertEqual(0, disabled.returncode, disabled.stderr)
+        self.assertEqual("0\n", marker.read_text())
 
     def test_optional_metadata_and_documentation_exclude_bytecode(self):
         for name in ("LICENSE", "VERSION", "CHANGELOG.md", "README.md", "CONTRIBUTING.md", "docs/guide.md"):

@@ -45,11 +45,12 @@ Hints and bottom tips teach the keys and commands for the current mode. The
 context builder loads on the first right-click and does not start tools merely
 by opening the menu.
 
-With the optional Linux GTK3 helper, right-click a native tab label for close,
+On Linux GTK3 GVim, right-click a native tab label for close,
 move, duplicate, recovery and layout actions, plus file actions for that tab.
-Copying its path leaves the active tab unchanged. `make install` builds the
-helper when its development prerequisites exist; `:PlanetNativeTabs off`
-restores Vim's stock tab menu. See [native tab menus](NATIVE_TABS.md).
+Copying its path leaves the active tab unchanged. `make install` builds and
+enables the helper by default; `NATIVE_TABS=0` omits it. `:PlanetNativeTabs off`
+restores Vim's stock tab menu for this instance; `g:PV_native_tabs = false` in
+your private configuration persists that choice. See [native tab menus](NATIVE_TABS.md).
 
 ## Home startup and recovery
 

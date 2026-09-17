@@ -2,6 +2,9 @@
 
 ## Unreleased — Linux GVim menus, Vim9 runtime and plugin refresh
 
+- Keep the native tab menu open after a normal right-click by opening it after
+  button release. Build and enable the Linux helper by default with an explicit
+  `NATIVE_TABS=0` installation opt-out and `g:PV_native_tabs = false` runtime option.
 - Add an optional Linux GTK3 helper for richer native tab-label context menus.
   Keep persistent tab identity across reordering, preserve edits and closed-tab
   recovery, and support mode-aware Vim9 actions and managed helper installation.

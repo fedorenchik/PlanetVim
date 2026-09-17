@@ -481,3 +481,19 @@ disabled 1.365–1.427 seconds). This run does not demonstrate the earlier
 1.0-second startup target. The local raw samples are in
 `/tmp/planetvim-native-tabs/startup-comparison.json`; the measurement uses
 `scripts/benchmark.py` with only `g:PV_native_tabs` varied.
+
+The subsequent right-click fix (`bf09abaf3`) captures the tab on press and opens
+the menu on release. The regression test failed against the old helper for
+50–800 ms holds; instantaneous synthetic clicks had missed the dismissal.
+Both real-mouse tests now pass on current and minimum GVim, including release
+over a different tab, mode preservation and native dragging. Linux installation
+now requires the helper by default, with `NATIVE_TABS=0` as an explicit opt-out.
+All 29 installer tests pass, including missing build tools preventing installer
+execution and opt-out allowing it. The Python suite completed 114 tests with
+three skips: the two separately run native mouse tests and one optional template
+dependency.
+The full GUI run passed 88/92 files with the same three debugpy skips and one
+writing-preview fixture failure: its recorder file was readable before its
+contents arrived (`v:none` instead of the expected argument list). The isolated
+writing test passed on retry. No writing runtime or fixture was changed; this
+run is recorded as a full-run failure with a successful focused rerun.
