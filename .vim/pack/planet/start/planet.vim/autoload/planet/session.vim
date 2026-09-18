@@ -22,9 +22,38 @@ export def Directory(): string
 enddef
 
 export def PathForDirectory(directory: string): string
+  var name = fnamemodify(Canonical(directory), ':t')
+  return Directory() .. '/' .. (empty(name) ? 'root' : name) .. '.session/session.vim'
+enddef
+
+def DirectoryRecord(root: string): list<string>
+  return ['vim9script', 'g:PV_session_directory = ' .. string(root)]
+enddef
+
+def RecordDirectory(path: string, root: string)
+  var file = fnamemodify(path, ':h') .. '/directory.vim'
+  writefile(DirectoryRecord(root), file)
+  setfperm(file, 'rw-------')
+enddef
+
+# Reserve the readable name before loading any viminfo or opening buffers.
+# The record also protects state left by a crash before the first snapshot.
+def DirectoryPath(directory: string): string
   var root = Canonical(directory)
-  var name = substitute(fnamemodify(root, ':t'), '[^[:alnum:]_-]', '_', 'g')
-  return Directory() .. '/' .. name .. '-' .. sha256(root)[: 15] .. '.session/session.vim'
+  var path = PathForDirectory(root)
+  var container = fnamemodify(path, ':h')
+  var record = container .. '/directory.vim'
+  if isdirectory(container)
+    if !filereadable(record) || readfile(record) != DirectoryRecord(root)
+      throw 'PlanetVim: session name "' .. Name(path) .. '" is already in use. Use Sessions > Save As to choose another name.'
+    endif
+  else
+    mkdir(Directory(), 'p', 0o700)
+    # No "p": another process claiming this name must not share its state.
+    mkdir(container, '', 0o700)
+    RecordDirectory(path, root)
+  endif
+  return path
 enddef
 
 # A chosen name denotes a container. Keep the snapshot name uniform so native
@@ -267,6 +296,7 @@ def Write(requested: string, options: string)
   endif
   active_file = path
   active_options = options
+  RecordDirectory(path, active_root)
   planet#session_state#Use(path, true)
   planet#session_state#Flush()
   Forward(requested, path)
@@ -274,10 +304,7 @@ def Write(requested: string, options: string)
 enddef
 
 export def Save(): number
-  var path = empty(v:this_session) ? PathForDirectory(getcwd(-1)) : fnamemodify(v:this_session, ':p')
-  if empty(v:this_session)
-    mkdir(Directory(), 'p', 0o700)
-  endif
+  var path = empty(v:this_session) ? DirectoryPath(getcwd(-1)) : fnamemodify(v:this_session, ':p')
   var options = path ==# active_file ? active_options : &sessionoptions
   Write(path, options)
   MenuList()
@@ -354,9 +381,16 @@ def AutomaticPath(): string
       return item.file
     endif
   endfor
-  var path = PathForDirectory(startup_root)
-  var old = substitute(path, '\.session/session\.vim$', '.vim', '')
-  return !filereadable(path) && filereadable(old) ? old : path
+  # Keep old automatic snapshots discoverable even without the recent index.
+  # These names are only looked up; new sessions always use the directory name.
+  var name = substitute(fnamemodify(startup_root, ':t'), '[^[:alnum:]_-]', '_', 'g')
+  var old = Directory() .. '/' .. name .. '-' .. sha256(startup_root)[: 15]
+  for candidate in [old .. '.session/session.vim', old .. '.vim']
+    if filereadable(candidate)
+      return candidate
+    endif
+  endfor
+  return DirectoryPath(startup_root)
 enddef
 
 # settings.vim calls this before Vim's initial viminfo read and buffer loading.
@@ -386,7 +420,12 @@ export def PrepareStartup()
   endfor
   if empty(path) && startup_root !=# Canonical(expand('~')) && argc() == 0 && !&diff
       && !get(g:, 'startify_disable_at_vimenter', 0) && get(g:, 'PV_session_auto', 1)
-    path = AutomaticPath()
+    try
+      path = AutomaticPath()
+    catch
+      # Startup reports the error at VimEnter; retain global storage meanwhile.
+      return
+    endtry
   endif
   if !empty(path)
     planet#session_state#Use(PathForFile(path), false, true)
@@ -423,7 +462,16 @@ export def Startup()
     planet#session_state#Use('')
     return
   endif
-  var path = AutomaticPath()
+  var path: string
+  try
+    path = AutomaticPath()
+  catch
+    planet#session_state#Use('')
+    echohl WarningMsg
+    echomsg v:exception
+    echohl None
+    return
+  endtry
   if filereadable(path)
     # A broken session must neither open Startify nor be overwritten on exit.
     g:startify_disable_at_vimenter = 1

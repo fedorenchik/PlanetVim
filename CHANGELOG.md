@@ -2,6 +2,9 @@
 
 ## Unreleased — Linux GVim menus, Vim9 runtime and plugin refresh
 
+- Name new automatic sessions after their project folder without a generated
+  suffix; keep user-chosen names and existing session paths. Require Save As
+  when another project already uses the same name to preserve state isolation.
 - Save and restore complete quickfix and per-window location-list histories in
   session snapshots, including selected lists/entries and open panels. Preserve
   window ownership and file-based jump targets across restarts; keep list state

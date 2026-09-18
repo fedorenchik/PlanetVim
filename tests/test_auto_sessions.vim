@@ -11,7 +11,11 @@ for s:root in [s:first, s:second]
   call mkdir(s:root, 'p')
   call writefile(['one', 'two', 'three'], s:root .. '/main.txt')
 endfor
-call assert_notequal(planet#session#PathForDirectory(s:first), planet#session#PathForDirectory(s:second))
+call assert_equal(g:PV_sessions_dir .. '/project.session/session.vim', planet#session#PathForDirectory(s:first))
+call assert_equal(planet#session#PathForDirectory(s:first), planet#session#PathForDirectory(s:second))
+call assert_equal(g:PV_sessions_dir .. "/项目 'one' | two.session/session.vim",
+      \ planet#session#PathForDirectory(g:PV_test_dir .. "/项目 'one' | two"))
+call assert_equal(g:PV_sessions_dir .. '/root.session/session.vim', planet#session#PathForDirectory('/'))
 if has('unix')
   call system('ln -s ' .. shellescape(s:first) .. ' ' .. shellescape(g:PV_test_dir .. '/alias'))
   call assert_equal(planet#session#PathForDirectory(s:first), planet#session#PathForDirectory(g:PV_test_dir .. '/alias'))
@@ -42,6 +46,48 @@ call assert_equal(2, winnr('$'))
 call assert_equal('main.txt', expand('%:t'))
 call assert_equal([3, 2], getcurpos()[1:2])
 call planet#session#Close()
+unlet! g:startify_disable_at_vimenter
+
+" Another directory with the same name must not load or overwrite this state.
+let s:original = readfile(s:auto)
+let s:global_info = &viminfofile
+execute 'cd ' .. fnameescape(s:second)
+call planet#session#Init()
+call planet#session#PrepareStartup()
+call assert_equal(s:global_info, &viminfofile, 'name collision is checked before viminfo loading')
+call planet#session#Startup()
+call assert_equal('', v:this_session)
+call assert_equal(s:second, getcwd(-1))
+call assert_equal('', get(g:, 'PV_session_state_dir', ''))
+call assert_match('already in use.*Save As', execute('messages'))
+try
+  call planet#session#Save()
+  call assert_report('Save must not overwrite a namesake project')
+catch /already in use/
+endtry
+call assert_equal(0, planet#session#AutoSave())
+call assert_equal(s:original, readfile(s:auto))
+execute 'edit ' .. fnameescape(s:second .. '/main.txt')
+let s:second_session = g:PV_sessions_dir .. '/second project.session/session.vim'
+call planet#session#SaveAs(s:second_session)
+call planet#session#Close()
+call planet#session#Init()
+call planet#session#Startup()
+call assert_equal(s:second_session, v:this_session, 'a chosen name resolves the collision')
+call planet#session#Close()
+unlet! g:startify_disable_at_vimenter
+
+" The directory record identifies a plain name even if the MRU index is lost.
+let s:history = planet#paths#State() .. '/sessions.vim'
+let s:history_lines = readfile(s:history)
+call delete(s:history)
+execute 'cd ' .. fnameescape(s:first)
+call planet#session#Init()
+call planet#session#Startup()
+call assert_equal(s:auto, v:this_session)
+call assert_equal(2, winnr('$'))
+call planet#session#Close()
+call writefile(s:history_lines, s:history)
 unlet! g:startify_disable_at_vimenter
 
 " Manually chosen paths become the next automatic destination and MRU entry.
@@ -142,4 +188,29 @@ call assert_equal($HOME, getcwd(-1))
 call assert_equal('', v:this_session)
 call planet#session#OpenPath(s:variant)
 call assert_equal(s:before_close, getcwd(-1), 'Close Everything saves the project before returning home')
+call planet#session#Close()
+unlet! g:startify_disable_at_vimenter
+
+" Existing generated names remain discoverable without a recent-session entry.
+for s:format in ['container', 'flat']
+  let s:root = g:PV_test_dir .. '/old ' .. s:format
+  call mkdir(s:root, 'p')
+  call writefile(['old workspace'], s:root .. '/legacy.txt')
+  execute 'cd ' .. fnameescape(s:root)
+  execute 'edit ' .. fnameescape(s:root .. '/legacy.txt')
+  let s:old = g:PV_sessions_dir .. '/old_' .. s:format .. '-' .. sha256(s:root)[:15]
+        \ .. (s:format ==# 'container' ? '.session/session.vim' : '.vim')
+  call mkdir(fnamemodify(s:old, ':h'), 'p')
+  execute 'mksession! ' .. fnameescape(s:old)
+  let v:this_session = ''
+  silent %bwipeout
+  call planet#session#Init()
+  call planet#session#PrepareStartup()
+  call planet#session#Startup()
+  call assert_equal(planet#session#PathForFile(s:old), v:this_session)
+  call assert_equal('legacy.txt', expand('%:t'))
+  call assert_false(filereadable(planet#session#PathForDirectory(s:root)))
+  call planet#session#Close()
+  unlet! g:startify_disable_at_vimenter
+endfor
 let $HOME = s:home

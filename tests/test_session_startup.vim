@@ -80,6 +80,49 @@ call s:Run(s:folder, [
       \ ])
 let s:auto = planet#session#PathForDirectory(s:folder)
 call assert_true(filereadable(s:auto), 'normal exit saves automatically')
+call assert_equal(g:PV_test_dir .. '/sessions/folder.session/session.vim', s:auto)
+
+" A namesake folder must never read the first project's snapshot or viminfo.
+let s:namesake = g:PV_test_dir .. '/other/folder'
+call mkdir(s:namesake, 'p')
+let s:before_collision = readfile(s:auto)
+call s:Run(s:namesake, [
+      \ 'call assert_equal("", v:this_session)',
+      \ 'call assert_equal(' .. string(s:namesake) .. ', getcwd(-1))',
+      \ 'call assert_equal("global-only register", @z)',
+      \ 'call assert_equal("", @a)',
+      \ 'call assert_equal("", get(g:, "PV_session_state_dir", ""))',
+      \ 'call assert_match("already in use.*Save As", execute("messages"))',
+      \ 'call assert_equal(0, planet#session#AutoSave())',
+      \ ])
+call assert_equal(s:before_collision, readfile(s:auto))
+
+" A crash before the first snapshot still reserves the directory's name/state.
+let s:welcome = g:PV_test_dir .. "/one/项目 'welcome' | folder"
+let s:other_welcome = g:PV_test_dir .. "/two/项目 'welcome' | folder"
+call mkdir(s:welcome, 'p')
+call mkdir(s:other_welcome, 'p')
+let s:welcome_session = planet#session#PathForDirectory(s:welcome)
+call s:Run(s:welcome, [
+      \ 'call assert_equal(' .. string(s:welcome_session) .. ', v:this_session)',
+      \ ], [], 'cquit!')
+call assert_false(filereadable(s:welcome_session))
+call s:Run(s:other_welcome, [
+      \ 'call assert_equal("", v:this_session)',
+      \ 'call assert_equal("global-only register", @z)',
+      \ 'call assert_match("already in use.*Save As", execute("messages"))',
+      \ ])
+call s:Run(s:welcome, [
+      \ 'call assert_equal(' .. string(s:welcome_session) .. ', v:this_session)',
+      \ 'call assert_equal("", @z)',
+      \ 'edit example.txt',
+      \ ])
+call assert_true(filereadable(s:welcome_session))
+call s:Run(s:welcome, [
+      \ 'call assert_equal(' .. string(s:welcome_session) .. ', v:this_session)',
+      \ 'call assert_equal("example.txt", expand("%:t"))',
+      \ ])
+
 call s:Run(s:folder, [
       \ 'call assert_equal(2, winnr("$"))',
       \ 'call assert_equal("two.txt", expand("%:t"))',

@@ -579,3 +579,22 @@ fixture, automatic sessions, save variants, Vim9 compilation and help. **3 final
 minimum-GVim 9.1.0016 GUI files** passed, including complete list restoration,
 real-process startup and Vim9 compilation. The full suite was not repeated
 after this final fix. `git diff --check` passed.
+
+
+## Plain session names — 2026-09-18
+
+New automatic sessions use `<folder>.session/session.vim`, retaining spaces and
+Unicode. A private directory record prevents different projects with the same
+name from sharing snapshots or recovery state, including after an exit before
+the first snapshot. Save As selects a custom name to resolve a collision.
+Existing generated names and flat snapshots remain discoverable, including
+without a recent-session index.
+
+All **7 focused GUI files** passed on Linux GVim **9.2.1011**: automatic sessions,
+real child-process startup, state isolation, list persistence, navigation, Vim9
+compilation and help. All **5 focused GUI files** passed on minimum GVim
+**9.1.0016**: automatic sessions, child-process startup, state isolation, Vim9
+compilation and help. Tests cover plain/custom names, symlink aliases, duplicate
+names, Unicode and punctuation, recovery without the recent index, old snapshot
+paths, and actual restart behavior. `git diff --check` passed. Tests used private
+temporary state; installed user sessions were not renamed.

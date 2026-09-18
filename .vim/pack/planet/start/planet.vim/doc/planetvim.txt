@@ -416,11 +416,14 @@ Plain GVim launches from a directory resume its last saved session. New folder
 sessions start automatically and save every 30 seconds and on normal exit.
 Directories live in ~/.local/share/planetvim/.vim/sessions (under $XDG_DATA_HOME when
 set). g:PV_sessions_dir or $PLANETVIM_SESSIONS_DIR overrides that directory.
-Directory hashes distinguish folders with the same name. Recent-session history
-is state/sessions.vim; updates/uninstall preserve session directories and history.
+Automatic sessions use the plain folder name, including spaces and Unicode.
+If another project already uses that name, the instance stays unmanaged; use
+Sessions -> Save As... to choose a different name. Recent-session history is
+state/sessions.vim; updates/uninstall preserve session directories and history.
 
-Each <folder>-<hash>.session/ contains session.vim, viminfo, undo/, swap/, backup/
-and views/. Closed-tab snapshots, task logs, test reports and grammar logs also
+Each <folder>.session/ contains session.vim, viminfo, undo/, swap/, backup/ and
+views/, plus a private directory.vim record identifying its project directory.
+Closed-tab snapshots, task logs, test reports and grammar logs also
 use this directory as needed. Session storage is selected before startup reads
 viminfo or opens files. Switching sessions reloads that session's registers,
 histories, bookmarks and undo; closing restores global storage and viminfo.
@@ -452,6 +455,8 @@ Existing flat sessions are imported when opened or saved. Their original is
 preserved as previous-session.vim in the new directory; a forwarding script at
 the old path keeps launchers working. Previously shared recovery files remain
 where they were, rather than being copied into every session.
+Existing sessions with generated name suffixes retain their paths and still
+resume automatically. Use Save As... to select a plain or custom name for them.
 
 Launching from $HOME never starts directory session management; explicitly
 save or open a session to opt in. Native :mksession and gvim -S file.vim also
