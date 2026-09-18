@@ -38,6 +38,12 @@ loader at `~/.vimrc`. An existing startup file or symlink is backed up first;
 undoes the most recent operation. Use `PREFIX="/your/private/PlanetVim"` with each
 command for a custom distribution location. Do not use your home itself as PREFIX.
 
+Linux installations also add a **PlanetVim** application-menu entry with the blue
+PlanetVim icon. Its desktop file is `~/.local/share/applications/planetvim.desktop`
+(or `$XDG_DATA_HOME/applications/planetvim.desktop` when set). Both home and private
+installations use their own installed launcher and icon paths. Updates refresh
+the entry; uninstall removes it, preserving local edits as with other managed files.
+
 On Linux, `make install` builds and enables richer native GTK tab menus by
 default. A C compiler, `pkg-config` and GTK3 development headers are required.
 Use `NATIVE_TABS=0` to omit the helper, or set `g:PV_native_tabs = false` in your

@@ -321,7 +321,7 @@ class HomeInstallerTests(unittest.TestCase):
             data["schema"] = 1
             path.write_text(json.dumps(data))
         updated = self.installer(enabled=True).run("update")
-        self.assertEqual(updated["schema"], 2)
+        self.assertEqual(updated["schema"], install.SCHEMA)
         self.assertIn("startup", updated)
         self.installer().run("uninstall")
         self.assertFalse(self.rc.exists())

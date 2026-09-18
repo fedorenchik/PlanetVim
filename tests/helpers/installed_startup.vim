@@ -25,7 +25,7 @@ let s:log = g:PV_test_dir .. '/installed-startup.log'
 " Keep HOME ordinary; the installation/config/state/cache still stress quoting.
 let s:home = g:PV_test_dir .. '/home'
 let s:home_rc = s:home .. (has('win32') ? '/_vimrc' : '/.vimrc')
-let s:home_env = #{HOME:s:home, VIMINIT:'', EXINIT:'', GVIMINIT:'', PLANETVIM_ROOT:''}
+let s:home_env = #{HOME:s:home, XDG_DATA_HOME:s:home .. '/.local/share', VIMINIT:'', EXINIT:'', GVIMINIT:'', PLANETVIM_ROOT:''}
 call mkdir(s:home, 'p')
 call writefile(['let g:PV_previous_rc = 1'], s:home_rc)
 let s:previous_rc = readfile(s:home_rc, 'b')

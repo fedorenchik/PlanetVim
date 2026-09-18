@@ -21,9 +21,10 @@ import tempfile
 import uuid
 
 METADATA = ".planetvim"
-SCHEMA = 2
-READABLE_SCHEMAS = (1, SCHEMA)
+SCHEMA = 3
+READABLE_SCHEMAS = (1, 2, SCHEMA)
 STARTUP_KEY = "__home_vimrc__"  # Journal key, never a path in the payload.
+DESKTOP_KEY = "__desktop_entry__"  # User application menu, outside the prefix.
 STARTUP_MARKER = b'" PlanetVim managed GVim startup\n'
 STATE_NAMES = {"session", "sessions", "undo", "view", "viminfo", "tab"}
 USER_FILES = {"planetvimrc.vim", "fern-bookmark.json", "clap_yanks.history"}
@@ -173,6 +174,10 @@ class Installer:
         alternate = self.home / (".vimrc" if self.platform == "win32" else "_vimrc")
         if not os.path.lexists(self.startup_path) and os.path.lexists(alternate):
             self.startup_path = alternate
+        data_home = Path(os.environ.get("XDG_DATA_HOME") or self.home / ".local/share")
+        if not data_home.is_absolute():
+            data_home = self.home / ".local/share"
+        self.desktop_path = data_home / "applications/planetvim.desktop"
 
     def target(self, relative):
         if relative == STARTUP_KEY:
@@ -183,6 +188,14 @@ class Installer:
                     raise InstallError("Unsafe home directory: " + str(parent))
             startup_info(self.startup_path)
             return self.startup_path
+        if relative == DESKTOP_KEY:
+            if not self.platform.startswith("linux"):
+                raise InstallError("Desktop entries are supported only on Linux.")
+            for parent in self.desktop_path.parents:
+                if parent.is_symlink() or (parent.exists() and not parent.is_dir()):
+                    raise InstallError("Unsafe desktop directory: " + str(parent))
+            regular_or_absent(self.desktop_path)
+            return self.desktop_path
         path = self.prefix.joinpath(*checked_relative(relative).parts)
         for parent in path.parents:
             if parent.is_symlink() or (parent.exists() and not parent.is_dir()):
@@ -264,7 +277,13 @@ class Installer:
             if not isinstance(info, dict) or not isinstance(info.get("sha256"), str):
                 raise InstallError("Invalid file entry in installation manifest.")
         self.validate_startup(result.get("startup"))
+        self.validate_desktop(result)
         return result
+
+    def validate_desktop(self, manifest):
+        if manifest and DESKTOP_KEY in manifest["files"]:
+            if manifest.get("desktop") != str(self.desktop_path):
+                raise InstallError("This installation manages another desktop entry; use the original HOME and XDG_DATA_HOME.")
 
     def validate_startup(self, record):
         if record is None:
@@ -380,6 +399,22 @@ class Installer:
             'export PLANETVIM_ROOT\nexec "${PLANETVIM_GVIM:-gvim}" '
             '-u "$PLANETVIM_ROOT/scripts/planetvim.vim" "$@"\n').encode("utf-8")
 
+    def desktop_entry(self):
+        def escape(value):
+            return str(value).translate(str.maketrans({
+                "\\": "\\\\", "\n": "\\n", "\r": "\\r", "\t": "\\t"}))
+
+        # Exec quoting is separate from desktop string escaping; it is not
+        # shell quoting. sh reads the launcher file without evaluating its name.
+        launcher = str(self.prefix / "bin/planetvim").replace("%", "%%")
+        launcher = "".join("\\" + c if c in '\\"`$' else c for c in launcher)
+        return ("[Desktop Entry]\nType=Application\nName=PlanetVim\n"
+                "GenericName=Text Editor\nComment=Edit files and projects in GVim\n"
+                'Exec=sh "' + escape(launcher) + '" -f -- %F\n'
+                "Icon=" + escape(self.prefix / "docs/images/planetvim-icon.png") + "\n"
+                "Terminal=false\nCategories=Development;IDE;\n"
+                "StartupNotify=true\nStartupWMClass=Gvim\n").encode("utf-8")
+
     def payload(self, staging):
         incoming = {}
         for relative in (".vimrc", "scripts/planetvim.vim"):
@@ -444,6 +479,11 @@ class Installer:
         launcher.write_bytes(content)
         launcher.chmod(0o755)
         incoming[relative] = launcher
+        if self.platform.startswith("linux") and "docs/images/planetvim-icon.png" in incoming:
+            desktop = staging / DESKTOP_KEY
+            desktop.write_bytes(self.desktop_entry())
+            desktop.chmod(0o644)
+            incoming[DESKTOP_KEY] = desktop
         return {relative: file_info(staging / relative) for relative in sorted(incoming)}
 
     def plan(self, before, after, command):
@@ -544,6 +584,7 @@ class Installer:
         for manifest in (receipt["before_manifest"], receipt["after_manifest"]):
             if manifest:
                 self.validate_startup(manifest.get("startup"))
+                self.validate_desktop(manifest)
         current = self.manifest()
         if current and current.get("transaction") == pending["transaction"]:
             receipt["status"] = "committed"
@@ -558,6 +599,8 @@ class Installer:
         directory = self.transaction_directory(transaction)
         directory.mkdir(parents=True)
         updated = {"schema": SCHEMA, "transaction": transaction, "files": after}
+        if DESKTOP_KEY in after:
+            updated["desktop"] = str(self.desktop_path)
         if startup:
             updated["startup"] = startup
         receipt = {"schema": SCHEMA, "command": command, "status": "preparing",
@@ -613,6 +656,7 @@ class Installer:
             raise InstallError("This backup is not a committed transaction.")
         previous = receipt["before_manifest"]
         self.validate_startup(previous.get("startup") if previous else None)
+        self.validate_desktop(previous)
         after = previous["files"] if previous else {}
         changes = []
         for change in receipt["changes"]:

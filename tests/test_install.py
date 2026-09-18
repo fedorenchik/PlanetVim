@@ -26,6 +26,12 @@ class InstallerTests(unittest.TestCase):
         self.write(self.source / ".vimrc", 'let g:distribution = 1\n')
         self.write(self.source / ".vim/plugin/example.vim", 'let g:example = 1\n')
         self.write(self.source / "scripts/planetvim.vim", '" bootstrap fixture\n')
+        self.write(self.source / "docs/images/planetvim-icon.png", "icon fixture")
+        self.data_home = self.directory / "desktop data"
+        self.desktop = self.data_home / "applications/planetvim.desktop"
+        environment = mock.patch.dict(os.environ, {"XDG_DATA_HOME": str(self.data_home)})
+        environment.start()
+        self.addCleanup(environment.stop)
         self.messages = []
 
     def write(self, path, content):
@@ -45,9 +51,12 @@ class InstallerTests(unittest.TestCase):
             self.write(self.prefix / ".vim/sessions/project.session" / relative, relative)
         first = self.installer().run("install")
         self.assertEqual((self.prefix / ".vimrc").read_text(), 'let g:distribution = 1\n')
+        self.assertIn("Icon=" + str(self.prefix / "docs/images/planetvim-icon.png"), self.desktop.read_text())
+        self.assertEqual(first["desktop"], str(self.desktop))
         self.assertEqual(first, self.installer().run("install"))
         self.installer().run("uninstall")
         self.assertFalse((self.prefix / ".vimrc").exists())
+        self.assertFalse(self.desktop.exists())
         self.assertEqual((self.prefix / "notes.txt").read_text(), "keep me")
         self.assertEqual((self.prefix / ".vim/plugin/personal.vim").read_text(), "personal plugin")
         self.assertEqual((self.prefix / ".vim/sessions/project.vim").read_text(), "personal session")
@@ -58,7 +67,62 @@ class InstallerTests(unittest.TestCase):
     def test_dry_run_does_not_create_destination(self):
         self.installer(dry_run=True).run("install")
         self.assertFalse(self.prefix.exists())
+        self.assertFalse(self.desktop.exists())
         self.assertTrue(any(message.startswith("CREATE ") for message in self.messages))
+
+    def test_desktop_update_restore_and_uninstall_preserve_edits(self):
+        self.installer().run("install")
+        original = self.desktop.read_bytes()
+        modified = original.replace(b"Name=PlanetVim", b"Name=My PlanetVim")
+        self.desktop.write_bytes(modified)
+        self.installer().run("update")
+        self.assertEqual(self.desktop.read_bytes(), original)
+        self.installer().run("restore")
+        self.assertEqual(self.desktop.read_bytes(), modified)
+        self.installer().run("uninstall")
+        self.assertEqual(self.desktop.read_bytes(), modified)
+        self.assertIn("KEEP locally modified " + str(self.desktop), self.messages)
+
+    def test_desktop_collision_is_preserved(self):
+        self.write(self.desktop, "personal desktop entry")
+        with self.assertRaisesRegex(install.InstallError, "Unmanaged file collision"):
+            self.installer().run("install")
+        self.assertEqual(self.desktop.read_text(), "personal desktop entry")
+        self.assertFalse((self.prefix / "bin/planetvim").exists())
+
+    def test_desktop_uses_home_default_and_rejects_changed_data_home(self):
+        home = self.directory / "home"
+        for value in ("", "relative/path"):
+            with mock.patch.dict(os.environ, {"XDG_DATA_HOME": value}):
+                installer = install.Installer(self.source, self.prefix, platform="linux", home=home)
+                self.assertEqual(installer.desktop_path, home / ".local/share/applications/planetvim.desktop")
+        self.installer().run("install")
+        with mock.patch.dict(os.environ, {"XDG_DATA_HOME": str(self.directory / "another data home")}):
+            with self.assertRaisesRegex(install.InstallError, "original HOME and XDG_DATA_HOME"):
+                self.installer().run("uninstall")
+        self.assertTrue(self.desktop.exists())
+
+    def test_desktop_symlink_is_not_replaced(self):
+        self.desktop.parent.mkdir(parents=True)
+        self.desktop.symlink_to(self.source / ".vimrc")
+        with self.assertRaisesRegex(install.InstallError, "non-regular"):
+            self.installer().run("install")
+        self.assertTrue(self.desktop.is_symlink())
+
+    def test_schema_two_update_adds_desktop_entry(self):
+        icon = self.source / "docs/images/planetvim-icon.png"
+        icon.unlink()
+        self.installer().run("install")
+        for name in ("owner.json", "manifest.json"):
+            path = self.prefix / ".planetvim" / name
+            data = json.loads(path.read_text())
+            data["schema"] = 2
+            path.write_text(json.dumps(data))
+        self.write(icon, "new icon")
+        self.installer().run("update")
+        self.assertTrue(self.desktop.exists())
+        self.installer().run("restore")
+        self.assertFalse(self.desktop.exists())
 
     def test_native_helper_install_update_uninstall(self):
         helper = self.source / "build/native/planetvim-tabmenu.so"
@@ -326,6 +390,7 @@ class InstallerTests(unittest.TestCase):
         self.installer(platform="win32").run("install")
         self.assertIn('set "PLANETVIM_ROOT=%~dp0.."', (self.prefix / "bin/planetvim.cmd").read_text())
         self.assertFalse((self.prefix / "bin/planetvim").exists())
+        self.assertFalse(self.desktop.exists())
 
     def test_main_returns_failure_status(self):
         with mock.patch.object(install.Installer, "run", side_effect=OSError("copy failed")):
