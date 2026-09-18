@@ -48,6 +48,7 @@ unlet! g:startify_disable_at_vimenter
 execute 'cd ' .. fnameescape(s:first)
 execute 'edit ' .. fnameescape(s:first .. '/main.txt')
 let s:external = g:PV_test_dir .. "/chosen 'name' | session.vim"
+let s:external = planet#session#PathForFile(s:external)
 call assert_equal(1, planet#session#SaveAs(s:external))
 call cursor(2, 1)
 call assert_equal(1, planet#session#AutoSave())
@@ -104,6 +105,7 @@ execute 'edit ' .. fnameescape(s:second .. '/main.txt')
 let s:native = g:PV_test_dir .. '/native session.vim'
 execute 'mksession! ' .. fnameescape(s:native)
 call assert_equal(1, planet#session#AutoSave())
+let s:native = planet#session#PathForFile(s:native)
 call assert_equal(s:native, planet#session#Recent()[0].file)
 call planet#session#Close()
 
@@ -126,6 +128,7 @@ call planet#session#OpenPath(s:external)
 let g:PlanetSessionFixture = 'do not save'
 set sessionoptions+=globals
 let s:variant = g:PV_test_dir .. '/no globals.vim'
+let s:variant = planet#session#PathForFile(s:variant)
 call planet#session#SaveVariant('no-globals', s:variant, v:true)
 call planet#session#AutoSave()
 call assert_notmatch('PlanetSessionFixture', join(readfile(s:variant), "\n"))

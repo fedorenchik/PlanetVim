@@ -247,3 +247,6 @@ set writebackup
 
 &viewdir = planet#paths#State('views')
 &viminfofile = planet#paths#State() .. '/viminfo'
+
+# Select session persistence before Vim reads viminfo and opens startup files.
+planet#session#PrepareStartup()

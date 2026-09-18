@@ -39,6 +39,10 @@ class InstallerTests(unittest.TestCase):
         self.write(self.prefix / "notes.txt", "keep me")
         self.write(self.prefix / ".vim/plugin/personal.vim", "personal plugin")
         self.write(self.prefix / ".vim/sessions/project.vim", "personal session")
+        session_state = ["session.vim", "viminfo", "undo/file", "swap/file.swp",
+                         "backup/file", "views/file", "tabs/process/snapshot.vim"]
+        for relative in session_state:
+            self.write(self.prefix / ".vim/sessions/project.session" / relative, relative)
         first = self.installer().run("install")
         self.assertEqual((self.prefix / ".vimrc").read_text(), 'let g:distribution = 1\n')
         self.assertEqual(first, self.installer().run("install"))
@@ -47,6 +51,8 @@ class InstallerTests(unittest.TestCase):
         self.assertEqual((self.prefix / "notes.txt").read_text(), "keep me")
         self.assertEqual((self.prefix / ".vim/plugin/personal.vim").read_text(), "personal plugin")
         self.assertEqual((self.prefix / ".vim/sessions/project.vim").read_text(), "personal session")
+        for relative in session_state:
+            self.assertEqual((self.prefix / ".vim/sessions/project.session" / relative).read_text(), relative)
         self.assertTrue((self.prefix / ".planetvim/backups").is_dir())
 
     def test_dry_run_does_not_create_destination(self):

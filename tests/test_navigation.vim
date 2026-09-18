@@ -56,6 +56,7 @@ set sessionoptions+=globals
 let s:ssop = &sessionoptions
 for s:variant in ['relative', 'local', 'all', 'no-globals']
   let s:path = s:project .. '/session ' .. s:variant .. '.vim'
+  let s:path = planet#session#PathForFile(s:path)
   call assert_equal(1, planet#session#SaveVariant(s:variant, s:path))
   call assert_equal(s:ssop, &sessionoptions)
   call assert_equal(s:cwd, getcwd())
@@ -76,6 +77,7 @@ for s:variant in ['relative', 'local', 'all', 'no-globals']
 endfor
 " Saving/reopening a project session retains its full path, outside Startify.
 let s:external_session = s:Native(s:project .. '/session local.vim')
+let s:external_session = planet#session#PathForFile(s:external_session)
 let v:this_session = s:external_session
 call planet#session#Save()
 call assert_equal(s:external_session, v:this_session)
@@ -91,19 +93,19 @@ endtry
 " Session launchers keep names and installed bootstrap paths as literal argv.
 let g:PV_applications_dir = g:PV_test_dir .. '/applications'
 let g:PV_desktop_dir = g:PV_test_dir .. '/desktop'
-let s:launcher = planet#session#DesktopEntry(0, 0, s:project .. '/session all.vim')
+let s:launcher = planet#session#DesktopEntry(0, 0, planet#session#PathForFile(s:project .. '/session all.vim'))
 if !has('win32')
   call assert_true(filereadable(s:launcher))
   let s:entry = join(readfile(s:launcher), "\n")
   call assert_match('scripts/planetvim.vim', s:entry)
   call assert_match('session#OpenPath', s:entry)
-  call assert_match('session all.vim', s:entry)
+  call assert_match('session all.session', s:entry)
   call assert_match('%%', planet#session#DesktopExec(['literal%value']))
   if executable('desktop-file-validate')
     call system('desktop-file-validate ' .. shellescape(s:launcher))
     call assert_equal(0, v:shell_error)
   endif
-  call planet#session#DesktopEntry(1, 0, s:project .. '/session all.vim')
+  call planet#session#DesktopEntry(1, 0, planet#session#PathForFile(s:project .. '/session all.vim'))
   call assert_false(filereadable(s:launcher))
 endif
 

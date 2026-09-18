@@ -10,7 +10,7 @@ var script_closing = v:false
 
 def LocalDirectory(): any
   if empty(script_directory)
-    script_directory = planet#paths#State('tabs') .. '/' .. getpid() .. '-' .. sha256(tempname())[ : 15]
+    script_directory = planet#paths#SessionState('tabs') .. '/' .. getpid() .. '-' .. sha256(tempname())[ : 15]
     mkdir(script_directory, 'p')
   endif
   return script_directory

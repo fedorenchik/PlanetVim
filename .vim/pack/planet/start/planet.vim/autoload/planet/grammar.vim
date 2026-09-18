@@ -33,7 +33,7 @@ export def Configure(): any
   if empty(python)
     return 0
   endif
-  g:PV_grammar_error_file = planet#paths#State('grammar') .. '/' .. getpid() .. '.log'
+  g:PV_grammar_error_file = planet#paths#SessionState('grammar') .. '/' .. getpid() .. '.log'
   var settings: any = json_encode({argv: argv, timeout: get(g:, 'PV_grammar_timeout', 60), error_file: g:PV_grammar_error_file})
   var config: any = planet#paths#Cache('grammar') .. '/' .. sha256(settings)[ : 20] .. '.json'
   if !filereadable(config)

@@ -248,12 +248,6 @@ export def SettingsToggle(): any
   return 0
 enddef
 
-export def SetPerSessionOptions(): any
-  planet#session#SetCwdSession()
-  silent! rviminfo!
-  return 0
-enddef
-
 export def SaveAll(): any
   try
     confirm wall

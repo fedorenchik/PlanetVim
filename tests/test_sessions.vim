@@ -105,6 +105,7 @@ execute 'cd ' .. fnameescape(g:PV_test_dir .. '/session name with spaces')
 let v:this_session = ''
 call s:Stage('Startify save')
 let s:saved_session = s:Native(g:startify_session_dir .. '/session name with spaces')
+let s:saved_session = planet#session#PathForFile(s:saved_session)
 call mkdir(g:startify_session_dir, 'p')
 call planet#session#SaveAs(s:saved_session)
 call assert_true(filereadable(s:saved_session))

@@ -9,7 +9,8 @@ call mkdir(s:home, 'p')
 call mkdir(s:folder, 'p')
 call writefile(['one', 'two', 'three'], s:folder .. '/one.txt')
 call writefile(['another file'], s:folder .. '/two.txt')
-let s:external = g:PV_test_dir .. '/named workspace.vim'
+let s:external = g:PV_test_dir .. '/named workspace'
+let s:external = planet#session#PathForFile(s:external)
 let s:counter = 0
 func! s:Run(cwd, checks, args = [], after = 'qa!', interval = 30000) abort
   let s:counter += 1
@@ -20,6 +21,7 @@ func! s:Run(cwd, checks, args = [], after = 'qa!', interval = 30000) abort
         \ 'let g:PV_session_interval = ' .. a:interval,
         \ 'let g:PV_clangd_argv = []',
         \ 'let g:PV_pylsp_argv = []',
+        \ 'autocmd BufReadPre * let g:PlanetStartupUndoDir = &undodir',
         \ 'function! PlanetSessionCheck(timer) abort',
         \ '  try',
         \ '    set noinsertmode',
@@ -57,10 +59,21 @@ func! s:Run(cwd, checks, args = [], after = 'qa!', interval = 30000) abort
   call assert_equal(a:after ==# 'cquit!' ? 1 : 0, get(job_info(l:job), 'exitval', -1))
 endfunc
 
+" Initial viminfo must be selected before Vim reads it, not at VimEnter.
+call s:Run(s:home, [
+      \ 'let @z = "global-only register"',
+      \ 'call histadd("cmd", "echo global-only-history")',
+      \ ])
+
 " A first folder launch displays welcome, then normal exit saves its layout.
 call s:Run(s:folder, [
       \ 'call assert_equal("startify", &filetype)',
       \ 'call assert_equal(planet#session#PathForDirectory(getcwd(-1)), v:this_session)',
+      \ 'call assert_equal("", @z)',
+      \ 'call assert_notmatch("global-only-history", execute("history cmd"))',
+      \ 'call assert_equal(fnamemodify(v:this_session, ":h") .. "/viminfo", &viminfofile)',
+      \ 'let @a = "session-only register"',
+      \ 'call histadd("cmd", "echo session-only-history")',
       \ 'edit one.txt',
       \ 'normal! 3G',
       \ 'vsplit two.txt',
@@ -72,6 +85,9 @@ call s:Run(s:folder, [
       \ 'call assert_equal("two.txt", expand("%:t"))',
       \ 'call assert_notequal("startify", &filetype)',
       \ 'call assert_equal(' .. string(s:folder) .. ', getcwd(-1))',
+      \ 'call assert_equal("session-only register", @a)',
+      \ 'call assert_equal("", @z)',
+      \ 'call assert_match("session-only-history", execute("history cmd"))',
       \ 'call planet#session#SaveAs(' .. string(s:external) .. ')',
       \ 'only',
       \ 'edit one.txt',
@@ -91,10 +107,13 @@ call assert_equal(s:original, readfile(s:auto), 'Save As is never redirected int
 call s:Run(s:home, [
       \ 'call assert_equal("", v:this_session)',
       \ 'call assert_equal("startify", &filetype)',
+      \ 'call assert_equal("global-only register", @z)',
+      \ 'call assert_equal("", @a)',
+      \ 'call assert_notmatch("session-only-history", execute("history cmd"))',
       \ 'call assert_match("Recent Sessions", join(getline(1, "$"), "\n"))',
-      \ 'call assert_match("named workspace.vim", join(getline(1, "$"), "\n"))',
+      \ 'call assert_match("named workspace", join(getline(1, "$"), "\n"))',
       \ 'call assert_equal(' .. string(s:external) .. ', planet#session#Recent()[0].file)',
-      \ 'let entries = filter(values(b:startify.entries), ''get(v:val, "cmd", "") =~# "named workspace.vim"'')',
+      \ 'let entries = filter(values(b:startify.entries), ''get(v:val, "cmd", "") =~# "named workspace"'')',
       \ 'call assert_true(!empty(entries))',
       \ 'execute entries[0].cmd',
       \ 'call assert_equal(' .. string(s:external) .. ', v:this_session)',
@@ -120,6 +139,8 @@ call s:Run(s:home, ['call assert_equal("", v:this_session)'])
 call s:Run(s:home, [
       \ 'call assert_equal(' .. string(s:external) .. ', v:this_session)',
       \ 'call assert_notequal("startify", &filetype)',
+      \ 'call assert_equal(fnamemodify(v:this_session, ":h") .. "/viminfo", &viminfofile)',
+      \ 'call assert_equal("", @z)',
       \ ], ['-S', s:external])
 
 " Emergency exit retains the previous snapshot.
@@ -134,3 +155,16 @@ call s:Run(s:folder, [
       \ 'call assert_match("normal!.*", join(readfile(v:this_session), "\n"))',
       \ ], [], 'cquit!', 50)
 call s:Run(s:folder, ['call assert_equal(3, line("."))'])
+
+" A native -S import must ignore captured global persistence before reading files.
+let s:legacy = g:PV_test_dir .. '/legacy native.vim'
+call s:Run(s:home, [
+      \ 'execute "edit " .. fnameescape(' .. string(s:folder .. '/one.txt') .. ')',
+      \ 'set sessionoptions+=options',
+      \ 'execute "mksession! " .. fnameescape(' .. string(s:legacy) .. ')',
+      \ ], [], 'cquit!')
+call s:Run(s:home, [
+      \ 'call assert_equal(' .. string(planet#session#PathForFile(s:legacy)) .. ', v:this_session)',
+      \ 'call assert_match("legacy.*session/undo", g:PlanetStartupUndoDir)',
+      \ 'call assert_equal("", @z)',
+      \ ], ['-S', s:legacy])

@@ -287,7 +287,7 @@ export def RunCmd(cmd: any, this_window: any = v:false, close_on_exit: any = v:f
   context.parser = get(options, 'parser', planet#diagnostics#Auto(cmd))
   context.log_file = ''
   if !empty(context.parser) || has_key(options, 'task_id')
-    context.log_file = planet#paths#State('task-logs') .. '/' .. sha256(tempname()) .. '.log'
+    context.log_file = planet#paths#SessionState('task-logs') .. '/' .. sha256(tempname()) .. '.log'
     writefile([], context.log_file)
     setfperm(context.log_file, 'rw-------')
     context.result.log_file = context.log_file

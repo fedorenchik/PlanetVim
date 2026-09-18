@@ -34,6 +34,16 @@ export def State(name: string = ''): string
   return LocalDirectory('state', name)
 enddef
 
+export def SessionState(name: string = ''): string
+  var owner = get(g:, 'PV_session_state_dir', '')
+  if empty(owner)
+    return State(name)
+  endif
+  var path = owner .. (empty(name) ? '' : '/' .. name)
+  mkdir(path, 'p', 0o700)
+  return path
+enddef
+
 export def Cache(name: string = ''): string
   return LocalDirectory('cache', name)
 enddef

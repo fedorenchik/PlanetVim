@@ -72,7 +72,7 @@ export def Run(id: any, options: any = {}): any
     if index(['qt', 'google', 'boost', 'catch2'], id) >= 0
       program = planet#debugtools#Value(options, 'program', 'Built ' .. id .. ' test executable:')
       argv = LocalTool(program, options)
-      report = get(options, 'report', planet#paths#State('test-reports') .. '/' .. id .. '-' .. sha256(tempname())[ : 15] .. '.xml')
+      report = get(options, 'report', planet#paths#SessionState('test-reports') .. '/' .. id .. '-' .. sha256(tempname())[ : 15] .. '.xml')
       if id ==# 'qt'
         argv += ['-o', '-,txt', '-o', report .. ',junitxml']
       elseif id ==# 'google'

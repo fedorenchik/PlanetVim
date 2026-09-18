@@ -274,7 +274,6 @@ au CursorHoldI * if win_gettype() == "" | checktime | endif
 # Filetype-specific behavior lives in planet.vim/plugin/filetypes.vim.
 au GUIEnter * set t_vb=
 au InsertLeave * if empty(&buftype) | pclose | endif
-au SessionLoadPost * call planet#planet#SetPerSessionOptions()
 au StdinReadPost * set nomodified
 au TerminalWinOpen * setlocal foldcolumn=0 signcolumn=no nonumber norelativenumber winfixheight winfixwidth
 au BufWinEnter * if &buftype == 'terminal' | setlocal foldcolumn=0 signcolumn=no nonumber norelativenumber winfixheight winfixwidth | endif
