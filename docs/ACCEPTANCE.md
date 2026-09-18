@@ -556,3 +556,26 @@ tests** passed, including the extended check that nested session snapshots,
 viminfo, undo, swap, backups, views and tab-recovery files survive installation
 and uninstall. `git diff --check` passed. These checks used temporary state;
 the user's installed session files were not migrated during development.
+
+
+## Quickfix and location-list session persistence — 2026-09-18
+
+Session snapshots now include every quickfix list and each saved window's
+location-list history. Fixtures cover older/newer list selection, entry indices,
+file-based navigation after buffer renumbering, ranges, context/user data,
+Unicode and multiline messages, separate lists for windows showing the same
+file, multiple tabs, closed panels, visible panel layout/focus, Save As isolation,
+empty lists and sessions containing only search results. Location histories
+owned by quickfix windows are covered too. Real child processes verify timer
+saves, normal exit, restart and native `-S` loading. No-session editing does not
+write list state.
+
+The full Linux GVim 9.2.1011 run completed with **91/95 files passing**, three
+explicit debugpy-adapter skips and one all-options panel-layout failure. The
+failure exposed native quickfix placeholders being mistaken for real list
+windows; clearing their temporary buffer types before reconstruction fixes it.
+After that fix, **5 focused current-GVim GUI files** passed, including the list
+fixture, automatic sessions, save variants, Vim9 compilation and help. **3 final
+minimum-GVim 9.1.0016 GUI files** passed, including complete list restoration,
+real-process startup and Vim9 compilation. The full suite was not repeated
+after this final fix. `git diff --check` passed.

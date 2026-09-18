@@ -2,6 +2,10 @@
 
 ## Unreleased — Linux GVim menus, Vim9 runtime and plugin refresh
 
+- Save and restore complete quickfix and per-window location-list histories in
+  session snapshots, including selected lists/entries and open panels. Preserve
+  window ownership and file-based jump targets across restarts; keep list state
+  isolated between sessions and skip persistence when no session is active.
 - Store each session's snapshot, viminfo, undo, swap, backups, views and related
   recovery files in its own directory. Select storage before startup reads
   viminfo; restore global state when no session is active. Save As creates an

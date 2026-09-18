@@ -427,6 +427,17 @@ Without a session, editor recovery uses the normal global state directory.
 Preferences, personal dictionaries, project configuration and the MRU index
 remain shared. Delete removes the snapshot and retains its recovery directory.
 
+Session snapshots also contain every list in the quickfix history and every
+location-list history belonging to a saved window, including closed panels.
+Titles, entries, selected lists/entries and ordinary context/user data persist.
+Restore reopens visible panels and reattaches location lists to their own windows,
+including separate lists for windows showing the same file. |:colder|/|:cnewer|
+and |:lolder|/|:lnewer| continue to navigate the saved histories after a restart.
+File paths replace temporary buffer IDs. Unnamed-buffer entries retain text but
+cannot jump to a file; process-specific plugin callbacks are not persisted.
+Lists use the same autosave and Save/Save As lifecycle as the layout, embedded in
+session.vim. Without an active session, lists are not automatically saved/loaded.
+
 Sessions -> Save As... chooses a directory and name. /work/demo.vim creates
 /work/demo.session/session.vim. Current history and undo become independent
 copies; open buffers' swap files move into the new directory. The snapshot is
