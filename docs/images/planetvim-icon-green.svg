@@ -6,8 +6,8 @@
        Paths are unchanged after Inkscape's EPS-to-SVG conversion; only a shared uniform transform is added.
        See VIM-ICON-LICENSE.txt and planetvim-icon.md. -->
   <g id="orbit-back" transform="rotate(-15 512 620)" fill="none">
-    <ellipse cx="512" cy="620" rx="448" ry="125" stroke="#231f20" stroke-width="60"/>
-    <ellipse cx="512" cy="620" rx="448" ry="125" stroke="#b1edc1" stroke-width="44"/>
+    <ellipse cx="512" cy="620" rx="448" ry="125" stroke="#231f20" stroke-width="120"/>
+    <ellipse cx="512" cy="620" rx="448" ry="125" stroke="#b1edc1" stroke-width="88"/>
   </g>
   <circle id="planet" cx="512" cy="512" r="376" fill="#009f40" stroke="#231f20" stroke-width="12"/>
   <g id="vim-v" transform="translate(117.2 117.2) scale(2.1)">
@@ -170,7 +170,7 @@
        transform="matrix(0.13333333,0,0,-0.13333333,0,376)" />
   </g>
   <g id="orbit-front" transform="rotate(-15 512 620)" fill="none">
-    <path d="M64 620 A448 125 0 0 0 960 620" stroke="#231f20" stroke-width="60"/>
-    <path d="M64 620 A448 125 0 0 0 960 620" stroke="#b1edc1" stroke-width="44" stroke-linecap="round"/>
+    <path d="M64 620 A448 125 0 0 0 960 620" stroke="#231f20" stroke-width="120"/>
+    <path d="M64 620 A448 125 0 0 0 960 620" stroke="#b1edc1" stroke-width="88" stroke-linecap="round"/>
   </g>
 </svg>
