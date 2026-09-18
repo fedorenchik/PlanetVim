@@ -1,3 +1,5 @@
+<img src="docs/images/planetvim-icon.png" width="128" height="128" alt="PlanetVim icon">
+
 # PlanetVim
 
 PlanetVim is a **GVim distribution for Linux and Windows**, with discoverable menus for editing, projects, Git, SDK tools, testing, debugging, and writing. Linux is the primary platform. macOS, terminal Vim, and Neovim are outside this release's scope.
