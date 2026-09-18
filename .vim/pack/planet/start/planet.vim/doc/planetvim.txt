@@ -92,11 +92,12 @@ Vimscript globals g:PV_config_dir, g:PV_state_dir, g:PV_cache_dir take precedenc
 ==============================================================================
 MENUS AND LEARNING                                           *planetvim-menus*
 
-PlanetVim -> Menu Style chooses Emoji (default), Plain (compact keyboard
-letters), or Descriptive. Descriptive shows one group at a time; the PlanetVim
-root is always visible. Select Basic, Editing, Development, Tools, Navigation,
-or Settings there. Compact styles let these groups be toggled independently.
-Style and selected group are saved across restarts.
+Choose Menu Style: Emoji, Menu Style: Plain, or Menu Style: Descriptive directly
+from the PlanetVim menu. Emoji is the default compact style, Plain uses compact
+keyboard letters, and Descriptive shows one group at a time. The PlanetVim root
+is always visible. Select Basic, Editing, Development, Tools, Navigation, or
+Settings there. Compact styles let these groups be toggled independently. Style
+and selected group are saved across restarts.
 
 Option menus show ☑/☐ for enabled/disabled toggles and ●/○ for selected/unselected
 choices. They follow actual settings, including direct :set changes and the

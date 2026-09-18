@@ -138,7 +138,8 @@ execution and preserving an active Visual selection. Existing Clap entries remai
 
 ### MD-03 · Superseded by owner request · Compact menu styles
 
-- [x] PlanetVim → Menu Style offers Emoji (default), Plain, and Descriptive.
+- [x] The PlanetVim menu directly offers Menu Style: Emoji (default), Plain, and
+  Descriptive instead of nesting these choices in a submenu.
   Descriptive mode shows exactly one of the six groups; PlanetVim always remains
   visible. Style and selected group are saved across restarts. Compact styles
   retain the independent group toggles. Dynamic buffer, session, GUI and run
