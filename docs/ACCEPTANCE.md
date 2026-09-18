@@ -2,6 +2,42 @@
 
 This record covers PlanetVim **0.1.0-rc.1**, implemented on **2026-09-08** from baseline `f75c805a`. The source is a release candidate. Native Windows hosted CI and external SDK/target acceptance remain release gates; checked-in automation is not evidence that those jobs ran.
 
+## Menu state indicators — 2026-09-18
+
+First-party Vim9script decorates toggle/choice labels with checkboxes and radio
+markers. Native `:menutrans` aliases preserve canonical menu paths and short
+accelerators. Stable sibling priorities preserve ordering when changed leaves
+are recreated. There is no polling timer, helper extension or population on
+menubar opening. Third-party plugin sources are unchanged.
+
+The full current-GVim GUI run passed **90/93 files**, with three debugpy fixtures
+explicitly skipped because the adapter is unavailable. The four static menu
+contract tests passed. Final focused reruns cover literal-label preservation in
+the action finder and canonical menu paths.
+
+Focused checks cover direct option changes, local window state, preset values,
+hidden groups, all three root styles, identical labels in different branches,
+escaped labels, disabled modes, script-local callbacks, tooltips, canonical
+`:emenu` actions, action search and bounded translation reuse. Six focused Vim
+fixtures passed on minimum **GVim 9.1.0016**. The opt-in live event test passed on
+both **9.1.0016** and **9.2.1011**, including actual command-line input followed
+by `SafeState`. A GTK visual check confirmed checkbox/radio rendering and a
+real mouse click toggled wrapping and its indicator together. Run the live test
+with `PLANETVIM_MENU_GUI=1 PLANETVIM_XVFB=/path/to/Xvfb python3 -m unittest
+discover -s tests -p test_menu_state_gui.py`; use `GVIM` to select a build.
+
+Five alternating warm startup samples per version, after one excluded warmup
+each, measured **1.667 s median** to first screen with indicators versus
+**1.421 s** for the parent menu implementation. The comparison used fresh GTK3
+GVim 9.2.1011 processes, private Xvfb, the same bundled plugins/helper, and a
+shared warm menu-hint cache. The new menu layer adds about **0.25 s** on this
+host; the **1.0 s target is not met**. Eliminating unnecessary pattern searches
+and caching priority parsing reduced the initial implementation's overhead.
+A separate 158-entry refresh measurement averaged **1.8 ms** with no changes
+(500 iterations) and **3.9 ms** when toggling wrapping (200 iterations).
+These are script execution times, not display latency. Local raw results are
+`/tmp/pv-menu-state-bench/startup-comparison.json` and `refresh-cost.json`.
+
 ## Contextual right-click menus — 2026-09-17
 
 The native editor popup adapts to selections, editing mode, writable state,

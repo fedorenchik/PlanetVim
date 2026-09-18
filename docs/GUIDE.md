@@ -13,6 +13,13 @@ Tools, Navigation, or Settings from PlanetVim to switch groups. PlanetVim is
 always visible, and both your style and selected group survive a restart.
 In compact styles the same group entries toggle groups independently.
 
+Option menus show **☑ / ☐** for enabled/disabled toggles and **● / ○** for
+selected/unselected choices. Indicators follow the actual setting, including
+changes made with `:set` and the current buffer/window. Custom option values can
+leave all presets unselected. Actions without a readable setting have no marker.
+These are text indicators drawn by Vimscript; shortcuts and bottom tips remain
+available. Find Menu Action uses plain labels to avoid retaining stale markers.
+
 **PlanetVim → Find Menu Action** (also in View) searches actions in every group.
 Type words to filter, use the arrow keys to choose, Enter to run, F1 for the
 selected action's help and mapping, or Esc to cancel.

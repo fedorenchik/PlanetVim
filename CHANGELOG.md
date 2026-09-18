@@ -2,6 +2,9 @@
 
 ## Unreleased — Linux GVim menus, Vim9 runtime and plugin refresh
 
+- Show checkbox and radio indicators for menu settings using Vim9script. Follow
+  direct option changes and the active window/buffer, updating only changed
+  entries while preserving menu order, canonical paths, shortcuts and tips.
 - Keep the native tab menu open after a normal right-click by opening it after
   button release. Build and enable the Linux helper by default with an explicit
   `NATIVE_TABS=0` installation opt-out and `g:PV_native_tabs = false` runtime option.

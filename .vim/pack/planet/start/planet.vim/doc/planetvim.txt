@@ -98,6 +98,13 @@ root is always visible. Select Basic, Editing, Development, Tools, Navigation,
 or Settings there. Compact styles let these groups be toggled independently.
 Style and selected group are saved across restarts.
 
+Option menus show ☑/☐ for enabled/disabled toggles and ●/○ for selected/unselected
+choices. They follow actual settings, including direct :set changes and the
+current window/buffer. Custom values may leave every preset unselected. Actions
+without a readable setting have no marker. These are Vimscript label indicators;
+canonical :emenu paths, shortcut hints and tips are preserved. Find Menu Action
+uses plain labels rather than retaining an old checked/unchecked state.
+
 Menu hints prefer keyboard shortcuts. The primary shortcut is on the far right;
 a second short shortcut, or a short command, appears before it. At most two
 shortcuts are shown. For example, Undo shows :undo then u; Next Tab shows
