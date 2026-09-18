@@ -71,7 +71,9 @@ window first when keeping the current project open.
 
 Plain GVim launches from a project directory automatically resume its last
 session and save every 30 seconds and on normal exit. Sessions → Save As… chooses
-a named file to use for future autosaves and launches from that directory.
+a named session directory to use for future autosaves and launches from that
+directory. Its `session.vim`, viminfo, undo, swap, backups and views stay together;
+editing without a session uses global state.
 The startup screen lists recent sessions; `$HOME` launches stay unmanaged until
 you explicitly save or open one. See [session management](GUIDE.md#sessions-recovery-and-environment).
 

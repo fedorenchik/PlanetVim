@@ -90,7 +90,7 @@ The PlanetVim menu selects **Easy**, **Standard**, or **Supercharged** mode. Sta
 - **Build / Run / Debug / Test / Analyze** operate on the GVim instance's project, rooted at its global working directory. Start GVim from the project root or use `:cd /path/to/project`; tabs share the same project.
 - **Git** operates on the saved file's repository. Network, commit, deployment, and installation actions run only when selected.
 - **Writing / Spell Check** provide Markdown/LaTeX builds, prose tools, translation, spelling, and grammar checking.
-- **Sessions** automatically resumes and saves each folder's layout, supports custom session files, and lists recent sessions on the welcome screen. Home-directory launches stay unmanaged until you save or open a session.
+- **Sessions** automatically resumes and saves each folder's layout, keeps each session's viminfo, undo, swap, backups and views in its own directory, and lists recent sessions on the welcome screen. Home-directory launches use global state until you save or open a session.
 
 Commands show output, working directory, and exit status in a GVim terminal buffer. `:PlanetCommandResult` describes the current output and `:PlanetCommandCancel` stops its job. Failed commands remain available for inspection.
 

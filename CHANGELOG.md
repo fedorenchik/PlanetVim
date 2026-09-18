@@ -2,6 +2,11 @@
 
 ## Unreleased — Linux GVim menus, Vim9 runtime and plugin refresh
 
+- Store each session's snapshot, viminfo, undo, swap, backups, views and related
+  recovery files in its own directory. Select storage before startup reads
+  viminfo; restore global state when no session is active. Save As creates an
+  independent copy of current history/undo. Import flat session files while
+  preserving their originals and existing launch paths.
 - Show checkbox and radio indicators for menu settings using Vim9script. Follow
   direct option changes and the active window/buffer, updating only changed
   entries while preserving menu order, canonical paths, shortcuts and tips.

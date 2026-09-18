@@ -533,3 +533,26 @@ writing-preview fixture failure: its recorder file was readable before its
 contents arrived (`v:none` instead of the expected argument list). The isolated
 writing test passed on retry. No writing runtime or fixture was changed; this
 run is recorded as a full-run failure with a successful focused rerun.
+
+
+## Per-session persistence — 2026-09-18
+
+Linux GVim **9.2.1011** passed the full GUI suite: **91/94 files**, with three
+explicit debugpy-adapter skips. After the final legacy-import and fixed-window
+changes, all **9 focused GUI files** passed again. Minimum supported GVim
+**9.1.0016** passed **5 focused GUI files**, including real child-process startup,
+state isolation, automatic sessions, project layouts and Vim9 compilation.
+
+The fixtures verify actual swap relocation, backup/view creation, independent
+undo files for the same source file, hidden-buffer undo copies, preservation of
+per-buffer swap opt-outs and fixed windows, viminfo history/register/bookmark
+isolation, restoration of global storage, broken-load fallback, native `-S`
+imports, relative sessions and all-options snapshots. Existing session extra
+configuration and forwarding launch paths survive import. No-session HOME and
+explicit-file launches continue using global state.
+
+The Python suite completed **115 tests with four skips**. All **29 installer
+tests** passed, including the extended check that nested session snapshots,
+viminfo, undo, swap, backups, views and tab-recovery files survive installation
+and uninstall. `git diff --check` passed. These checks used temporary state;
+the user's installed session files were not migrated during development.
