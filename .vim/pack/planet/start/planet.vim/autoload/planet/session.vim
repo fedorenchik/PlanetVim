@@ -237,6 +237,13 @@ def Write(requested: string, options: string)
     &sessionoptions = options
     execute 'mksession! ' .. fnameescape(temporary)
     var lines = readfile(temporary)
+    var lists = planet#session_lists#Capture(options)
+    var restore = index(lines, 'doautoall SessionLoadPost')
+    if restore < 0
+      throw 'PlanetVim: session snapshot is missing SessionLoadPost'
+    endif
+    extend(lines, ["if exists('g:PV_root')",
+      '  call planet#session_lists#Restore(' .. lists .. ')', 'endif'], restore)
     # "All options" must not put persistence back in the previous session.
     filter(lines, (_, line) => !StorageOption(line))
     var header = get(lines, 0, '') ==# 'vim9script' ? [remove(lines, 0), '# PlanetVim session directory']
@@ -301,6 +308,7 @@ export def AutoSave(): number
   # emptied existing session can still be saved.
   if (&filetype ==# 'startify' || !filereadable(v:this_session))
       && empty(filter(getbufinfo({'buflisted': 1}), (_, b) => !empty(b.name) && getbufvar(b.bufnr, '&buftype') ==# ''))
+      && !planet#session_lists#HasLists()
     return 0
   endif
   try

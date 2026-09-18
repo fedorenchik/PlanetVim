@@ -168,3 +168,34 @@ call s:Run(s:home, [
       \ 'call assert_match("legacy.*session/undo", g:PlanetStartupUndoDir)',
       \ 'call assert_equal("", @z)',
       \ ], ['-S', s:legacy])
+
+" Real restarts restore every list, using filenames rather than old buffer IDs.
+let s:lists = planet#session#PathForFile(g:PV_test_dir .. '/diagnostics.vim')
+call s:Run(s:home, [
+      \ 'execute "edit " .. fnameescape(' .. string(s:folder .. '/one.txt') .. ')',
+      \ 'call setqflist([], " ", {"title": "older build", "items": [{"bufnr": bufnr(), "lnum": 1, "text": "older"}]})',
+      \ 'call setqflist([], " ", {"title": "latest build", "items": [{"bufnr": bufnr(), "lnum": 2, "text": "latest"}]})',
+      \ 'call setloclist(0, [], " ", {"title": "older search", "items": [{"bufnr": bufnr(), "lnum": 1, "text": "old local"}]})',
+      \ 'call setloclist(0, [], " ", {"title": "latest search", "items": [{"bufnr": bufnr(), "lnum": 3, "text": "new local"}]})',
+      \ 'lopen 4',
+      \ 'botright copen 5',
+      \ 'call planet#session#SaveAs(' .. string(s:lists) .. ')',
+      \ 'call setqflist([], "a", {"title": "timer saved build"})',
+      \ 'sleep 200m',
+      \ 'call assert_match("timer saved build", join(readfile(v:this_session), "\n"))',
+      \ ], [], 'qa!', 50)
+call s:Run(s:home, [
+      \ 'call assert_equal(3, winnr("$"))',
+      \ 'call assert_true(getwininfo(win_getid())[0].quickfix)',
+      \ 'call assert_false(getwininfo(win_getid())[0].loclist)',
+      \ 'call assert_equal(2, getqflist({"nr": "$"}).nr)',
+      \ 'call assert_equal("timer saved build", getqflist({"title": 0}).title)',
+      \ 'let owner = filter(getwininfo(), "!v:val.quickfix")[0].winid',
+      \ 'call assert_equal(2, getloclist(owner, {"nr": "$"}).nr)',
+      \ 'call assert_equal("latest search", getloclist(owner, {"title": 0}).title)',
+      \ 'call assert_true(getloclist(owner, {"winid": 0}).winid > 0)',
+      \ 'colder',
+      \ 'cc',
+      \ 'call assert_equal("one.txt", expand("%:t"))',
+      \ 'call assert_equal(1, line("."))',
+      \ ], ['-S', s:lists])

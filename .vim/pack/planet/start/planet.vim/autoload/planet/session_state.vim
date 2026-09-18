@@ -32,6 +32,7 @@ export def Prepare(file: string)
 enddef
 
 def ClearMemory()
+  planet#session_lists#Clear()
   for history in ['cmd', 'search', 'expr', 'input', 'debug']
     histdel(history)
   endfor
