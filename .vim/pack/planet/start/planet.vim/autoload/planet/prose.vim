@@ -187,6 +187,10 @@ export def FocusPending(): any
   return has_key(script_state, 'focus_restore')
 enddef
 
+export def FocusActive(): bool
+  return has_key(script_state, 'focus')
+enddef
+
 def LocalRestoreFocus(timer: any): any
   if !has_key(script_state, 'focus_restore') || script_state.focus_restore.timer != timer
     timer_stop(timer)

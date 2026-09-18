@@ -118,6 +118,7 @@ enddef
 export def Begin()
   # Root menus will be rebuilt; keep independent context and window-bar tips.
   filter(registry, (_, item) => item.path =~# '^\%(PopUp\|WinBar\|]PVTab\)\.')
+  planet#menu_state#Begin()
   Reset()
 enddef
 
@@ -323,7 +324,8 @@ enddef
 
 # Fixed menu declarations pass their fields directly from compiled Vim9 code.
 # Dynamic/user declarations retain the PlanetMenu parser and caller context.
-export def Entry(head: string, original: string, rhs: string): string
+export def Entry(arg_head: string, original: string, rhs: string): string
+  var head = planet#menu_state#Order(arg_head, original)
   var spec = head .. original .. ' ' .. rhs
   var path = original
   var sid = ''
@@ -367,7 +369,7 @@ export def Entry(head: string, original: string, rhs: string): string
   endif
   registry[key] = {path: original, rhs: rhs, remap: remap && stridx(rhs, '<Cmd>') < 0 && stridx(rhs, ':') < 0, sid: sid, normal: preferred}
   tip = TipText(substitute(tip, '\c<SID>', sid, 'g'))
-  return head .. path .. ' ' .. rhs .. "\ntmenu " .. original .. ' ' .. tip
+  return planet#menu_state#Definition(head, path, rhs) .. "\ntmenu " .. original .. ' ' .. tip
     .. (rhs =~? '\c<SID>' ? "\ncall planet#menu_help#ScriptTip(" .. string(key) .. ')' : '') .. PopupRefresh(original)
 enddef
 

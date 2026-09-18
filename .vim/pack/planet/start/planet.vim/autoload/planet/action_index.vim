@@ -24,7 +24,14 @@ def Walk(path: string, label: string, group: string)
   endfor
   if !empty(children)
     for child in children
-      Walk(path .. '.' .. escape(child, '\. |'), label .. ' → ' .. child, group)
+      # Indicators change with the active window; keep the cached finder text
+      # and path canonical instead of retaining an old checked/unchecked label.
+      var name = substitute(child, '^[☑☐●○] ', '', '')
+      if name !=# child && empty(menu_info(path .. '.' .. escape(name, '\. |')))
+        # A user/plugin may use these glyphs as literal text, without an alias.
+        name = child
+      endif
+      Walk(path .. '.' .. escape(name, '\. |'), label .. ' → ' .. name, group)
     endfor
     return
   endif
