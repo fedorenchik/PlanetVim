@@ -1,30 +1,29 @@
 # PlanetVim icon
 
-The current icons reuse Vim's original lettering over a circular planet with a foreground orbit ring. Both color variants have identical geometry and transparent backgrounds:
+The PlanetVim icon reuses Vim's original lettering over a blue circular planet with a foreground orbit ring. The circle is slightly smaller than the V's overall height.
 
-- Green: [editable SVG](planetvim-icon-green.svg), [1024 × 1024 PNG](planetvim-icon-green.png).
-- Blue: [editable SVG](planetvim-icon-blue.svg), [1024 × 1024 PNG](planetvim-icon-blue.png).
+- [Editable SVG master](planetvim-icon.svg).
+- [Transparent 1024 × 1024 PNG](planetvim-icon.png).
 
-The README displays both variants at 128 pixels. Earlier generated designs remain available as [the round V icon](planetvim-icon.png) and [the diamond icon](planetvim-icon-v2.png).
+The README displays the icon at 128 pixels.
 
 ## Exact lettering and source
 
-The final SVGs directly reuse the paths from Vim's `runtime/vimlogo.eps`, from source snapshot `124371c5a149a8c0c75c04b6c90ac11e71a0aa97`. Inkscape converted that EPS to SVG. The nine diamond paths were omitted, while all 31 letter paths were retained with their original coordinates, transforms, fills, strokes, spacing and relative sizes. A shared uniform scale and translation positions the lettering over the new circle. The ring's front arc is the topmost layer, crossing in front of the circle and all lettering, including `im`.
+The final SVG directly reuses the paths from Vim's `runtime/vimlogo.eps`, from source snapshot `124371c5a149a8c0c75c04b6c90ac11e71a0aa97`. Inkscape converted that EPS to SVG. The nine diamond paths were omitted, while all 31 letter paths were retained with their original coordinates, transforms, fills, strokes, spacing and relative sizes. A shared uniform scale and translation positions the lettering over the new circle. The ring's front arc is the topmost layer, crossing in front of the circle and all lettering, including `im`.
 
-The original letter artwork retains the [Vim license](VIM-ICON-LICENSE.txt), copied unmodified from that source snapshot. The circles and orbit rings are PlanetVim additions. Neither color variant relies on fonts or external assets. Only the circle and ring colors differ between variants.
+The original letter artwork retains the [Vim license](VIM-ICON-LICENSE.txt), copied unmodified from that source snapshot. The circle and orbit ring are PlanetVim additions. The icon does not rely on fonts or external assets.
 
-Render the transparent PNGs from the SVG masters with:
+Render the transparent PNG from the SVG master with:
 
 ```sh
-rsvg-convert docs/images/planetvim-icon-green.svg --output docs/images/planetvim-icon-green.png
-rsvg-convert docs/images/planetvim-icon-blue.svg --output docs/images/planetvim-icon-blue.png
+rsvg-convert docs/images/planetvim-icon.svg --output docs/images/planetvim-icon.png
 ```
 
-The built-in image generation tool produced the exploratory designs below. For the final pair, direct vector reuse replaces generated lettering to meet the exact-lettering requirement.
+The built-in image generation tool produced the exploratory designs below. For the final icon, direct vector reuse replaces generated lettering to meet the exact-lettering requirement.
 
 ## Circular color exploration prompts
 
-These built-in image-generation drafts guided the composition; the delivered SVGs and PNGs use the original vector lettering instead.
+These built-in image-generation drafts guided the composition; the delivered SVG and PNG use the original vector lettering instead.
 
 ### Green draft
 

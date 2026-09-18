@@ -9,7 +9,7 @@
     <ellipse cx="512" cy="512" rx="448" ry="125" stroke="#231f20" stroke-width="120"/>
     <ellipse cx="512" cy="512" rx="448" ry="125" stroke="#a8dfff" stroke-width="88"/>
   </g>
-  <circle id="planet" cx="512" cy="512" r="376" fill="#2477c8" stroke="#231f20" stroke-width="12"/>
+  <circle id="planet" cx="512" cy="512" r="320" fill="#2477c8" stroke="#231f20" stroke-width="12"/>
   <g id="vim-v" transform="translate(117.2 117.2) scale(2.1)">
     <path
        id="path10"
