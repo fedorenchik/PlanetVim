@@ -1,4 +1,5 @@
-<img src="docs/images/planetvim-icon-v2.png" width="128" height="128" alt="PlanetVim icon">
+<img src="docs/images/planetvim-icon-green.png" width="128" height="128" alt="PlanetVim green icon">
+<img src="docs/images/planetvim-icon-blue.png" width="128" height="128" alt="PlanetVim blue icon">
 
 # PlanetVim
 

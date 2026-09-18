@@ -1,8 +1,48 @@
 # PlanetVim icon
 
-[planetvim-icon-v2.png](planetvim-icon-v2.png) is the current transparent PNG master for PlanetVim: Vim's familiar green diamond and italic lettering with a mint orbital ring. The README displays it at 128 pixels. The generated RGBA image is preserved without recompression.
+The current icons reuse Vim's original lettering over a circular planet with a foreground orbit ring. Both color variants have identical geometry and transparent backgrounds:
 
-The earlier round-planet design remains available as [planetvim-icon.png](planetvim-icon.png). Both versions were created with the built-in image generation tool.
+- Green: [editable SVG](planetvim-icon-green.svg), [1024 × 1024 PNG](planetvim-icon-green.png).
+- Blue: [editable SVG](planetvim-icon-blue.svg), [1024 × 1024 PNG](planetvim-icon-blue.png).
+
+The README displays both variants at 128 pixels. Earlier generated designs remain available as [the round V icon](planetvim-icon.png) and [the diamond icon](planetvim-icon-v2.png).
+
+## Exact lettering and source
+
+The final SVGs directly reuse the paths from Vim's `runtime/vimlogo.eps`, from source snapshot `124371c5a149a8c0c75c04b6c90ac11e71a0aa97`. Inkscape converted that EPS to SVG. The nine diamond paths were omitted, while all 31 letter paths were retained with their original coordinates, transforms, fills, strokes, spacing and relative sizes. A shared uniform scale and translation positions the lettering over the new circle. The ring's front arc is the topmost layer, crossing in front of the circle and all lettering, including `im`.
+
+The original letter artwork retains the [Vim license](VIM-ICON-LICENSE.txt), copied unmodified from that source snapshot. The circles and orbit rings are PlanetVim additions. Neither color variant relies on fonts or external assets. Only the circle and ring colors differ between variants.
+
+Render the transparent PNGs from the SVG masters with:
+
+```sh
+rsvg-convert docs/images/planetvim-icon-green.svg --output docs/images/planetvim-icon-green.png
+rsvg-convert docs/images/planetvim-icon-blue.svg --output docs/images/planetvim-icon-blue.png
+```
+
+The built-in image generation tool produced the exploratory designs below. For the final pair, direct vector reuse replaces generated lettering to meet the exact-lettering requirement.
+
+## Circular color exploration prompts
+
+These built-in image-generation drafts guided the composition; the delivered SVGs and PNGs use the original vector lettering instead.
+
+### Green draft
+
+```text
+Use case: precise-object-edit, logo-brand.
+The reference image is the ORIGINAL Vim logo rendered from Vim's upstream vimlogo.eps. Treat it as the edit target, not a loose style reference.
+User requirement: keep the text 'Vim' EXACTLY as in this original logo, replace the background diamond with a circle, and add a planetary ring in front. This is the GREEN variant.
+Preserve the original Vim lettering as an unchanged foreground cutout: the exact large angular slab-serif V, the exact small angular italic i and m, the original relative size, alignment, spacing, charcoal outlines, silver-gray faces, white bevels, gray edge shading, and straight clipped corners. Do NOT redraw it with another font, do NOT round off the angular letterforms, do NOT replace it with a generic white serif V, and do NOT re-typeset the word. Uniformly scale the whole original text group only as necessary to fit the icon.
+Change only the green diamond behind the lettering into a true circular planet, using classic saturated Vim green, with a simple dark outline. Completely remove every diamond corner. Add one pale mint-green elliptical Saturn ring around the circle, tilted gently upward to the right. The near arc must visibly sweep IN FRONT of the lower part of the circular planet, with small far portions passing behind the circle at the sides. Keep the lettering readable and unchanged; let the front arc pass just below most of the lettering, across the low foot of the V at most. The ring should be clearly visible but secondary to the original Vim wordmark.
+Square application icon with the complete circle, text and ring centered and uncropped, comfortable transparent padding on all sides, genuinely transparent RGBA background. No white canvas, no black canvas, no checkerboard texture. No other text, labels, stars, gradients or decoration. Preserve the original logo lettering's bevels, but make the new circle and ring clean flat colors with smooth edges. Return exactly one finished green icon.
+```
+
+### Blue draft
+
+```text
+Use case: precise-object-edit.
+Create the BLUE color variant of this exact PlanetVim icon. Change COLORS ONLY. Replace the green circular planet with saturated medium blue (approximately #2477C8), and replace the pale mint ring with pale sky blue (approximately #A8DFFF). Keep the complete geometry, exact original Vim lettering shapes, silver-gray letter faces, white bevels, gray letter edges, charcoal outlines, letter positions and spacing, front-ring overlap, circle size, transparent background, canvas size and margins UNCHANGED. Do not redraw or restyle any text or shape. The background remains a true circle, and the ring remains in front exactly as shown. No new elements, no extra text, no labels, no wordmark, no background. Return one blue icon with actual RGBA transparency.
+```
 
 ## Vim-style revision prompt
 
