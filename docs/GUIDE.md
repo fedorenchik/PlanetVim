@@ -6,8 +6,10 @@ Git is optional for basic editing. Git menu actions remain available and report 
 
 ## Menu styles
 
-Use **PlanetVim → Menu Style** to choose **Emoji** (the default compact roots),
-**Plain** (compact keyboard letters), or **Descriptive** (File, Edit, and so on).
+Choose **Menu Style: Emoji**, **Menu Style: Plain**, or **Menu Style:
+Descriptive** directly from the **PlanetVim** menu. Emoji is the default compact
+style, Plain uses compact keyboard letters, and Descriptive uses File, Edit, and
+so on.
 Descriptive mode shows one group at a time. Choose Basic, Editing, Development,
 Tools, Navigation, or Settings from PlanetVim to switch groups. PlanetVim is
 always visible, and both your style and selected group survive a restart.

@@ -94,8 +94,8 @@ setlocal wrap
 
 " Labels, aliases and state survive root translation and hidden groups.
 call planet#menu#Style('plain')
-call assert_match('^● ', menu_info('[P].Menu Style.Plain').display)
-call assert_match('^○ ', menu_info('[P].Menu Style.Emoji (default)').display)
+call assert_match('^● ', menu_info('[P].Menu Style: Plain').display)
+call assert_match('^○ ', menu_info('[P].Menu Style: Emoji (default)').display)
 call planet#menu#Style('descriptive')
 call planet#menu#Group('settings')
 call assert_match('^● ', menu_info('PlanetVim.Settings Menus').display)

@@ -5,6 +5,8 @@ runtime! plugin/**/*.vim
 set noinsertmode
 call planet#menu#Style('descriptive')
 call assert_false(empty(menu_info('PlanetVim')))
+call assert_equal({}, menu_info('PlanetVim.Menu Style'))
+call assert_false(empty(menu_info('PlanetVim.Menu Style: Descriptive (one group)')))
 call assert_false(empty(menu_info('File')))
 call assert_equal({}, menu_info('Buffers'))
 emenu PlanetVim.Navigation\ Menus
