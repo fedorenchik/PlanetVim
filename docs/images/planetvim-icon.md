@@ -1,8 +1,21 @@
 # PlanetVim icon
 
-[planetvim-icon.png](planetvim-icon.png) is the transparent PNG master for PlanetVim: a green planet with a white V and a mint orbital ring. The README displays it at 128 pixels. The original image has an RGBA alpha channel and is preserved without recompression.
+[planetvim-icon-v2.png](planetvim-icon-v2.png) is the current transparent PNG master for PlanetVim: Vim's familiar green diamond and italic lettering with a mint orbital ring. The README displays it at 128 pixels. The generated RGBA image is preserved without recompression.
 
-Created with the built-in image generation tool, followed by one refinement using the first image as the edit target.
+The earlier round-planet design remains available as [planetvim-icon.png](planetvim-icon.png). Both versions were created with the built-in image generation tool.
+
+## Vim-style revision prompt
+
+The edit target was the earlier PlanetVim icon. The visual reference was the classic Vim/GVim icon installed at `/usr/share/icons/hicolor/48x48/apps/gvim.png`; Vim's original icon is not bundled here.
+
+```text
+Use case: logo-brand, precise-object-edit.
+Image 1 is the current PlanetVim icon to redesign. Image 2 is the installed classic Vim/GVim application icon, supplied strictly as the visual style reference.
+User request: Make the PlanetVim icon more similar to Vim's classic icon.
+Redesign image 1 to strongly echo image 2: replace the round green planet with Vim's familiar vivid green diamond, a square rotated 45 degrees. Use the classic oversized slanted white/light-gray serif capital V with a crisp thin charcoal outline, and the smaller italic lowercase 'im' tucked beside its lower-right stroke, reading exactly 'Vim', with the recognizable proportions and arrangement of the reference. The large V should extend slightly beyond the diamond as in the reference. Keep the classic bright Vim green, light lettering, and dark contours; reproduce the clean logo geometry at high resolution rather than pixelating the low-resolution reference.
+Retain PlanetVim's distinguishing feature: one clean, restrained pale mint planetary orbit ring wrapping diagonally around the green diamond. The orbit should integrate with the diamond, passing behind the upper part and across the lower green area, with ALL lettering clearly in front of the ring and fully readable. Make the orbit substantially less dominant than the V and green diamond. The result should immediately look like a Vim-family app with a planetary orbit.
+Create a polished square application icon on a genuinely transparent RGBA background, with balanced transparent margins around the whole uncropped silhouette. Clean smooth antialiased edges, flat colors, no mottling, no grain, no stray pixels, no gradients, no 3D lighting, no glow, no extra shadows. Exactly the letters 'Vim'; no 'PlanetVim' wordmark, captions, labels, stars, other symbols, mockups, or multiple variants. Return only one finished isolated icon.
+```
 
 ## Initial prompt
 
@@ -21,4 +34,3 @@ Text: exactly one uppercase letter "V" as part of the icon. No other letters or 
 Use case: precise-object-edit, logo-brand.
 Edit the attached PlanetVim application icon. Keep the exact design concept and arrangement: the circular green planet, bold white serif capital V, and tilted mint orbital ring. Change only the rendering quality: make all shapes perfectly clean, smooth and flat, with solid uniform emerald-green fill for the planet, solid pale mint fill for the ring, and pure white for the V. Remove all mottling, gradients, dark smudges, grain, stray pixels, and ragged cutout edges. Use clean antialiased contours like a professionally drawn geometric vector logo. Keep the V large and readable at small application-icon sizes. Preserve a truly transparent alpha background and generous transparent padding around the complete uncropped silhouette. No background color, no checkerboard, no shadows, no textures, no extra text or new elements. One finished square app icon only.
 ```
-
