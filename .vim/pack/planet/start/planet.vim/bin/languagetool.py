@@ -46,15 +46,16 @@ def as_xml(response, text):
 
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--config', required=True)
+    parser = argparse.ArgumentParser(allow_abbrev=False)
+    parser.add_argument('--backend-arg', action='append', required=True)
+    parser.add_argument('--timeout', type=float, default=60)
+    parser.add_argument('--error-file')
     options, arguments = parser.parse_known_args()
     error_file = None
     try:
-        config = json.loads(Path(options.config).read_text(encoding='utf-8'))
-        if config.get('error_file'):
-            error_file = Path(config['error_file'])
-        command = config['argv']
+        if options.error_file:
+            error_file = Path(options.error_file)
+        command = options.backend_arg
         if not isinstance(command, list) or not command or not all(isinstance(arg, str) for arg in command):
             raise ValueError('LanguageTool command must be a nonempty argv list')
         if '--api' not in arguments or not arguments:
@@ -67,7 +68,7 @@ def main():
             text = stream.read()
         arguments = ['--json' if argument == '--api' else argument for argument in arguments]
         process = subprocess.run(command + arguments, capture_output=True, text=True,
-                                 encoding='utf-8', timeout=config.get('timeout', 60))
+                                 encoding='utf-8', timeout=options.timeout)
         if process.returncode:
             error = process.stderr or process.stdout or f'LanguageTool exited {process.returncode}'
             if error_file:

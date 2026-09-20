@@ -35,13 +35,13 @@ class LanguageToolAdapter(unittest.TestCase):
     def test_native_argv_and_real_exit_status(self):
         with tempfile.TemporaryDirectory(prefix='planet grammar ') as directory:
             root = Path(directory)
-            source, config, script, record = [root / name for name in ['input.txt', 'config.json', 'fake cli.py', 'argv.json']]
+            source, script, record = [root / name for name in ['input.txt', 'fake cli.py', 'argv.json']]
             source.write_text('Text with literal $(text).', encoding='utf-8')
             script.write_text('import json,pathlib,sys\npathlib.Path(sys.argv[1]).write_text(json.dumps(sys.argv[2:]),encoding="utf-8")\nprint(json.dumps({"matches":[]}))\n', encoding='utf-8')
             literal = 'two words; "quoted" \\ trailing'
             error_file = root / 'last-error.log'
-            config.write_text(json.dumps({'argv': [sys.executable, str(script), str(record), literal], 'error_file': str(error_file)}), encoding='utf-8')
-            result = subprocess.run([sys.executable, str(HELPER), '--config', str(config), '-c', 'utf-8', '-l', 'en-US', '--api', str(source)], capture_output=True)
+            adapter_args = ['--error-file=' + str(error_file)] + ['--backend-arg=' + arg for arg in [sys.executable, str(script), str(record), literal]]
+            result = subprocess.run([sys.executable, str(HELPER)] + adapter_args + ['-c', 'utf-8', '-l', 'en-US', '--api', str(source)], capture_output=True)
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertEqual(ET.fromstring(result.stdout).tag, 'matches')
             self.assertEqual(json.loads(record.read_text(encoding='utf-8')), [literal, '-c', 'utf-8', '-l', 'en-US', '--json', str(source)])
@@ -50,12 +50,12 @@ class LanguageToolAdapter(unittest.TestCase):
                                     'context': {'text': 'This is is a mistake.', 'offset': 5, 'length': 5},
                                     'replacements': [{'value': 'is'}], 'rule': {'id': 'REPEAT'}}]}
             script.write_text('print(' + repr(json.dumps(response)) + ')\n', encoding='utf-8')
-            result = subprocess.run([sys.executable, str(HELPER), '--config', str(config), '--api', str(source)], capture_output=True)
+            result = subprocess.run([sys.executable, str(HELPER)] + adapter_args + ['--api', str(source)], capture_output=True)
             self.assertEqual(result.returncode, 0, result.stderr)
             error = ET.fromstring(result.stdout)[0].attrib
             self.assertEqual((error['fromy'], error['fromx']), ('1', '5'), 'CRLF must not shift Windows source columns')
             script.write_text('import sys\nprint("intentional failure",file=sys.stderr)\nsys.exit(7)\n', encoding='utf-8')
-            result = subprocess.run([sys.executable, str(HELPER), '--config', str(config), '--api', str(source)], capture_output=True)
+            result = subprocess.run([sys.executable, str(HELPER)] + adapter_args + ['--api', str(source)], capture_output=True)
             self.assertEqual(result.returncode, 7)
             self.assertIn(b'intentional failure', result.stderr)
             self.assertEqual(result.stdout, b'')
