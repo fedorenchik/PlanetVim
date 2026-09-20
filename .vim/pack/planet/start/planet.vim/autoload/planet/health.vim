@@ -52,7 +52,7 @@ def LocalIntegrationItems(items: any): any
   var path: any
   var argv: any
   var qt_dirs: any
-  var spec_file: any = script_runtime .. '/data/integrations.json'
+  var spec_file: any = script_runtime .. '/data/integrations.vim'
   var tools: any = {}
   var overrides: any = get(g:, 'PV_integration_tools', {})
   if type(overrides) != v:t_dict
@@ -60,7 +60,7 @@ def LocalIntegrationItems(items: any): any
     overrides = {}
   endif
   try
-    specs = json_decode(join(readfile(spec_file), "\n"))
+    specs = planet#storage#Read(spec_file)
     for [id, spec] in items(specs)
       name = spec.argv[0]
       if !has_key(tools, name)

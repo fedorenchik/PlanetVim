@@ -2,7 +2,7 @@
 
 The development menus run optional SDK tools in the current PlanetVim project directory. Each action either operates directly, asks for the required files/targets, or explains which executable or SDK must be installed. Selecting an install, package, deployment, translation, or kernel-configuration action performs that operation; startup never installs these tools.
 
-`autoload/planet/integrations.vim` implements the workflows. `data/integrations.json` records 118 specific command contracts, including their argument order, required inputs, and platform requirements. Arguments remain native argv values. Additional arguments use a JSON array, for example `["--target", "target with spaces"]`. Empty/cancelled input starts no process. Process output retains the executable, working directory, and actual exit status.
+`autoload/planet/integrations.vim` implements the workflows. `data/integrations.vim` records 118 specific command contracts, including their argument order, required inputs, and platform requirements. Arguments remain native argv values. Additional arguments use a JSON array, for example `["--target", "target with spaces"]`. Empty/cancelled input starts no process. Process output retains the executable, working directory, and actual exit status.
 
 ## Selecting tools
 

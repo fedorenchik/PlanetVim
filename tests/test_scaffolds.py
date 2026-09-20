@@ -27,10 +27,18 @@ class Scaffolds(unittest.TestCase):
         return result.stdout
 
     def test_every_catalog_entry_generates_without_overwriting(self):
-        catalog = json.loads((TEMPLATES / 'catalog.json').read_text())
         menu = (PLUGIN / 'autoload/planet/menu/basic.vim').read_text()
         with tempfile.TemporaryDirectory(prefix="planetvim scaffolds ' 工作 ") as temporary:
             parent = Path(temporary)
+            # Ask Vim to evaluate the same catalog used by the menus.
+            script, result = parent / 'catalog.vim', parent / 'catalog-output.txt'
+            quote = lambda value: "'" + str(value).replace("'", "''") + "'"
+            script.write_text("execute 'source ' .. fnameescape(" + quote(TEMPLATES / 'catalog.vim') + ')\n'
+                              'call writefile([json_encode(getscriptinfo({"sid": getscriptinfo()[-1].sid})[0].variables.config)], '
+                              + quote(result) + ')\nqa!\n')
+            self.run_tool(['gvim', '-v', '-Nu', 'NONE', '-U', 'NONE', '-i', 'NONE', '-n', '-es',
+                           '--cmd', 'set shell=/bin/sh', '-S', str(script)])
+            catalog = json.loads(result.read_text())
             for name, entry in catalog.items():
                 with self.subTest(name=name), contextlib.redirect_stdout(io.StringIO()):
                     self.assertIn("planet#scaffold#New(''" + name + "'')", menu)

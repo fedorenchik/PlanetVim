@@ -1,6 +1,6 @@
 vim9script
 export def Catalog(): any
-  return json_decode(join(readfile(planet#paths#Root() .. '/.vim/pack/planet/start/planet.vim/templates/catalog.json'), "\n"))
+  return planet#storage#Read(planet#paths#Root() .. '/.vim/pack/planet/start/planet.vim/templates/catalog.vim')
 enddef
 
 export def New(name: any, destination: any = v:null, arg_options: any = {}): any

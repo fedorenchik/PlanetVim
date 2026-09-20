@@ -1,7 +1,7 @@
 vim9script
 
 var script_runtime = expand('<script>:p:h:h:h')
-var script_specs = json_decode(join(readfile(script_runtime .. '/data/integrations.json'), "\n"))
+var script_specs = planet#storage#Read(script_runtime .. '/data/integrations.vim')
 var script_display_jobs = {}
 var script_environment_stack = {}
 var script_initial_display = $DISPLAY
