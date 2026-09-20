@@ -72,7 +72,7 @@ Supercharged changes Normal keys:
     e/E       older/newer change
     ge/gE     first/last tab
 
-Modes and menu preferences are stored in preferences.json. Defaults are applied
+Modes and menu preferences are stored in preferences.vim. Defaults are applied
 before mode selection and your planetvimrc.vim. Your script is read once; it is
 never rewritten to save generated preferences. During later mode switches,
 mappings changed by the user are preserved instead of blindly overwritten.
@@ -259,8 +259,9 @@ nonempty files/directories are preserved; cancellation creates nothing. File
 → New File includes native C++, Python, Qt, shader, web, and LaTeX templates.
 Follow the generated project's README for its SDK dependencies.
 
-Run → Add Configuration accepts a JSON object: >
-    {"name":"hello","argv":["./build/hello","a,b"],"cwd":"."}
+Run → Add Configuration prompts for a shell command. Edit Run Configurations
+opens a Vim9script file; saving reloads its config.profiles list. Each entry is: >
+    {name: 'hello', argv: ['./build/hello', 'a,b'], cwd: '.'}
 <
 Use an argv List for native execution. A `command` String is an alternative for
 an intentional shell script. Supply one, not both. Windows users should select
@@ -311,9 +312,9 @@ LSP → Preview → Signature runs :LspSignatureHelp. Pull diagnostics are enabl
 servers advertising the protocol; set g:lsp_diagnostics_pull_enabled = 0 to opt
 out. Stop All Servers also stops servers belonging to other filetypes.
 
-Modify → Snippets prompts for fields before insertion. Custom snippets are JSON
-objects whose values are arrays of lines, stored under config/snippets/FILETYPE
-.json. ${field} prompts once; ${cursor} selects the final cursor position. Custom
+Modify → Snippets prompts for fields before insertion. Custom snippets use
+Vim9script with export var config: dict<any> mapping names to lists of lines,
+stored under config/snippets/FILETYPE.vim. ${field} prompts once; ${cursor} selects the final cursor position. Custom
 names override built-ins. Emmet expands an abbreviation through its bundled API.
 
 HEX editing                                                   *planetvim-hex*

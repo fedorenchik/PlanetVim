@@ -22,9 +22,9 @@ def CacheReset(mappings: list<dict<any>>)
   if !cache_loaded
     cache_loaded = true
     try
-      var path = planet#paths#Cache() .. '/menu-hints.json'
+      var path = planet#paths#Cache() .. '/menu-hints.vim'
       if filereadable(path) && getfsize(path) < 8 * 1024 * 1024
-        var data = json_decode(join(readfile(path), "\n"))
+        var data = planet#storage#Read(path)
         if type(data) == v:t_dict
           hint_cache = data
         endif
@@ -54,21 +54,12 @@ export def SaveCache()
   if !cache_changed || empty(cache_key)
     return
   endif
-  var temporary = ''
   try
-    var path = planet#paths#Cache() .. '/menu-hints.json'
-    temporary = path .. '.' .. getpid()
-    writefile([json_encode(hint_cache)], temporary)
-    setfperm(temporary, 'rw-------')
-    if rename(temporary, path) == 0
-      cache_changed = false
-    endif
+    var path = planet#paths#Cache() .. '/menu-hints.vim'
+    planet#storage#Write(path, hint_cache)
+    cache_changed = false
   catch
     # Read-only caches are supported; the live computation remains available.
-  finally
-    if !empty(temporary)
-      delete(temporary)
-    endif
   endtry
 enddef
 

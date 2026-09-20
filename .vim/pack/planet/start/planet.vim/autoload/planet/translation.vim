@@ -15,10 +15,10 @@ def LocalSettings(): any
   var file: any
   if !has_key(script_state, 'settings')
     script_state.settings = {source:  get(g:, 'translator_source_lang', 'auto'), target:  get(g:, 'translator_target_lang', 'zh'), engines:  get(g:, 'translator_default_engines', ['google'])}
-    file = planet#paths#Config() .. '/translation.json'
+    file = planet#paths#Config() .. '/translation.vim'
     if filereadable(file)
       try
-        extend(script_state.settings, json_decode(join(readfile(file), "\n")), 'force')
+        extend(script_state.settings, planet#storage#Read(file), 'force')
       catch
         LocalWarn('could not load saved settings: ' .. v:exception)
       endtry
@@ -47,7 +47,7 @@ export def Language(which: any, arg_value: any = v:null): any
   endif
   settings[which] = value
   g:['translator_' .. which .. '_lang'] = value
-  writefile([json_encode(settings)], planet#paths#Config() .. '/translation.json')
+  planet#storage#Write(planet#paths#Config() .. '/translation.vim', settings)
   return 1
 enddef
 
@@ -73,7 +73,7 @@ export def Engines(arg_value: any = v:null): any
     endif
   endfor
   g:translator_default_engines = copy(settings.engines)
-  writefile([json_encode(settings)], planet#paths#Config() .. '/translation.json')
+  planet#storage#Write(planet#paths#Config() .. '/translation.vim', settings)
   return 1
 enddef
 

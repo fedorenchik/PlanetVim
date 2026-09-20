@@ -5,7 +5,7 @@ PlanetMenu an Cached.Undo u
 let s:expected = menu_info('Cached.Undo')
 let s:tip = menu_info('Cached.Undo', 't').rhs
 call planet#menu_help#SaveCache()
-call assert_true(filereadable(g:PV_cache_dir .. '/menu-hints.json'))
+call assert_true(filereadable(g:PV_cache_dir .. '/menu-hints.vim'))
 execute 'source ' .. fnameescape(s:module)
 call planet#menu_help#Reset()
 PlanetMenu an Cached.Undo u
@@ -28,7 +28,7 @@ call assert_match('zy$', menu_info('Cached.Buffers').accel)
 nunmap zy
 
 " Corrupt cache data falls back to live hints.
-call writefile(['{invalid json'], g:PV_cache_dir .. '/menu-hints.json')
+call writefile(['invalid Vimscript'], g:PV_cache_dir .. '/menu-hints.vim')
 execute 'source ' .. fnameescape(s:module)
 call planet#menu_help#Reset()
 PlanetMenu an Cached.Undo u
@@ -37,13 +37,13 @@ call assert_equal(s:tip, menu_info('Cached.Undo', 't').rhs)
 
 " Cache strings cannot introduce Ex commands, even if manually modified.
 call planet#menu_help#SaveCache()
-let s:cache = json_decode(join(readfile(g:PV_cache_dir .. '/menu-hints.json'), "\n"))
+let s:cache = planet#storage#Read(g:PV_cache_dir .. '/menu-hints.vim')
 for s:bucket in values(s:cache)
   if has_key(s:bucket, 'an Cached.Undo u')
     let s:bucket['an Cached.Undo u'] = [':undo | let g:PV_cache_injected = 1', "hint\n|let g:PV_cache_injected = 1"]
   endif
 endfor
-call writefile([json_encode(s:cache)], g:PV_cache_dir .. '/menu-hints.json')
+call planet#storage#Write(g:PV_cache_dir .. '/menu-hints.vim', s:cache)
 execute 'source ' .. fnameescape(s:module)
 call planet#menu_help#Reset()
 PlanetMenu an Cached.Undo u

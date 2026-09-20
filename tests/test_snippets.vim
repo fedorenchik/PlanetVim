@@ -7,8 +7,8 @@ call assert_equal([2, 9], [line('.'), col('.')])
 let s:before = getline(1, '$')
 call assert_equal(0, planet#snippets#Insert('not-a-snippet', {}))
 call assert_equal(s:before, getline(1, '$'))
-let s:custom = planet#paths#Config('snippets') .. '/python.json'
-call writefile([json_encode(#{literal: ['${text}${cursor}']})], s:custom)
+let s:custom = planet#paths#Config('snippets') .. '/python.vim'
+call planet#storage#Write(s:custom, #{literal: ['${text}${cursor}']})
 call assert_equal(1, planet#snippets#Insert('literal', #{text: 'quote" and \ literal'}))
 call assert_match('quote" and \\ literal', getline('.'))
 let s:catalog = planet#snippets#Catalog()

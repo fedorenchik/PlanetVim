@@ -38,7 +38,7 @@ call assert_equal({}, menu_info('[f]'))
 call planet#menu#Style('descriptive')
 call assert_equal('editing', g:PV_menu_group)
 call assert_false(empty(menu_info('Registers')))
-let s:saved = json_decode(readfile(planet#paths#Config() .. '/preferences.json')[0])
+let s:saved = planet#storage#Read(planet#paths#Config() .. '/preferences.vim')
 call assert_equal('descriptive', s:saved.PV_menu_style)
 call assert_equal('editing', s:saved.PV_menu_group)
 for s:group in ['basic', 'editing', 'dev', 'tools', 'nav', 'settings']

@@ -28,13 +28,13 @@ def LocalValid(key: string, value: any): any
 enddef
 
 def LocalRead(): dict<any>
-  var path: any = planet#paths#Config() .. '/preferences.json'
+  var path: any = planet#paths#Config() .. '/preferences.vim'
   if !filereadable(path)
     return {}
   endif
-  var values: any = json_decode(join(readfile(path), "\n"))
+  var values: any = planet#storage#Read(path)
   if type(values) != v:t_dict
-    throw 'PlanetVim: preferences.json must contain an object'
+    throw 'PlanetVim: preferences.vim must export a config dictionary'
   endif
   for [key, value] in items(values)
     if !LocalValid(key, value)
@@ -59,27 +59,16 @@ export def SavePreference(arg_key: string, value: any): any
     LocalWarn('refusing invalid preference ' .. key)
     return v:false
   endif
-  var temporary: any = ''
   try
     values = LocalRead()
     values[key] = value
-    path = planet#paths#Config() .. '/preferences.json'
-    temporary = path .. '.' .. getpid() .. '.tmp'
-    writefile([json_encode(values)], temporary)
-    setfperm(temporary, 'rw-------')
-    if rename(temporary, path) != 0
-      throw 'could not replace ' .. path
-    endif
+    path = planet#paths#Config() .. '/preferences.vim'
+    planet#storage#Write(path, values)
     return v:true
   catch
     LocalWarn(v:exception)
     return v:false
-  finally
-    if !empty(temporary) && filereadable(temporary)
-      delete(temporary)
-    endif
   endtry
-  return 0
 enddef
 
 export def Initialize(): number

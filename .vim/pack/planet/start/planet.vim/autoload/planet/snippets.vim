@@ -1,12 +1,12 @@
 vim9script
 export def Catalog(): any
   var snippets: any
-  var file: any = planet#paths#Root() .. '/.vim/pack/planet/start/planet.vim/data/snippets.json'
-  var all: any = json_decode(join(readfile(file), "\n"))
+  var file: any = planet#paths#Root() .. '/.vim/pack/planet/start/planet.vim/data/snippets.vim'
+  var all: any = planet#storage#Read(file)
   snippets = extend(copy(get(all, '*', {})), get(all, &filetype, {}))
-  var custom: any = planet#paths#Config('snippets') .. '/' .. (empty(&filetype) ? 'text' : &filetype) .. '.json'
+  var custom: any = planet#paths#Config('snippets') .. '/' .. (empty(&filetype) ? 'text' : &filetype) .. '.vim'
   if filereadable(custom)
-    extend(snippets, json_decode(join(readfile(custom), "\n")))
+    extend(snippets, planet#storage#Read(custom))
   endif
   return snippets
 enddef
@@ -91,9 +91,9 @@ export def Insert(arg_name: any = v:null, arg_fields: any = {}): any
 enddef
 
 export def Edit(): any
-  var path: any = planet#paths#Config('snippets') .. '/' .. (empty(&filetype) ? 'text' : &filetype) .. '.json'
+  var path: any = planet#paths#Config('snippets') .. '/' .. (empty(&filetype) ? 'text' : &filetype) .. '.vim'
   if !filereadable(path)
-    writefile(['{}'], path)
+    planet#storage#Write(path, {})
   endif
   execute 'tabedit ' .. fnameescape(path)
   return 0

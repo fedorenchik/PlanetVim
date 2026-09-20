@@ -42,14 +42,14 @@ def LocalGdbQuote(path: any): any
 enddef
 
 def LocalProfiles(): any
-  var file: any = planet#paths#Config('debugtools') .. '/profiles.json'
-  return filereadable(file) ? json_decode(join(readfile(file), "\n")) : {}
+  var file: any = planet#paths#Config('debugtools') .. '/profiles.vim'
+  return filereadable(file) ? planet#storage#Read(file) : {}
 enddef
 
 def LocalRemember(id: any, options: any): any
   var profiles: any = LocalProfiles()
   profiles[id] = options
-  writefile([json_encode(profiles)], planet#paths#Config('debugtools') .. '/profiles.json')
+  planet#storage#Write(planet#paths#Config('debugtools') .. '/profiles.vim', profiles)
   return 0
 enddef
 

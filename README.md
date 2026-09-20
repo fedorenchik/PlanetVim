@@ -104,10 +104,10 @@ Commands show output, working directory, and exit status in a GVim terminal buff
 
 ## First projects
 
-For C++: select **File → New Project → CMake**, choose a new directory, then select **Build → CMake → Create In-Tree Build Dir**, **Configure**, and **Build**. The generated project includes a CTest test. **Test → CTest** runs it. Generate `compile_commands.json` from the CMake menu for clangd. Add a Run profile with native arguments, for example:
+For C++: select **File → New Project → CMake**, choose a new directory, then select **Build → CMake → Create In-Tree Build Dir**, **Configure**, and **Build**. The generated project includes a CTest test. **Test → CTest** runs it. Generate `compile_commands.json` from the CMake menu for clangd. Use **Run → Edit Run Configurations** to edit `config.profiles` in Vim9script, with entries such as:
 
-```json
-{"name":"hello","argv":["./build/hello"],"cwd":"."}
+```vim
+{name: 'hello', argv: ['./build/hello'], cwd: '.'}
 ```
 
 On Windows, use the actual `.exe` output path, including the configuration subdirectory for a multi-configuration generator. Run profiles belong to the instance's project and are stored in private state.

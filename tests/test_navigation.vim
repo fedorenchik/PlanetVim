@@ -115,8 +115,8 @@ call deletebufline(bufnr(), 3, '$')
 setlocal noendofline
 call cursor(2, 3)
 let s:snapshot = planet#gui#TransferSnapshot()
-let s:snapshot_path = g:PV_test_dir .. '/transfer.json'
-call writefile([json_encode(s:snapshot)], s:snapshot_path)
+let s:snapshot_path = g:PV_test_dir .. '/transfer.vim'
+call planet#storage#Write(s:snapshot_path, s:snapshot)
 enew
 call assert_equal(1, planet#gui#RestoreTransfer(s:snapshot_path))
 call assert_equal(s:snapshot.lines, getline(1, '$'))

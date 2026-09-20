@@ -134,7 +134,14 @@ Linux defaults:
 
 Windows defaults are `%LOCALAPPDATA%\PlanetVim\config`, `state`, and `cache`. Override with `PLANETVIM_CONFIG_DIR`, `PLANETVIM_STATE_DIR`, and `PLANETVIM_CACHE_DIR` before launch. Explicit early Vimscript globals `g:PV_config_dir`, `g:PV_state_dir`, and `g:PV_cache_dir` take priority.
 
-The editable config is `planetvimrc.vim` in the config directory. The PlanetVim menu opens it. Initialization applies distribution defaults, saved mode/menu preferences, the selected mode, then your config. It runs the custom file once. Generated `preferences.json` is separate from your script. Preference writes merge the current file and atomically replace it; simultaneous writes to the same preference use the last completed writer, and are not a cross-process settings transaction.
+The editable config is `planetvimrc.vim` in the config directory. The PlanetVim menu opens it. Initialization applies distribution defaults, saved mode/menu preferences, the selected mode, then your config. It runs the custom file once. Generated `preferences.vim` is separate from your script. Preference writes merge the current file and atomically replace it; simultaneous writes to the same preference use the last completed writer, and are not a cross-process settings transaction.
+
+Saved preferences, translation settings, debugger profiles, custom snippets,
+project run profiles, and menu-hint caches use Vim9script with an
+`export var config: dict<any>` dictionary. These are local executable scripts;
+edit only trusted settings. Generated files are private to your user and are
+replaced atomically when saved by PlanetVim. Plugin-required formats and installer
+backup records retain their own formats.
 
 Example customization:
 
@@ -163,10 +170,10 @@ Run → Project provides shared `.planetvim.vim` settings, private Vim9 override
 
 The File menu creates a template only in a new or empty destination. Cancel creates nothing. Hidden files and binary files are copied; existing nonempty output is preserved. Electron/Vue dependency installation is explicit. Nuxt invokes an installed creator and reports its result. Generated README/build files describe the next steps.
 
-Build → CMake can select a configure preset, build configuration and target, inspect actual executable artifacts, configure/build/rebuild, open GUI/TUI configuration, and generate a compilation database. Build prerequisites must succeed before dependent steps run. Run → Add Configuration accepts an object such as:
+Build → CMake can select a configure preset, build configuration and target, inspect actual executable artifacts, configure/build/rebuild, open GUI/TUI configuration, and generate a compilation database. Build prerequisites must succeed before dependent steps run. Run → Add Configuration prompts for a shell command. Edit Run Configurations opens the current project’s Vim9script file; saving it reloads the profiles. Set its `config.profiles` list to entries such as:
 
-```json
-{"name":"application","argv":["./build/hello","argument with spaces","a,b"],"cwd":"."}
+```vim
+{name: 'application', argv: ['./build/hello', 'argument with spaces', 'a,b'], cwd: '.'}
 ```
 
 `argv` executes directly. `command` is an alternative for a deliberately requested shell script; supply exactly one. On Windows, point to the native executable and its actual configuration directory.
@@ -185,10 +192,11 @@ Supported actions are `:PlanetDefinition`, `:PlanetReferences`, `:PlanetHover`, 
 
 LSP → Document Semantic Scopes (`:PlanetSemanticScopes`) requests semantic tokens and opens their types, modifiers, and source locations. It needs a server with full semantic-token support, such as clangd; pylsp normally does not provide this capability. Analyze → Check shows the current document's language-server diagnostics. Both actions report missing server support when unavailable.
 
-Modify → Snippets inserts a filetype-specific snippet and prompts for its fields before changing the buffer. Edit Custom Snippets opens a private JSON object mapping names to arrays of lines. `${field}` prompts once per field; `${cursor}` sets the final cursor. Example:
+Modify → Snippets inserts a filetype-specific snippet and prompts for its fields before changing the buffer. Edit Custom Snippets opens `snippets/FILETYPE.vim` in the private config directory. Its exported `config` dictionary maps names to lists of lines. `${field}` prompts once per field; `${cursor}` sets the final cursor. Example:
 
-```json
-{"greeting":["Hello ${name}!${cursor}"]}
+```vim
+vim9script
+export var config: dict<any> = {greeting: ['Hello ${name}!${cursor}']}
 ```
 
 Custom names override built-ins for that filetype. Emmet expands the abbreviation at the cursor through the bundled plugin.
@@ -259,7 +267,7 @@ lazy-loading plugin manager. The expensive integrations now start when needed:
 - The action finder builds its search index on first use. All selected menubar
   groups and their hints are available immediately; hidden groups remain searchable.
 - Fixed menu declarations use direct compiled calls. Derived shortcuts and tips
-  are cached as JSON in the PlanetVim cache directory (`menu-hints.json`). They
+  are cached as Vim9script in the PlanetVim cache directory (`menu-hints.vim`). They
   are recomputed when mappings, leaders, relevant display settings or hint code
   change. The cache is saved on exit, so the first launch after an update costs
   more. Missing or damaged caches fall back to live computation.

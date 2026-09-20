@@ -16,12 +16,12 @@ export def Path(arg_path: any, base: any): any
 enddef
 
 def LocalStateFile(root: any): any
-  return planet#paths#State('projects') .. '/' .. sha256(root) .. '.json'
+  return planet#paths#State('projects') .. '/' .. sha256(root) .. '.vim'
 enddef
 
 def LocalValidate(profiles: any): any
   if type(profiles) != v:t_list
-    throw 'run profiles must be a JSON array'
+    throw 'run profiles must be a List'
   endif
   for profile in profiles
     if type(profile) != v:t_dict || type(get(profile, 'name', 0)) != v:t_string || empty(profile.name) || type(get(profile, 'cwd', '')) != v:t_string
@@ -52,7 +52,7 @@ export def Project(): any
     file = LocalStateFile(root)
     if filereadable(file)
       try
-        saved = json_decode(join(readfile(file), "\n"))
+        saved = planet#storage#Read(file)
         if type(saved) != v:t_dict || get(saved, 'root', '') !=# root || type(get(saved, 'build_dir', 0)) != v:t_string
           throw 'invalid project state'
         endif
@@ -81,15 +81,9 @@ enddef
 
 export def Save(project: any = planet#run#Project()): any
   var file: any = LocalStateFile(project.root)
-  var temporary: any = file .. '.' .. getpid() .. '.tmp'
   try
-    writefile([json_encode(project)], temporary)
-    setfperm(temporary, 'rw-------')
-    if rename(temporary, file) != 0
-      throw 'cannot replace ' .. file
-    endif
+    planet#storage#Write(file, project)
   catch
-    delete(temporary)
     return LocalError('cannot save project state: ' .. v:exception)
   endtry
   return 1
@@ -149,15 +143,31 @@ export def AddConfig(arg_profile: any = v:null): any
 enddef
 
 export def EditConfig(): any
-  var json: any = inputdialog('Run profiles (JSON array with name, argv or command, optional cwd): ', json_encode(planet#run#Project().profiles), 'CANCELLED')
-  if json ==# 'CANCELLED' || empty(json)
+  var project = Project()
+  if !Save(project)
     return 0
   endif
+  var path = LocalStateFile(project.root)
+  execute 'tabedit ' .. fnameescape(path)
+  autocmd! PlanetVimRun BufWritePost <buffer>
+  autocmd PlanetVimRun BufWritePost <buffer> call planet#run#Reload()
+  return 1
+enddef
+
+export def Reload()
+  var root = planet#project#Root()
   try
-    return planet#run#SetProfiles(json_decode(json))
+    var saved = planet#storage#Read(LocalStateFile(root))
+    if get(saved, 'root', '') !=# root || type(get(saved, 'build_dir', 0)) != v:t_string
+      throw 'invalid project state'
+    endif
+    LocalValidate(get(saved, 'profiles', null))
+    instance_project = saved
   catch
-    return LocalError('invalid run profile JSON: ' .. v:exception)
+    LocalError('cannot load project state: ' .. v:exception)
+    return
   endtry
+  UpdateRunMenu()
 enddef
 
 export def UpdateRunMenu(): any

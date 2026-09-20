@@ -23,15 +23,15 @@ for s:mode in ['p', 's', 'e', 'p', 'e', 's', 'p', 'p', 's']
   endif
 endfor
 call assert_equal(s:custom, readfile(g:PV_config))
-let s:preferences = planet#paths#Config() .. '/preferences.json'
-call assert_equal('s', json_decode(readfile(s:preferences)[0]).PV_mode)
+let s:preferences = planet#paths#Config() .. '/preferences.vim'
+call assert_equal('s', planet#storage#Read(s:preferences).PV_mode)
 call assert_true(planet#config#SavePreference('g:PlanetVim_menus_basic', 0))
 let s:before = readfile(s:preferences)
 call assert_false(planet#config#SavePreference('g:PV_mode', 'invalid'))
 call assert_equal(s:before, readfile(s:preferences))
-call writefile(['invalid JSON'], s:preferences)
+call writefile(['invalid Vimscript'], s:preferences)
 call assert_false(planet#config#SavePreference('g:PV_mode', 'e'))
-call assert_equal(['invalid JSON'], readfile(s:preferences))
+call assert_equal(['invalid Vimscript'], readfile(s:preferences))
 call delete(s:preferences)
 call delete(g:PV_config)
 unlet g:PV_config_loaded

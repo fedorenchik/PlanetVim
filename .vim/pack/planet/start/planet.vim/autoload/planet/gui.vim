@@ -40,7 +40,7 @@ enddef
 export def RestoreTransfer(path: any): any
   var data: any
   try
-    data = json_decode(join(readfile(path), "\n"))
+    data = planet#storage#Read(path)
     if empty(data.path)
       enew
     else
@@ -70,8 +70,8 @@ enddef
 export def Transfer(move: any = v:false): any
   var data: any = planet#gui#TransferSnapshot()
   var directory: any = planet#paths#Cache('transfers/' .. sha256(tempname())[ : 19])
-  var path: any = directory .. '/buffer.json'
-  writefile([json_encode(data)], path)
+  var path: any = directory .. '/buffer.vim'
+  planet#storage#Write(path, data)
   var context: any = {'path': path, 'directory': directory, 'buffer': bufnr(), 'window': win_getid(),
        'tick': b:changedtick, 'move': move, 'attempts': 0, 'status': 'running'}
   var argv: any = planet#gui#Command() + ['-f', '-n', '--cmd', 'let g:startify_disable_at_vimenter = 1',
