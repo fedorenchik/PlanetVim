@@ -2,8 +2,9 @@ vim9script
 
 # Private settings and generated caches share the project-settings format.
 export def Read(path: string): dict<any>
-  execute 'source ' .. fnameescape(path)
-  var scripts = getscriptinfo({name: '^\V' .. escape(fnamemodify(path, ':p'), '\') .. '\m$'})
+  var absolute = simplify(fnamemodify(path, ':p'))
+  execute 'source ' .. fnameescape(absolute)
+  var scripts = getscriptinfo({name: '^\V' .. escape(absolute, '\') .. '\m$'})
   if empty(scripts)
     throw 'PlanetVim: could not inspect settings script: ' .. path
   endif

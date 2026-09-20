@@ -6,6 +6,7 @@ let s:value = {'quotes': "a'\"b\\c", 'lines': "one\ntwo\r\t\b", 'unicode': 'ф╕нц
 call planet#storage#Write(s:path, s:value)
 call assert_equal('vim9script', readfile(s:path)[0])
 call assert_equal(s:value, planet#storage#Read(s:path))
+call assert_equal(s:value, planet#storage#Read(fnamemodify(s:path, ':h') .. '//./' .. fnamemodify(s:path, ':t')))
 call assert_false(exists('g:PV_storage_injected'))
 if !has('win32')
   call assert_equal('rw-------', getfperm(s:path))
