@@ -17,7 +17,7 @@
     "vue": "3.5.42"
   },
   "devDependencies": {
-    "vite": "8.2.2",
+    "vite": "8.3.4",
     "@vitejs/plugin-vue": "6.0.8",
     "eslint": "10.10.0",
     "@eslint/js": "10.0.1",
