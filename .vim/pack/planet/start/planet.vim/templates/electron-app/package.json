@@ -21,7 +21,7 @@
   "author": "PlanetVim contributors",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "44.2.0",
+    "electron": "44.9.1",
     "electron-builder": "26.15.3",
     "eslint": "10.10.0",
     "@eslint/js": "10.0.1",
